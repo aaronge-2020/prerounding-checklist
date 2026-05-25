@@ -572,6 +572,11 @@ RESPIRATORY EXAM
 Ability to count to 20 in one breath: Yes / No, stops at __
 Cough strength: Strong / Weak / Absent
 
+SENSORY EXAM
+Sensory level on trunk
+Present at ___
+Absent
+
 SKIN AND VASCULAR
 Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
         </details>
@@ -665,6 +670,11 @@ RESPIRATORY EXAM
 Ability to count to 20 in one breath: Yes / No, stops at __
 Cough strength: Strong / Weak / Absent
 
+SENSORY EXAM
+Sensory level on trunk
+Present at ___
+Absent
+
 SKIN AND VASCULAR
 Skin integrity sacrum and heels: Intact / Breakdown present at __`;
 
@@ -715,17 +725,86 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       };
     }
 
-    function parseChecklist(rawText) {
-      const lines = rawText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-      const sections = [];
-      let questionCount = 0;
+    function parseOptionText(value) {
+      const noteParse = stripTrailingNotePlaceholder(value);
+      const options = noteParse.text.includes("/")
+        ? noteParse.text.split("/").map((option) => option.trim()).filter(Boolean)
+        : [noteParse.text].map((option) => option.trim()).filter(Boolean);
+      return {
+        options,
+        hasNotes: noteParse.hasNotes
+      };
+    }
 
-      lines.forEach((line) => {
+    function isLikelyOptionLine(line) {
+      if (!line || line.includes(":") || isAllCapsLine(line)) {
+        return false;
+      }
+      const optionText = stripTrailingNotePlaceholder(line).text;
+      const wordCount = optionText.split(/\s+/).filter(Boolean).length;
+      return line.includes("__") || wordCount > 0 && wordCount <= 6;
+    }
+
+    function addQuestion(sections, label, options, hasNotes) {
+      const currentSection = ensureSection(sections);
+      const itemId = makeItemId(sections.length - 1, currentSection.items.length);
+      currentSection.items.push({
+        id: itemId,
+        label,
+        options,
+        hasNotes
+      });
+    }
+
+    function parseChecklist(rawText) {
+      const lines = [];
+      let blockId = 0;
+
+      rawText.split(/\r?\n/).forEach((rawLine) => {
+        const text = rawLine.trim();
+        if (!text) {
+          blockId += 1;
+          return;
+        }
+        lines.push({ text, blockId });
+      });
+
+      const sections = [];
+
+      for (let index = 0; index < lines.length; index += 1) {
+        const line = lines[index].text;
+
+        if (!line.includes(":") && !isAllCapsLine(line)) {
+          const nextLine = lines[index + 1];
+          if (nextLine && nextLine.blockId === lines[index].blockId && isLikelyOptionLine(nextLine.text)) {
+            const options = [];
+            let hasNotes = false;
+            let optionIndex = index + 1;
+
+            while (
+              optionIndex < lines.length &&
+              lines[optionIndex].blockId === lines[index].blockId &&
+              isLikelyOptionLine(lines[optionIndex].text)
+            ) {
+              const optionParse = parseOptionText(lines[optionIndex].text);
+              options.push(...optionParse.options);
+              hasNotes = hasNotes || optionParse.hasNotes;
+              optionIndex += 1;
+            }
+
+            if (options.length || hasNotes) {
+              addQuestion(sections, line, options, hasNotes);
+              index = optionIndex - 1;
+              continue;
+            }
+          }
+        }
+
         if (!line.includes(":")) {
           if (isAllCapsLine(line) || (!line.includes("/") && !line.includes("__"))) {
             sections.push({ title: normalizeHeader(line), items: [] });
           }
-          return;
+          continue;
         }
 
         const colonIndex = line.indexOf(":");
@@ -733,30 +812,18 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         const rawValue = line.slice(colonIndex + 1).trim();
 
         if (!label) {
-          return;
+          continue;
         }
 
-        const noteParse = stripTrailingNotePlaceholder(rawValue);
-        const hasOptions = noteParse.text.includes("/");
-        const options = hasOptions
-          ? noteParse.text.split("/").map((option) => option.trim()).filter(Boolean)
-          : [];
+        const optionParse = parseOptionText(rawValue);
 
-        if (!options.length && !noteParse.hasNotes) {
+        if (!optionParse.options.length && !optionParse.hasNotes) {
           sections.push({ title: normalizeHeader(label), items: [] });
-          return;
+          continue;
         }
 
-        const currentSection = ensureSection(sections);
-        const itemId = makeItemId(sections.length - 1, currentSection.items.length);
-        currentSection.items.push({
-          id: itemId,
-          label,
-          options,
-          hasNotes: noteParse.hasNotes
-        });
-        questionCount += 1;
-      });
+        addQuestion(sections, label, optionParse.options, optionParse.hasNotes);
+      }
 
       return sections.filter((section) => section.items.length || section.title);
     }
