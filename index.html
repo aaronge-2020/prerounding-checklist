@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#141413">
+  <title>Pre-Rounding Checklist Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #141413;
+      --surface: #1c1b19;
+      --surface-strong: #24231f;
+      --surface-soft: #191817;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.17);
+      --text: #f1eee7;
+      --muted: #aaa59a;
+      --quiet: #7f7a70;
+      --accent: #4f98a3;
+      --accent-strong: #6ab3bd;
+      --accent-soft: rgba(79, 152, 163, 0.18);
+      --accent-border: rgba(79, 152, 163, 0.74);
+      --danger: #d88b7d;
+      --danger-soft: rgba(216, 139, 125, 0.14);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      --radius: 22px;
+      --radius-sm: 16px;
+      --max: 680px;
+      --bottom-bar-height: 92px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background: linear-gradient(180deg, #171614 0%, var(--bg) 38%);
+      letter-spacing: 0;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      min-height: 44px;
+      border: 0;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    button,
+    textarea,
+    summary {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(106, 179, 189, 0.62);
+      outline-offset: 3px;
+    }
+
+    .app-shell {
+      width: min(100%, var(--max));
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: max(20px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+    }
+
+    .screen {
+      display: none;
+      animation: screenIn 180ms ease-out;
+    }
+
+    .screen.is-active {
+      display: block;
+    }
+
+    @keyframes screenIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .screen {
+        animation: none;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    .hero {
+      padding: 22px 2px 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent-strong);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 13ch;
+      margin-bottom: 12px;
+      font-size: clamp(2rem, 7vw, 3.7rem);
+      line-height: 0.96;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: clamp(1.45rem, 4vw, 2.2rem);
+      line-height: 1.06;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .helper {
+      max-width: 56ch;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .surface {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.01)), var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .paste-card {
+      padding: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.18);
+      resize: vertical;
+      caret-color: var(--accent-strong);
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea::placeholder {
+      color: #736f67;
+    }
+
+    textarea:focus {
+      border-color: rgba(79, 152, 163, 0.8);
+      background: rgba(0, 0, 0, 0.24);
+      box-shadow: 0 0 0 4px rgba(79, 152, 163, 0.12);
+      outline: none;
+    }
+
+    .paste-input {
+      min-height: min(44svh, 440px);
+      padding: 16px;
+      line-height: 1.55;
+    }
+
+    .note-input {
+      min-height: 52px;
+      overflow: hidden;
+      padding: 13px 14px;
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: var(--text);
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #071113;
+      box-shadow: 0 12px 28px rgba(79, 152, 163, 0.24);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-strong);
+    }
+
+    .btn-secondary,
+    .btn-quiet {
+      border: 1px solid var(--border-strong);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-secondary:hover,
+    .btn-quiet:hover {
+      border-color: rgba(106, 179, 189, 0.44);
+      background: rgba(255, 255, 255, 0.075);
+    }
+
+    .btn-quiet {
+      color: var(--muted);
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .inline-error {
+      display: none;
+      margin: 14px 0 0;
+      border: 1px solid rgba(216, 139, 125, 0.32);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #f0b5ab;
+      background: var(--danger-soft);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .inline-error.is-visible {
+      display: block;
+    }
+
+    details {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.026);
+      overflow: hidden;
+    }
+
+    summary {
+      min-height: 48px;
+      padding: 13px 15px;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .example {
+      margin: 0;
+      border-top: 1px solid var(--border);
+      padding: 15px;
+      overflow-x: auto;
+      color: #d6d1c8;
+      font: 0.9rem/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space: pre-wrap;
+    }
+
+    .progress-panel {
+      position: sticky;
+      top: max(10px, env(safe-area-inset-top));
+      z-index: 5;
+      margin: 0 -4px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 14px;
+      background: rgba(28, 27, 25, 0.92);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .progress-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 11px;
+    }
+
+    .progress-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .progress-count {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transition: width 180ms ease;
+    }
+
+    .checklist-list {
+      display: grid;
+      gap: 14px;
+      padding-bottom: calc(var(--bottom-bar-height) + env(safe-area-inset-bottom));
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 2px 0;
+      color: var(--accent-strong);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-label::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, rgba(106, 179, 189, 0.38), transparent);
+    }
+
+    .question-card {
+      padding: 16px;
+    }
+
+    .question-title {
+      margin: 0 0 13px;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .chip-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .chip {
+      min-height: 44px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 8px 14px;
+      color: #ddd8ce;
+      background: rgba(255, 255, 255, 0.045);
+      font-size: 0.94rem;
+      font-weight: 800;
+      line-height: 1.2;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+    }
+
+    .chip:hover {
+      border-color: rgba(106, 179, 189, 0.44);
+      background: rgba(255, 255, 255, 0.072);
+    }
+
+    .chip[aria-pressed="true"] {
+      border-color: var(--accent-border);
+      color: #effdff;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px rgba(106, 179, 189, 0.22);
+    }
+
+    .bottom-bar {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 7;
+      padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, transparent, rgba(20, 20, 19, 0.92) 22%, rgba(20, 20, 19, 0.98));
+    }
+
+    .bottom-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 10px;
+      width: min(100%, var(--max));
+      margin: 0 auto;
+    }
+
+    .output-card {
+      padding: 16px;
+    }
+
+    .output-box {
+      min-height: min(56svh, 620px);
+      padding: 16px;
+      color: #f4f1ea;
+      white-space: pre-wrap;
+    }
+
+    .output-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .output-actions .btn-primary {
+      grid-column: 1 / -1;
+    }
+
+    .status-line {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: var(--accent-strong);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 720px) {
+      .app-shell {
+        padding-right: 0;
+        padding-left: 0;
+      }
+
+      .paste-card,
+      .output-card {
+        padding: 22px;
+      }
+
+      .question-card {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .actions,
+      .output-actions,
+      .bottom-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        display: grid;
+      }
+
+      .output-actions .btn-primary {
+        grid-column: auto;
+      }
+
+      .chip {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell" aria-live="polite">
+    <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
+      <header class="hero">
+        <p class="eyebrow">Bedside workflow</p>
+        <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
+        <p class="helper">Paste an AI-generated plain text checklist, then tap through it at the bedside and generate clean note-ready findings.</p>
+      </header>
+
+      <div class="surface paste-card">
+        <label for="checklistInput">Checklist text</label>
+        <textarea id="checklistInput" class="paste-input" spellcheck="false" placeholder="Paste your checklist here..."></textarea>
+        <p id="pasteError" class="inline-error" role="alert"></p>
+        <div class="actions">
+          <button id="buildButton" class="btn btn-primary btn-full" type="button">Build Checklist</button>
+          <button id="downloadButton" class="btn btn-secondary" type="button">Download App</button>
+        </div>
+
+        <details>
+          <summary>Expected input format</summary>
+          <pre class="example">BEDSIDE QUESTION CHECKLIST
+
+STRENGTH AND MOVEMENT
+Arms today compared to yesterday: Stronger / Same / Weaker
+Can you squeeze both my hands: Yes both / Yes one only / No
+
+RESPIRATORY EXAM
+Ability to count to 20 in one breath: Yes / No, stops at __
+Cough strength: Strong / Weak / Absent
+
+SKIN AND VASCULAR
+Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
+        </details>
+      </div>
+    </section>
+
+    <section id="checklistScreen" class="screen" aria-labelledby="checklistTitle">
+      <div class="progress-panel" role="region" aria-label="Checklist progress">
+        <div class="progress-top">
+          <h2 id="checklistTitle" class="progress-title">Interactive Checklist</h2>
+          <div id="progressCount" class="progress-count">0 of 0 answered</div>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div id="checklistList" class="checklist-list"></div>
+
+      <div class="bottom-bar" role="region" aria-label="Checklist actions">
+        <div class="bottom-inner">
+          <button id="clearButton" class="btn btn-secondary" type="button">Clear All</button>
+          <button id="generateButton" class="btn btn-primary" type="button">Generate Findings</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="outputScreen" class="screen" aria-labelledby="outputTitle">
+      <header class="hero">
+        <p class="eyebrow">Generated text</p>
+        <h2 id="outputTitle">Findings</h2>
+        <p class="helper">Ready to paste into a medical note.</p>
+      </header>
+
+      <div class="surface output-card">
+        <label for="outputText">Compiled findings</label>
+        <textarea id="outputText" class="output-box" readonly></textarea>
+        <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
+        <div class="output-actions">
+          <button id="copyButton" class="btn btn-primary" type="button">Copy Findings</button>
+          <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
+          <button id="newButton" class="btn btn-quiet" type="button">New Checklist</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      sections: [],
+      answers: {},
+      notes: {},
+      compiledText: ""
+    };
+
+    const elements = {
+      pasteScreen: document.getElementById("pasteScreen"),
+      checklistScreen: document.getElementById("checklistScreen"),
+      outputScreen: document.getElementById("outputScreen"),
+      checklistInput: document.getElementById("checklistInput"),
+      pasteError: document.getElementById("pasteError"),
+      buildButton: document.getElementById("buildButton"),
+      downloadButton: document.getElementById("downloadButton"),
+      checklistList: document.getElementById("checklistList"),
+      progressCount: document.getElementById("progressCount"),
+      progressFill: document.getElementById("progressFill"),
+      clearButton: document.getElementById("clearButton"),
+      generateButton: document.getElementById("generateButton"),
+      outputText: document.getElementById("outputText"),
+      copyButton: document.getElementById("copyButton"),
+      editButton: document.getElementById("editButton"),
+      newButton: document.getElementById("newButton"),
+      copyStatus: document.getElementById("copyStatus")
+    };
+
+    const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
+
+    const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
+
+STRENGTH AND MOVEMENT
+Arms today compared to yesterday: Stronger / Same / Weaker
+Legs today compared to yesterday: Stronger / Same / Weaker
+Can you squeeze both my hands: Yes both / Yes one only / No
+Can you lift your legs off the bed: Yes both / Yes one only / No
+
+BREATHING
+How is your breathing right now: Normal / A little hard / Very hard
+Any trouble catching your breath when lying flat: Yes / No
+
+RESPIRATORY EXAM
+Ability to count to 20 in one breath: Yes / No, stops at __
+Cough strength: Strong / Weak / Absent
+
+SKIN AND VASCULAR
+Skin integrity sacrum and heels: Intact / Breakdown present at __`;
+
+    elements.checklistInput.value = "";
+    elements.checklistInput.dataset.example = exampleChecklist;
+
+    function showScreen(name) {
+      const screens = [elements.pasteScreen, elements.checklistScreen, elements.outputScreen];
+      screens.forEach((screen) => {
+        screen.classList.toggle("is-active", screen.id === name);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function setError(message) {
+      elements.pasteError.textContent = message;
+      elements.pasteError.classList.toggle("is-visible", Boolean(message));
+    }
+
+    function normalizeHeader(line) {
+      return line.trim().toUpperCase();
+    }
+
+    function isAllCapsLine(line) {
+      const letters = line.replace(/[^A-Za-z]/g, "");
+      return letters.length > 0 && line === line.toUpperCase();
+    }
+
+    function makeItemId(sectionIndex, itemIndex) {
+      return `s${sectionIndex}i${itemIndex}`;
+    }
+
+    function ensureSection(sections) {
+      if (!sections.length) {
+        sections.push({ title: "CHECKLIST", items: [] });
+      }
+      return sections[sections.length - 1];
+    }
+
+    function stripTrailingNotePlaceholder(value) {
+      const match = value.match(/\s*_{2,3}\s*$/);
+      if (!match) {
+        return { text: value.trim(), hasNotes: false };
+      }
+      return {
+        text: value.slice(0, match.index).trim(),
+        hasNotes: true
+      };
+    }
+
+    function parseChecklist(rawText) {
+      const lines = rawText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      const sections = [];
+      let questionCount = 0;
+
+      lines.forEach((line) => {
+        if (!line.includes(":")) {
+          if (isAllCapsLine(line) || (!line.includes("/") && !line.includes("__"))) {
+            sections.push({ title: normalizeHeader(line), items: [] });
+          }
+          return;
+        }
+
+        const colonIndex = line.indexOf(":");
+        const label = line.slice(0, colonIndex).trim();
+        const rawValue = line.slice(colonIndex + 1).trim();
+
+        if (!label) {
+          return;
+        }
+
+        const noteParse = stripTrailingNotePlaceholder(rawValue);
+        const hasOptions = noteParse.text.includes("/");
+        const options = hasOptions
+          ? noteParse.text.split("/").map((option) => option.trim()).filter(Boolean)
+          : [];
+
+        if (!options.length && !noteParse.hasNotes) {
+          sections.push({ title: normalizeHeader(label), items: [] });
+          return;
+        }
+
+        const currentSection = ensureSection(sections);
+        const itemId = makeItemId(sections.length - 1, currentSection.items.length);
+        currentSection.items.push({
+          id: itemId,
+          label,
+          options,
+          hasNotes: noteParse.hasNotes
+        });
+        questionCount += 1;
+      });
+
+      return sections.filter((section) => section.items.length || section.title);
+    }
+
+    function countChipQuestions() {
+      return state.sections.reduce((total, section) => {
+        return total + section.items.filter((item) => item.options.length > 0).length;
+      }, 0);
+    }
+
+    function updateProgress() {
+      const total = countChipQuestions();
+      const answered = state.sections.reduce((sum, section) => {
+        return sum + section.items.filter((item) => item.options.length > 0 && state.answers[item.id]).length;
+      }, 0);
+      const percentage = total ? Math.round((answered / total) * 100) : 0;
+      elements.progressCount.textContent = `${answered} of ${total} answered`;
+      elements.progressFill.style.width = `${percentage}%`;
+    }
+
+    function autoResize(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+
+    function renderChecklist() {
+      elements.checklistList.innerHTML = "";
+
+      state.sections.forEach((section) => {
+        const sectionLabel = document.createElement("div");
+        sectionLabel.className = "section-label";
+        sectionLabel.textContent = section.title;
+        elements.checklistList.appendChild(sectionLabel);
+
+        section.items.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "surface question-card";
+
+          const title = document.createElement("h3");
+          title.className = "question-title";
+          title.textContent = item.label;
+          card.appendChild(title);
+
+          if (item.options.length) {
+            const group = document.createElement("div");
+            group.className = "chip-group";
+            group.setAttribute("role", "group");
+            group.setAttribute("aria-label", item.label);
+
+            item.options.forEach((option) => {
+              const chip = document.createElement("button");
+              chip.type = "button";
+              chip.className = "chip";
+              chip.textContent = option;
+              chip.setAttribute("aria-pressed", state.answers[item.id] === option ? "true" : "false");
+              chip.addEventListener("click", () => {
+                state.answers[item.id] = state.answers[item.id] === option ? "" : option;
+                renderChecklist();
+                updateProgress();
+              });
+              group.appendChild(chip);
+            });
+
+            card.appendChild(group);
+          }
+
+          if (item.hasNotes) {
+            const noteLabel = document.createElement("label");
+            noteLabel.className = "sr-only";
+            noteLabel.setAttribute("for", `note-${item.id}`);
+            noteLabel.textContent = `${item.label} notes`;
+
+            const noteInput = document.createElement("textarea");
+            noteInput.id = `note-${item.id}`;
+            noteInput.className = "note-input";
+            noteInput.rows = 1;
+            noteInput.placeholder = "Add note...";
+            noteInput.value = state.notes[item.id] || "";
+            noteInput.addEventListener("input", () => {
+              state.notes[item.id] = noteInput.value;
+              autoResize(noteInput);
+            });
+
+            card.appendChild(noteLabel);
+            card.appendChild(noteInput);
+            requestAnimationFrame(() => autoResize(noteInput));
+          }
+
+          elements.checklistList.appendChild(card);
+        });
+      });
+
+      updateProgress();
+    }
+
+    function selectedAnswerNeedsSpace(answer) {
+      return /(?:\b(?:at|to|with|on|in|for|of|by)|[,;:/(-])\s*$/i.test(answer.trim());
+    }
+
+    function formatItem(item) {
+      const answer = (state.answers[item.id] || "").trim();
+      const note = (state.notes[item.id] || "").trim();
+
+      if (item.options.length && item.hasNotes) {
+        if (answer && note) {
+          const separator = selectedAnswerNeedsSpace(answer) ? " " : "; ";
+          return `${item.label}: ${answer}${separator}${note}`;
+        }
+        if (answer) {
+          return `${item.label}: ${answer}`;
+        }
+        if (note) {
+          return `${item.label}: ${note}`;
+        }
+        return `${item.label}: not assessed`;
+      }
+
+      if (item.options.length) {
+        return `${item.label}: ${answer || "not assessed"}`;
+      }
+
+      return `${item.label}: ${note || "not assessed"}`;
+    }
+
+    function compileFindings() {
+      return state.sections.map((section) => {
+        const lines = [section.title];
+        section.items.forEach((item) => lines.push(formatItem(item)));
+        return lines.join("\n");
+      }).join("\n\n");
+    }
+
+    function clearAll() {
+      state.answers = {};
+      state.notes = {};
+      renderChecklist();
+    }
+
+    function resetApp() {
+      state.sections = [];
+      state.answers = {};
+      state.notes = {};
+      state.compiledText = "";
+      elements.outputText.value = "";
+      elements.copyStatus.textContent = "";
+      elements.checklistInput.value = "";
+      setError("");
+      showScreen("pasteScreen");
+      elements.checklistInput.focus();
+    }
+
+    elements.buildButton.addEventListener("click", () => {
+      const rawText = elements.checklistInput.value.trim();
+      setError("");
+
+      if (!rawText) {
+        setError("Paste a checklist first.");
+        elements.checklistInput.focus();
+        return;
+      }
+
+      const sections = parseChecklist(rawText);
+      const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
+
+      if (!itemCount) {
+        setError("I could not find checklist items. Try lines like “Breathing: Normal / A little hard / Very hard” or “Respiratory rate: __”.");
+        return;
+      }
+
+      state.sections = sections;
+      state.answers = {};
+      state.notes = {};
+      renderChecklist();
+      showScreen("checklistScreen");
+    });
+
+    elements.downloadButton.addEventListener("click", () => {
+      const blob = new Blob([initialHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "pre-rounding-checklist.html";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+
+    elements.clearButton.addEventListener("click", clearAll);
+
+    elements.generateButton.addEventListener("click", () => {
+      state.compiledText = compileFindings();
+      elements.outputText.value = state.compiledText;
+      elements.copyStatus.textContent = "";
+      showScreen("outputScreen");
+    });
+
+    elements.copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(state.compiledText);
+        elements.copyStatus.textContent = "Copied.";
+      } catch (error) {
+        elements.outputText.focus();
+        elements.outputText.select();
+        elements.copyStatus.textContent = "Select the text and copy it.";
+      }
+    });
+
+    elements.editButton.addEventListener("click", () => {
+      showScreen("checklistScreen");
+    });
+
+    elements.newButton.addEventListener("click", resetApp);
+  </script>
+</body>
+</html>
