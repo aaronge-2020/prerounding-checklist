@@ -312,16 +312,143 @@
       font-size: 0.94rem;
     }
 
-    .patient-note-input {
+    .source-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.17);
+    }
+
+    .source-toggle button {
+      min-height: 44px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 900;
+      transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .source-toggle button[aria-pressed="true"] {
+      color: #effdff;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px var(--accent-border);
+    }
+
+    .source-panel {
+      display: none;
+      gap: 13px;
+    }
+
+    .source-panel.is-active {
+      display: grid;
+    }
+
+    .patient-note-input,
+    .scrubbed-note-input {
       min-height: min(22svh, 220px);
       padding: 14px;
       line-height: 1.5;
+    }
+
+    .scrubbed-note-input {
+      min-height: min(26svh, 260px);
+    }
+
+    .admission-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .admission-field-wide {
+      grid-column: 1 / -1;
+    }
+
+    .admission-input {
+      min-height: 96px;
+      padding: 13px;
+      line-height: 1.45;
+    }
+
+    .field-caption {
+      display: block;
+      margin: -5px 0 8px;
+      color: var(--quiet);
+      font-size: 0.82rem;
+      font-weight: 700;
     }
 
     .prompt-actions {
       display: grid;
       grid-template-columns: 1.25fr 1fr;
       gap: 10px;
+    }
+
+    .scrub-review {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(79, 152, 163, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .scrub-review[hidden] {
+      display: none !important;
+    }
+
+    .review-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .review-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.96rem;
+      font-weight: 900;
+    }
+
+    .review-count {
+      color: var(--accent-strong);
+      font-size: 0.84rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .phi-note {
+      margin: 0;
+      border: 1px solid rgba(216, 139, 125, 0.32);
+      border-radius: 14px;
+      padding: 11px 12px;
+      color: #e5c0ba;
+      background: rgba(216, 139, 125, 0.1);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .flag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flag-list li {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #ded8ce;
+      background: rgba(255, 255, 255, 0.046);
+      font-size: 0.82rem;
+      font-weight: 800;
     }
 
     .prompt-status {
@@ -642,6 +769,7 @@
       .output-actions,
       .bottom-inner,
       .prompt-actions,
+      .admission-grid,
       .install-actions,
       .install-steps {
         grid-template-columns: 1fr;
@@ -652,6 +780,10 @@
       }
 
       .output-actions .btn-primary {
+        grid-column: auto;
+      }
+
+      .admission-field-wide {
         grid-column: auto;
       }
 
@@ -674,14 +806,92 @@
         <div>
           <p class="eyebrow">OpenEvidence</p>
           <h2 id="promptOneTitle" class="workflow-title">Checklist prompt</h2>
-          <p class="workflow-copy">Add the patient note here, then copy Prompt 1 into OpenEvidence.</p>
+          <p class="workflow-copy">Choose the source, copy the checklist prompt into OpenEvidence, then paste the returned checklist below.</p>
         </div>
-        <label for="patientNoteInput">Patient note</label>
-        <textarea id="patientNoteInput" class="patient-note-input" spellcheck="false" placeholder="Paste the patient note here..."></textarea>
-        <div class="prompt-actions">
-          <button id="copyPromptOneWithNoteButton" class="btn btn-primary" type="button">Copy Prompt + Note</button>
-          <button id="copyPromptOneButton" class="btn btn-secondary" type="button">Copy Prompt Only</button>
+
+        <div class="source-toggle" role="group" aria-label="Checklist source">
+          <button id="priorModeButton" type="button" aria-pressed="true">Prior SOAP note</button>
+          <button id="admissionModeButton" type="button" aria-pressed="false">New admission form</button>
         </div>
+
+        <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
+          <div>
+            <h3 id="priorSourceTitle" class="workflow-title">Prior SOAP note</h3>
+          <p class="workflow-copy">Paste the note locally. The Stanford AIMI deidentifier runs in this browser before anything is copied out.</p>
+          </div>
+          <label for="rawSoapInput">Raw SOAP note</label>
+          <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here. It stays local in this browser."></textarea>
+          <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers, so review the preview before pasting into OpenEvidence.</p>
+          <div id="scrubReview" class="scrub-review" hidden>
+            <div class="review-header">
+              <p class="review-title">Scrubbed preview</p>
+              <p id="scrubSummary" class="review-count">0 redactions</p>
+            </div>
+            <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note</label>
+            <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note preview..."></textarea>
+            <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
+          </div>
+          <div class="prompt-actions">
+            <button id="scrubAndCopyButton" class="btn btn-primary" type="button">De-identify + Copy Prompt</button>
+            <button id="scrubPreviewButton" class="btn btn-secondary" type="button">De-identify Preview</button>
+          </div>
+        </section>
+
+        <section id="admissionSourcePanel" class="source-panel" aria-labelledby="admissionSourceTitle">
+          <div>
+            <h3 id="admissionSourceTitle" class="workflow-title">New admission form</h3>
+            <p class="workflow-copy">Use this when no prior SOAP note is available. Fill only what you know.</p>
+          </div>
+          <div class="admission-grid">
+            <div>
+              <label for="chiefConcernInput">Chief concern</label>
+              <span class="field-caption">Reason for admission.</span>
+              <textarea id="chiefConcernInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="admittingServiceInput">Admitting service</label>
+              <span class="field-caption">Medicine, surgery, neurology, etc.</span>
+              <textarea id="admittingServiceInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div class="admission-field-wide">
+              <label for="patientOneLinerInput">Patient one-liner</label>
+              <span class="field-caption">Age range, relevant background, and why they are here.</span>
+              <textarea id="patientOneLinerInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div class="admission-field-wide">
+              <label for="briefHpiInput">Brief HPI / key symptoms</label>
+              <textarea id="briefHpiInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="relevantHistoryInput">Relevant PMH / baseline</label>
+              <textarea id="relevantHistoryInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="courseSoFarInput">Course so far</label>
+              <textarea id="courseSoFarInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="objectiveDataInput">Key objective data</label>
+              <textarea id="objectiveDataInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="treatmentsInput">Treatments or support</label>
+              <textarea id="treatmentsInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="pendingTasksInput">Pending studies / consults / tasks</label>
+              <textarea id="pendingTasksInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+            <div>
+              <label for="monitoringConcernsInput">Main concerns to monitor</label>
+              <textarea id="monitoringConcernsInput" class="admission-input" spellcheck="false"></textarea>
+            </div>
+          </div>
+          <div class="prompt-actions">
+            <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy Admission Prompt</button>
+          </div>
+        </section>
+
         <p id="promptStatus" class="prompt-status" role="status" aria-live="polite"></p>
       </section>
 
@@ -791,12 +1001,21 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
     </section>
   </main>
 
-  <script>
+  <script type="module">
+    import { env, pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+
+    env.allowLocalModels = false;
+    env.allowRemoteModels = true;
+
     const state = {
       sections: [],
       answers: {},
       notes: {},
-      patientNote: "",
+      sourceMode: "prior",
+      rawSoapNote: "",
+      scrubbedNote: "",
+      scrubResult: null,
+      admission: {},
       compiledText: ""
     };
 
@@ -804,9 +1023,18 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
       outputScreen: document.getElementById("outputScreen"),
-      patientNoteInput: document.getElementById("patientNoteInput"),
-      copyPromptOneWithNoteButton: document.getElementById("copyPromptOneWithNoteButton"),
-      copyPromptOneButton: document.getElementById("copyPromptOneButton"),
+      priorModeButton: document.getElementById("priorModeButton"),
+      admissionModeButton: document.getElementById("admissionModeButton"),
+      priorSourcePanel: document.getElementById("priorSourcePanel"),
+      admissionSourcePanel: document.getElementById("admissionSourcePanel"),
+      rawSoapInput: document.getElementById("rawSoapInput"),
+      scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
+      scrubReview: document.getElementById("scrubReview"),
+      scrubSummary: document.getElementById("scrubSummary"),
+      scrubFlags: document.getElementById("scrubFlags"),
+      scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
+      scrubPreviewButton: document.getElementById("scrubPreviewButton"),
+      copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
       promptStatus: document.getElementById("promptStatus"),
       checklistInput: document.getElementById("checklistInput"),
       pasteError: document.getElementById("pasteError"),
@@ -832,9 +1060,25 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       copyStatus: document.getElementById("copyStatus")
     };
 
+    const admissionFields = [
+      { key: "chiefConcern", label: "Chief concern", element: document.getElementById("chiefConcernInput") },
+      { key: "admittingService", label: "Admitting service", element: document.getElementById("admittingServiceInput") },
+      { key: "patientOneLiner", label: "Patient one-liner", element: document.getElementById("patientOneLinerInput") },
+      { key: "briefHpi", label: "Brief HPI / key symptoms", element: document.getElementById("briefHpiInput") },
+      { key: "relevantHistory", label: "Relevant PMH / baseline function", element: document.getElementById("relevantHistoryInput") },
+      { key: "courseSoFar", label: "ED or hospital course so far", element: document.getElementById("courseSoFarInput") },
+      { key: "objectiveData", label: "Key objective data", element: document.getElementById("objectiveDataInput") },
+      { key: "treatments", label: "Current treatments or support", element: document.getElementById("treatmentsInput") },
+      { key: "pendingTasks", label: "Pending studies, consults, or tasks", element: document.getElementById("pendingTasksInput") },
+      { key: "monitoringConcerns", label: "Main concerns to monitor today", element: document.getElementById("monitoringConcernsInput") }
+    ];
+
     const hostedAppUrl = "https://aaronge-2020.github.io/prerounding-checklist/";
+    const deidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
+    const deidentifierDtype = "q8";
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
     let deferredInstallPrompt = null;
+    let deidentifierPipelinePromise = null;
 
     const checklistPrompt = `You are an experienced attending physician helping a third-year medical student pre-round.
 Review the patient note below and produce only two plain-text checklists:
@@ -871,8 +1115,43 @@ Respiratory rate: ___
 Heart rate and rhythm: Regular / Irregular
 NEUROLOGIC EXAM
 Shoulder abduction strength right: 0 / 1 / 2 / 3 / 4 / 5
-Babinski sign right: Upgoing / Downgoing / Equivocal / No response
-Patient Note:`;
+Babinski sign right: Upgoing / Downgoing / Equivocal / No response`;
+
+    const newAdmissionChecklistPrompt = `You are an experienced attending physician helping a third-year medical student pre-round on a newly admitted patient.
+There is no prior SOAP note available.
+Use the admission intake information below to produce only two plain-text checklists:
+1. A bedside question checklist
+2. A targeted physical exam checklist
+Do not write an oral presentation.
+Do not write a teaching section.
+Do not include explanations.
+Do not include generic questions or exam items.
+Focus on the highest-yield questions and exam findings needed to establish baseline severity, clarify trajectory since presentation or admission, and guide management today.
+The bedside question checklist must use patient-friendly language with zero medical jargon.
+The targeted physical exam checklist must include only the most important exam items for this specific patient today.
+Use plain text only. Do not use bold, italics, asterisks, bullets, numbering, markdown symbols, emojis, or special formatting.
+CRITICAL FORMATTING RULES:
+Section headers must be ALL CAPS with no punctuation.
+Every item must be on a single line.
+Every item must follow this exact format:
+Label: Option A / Option B / Option C
+Use concise labels.
+Use structured options whenever possible.
+Only include a free-text blank ___ if structured options are not adequate.
+Do not include any text before or after the two checklists.
+EXAMPLE FORMAT:
+BEDSIDE QUESTION CHECKLIST
+SYMPTOM TRAJECTORY
+Main symptom since arrival: Better / Same / Worse
+New concerning symptom: Yes / No
+FUNCTION AND SAFETY
+Able to get out of bed safely: Yes / No / Not tried
+TARGETED PHYSICAL EXAM CHECKLIST
+VITAL SIGNS
+Respiratory rate: ___
+Heart rate and rhythm: Regular / Irregular
+FOCUSED EXAM
+Overall appearance: Comfortable / Uncomfortable / Toxic appearing`;
 
     const presentationPromptIntro = `You are an experienced attending physician helping a third-year medical student update a rounds presentation.
 Use the original patient note and the new pre-rounding checklist findings below to create a concise 2-minute oral presentation.
@@ -932,11 +1211,13 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
 
     function configureManifest() {
       const icon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23141413'/%3E%3Cpath d='M146 270 220 344 370 166' fill='none' stroke='%236ab3bd' stroke-width='54' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+      const appUrl = getAppLink();
+      const appScope = new URL("./", appUrl).href;
       const manifest = {
         name: "Pre-Rounding Checklist Builder",
         short_name: "Pre-Rounds",
-        start_url: hostedAppUrl,
-        scope: hostedAppUrl,
+        start_url: appUrl,
+        scope: appScope,
         display: "standalone",
         background_color: "#141413",
         theme_color: "#141413",
@@ -992,22 +1273,350 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       statusElement.textContent = successMessage;
     }
 
-    function syncPatientNote() {
-      state.patientNote = elements.patientNoteInput.value.trim();
+    function setSourceMode(mode) {
+      state.sourceMode = mode;
+      const isPrior = mode === "prior";
+      elements.priorModeButton.setAttribute("aria-pressed", isPrior ? "true" : "false");
+      elements.admissionModeButton.setAttribute("aria-pressed", isPrior ? "false" : "true");
+      elements.priorSourcePanel.classList.toggle("is-active", isPrior);
+      elements.admissionSourcePanel.classList.toggle("is-active", !isPrior);
+      elements.promptStatus.textContent = "";
     }
 
-    function buildChecklistPrompt(includeNote) {
-      syncPatientNote();
-      if (includeNote && state.patientNote) {
-        return `${checklistPrompt}\n${state.patientNote}`;
+    function syncRawSoapNote() {
+      state.rawSoapNote = elements.rawSoapInput.value;
+    }
+
+    function clearScrubPreview() {
+      state.scrubbedNote = "";
+      state.scrubResult = null;
+      elements.scrubbedNoteInput.value = "";
+      elements.scrubReview.hidden = true;
+      elements.scrubSummary.textContent = "0 redactions";
+      elements.scrubFlags.innerHTML = "";
+    }
+
+    function syncScrubbedNote() {
+      state.scrubbedNote = elements.scrubbedNoteInput.value.trim();
+    }
+
+    function syncAdmissionFields() {
+      admissionFields.forEach((field) => {
+        state.admission[field.key] = field.element.value.trim();
+      });
+    }
+
+    function formatAdmissionContext() {
+      syncAdmissionFields();
+      return admissionFields
+        .map((field) => {
+          const value = state.admission[field.key];
+          return value ? `${field.label}: ${value}` : "";
+        })
+        .filter(Boolean)
+        .join("\n");
+    }
+
+    function normalizePhiLabel(entityOrLabel) {
+      const rawLabel = typeof entityOrLabel === "string"
+        ? entityOrLabel
+        : entityOrLabel.entity_group || entityOrLabel.entity || "PHI";
+      const label = String(rawLabel).replace(/^[BI]-/, "").toUpperCase();
+      const labelMap = {
+        HCW: "NAME",
+        PATIENT: "NAME",
+        HOSPITAL: "LOCATION",
+        VENDOR: "ORGANIZATION"
+      };
+      return labelMap[label] || label;
+    }
+
+    function tokenToSearchText(token) {
+      return String(token || "")
+        .replace(/^##/, "")
+        .replace(/^Ġ/, "")
+        .replace(/^▁/, "")
+        .toLowerCase();
+    }
+
+    function findTokenSpan(rawText, token, cursor) {
+      const tokenText = tokenToSearchText(token);
+      if (!tokenText || tokenText === "[unk]") {
+        return null;
       }
-      return checklistPrompt;
+
+      const lowerText = rawText.toLowerCase();
+      const isContinuation = String(token).startsWith("##");
+      const directStart = isContinuation ? cursor : -1;
+
+      if (directStart >= 0 && lowerText.slice(directStart, directStart + tokenText.length) === tokenText) {
+        return { start: directStart, end: directStart + tokenText.length };
+      }
+
+      const start = lowerText.indexOf(tokenText, Math.max(0, cursor - (isContinuation ? 2 : 0)));
+      if (start === -1) {
+        return null;
+      }
+
+      return { start, end: start + tokenText.length };
+    }
+
+    function modelPredictionsToEntities(rawText, predictions) {
+      const entities = [];
+      let cursor = 0;
+
+      predictions.forEach((prediction) => {
+        const span = findTokenSpan(rawText, prediction.word, cursor);
+        if (!span) {
+          return;
+        }
+
+        cursor = Math.max(cursor, span.end);
+        const label = normalizePhiLabel(prediction);
+
+        if (label === "O") {
+          return;
+        }
+
+        entities.push({
+          start: span.start,
+          end: span.end,
+          label,
+          score: prediction.score || 0,
+          source: "model"
+        });
+      });
+
+      return entities;
+    }
+
+    function addPatternEntities(rawText, entities) {
+      const patterns = [
+        { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
+        { label: "URL", regex: /\b(?:https?:\/\/|www\.)\S+/gi },
+        { label: "IP", regex: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g },
+        { label: "SSN", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+        { label: "PHONE", regex: /\b(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b/g },
+        { label: "DOB REDACTED", regex: /\b(?:DOB|Date of birth)\s*[:#]?\s*(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|[A-Z][a-z]+\.?\s+\d{1,2},?\s+\d{4})\b/gi },
+        { label: "DATE", regex: /\b(?:Admit(?:ted| date)?|Admission date|Discharge date|Date of service|DOS|Death date)\s*[:#]?\s*(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|[A-Z][a-z]+\.?\s+\d{1,2},?\s+\d{4})\b/gi },
+        { label: "DATE", regex: /\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2},?\s+\d{4})\b/gi },
+        { label: "ID", regex: /\b(?:MRN|Medical Record(?: Number)?|Account(?: Number)?|Acct|Policy|Member ID|Insurance ID|Accession|Order(?: Number)?|CSN|FIN)\s*[:#]?\s*[A-Z0-9-]{3,}\b/gi },
+        { label: "ROOM", regex: /\b(?:Room|Rm|Bed)\s*[:#]?\s*[A-Z0-9-]+\b/gi },
+        { label: "ADDRESS", regex: /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl)\b(?:,?\s+[A-Za-z .-]+)?(?:,?\s+[A-Z]{2})?(?:\s+\d{5}(?:-\d{4})?)?/gi }
+      ];
+
+      patterns.forEach(({ label, regex }) => {
+        for (const match of rawText.matchAll(regex)) {
+          entities.push({
+            start: match.index,
+            end: match.index + match[0].length,
+            label,
+            score: 1,
+            source: "pattern"
+          });
+        }
+      });
+
+      return entities;
+    }
+
+    function labelPriority(label) {
+      const priorities = ["DOB REDACTED", "SSN", "EMAIL", "URL", "IP", "ID", "PHONE", "ADDRESS", "ROOM", "DATE", "NAME", "LOCATION", "ORGANIZATION"];
+      const index = priorities.indexOf(label);
+      return index === -1 ? priorities.length : index;
+    }
+
+    function mergeEntities(entities, rawText) {
+      const sorted = entities
+        .filter((entity) => Number.isFinite(entity.start) && Number.isFinite(entity.end) && entity.end > entity.start)
+        .sort((a, b) => a.start - b.start || b.end - a.end);
+      const merged = [];
+
+      sorted.forEach((entity) => {
+        const last = merged[merged.length - 1];
+        const gap = last ? rawText.slice(last.end, entity.start) : "";
+        const shouldMerge = last && (
+          entity.start <= last.end ||
+          entity.label === last.label && /^[\s.,;:/()[\]{}-]*$/.test(gap)
+        );
+
+        if (shouldMerge) {
+          last.end = Math.max(last.end, entity.end);
+          last.score = Math.max(last.score, entity.score || 0);
+          if (labelPriority(entity.label) < labelPriority(last.label)) {
+            last.label = entity.label;
+          }
+          last.source = last.source === entity.source ? last.source : "model+pattern";
+          return;
+        }
+
+        merged.push({
+          start: entity.start,
+          end: entity.end,
+          label: entity.label,
+          score: entity.score || 0,
+          source: entity.source || "model"
+        });
+      });
+
+      return merged;
+    }
+
+    function generalizeAgesOver89(text) {
+      return text.replace(/\b(?:9[0-9]|1[0-9]{2})[-\s]*(?:year[-\s]*old|years old|yo|y\/o)\b/gi, "90 or older");
+    }
+
+    function redactFromEntities(rawText, entities) {
+      let cursor = 0;
+      let output = "";
+
+      entities.forEach((entity) => {
+        output += rawText.slice(cursor, entity.start);
+        output += entity.label === "DOB REDACTED" ? "[DOB REDACTED]" : `[${entity.label}]`;
+        cursor = entity.end;
+      });
+
+      output += rawText.slice(cursor);
+      return generalizeAgesOver89(output.trim());
+    }
+
+    function summarizeEntities(entities) {
+      return entities.reduce((counts, entity) => {
+        counts[entity.label] = (counts[entity.label] || 0) + 1;
+        return counts;
+      }, {});
+    }
+
+    function entityFlags(rawText, entities) {
+      if (!entities.length) {
+        return ["No PHI spans detected. Review still required."];
+      }
+
+      return entities.slice(0, 12).map((entity) => {
+        const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+        const score = entity.source === "model" && entity.score ? ` ${(entity.score * 100).toFixed(0)}%` : "";
+        return `${entity.label}${score}: ${span}`;
+      });
+    }
+
+    async function loadDeidentifierPipeline() {
+      if (!deidentifierPipelinePromise) {
+        elements.promptStatus.textContent = "Loading Stanford AIMI deidentifier model. First load can take a minute.";
+        deidentifierPipelinePromise = pipeline("token-classification", deidentifierModelId, {
+          dtype: deidentifierDtype
+        });
+      }
+
+      return deidentifierPipelinePromise;
+    }
+
+    async function scrubSoapNoteText(rawText) {
+      const deidentifier = await loadDeidentifierPipeline();
+      const predictions = await deidentifier(rawText, { ignore_labels: [] });
+      const modelEntities = modelPredictionsToEntities(rawText, predictions);
+      const entities = mergeEntities(addPatternEntities(rawText, modelEntities), rawText);
+      const counts = summarizeEntities(entities);
+
+      return {
+        text: redactFromEntities(rawText, entities),
+        counts,
+        redactionTotal: entities.length,
+        flags: entityFlags(rawText, entities),
+        entities
+      };
+    }
+
+    function renderScrubResult(result) {
+      elements.scrubReview.hidden = false;
+      elements.scrubbedNoteInput.value = result.text;
+      elements.scrubSummary.textContent = `${result.redactionTotal} redaction${result.redactionTotal === 1 ? "" : "s"}`;
+      elements.scrubFlags.innerHTML = "";
+
+      const countLabels = Object.entries(result.counts).map(([label, value]) => `${label}: ${value}`);
+      const flags = result.flags.length ? result.flags : ["No obvious leftover identifiers flagged. Review still required."];
+
+      [...countLabels, ...flags].forEach((flag) => {
+        const item = document.createElement("li");
+        item.textContent = flag;
+        elements.scrubFlags.appendChild(item);
+      });
+    }
+
+    async function scrubCurrentSoapNote() {
+      syncRawSoapNote();
+
+      if (!state.rawSoapNote.trim()) {
+        elements.promptStatus.textContent = "Paste a SOAP note first.";
+        elements.rawSoapInput.focus();
+        return null;
+      }
+
+      elements.scrubAndCopyButton.disabled = true;
+      elements.scrubPreviewButton.disabled = true;
+      elements.promptStatus.textContent = "Running Stanford AIMI deidentifier locally...";
+
+      let result;
+      try {
+        result = await scrubSoapNoteText(state.rawSoapNote);
+      } catch (error) {
+        elements.promptStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
+        throw error;
+      } finally {
+        elements.scrubAndCopyButton.disabled = false;
+        elements.scrubPreviewButton.disabled = false;
+      }
+
+      state.scrubResult = result;
+      state.scrubbedNote = result.text;
+      renderScrubResult(result);
+      elements.promptStatus.textContent = "De-identified preview ready. Review before pasting into OpenEvidence.";
+      return result;
+    }
+
+    async function getReviewedScrubbedNote() {
+      if (!state.scrubResult) {
+        const result = await scrubCurrentSoapNote();
+        return result ? result.text : "";
+      }
+
+      syncScrubbedNote();
+      return state.scrubbedNote;
+    }
+
+    async function buildPriorChecklistPrompt() {
+      const scrubbedNote = await getReviewedScrubbedNote();
+      if (!scrubbedNote) {
+        return "";
+      }
+
+      return `${checklistPrompt}\n\nDe-identified patient note:\n${scrubbedNote}`;
+    }
+
+    function buildAdmissionChecklistPrompt() {
+      const admissionContext = formatAdmissionContext();
+      if (!admissionContext) {
+        elements.promptStatus.textContent = "Fill in at least one admission field.";
+        admissionFields[0].element.focus();
+        return "";
+      }
+
+      return `${newAdmissionChecklistPrompt}\n\nAdmission intake information:\n${admissionContext}`;
     }
 
     function buildPresentationPrompt() {
-      syncPatientNote();
-      const noteBlock = state.patientNote ? `\n\nOriginal patient note:\n${state.patientNote}` : "";
-      return `${presentationPromptIntro}${noteBlock}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+      syncScrubbedNote();
+      const sourceBlocks = [];
+      const admissionContext = formatAdmissionContext();
+
+      if (state.scrubbedNote) {
+        sourceBlocks.push(`De-identified source note:\n${state.scrubbedNote}`);
+      }
+
+      if (admissionContext) {
+        sourceBlocks.push(`Admission intake information:\n${admissionContext}`);
+      }
+
+      return `${presentationPromptIntro}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
     configureManifest();
@@ -1304,12 +1913,21 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       state.sections = [];
       state.answers = {};
       state.notes = {};
-      state.patientNote = "";
+      state.sourceMode = "prior";
+      state.rawSoapNote = "";
+      state.scrubbedNote = "";
+      state.scrubResult = null;
+      state.admission = {};
       state.compiledText = "";
       elements.outputText.value = "";
       elements.copyStatus.textContent = "";
       elements.promptStatus.textContent = "";
-      elements.patientNoteInput.value = "";
+      elements.rawSoapInput.value = "";
+      admissionFields.forEach((field) => {
+        field.element.value = "";
+      });
+      clearScrubPreview();
+      setSourceMode("prior");
       elements.checklistInput.value = "";
       setError("");
       showScreen("pasteScreen");
@@ -1317,7 +1935,6 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     }
 
     elements.buildButton.addEventListener("click", () => {
-      syncPatientNote();
       const rawText = elements.checklistInput.value.trim();
       setError("");
 
@@ -1342,14 +1959,50 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       showScreen("checklistScreen");
     });
 
-    elements.patientNoteInput.addEventListener("input", syncPatientNote);
-
-    elements.copyPromptOneWithNoteButton.addEventListener("click", async () => {
-      await copyText(buildChecklistPrompt(true), elements.promptStatus, state.patientNote ? "Prompt 1 and patient note copied." : "Prompt 1 copied. Add the patient note in OpenEvidence.");
+    elements.priorModeButton.addEventListener("click", () => {
+      setSourceMode("prior");
     });
 
-    elements.copyPromptOneButton.addEventListener("click", async () => {
-      await copyText(buildChecklistPrompt(false), elements.promptStatus, "Prompt 1 copied.");
+    elements.admissionModeButton.addEventListener("click", () => {
+      setSourceMode("admission");
+    });
+
+    elements.rawSoapInput.addEventListener("input", () => {
+      syncRawSoapNote();
+      clearScrubPreview();
+      elements.promptStatus.textContent = "";
+    });
+
+    elements.scrubbedNoteInput.addEventListener("input", syncScrubbedNote);
+
+    admissionFields.forEach((field) => {
+      field.element.addEventListener("input", syncAdmissionFields);
+    });
+
+    elements.scrubPreviewButton.addEventListener("click", async () => {
+      try {
+        await scrubCurrentSoapNote();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.scrubAndCopyButton.addEventListener("click", async () => {
+      try {
+        const prompt = await buildPriorChecklistPrompt();
+        if (prompt) {
+          await copyText(prompt, elements.promptStatus, "De-identified checklist prompt copied.");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copyAdmissionPromptButton.addEventListener("click", async () => {
+      const prompt = buildAdmissionChecklistPrompt();
+      if (prompt) {
+        await copyText(prompt, elements.promptStatus, "Admission checklist prompt copied.");
+      }
     });
 
     elements.installGuideButton.addEventListener("click", () => {
@@ -1428,7 +2081,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     });
 
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
-      await copyText(buildPresentationPrompt(), elements.copyStatus, state.patientNote ? "Prompt 2, patient note, and findings copied." : "Prompt 2 and findings copied.");
+      await copyText(buildPresentationPrompt(), elements.copyStatus, "Prompt 2 and findings copied.");
     });
 
     elements.copyButton.addEventListener("click", async () => {
