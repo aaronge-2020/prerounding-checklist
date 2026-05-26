@@ -447,10 +447,15 @@
     }
 
     .patient-note-input,
+    .lab-input,
     .scrubbed-note-input {
       min-height: min(22svh, 220px);
       padding: 14px;
       line-height: 1.5;
+    }
+
+    .lab-input {
+      min-height: min(18svh, 180px);
     }
 
     .scrubbed-note-input {
@@ -1383,8 +1388,8 @@
 
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
           <div>
-            <h3 id="priorSourceTitle" class="workflow-title">Prior SOAP note</h3>
-          <p class="workflow-copy">Paste the note locally. The Stanford AIMI deidentifier runs in this browser before anything is copied out.</p>
+            <h3 id="priorSourceTitle" class="workflow-title">Prior SOAP note and labs</h3>
+          <p class="workflow-copy">Paste the note, labs, or both locally. The Stanford AIMI deidentifier runs in this browser before anything is copied out.</p>
           </div>
           <div class="demo-actions">
             <p class="demo-copy">Try the full workflow with a synthetic endocrinology SOAP note.</p>
@@ -1392,7 +1397,10 @@
           </div>
           <label for="rawSoapInput">Raw SOAP note</label>
           <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here. It stays local in this browser."></textarea>
-          <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers, so review the preview before pasting into OpenEvidence.</p>
+          <label for="rawLabsInput">Labs / results</label>
+          <span class="field-caption">Optional. Paste CBC, BMP, cultures, imaging impressions, or trends from the chart.</span>
+          <textarea id="rawLabsInput" class="lab-input" spellcheck="false" placeholder="Paste labs or result tables here. They stay local and are de-identified with the note."></textarea>
+          <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers in notes or lab headers, so review the preview before pasting into OpenEvidence.</p>
           <p id="modelStatus" class="model-status" role="status" aria-live="polite"></p>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
@@ -1400,8 +1408,8 @@
               <p id="scrubSummary" class="review-count">0 redactions</p>
             </div>
             <ul id="scrubCounts" class="flag-list" aria-label="Redaction counts"></ul>
-            <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note</label>
-            <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note preview..."></textarea>
+            <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note and labs</label>
+            <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note and labs preview..."></textarea>
             <details class="review-details">
               <summary>Review details</summary>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
@@ -1652,6 +1660,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       notes: {},
       sourceMode: "prior",
       rawSoapNote: "",
+      rawLabs: "",
       scrubbedNote: "",
       scrubResult: null,
       admission: {},
@@ -1685,6 +1694,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
       loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
       rawSoapInput: document.getElementById("rawSoapInput"),
+      rawLabsInput: document.getElementById("rawLabsInput"),
       modelStatus: document.getElementById("modelStatus"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
@@ -2025,7 +2035,7 @@ You are an experienced attending physician and clerkship coach teaching a brand-
 </role>
 
 <task>
-Use the de-identified SOAP note below to create a patient-specific teaching guide. Teach the student what they need to know to be useful, safe, organized, and thoughtful on rounds for this patient.
+Use the de-identified SOAP note and/or pasted lab results below to create a patient-specific teaching guide. Teach the student what they need to know to be useful, safe, organized, and thoughtful on rounds for this patient.
 </task>
 
 <learner_level>
@@ -2065,7 +2075,7 @@ PATIENT SNAPSHOT
 Write a plain-English one-paragraph summary of who this patient is, why they are here, how sick they are, and what the team is trying to decide today.
 
 TRANSLATED SOAP NOTE
-Walk through the note section by section. Explain abbreviations, important findings, and why each detail matters.
+Walk through the source note and lab section if provided. Explain abbreviations, important findings, and why each detail matters.
 
 PROBLEM REPRESENTATION
 Create a concise clinical summary statement. Then explain how each phrase in that summary was chosen.
@@ -2238,6 +2248,7 @@ Sensory level present: No / Yes, at ___`;
       return hasChecklistState() ||
         elements.checklistInput.value.trim() ||
         elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
         elements.scrubbedNoteInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim());
     }
@@ -2448,6 +2459,22 @@ Sensory level present: No / Yes, at ___`;
 
     function syncRawSoapNote() {
       state.rawSoapNote = elements.rawSoapInput.value;
+      state.rawLabs = elements.rawLabsInput.value;
+    }
+
+    function buildRawPriorSourceText() {
+      syncRawSoapNote();
+      const blocks = [];
+
+      if (state.rawSoapNote.trim()) {
+        blocks.push(`SOAP NOTE:\n${state.rawSoapNote.trim()}`);
+      }
+
+      if (state.rawLabs.trim()) {
+        blocks.push(`ADDITIONAL LABS AND RESULTS:\n${state.rawLabs.trim()}`);
+      }
+
+      return blocks.join("\n\n");
     }
 
     function clearScrubPreview() {
@@ -2747,11 +2774,11 @@ Sensory level present: No / Yes, at ___`;
     }
 
     async function scrubCurrentSoapNote() {
-      syncRawSoapNote();
+      const rawPriorSource = buildRawPriorSourceText();
 
-      if (!state.rawSoapNote.trim()) {
-        elements.promptStatus.textContent = "Paste a SOAP note first.";
-        elements.rawSoapInput.focus();
+      if (!rawPriorSource) {
+        elements.promptStatus.textContent = "Paste a SOAP note or labs first.";
+        (elements.rawSoapInput.value.trim() ? elements.rawLabsInput : elements.rawSoapInput).focus();
         return null;
       }
 
@@ -2760,7 +2787,7 @@ Sensory level present: No / Yes, at ___`;
 
       let result;
       try {
-        result = await scrubSoapNoteText(state.rawSoapNote);
+        result = await scrubSoapNoteText(rawPriorSource);
       } catch (error) {
         elements.promptStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
         throw error;
@@ -2771,7 +2798,7 @@ Sensory level present: No / Yes, at ___`;
       state.scrubResult = result;
       state.scrubbedNote = result.text;
       renderScrubResult(result);
-      elements.promptStatus.textContent = "De-identified preview ready. Review before pasting into OpenEvidence.";
+      elements.promptStatus.textContent = "De-identified note and labs preview ready. Review before pasting into OpenEvidence.";
       requestAnimationFrame(() => {
         elements.scrubReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
@@ -2797,11 +2824,11 @@ Sensory level present: No / Yes, at ___`;
       return `${checklistPrompt}
 
 <context_type>
-Prior SOAP note available.
+Prior SOAP note and/or lab results available.
 </context_type>
 
 <patient_context>
-De-identified patient note:
+De-identified patient note and labs:
 ${scrubbedNote}
 </patient_context>
 
@@ -2817,7 +2844,7 @@ Now produce the final checklist only.`;
       return `${patientTeachingPromptInstructions}
 
 <patient_context>
-De-identified SOAP note:
+De-identified SOAP note and labs:
 ${scrubbedNote}
 </patient_context>
 
@@ -3655,6 +3682,7 @@ ${rawChecklist.trim()}`;
       state.notes = {};
       state.sourceMode = "prior";
       state.rawSoapNote = "";
+      state.rawLabs = "";
       state.scrubbedNote = "";
       state.scrubResult = null;
       state.admission = {};
@@ -3673,6 +3701,7 @@ ${rawChecklist.trim()}`;
       elements.promptStatus.textContent = "";
       elements.parseSummary.textContent = "";
       elements.rawSoapInput.value = "";
+      elements.rawLabsInput.value = "";
       admissionFields.forEach((field) => {
         field.element.value = "";
       });
@@ -3802,7 +3831,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -3810,6 +3839,21 @@ ${rawChecklist.trim()}`;
     elements.rawSoapInput.addEventListener("focus", prepareDeidentifierModel);
 
     elements.rawSoapInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
+    });
+
+    elements.rawLabsInput.addEventListener("input", () => {
+      syncRawSoapNote();
+      clearScrubPreview();
+      elements.promptStatus.textContent = "";
+      if (state.rawSoapNote.trim() || state.rawLabs.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.rawLabsInput.addEventListener("focus", prepareDeidentifierModel);
+
+    elements.rawLabsInput.addEventListener("paste", () => {
       window.setTimeout(prepareDeidentifierModel, 0);
     });
 
@@ -3824,9 +3868,10 @@ ${rawChecklist.trim()}`;
     elements.loadDemoSoapButton.addEventListener("click", () => {
       setSourceMode("prior");
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
+      elements.rawLabsInput.value = "";
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Copy a checklist prompt or teaching prompt to continue the test.";
+      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
       elements.rawSoapInput.focus();
       prepareDeidentifierModel();
       showToast("Demo endocrinology SOAP note loaded.");
