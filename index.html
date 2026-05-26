@@ -664,6 +664,139 @@
       font-weight: 800;
     }
 
+    .audit-panel {
+      display: grid;
+      gap: 12px;
+      margin: -2px -4px 16px;
+      border: 1px solid rgba(216, 139, 125, 0.34);
+      border-radius: 20px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(216, 139, 125, 0.12), rgba(216, 139, 125, 0.06)), var(--surface);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+    }
+
+    .audit-panel[hidden] {
+      display: none !important;
+    }
+
+    .audit-panel.is-ok {
+      border-color: rgba(79, 152, 163, 0.38);
+      background: linear-gradient(180deg, rgba(79, 152, 163, 0.12), rgba(79, 152, 163, 0.05)), var(--surface);
+    }
+
+    .audit-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .audit-title {
+      margin: 0 0 3px;
+      color: var(--text);
+      font-size: 0.98rem;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .audit-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .audit-badge {
+      flex: 0 0 auto;
+      border: 1px solid rgba(216, 139, 125, 0.45);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: #f1bbb2;
+      background: rgba(216, 139, 125, 0.12);
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .audit-panel.is-ok .audit-badge {
+      border-color: rgba(79, 152, 163, 0.52);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .audit-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .audit-list li {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 10px 11px;
+      color: #ead1cc;
+      background: rgba(0, 0, 0, 0.13);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .audit-panel.is-ok .audit-list li {
+      color: #d3edf0;
+    }
+
+    .audit-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .checklist-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.17);
+    }
+
+    .checklist-tab {
+      min-height: 44px;
+      border-radius: 999px;
+      padding: 6px 8px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 0.82rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .checklist-tab[aria-pressed="true"] {
+      color: #effdff;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px var(--accent-border);
+    }
+
+    .progress-breakdown {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .progress-pill {
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
     details {
       margin-top: 16px;
       border: 1px solid var(--border);
@@ -1294,21 +1427,23 @@
           <summary>Expected input format</summary>
           <pre class="example">BEDSIDE QUESTION CHECKLIST
 
-STRENGTH AND MOVEMENT
-Arms today compared to yesterday: Stronger / Same / Weaker
-Can you squeeze both my hands: Yes both / Yes one only / No
+SYMPTOM TRAJECTORY
+Since yesterday, has your weakness changed?: Better / Same / Worse / Other ___
+Has numbness or tingling moved higher on your body?: No / Yes, location ___
 
-RESPIRATORY EXAM
-Ability to count to 20 in one breath: Yes / No, stops at __
-Cough strength: Strong / Weak / Absent
+BREATHING AND SWALLOWING
+Are you having any trouble breathing while resting?: No / Yes, mild / Yes, severe / Other ___
+Have you had any trouble swallowing food, water, pills, or saliva?: No / Yes / Other ___
 
-SENSORY EXAM
-Sensory level on trunk
-Present at ___
-Absent
+TARGETED PHYSICAL EXAM CHECKLIST
 
-SKIN AND VASCULAR
-Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
+VITAL SIGNS AND SUPPORT
+Respiratory rate: ___
+SpO2: ___
+
+MUSCULOSKELETAL STRENGTH EXAM
+Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         </details>
       </div>
     </section>
@@ -1322,15 +1457,39 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
         <div class="progress-track" aria-hidden="true">
           <div id="progressFill" class="progress-fill"></div>
         </div>
+        <div class="progress-breakdown" aria-label="Checklist progress by view">
+          <span id="bedsideProgress" class="progress-pill">Bedside 0/0</span>
+          <span id="examProgress" class="progress-pill">Exam 0/0</span>
+          <span id="overallProgress" class="progress-pill">Overall 0/0</span>
+        </div>
         <div class="checklist-tools">
+          <div class="checklist-tabs" role="group" aria-label="Checklist view">
+            <button id="bedsideViewButton" class="checklist-tab" type="button" aria-pressed="true">Bedside</button>
+            <button id="examViewButton" class="checklist-tab" type="button" aria-pressed="false">Exam</button>
+            <button id="unansweredViewButton" class="checklist-tab" type="button" aria-pressed="false">Unanswered</button>
+            <button id="allViewButton" class="checklist-tab" type="button" aria-pressed="false">All</button>
+          </div>
           <div class="tool-row" role="group" aria-label="Checklist filters">
-            <button id="showAllButton" class="mini-btn is-active" type="button" aria-pressed="true">All</button>
-            <button id="showUnansweredButton" class="mini-btn" type="button" aria-pressed="false">Unanswered</button>
             <button id="nextUnansweredButton" class="mini-btn" type="button">Next unanswered</button>
             <button id="expandAllButton" class="mini-btn" type="button">Expand all</button>
             <button id="collapseExamButton" class="mini-btn" type="button">Collapse exam</button>
           </div>
           <div id="sectionJump" class="section-jump" aria-label="Section jumps"></div>
+        </div>
+      </div>
+
+      <div id="auditPanel" class="audit-panel" role="region" aria-labelledby="auditTitle" hidden>
+        <div class="audit-header">
+          <div>
+            <h3 id="auditTitle" class="audit-title">Checklist quality</h3>
+            <p id="auditSummary" class="audit-copy"></p>
+          </div>
+          <span id="auditBadge" class="audit-badge">Review</span>
+        </div>
+        <ul id="auditList" class="audit-list"></ul>
+        <div id="auditActions" class="audit-actions">
+          <button id="copyCleanupPromptButton" class="btn btn-secondary" type="button">Copy Cleanup Prompt</button>
+          <button id="continueAnywayButton" class="btn btn-quiet" type="button">Continue Anyway</button>
         </div>
       </div>
 
@@ -1348,7 +1507,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       <header class="hero">
         <p class="eyebrow">OpenEvidence</p>
         <h2 id="outputTitle">Findings</h2>
-        <p class="helper">Copy Prompt 2 with these findings attached, then paste it back into OpenEvidence.</p>
+        <p class="helper">Copy Prompt 2 with these findings attached, then paste it back into OpenEvidence for a rounds presentation and detailed SOAP update.</p>
       </header>
 
       <div class="surface output-card">
@@ -1360,7 +1519,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
         <textarea id="outputText" class="output-box" readonly></textarea>
         <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
         <div class="output-actions">
-          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy Prompt 2 + Findings</button>
+          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy Presentation + SOAP Prompt</button>
           <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           <button id="copyButton" class="btn btn-secondary" type="button">Copy Findings Only</button>
           <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
@@ -1392,9 +1551,11 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       scrubResult: null,
       admission: {},
       promptCollapsed: false,
-      checklistFilter: "all",
+      activeChecklistView: "bedside",
       activeSection: "all",
       collapsedSections: {},
+      auditResult: null,
+      checklistRawText: "",
       outputMode: "assessed",
       lastClearSnapshot: null,
       newChecklistConfirming: false,
@@ -1446,11 +1607,24 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       checklistList: document.getElementById("checklistList"),
       progressCount: document.getElementById("progressCount"),
       progressFill: document.getElementById("progressFill"),
-      showAllButton: document.getElementById("showAllButton"),
-      showUnansweredButton: document.getElementById("showUnansweredButton"),
+      bedsideProgress: document.getElementById("bedsideProgress"),
+      examProgress: document.getElementById("examProgress"),
+      overallProgress: document.getElementById("overallProgress"),
+      bedsideViewButton: document.getElementById("bedsideViewButton"),
+      examViewButton: document.getElementById("examViewButton"),
+      unansweredViewButton: document.getElementById("unansweredViewButton"),
+      allViewButton: document.getElementById("allViewButton"),
       nextUnansweredButton: document.getElementById("nextUnansweredButton"),
       expandAllButton: document.getElementById("expandAllButton"),
       collapseExamButton: document.getElementById("collapseExamButton"),
+      auditPanel: document.getElementById("auditPanel"),
+      auditTitle: document.getElementById("auditTitle"),
+      auditSummary: document.getElementById("auditSummary"),
+      auditBadge: document.getElementById("auditBadge"),
+      auditList: document.getElementById("auditList"),
+      auditActions: document.getElementById("auditActions"),
+      copyCleanupPromptButton: document.getElementById("copyCleanupPromptButton"),
+      continueAnywayButton: document.getElementById("continueAnywayButton"),
       sectionJump: document.getElementById("sectionJump"),
       clearButton: document.getElementById("clearButton"),
       generateButton: document.getElementById("generateButton"),
@@ -1606,6 +1780,41 @@ NEUROLOGIC SENSORY EXAM
 Sensory level present: No / Yes, at ___
 </format_examples>
 
+<neurologic_case_style_example>
+For a patient with progressive weakness, sensory symptoms, possible cord disease, and respiratory risk, prefer this style:
+
+BEDSIDE QUESTION CHECKLIST
+BREATHING AND SWALLOWING
+Are you having any trouble breathing while resting?: No / Yes, mild / Yes, severe / Other ___
+Have you had any trouble swallowing food, water, pills, or saliva?: No / Yes / Other ___
+SYMPTOM TRAJECTORY
+Since yesterday, has your weakness changed?: Better / Same / Worse / Other ___
+Has numbness or tingling moved higher on your body?: No / Yes, location ___
+RED FLAGS
+Have you had any new trouble controlling urine or bowel movements?: No / Yes / Other ___
+What is your biggest concern today?: ___
+
+TARGETED PHYSICAL EXAM CHECKLIST
+VITAL SIGNS AND SUPPORT
+Respiratory rate: ___
+SpO2: ___
+Oxygen support and flow rate: Room air / Nasal cannula / Face mask / BiPAP / Ventilator / Other ___
+RESPIRATORY EXAM
+Work of breathing: Normal / Mildly increased / Markedly increased
+MUSCULOSKELETAL STRENGTH EXAM
+Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
+Lower extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Lower extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
+NEUROLOGIC REFLEX EXAM
+Overall reflex pattern: Absent / Diminished / Normal / Brisk / Clonus
+Babinski signs: Downgoing bilaterally / Upgoing right / Upgoing left / Upgoing both / Equivocal
+NEUROLOGIC SENSORY EXAM
+Sensory level present: No / Yes, at ___
+BULBAR CRANIAL NERVE EXAM
+Palate elevation and gag reflex: Normal / Diminished / Absent
+</neurologic_case_style_example>
+
 <final_self_check>
 Before finalizing, silently verify:
 1. Both required checklist titles are present.
@@ -1628,20 +1837,24 @@ No prior SOAP note is available. The patient is newly admitted or being admitted
 </context_type>`;
 
     const presentationPromptInstructions = `<role>
-You are an experienced attending physician and clerkship coach helping a third-year medical student give a concise, assessment-forward rounds update.
+You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval SOAP note.
 </role>
 
 <task>
-Use the provided source context and new checklist findings to create a polished 2-minute oral rounds presentation.
+Use the provided source context and new checklist findings to create two outputs:
+1. A polished 2-minute spoken rounds presentation.
+2. A detailed interval SOAP note that is organized, clinically precise, and note-ready.
 </task>
 
 <clinical_goal>
-Synthesize the information into clinically meaningful language. Emphasize today's trajectory, severity, red flags, improvement or worsening, discordance between symptoms and exam, and how the new findings affect monitoring, treatment, disposition, or escalation.
+Synthesize the information into clinically meaningful language. Emphasize today's trajectory, severity, red flags, improvement or worsening, discordance between symptoms and exam, and how the new findings affect monitoring, treatment, disposition, or escalation. Preserve uncertainty and separate objective facts from assessment.
 </clinical_goal>
 
 <source_rules>
 Use only information present in the source context or the new checklist findings.
 Do not invent diagnoses, test results, treatments, vitals, exam findings, or plans.
+Do not invent trends. Only call a finding improved, worse, new, stable, high, or low if that is supported by the source context, the new checklist findings, or clinically unambiguous reference context.
+Do not over-localize neurologic findings. Preserve uncertainty around differential diagnosis and localization unless the source clearly supports a conclusion.
 Ignore items marked not assessed, [not assessed], left blank, containing only underscores, or otherwise not answered.
 If a checklist finding conflicts with the source context, state the discordance clearly and clinically.
 If no prior SOAP note is available, frame the presentation as an admission baseline and early trajectory rather than an overnight update.
@@ -1655,27 +1868,36 @@ Before writing the final answer, silently:
 2. Extract the clinically important new subjective findings.
 3. Extract the clinically important objective and focused exam findings.
 4. Identify the highest-impact interval changes and red flags.
-5. Determine how the findings affect today's assessment, monitoring needs, and plan.
-6. Remove unsupported, redundant, or low-yield details.
+5. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
+6. Determine how the findings affect today's assessment, monitoring needs, and plan.
+7. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
 
 <output_format>
 Use plain text only.
-Use exactly these section headers:
+Use exactly these top-level section headers:
 
+TWO MINUTE ROUNDS PRESENTATION
+DETAILED INTERVAL SOAP NOTE
+
+Under TWO MINUTE ROUNDS PRESENTATION, use exactly these subsections:
 ONE-LINER AND TRAJECTORY
 SUBJECTIVE AND INTERVAL EVENTS
 OBJECTIVE AND FOCUSED EXAM
 ASSESSMENT AND PLAN
 KEY INTERVAL CHANGES
 
-Write the first four sections as concise prose, not bullets.
-KEY INTERVAL CHANGES must contain 3 to 4 concise bullets and is the only section where bullets are allowed.
-Keep the entire presentation short enough to say in about 2 minutes.
-Use natural medical language suitable for a third-year medical student on rounds.
-Do not simply copy checklist labels.
+Keep TWO MINUTE ROUNDS PRESENTATION short enough to say in about 2 minutes. Write the first four presentation subsections as concise prose, not bullets. KEY INTERVAL CHANGES must contain 3 to 4 concise bullets and is the only presentation subsection where bullets are allowed.
+
+Under DETAILED INTERVAL SOAP NOTE, use exactly these subsections:
+SUBJECTIVE
+OBJECTIVE
+ASSESSMENT
+PLAN
+
+The SOAP note should be more detailed than the presentation and ready to paste into a note. It may use concise bullets under OBJECTIVE and PLAN if that improves readability. Do not simply copy checklist labels; synthesize them into clinical language.
 Do not use markdown tables, bold, italics, numbering, emojis, or special formatting.
 </output_format>
 
@@ -1683,9 +1905,11 @@ Do not use markdown tables, bold, italics, numbering, emojis, or special formatt
 Before finalizing, silently verify:
 1. Every included claim is supported by the source context or checklist findings.
 2. Unassessed and blank items were ignored.
-3. The assessment and plan reflect the new findings.
-4. The presentation is concise, organized, and assessment-forward.
-5. No extra commentary appears outside the required sections.
+3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE.
+4. Objective facts are separated from assessment.
+5. The assessment and plan reflect the new findings without inventing unsupported plans.
+6. No PHI or identifiers appear.
+7. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -1694,27 +1918,26 @@ Before finalizing, silently verify:
 
     const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
 
-STRENGTH AND MOVEMENT
-Arms today compared to yesterday: Stronger / Same / Weaker
-Legs today compared to yesterday: Stronger / Same / Weaker
-Can you squeeze both my hands: Yes both / Yes one only / No
-Can you lift your legs off the bed: Yes both / Yes one only / No
+SYMPTOM TRAJECTORY
+Since yesterday, has your weakness changed?: Better / Same / Worse / Other ___
+Has numbness or tingling moved higher on your body?: No / Yes, location ___
 
-BREATHING
-How is your breathing right now: Normal / A little hard / Very hard
-Any trouble catching your breath when lying flat: Yes / No
+BREATHING AND SWALLOWING
+Are you having any trouble breathing while resting?: No / Yes, mild / Yes, severe / Other ___
+Have you had any trouble swallowing food, water, pills, or saliva?: No / Yes / Other ___
 
-RESPIRATORY EXAM
-Ability to count to 20 in one breath: Yes / No, stops at __
-Cough strength: Strong / Weak / Absent
+TARGETED PHYSICAL EXAM CHECKLIST
 
-SENSORY EXAM
-Sensory level on trunk
-Present at ___
-Absent
+VITAL SIGNS AND SUPPORT
+Respiratory rate: ___
+SpO2: ___
 
-SKIN AND VASCULAR
-Skin integrity sacrum and heels: Intact / Breakdown present at __`;
+MUSCULOSKELETAL STRENGTH EXAM
+Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
+
+NEUROLOGIC SENSORY EXAM
+Sensory level present: No / Yes, at ___`;
 
     elements.checklistInput.value = "";
     elements.checklistInput.dataset.example = exampleChecklist;
@@ -1836,7 +2059,9 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         sections: state.sections,
         answers: state.answers,
         notes: state.notes,
+        activeChecklistView: state.activeChecklistView,
         collapsedSections: state.collapsedSections,
+        auditResult: state.auditResult,
         checklistText: elements.checklistInput.value,
         outputMode: state.outputMode,
         compiledText: state.compiledText
@@ -2372,6 +2597,138 @@ Now produce the final checklist only.`;
       elements.parseSummary.textContent = `${prefix}: ${sections.length} sections, ${itemCount} items, ${chipCount} chip questions, ${noteCount} note fields.`;
     }
 
+    function isBedsideExamManeuver(label) {
+      return /\b(?:squeeze|lift|wiggle|count\s+(?:aloud|out loud)|count\s+to|cough|stick\s+out|tongue|palate|gag|reflex|strength|babinski|clonus|hoffmann|follow\s+(?:my|your)|finger-to-nose|walk|stand)\b/i.test(label);
+    }
+
+    function hasBadBlankFormat(item) {
+      const rawValue = item.rawValue || "";
+      return /_{2,3}\s*\/\s*(?:\d|_|[A-Za-z])/.test(rawValue) || /_{2,3}[\s\S]*\/[\s\S]*(?:\S)/.test(rawValue) && !/\/[^/]*_{2,3}\s*$/.test(rawValue);
+    }
+
+    function validateChecklist(sections) {
+      const issues = [];
+      const bedsideItems = sections.flatMap((section) => section.items).filter((item) => item.category === "bedside");
+      const examSections = sections.filter((section) => section.category === "exam" && section.items.length > 0);
+      const examItems = examSections.flatMap((section) => section.items);
+      const seenLabels = new Map();
+
+      if (bedsideItems.length < 5) {
+        issues.push({ type: "bedside-count-low", message: `Bedside checklist has only ${bedsideItems.length} patient questions. Aim for 6 to 8.` });
+      } else if (bedsideItems.length > 8) {
+        issues.push({ type: "bedside-count-high", message: `Bedside checklist has ${bedsideItems.length} patient questions. Aim for 6 to 8.` });
+      }
+
+      if (examItems.length > 16) {
+        issues.push({ type: "exam-count-high", message: `Focused exam has ${examItems.length} items. Aim for 10 to 14 and never more than 16.` });
+      }
+
+      examSections.forEach((section) => {
+        if (section.items.length > 4) {
+          issues.push({ type: "exam-section-long", message: `${section.title} has ${section.items.length} exam items. Keep each exam section to 4 or fewer.` });
+        }
+      });
+
+      sections.forEach((section) => {
+        section.items.forEach((item) => {
+          const normalizedLabel = item.label.toLowerCase().replace(/\s+/g, " ").trim();
+          if (seenLabels.has(normalizedLabel)) {
+            issues.push({ type: "duplicate-label", message: `Duplicate item label: ${item.label}` });
+          } else {
+            seenLabels.set(normalizedLabel, true);
+          }
+
+          if (hasBadBlankFormat(item)) {
+            issues.push({ type: "bad-blank-format", message: `Possible bad blank format: ${item.label}` });
+          }
+
+          if (item.category === "bedside") {
+            if (!item.label.trim().endsWith("?")) {
+              issues.push({ type: "bedside-question-format", message: `Bedside item should be a direct question ending in ?: ${item.label}` });
+            }
+            if (isBedsideExamManeuver(item.label)) {
+              issues.push({ type: "bedside-exam-maneuver", message: `Bedside item may be an exam maneuver, not history: ${item.label}` });
+            }
+          }
+        });
+      });
+
+      return {
+        ok: issues.length === 0,
+        issues,
+        bedsideCount: bedsideItems.length,
+        examCount: examItems.length
+      };
+    }
+
+    function buildCleanupPrompt(rawChecklist, auditResult) {
+      const issueText = auditResult.issues.length
+        ? auditResult.issues.map((issue) => `- ${issue.message}`).join("\n")
+        : "- Shorten and organize the checklist into the required bedside-first format.";
+
+      return `You are an experienced attending physician and clerkship coach. Rewrite the checklist below so it is shorter, bedside-first, and fully parseable by a checklist app.
+
+Fix these issues:
+${issueText}
+
+Rules:
+Use plain text only.
+Return exactly two checklists:
+BEDSIDE QUESTION CHECKLIST
+TARGETED PHYSICAL EXAM CHECKLIST
+
+BEDSIDE QUESTION CHECKLIST:
+Use 6 to 8 true patient history questions.
+Every bedside label must be a direct question ending in ? before the colon.
+Do not include exam maneuvers, commands, or observed findings in bedside questions.
+Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out their tongue, follow a finger, or perform a physical exam task.
+Use patient-friendly language and include Other ___ when answers may not fit the choices.
+
+TARGETED PHYSICAL EXAM CHECKLIST:
+Use 10 to 14 focused exam items total and never more than 16.
+Group exam items by exam system or exam type.
+Use no more than 4 items per exam section.
+Prefer grouped screening items over exhaustive right-left inventories.
+
+Formatting:
+Section headers must be ALL CAPS with no punctuation.
+Every item must be one line in this exact format:
+Label: Option A / Option B / Option C
+Put ___ only at the end of an option or item.
+Do not use ___ / 5 or blanks before another slash option.
+Do not include explanations before or after the rewritten checklist.
+
+Checklist to rewrite:
+${rawChecklist.trim()}`;
+    }
+
+    function renderAudit(result) {
+      state.auditResult = result;
+
+      if (!result) {
+        elements.auditPanel.hidden = true;
+        return;
+      }
+
+      elements.auditPanel.hidden = false;
+      elements.auditPanel.classList.toggle("is-ok", result.ok);
+      elements.auditTitle.textContent = result.ok ? "Checklist quality looks good" : "Checklist needs review";
+      elements.auditSummary.textContent = result.ok
+        ? `Detected ${result.bedsideCount} bedside questions and ${result.examCount} exam items.`
+        : `Detected ${result.bedsideCount} bedside questions and ${result.examCount} exam items. Review these issues before bedside use.`;
+      elements.auditBadge.textContent = result.ok ? "Ready" : `${result.issues.length} issue${result.issues.length === 1 ? "" : "s"}`;
+      elements.auditList.innerHTML = "";
+
+      const messages = result.ok ? [{ message: "No strict checklist issues found." }] : result.issues.slice(0, 8);
+      messages.forEach((issue) => {
+        const item = document.createElement("li");
+        item.textContent = issue.message;
+        elements.auditList.appendChild(item);
+      });
+
+      elements.auditActions.hidden = result.ok;
+    }
+
     function normalizeChecklistText(rawText) {
       return rawText
         .replace(/[“”]/g, "\"")
@@ -2454,7 +2811,10 @@ Now produce the final checklist only.`;
 
     function defaultCollapsedSections(sections) {
       const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
-      if (itemCount <= 22) {
+      const examCount = sections.reduce((total, section) => {
+        return total + (section.category === "exam" ? section.items.length : 0);
+      }, 0);
+      if (itemCount <= 18 && examCount < 10) {
         return {};
       }
 
@@ -2532,7 +2892,7 @@ Now produce the final checklist only.`;
       return line.includes("__") || wordCount > 0 && wordCount <= 6;
     }
 
-    function addQuestion(sections, label, options, hasNotes) {
+    function addQuestion(sections, label, options, hasNotes, rawValue = "") {
       const currentSection = ensureSection(sections);
       const itemId = makeItemId(sections.length - 1, currentSection.items.length);
       const category = currentSection.category || "general";
@@ -2540,6 +2900,7 @@ Now produce the final checklist only.`;
         id: itemId,
         label,
         options,
+        rawValue,
         category,
         hasNotes: Boolean(hasNotes || category === "bedside" && options.length)
       });
@@ -2584,7 +2945,7 @@ Now produce the final checklist only.`;
             }
 
             if (options.length || hasNotes) {
-              addQuestion(sections, line, options, hasNotes);
+              addQuestion(sections, line, options, hasNotes, options.join(" / "));
               index = optionIndex - 1;
               continue;
             }
@@ -2618,16 +2979,10 @@ Now produce the final checklist only.`;
           continue;
         }
 
-        addQuestion(sections, label, optionParse.options, optionParse.hasNotes);
+        addQuestion(sections, label, optionParse.options, optionParse.hasNotes, rawValue);
       }
 
       return annotateChecklistSections(sections.filter((section) => section.items.length || section.title));
-    }
-
-    function countChipQuestions() {
-      return state.sections.reduce((total, section) => {
-        return total + section.items.filter((item) => item.options.length > 0).length;
-      }, 0);
     }
 
     function isItemAnswered(item) {
@@ -2639,22 +2994,67 @@ Now produce the final checklist only.`;
       return Boolean(note);
     }
 
-    function sectionStats(section) {
-      const countable = section.items.filter((item) => item.options.length > 0);
-      const answered = countable.filter(isItemAnswered).length;
+    function itemMatchesView(item, view = state.activeChecklistView) {
+      if (view === "bedside") {
+        return item.category === "bedside";
+      }
+      if (view === "exam") {
+        return item.category === "exam";
+      }
+      if (view === "unanswered") {
+        return !isItemAnswered(item);
+      }
+      return true;
+    }
+
+    function itemsForView(view = state.activeChecklistView) {
+      return state.sections.flatMap((section) => section.items).filter((item) => itemMatchesView(item, view));
+    }
+
+    function progressForItems(items) {
       return {
-        answered,
-        total: countable.length
+        answered: items.filter(isItemAnswered).length,
+        total: items.length
       };
     }
 
+    function countItemsByCategory(category) {
+      return progressForItems(state.sections.flatMap((section) => section.items).filter((item) => item.category === category));
+    }
+
+    function sectionStats(section, view = state.activeChecklistView) {
+      return progressForItems(section.items.filter((item) => itemMatchesView(item, view)));
+    }
+
+    function formatProgress(label, progress) {
+      return `${label} ${progress.answered}/${progress.total}`;
+    }
+
+    function viewLabel(view) {
+      if (view === "bedside") {
+        return "Bedside";
+      }
+      if (view === "exam") {
+        return "Exam";
+      }
+      if (view === "unanswered") {
+        return "Unanswered";
+      }
+      return "All";
+    }
+
     function updateProgress() {
-      const total = countChipQuestions();
-      const answered = state.sections.reduce((sum, section) => {
-        return sum + section.items.filter((item) => item.options.length > 0 && isItemAnswered(item)).length;
-      }, 0);
+      const active = progressForItems(itemsForView(state.activeChecklistView));
+      const bedside = countItemsByCategory("bedside");
+      const exam = countItemsByCategory("exam");
+      const overall = progressForItems(state.sections.flatMap((section) => section.items));
+      const total = active.total;
+      const answered = active.answered;
       const percentage = total ? Math.round((answered / total) * 100) : 0;
-      elements.progressCount.textContent = `${answered} of ${total} answered`;
+      elements.progressCount.textContent = `${viewLabel(state.activeChecklistView)} ${answered} of ${total}`;
+      elements.bedsideProgress.textContent = formatProgress("Bedside", bedside);
+      elements.examProgress.textContent = formatProgress("Exam", exam);
+      elements.overallProgress.textContent = formatProgress("Overall", overall);
       elements.progressFill.style.width = `${percentage}%`;
       updateStepRail(elements.checklistScreen.classList.contains("is-active") ? "bedside" : "paste");
     }
@@ -2670,7 +3070,7 @@ Now produce the final checklist only.`;
       const allButton = document.createElement("button");
       allButton.type = "button";
       allButton.className = `mini-btn${state.activeSection === "all" ? " is-active" : ""}`;
-      allButton.textContent = "All sections";
+      allButton.textContent = `All ${viewLabel(state.activeChecklistView).toLowerCase()}`;
       allButton.addEventListener("click", () => {
         state.activeSection = "all";
         renderChecklist();
@@ -2680,6 +3080,9 @@ Now produce the final checklist only.`;
 
       state.sections.forEach((section, index) => {
         const stats = sectionStats(section);
+        if (!stats.total) {
+          return;
+        }
         const button = document.createElement("button");
         button.type = "button";
         button.className = `mini-btn${state.activeSection === section.title ? " is-active" : ""}`;
@@ -2699,19 +3102,36 @@ Now produce the final checklist only.`;
       });
     }
 
-    function setChecklistFilter(filter) {
-      state.checklistFilter = filter;
-      elements.showAllButton.setAttribute("aria-pressed", filter === "all" ? "true" : "false");
-      elements.showUnansweredButton.setAttribute("aria-pressed", filter === "unanswered" ? "true" : "false");
-      elements.showAllButton.classList.toggle("is-active", filter === "all");
-      elements.showUnansweredButton.classList.toggle("is-active", filter === "unanswered");
+    function setChecklistView(view) {
+      state.activeChecklistView = view;
+      state.activeSection = "all";
+      elements.bedsideViewButton.setAttribute("aria-pressed", view === "bedside" ? "true" : "false");
+      elements.examViewButton.setAttribute("aria-pressed", view === "exam" ? "true" : "false");
+      elements.unansweredViewButton.setAttribute("aria-pressed", view === "unanswered" ? "true" : "false");
+      elements.allViewButton.setAttribute("aria-pressed", view === "all" ? "true" : "false");
       renderChecklist();
     }
 
+    function setChecklistFilter(filter) {
+      setChecklistView(filter === "unanswered" ? "unanswered" : "all");
+    }
+
     function findNextUnansweredCard() {
-      return Array.from(document.querySelectorAll(".question-card:not(.is-hidden)")).find((card) => {
-        return card.dataset.answered === "false";
-      });
+      for (let sectionIndex = 0; sectionIndex < state.sections.length; sectionIndex += 1) {
+        const section = state.sections[sectionIndex];
+        const hiddenBySection = state.activeSection !== "all" && state.activeSection !== section.title;
+        if (hiddenBySection) {
+          continue;
+        }
+
+        const item = section.items.find((candidate) => itemMatchesView(candidate) && !isItemAnswered(candidate));
+        if (item) {
+          state.collapsedSections[sectionKey(section, sectionIndex)] = false;
+          renderChecklist();
+          return document.querySelector(`[data-item-id="${item.id}"]`);
+        }
+      }
+      return null;
     }
 
     function renderChecklist() {
@@ -2760,17 +3180,17 @@ Now produce the final checklist only.`;
         let sectionHasVisibleContent = false;
         section.items.forEach((item) => {
           const answered = isItemAnswered(item);
-          const hiddenByFilter = state.checklistFilter === "unanswered" && answered;
+          const hiddenByView = !itemMatchesView(item);
           const hiddenBySection = state.activeSection !== "all" && state.activeSection !== section.title;
-          sectionHasVisibleContent = sectionHasVisibleContent || !(hiddenByFilter || hiddenBySection);
+          sectionHasVisibleContent = sectionHasVisibleContent || !(hiddenByView || hiddenBySection);
           const card = document.createElement("article");
           card.className = "surface question-card";
-          card.classList.toggle("is-hidden", hiddenByFilter || hiddenBySection || collapsed);
+          card.classList.toggle("is-hidden", hiddenByView || hiddenBySection || collapsed);
           card.id = `section-items-${sectionIndex}-${item.id}`;
           card.dataset.itemId = item.id;
           card.dataset.section = section.title;
           card.dataset.answered = answered ? "true" : "false";
-          visibleItems += hiddenByFilter || hiddenBySection || collapsed ? 0 : 1;
+          visibleItems += hiddenByView || hiddenBySection || collapsed ? 0 : 1;
 
           const title = document.createElement("h3");
           title.className = "question-title";
@@ -2921,9 +3341,11 @@ Now produce the final checklist only.`;
       state.scrubResult = null;
       state.admission = {};
       state.promptCollapsed = false;
-      state.checklistFilter = "all";
+      state.activeChecklistView = "bedside";
       state.activeSection = "all";
       state.collapsedSections = {};
+      state.auditResult = null;
+      state.checklistRawText = "";
       state.outputMode = "assessed";
       state.lastClearSnapshot = null;
       state.newChecklistConfirming = false;
@@ -2938,9 +3360,10 @@ Now produce the final checklist only.`;
       });
       clearScrubPreview();
       clearChecklistSession();
+      renderAudit(null);
       setPromptCollapsed(false);
       setOutputMode("assessed");
-      setChecklistFilter("all");
+      setChecklistView("bedside");
       setSourceMode("prior");
       elements.checklistInput.value = "";
       setError("");
@@ -2988,20 +3411,23 @@ Now produce the final checklist only.`;
         return false;
       }
 
-      elements.checklistInput.value = normalizeChecklistText(rawText);
+      const normalizedText = normalizeChecklistText(rawText);
+      elements.checklistInput.value = normalizedText;
       state.sections = sections;
       state.answers = {};
       state.notes = {};
       state.activeSection = "all";
-      state.checklistFilter = "all";
+      state.activeChecklistView = "bedside";
       state.collapsedSections = defaultCollapsedSections(sections);
+      state.checklistRawText = normalizedText;
+      state.auditResult = validateChecklist(sections);
       state.lastClearSnapshot = null;
-      setChecklistFilter("all");
       setParseSummary(sections, "Built");
-      renderChecklist();
+      renderAudit(state.auditResult);
+      setChecklistView("bedside");
       showScreen("checklistScreen");
       saveChecklistSession();
-      showToast("Checklist built.");
+      showToast(state.auditResult.ok ? "Checklist built." : "Checklist built with review warnings.");
       return true;
     }
 
@@ -3020,13 +3446,17 @@ Now produce the final checklist only.`;
         state.sections = annotateChecklistSections(parsed.sections);
         state.answers = parsed.answers || {};
         state.notes = parsed.notes || {};
+        state.activeChecklistView = parsed.activeChecklistView || "bedside";
         state.collapsedSections = parsed.collapsedSections || defaultCollapsedSections(state.sections);
+        state.auditResult = parsed.auditResult || validateChecklist(state.sections);
+        state.checklistRawText = parsed.checklistText || "";
         state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
         state.compiledText = parsed.compiledText || "";
         elements.checklistInput.value = parsed.checklistText || "";
         setOutputMode(state.outputMode);
         setParseSummary(state.sections, "Recovered");
-        renderChecklist();
+        renderAudit(state.auditResult);
+        setChecklistView(state.activeChecklistView);
         showToast("Recovered checklist from this browser session.", {
           actionLabel: "Resume",
           onAction: () => showScreen("checklistScreen")
@@ -3186,12 +3616,20 @@ Now produce the final checklist only.`;
 
     elements.clearButton.addEventListener("click", clearAll);
 
-    elements.showAllButton.addEventListener("click", () => {
-      setChecklistFilter("all");
+    elements.bedsideViewButton.addEventListener("click", () => {
+      setChecklistView("bedside");
     });
 
-    elements.showUnansweredButton.addEventListener("click", () => {
-      setChecklistFilter("unanswered");
+    elements.examViewButton.addEventListener("click", () => {
+      setChecklistView("exam");
+    });
+
+    elements.unansweredViewButton.addEventListener("click", () => {
+      setChecklistView("unanswered");
+    });
+
+    elements.allViewButton.addEventListener("click", () => {
+      setChecklistView("all");
     });
 
     elements.nextUnansweredButton.addEventListener("click", () => {
@@ -3218,6 +3656,15 @@ Now produce the final checklist only.`;
       }, {});
       renderChecklist();
       showToast("Exam sections collapsed.");
+    });
+
+    elements.copyCleanupPromptButton.addEventListener("click", async () => {
+      const prompt = buildCleanupPrompt(state.checklistRawText || elements.checklistInput.value, state.auditResult || validateChecklist(state.sections));
+      await copyText(prompt, elements.copyStatus, "Cleanup prompt copied.");
+    });
+
+    elements.continueAnywayButton.addEventListener("click", () => {
+      showToast("Continuing with checklist warnings visible.");
     });
 
     elements.generateButton.addEventListener("click", () => {
