@@ -1357,14 +1357,14 @@
       <header class="hero">
         <p class="eyebrow">Bedside workflow</p>
         <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
-        <p class="helper">Copy the OpenEvidence prompt, paste the returned checklist here, then generate clean note-ready findings.</p>
+        <p class="helper">Copy an OpenEvidence checklist prompt, teaching prompt, or presentation prompt while keeping source notes local and de-identified.</p>
       </header>
 
       <section class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
           <p class="eyebrow">OpenEvidence</p>
           <h2 id="promptOneTitle" class="workflow-title">Checklist prompt</h2>
-          <p class="workflow-copy">Choose the source, copy the checklist prompt into OpenEvidence, then paste the returned checklist below.</p>
+          <p class="workflow-copy">Choose the source, then copy either a checklist prompt for bedside workflow or a teaching prompt for patient-specific learning.</p>
         </div>
 
         <div id="promptCopiedSummary" class="compact-summary" hidden>
@@ -1408,7 +1408,8 @@
             </details>
           </div>
           <div class="prompt-actions">
-            <button id="scrubAndCopyButton" class="btn btn-primary" type="button">De-identify + Copy Prompt</button>
+            <button id="scrubAndCopyButton" class="btn btn-primary" type="button">Copy Checklist Prompt</button>
+            <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button">Copy Teaching Prompt</button>
             <button id="scrubPreviewButton" class="btn btn-secondary" type="button">De-identify Preview</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
@@ -1691,6 +1692,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
+      copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
       promptStatus: document.getElementById("promptStatus"),
@@ -2016,6 +2018,103 @@ Before finalizing, silently verify:
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
 6. No PHI or identifiers appear.
 7. No extra commentary appears outside the required sections.
+</final_self_check>`;
+
+    const patientTeachingPromptInstructions = `<role>
+You are an experienced attending physician and clerkship coach teaching a brand-new third-year medical student how to understand and care for this patient.
+</role>
+
+<task>
+Use the de-identified SOAP note below to create a patient-specific teaching guide. Teach the student what they need to know to be useful, safe, organized, and thoughtful on rounds for this patient.
+</task>
+
+<learner_level>
+Assume the learner is early in third year.
+Explain medical terms, abbreviations, pathophysiology, and clinical reasoning plainly.
+Do not talk down to the learner.
+Make the teaching practical for bedside care, prerounding, presenting, and following up tasks.
+</learner_level>
+
+<source_rules>
+Use only information present in the note plus standard medical knowledge needed to explain it.
+Do not invent missing history, diagnoses, test results, exam findings, treatments, or plans.
+If something is uncertain or missing, say what cannot be concluded and what the student should clarify.
+Do not include identifiers or PHI.
+Do not give patient-specific orders as if you are the treating team. Frame management as what the team appears to be doing, what the student should understand, and what questions to ask.
+</source_rules>
+
+<teaching_method>
+Structure the teaching using clinical reasoning principles:
+1. Start with a simple mental model of who the patient is and why they are in the hospital.
+2. Build a problem representation using key features, severity, time course, and context.
+3. Explain the active problems by illness scripts: predisposing factors, mechanism or pathophysiology, clinical consequences, supporting data, and discriminating features.
+4. Compare the most relevant differential diagnoses, including what supports and argues against each.
+5. Translate data into meaning: vitals, exam, labs, imaging, medications, treatments, and pending studies.
+6. Identify what matters today: red flags, response to therapy, complications to watch for, discharge barriers, and what would change management.
+7. Give the learner questions to ask, exam maneuvers to understand, and topics to read tonight.
+</teaching_method>
+
+<output_format>
+Use plain text with clear section headers.
+Do not use markdown tables.
+Use concise bullets where they improve readability.
+
+Use exactly these sections:
+
+PATIENT SNAPSHOT
+Write a plain-English one-paragraph summary of who this patient is, why they are here, how sick they are, and what the team is trying to decide today.
+
+TRANSLATED SOAP NOTE
+Walk through the note section by section. Explain abbreviations, important findings, and why each detail matters.
+
+PROBLEM REPRESENTATION
+Create a concise clinical summary statement. Then explain how each phrase in that summary was chosen.
+
+ACTIVE PROBLEMS AND ILLNESS SCRIPTS
+For each major active problem, teach:
+- What it means
+- Why this patient may have it
+- Mechanism or pathophysiology
+- Key supporting and refuting data from the note
+- Complications and red flags
+- What the student should monitor today
+
+DIFFERENTIAL DIAGNOSIS
+List the most relevant diagnoses or explanations. For each, include what supports it, what argues against it, and what data would help distinguish it.
+
+DATA INTERPRETATION
+Explain the important vitals, physical exam findings, labs, imaging, microbiology, and trends. Say what is normal, abnormal, improving, worsening, or uncertain only when supported.
+
+MEDICATIONS AND TREATMENTS
+Explain the important medications, fluids, oxygen or respiratory support, procedures, consults, and pending studies. Include why they are being used, what to monitor, and common adverse effects or safety issues relevant to this patient.
+
+WHAT TO DO BEFORE ROUNDS
+Give a practical prerounding checklist for this patient: what to ask, what to examine, what labs or studies to check, what tasks to follow up, and what changes would be urgent.
+
+HOW TO PRESENT THIS PATIENT
+Give a short presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
+
+QUESTIONS TO ASK THE TEAM
+Give thoughtful questions the student can ask the intern, resident, attending, consultants, nurse, pharmacist, or case manager.
+
+PATIENT-FRIENDLY EXPLANATION
+Explain the patient’s situation in language the student could use at the bedside, avoiding jargon and preserving uncertainty.
+
+SELF-STUDY PLAN
+Give a focused study plan for tonight: 5 to 8 topics, why each matters for this patient, and what the student should be able to explain tomorrow.
+
+UNCERTAINTIES AND SAFETY CHECKS
+List what is missing, what could be dangerous if missed, and what claims should not be made from the note alone.
+</output_format>
+
+<final_self_check>
+Before finalizing, silently verify:
+1. The teaching is specific to this patient, not a generic disease review.
+2. Every patient-specific claim is supported by the note.
+3. Uncertainty is preserved when the note is incomplete.
+4. The explanation is appropriate for an early third-year medical student.
+5. No PHI or identifiers appear.
+6. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -2598,10 +2697,13 @@ Sensory level present: No / Yes, at ___`;
 
     function setScrubBusy(isBusy, primaryLabel) {
       elements.scrubAndCopyButton.disabled = isBusy;
+      elements.copyTeachingPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
-      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "De-identify + Copy Prompt";
+      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy Checklist Prompt";
+      elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy Teaching Prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify Preview";
     }
 
@@ -2704,6 +2806,22 @@ ${scrubbedNote}
 </patient_context>
 
 Now produce the final checklist only.`;
+    }
+
+    async function buildPatientTeachingPrompt() {
+      const scrubbedNote = await getReviewedScrubbedNote();
+      if (!scrubbedNote) {
+        return "";
+      }
+
+      return `${patientTeachingPromptInstructions}
+
+<patient_context>
+De-identified SOAP note:
+${scrubbedNote}
+</patient_context>
+
+Now teach me this patient.`;
     }
 
     function buildAdmissionChecklistPrompt() {
@@ -3708,7 +3826,7 @@ ${rawChecklist.trim()}`;
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Click De-identify + Copy Prompt to continue the test.";
+      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Copy a checklist prompt or teaching prompt to continue the test.";
       elements.rawSoapInput.focus();
       prepareDeidentifierModel();
       showToast("Demo endocrinology SOAP note loaded.");
@@ -3741,6 +3859,21 @@ ${rawChecklist.trim()}`;
           setPromptCollapsed(true, "Paste it into OpenEvidence, then paste the returned checklist below.");
           elements.checklistInput.focus();
           await copyText(prompt, elements.promptStatus, "De-identified checklist prompt copied.");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copyTeachingPromptButton.addEventListener("click", async () => {
+      try {
+        const prompt = await buildPatientTeachingPrompt();
+        if (prompt) {
+          await copyText(prompt, elements.promptStatus, "Teaching prompt copied. Open OpenEvidence to paste.", {
+            actionLabel: "Open OpenEvidence",
+            actionUrl: openEvidenceUrl,
+            duration: 7000
+          });
         }
       } catch (error) {
         console.error(error);
