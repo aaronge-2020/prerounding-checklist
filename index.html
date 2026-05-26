@@ -1153,9 +1153,7 @@ Heart rate and rhythm: Regular / Irregular
 FOCUSED EXAM
 Overall appearance: Comfortable / Uncomfortable / Toxic appearing`;
 
-    const presentationPromptIntro = `You are an experienced attending physician helping a third-year medical student update a rounds presentation.
-Use the original patient note and the new pre-rounding checklist findings below to create a concise 2-minute oral presentation.
-Your output should have four sections:
+    const presentationPromptInstructions = `Your output should have four sections:
 SUBJECTIVE AND INTERVAL EVENTS
 OBJECTIVE AND EXAM
 ASSESSMENT AND PLAN
@@ -1164,12 +1162,28 @@ Instructions:
 Convert the checklist findings from Label: Answer format into natural, concise medical language suitable for a medical student presenting on rounds.
 Do not simply copy checklist labels. Synthesize the findings into a coherent clinical update.
 Ignore any items marked [not assessed], not assessed, left blank, or containing only underscores ___.
-Only report information that was actually gathered or is present in the original patient note.
+Only report information that was actually gathered or is present in the provided source context.
 Emphasize clinically significant updates, including new or worsening symptoms, improvement, stability, red flags, and discordance between symptoms and exam findings.
 When relevant, synthesize subjective findings with physical exam findings. For example, if the patient reports weakness but strength is 5/5 on exam, state that clearly.
 The assessment and plan should briefly reflect how the new interval findings affect today’s differential diagnosis, severity assessment, monitoring needs, and management plan.
 KEY INTERVAL CHANGES should contain 3 to 4 concise bullets summarizing the most important updates. This is the only section where bullets are allowed.
 Use plain text only. Do not use bold, italics, markdown tables, or special formatting.`;
+
+    function presentationPromptIntro(hasSourceNote, hasAdmissionContext) {
+      let contextLine = "Use the new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
+
+      if (hasSourceNote && hasAdmissionContext) {
+        contextLine = "Use the de-identified source note, admission intake information, and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
+      } else if (hasSourceNote) {
+        contextLine = "Use the de-identified source note and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
+      } else if (hasAdmissionContext) {
+        contextLine = "No prior SOAP note is available. Use the admission intake information and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
+      }
+
+      return `You are an experienced attending physician helping a third-year medical student update a rounds presentation.
+${contextLine}
+${presentationPromptInstructions}`;
+    }
 
     const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
 
@@ -1421,7 +1435,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     }
 
     function labelPriority(label) {
-      const priorities = ["DOB REDACTED", "SSN", "EMAIL", "URL", "IP", "ID", "PHONE", "ADDRESS", "ROOM", "DATE", "NAME", "LOCATION", "ORGANIZATION"];
+      const priorities = ["DOB REDACTED", "SSN", "EMAIL", "URL", "IP", "ID", "ADDRESS", "ROOM", "PHONE", "DATE", "NAME", "LOCATION", "ORGANIZATION"];
       const index = priorities.indexOf(label);
       return index === -1 ? priorities.length : index;
     }
@@ -1510,6 +1524,15 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       return deidentifierPipelinePromise;
     }
 
+    function setScrubBusy(isBusy, primaryLabel) {
+      elements.scrubAndCopyButton.disabled = isBusy;
+      elements.scrubPreviewButton.disabled = isBusy;
+      elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "De-identify + Copy Prompt";
+      elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify Preview";
+    }
+
     async function scrubSoapNoteText(rawText) {
       const deidentifier = await loadDeidentifierPipeline();
       const predictions = await deidentifier(rawText, { ignore_labels: [] });
@@ -1551,8 +1574,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         return null;
       }
 
-      elements.scrubAndCopyButton.disabled = true;
-      elements.scrubPreviewButton.disabled = true;
+      setScrubBusy(true, "De-identifying...");
       elements.promptStatus.textContent = "Running Stanford AIMI deidentifier locally...";
 
       let result;
@@ -1562,8 +1584,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         elements.promptStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
         throw error;
       } finally {
-        elements.scrubAndCopyButton.disabled = false;
-        elements.scrubPreviewButton.disabled = false;
+        setScrubBusy(false);
       }
 
       state.scrubResult = result;
@@ -1616,7 +1637,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         sourceBlocks.push(`Admission intake information:\n${admissionContext}`);
       }
 
-      return `${presentationPromptIntro}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+      const promptIntro = presentationPromptIntro(Boolean(state.scrubbedNote), Boolean(admissionContext));
+      return `${promptIntro}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
     configureManifest();
