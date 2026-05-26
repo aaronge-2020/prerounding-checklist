@@ -1447,109 +1447,173 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
     let deferredInstallPrompt = null;
     let deidentifierPipelinePromise = null;
 
-    const checklistPrompt = `You are an experienced attending physician helping a third-year medical student pre-round.
-Review the patient note below and produce only two plain-text checklists:
-1. A bedside question checklist
-2. A targeted physical exam checklist
-Do not write an oral presentation.
-Do not write a teaching section.
-Do not include explanations.
-Do not include generic questions or exam items.
-Focus only on the highest-yield questions and exam findings needed to track this specific patient’s trajectory today and guide management.
-The bedside question checklist must use patient-friendly language with zero medical jargon.
-The targeted physical exam checklist must include only the most important exam items for this specific patient today.
-Use plain text only. Do not use bold, italics, asterisks, bullets, numbering, markdown symbols, emojis, or special formatting.
-CRITICAL FORMATTING RULES:
-Section headers must be ALL CAPS with no punctuation.
-Every item must be on a single line.
-Every item must follow this exact format:
-Label: Option A / Option B / Option C
-Use concise labels.
-Use structured options whenever possible.
-Only include a free-text blank ___ if structured options are not adequate.
-Do not include any text before or after the two checklists.
-EXAMPLE FORMAT:
-BEDSIDE QUESTION CHECKLIST
-STRENGTH AND MOVEMENT
-Arms today compared to yesterday: Stronger / Same / Weaker
-Leg strength: Normal / Weak / Unable to lift
-NUMBNESS AND TINGLING
-Has the numbness spread: Yes / No
-Current pain level zero to ten: ___
-TARGETED PHYSICAL EXAM CHECKLIST
-VITAL SIGNS
-Respiratory rate: ___
-Heart rate and rhythm: Regular / Irregular
-NEUROLOGIC EXAM
-Shoulder abduction strength right: 0 / 1 / 2 / 3 / 4 / 5
-Babinski sign right: Upgoing / Downgoing / Equivocal / No response`;
+    const checklistPrompt = `<role>
+You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
+</role>
 
-    const newAdmissionChecklistPrompt = `You are an experienced attending physician helping a third-year medical student pre-round on a newly admitted patient.
-There is no prior SOAP note available.
-Use the admission intake information below to produce only two plain-text checklists:
-1. A bedside question checklist
-2. A targeted physical exam checklist
-Do not write an oral presentation.
-Do not write a teaching section.
-Do not include explanations.
-Do not include generic questions or exam items.
-Focus on the highest-yield questions and exam findings needed to establish baseline severity, clarify trajectory since presentation or admission, and guide management today.
-The bedside question checklist must use patient-friendly language with zero medical jargon.
-The targeted physical exam checklist must include only the most important exam items for this specific patient today.
-Use plain text only. Do not use bold, italics, asterisks, bullets, numbering, markdown symbols, emojis, or special formatting.
-CRITICAL FORMATTING RULES:
+<task>
+Create a patient-specific bedside pre-rounding checklist from the clinical context below.
+
+Your final answer must contain exactly two plain-text checklists:
+BEDSIDE QUESTION CHECKLIST
+TARGETED PHYSICAL EXAM CHECKLIST
+
+You must include both checklists. Never omit the bedside question checklist.
+</task>
+
+<clinical_goal>
+The checklist should help the student quickly determine today's clinical trajectory, severity, red flags, response to treatment, functional status, and management-relevant changes. Include only items that could affect today's rounds presentation, assessment, monitoring, treatment plan, discharge readiness, or escalation decisions.
+</clinical_goal>
+
+<internal_process>
+Before writing the final answer, silently identify:
+1. The patient's active problems and reason for hospitalization or admission.
+2. The key clinical uncertainties for today.
+3. Bedside questions that clarify symptom trajectory, red flags, function, safety, treatment response, and patient concerns.
+4. Focused physical exam findings that would confirm improvement, worsening, complications, or management-relevant severity.
+5. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
+
+Do not show this reasoning. Show only the final checklist.
+</internal_process>
+
+<content_rules>
+For the bedside question checklist:
+Use patient-friendly language with no medical jargon.
+Focus on what the patient can report: symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, and concerns.
+Use 8 to 12 bedside questions when clinically supportable. If the context is sparse, still include the most relevant patient-specific questions needed to establish baseline and trajectory.
+
+For the targeted physical exam checklist:
+Use concise clinical labels appropriate for a medical student.
+Focus on focused exam findings, vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
+Use 8 to 16 exam items when clinically supportable.
+
+Do not include generic review-of-systems questions.
+Do not include a full head-to-toe exam.
+Do not include teaching, explanations, citations, caveats, or oral presentation text.
+Do not mention that the note is de-identified.
+</content_rules>
+
+<format_rules>
+Use plain text only.
+Do not use markdown, bullets, numbering, bold, italics, tables, emojis, or special formatting.
 Section headers must be ALL CAPS with no punctuation.
-Every item must be on a single line.
-Every item must follow this exact format:
+Every checklist item must be on a single line.
+Every checklist item must use exactly this format:
 Label: Option A / Option B / Option C
+
 Use concise labels.
 Use structured options whenever possible.
-Only include a free-text blank ___ if structured options are not adequate.
-Do not include any text before or after the two checklists.
-EXAMPLE FORMAT:
+Use ___ only when structured options are not adequate, such as numeric values, locations, brief descriptions, or device settings.
+Mixed structured-plus-free-text options are allowed when useful, for example:
+Ability to count in one breath: 20 or more / Less than 20, stops at ___
+
+The final answer must begin with:
+BEDSIDE QUESTION CHECKLIST
+
+The final answer must not include any text before or after the two checklists.
+</format_rules>
+
+<format_examples>
 BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
-Main symptom since arrival: Better / Same / Worse
-New concerning symptom: Yes / No
+Main symptom since yesterday: Better / Same / Worse
+Any new or worsening symptom: Yes / No
+Breathing right now: Normal / A little hard / Very hard
 FUNCTION AND SAFETY
 Able to get out of bed safely: Yes / No / Not tried
+Any dizziness when sitting or standing: Yes / No
+Patient main concern today: ___
+
 TARGETED PHYSICAL EXAM CHECKLIST
-VITAL SIGNS
+VITAL SIGNS AND SUPPORT
 Respiratory rate: ___
+Oxygen support: Room air / Nasal cannula ___ / Face mask ___ / Ventilator
 Heart rate and rhythm: Regular / Irregular
 FOCUSED EXAM
-Overall appearance: Comfortable / Uncomfortable / Toxic appearing`;
+Work of breathing: Normal / Mildly increased / Markedly increased
+Lung exam: Clear / Crackles / Wheezes / Diminished
+Volume status: Dry / Euvolemic / Overloaded
+</format_examples>
 
-    const presentationPromptInstructions = `Your output should have four sections:
+<final_self_check>
+Before finalizing, silently verify:
+1. Both required checklist titles are present.
+2. There is at least one bedside-question section and one exam section.
+3. Bedside questions are patient-friendly.
+4. Exam items are focused and management-relevant.
+5. Every item is parseable as Label: options.
+6. No bullets, numbering, markdown, explanations, citations, or extra prose appear.
+</final_self_check>`;
+
+    const newAdmissionChecklistPrompt = `${checklistPrompt}
+
+<context_type>
+No prior SOAP note is available. The patient is newly admitted or being admitted now.
+</context_type>`;
+
+    const presentationPromptInstructions = `<role>
+You are an experienced attending physician and clerkship coach helping a third-year medical student give a concise, assessment-forward rounds update.
+</role>
+
+<task>
+Use the provided source context and new checklist findings to create a polished 2-minute oral rounds presentation.
+</task>
+
+<clinical_goal>
+Synthesize the information into clinically meaningful language. Emphasize today's trajectory, severity, red flags, improvement or worsening, discordance between symptoms and exam, and how the new findings affect monitoring, treatment, disposition, or escalation.
+</clinical_goal>
+
+<source_rules>
+Use only information present in the source context or the new checklist findings.
+Do not invent diagnoses, test results, treatments, vitals, exam findings, or plans.
+Ignore items marked not assessed, [not assessed], left blank, containing only underscores, or otherwise not answered.
+If a checklist finding conflicts with the source context, state the discordance clearly and clinically.
+If no prior SOAP note is available, frame the presentation as an admission baseline and early trajectory rather than an overnight update.
+Do not include identifiers or PHI.
+Do not include citations, teaching commentary, or disclaimers.
+</source_rules>
+
+<internal_process>
+Before writing the final answer, silently:
+1. Build a one-sentence problem representation.
+2. Extract the clinically important new subjective findings.
+3. Extract the clinically important objective and focused exam findings.
+4. Identify the highest-impact interval changes and red flags.
+5. Determine how the findings affect today's assessment, monitoring needs, and plan.
+6. Remove unsupported, redundant, or low-yield details.
+
+Do not show this reasoning. Show only the final presentation.
+</internal_process>
+
+<output_format>
+Use plain text only.
+Use exactly these section headers:
+
+ONE-LINER AND TRAJECTORY
 SUBJECTIVE AND INTERVAL EVENTS
-OBJECTIVE AND EXAM
+OBJECTIVE AND FOCUSED EXAM
 ASSESSMENT AND PLAN
 KEY INTERVAL CHANGES
-Instructions:
-Convert the checklist findings from Label: Answer format into natural, concise medical language suitable for a medical student presenting on rounds.
-Do not simply copy checklist labels. Synthesize the findings into a coherent clinical update.
-Ignore any items marked [not assessed], not assessed, left blank, or containing only underscores ___.
-Only report information that was actually gathered or is present in the provided source context.
-Emphasize clinically significant updates, including new or worsening symptoms, improvement, stability, red flags, and discordance between symptoms and exam findings.
-When relevant, synthesize subjective findings with physical exam findings. For example, if the patient reports weakness but strength is 5/5 on exam, state that clearly.
-The assessment and plan should briefly reflect how the new interval findings affect today’s differential diagnosis, severity assessment, monitoring needs, and management plan.
-KEY INTERVAL CHANGES should contain 3 to 4 concise bullets summarizing the most important updates. This is the only section where bullets are allowed.
-Use plain text only. Do not use bold, italics, markdown tables, or special formatting.`;
 
-    function presentationPromptIntro(hasSourceNote, hasAdmissionContext) {
-      let contextLine = "Use the new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
+Write the first four sections as concise prose, not bullets.
+KEY INTERVAL CHANGES must contain 3 to 4 concise bullets and is the only section where bullets are allowed.
+Keep the entire presentation short enough to say in about 2 minutes.
+Use natural medical language suitable for a third-year medical student on rounds.
+Do not simply copy checklist labels.
+Do not use markdown tables, bold, italics, numbering, emojis, or special formatting.
+</output_format>
 
-      if (hasSourceNote && hasAdmissionContext) {
-        contextLine = "Use the de-identified source note, admission intake information, and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
-      } else if (hasSourceNote) {
-        contextLine = "Use the de-identified source note and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
-      } else if (hasAdmissionContext) {
-        contextLine = "No prior SOAP note is available. Use the admission intake information and new pre-rounding checklist findings below to create a concise 2-minute oral presentation.";
-      }
+<final_self_check>
+Before finalizing, silently verify:
+1. Every included claim is supported by the source context or checklist findings.
+2. Unassessed and blank items were ignored.
+3. The assessment and plan reflect the new findings.
+4. The presentation is concise, organized, and assessment-forward.
+5. No extra commentary appears outside the required sections.
+</final_self_check>`;
 
-      return `You are an experienced attending physician helping a third-year medical student update a rounds presentation.
-${contextLine}
-${presentationPromptInstructions}`;
+    function presentationPromptIntro() {
+      return presentationPromptInstructions;
     }
 
     const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
@@ -2137,7 +2201,18 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         return "";
       }
 
-      return `${checklistPrompt}\n\nDe-identified patient note:\n${scrubbedNote}`;
+      return `${checklistPrompt}
+
+<context_type>
+Prior SOAP note available.
+</context_type>
+
+<patient_context>
+De-identified patient note:
+${scrubbedNote}
+</patient_context>
+
+Now produce the final checklist only.`;
     }
 
     function buildAdmissionChecklistPrompt() {
@@ -2148,7 +2223,18 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         return "";
       }
 
-      return `${newAdmissionChecklistPrompt}\n\nAdmission intake information:\n${admissionContext}`;
+      return `${newAdmissionChecklistPrompt}
+
+<patient_context>
+Admission intake information:
+${admissionContext}
+</patient_context>
+
+<new_admission_focus>
+Because no prior SOAP note is available, design the checklist to establish baseline severity, clarify trajectory since presentation, identify red flags, assess response to initial treatments, and guide today's admission plan.
+</new_admission_focus>
+
+Now produce the final checklist only.`;
     }
 
     function buildPresentationPrompt() {
