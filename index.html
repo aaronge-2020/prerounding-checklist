@@ -454,6 +454,25 @@
       gap: 10px;
     }
 
+    .demo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(79, 152, 163, 0.24);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      background: rgba(79, 152, 163, 0.07);
+    }
+
+    .demo-copy {
+      flex: 1 1 220px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
     .model-status {
       min-height: 20px;
       margin: -2px 0 0;
@@ -1291,6 +1310,10 @@
             <h3 id="priorSourceTitle" class="workflow-title">Prior SOAP note</h3>
           <p class="workflow-copy">Paste the note locally. The Stanford AIMI deidentifier runs in this browser before anything is copied out.</p>
           </div>
+          <div class="demo-actions">
+            <p class="demo-copy">Try the full workflow with a synthetic endocrinology SOAP note.</p>
+            <button id="loadDemoSoapButton" class="btn btn-secondary" type="button">Load Demo Endocrinology Note</button>
+          </div>
           <label for="rawSoapInput">Raw SOAP note</label>
           <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here. It stays local in this browser."></textarea>
           <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers, so review the preview before pasting into OpenEvidence.</p>
@@ -1578,6 +1601,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       admissionModeButton: document.getElementById("admissionModeButton"),
       priorSourcePanel: document.getElementById("priorSourcePanel"),
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
+      loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
       rawSoapInput: document.getElementById("rawSoapInput"),
       modelStatus: document.getElementById("modelStatus"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
@@ -1915,6 +1939,89 @@ Before finalizing, silently verify:
     function presentationPromptIntro() {
       return presentationPromptInstructions;
     }
+
+    const demoEndocrinologySoapNote = `SYNTHETIC DEMO SOAP NOTE
+Service: Endocrinology consult
+Hospital day: 2
+Reason for consult: Hyperglycemia after DKA, transition from insulin infusion to subcutaneous insulin
+
+Subjective:
+Patient is a 58-year-old adult with type 2 diabetes mellitus, chronic kidney disease stage 3, hypertension, and hypothyroidism admitted with diabetic ketoacidosis after several days of nausea, poor oral intake, missed basal insulin, and dysuria. The patient reports feeling less nauseated today and has tolerated small amounts of breakfast. Thirst has improved but is still present. No chest pain or shortness of breath. Dysuria is improving after antibiotics. No vomiting overnight. The patient feels anxious about using insulin correctly after discharge and says glucose checks at home have been inconsistent due to running out of test strips. No new confusion, abdominal pain, or focal weakness.
+
+Objective:
+Vitals:
+Temp 37.1 C
+Heart rate 96
+Blood pressure 132/78
+Respiratory rate 18
+SpO2 97 percent on room air
+
+Intake and output:
+Oral intake improving, ate about half of breakfast
+Urine output 1.4 L over the last 24 hours
+
+Exam:
+General: Awake, conversant, mildly fatigued, no acute distress
+Mucous membranes: Mildly dry
+Cardiac: Regular rhythm, no murmurs noted
+Pulmonary: Clear to auscultation bilaterally
+Abdomen: Soft, nontender, nondistended
+Extremities: No edema, feet warm, no visible ulcers
+Neuro: Alert and oriented, no focal deficits
+
+Labs:
+Glucose trend overnight: 242, 218, 196, 184
+Sodium 136
+Potassium 3.6 after repletion
+Chloride 103
+Bicarbonate 21, improved from 12 on admission
+Anion gap 11, closed from 24 on admission
+Creatinine 1.4, baseline around 1.3
+Beta-hydroxybutyrate improved
+Hemoglobin A1c 10.8 percent
+TSH 7.2
+Free T4 0.9
+Urinalysis: Leukocyte esterase positive, nitrite positive, ketones improving
+
+Current medications:
+Insulin glargine 24 units nightly
+Insulin lispro 8 units with meals plus correction scale
+Ceftriaxone for suspected urinary tract infection
+Levothyroxine 75 mcg daily
+Lisinopril held during acute kidney injury
+Atorvastatin 40 mg nightly
+Potassium chloride repletion as needed
+
+Assessment:
+58-year-old adult with poorly controlled type 2 diabetes admitted with DKA likely triggered by missed insulin, poor oral intake, and urinary tract infection. Anion gap has closed and patient has transitioned off insulin infusion to basal-bolus insulin. Glucose remains above goal but is improving. Mild volume depletion is improving with oral intake. Potassium remains borderline after insulin therapy and repletion. CKD is near baseline. Hypothyroidism appears undertreated or affected by acute illness; patient is clinically stable without myxedema features.
+
+Plan:
+1. Diabetic ketoacidosis, resolved
+- Continue basal-bolus insulin regimen
+- Monitor premeal and bedtime glucose
+- Recheck basic metabolic panel this afternoon to ensure gap remains closed
+- Continue diabetes education before discharge
+
+2. Type 2 diabetes mellitus, poorly controlled
+- Continue glargine 24 units nightly
+- Continue lispro 8 units with meals and correction scale
+- Adjust prandial insulin if oral intake increases
+- Ensure patient has glucometer supplies, test strips, and insulin access before discharge
+
+3. Suspected urinary tract infection
+- Continue ceftriaxone pending urine culture
+- Monitor dysuria and fever curve
+
+4. Potassium management
+- Replete potassium to maintain safe level while receiving insulin
+- Repeat BMP and magnesium
+
+5. Hypothyroidism
+- Continue levothyroxine 75 mcg daily
+- Recheck thyroid studies outpatient after recovery from acute illness
+
+6. Discharge planning
+- Needs insulin teaching, sick-day guidance, medication access review, and close endocrinology or primary care follow-up`;
 
     const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
 
@@ -3501,6 +3608,17 @@ ${rawChecklist.trim()}`;
       setPromptCollapsed(false);
       elements.promptStatus.textContent = "";
       showToast("Source editing restored.");
+    });
+
+    elements.loadDemoSoapButton.addEventListener("click", () => {
+      setSourceMode("prior");
+      elements.rawSoapInput.value = demoEndocrinologySoapNote;
+      syncRawSoapNote();
+      clearScrubPreview();
+      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Click De-identify + Copy Prompt to continue the test.";
+      elements.rawSoapInput.focus();
+      prepareDeidentifierModel();
+      showToast("Demo endocrinology SOAP note loaded.");
     });
 
     admissionFields.forEach((field) => {
