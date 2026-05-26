@@ -291,6 +291,45 @@
       width: 100%;
     }
 
+    .workflow-rail {
+      position: sticky;
+      top: 0;
+      z-index: 12;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: -4px -4px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 7px;
+      background: rgba(20, 20, 19, 0.92);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(16px);
+    }
+
+    .step-pill {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 6px 8px;
+      color: var(--quiet);
+      background: transparent;
+      font-size: 0.78rem;
+      font-weight: 900;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .step-pill.is-current {
+      border-color: var(--accent-border);
+      color: #effdff;
+      background: var(--accent-soft);
+    }
+
+    .step-pill.is-complete {
+      color: var(--accent-strong);
+    }
+
     .prompt-card {
       display: grid;
       gap: 14px;
@@ -310,6 +349,34 @@
       margin: 0;
       color: var(--muted);
       font-size: 0.94rem;
+    }
+
+    .compact-summary {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(79, 152, 163, 0.32);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .compact-summary-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.96rem;
+      font-weight: 900;
+    }
+
+    .compact-summary-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .compact-summary-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .source-toggle {
@@ -387,6 +454,14 @@
       gap: 10px;
     }
 
+    .model-status {
+      min-height: 20px;
+      margin: -2px 0 0;
+      color: var(--accent-strong);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
     .scrub-review {
       display: grid;
       gap: 10px;
@@ -451,12 +526,30 @@
       font-weight: 800;
     }
 
+    .review-details {
+      margin: 0;
+      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .review-details summary {
+      min-height: 44px;
+      padding: 11px 13px;
+      color: var(--accent-strong);
+      font-size: 0.88rem;
+    }
+
     .prompt-status {
       min-height: 22px;
       margin: 0;
       color: var(--accent-strong);
       font-size: 0.9rem;
       font-weight: 800;
+    }
+
+    .open-link {
+      border: 1px solid rgba(106, 179, 189, 0.36);
+      color: var(--accent-strong);
     }
 
     .install-panel {
@@ -523,6 +616,30 @@
       font-weight: 800;
     }
 
+    .offline-checklist {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #d8d3ca;
+      font-size: 0.92rem;
+    }
+
+    .offline-checklist li {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+    }
+
+    .offline-checklist input {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
     .inline-error {
       display: none;
       margin: 14px 0 0;
@@ -537,6 +654,14 @@
 
     .inline-error.is-visible {
       display: block;
+    }
+
+    .parse-summary {
+      min-height: 22px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
     }
 
     details {
@@ -567,7 +692,7 @@
 
     .progress-panel {
       position: sticky;
-      top: max(10px, env(safe-area-inset-top));
+      top: max(72px, calc(env(safe-area-inset-top) + 62px));
       z-index: 5;
       margin: 0 -4px 16px;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -615,6 +740,48 @@
       transition: width 180ms ease;
     }
 
+    .checklist-tools {
+      display: grid;
+      gap: 10px;
+      margin-top: 13px;
+    }
+
+    .tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mini-btn {
+      min-height: 44px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 0 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.045);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .mini-btn[aria-pressed="true"],
+    .mini-btn.is-active {
+      border-color: var(--accent-border);
+      color: #effdff;
+      background: var(--accent-soft);
+    }
+
+    .section-jump {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: thin;
+    }
+
+    .section-jump .mini-btn {
+      white-space: nowrap;
+    }
+
     .checklist-list {
       display: grid;
       gap: 14px;
@@ -631,6 +798,19 @@
       font-weight: 900;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+    }
+
+    .section-label.is-hidden,
+    .question-card.is-hidden {
+      display: none;
+    }
+
+    .section-meta {
+      color: var(--quiet);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .section-label::after {
@@ -728,12 +908,97 @@
       grid-column: 1 / -1;
     }
 
+    .output-mode {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin: 0 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px;
+      background: rgba(0, 0, 0, 0.17);
+    }
+
+    .output-mode button {
+      min-height: 44px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: transparent;
+      font-weight: 900;
+    }
+
+    .output-mode button[aria-pressed="true"] {
+      color: #effdff;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px var(--accent-border);
+    }
+
     .status-line {
       min-height: 24px;
       margin: 12px 0 0;
       color: var(--accent-strong);
       font-size: 0.92rem;
       font-weight: 800;
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      left: 16px;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+      border: 1px solid rgba(106, 179, 189, 0.4);
+      border-radius: 18px;
+      padding: 12px;
+      color: var(--text);
+      background: rgba(28, 27, 25, 0.96);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(18px);
+      transform: translateY(16px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast.is-above-bar {
+      bottom: calc(var(--bottom-bar-height) + 12px + env(safe-area-inset-bottom));
+    }
+
+    .toast-message {
+      margin: 0;
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .toast-action,
+    .toast-close {
+      min-height: 44px;
+      border: 1px solid rgba(106, 179, 189, 0.34);
+      border-radius: 999px;
+      padding: 0 12px;
+      color: var(--accent-strong);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.86rem;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .toast-close {
+      min-width: 44px;
+      padding: 0;
+      color: var(--muted);
     }
 
     .sr-only {
@@ -775,6 +1040,17 @@
         grid-template-columns: 1fr;
       }
 
+      .workflow-rail {
+        gap: 4px;
+        padding: 5px;
+      }
+
+      .step-pill {
+        min-height: 44px;
+        padding: 5px 3px;
+        font-size: 0.68rem;
+      }
+
       .actions {
         display: grid;
       }
@@ -790,11 +1066,27 @@
       .chip {
         flex: 1 1 auto;
       }
+
+      .toast {
+        grid-template-columns: 1fr auto;
+      }
+
+      .toast-action {
+        grid-column: 1 / -1;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
   <main class="app-shell" aria-live="polite">
+    <nav class="workflow-rail" aria-label="Workflow progress">
+      <div id="stepSource" class="step-pill is-current">1 Source</div>
+      <div id="stepPaste" class="step-pill">2 Paste</div>
+      <div id="stepBedside" class="step-pill">3 Bedside</div>
+      <div id="stepOutput" class="step-pill">4 Output</div>
+    </nav>
+
     <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
       <header class="hero">
         <p class="eyebrow">Bedside workflow</p>
@@ -807,6 +1099,15 @@
           <p class="eyebrow">OpenEvidence</p>
           <h2 id="promptOneTitle" class="workflow-title">Checklist prompt</h2>
           <p class="workflow-copy">Choose the source, copy the checklist prompt into OpenEvidence, then paste the returned checklist below.</p>
+        </div>
+
+        <div id="promptCopiedSummary" class="compact-summary" hidden>
+          <p class="compact-summary-title">Prompt copied</p>
+          <p id="promptCopiedCopy" class="compact-summary-copy">Paste it into OpenEvidence, then paste the returned checklist below.</p>
+          <div class="compact-summary-actions">
+            <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
+            <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
+          </div>
         </div>
 
         <div class="source-toggle" role="group" aria-label="Checklist source">
@@ -822,18 +1123,24 @@
           <label for="rawSoapInput">Raw SOAP note</label>
           <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here. It stays local in this browser."></textarea>
           <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers, so review the preview before pasting into OpenEvidence.</p>
+          <p id="modelStatus" class="model-status" role="status" aria-live="polite"></p>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
               <p class="review-title">Scrubbed preview</p>
               <p id="scrubSummary" class="review-count">0 redactions</p>
             </div>
+            <ul id="scrubCounts" class="flag-list" aria-label="Redaction counts"></ul>
             <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note</label>
             <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note preview..."></textarea>
-            <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
+            <details class="review-details">
+              <summary>Review details</summary>
+              <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
+            </details>
           </div>
           <div class="prompt-actions">
             <button id="scrubAndCopyButton" class="btn btn-primary" type="button">De-identify + Copy Prompt</button>
             <button id="scrubPreviewButton" class="btn btn-secondary" type="button">De-identify Preview</button>
+            <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
         </section>
 
@@ -889,6 +1196,7 @@
           </div>
           <div class="prompt-actions">
             <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy Admission Prompt</button>
+            <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
         </section>
 
@@ -898,13 +1206,15 @@
       <div class="surface paste-card">
         <label for="checklistInput">Checklist from OpenEvidence</label>
         <textarea id="checklistInput" class="paste-input" spellcheck="false" placeholder="Paste the OpenEvidence checklist here..."></textarea>
+        <p id="parseSummary" class="parse-summary" role="status" aria-live="polite"></p>
         <p id="pasteError" class="inline-error" role="alert"></p>
         <div class="actions">
           <button id="buildButton" class="btn btn-primary btn-full" type="button">Build Checklist</button>
-          <button id="installGuideButton" class="btn btn-secondary" type="button">Tablet Setup</button>
+          <button id="installGuideButton" class="btn btn-secondary" type="button">Install / Offline</button>
         </div>
 
-        <section id="installPanel" class="install-panel" aria-labelledby="installTitle" tabindex="-1">
+        <details id="installPanel" class="install-panel" aria-labelledby="installTitle" tabindex="-1">
+          <summary>Install / Offline</summary>
           <div>
             <p id="installTitle" class="install-title">Install or save for tablet use</p>
             <p id="platformHint" class="install-copy">Open this app on the tablet, then use the matching option below.</p>
@@ -933,8 +1243,14 @@
               </ol>
             </div>
           </div>
+          <ul class="offline-checklist" aria-label="Offline readiness checklist">
+            <li><input id="offlineHomeScreen" type="checkbox" disabled><label for="offlineHomeScreen">Open from the Home Screen for the fastest bedside launch.</label></li>
+            <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Prepare the de-ID model once while online before relying on it offline.</label></li>
+            <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
+          </ul>
+          <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist fallback.</p>
           <p id="installStatus" class="install-status" role="status" aria-live="polite"></p>
-        </section>
+        </details>
 
         <details>
           <summary>Expected input format</summary>
@@ -968,6 +1284,14 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
         <div class="progress-track" aria-hidden="true">
           <div id="progressFill" class="progress-fill"></div>
         </div>
+        <div class="checklist-tools">
+          <div class="tool-row" role="group" aria-label="Checklist filters">
+            <button id="showAllButton" class="mini-btn is-active" type="button" aria-pressed="true">All</button>
+            <button id="showUnansweredButton" class="mini-btn" type="button" aria-pressed="false">Unanswered</button>
+            <button id="nextUnansweredButton" class="mini-btn" type="button">Next unanswered</button>
+          </div>
+          <div id="sectionJump" class="section-jump" aria-label="Section jumps"></div>
+        </div>
       </div>
 
       <div id="checklistList" class="checklist-list"></div>
@@ -988,17 +1312,28 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       </header>
 
       <div class="surface output-card">
+        <div class="output-mode" role="group" aria-label="Output mode">
+          <button id="assessedOnlyButton" type="button" aria-pressed="true">Assessed only</button>
+          <button id="fullOutputButton" type="button" aria-pressed="false">Full with not assessed</button>
+        </div>
         <label for="outputText">Compiled findings</label>
         <textarea id="outputText" class="output-box" readonly></textarea>
         <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
         <div class="output-actions">
           <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy Prompt 2 + Findings</button>
+          <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           <button id="copyButton" class="btn btn-secondary" type="button">Copy Findings Only</button>
           <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
           <button id="newButton" class="btn btn-quiet" type="button">New Checklist</button>
         </div>
       </div>
     </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true">
+      <p id="toastMessage" class="toast-message"></p>
+      <button id="toastAction" class="toast-action" type="button" hidden></button>
+      <button id="toastClose" class="toast-close" type="button" aria-label="Dismiss notification">x</button>
+    </div>
   </main>
 
   <script type="module">
@@ -1016,27 +1351,44 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       scrubbedNote: "",
       scrubResult: null,
       admission: {},
+      promptCollapsed: false,
+      checklistFilter: "all",
+      activeSection: "all",
+      outputMode: "assessed",
+      lastClearSnapshot: null,
+      newChecklistConfirming: false,
+      modelReady: false,
       compiledText: ""
     };
 
     const elements = {
+      stepSource: document.getElementById("stepSource"),
+      stepPaste: document.getElementById("stepPaste"),
+      stepBedside: document.getElementById("stepBedside"),
+      stepOutput: document.getElementById("stepOutput"),
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
       outputScreen: document.getElementById("outputScreen"),
+      promptCopiedSummary: document.getElementById("promptCopiedSummary"),
+      promptCopiedCopy: document.getElementById("promptCopiedCopy"),
+      editSourceButton: document.getElementById("editSourceButton"),
       priorModeButton: document.getElementById("priorModeButton"),
       admissionModeButton: document.getElementById("admissionModeButton"),
       priorSourcePanel: document.getElementById("priorSourcePanel"),
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
       rawSoapInput: document.getElementById("rawSoapInput"),
+      modelStatus: document.getElementById("modelStatus"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
       scrubSummary: document.getElementById("scrubSummary"),
+      scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
       promptStatus: document.getElementById("promptStatus"),
       checklistInput: document.getElementById("checklistInput"),
+      parseSummary: document.getElementById("parseSummary"),
       pasteError: document.getElementById("pasteError"),
       buildButton: document.getElementById("buildButton"),
       installGuideButton: document.getElementById("installGuideButton"),
@@ -1047,17 +1399,30 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       downloadButton: document.getElementById("downloadButton"),
       platformHint: document.getElementById("platformHint"),
       installStatus: document.getElementById("installStatus"),
+      offlineHomeScreen: document.getElementById("offlineHomeScreen"),
+      offlineModelReady: document.getElementById("offlineModelReady"),
+      offlineHtmlReady: document.getElementById("offlineHtmlReady"),
       checklistList: document.getElementById("checklistList"),
       progressCount: document.getElementById("progressCount"),
       progressFill: document.getElementById("progressFill"),
+      showAllButton: document.getElementById("showAllButton"),
+      showUnansweredButton: document.getElementById("showUnansweredButton"),
+      nextUnansweredButton: document.getElementById("nextUnansweredButton"),
+      sectionJump: document.getElementById("sectionJump"),
       clearButton: document.getElementById("clearButton"),
       generateButton: document.getElementById("generateButton"),
       outputText: document.getElementById("outputText"),
+      assessedOnlyButton: document.getElementById("assessedOnlyButton"),
+      fullOutputButton: document.getElementById("fullOutputButton"),
       copyButton: document.getElementById("copyButton"),
       copyPresentationPromptButton: document.getElementById("copyPresentationPromptButton"),
       editButton: document.getElementById("editButton"),
       newButton: document.getElementById("newButton"),
-      copyStatus: document.getElementById("copyStatus")
+      copyStatus: document.getElementById("copyStatus"),
+      toast: document.getElementById("toast"),
+      toastMessage: document.getElementById("toastMessage"),
+      toastAction: document.getElementById("toastAction"),
+      toastClose: document.getElementById("toastClose")
     };
 
     const admissionFields = [
@@ -1074,6 +1439,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
     ];
 
     const hostedAppUrl = "https://aaronge-2020.github.io/prerounding-checklist/";
+    const openEvidenceUrl = "https://www.openevidence.com/";
+    const sessionKey = "preRoundChecklistSessionV2";
     const deidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
     const deidentifierDtype = "q8";
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
@@ -1212,6 +1579,133 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     elements.checklistInput.value = "";
     elements.checklistInput.dataset.example = exampleChecklist;
 
+    function hasChecklistState() {
+      return state.sections.length > 0 || Object.values(state.answers).some(Boolean) || Object.values(state.notes).some((value) => value && value.trim());
+    }
+
+    function hasEnteredData() {
+      return hasChecklistState() ||
+        elements.checklistInput.value.trim() ||
+        elements.rawSoapInput.value.trim() ||
+        elements.scrubbedNoteInput.value.trim() ||
+        admissionFields.some((field) => field.element.value.trim());
+    }
+
+    function showToast(message, options = {}) {
+      window.clearTimeout(showToast.timer);
+      elements.toastMessage.textContent = message;
+      elements.toast.classList.toggle("is-above-bar", elements.checklistScreen.classList.contains("is-active"));
+
+      if (options.actionLabel && typeof options.onAction === "function") {
+        elements.toastAction.hidden = false;
+        elements.toastAction.textContent = options.actionLabel;
+        elements.toastAction.onclick = () => {
+          options.onAction();
+          hideToast();
+        };
+      } else if (options.actionLabel && options.actionUrl) {
+        elements.toastAction.hidden = false;
+        elements.toastAction.textContent = options.actionLabel;
+        elements.toastAction.onclick = () => {
+          window.open(options.actionUrl, "_blank", "noopener");
+          hideToast();
+        };
+      } else {
+        elements.toastAction.hidden = true;
+        elements.toastAction.onclick = null;
+      }
+
+      elements.toast.classList.add("is-visible");
+      showToast.timer = window.setTimeout(hideToast, options.duration || 3800);
+    }
+
+    function hideToast() {
+      elements.toast.classList.remove("is-visible");
+    }
+
+    function updateStepRail(activeStep) {
+      const hasPrompt = state.promptCollapsed || state.scrubbedNote || formatAdmissionContext();
+      const hasChecklist = state.sections.length > 0;
+      const hasOutput = Boolean(state.compiledText);
+      const steps = [
+        { element: elements.stepSource, key: "source", complete: Boolean(hasPrompt) },
+        { element: elements.stepPaste, key: "paste", complete: hasChecklist },
+        { element: elements.stepBedside, key: "bedside", complete: hasOutput },
+        { element: elements.stepOutput, key: "output", complete: false }
+      ];
+
+      steps.forEach((step) => {
+        step.element.classList.toggle("is-current", step.key === activeStep);
+        step.element.classList.toggle("is-complete", step.complete && step.key !== activeStep);
+      });
+    }
+
+    function setPromptCollapsed(isCollapsed, message = "Paste it into OpenEvidence, then paste the returned checklist below.") {
+      state.promptCollapsed = isCollapsed;
+      elements.promptCopiedSummary.hidden = !isCollapsed;
+      elements.promptCopiedCopy.textContent = message;
+      elements.priorModeButton.parentElement.hidden = isCollapsed;
+      elements.priorSourcePanel.hidden = isCollapsed;
+      elements.admissionSourcePanel.hidden = isCollapsed;
+      updateStepRail("paste");
+    }
+
+    function setOutputMode(mode) {
+      state.outputMode = mode;
+      const isAssessed = mode === "assessed";
+      elements.assessedOnlyButton.setAttribute("aria-pressed", isAssessed ? "true" : "false");
+      elements.fullOutputButton.setAttribute("aria-pressed", isAssessed ? "false" : "true");
+      state.compiledText = compileFindings(mode);
+      elements.outputText.value = state.compiledText;
+      saveChecklistSession();
+    }
+
+    function safeStorageSet(key, value) {
+      try {
+        window.sessionStorage.setItem(key, value);
+      } catch (error) {
+        return false;
+      }
+      return true;
+    }
+
+    function safeStorageGet(key) {
+      try {
+        return window.sessionStorage.getItem(key);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function safeStorageRemove(key) {
+      try {
+        window.sessionStorage.removeItem(key);
+      } catch (error) {
+        return false;
+      }
+      return true;
+    }
+
+    function saveChecklistSession() {
+      if (!state.sections.length) {
+        safeStorageRemove(sessionKey);
+        return;
+      }
+
+      safeStorageSet(sessionKey, JSON.stringify({
+        sections: state.sections,
+        answers: state.answers,
+        notes: state.notes,
+        checklistText: elements.checklistInput.value,
+        outputMode: state.outputMode,
+        compiledText: state.compiledText
+      }));
+    }
+
+    function clearChecklistSession() {
+      safeStorageRemove(sessionKey);
+    }
+
     function getAppLink() {
       if (window.location.protocol === "http:" || window.location.protocol === "https:") {
         return window.location.href.split("#")[0];
@@ -1268,7 +1762,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       setInstallStatus("Link copied.");
     }
 
-    async function copyText(text, statusElement, successMessage) {
+    async function copyText(text, statusElement, successMessage, toastOptions = {}) {
       try {
         await navigator.clipboard.writeText(text);
       } catch (error) {
@@ -1285,6 +1779,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         scratch.remove();
       }
       statusElement.textContent = successMessage;
+      showToast(successMessage, toastOptions);
     }
 
     function setSourceMode(mode) {
@@ -1307,6 +1802,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       elements.scrubbedNoteInput.value = "";
       elements.scrubReview.hidden = true;
       elements.scrubSummary.textContent = "0 redactions";
+      elements.scrubCounts.innerHTML = "";
       elements.scrubFlags.innerHTML = "";
     }
 
@@ -1515,13 +2011,34 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
 
     async function loadDeidentifierPipeline() {
       if (!deidentifierPipelinePromise) {
-        elements.promptStatus.textContent = "Loading Stanford AIMI deidentifier model. First load can take a minute.";
+        elements.modelStatus.textContent = "Preparing local de-ID model. First load can take a minute.";
+        elements.offlineModelReady.checked = false;
         deidentifierPipelinePromise = pipeline("token-classification", deidentifierModelId, {
           dtype: deidentifierDtype
+        }).then((loadedPipeline) => {
+          state.modelReady = true;
+          elements.modelStatus.textContent = "Local de-ID model ready.";
+          elements.offlineModelReady.checked = true;
+          return loadedPipeline;
+        }).catch((error) => {
+          deidentifierPipelinePromise = null;
+          state.modelReady = false;
+          elements.modelStatus.textContent = "Could not prepare local de-ID model.";
+          elements.offlineModelReady.checked = false;
+          throw error;
         });
       }
 
       return deidentifierPipelinePromise;
+    }
+
+    function prepareDeidentifierModel() {
+      if (!deidentifierPipelinePromise) {
+        showToast("Preparing local de-ID model.");
+      }
+      loadDeidentifierPipeline().catch((error) => {
+        console.error(error);
+      });
     }
 
     function setScrubBusy(isBusy, primaryLabel) {
@@ -1553,12 +2070,19 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       elements.scrubReview.hidden = false;
       elements.scrubbedNoteInput.value = result.text;
       elements.scrubSummary.textContent = `${result.redactionTotal} redaction${result.redactionTotal === 1 ? "" : "s"}`;
+      elements.scrubCounts.innerHTML = "";
       elements.scrubFlags.innerHTML = "";
 
       const countLabels = Object.entries(result.counts).map(([label, value]) => `${label}: ${value}`);
       const flags = result.flags.length ? result.flags : ["No obvious leftover identifiers flagged. Review still required."];
 
-      [...countLabels, ...flags].forEach((flag) => {
+      countLabels.forEach((flag) => {
+        const item = document.createElement("li");
+        item.textContent = flag;
+        elements.scrubCounts.appendChild(item);
+      });
+
+      flags.forEach((flag) => {
         const item = document.createElement("li");
         item.textContent = flag;
         elements.scrubFlags.appendChild(item);
@@ -1591,6 +2115,9 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       state.scrubbedNote = result.text;
       renderScrubResult(result);
       elements.promptStatus.textContent = "De-identified preview ready. Review before pasting into OpenEvidence.";
+      requestAnimationFrame(() => {
+        elements.scrubReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
       return result;
     }
 
@@ -1655,12 +2182,54 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       screens.forEach((screen) => {
         screen.classList.toggle("is-active", screen.id === name);
       });
+      if (name === "checklistScreen") {
+        updateStepRail("bedside");
+      } else if (name === "outputScreen") {
+        updateStepRail("output");
+      } else {
+        updateStepRail(state.promptCollapsed ? "paste" : "source");
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function setError(message) {
       elements.pasteError.textContent = message;
       elements.pasteError.classList.toggle("is-visible", Boolean(message));
+    }
+
+    function setParseSummary(sections, prefix = "Detected") {
+      if (!sections || !sections.length) {
+        elements.parseSummary.textContent = "";
+        return;
+      }
+
+      const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
+      const chipCount = sections.reduce((total, section) => total + section.items.filter((item) => item.options.length > 0).length, 0);
+      const noteCount = sections.reduce((total, section) => total + section.items.filter((item) => item.hasNotes).length, 0);
+      elements.parseSummary.textContent = `${prefix}: ${sections.length} sections, ${itemCount} items, ${chipCount} chip questions, ${noteCount} note fields.`;
+    }
+
+    function normalizeChecklistText(rawText) {
+      return rawText
+        .replace(/[“”]/g, "\"")
+        .replace(/[‘’]/g, "'")
+        .replace(/[–—]/g, "-")
+        .split(/\r?\n/)
+        .map((line) => {
+          const cleaned = line
+            .trim()
+            .replace(/^#{1,6}\s+/, "")
+            .replace(/^[>*•-]\s+/, "")
+            .replace(/^\d+[\.)]\s+/, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+          const colonIndex = cleaned.indexOf(":");
+          if (colonIndex === -1) {
+            return cleaned;
+          }
+          return `${cleaned.slice(0, colonIndex).trim()}: ${cleaned.slice(colonIndex + 1).replace(/\s*\/\s*/g, " / ").replace(/\s{2,}/g, " ").trim()}`;
+        })
+        .join("\n");
     }
 
     function normalizeHeader(line) {
@@ -1726,6 +2295,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     }
 
     function parseChecklist(rawText) {
+      rawText = normalizeChecklistText(rawText);
       const lines = [];
       let blockId = 0;
 
@@ -1803,6 +2373,21 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       }, 0);
     }
 
+    function isItemAnswered(item) {
+      const answer = (state.answers[item.id] || "").trim();
+      const note = (state.notes[item.id] || "").trim();
+      return item.options.length > 0 ? Boolean(answer) : Boolean(note);
+    }
+
+    function sectionStats(section) {
+      const countable = section.items.filter((item) => item.options.length > 0);
+      const answered = countable.filter((item) => state.answers[item.id]).length;
+      return {
+        answered,
+        total: countable.length
+      };
+    }
+
     function updateProgress() {
       const total = countChipQuestions();
       const answered = state.sections.reduce((sum, section) => {
@@ -1811,6 +2396,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       const percentage = total ? Math.round((answered / total) * 100) : 0;
       elements.progressCount.textContent = `${answered} of ${total} answered`;
       elements.progressFill.style.width = `${percentage}%`;
+      updateStepRail(elements.checklistScreen.classList.contains("is-active") ? "bedside" : "paste");
     }
 
     function autoResize(textarea) {
@@ -1818,18 +2404,86 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
 
+    function renderSectionJump() {
+      elements.sectionJump.innerHTML = "";
+
+      const allButton = document.createElement("button");
+      allButton.type = "button";
+      allButton.className = `mini-btn${state.activeSection === "all" ? " is-active" : ""}`;
+      allButton.textContent = "All sections";
+      allButton.addEventListener("click", () => {
+        state.activeSection = "all";
+        renderChecklist();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      elements.sectionJump.appendChild(allButton);
+
+      state.sections.forEach((section, index) => {
+        const stats = sectionStats(section);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `mini-btn${state.activeSection === section.title ? " is-active" : ""}`;
+        button.textContent = stats.total ? `${section.title} ${stats.answered}/${stats.total}` : section.title;
+        button.addEventListener("click", () => {
+          state.activeSection = section.title;
+          renderChecklist();
+          requestAnimationFrame(() => {
+            const target = document.getElementById(`section-${index}`);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        });
+        elements.sectionJump.appendChild(button);
+      });
+    }
+
+    function setChecklistFilter(filter) {
+      state.checklistFilter = filter;
+      elements.showAllButton.setAttribute("aria-pressed", filter === "all" ? "true" : "false");
+      elements.showUnansweredButton.setAttribute("aria-pressed", filter === "unanswered" ? "true" : "false");
+      elements.showAllButton.classList.toggle("is-active", filter === "all");
+      elements.showUnansweredButton.classList.toggle("is-active", filter === "unanswered");
+      renderChecklist();
+    }
+
+    function findNextUnansweredCard() {
+      return Array.from(document.querySelectorAll(".question-card:not(.is-hidden)")).find((card) => {
+        return card.dataset.answered === "false";
+      });
+    }
+
     function renderChecklist() {
       elements.checklistList.innerHTML = "";
+      renderSectionJump();
 
-      state.sections.forEach((section) => {
+      state.sections.forEach((section, sectionIndex) => {
+        const stats = sectionStats(section);
         const sectionLabel = document.createElement("div");
         sectionLabel.className = "section-label";
+        sectionLabel.id = `section-${sectionIndex}`;
+        sectionLabel.dataset.section = section.title;
         sectionLabel.textContent = section.title;
+        if (stats.total) {
+          const meta = document.createElement("span");
+          meta.className = "section-meta";
+          meta.textContent = `${stats.answered}/${stats.total}`;
+          sectionLabel.appendChild(meta);
+        }
         elements.checklistList.appendChild(sectionLabel);
 
+        let visibleItems = 0;
         section.items.forEach((item) => {
+          const answered = isItemAnswered(item);
+          const hiddenByFilter = state.checklistFilter === "unanswered" && answered;
+          const hiddenBySection = state.activeSection !== "all" && state.activeSection !== section.title;
           const card = document.createElement("article");
           card.className = "surface question-card";
+          card.classList.toggle("is-hidden", hiddenByFilter || hiddenBySection);
+          card.dataset.itemId = item.id;
+          card.dataset.section = section.title;
+          card.dataset.answered = answered ? "true" : "false";
+          visibleItems += hiddenByFilter || hiddenBySection ? 0 : 1;
 
           const title = document.createElement("h3");
           title.className = "question-title";
@@ -1852,6 +2506,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
                 state.answers[item.id] = state.answers[item.id] === option ? "" : option;
                 renderChecklist();
                 updateProgress();
+                saveChecklistSession();
               });
               group.appendChild(chip);
             });
@@ -1874,6 +2529,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
             noteInput.addEventListener("input", () => {
               state.notes[item.id] = noteInput.value;
               autoResize(noteInput);
+              updateProgress();
+              saveChecklistSession();
             });
 
             card.appendChild(noteLabel);
@@ -1883,16 +2540,19 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
 
           elements.checklistList.appendChild(card);
         });
+
+        sectionLabel.classList.toggle("is-hidden", visibleItems === 0);
       });
 
       updateProgress();
+      saveChecklistSession();
     }
 
     function selectedAnswerNeedsSpace(answer) {
       return /(?:\b(?:at|to|with|on|in|for|of|by)|[,;:/(-])\s*$/i.test(answer.trim());
     }
 
-    function formatItem(item) {
+    function formatItem(item, mode = "full") {
       const answer = (state.answers[item.id] || "").trim();
       const note = (state.notes[item.id] || "").trim();
 
@@ -1907,28 +2567,61 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         if (note) {
           return `${item.label}: ${note}`;
         }
+        if (mode === "assessed") {
+          return "";
+        }
         return `${item.label}: not assessed`;
       }
 
       if (item.options.length) {
+        if (!answer && mode === "assessed") {
+          return "";
+        }
         return `${item.label}: ${answer || "not assessed"}`;
       }
 
+      if (!note && mode === "assessed") {
+        return "";
+      }
       return `${item.label}: ${note || "not assessed"}`;
     }
 
-    function compileFindings() {
+    function compileFindings(mode = state.outputMode) {
       return state.sections.map((section) => {
         const lines = [section.title];
-        section.items.forEach((item) => lines.push(formatItem(item)));
+        section.items.forEach((item) => {
+          const line = formatItem(item, mode);
+          if (line) {
+            lines.push(line);
+          }
+        });
+        if (mode === "assessed" && lines.length === 1) {
+          return "";
+        }
         return lines.join("\n");
-      }).join("\n\n");
+      }).filter(Boolean).join("\n\n");
     }
 
     function clearAll() {
+      state.lastClearSnapshot = {
+        answers: { ...state.answers },
+        notes: { ...state.notes }
+      };
       state.answers = {};
       state.notes = {};
       renderChecklist();
+      showToast("Checklist cleared.", {
+        actionLabel: "Undo",
+        onAction: () => {
+          if (state.lastClearSnapshot) {
+            state.answers = { ...state.lastClearSnapshot.answers };
+            state.notes = { ...state.lastClearSnapshot.notes };
+            state.lastClearSnapshot = null;
+            renderChecklist();
+            showToast("Answers restored.");
+          }
+        }
+      });
     }
 
     function resetApp() {
@@ -1940,15 +2633,26 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       state.scrubbedNote = "";
       state.scrubResult = null;
       state.admission = {};
+      state.promptCollapsed = false;
+      state.checklistFilter = "all";
+      state.activeSection = "all";
+      state.outputMode = "assessed";
+      state.lastClearSnapshot = null;
+      state.newChecklistConfirming = false;
       state.compiledText = "";
       elements.outputText.value = "";
       elements.copyStatus.textContent = "";
       elements.promptStatus.textContent = "";
+      elements.parseSummary.textContent = "";
       elements.rawSoapInput.value = "";
       admissionFields.forEach((field) => {
         field.element.value = "";
       });
       clearScrubPreview();
+      clearChecklistSession();
+      setPromptCollapsed(false);
+      setOutputMode("assessed");
+      setChecklistFilter("all");
       setSourceMode("prior");
       elements.checklistInput.value = "";
       setError("");
@@ -1956,14 +2660,32 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       elements.checklistInput.focus();
     }
 
-    elements.buildButton.addEventListener("click", () => {
+    function updateParsePreview() {
+      const rawText = elements.checklistInput.value.trim();
+      if (!rawText) {
+        setParseSummary(null);
+        return null;
+      }
+      const sections = parseChecklist(rawText);
+      const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
+      if (itemCount) {
+        setParseSummary(sections);
+      } else {
+        setParseSummary(null);
+      }
+      return { sections, itemCount };
+    }
+
+    function tryBuildChecklist(options = {}) {
       const rawText = elements.checklistInput.value.trim();
       setError("");
 
       if (!rawText) {
-        setError("Paste a checklist first.");
-        elements.checklistInput.focus();
-        return;
+        if (!options.auto) {
+          setError("Paste a checklist first.");
+          elements.checklistInput.focus();
+        }
+        return false;
       }
 
       const sections = parseChecklist(rawText);
@@ -1971,14 +2693,63 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
 
       if (!itemCount) {
         setError("I could not find checklist items. Try lines like “Breathing: Normal / A little hard / Very hard” or “Respiratory rate: __”.");
-        return;
+        setParseSummary(null);
+        if (options.auto) {
+          showToast("Checklist was pasted, but I could not find usable items.");
+        }
+        return false;
       }
 
+      elements.checklistInput.value = normalizeChecklistText(rawText);
       state.sections = sections;
       state.answers = {};
       state.notes = {};
+      state.activeSection = "all";
+      state.checklistFilter = "all";
+      state.lastClearSnapshot = null;
+      setChecklistFilter("all");
+      setParseSummary(sections, "Built");
       renderChecklist();
       showScreen("checklistScreen");
+      saveChecklistSession();
+      showToast("Checklist built.");
+      return true;
+    }
+
+    function restoreChecklistSession() {
+      const saved = safeStorageGet(sessionKey);
+      if (!saved) {
+        return false;
+      }
+
+      try {
+        const parsed = JSON.parse(saved);
+        if (!Array.isArray(parsed.sections) || !parsed.sections.length) {
+          return false;
+        }
+
+        state.sections = parsed.sections;
+        state.answers = parsed.answers || {};
+        state.notes = parsed.notes || {};
+        state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
+        state.compiledText = parsed.compiledText || "";
+        elements.checklistInput.value = parsed.checklistText || "";
+        setOutputMode(state.outputMode);
+        setParseSummary(state.sections, "Recovered");
+        renderChecklist();
+        showToast("Recovered checklist from this browser session.", {
+          actionLabel: "Resume",
+          onAction: () => showScreen("checklistScreen")
+        });
+        return true;
+      } catch (error) {
+        clearChecklistSession();
+        return false;
+      }
+    }
+
+    elements.buildButton.addEventListener("click", () => {
+      tryBuildChecklist();
     });
 
     elements.priorModeButton.addEventListener("click", () => {
@@ -1993,12 +2764,35 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
+      if (state.rawSoapNote.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.rawSoapInput.addEventListener("focus", prepareDeidentifierModel);
+
+    elements.rawSoapInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
     });
 
     elements.scrubbedNoteInput.addEventListener("input", syncScrubbedNote);
 
+    elements.editSourceButton.addEventListener("click", () => {
+      setPromptCollapsed(false);
+      elements.promptStatus.textContent = "";
+      showToast("Source editing restored.");
+    });
+
     admissionFields.forEach((field) => {
       field.element.addEventListener("input", syncAdmissionFields);
+    });
+
+    elements.checklistInput.addEventListener("input", updateParsePreview);
+
+    elements.checklistInput.addEventListener("paste", () => {
+      window.setTimeout(() => {
+        tryBuildChecklist({ auto: true });
+      }, 0);
     });
 
     elements.scrubPreviewButton.addEventListener("click", async () => {
@@ -2013,6 +2807,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       try {
         const prompt = await buildPriorChecklistPrompt();
         if (prompt) {
+          setPromptCollapsed(true, "Paste it into OpenEvidence, then paste the returned checklist below.");
+          elements.checklistInput.focus();
           await copyText(prompt, elements.promptStatus, "De-identified checklist prompt copied.");
         }
       } catch (error) {
@@ -2023,11 +2819,14 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
     elements.copyAdmissionPromptButton.addEventListener("click", async () => {
       const prompt = buildAdmissionChecklistPrompt();
       if (prompt) {
+        setPromptCollapsed(true, "Paste it into OpenEvidence, then paste the returned checklist below.");
+        elements.checklistInput.focus();
         await copyText(prompt, elements.promptStatus, "Admission checklist prompt copied.");
       }
     });
 
     elements.installGuideButton.addEventListener("click", () => {
+      elements.installPanel.open = true;
       elements.installPanel.scrollIntoView({ behavior: "smooth", block: "start" });
       elements.installPanel.focus({ preventScroll: true });
     });
@@ -2090,20 +2889,54 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      elements.offlineHtmlReady.checked = true;
       setInstallStatus("Downloaded pre-rounding-checklist.html.");
+      showToast("HTML backup downloaded.");
     });
 
     elements.clearButton.addEventListener("click", clearAll);
 
+    elements.showAllButton.addEventListener("click", () => {
+      setChecklistFilter("all");
+    });
+
+    elements.showUnansweredButton.addEventListener("click", () => {
+      setChecklistFilter("unanswered");
+    });
+
+    elements.nextUnansweredButton.addEventListener("click", () => {
+      const nextCard = findNextUnansweredCard();
+      if (nextCard) {
+        nextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        showToast("Everything visible is answered.");
+      }
+    });
+
     elements.generateButton.addEventListener("click", () => {
-      state.compiledText = compileFindings();
+      state.outputMode = "assessed";
+      state.compiledText = compileFindings("assessed");
       elements.outputText.value = state.compiledText;
       elements.copyStatus.textContent = "";
+      setOutputMode("assessed");
+      saveChecklistSession();
       showScreen("outputScreen");
     });
 
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
-      await copyText(buildPresentationPrompt(), elements.copyStatus, "Prompt 2 and findings copied.");
+      await copyText(buildPresentationPrompt(), elements.copyStatus, "Prompt copied. Open OpenEvidence to paste.", {
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000
+      });
+    });
+
+    elements.assessedOnlyButton.addEventListener("click", () => {
+      setOutputMode("assessed");
+    });
+
+    elements.fullOutputButton.addEventListener("click", () => {
+      setOutputMode("full");
     });
 
     elements.copyButton.addEventListener("click", async () => {
@@ -2120,7 +2953,28 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
       showScreen("checklistScreen");
     });
 
-    elements.newButton.addEventListener("click", resetApp);
+    elements.newButton.addEventListener("click", () => {
+      if (!state.newChecklistConfirming && hasEnteredData()) {
+        state.newChecklistConfirming = true;
+        elements.newButton.textContent = "Tap Again to Reset";
+        showToast("Tap New Checklist again to reset everything.");
+        window.setTimeout(() => {
+          state.newChecklistConfirming = false;
+          elements.newButton.textContent = "New Checklist";
+        }, 5000);
+        return;
+      }
+
+      elements.newButton.textContent = "New Checklist";
+      resetApp();
+      showToast("Ready for a new checklist.");
+    });
+
+    elements.toastClose.addEventListener("click", hideToast);
+
+    const restoredSession = restoreChecklistSession();
+    updateStepRail(restoredSession ? "paste" : "source");
+    elements.offlineHomeScreen.checked = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   </script>
 </body>
 </html>
