@@ -793,11 +793,49 @@
       align-items: center;
       gap: 10px;
       margin: 18px 2px 0;
+      min-height: 44px;
       color: var(--accent-strong);
       font-size: 0.76rem;
       font-weight: 900;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+    }
+
+    .section-toggle {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 44px;
+      max-width: 100%;
+      padding: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      letter-spacing: inherit;
+      text-align: left;
+      text-transform: inherit;
+    }
+
+    .section-chevron {
+      display: grid;
+      place-items: center;
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(106, 179, 189, 0.26);
+      border-radius: 999px;
+      color: var(--accent-strong);
+      background: rgba(106, 179, 189, 0.08);
+      font-size: 0.74rem;
+      line-height: 1;
+    }
+
+    .section-label.is-collapsed .section-chevron {
+      transform: rotate(-90deg);
+    }
+
+    .section-name {
+      overflow-wrap: anywhere;
     }
 
     .section-label.is-hidden,
@@ -1289,6 +1327,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
             <button id="showAllButton" class="mini-btn is-active" type="button" aria-pressed="true">All</button>
             <button id="showUnansweredButton" class="mini-btn" type="button" aria-pressed="false">Unanswered</button>
             <button id="nextUnansweredButton" class="mini-btn" type="button">Next unanswered</button>
+            <button id="expandAllButton" class="mini-btn" type="button">Expand all</button>
+            <button id="collapseExamButton" class="mini-btn" type="button">Collapse exam</button>
           </div>
           <div id="sectionJump" class="section-jump" aria-label="Section jumps"></div>
         </div>
@@ -1354,6 +1394,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       promptCollapsed: false,
       checklistFilter: "all",
       activeSection: "all",
+      collapsedSections: {},
       outputMode: "assessed",
       lastClearSnapshot: null,
       newChecklistConfirming: false,
@@ -1408,6 +1449,8 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __</pre>
       showAllButton: document.getElementById("showAllButton"),
       showUnansweredButton: document.getElementById("showUnansweredButton"),
       nextUnansweredButton: document.getElementById("nextUnansweredButton"),
+      expandAllButton: document.getElementById("expandAllButton"),
+      collapseExamButton: document.getElementById("collapseExamButton"),
       sectionJump: document.getElementById("sectionJump"),
       clearButton: document.getElementById("clearButton"),
       generateButton: document.getElementById("generateButton"),
@@ -1479,17 +1522,24 @@ Do not show this reasoning. Show only the final checklist.
 <content_rules>
 For the bedside question checklist:
 Use patient-friendly language with no medical jargon.
-Write each bedside item as a direct question or short prompt the student can say out loud to the patient.
+Write each bedside item as a direct history question the student can say out loud to the patient.
+Every bedside item label must end with a question mark before the colon.
 Do not write shorthand clinical label fragments for bedside items.
-Do not put exam maneuvers, commands, or clinician-observed findings in the bedside question checklist.
+Do not put exam maneuvers, commands, performance tests, or clinician-observed findings in the bedside question checklist.
+Never ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out the tongue, follow your finger, or perform an exam maneuver in the bedside question checklist. Those belong only in the targeted physical exam checklist.
 Focus on what the patient can report: symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, and concerns.
-Use 8 to 12 bedside questions when clinically supportable. If the context is sparse, still include the most relevant patient-specific questions needed to establish baseline and trajectory.
+Use 6 to 8 bedside questions. If more seem useful, choose the highest-yield questions rather than exceeding 8.
 When the patient might answer outside the choices, include Other ___ as the final option.
 
 For the targeted physical exam checklist:
 Use concise clinical labels appropriate for a medical student.
 Focus on focused exam findings, vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
-Use 8 to 16 exam items when clinically supportable.
+Use 10 to 14 exam items total. Never exceed 16 exam items.
+Organize exam items by exam system and exam type using focused section headers. Use relevant headers such as VITAL SIGNS AND SUPPORT, RESPIRATORY EXAM, MUSCULOSKELETAL STRENGTH EXAM, NEUROLOGIC REFLEX EXAM, NEUROLOGIC SENSORY EXAM, BULBAR CRANIAL NERVE EXAM, ABDOMINAL EXAM, VOLUME EXAM, SKIN LINES AND WOUNDS, or FUNCTIONAL SAFETY EXAM.
+Use no more than 4 items in any one exam section.
+Prefer grouped screening items over exhaustive right-left muscle and reflex inventories.
+For strength exams, organize by body region rather than listing every individual muscle unless a specific muscle group is critical today.
+For reflex exams, prefer a summary pattern item unless exact right-left reflexes are critical today.
 
 Do not include generic review-of-systems questions.
 Do not include a full head-to-toe exam.
@@ -1528,35 +1578,47 @@ The final answer must not include any text before or after the two checklists.
 <format_examples>
 BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
-Since yesterday, is your main symptom better, the same, or worse: Better / Same / Worse / Other ___
-Have you noticed any new or worsening symptom: Yes / No / Other ___
-How is your breathing right now: Normal / A little hard / Very hard / Other ___
+Since yesterday, is your main symptom better, the same, or worse?: Better / Same / Worse / Other ___
+Have you noticed any new or worsening symptom?: Yes / No / Other ___
+How is your breathing right now?: Normal / A little hard / Very hard / Other ___
 FUNCTION AND SAFETY
-Have you been able to get out of bed safely: Yes / No / Not tried / Other ___
-Do you feel dizzy when sitting or standing: Yes / No / Other ___
-What is your main concern today: ___
+Have you been able to get out of bed safely?: Yes / No / Not tried / Other ___
+Do you feel dizzy when sitting or standing?: Yes / No / Other ___
+What is your main concern today?: ___
 
 TARGETED PHYSICAL EXAM CHECKLIST
 VITAL SIGNS AND SUPPORT
 Respiratory rate: ___
 Oxygen support and flow rate: Room air / Nasal cannula / Face mask / Ventilator / Other ___
 Heart rate and rhythm: Regular / Irregular
-FOCUSED EXAM
+RESPIRATORY EXAM
 Work of breathing: Normal / Mildly increased / Markedly increased
 Lung exam: Clear / Crackles / Wheezes / Diminished
-Volume status: Dry / Euvolemic / Overloaded
-Shoulder abduction strength right: 0 / 1 / 2 / 3 / 4 / 5
+MUSCULOSKELETAL STRENGTH EXAM
+Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
+Lower extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
+Lower extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
+NEUROLOGIC REFLEX EXAM
+Overall reflex pattern: Absent / Diminished / Normal / Brisk / Clonus
+Babinski signs: Downgoing bilaterally / Upgoing right / Upgoing left / Upgoing both / Equivocal
+NEUROLOGIC SENSORY EXAM
+Sensory level present: No / Yes, at ___
 </format_examples>
 
 <final_self_check>
 Before finalizing, silently verify:
 1. Both required checklist titles are present.
 2. There is at least one bedside-question section and one exam section.
-3. Bedside labels are patient-facing questions or prompts, not shorthand labels.
-4. Exam items are focused and management-relevant.
-5. Every item is parseable as Label: options.
-6. No bullets, numbering, markdown, explanations, citations, or extra prose appear.
-7. No item uses ___ / 5, ___ / 10, ___ / ___, or a blank before another slash option.
+3. Every bedside label is a real patient-facing history question ending in a question mark.
+4. No bedside item asks the patient to perform an exam maneuver.
+5. Exam items are focused, grouped by exam system or exam type, and management-relevant.
+6. The bedside checklist has 6 to 8 items.
+7. The targeted physical exam checklist has 10 to 14 items and no more than 16 items.
+8. No exam section contains more than 4 items.
+9. Every item is parseable as Label: options.
+10. No bullets, numbering, markdown, explanations, citations, or extra prose appear.
+11. No item uses ___ / 5, ___ / 10, ___ / ___, or a blank before another slash option.
 </final_self_check>`;
 
     const newAdmissionChecklistPrompt = `${checklistPrompt}
@@ -1774,6 +1836,7 @@ Skin integrity sacrum and heels: Intact / Breakdown present at __`;
         sections: state.sections,
         answers: state.answers,
         notes: state.notes,
+        collapsedSections: state.collapsedSections,
         checklistText: elements.checklistInput.value,
         outputMode: state.outputMode,
         compiledText: state.compiledText
@@ -2381,6 +2444,28 @@ Now produce the final checklist only.`;
       return `s${sectionIndex}i${itemIndex}`;
     }
 
+    function sectionKey(section, index) {
+      return `${index}:${section.title}`;
+    }
+
+    function isSectionCollapsed(section, index) {
+      return Boolean(state.collapsedSections[sectionKey(section, index)]);
+    }
+
+    function defaultCollapsedSections(sections) {
+      const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
+      if (itemCount <= 22) {
+        return {};
+      }
+
+      return sections.reduce((collapsed, section, index) => {
+        if (section.category === "exam" && section.items.length > 0) {
+          collapsed[sectionKey(section, index)] = true;
+        }
+        return collapsed;
+      }, {});
+    }
+
     function ensureSection(sections) {
       if (!sections.length) {
         sections.push({ title: "CHECKLIST", category: "general", items: [] });
@@ -2601,6 +2686,7 @@ Now produce the final checklist only.`;
         button.textContent = stats.total ? `${section.title} ${stats.answered}/${stats.total}` : section.title;
         button.addEventListener("click", () => {
           state.activeSection = section.title;
+          state.collapsedSections[sectionKey(section, index)] = false;
           renderChecklist();
           requestAnimationFrame(() => {
             const target = document.getElementById(`section-${index}`);
@@ -2634,11 +2720,34 @@ Now produce the final checklist only.`;
 
       state.sections.forEach((section, sectionIndex) => {
         const stats = sectionStats(section);
+        const collapsed = isSectionCollapsed(section, sectionIndex);
         const sectionLabel = document.createElement("div");
         sectionLabel.className = "section-label";
+        sectionLabel.classList.toggle("is-collapsed", collapsed);
         sectionLabel.id = `section-${sectionIndex}`;
         sectionLabel.dataset.section = section.title;
-        sectionLabel.textContent = section.title;
+        const sectionButton = document.createElement("button");
+        sectionButton.type = "button";
+        sectionButton.className = "section-toggle";
+        sectionButton.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        sectionButton.addEventListener("click", () => {
+          const key = sectionKey(section, sectionIndex);
+          state.collapsedSections[key] = !state.collapsedSections[key];
+          renderChecklist();
+        });
+
+        const chevron = document.createElement("span");
+        chevron.className = "section-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.textContent = "v";
+
+        const sectionName = document.createElement("span");
+        sectionName.className = "section-name";
+        sectionName.textContent = section.title;
+
+        sectionButton.appendChild(chevron);
+        sectionButton.appendChild(sectionName);
+        sectionLabel.appendChild(sectionButton);
         if (stats.total) {
           const meta = document.createElement("span");
           meta.className = "section-meta";
@@ -2648,17 +2757,20 @@ Now produce the final checklist only.`;
         elements.checklistList.appendChild(sectionLabel);
 
         let visibleItems = 0;
+        let sectionHasVisibleContent = false;
         section.items.forEach((item) => {
           const answered = isItemAnswered(item);
           const hiddenByFilter = state.checklistFilter === "unanswered" && answered;
           const hiddenBySection = state.activeSection !== "all" && state.activeSection !== section.title;
+          sectionHasVisibleContent = sectionHasVisibleContent || !(hiddenByFilter || hiddenBySection);
           const card = document.createElement("article");
           card.className = "surface question-card";
-          card.classList.toggle("is-hidden", hiddenByFilter || hiddenBySection);
+          card.classList.toggle("is-hidden", hiddenByFilter || hiddenBySection || collapsed);
+          card.id = `section-items-${sectionIndex}-${item.id}`;
           card.dataset.itemId = item.id;
           card.dataset.section = section.title;
           card.dataset.answered = answered ? "true" : "false";
-          visibleItems += hiddenByFilter || hiddenBySection ? 0 : 1;
+          visibleItems += hiddenByFilter || hiddenBySection || collapsed ? 0 : 1;
 
           const title = document.createElement("h3");
           title.className = "question-title";
@@ -2716,7 +2828,7 @@ Now produce the final checklist only.`;
           elements.checklistList.appendChild(card);
         });
 
-        sectionLabel.classList.toggle("is-hidden", visibleItems === 0);
+        sectionLabel.classList.toggle("is-hidden", !sectionHasVisibleContent);
       });
 
       updateProgress();
@@ -2811,6 +2923,7 @@ Now produce the final checklist only.`;
       state.promptCollapsed = false;
       state.checklistFilter = "all";
       state.activeSection = "all";
+      state.collapsedSections = {};
       state.outputMode = "assessed";
       state.lastClearSnapshot = null;
       state.newChecklistConfirming = false;
@@ -2881,6 +2994,7 @@ Now produce the final checklist only.`;
       state.notes = {};
       state.activeSection = "all";
       state.checklistFilter = "all";
+      state.collapsedSections = defaultCollapsedSections(sections);
       state.lastClearSnapshot = null;
       setChecklistFilter("all");
       setParseSummary(sections, "Built");
@@ -2906,6 +3020,7 @@ Now produce the final checklist only.`;
         state.sections = annotateChecklistSections(parsed.sections);
         state.answers = parsed.answers || {};
         state.notes = parsed.notes || {};
+        state.collapsedSections = parsed.collapsedSections || defaultCollapsedSections(state.sections);
         state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
         state.compiledText = parsed.compiledText || "";
         elements.checklistInput.value = parsed.checklistText || "";
@@ -3086,6 +3201,23 @@ Now produce the final checklist only.`;
       } else {
         showToast("Everything visible is answered.");
       }
+    });
+
+    elements.expandAllButton.addEventListener("click", () => {
+      state.collapsedSections = {};
+      renderChecklist();
+      showToast("All sections expanded.");
+    });
+
+    elements.collapseExamButton.addEventListener("click", () => {
+      state.collapsedSections = state.sections.reduce((collapsed, section, index) => {
+        if (section.category === "exam" && section.items.length > 0) {
+          collapsed[sectionKey(section, index)] = true;
+        }
+        return collapsed;
+      }, {});
+      renderChecklist();
+      showToast("Exam sections collapsed.");
     });
 
     elements.generateButton.addEventListener("click", () => {
