@@ -1479,8 +1479,12 @@ Do not show this reasoning. Show only the final checklist.
 <content_rules>
 For the bedside question checklist:
 Use patient-friendly language with no medical jargon.
+Write each bedside item as a direct question or short prompt the student can say out loud to the patient.
+Do not write shorthand clinical label fragments for bedside items.
+Do not put exam maneuvers, commands, or clinician-observed findings in the bedside question checklist.
 Focus on what the patient can report: symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, and concerns.
 Use 8 to 12 bedside questions when clinically supportable. If the context is sparse, still include the most relevant patient-specific questions needed to establish baseline and trajectory.
+When the patient might answer outside the choices, include Other ___ as the final option.
 
 For the targeted physical exam checklist:
 Use concise clinical labels appropriate for a medical student.
@@ -1524,13 +1528,13 @@ The final answer must not include any text before or after the two checklists.
 <format_examples>
 BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
-Main symptom since yesterday: Better / Same / Worse
-Any new or worsening symptom: Yes / No
-Breathing right now: Normal / A little hard / Very hard
+Since yesterday, is your main symptom better, the same, or worse: Better / Same / Worse / Other ___
+Have you noticed any new or worsening symptom: Yes / No / Other ___
+How is your breathing right now: Normal / A little hard / Very hard / Other ___
 FUNCTION AND SAFETY
-Able to get out of bed safely: Yes / No / Not tried
-Any dizziness when sitting or standing: Yes / No
-Patient main concern today: ___
+Have you been able to get out of bed safely: Yes / No / Not tried / Other ___
+Do you feel dizzy when sitting or standing: Yes / No / Other ___
+What is your main concern today: ___
 
 TARGETED PHYSICAL EXAM CHECKLIST
 VITAL SIGNS AND SUPPORT
@@ -1548,7 +1552,7 @@ Shoulder abduction strength right: 0 / 1 / 2 / 3 / 4 / 5
 Before finalizing, silently verify:
 1. Both required checklist titles are present.
 2. There is at least one bedside-question section and one exam section.
-3. Bedside questions are patient-friendly.
+3. Bedside labels are patient-facing questions or prompts, not shorthand labels.
 4. Exam items are focused and management-relevant.
 5. Every item is parseable as Label: options.
 6. No bullets, numbering, markdown, explanations, citations, or extra prose appear.
@@ -2332,6 +2336,42 @@ Now produce the final checklist only.`;
       return line.trim().toUpperCase();
     }
 
+    function categoryForChecklistTitle(title) {
+      if (title === "BEDSIDE QUESTION CHECKLIST") {
+        return "bedside";
+      }
+      if (title === "TARGETED PHYSICAL EXAM CHECKLIST") {
+        return "exam";
+      }
+      return "";
+    }
+
+    function annotateChecklistSections(sections) {
+      let activeCategory = "general";
+      return sections.map((section) => {
+        const title = normalizeHeader(section.title || "CHECKLIST");
+        const titleCategory = categoryForChecklistTitle(title);
+        if (titleCategory) {
+          activeCategory = titleCategory;
+        }
+
+        const category = section.category || activeCategory;
+        return {
+          ...section,
+          title,
+          category,
+          items: (section.items || []).map((item) => {
+            const itemCategory = item.category || category;
+            return {
+              ...item,
+              category: itemCategory,
+              hasNotes: Boolean(item.hasNotes || itemCategory === "bedside" && item.options && item.options.length)
+            };
+          })
+        };
+      });
+    }
+
     function isAllCapsLine(line) {
       const letters = line.replace(/[^A-Za-z]/g, "");
       return letters.length > 0 && line === line.toUpperCase();
@@ -2343,7 +2383,7 @@ Now produce the final checklist only.`;
 
     function ensureSection(sections) {
       if (!sections.length) {
-        sections.push({ title: "CHECKLIST", items: [] });
+        sections.push({ title: "CHECKLIST", category: "general", items: [] });
       }
       return sections[sections.length - 1];
     }
@@ -2410,11 +2450,13 @@ Now produce the final checklist only.`;
     function addQuestion(sections, label, options, hasNotes) {
       const currentSection = ensureSection(sections);
       const itemId = makeItemId(sections.length - 1, currentSection.items.length);
+      const category = currentSection.category || "general";
       currentSection.items.push({
         id: itemId,
         label,
         options,
-        hasNotes
+        category,
+        hasNotes: Boolean(hasNotes || category === "bedside" && options.length)
       });
     }
 
@@ -2433,6 +2475,7 @@ Now produce the final checklist only.`;
       });
 
       const sections = [];
+      let activeCategory = "general";
 
       for (let index = 0; index < lines.length; index += 1) {
         const line = lines[index].text;
@@ -2465,7 +2508,12 @@ Now produce the final checklist only.`;
 
         if (!line.includes(":")) {
           if (isAllCapsLine(line) || (!line.includes("/") && !line.includes("__"))) {
-            sections.push({ title: normalizeHeader(line), items: [] });
+            const title = normalizeHeader(line);
+            const titleCategory = categoryForChecklistTitle(title);
+            if (titleCategory) {
+              activeCategory = titleCategory;
+            }
+            sections.push({ title, category: activeCategory, items: [] });
           }
           continue;
         }
@@ -2481,14 +2529,14 @@ Now produce the final checklist only.`;
         const optionParse = parseOptionText(rawValue);
 
         if (!optionParse.options.length && !optionParse.hasNotes) {
-          sections.push({ title: normalizeHeader(label), items: [] });
+          sections.push({ title: normalizeHeader(label), category: activeCategory, items: [] });
           continue;
         }
 
         addQuestion(sections, label, optionParse.options, optionParse.hasNotes);
       }
 
-      return sections.filter((section) => section.items.length || section.title);
+      return annotateChecklistSections(sections.filter((section) => section.items.length || section.title));
     }
 
     function countChipQuestions() {
@@ -2500,12 +2548,15 @@ Now produce the final checklist only.`;
     function isItemAnswered(item) {
       const answer = (state.answers[item.id] || "").trim();
       const note = (state.notes[item.id] || "").trim();
-      return item.options.length > 0 ? Boolean(answer) : Boolean(note);
+      if (item.options.length > 0) {
+        return item.category === "bedside" ? Boolean(answer || note) : Boolean(answer);
+      }
+      return Boolean(note);
     }
 
     function sectionStats(section) {
       const countable = section.items.filter((item) => item.options.length > 0);
-      const answered = countable.filter((item) => state.answers[item.id]).length;
+      const answered = countable.filter(isItemAnswered).length;
       return {
         answered,
         total: countable.length
@@ -2515,7 +2566,7 @@ Now produce the final checklist only.`;
     function updateProgress() {
       const total = countChipQuestions();
       const answered = state.sections.reduce((sum, section) => {
-        return sum + section.items.filter((item) => item.options.length > 0 && state.answers[item.id]).length;
+        return sum + section.items.filter((item) => item.options.length > 0 && isItemAnswered(item)).length;
       }, 0);
       const percentage = total ? Math.round((answered / total) * 100) : 0;
       elements.progressCount.textContent = `${answered} of ${total} answered`;
@@ -2648,7 +2699,7 @@ Now produce the final checklist only.`;
             noteInput.id = `note-${item.id}`;
             noteInput.className = "note-input";
             noteInput.rows = 1;
-            noteInput.placeholder = "Add note...";
+            noteInput.placeholder = item.category === "bedside" ? "Patient response, other answer, or detail..." : "Add note...";
             noteInput.value = state.notes[item.id] || "";
             noteInput.addEventListener("input", () => {
               state.notes[item.id] = noteInput.value;
@@ -2852,7 +2903,7 @@ Now produce the final checklist only.`;
           return false;
         }
 
-        state.sections = parsed.sections;
+        state.sections = annotateChecklistSections(parsed.sections);
         state.answers = parsed.answers || {};
         state.notes = parsed.notes || {};
         state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
