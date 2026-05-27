@@ -3255,8 +3255,33 @@ Sensory level present: No / Yes, at ___`;
       "allergies",
       "vital signs",
       "lab results",
+      "consult note",
+      "endocrinology consult",
+      "treatment team",
+      "scheduled meds",
+      "current inpatient",
+      "vital sign",
+      "heart rate",
+      "output summary",
       "basic metabolic",
       "complete blood",
+      "reticulated platelets",
+      "plt morphology",
+      "normal absolute",
+      "absolute lymphocytes",
+      "atypical lymphocytes",
+      "absolute monocytes",
+      "absolute basophils",
+      "absolute eosinophils",
+      "burr cells",
+      "anion gap",
+      "see comment",
+      "toxic granulation",
+      "total protein",
+      "bilirubin total",
+      "alk phos",
+      "base excess",
+      "warfarin sodium",
       "encephalopathy diabetes",
       "diabetes mellitus",
       "acute kidney",
@@ -3265,12 +3290,59 @@ Sensory level present: No / Yes, at ___`;
     ]);
 
     const nonNameClinicalWords = new Set([
-      "active", "acute", "admission", "allergies", "and", "assessment", "basic", "blood", "bowel", "cardiology", "chief",
-      "complaint", "course", "current", "diabetes", "diagnosis", "discharge", "emergency", "encephalopathy", "exam",
-      "family", "follow", "general", "history", "home", "hospital", "information", "kidney", "lab", "labs", "medical",
-      "medications", "medicine", "meds", "mental", "neurology", "objective", "past", "physical", "plan", "principal",
-      "problem", "problems", "progress", "resolved", "review", "social", "subjective", "surgical", "systems", "vital"
+      "absolute", "acetaminophen", "active", "acute", "admission", "albumin", "alk", "alkaline", "allergies", "and",
+      "anion", "assessment", "atypical", "basophils", "base", "basic", "bicarbonate", "bilirubin", "blood", "bowel",
+      "bun", "burr", "calcium", "cardiology", "cells", "chloride", "chief", "cbc", "comment", "complaint", "consult",
+      "course", "creatinine", "current", "diabetes", "diagnosis", "discharge", "eosinophils", "emergency",
+      "encephalopathy", "endocrinology", "exam", "excess", "family", "follow", "gap", "general", "glucose", "heart",
+      "hematocrit", "hemoglobin", "history", "home", "hospital", "information", "inpatient", "kidney", "lab", "labs",
+      "lactate", "lymphocytes", "magnesium", "medical", "medications", "medicine", "meds", "mental", "monocytes",
+      "morphology", "neurology", "normal", "note", "objective", "output", "past", "phos", "phosphate", "physical",
+      "plan", "platelets", "plt", "potassium", "principal", "problem", "problems", "progress", "protein", "rate",
+      "resolved", "reticulated", "review", "scheduled", "see", "sign", "sodium", "social", "subjective", "summary",
+      "surgical", "systems", "team", "total", "toxic", "treatment", "vital", "warfarin", "wbc"
     ]);
+
+    const clinicalAnchorWords = new Set([
+      "absolute", "acetaminophen", "albumin", "alk", "alkaline", "anion", "atypical", "basophils", "base",
+      "bicarbonate", "bilirubin", "bun", "burr", "calcium", "cbc", "chloride", "comment", "consult", "creatinine",
+      "eosinophils", "endocrinology", "excess", "gap", "glucose", "heart", "hematocrit", "hemoglobin", "inpatient",
+      "lab", "labs", "lactate", "lymphocytes", "magnesium", "medications", "meds", "monocytes", "morphology",
+      "note", "output", "phos", "phosphate", "platelets", "plt", "potassium", "protein", "rate", "reticulated",
+      "scheduled", "sodium", "summary", "team", "total", "toxic", "treatment", "vital", "warfarin", "wbc"
+    ]);
+
+    const medicationSaltOrFormWords = new Set([
+      "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl", "hydrochloride",
+      "injection", "lactate", "magnesium", "oral", "potassium", "sodium", "succinate", "sulfate", "tartrate",
+      "tablet", "topical"
+    ]);
+
+    const medicationNameWords = new Set([
+      "acetaminophen", "amlodipine", "aspirin", "atorvastatin", "azithromycin", "cefazolin", "cefepime",
+      "ceftriaxone", "duloxetine", "enoxaparin", "furosemide", "gabapentin", "heparin", "hydromorphone",
+      "insulin", "levothyroxine", "lisinopril", "losartan", "metformin", "metoprolol", "ondansetron",
+      "oxycodone", "pantoprazole", "pregabalin", "senna", "tamsulosin", "tramadol", "trazodone", "vancomycin",
+      "warfarin"
+    ]);
+
+    function isLikelyClinicalNameLikePhrase(normalized) {
+      const words = normalized.split(" ");
+      if (words.length < 2 || words.length > 5) {
+        return false;
+      }
+
+      if (nonNameClinicalPhrases.has(normalized)) {
+        return true;
+      }
+
+      if (words.length === 2 && medicationNameWords.has(words[0]) && medicationSaltOrFormWords.has(words[1])) {
+        return true;
+      }
+
+      return words.every((word) => nonNameClinicalWords.has(word)) &&
+        words.some((word) => clinicalAnchorWords.has(word));
+    }
 
     function isLikelyChartHeadingPhrase(rawText, start, end) {
       const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
@@ -3300,6 +3372,10 @@ Sensory level present: No / Yes, at ___`;
       }
 
       if (isLikelyChartHeadingPhrase(rawText, start, end)) {
+        return true;
+      }
+
+      if (isLikelyClinicalNameLikePhrase(normalized)) {
         return true;
       }
 
@@ -3560,6 +3636,7 @@ Sensory level present: No / Yes, at ___`;
         /De-identified SOAP note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
         /Admission intake information:\n([\s\S]*?)(?:\n<\/patient_context>|\n\n<new_admission_focus>|\n\nNew checklist answers and exam findings:|$)/gi,
         /De-identified source note:\n([\s\S]*?)(?:\n\nAdmission intake information:|\n\nNew checklist answers and exam findings:|$)/gi,
+        /Checklist to rewrite:\n([\s\S]*)$/gi,
         /New checklist answers and exam findings:\n([\s\S]*)$/gi
       ];
 
