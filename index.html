@@ -1956,7 +1956,7 @@
 
         <div class="tool-section">
           <p class="tool-title">Demo</p>
-          <p class="tool-copy">Load a synthetic endocrinology note to try the full workflow.</p>
+          <p class="tool-copy">Load a textbook synthetic DKA consult note to try the full workflow.</p>
           <button id="loadDemoSoapButton" class="btn btn-secondary" type="button">Load demo note</button>
         </div>
 
@@ -2906,26 +2906,26 @@ Before finalizing, silently verify:
     const demoEndocrinologySoapNote = `SYNTHETIC DEMO SOAP NOTE
 Service: Endocrinology consult
 Hospital day: 2
-Reason for consult: Hyperglycemia after DKA, transition from insulin infusion to subcutaneous insulin
+Reason for consult: Diabetic ketoacidosis now resolved; transition from insulin infusion to subcutaneous insulin
 
 Subjective:
-Patient is a 58-year-old adult with type 2 diabetes mellitus, chronic kidney disease stage 3, hypertension, and hypothyroidism admitted with diabetic ketoacidosis after several days of nausea, poor oral intake, missed basal insulin, and dysuria. The patient reports feeling less nauseated today and has tolerated small amounts of breakfast. Thirst has improved but is still present. No chest pain or shortness of breath. Dysuria is improving after antibiotics. No vomiting overnight. The patient feels anxious about using insulin correctly after discharge and says glucose checks at home have been inconsistent due to running out of test strips. No new confusion, abdominal pain, or focal weakness.
+Patient is a 26-year-old adult with type 1 diabetes mellitus and autoimmune hypothyroidism admitted with diabetic ketoacidosis after missing basal insulin during two days of viral gastroenteritis with nausea, vomiting, and poor oral intake. The patient feels much better this morning, nausea has resolved, and breakfast was tolerated without vomiting. Thirst and polyuria have improved. No abdominal pain, chest pain, shortness of breath, dysuria, fever, or confusion. The patient understands that basal insulin should not be stopped when sick but reports running low on insulin pens and not having ketone strips at home.
 
 Objective:
 Vitals:
-Temp 37.1 C
-Heart rate 96
-Blood pressure 132/78
-Respiratory rate 18
+Temp 36.9 C
+Heart rate 88
+Blood pressure 118/72
+Respiratory rate 16
 SpO2 97 percent on room air
 
 Intake and output:
-Oral intake improving, ate about half of breakfast
-Urine output 1.4 L over the last 24 hours
+Oral intake improving, ate full breakfast
+Urine output 1.6 L over the last 24 hours
 
 Exam:
-General: Awake, conversant, mildly fatigued, no acute distress
-Mucous membranes: Mildly dry
+General: Awake, comfortable, no acute distress
+Mucous membranes: Moist
 Cardiac: Regular rhythm, no murmurs noted
 Pulmonary: Clear to auscultation bilaterally
 Abdomen: Soft, nontender, nondistended
@@ -2933,58 +2933,60 @@ Extremities: No edema, feet warm, no visible ulcers
 Neuro: Alert and oriented, no focal deficits
 
 Labs:
-Glucose trend overnight: 242, 218, 196, 184
-Sodium 136
-Potassium 3.6 after repletion
-Chloride 103
-Bicarbonate 21, improved from 12 on admission
-Anion gap 11, closed from 24 on admission
-Creatinine 1.4, baseline around 1.3
-Beta-hydroxybutyrate improved
-Hemoglobin A1c 10.8 percent
-TSH 7.2
-Free T4 0.9
-Urinalysis: Leukocyte esterase positive, nitrite positive, ketones improving
+Admission labs: Glucose 486, bicarbonate 9, anion gap 28, venous pH 7.16, beta-hydroxybutyrate 6.4, potassium 5.2, creatinine 1.1
+Glucose trend overnight after transition: 212, 186, 164, 152
+Sodium 137
+Potassium 3.8 after repletion
+Chloride 104
+Bicarbonate 23, improved from 9 on admission
+Anion gap 10, closed on two consecutive checks
+Creatinine 0.8, back to baseline
+Beta-hydroxybutyrate 0.4
+Hemoglobin A1c 9.8 percent
+TSH 5.4
+Free T4 1.0
+Urinalysis: Glucose and ketones present, no nitrites or leukocyte esterase
+Respiratory viral testing negative
+Chest radiograph without acute infiltrate
 
 Current medications:
-Insulin glargine 24 units nightly
-Insulin lispro 8 units with meals plus correction scale
-Ceftriaxone for suspected urinary tract infection
-Levothyroxine 75 mcg daily
-Lisinopril held during acute kidney injury
-Atorvastatin 40 mg nightly
+Insulin glargine 20 units every morning, given 2 hours before insulin infusion was stopped
+Insulin lispro 1 unit per 10 grams carbohydrate with meals plus low-dose correction scale
+Levothyroxine 88 mcg daily
+Ondansetron as needed
 Potassium chloride repletion as needed
 
 Assessment:
-58-year-old adult with poorly controlled type 2 diabetes admitted with DKA likely triggered by missed insulin, poor oral intake, and urinary tract infection. Anion gap has closed and patient has transitioned off insulin infusion to basal-bolus insulin. Glucose remains above goal but is improving. Mild volume depletion is improving with oral intake. Potassium remains borderline after insulin therapy and repletion. CKD is near baseline. Hypothyroidism appears undertreated or affected by acute illness; patient is clinically stable without myxedema features.
+26-year-old adult with type 1 diabetes admitted with moderate diabetic ketoacidosis triggered by missed basal insulin during a likely viral gastroenteritis. DKA has resolved with closed anion gap, normalized bicarbonate, resolved ketonemia, and return of oral intake. The patient has safely transitioned from insulin infusion to basal-bolus insulin with appropriate basal overlap. Ongoing endocrine priorities are preventing recurrent ketosis, matching prandial insulin to intake, maintaining potassium during insulin therapy, and ensuring discharge supplies and sick-day education.
 
 Plan:
 1. Diabetic ketoacidosis, resolved
-- Continue basal-bolus insulin regimen
-- Monitor premeal and bedtime glucose
-- Recheck basic metabolic panel this afternoon to ensure gap remains closed
-- Continue diabetes education before discharge
+- Continue subcutaneous basal-bolus insulin; never hold basal insulin in type 1 diabetes
+- Monitor premeal, bedtime, and 2 AM glucose for the first night after transition
+- Recheck basic metabolic panel this afternoon to ensure anion gap remains closed
+- If nausea, vomiting, or rising glucose recurs, check beta-hydroxybutyrate and repeat BMP
 
-2. Type 2 diabetes mellitus, poorly controlled
-- Continue glargine 24 units nightly
-- Continue lispro 8 units with meals and correction scale
-- Adjust prandial insulin if oral intake increases
-- Ensure patient has glucometer supplies, test strips, and insulin access before discharge
+2. Type 1 diabetes mellitus, above goal control
+- Continue glargine 20 units every morning
+- Continue lispro carbohydrate ratio 1 unit per 10 grams plus correction scale
+- Review glucose log after next 24 hours and adjust prandial insulin if consistently above goal
+- Ensure patient has insulin pens, pen needles, glucometer, test strips, ketone strips, and glucagon before discharge
 
-3. Suspected urinary tract infection
-- Continue ceftriaxone pending urine culture
-- Monitor dysuria and fever curve
+3. Precipitating illness and volume status
+- Viral gastroenteritis is improving; no current evidence of bacterial infection
+- Encourage oral hydration and antiemetics as needed
+- No antibiotics indicated based on current symptoms and testing
 
 4. Potassium management
 - Replete potassium to maintain safe level while receiving insulin
-- Repeat BMP and magnesium
+- Check magnesium with next BMP and replete if low
 
 5. Hypothyroidism
-- Continue levothyroxine 75 mcg daily
-- Recheck thyroid studies outpatient after recovery from acute illness
+- Continue levothyroxine 88 mcg daily
+- Recheck thyroid studies outpatient after recovery from acute illness before changing dose
 
 6. Discharge planning
-- Needs insulin teaching, sick-day guidance, medication access review, and close endocrinology or primary care follow-up`;
+- Needs sick-day plan, ketone testing instructions, hypoglycemia review, medication access confirmation, and close endocrinology follow-up`;
 
     const exampleChecklist = `BEDSIDE QUESTION CHECKLIST
 
@@ -5865,10 +5867,10 @@ ${rawChecklist.trim()}`;
       elements.rawLabsInput.value = "";
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Synthetic endocrinology SOAP note loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
+      elements.promptStatus.textContent = "Textbook synthetic DKA consult note loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
       elements.rawSoapInput.focus();
       prepareDeidentifierModel();
-      showToast("Demo endocrinology SOAP note loaded.");
+      showToast("Textbook DKA consult note loaded.");
     });
 
     admissionFields.forEach((field) => {
