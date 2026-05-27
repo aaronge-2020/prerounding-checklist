@@ -3247,16 +3247,45 @@ Sensory level present: No / Yes, at ___`;
       "home meds",
       "home medications",
       "current medications",
+      "current medication",
+      "prior medications",
+      "inpatient medications",
+      "scheduled medications",
+      "prn medications",
+      "infusion medications",
       "hospital course",
+      "interval history",
+      "progress note",
+      "discharge summary",
+      "admission note",
+      "transfer summary",
+      "operative note",
+      "procedure note",
+      "radiology report",
+      "pathology report",
+      "microbiology results",
+      "blood culture",
+      "urine culture",
+      "respiratory culture",
       "assessment plan",
       "assessment and plan",
       "physical exam",
+      "focused exam",
       "review systems",
+      "review of systems",
       "allergies",
       "vital signs",
       "lab results",
+      "laboratory results",
       "consult note",
       "endocrinology consult",
+      "cardiology consult",
+      "neurology consult",
+      "nephrology consult",
+      "pulmonology consult",
+      "infectious disease consult",
+      "infectious disease",
+      "gastroenterology consult",
       "treatment team",
       "scheduled meds",
       "current inpatient",
@@ -3268,6 +3297,8 @@ Sensory level present: No / Yes, at ___`;
       "reticulated platelets",
       "plt morphology",
       "normal absolute",
+      "platelet count",
+      "absolute neutrophils",
       "absolute lymphocytes",
       "atypical lymphocytes",
       "absolute monocytes",
@@ -3281,35 +3312,82 @@ Sensory level present: No / Yes, at ___`;
       "bilirubin total",
       "alk phos",
       "base excess",
+      "phosphorus level",
+      "iron studies",
+      "thyroid studies",
       "warfarin sodium",
+      "insulin glargine",
+      "insulin lispro",
+      "insulin regular",
+      "metformin hydrochloride",
+      "heparin infusion",
+      "vancomycin trough",
+      "blood glucose",
+      "urine output",
+      "intake output",
+      "mental status",
+      "oxygen saturation",
+      "respiratory rate",
+      "blood pressure",
+      "temperature maximum",
+      "temperature minimum",
+      "mean arterial",
+      "arterial pressure",
       "encephalopathy diabetes",
       "diabetes mellitus",
       "acute kidney",
+      "kidney injury",
+      "renal function",
+      "heart failure",
+      "respiratory failure",
       "altered mental",
       "general medicine"
     ]);
 
     const nonNameClinicalWords = new Set([
-      "absolute", "acetaminophen", "active", "acute", "admission", "albumin", "alk", "alkaline", "allergies", "and",
-      "anion", "assessment", "atypical", "basophils", "base", "basic", "bicarbonate", "bilirubin", "blood", "bowel",
-      "bun", "burr", "calcium", "cardiology", "cells", "chloride", "chief", "cbc", "comment", "complaint", "consult",
-      "course", "creatinine", "current", "diabetes", "diagnosis", "discharge", "eosinophils", "emergency",
-      "encephalopathy", "endocrinology", "exam", "excess", "family", "follow", "gap", "general", "glucose", "heart",
-      "hematocrit", "hemoglobin", "history", "home", "hospital", "information", "inpatient", "kidney", "lab", "labs",
-      "lactate", "lymphocytes", "magnesium", "medical", "medications", "medicine", "meds", "mental", "monocytes",
-      "morphology", "neurology", "normal", "note", "objective", "output", "past", "phos", "phosphate", "physical",
-      "plan", "platelets", "plt", "potassium", "principal", "problem", "problems", "progress", "protein", "rate",
-      "resolved", "reticulated", "review", "scheduled", "see", "sign", "sodium", "social", "subjective", "summary",
-      "surgical", "systems", "team", "total", "toxic", "treatment", "vital", "warfarin", "wbc"
+      "abdomen", "abdominal", "absolute", "acetaminophen", "active", "activity", "acute", "admission", "albumin",
+      "alk", "alkaline", "allergies", "alt", "and", "anion", "anesthesia", "antibiotic", "anticoagulation",
+      "arterial", "assessment", "ast", "atypical", "basophils", "base", "basic", "beta", "bicarbonate", "bilirubin",
+      "blood", "bladder", "bowel", "brain", "bun", "burr", "calcium", "cardiac", "cardiology", "cardiovascular",
+      "catheter", "cbc", "cells", "cervical", "chloride", "chief", "clinic", "cloudy", "coagulation", "code",
+      "comment", "complaint", "complete", "consult", "coordination", "count", "course", "cranial", "creatinine", "critical",
+      "culture", "current", "decreased", "dermatology", "diabetes", "diagnoses", "diagnosis", "diet", "differential",
+      "dimer", "discharge", "drain", "dvt", "edema", "elevated", "emergency", "encephalopathy", "endocrine",
+      "endocrinology", "eosinophils", "esr", "exam", "excess", "failure", "family", "ferritin", "fibrinogen",
+      "follow", "free", "gap", "gastroenterology", "general", "glucose", "gram", "granulation", "granulocytes",
+      "gu", "hba1c", "hct", "heart", "hematocrit", "hematology", "hemoglobin", "hepatology", "hgb", "high",
+      "history", "home", "hospital", "hospitalist", "hydroxybutyrate", "imaging", "immature", "impression",
+      "infectious", "information", "injury", "inpatient", "intact", "intake", "iron", "kidney", "lab", "laboratory",
+      "labs", "lactate", "lactic", "level", "line", "lipase", "liver", "low", "lumbar", "lung", "lungs",
+      "lymphocytes", "magnesium", "maximum", "mean", "medical", "medication", "medications", "medicine", "meds",
+      "mental", "microbiology", "minimum", "monocytes", "morphology", "motor", "musculoskeletal", "nephrology",
+      "nerve", "neuro", "neurologic", "neurology", "neurosurgery", "neutrophils", "normal", "note", "objective", "obstetrics",
+      "oncology", "operative", "orthopedics", "outpatient", "output", "palliative", "pathology", "past", "pco2",
+      "pediatrics", "ph", "pharmacy", "phos", "phosphatase", "phosphate", "phosphorus", "physical", "platelet", "platelets",
+      "plt", "po2", "potassium", "precautions", "principal", "prn", "problem", "problems", "procedure",
+      "procalcitonin", "progress", "protein", "psychiatry", "pt", "ptt", "pulmonary", "pulmonology", "radiology",
+      "rare", "rate", "rbc", "red", "reflex", "renal", "report", "resolved", "respiratory", "reticulated",
+      "reticulocyte", "review", "rheumatology", "saturation", "scheduled", "schistocytes", "see", "sensory",
+      "severe", "sign", "signs", "sodium", "social", "spinal", "spine", "sputum", "stain", "status", "subjective",
+      "studies", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy", "thoracic", "thyroid",
+      "tibc", "tone", "total", "toxic", "transfer", "transferrin", "trauma", "treatment", "triglycerides",
+      "troponin", "tsh", "turbid", "ua", "unit", "urinary", "urine", "urology", "vascular", "vital", "vitals",
+      "warfarin", "wbc", "white", "wound"
     ]);
 
     const clinicalAnchorWords = new Set([
-      "absolute", "acetaminophen", "albumin", "alk", "alkaline", "anion", "atypical", "basophils", "base",
-      "bicarbonate", "bilirubin", "bun", "burr", "calcium", "cbc", "chloride", "comment", "consult", "creatinine",
-      "eosinophils", "endocrinology", "excess", "gap", "glucose", "heart", "hematocrit", "hemoglobin", "inpatient",
-      "lab", "labs", "lactate", "lymphocytes", "magnesium", "medications", "meds", "monocytes", "morphology",
-      "note", "output", "phos", "phosphate", "platelets", "plt", "potassium", "protein", "rate", "reticulated",
-      "scheduled", "sodium", "summary", "team", "total", "toxic", "treatment", "vital", "warfarin", "wbc"
+      "absolute", "albumin", "alk", "alkaline", "anion", "antibiotic", "anticoagulation", "arterial", "ast",
+      "atypical", "basophils", "base", "bicarbonate", "bilirubin", "blood", "bun", "burr", "calcium",
+      "cardiology", "cbc", "chloride", "comment", "consult", "creatinine", "culture", "dimer", "eosinophils",
+      "endocrinology", "esr", "excess", "ferritin", "fibrinogen", "gap", "glucose", "heart", "hematocrit",
+      "hematology", "hemoglobin", "hgb", "imaging", "inpatient", "intake", "iron", "kidney", "lab",
+      "laboratory", "labs", "lactate", "lipase", "lymphocytes", "magnesium", "medications", "meds", "mental",
+      "microbiology", "monocytes", "morphology", "nephrology", "neurology", "neutrophils", "note", "oncology", "output",
+      "pathology", "pco2", "ph", "phos", "phosphatase", "phosphate", "phosphorus", "platelet", "platelets", "plt", "po2", "potassium",
+      "procalcitonin", "protein", "ptt", "pulmonology", "radiology", "rate", "rbc", "renal", "report",
+      "respiratory", "reticulated", "reticulocyte", "saturation", "scheduled", "schistocytes", "sodium",
+      "studies", "summary", "team", "temperature", "thyroid", "tibc", "total", "toxic", "transferrin", "treatment",
+      "triglycerides", "troponin", "tsh", "urine", "vital", "vitals", "warfarin", "wbc"
     ]);
 
     const medicationSaltOrFormWords = new Set([
@@ -3326,6 +3404,21 @@ Sensory level present: No / Yes, at ___`;
       "warfarin"
     ]);
 
+    const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
+
+    function isLikelyMedicationWord(word) {
+      return medicationNameWords.has(word) || medicationClassOrStemPattern.test(word);
+    }
+
+    function isLikelyMedicationPhrase(words) {
+      if (words.length < 2 || words.length > 4) {
+        return false;
+      }
+
+      return words.some(isLikelyMedicationWord) &&
+        words.every((word) => isLikelyMedicationWord(word) || medicationSaltOrFormWords.has(word) || nonNameClinicalWords.has(word));
+    }
+
     function isLikelyClinicalNameLikePhrase(normalized) {
       const words = normalized.split(" ");
       if (words.length < 2 || words.length > 5) {
@@ -3337,6 +3430,10 @@ Sensory level present: No / Yes, at ___`;
       }
 
       if (words.length === 2 && medicationNameWords.has(words[0]) && medicationSaltOrFormWords.has(words[1])) {
+        return true;
+      }
+
+      if (isLikelyMedicationPhrase(words)) {
         return true;
       }
 
@@ -3447,7 +3544,7 @@ Sensory level present: No / Yes, at ___`;
         { label: "ADDRESS", regex: /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?\s+[A-Za-z .-]+)?(?:,?\s+[A-Z]{2})?(?:\s+\d{5}(?:-\d{4})?)?/gi },
         { label: "LOCATION", regex: /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi },
         { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
-        { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:\s+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}\s+(?:Hospital|Clinic|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g },
+        { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g },
         { label: "NAME", regex: /\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?[ \t]+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
         { label: "NAME", regex: /\b(?:Patient(?: name)?|Pt(?: name)?|Name|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider|Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian)[ \t]*[:#][ \t]*[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,3}\b/gi },
         { label: "NAME", regex: /\b(?:Patient initials|Pt initials|Initials)[ \t]*[:#]?[ \t]*[A-Z]{1,4}\b/gi },
@@ -3618,8 +3715,8 @@ Sensory level present: No / Yes, at ___`;
       addResidualMatches(warnings, sourceText, "medium", "ZIP or postal code", /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi, "geographic detail smaller than state");
       addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");
       addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi, "care location detail");
-      addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:\s+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}\s+(?:Hospital|Clinic|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name");
-      addResidualMatches(warnings, sourceText, "medium", "possible full name", /\b(?:Dr\.?\s+)?[A-Z][a-z]{2,}(?:\s+[A-Z]\.?)?\s+[A-Z][a-z]{2,}\b/g, "capitalized name-like phrase", isLikelyNonNamePhrase);
+      addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name");
+      addResidualMatches(warnings, sourceText, "medium", "possible full name", /\b(?:Dr\.?[ \t]+)?[A-Z][a-z]{2,}(?:[ \t]+[A-Z]\.?)?[ \t]+[A-Z][a-z]{2,}\b/g, "capitalized name-like phrase", isLikelyNonNamePhrase);
       addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code");
       addResidualMatches(warnings, sourceText, "medium", "age over 89", /\b(?:Age\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})|(?:9[0-9]|1[0-9]{2})\s*(?:yo|y\/o|years? old|M|F|male|female))\b/gi, "age must be generalized");
       addResidualMatches(warnings, sourceText, "review", "rare identifying context", /\b(?:celebrity|publicized|news article|newspaper|police report|lawsuit|incarcerated|inmate|professional athlete|mayor|judge|teacher at|works at|employer|specific school|rare occupation|well-known)\b/gi, "context can identify a patient even without direct IDs");
