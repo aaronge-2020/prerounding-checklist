@@ -36,7 +36,7 @@
       --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
       --radius: 22px;
       --radius-sm: 16px;
-      --max: 680px;
+      --max: 1040px;
       --bottom-bar-height: 92px;
     }
 
@@ -63,7 +63,8 @@
 
     button,
     textarea,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -84,6 +85,7 @@
 
     button,
     textarea,
+    select,
     summary {
       -webkit-tap-highlight-color: transparent;
     }
@@ -217,6 +219,25 @@
     }
 
     textarea:focus {
+      border-color: rgba(79, 152, 163, 0.8);
+      background: rgba(0, 0, 0, 0.24);
+      box-shadow: 0 0 0 4px rgba(79, 152, 163, 0.12);
+      outline: none;
+    }
+
+    select {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 12px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.18);
+      caret-color: var(--accent-strong);
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    select:focus {
       border-color: rgba(79, 152, 163, 0.8);
       background: rgba(0, 0, 0, 0.24);
       box-shadow: 0 0 0 4px rgba(79, 152, 163, 0.12);
@@ -363,6 +384,101 @@
       display: none;
     }
 
+    .tools-drawer {
+      margin: 0 0 16px;
+      border-color: rgba(79, 152, 163, 0.28);
+      background: rgba(79, 152, 163, 0.07);
+    }
+
+    .tools-drawer > summary {
+      color: var(--accent-strong);
+    }
+
+    .tools-body {
+      display: grid;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding: 13px;
+    }
+
+    .tool-section {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.026);
+    }
+
+    .tool-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 900;
+    }
+
+    .tool-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .guided-layout {
+      display: grid;
+      gap: 16px;
+    }
+
+    .guided-main {
+      min-width: 0;
+    }
+
+    .guide-sidebar {
+      display: grid;
+      gap: 10px;
+      align-self: start;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.026), rgba(255, 255, 255, 0.01)), var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .guide-sidebar-title {
+      margin: 0;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    .guide-sidebar-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .guide-sidebar-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding-left: 20px;
+      color: #d8d3ca;
+      font-size: 0.88rem;
+      font-weight: 750;
+    }
+
+    @media (min-width: 900px) {
+      .guided-layout {
+        grid-template-columns: minmax(0, 1fr) 300px;
+        align-items: start;
+      }
+
+      .guide-sidebar {
+        position: sticky;
+        top: 82px;
+      }
+    }
+
     .step-pill {
       min-height: 44px;
       border: 1px solid transparent;
@@ -488,6 +604,71 @@
       color: #b8dce1;
     }
 
+    .profile-panel,
+    .deid-utility {
+      margin-top: 0;
+      border-color: rgba(79, 152, 163, 0.26);
+      background: rgba(79, 152, 163, 0.065);
+    }
+
+    .profile-panel summary,
+    .deid-utility summary {
+      color: var(--accent-strong);
+    }
+
+    .profile-body,
+    .deid-body {
+      display: grid;
+      gap: 12px;
+      border-top: 1px solid var(--border);
+      padding: 13px;
+    }
+
+    .profile-note,
+    .deid-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .profile-field-wide {
+      grid-column: 1 / -1;
+    }
+
+    .profile-input {
+      min-height: 46px;
+      padding: 11px 12px;
+      line-height: 1.35;
+    }
+
+    .profile-focus-input {
+      min-height: 84px;
+    }
+
+    .profile-actions,
+    .deid-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .profile-status,
+    .deid-status {
+      min-height: 20px;
+      margin: 0;
+      color: var(--accent-strong);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
     .source-panel {
       display: none;
       gap: 13px;
@@ -511,6 +692,18 @@
 
     .scrubbed-note-input {
       min-height: min(26svh, 260px);
+    }
+
+    .deid-input {
+      min-height: min(18svh, 180px);
+      padding: 13px;
+      line-height: 1.45;
+    }
+
+    .deid-preview {
+      min-height: min(24svh, 240px);
+      padding: 13px;
+      line-height: 1.45;
     }
 
     .admission-grid {
@@ -1559,20 +1752,32 @@
       .source-toggle,
       .phi-warning-groups,
       .admission-grid,
+      .profile-grid,
       .install-actions,
       .install-steps {
         grid-template-columns: 1fr;
       }
 
       .workflow-rail {
-        gap: 4px;
+        display: block;
         padding: 5px;
       }
 
+      .workflow-compact-label {
+        display: inline-flex;
+        min-height: 32px;
+        align-items: center;
+        border: 1px solid rgba(79, 152, 163, 0.34);
+        border-radius: 999px;
+        padding: 0 10px;
+        color: var(--accent-strong);
+        background: rgba(79, 152, 163, 0.08);
+        font-size: 0.74rem;
+        font-weight: 900;
+      }
+
       .step-pill {
-        min-height: 44px;
-        padding: 5px 3px;
-        font-size: 0.68rem;
+        display: none;
       }
 
       .checklist-tabs {
@@ -1614,9 +1819,9 @@
 <body data-screen="pasteScreen">
   <main class="app-shell" aria-live="polite">
     <nav class="workflow-rail" aria-label="Workflow progress">
-      <span class="workflow-compact-label">Step 3 of 4 - Bedside</span>
+      <span id="workflowCompactLabel" class="workflow-compact-label">Step 1 of 4 - Source</span>
       <div id="stepSource" class="step-pill is-current">1 Source</div>
-      <div id="stepPaste" class="step-pill">2 Paste</div>
+      <div id="stepPaste" class="step-pill">2 Checklist</div>
       <div id="stepBedside" class="step-pill">3 Bedside</div>
       <div id="stepOutput" class="step-pill">4 Output</div>
     </nav>
@@ -1628,16 +1833,192 @@
       <span id="findingsReadyStatus">Findings ready</span>
     </div>
 
+    <details id="toolsDrawer" class="tools-drawer">
+      <summary>Tools</summary>
+      <div class="tools-body">
+        <details id="profilePanel" class="profile-panel">
+          <summary>Prompt personalization</summary>
+          <div class="profile-body">
+            <p class="profile-note">Saved on this browser for future prompts. Keep this non-patient-specific.</p>
+            <div class="profile-grid">
+              <div>
+                <label for="profileServiceSelect">Service</label>
+                <select id="profileServiceSelect">
+                  <option value="">No default</option>
+                  <option>General medicine</option>
+                  <option>ICU/stepdown</option>
+                  <option>Surgery</option>
+                  <option>Emergency medicine/admission</option>
+                  <option>Endocrinology consult</option>
+                  <option>Cardiology consult</option>
+                  <option>Neurology</option>
+                  <option>Nephrology</option>
+                  <option>Pulmonology</option>
+                  <option>Infectious disease</option>
+                  <option>Gastroenterology</option>
+                  <option>Pediatrics</option>
+                  <option>OB/GYN</option>
+                  <option>Psychiatry</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div id="profileServiceOtherField" hidden>
+                <label for="profileServiceOtherInput">Other service</label>
+                <textarea id="profileServiceOtherInput" class="profile-input" rows="1" spellcheck="false" placeholder="Type service"></textarea>
+              </div>
+              <div>
+                <label for="profileTeamRoleSelect">Role</label>
+                <select id="profileTeamRoleSelect">
+                  <option value="">No default</option>
+                  <option>Primary team</option>
+                  <option>Consult service</option>
+                  <option>Cross-cover</option>
+                  <option>New admission</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div id="profileTeamRoleOtherField" hidden>
+                <label for="profileTeamRoleOtherInput">Other role</label>
+                <textarea id="profileTeamRoleOtherInput" class="profile-input" rows="1" spellcheck="false" placeholder="Type role"></textarea>
+              </div>
+              <div>
+                <label for="profileLearnerLevelSelect">Learner level</label>
+                <select id="profileLearnerLevelSelect">
+                  <option value="">No default</option>
+                  <option>Early M3</option>
+                  <option>Advanced student/sub-I</option>
+                  <option>Intern</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div id="profileLearnerLevelOtherField" hidden>
+                <label for="profileLearnerLevelOtherInput">Other learner level</label>
+                <textarea id="profileLearnerLevelOtherInput" class="profile-input" rows="1" spellcheck="false" placeholder="Type learner level"></textarea>
+              </div>
+              <div>
+                <label for="profileClinicalFocusSelect">Clinical focus</label>
+                <select id="profileClinicalFocusSelect">
+                  <option value="">No default</option>
+                  <option>Overall prerounding</option>
+                  <option>Consult question</option>
+                  <option>Active problems and trajectory</option>
+                  <option>Medication safety</option>
+                  <option>Discharge readiness</option>
+                  <option>Patient education</option>
+                  <option>Tasks and follow-up</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div id="profileClinicalFocusOtherField" hidden>
+                <label for="profileClinicalFocusOtherInput">Other clinical focus</label>
+                <textarea id="profileClinicalFocusOtherInput" class="profile-input" rows="1" spellcheck="false" placeholder="Type focus"></textarea>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button id="clearProfileButton" class="btn btn-quiet" type="button">Clear saved profile</button>
+              <p id="profileStatus" class="profile-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+        </details>
+
+        <details id="deidUtilityPanel" class="deid-utility">
+          <summary>De-identify anything</summary>
+          <div class="deid-body">
+            <p class="deid-note">This utility only returns redacted text. It does not change the checklist source.</p>
+            <label for="utilityRawInput">Text to de-identify</label>
+            <textarea id="utilityRawInput" class="deid-input" spellcheck="false" placeholder="Paste any note, lab header, message, or draft text here."></textarea>
+            <div class="deid-actions">
+              <button id="utilityDeidButton" class="btn btn-primary" type="button">De-identify</button>
+            </div>
+            <div id="utilityReview" class="scrub-review" hidden>
+              <div class="review-header">
+                <div>
+                  <p class="eyebrow">Review</p>
+                  <p class="review-title">Redacted text preview</p>
+                </div>
+                <p id="utilitySummary" class="review-count">0 redactions</p>
+              </div>
+              <p id="utilityVerdict" class="scrub-verdict">Review before copying.</p>
+              <ul id="utilityCounts" class="flag-list" aria-label="Utility redaction counts"></ul>
+              <label for="utilityScrubbedInput" class="sr-only">Redacted text preview</label>
+              <textarea id="utilityScrubbedInput" class="deid-preview" spellcheck="false" placeholder="Redacted text preview..."></textarea>
+              <details class="review-details">
+                <summary>Review details</summary>
+                <ul id="utilityFlags" class="flag-list" aria-label="Utility review flags"></ul>
+              </details>
+              <div class="deid-actions">
+                <button id="utilityCopyButton" class="btn btn-secondary" type="button">Copy redacted text</button>
+              </div>
+            </div>
+            <p id="utilityStatus" class="deid-status" role="status" aria-live="polite"></p>
+          </div>
+        </details>
+
+        <div class="tool-section">
+          <p class="tool-title">Demo</p>
+          <p class="tool-copy">Load a synthetic endocrinology note to try the full workflow.</p>
+          <button id="loadDemoSoapButton" class="btn btn-secondary" type="button">Load demo note</button>
+        </div>
+
+        <div class="tool-section">
+          <p class="tool-title">Checklist cleanup</p>
+          <p class="tool-copy">Use this if pasted checklist text is hard for the app to parse.</p>
+          <button id="copyPastedCleanupPromptButton" class="btn btn-secondary" type="button" hidden>Copy cleanup prompt</button>
+        </div>
+
+        <details id="installPanel" class="install-panel" aria-labelledby="installTitle" tabindex="-1">
+          <summary>Install / Offline</summary>
+          <div>
+            <p id="installTitle" class="install-title">Install or save for tablet use</p>
+            <p id="platformHint" class="install-copy">Open this app on the tablet, then use the matching option below.</p>
+          </div>
+          <div class="install-actions">
+            <button id="installButton" class="btn btn-primary" type="button" hidden>Install App</button>
+            <button id="shareButton" class="btn btn-secondary" type="button">Share Link</button>
+            <button id="copyLinkButton" class="btn btn-secondary" type="button">Copy Link</button>
+            <button id="downloadButton" class="btn btn-quiet" type="button">Download HTML</button>
+          </div>
+          <div class="install-steps">
+            <div class="install-step">
+              <h3>iPhone / iPad</h3>
+              <ol>
+                <li>Open the app in Safari.</li>
+                <li>Tap Share, then Add to Home Screen.</li>
+                <li>Use Download HTML to save a local copy in Files.</li>
+              </ol>
+            </div>
+            <div class="install-step">
+              <h3>Android tablet</h3>
+              <ol>
+                <li>Open the app in Chrome.</li>
+                <li>Tap Install App if shown, or Add to Home screen.</li>
+                <li>Use Download HTML for a standalone offline file.</li>
+              </ol>
+            </div>
+          </div>
+          <ul class="offline-checklist" aria-label="Offline readiness checklist">
+            <li><input id="offlineHomeScreen" type="checkbox" disabled><label for="offlineHomeScreen">Open from the Home Screen for the fastest bedside launch.</label></li>
+            <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Prepare the de-ID model once while online before relying on it offline.</label></li>
+            <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
+          </ul>
+          <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist fallback.</p>
+          <p id="installStatus" class="install-status" role="status" aria-live="polite"></p>
+        </details>
+      </div>
+    </details>
+
     <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
       <header class="hero">
         <p class="eyebrow">Bedside workflow</p>
         <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
-        <p class="helper">Follow the next button on each step: de-identify the source, copy the prompt, paste the checklist, then collect bedside findings.</p>
+        <p class="helper">Move through four stages: prepare the source, build the checklist, collect bedside findings, then generate the output.</p>
       </header>
 
+      <div class="guided-layout">
+        <div class="guided-main">
       <section class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
-          <p class="eyebrow">Step 1</p>
+          <p class="eyebrow">Source</p>
           <h2 id="promptOneTitle" class="workflow-title">What are you starting with?</h2>
           <p class="workflow-copy">Pick one. The app will tell you the next best action after that.</p>
         </div>
@@ -1670,7 +2051,7 @@
 
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
           <div class="guided-step">
-            <p class="eyebrow">Step 2</p>
+            <p class="eyebrow">Source details</p>
             <h3 id="priorSourceTitle" class="guided-step-title">Paste note and labs</h3>
             <p class="guided-step-copy">Raw text stays in this browser. The prompt will use only the editable de-identified preview.</p>
           </div>
@@ -1693,7 +2074,7 @@ UA: ketones negative, WBC present"></textarea>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
               <div>
-                <p class="eyebrow">Step 3</p>
+                <p class="eyebrow">Review</p>
                 <p class="review-title">Review de-identified preview</p>
               </div>
               <p id="scrubSummary" class="review-count">0 redactions</p>
@@ -1709,25 +2090,21 @@ UA: ketones negative, WBC present"></textarea>
           </div>
           <p class="next-action-copy">Next best action</p>
           <div class="prompt-actions guided-primary-actions">
-            <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify note</button>
-            <button id="scrubAndCopyButton" class="btn btn-primary" type="button" hidden>Copy prompt for checklist</button>
+            <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify and review</button>
+            <button id="scrubAndCopyButton" class="btn btn-primary" type="button" hidden>Copy checklist prompt</button>
           </div>
           <details class="more-options">
             <summary>More options</summary>
             <div class="more-options-body">
               <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button">Copy prompt for teaching</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
-              <div class="demo-actions">
-                <p class="demo-copy">Try the full workflow with a synthetic endocrinology SOAP note.</p>
-                <button id="loadDemoSoapButton" class="btn btn-secondary" type="button">Load Demo Endocrinology Note</button>
-              </div>
             </div>
           </details>
         </section>
 
         <section id="admissionSourcePanel" class="source-panel" aria-labelledby="admissionSourceTitle">
           <div class="guided-step">
-            <p class="eyebrow">Step 2</p>
+            <p class="eyebrow">Source details</p>
             <h3 id="admissionSourceTitle" class="guided-step-title">Fill the admission essentials</h3>
             <p class="guided-step-copy">Only chief concern and service are enough to start. Add more if it is easy.</p>
           </div>
@@ -1778,7 +2155,7 @@ UA: ketones negative, WBC present"></textarea>
           </div>
           <p class="next-action-copy">Next best action</p>
           <div class="prompt-actions guided-primary-actions">
-            <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy prompt for checklist</button>
+            <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
           </div>
           <details class="more-options">
             <summary>More options</summary>
@@ -1791,8 +2168,8 @@ UA: ketones negative, WBC present"></textarea>
         <p id="promptStatus" class="prompt-status" role="status" aria-live="polite"></p>
       </section>
 
-      <div class="surface paste-card">
-        <p class="eyebrow">Step 5</p>
+      <div id="checklistPasteCard" class="surface paste-card" hidden>
+        <p class="eyebrow">Checklist</p>
         <label for="checklistInput">Checklist from OpenEvidence</label>
         <textarea id="checklistInput" class="paste-input" spellcheck="false" placeholder="Paste the checklist OpenEvidence generated.
 
@@ -1802,54 +2179,13 @@ SYMPTOM TRAJECTORY
 Since yesterday, are you feeling better?: Better / Same / Worse / Other ___"></textarea>
         <p id="parseSummary" class="parse-summary" role="status" aria-live="polite"></p>
         <p id="pasteError" class="inline-error" role="alert"></p>
-        <button id="copyPastedCleanupPromptButton" class="btn btn-secondary paste-recovery-button" type="button" hidden>Copy Cleanup Prompt</button>
         <div class="actions">
-          <button id="buildButton" class="btn btn-primary btn-full" type="button">Start bedside checklist</button>
+          <button id="buildButton" class="btn btn-primary btn-full" type="button">Build checklist</button>
         </div>
 
         <details class="more-options">
           <summary>More options</summary>
           <div class="more-options-body">
-            <button id="installGuideButton" class="btn btn-secondary" type="button">Install / Offline</button>
-            <details id="installPanel" class="install-panel" aria-labelledby="installTitle" tabindex="-1">
-              <summary>Install / Offline</summary>
-              <div>
-                <p id="installTitle" class="install-title">Install or save for tablet use</p>
-                <p id="platformHint" class="install-copy">Open this app on the tablet, then use the matching option below.</p>
-              </div>
-              <div class="install-actions">
-                <button id="installButton" class="btn btn-primary" type="button" hidden>Install App</button>
-                <button id="shareButton" class="btn btn-secondary" type="button">Share Link</button>
-                <button id="copyLinkButton" class="btn btn-secondary" type="button">Copy Link</button>
-                <button id="downloadButton" class="btn btn-quiet" type="button">Download HTML</button>
-              </div>
-              <div class="install-steps">
-                <div class="install-step">
-                  <h3>iPhone / iPad</h3>
-                  <ol>
-                    <li>Open the app in Safari.</li>
-                    <li>Tap Share, then Add to Home Screen.</li>
-                    <li>Use Download HTML to save a local copy in Files.</li>
-                  </ol>
-                </div>
-                <div class="install-step">
-                  <h3>Android tablet</h3>
-                  <ol>
-                    <li>Open the app in Chrome.</li>
-                    <li>Tap Install App if shown, or Add to Home screen.</li>
-                    <li>Use Download HTML for a standalone offline file.</li>
-                  </ol>
-                </div>
-              </div>
-              <ul class="offline-checklist" aria-label="Offline readiness checklist">
-                <li><input id="offlineHomeScreen" type="checkbox" disabled><label for="offlineHomeScreen">Open from the Home Screen for the fastest bedside launch.</label></li>
-                <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Prepare the de-ID model once while online before relying on it offline.</label></li>
-                <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
-              </ul>
-              <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist fallback.</p>
-              <p id="installStatus" class="install-status" role="status" aria-live="polite"></p>
-            </details>
-
             <details>
               <summary>Expected input format</summary>
               <pre class="example">BEDSIDE QUESTION CHECKLIST
@@ -1874,6 +2210,19 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
             </details>
             </div>
         </details>
+      </div>
+        </div>
+        <aside class="guide-sidebar" aria-labelledby="nextActionTitle">
+          <p class="eyebrow">Current task</p>
+          <h2 id="nextActionTitle" class="guide-sidebar-title">Prepare the source</h2>
+          <p id="nextActionCopy" class="guide-sidebar-copy">Paste a prior note or fill admission essentials, then copy a checklist prompt for OpenEvidence.</p>
+          <ol class="guide-sidebar-list">
+            <li>Source ready</li>
+            <li>Checklist built</li>
+            <li>Bedside findings captured</li>
+            <li>Output copied</li>
+          </ol>
+        </aside>
       </div>
     </section>
 
@@ -1949,7 +2298,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       <header class="hero">
         <p class="eyebrow">OpenEvidence</p>
         <h2 id="outputTitle">Findings</h2>
-        <p class="helper">Copy Prompt 2 with these findings attached, then paste it back into OpenEvidence for a rounds presentation and detailed SOAP update.</p>
+        <p class="helper">Copy the rounds note prompt with these findings attached, then paste it into OpenEvidence for a presentation and detailed SOAP update.</p>
       </header>
 
       <div class="surface output-card">
@@ -1961,7 +2310,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         <textarea id="outputText" class="output-box" readonly></textarea>
         <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
         <div class="output-actions">
-          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy prompt for rounds note</button>
+          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy rounds note prompt</button>
           <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           <button id="copyButton" class="btn btn-secondary" type="button">Copy Findings Only</button>
           <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
@@ -2027,7 +2376,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       modelReady: false,
       compiledText: "",
       pendingPhiCopy: null,
-      lastPhiSafetyCheck: null
+      lastPhiSafetyCheck: null,
+      userProfile: {},
+      utilityScrubbedText: "",
+      utilityScrubResult: null
     };
 
     const elements = {
@@ -2035,15 +2387,35 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       stepPaste: document.getElementById("stepPaste"),
       stepBedside: document.getElementById("stepBedside"),
       stepOutput: document.getElementById("stepOutput"),
+      workflowCompactLabel: document.getElementById("workflowCompactLabel"),
       sourceReadyStatus: document.getElementById("sourceReadyStatus"),
       checklistReadyStatus: document.getElementById("checklistReadyStatus"),
       findingsReadyStatus: document.getElementById("findingsReadyStatus"),
+      toolsDrawer: document.getElementById("toolsDrawer"),
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
       outputScreen: document.getElementById("outputScreen"),
+      checklistPasteCard: document.getElementById("checklistPasteCard"),
+      nextActionTitle: document.getElementById("nextActionTitle"),
+      nextActionCopy: document.getElementById("nextActionCopy"),
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
       promptCopiedCopy: document.getElementById("promptCopiedCopy"),
       editSourceButton: document.getElementById("editSourceButton"),
+      profilePanel: document.getElementById("profilePanel"),
+      profileServiceSelect: document.getElementById("profileServiceSelect"),
+      profileServiceOtherField: document.getElementById("profileServiceOtherField"),
+      profileServiceOtherInput: document.getElementById("profileServiceOtherInput"),
+      profileTeamRoleSelect: document.getElementById("profileTeamRoleSelect"),
+      profileTeamRoleOtherField: document.getElementById("profileTeamRoleOtherField"),
+      profileTeamRoleOtherInput: document.getElementById("profileTeamRoleOtherInput"),
+      profileLearnerLevelSelect: document.getElementById("profileLearnerLevelSelect"),
+      profileLearnerLevelOtherField: document.getElementById("profileLearnerLevelOtherField"),
+      profileLearnerLevelOtherInput: document.getElementById("profileLearnerLevelOtherInput"),
+      profileClinicalFocusSelect: document.getElementById("profileClinicalFocusSelect"),
+      profileClinicalFocusOtherField: document.getElementById("profileClinicalFocusOtherField"),
+      profileClinicalFocusOtherInput: document.getElementById("profileClinicalFocusOtherInput"),
+      clearProfileButton: document.getElementById("clearProfileButton"),
+      profileStatus: document.getElementById("profileStatus"),
       priorModeButton: document.getElementById("priorModeButton"),
       admissionModeButton: document.getElementById("admissionModeButton"),
       priorSourcePanel: document.getElementById("priorSourcePanel"),
@@ -2062,13 +2434,23 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
+      deidUtilityPanel: document.getElementById("deidUtilityPanel"),
+      utilityRawInput: document.getElementById("utilityRawInput"),
+      utilityDeidButton: document.getElementById("utilityDeidButton"),
+      utilityReview: document.getElementById("utilityReview"),
+      utilitySummary: document.getElementById("utilitySummary"),
+      utilityVerdict: document.getElementById("utilityVerdict"),
+      utilityCounts: document.getElementById("utilityCounts"),
+      utilityScrubbedInput: document.getElementById("utilityScrubbedInput"),
+      utilityFlags: document.getElementById("utilityFlags"),
+      utilityCopyButton: document.getElementById("utilityCopyButton"),
+      utilityStatus: document.getElementById("utilityStatus"),
       promptStatus: document.getElementById("promptStatus"),
       checklistInput: document.getElementById("checklistInput"),
       parseSummary: document.getElementById("parseSummary"),
       pasteError: document.getElementById("pasteError"),
       copyPastedCleanupPromptButton: document.getElementById("copyPastedCleanupPromptButton"),
       buildButton: document.getElementById("buildButton"),
-      installGuideButton: document.getElementById("installGuideButton"),
       installPanel: document.getElementById("installPanel"),
       installButton: document.getElementById("installButton"),
       shareButton: document.getElementById("shareButton"),
@@ -2144,9 +2526,28 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       { key: "monitoringConcerns", label: "Main concerns to monitor today", element: document.getElementById("monitoringConcernsInput") }
     ];
 
+    const userProfileDefaults = {
+      service: "",
+      serviceOther: "",
+      teamRole: "",
+      teamRoleOther: "",
+      learnerLevel: "",
+      learnerLevelOther: "",
+      clinicalFocus: "",
+      clinicalFocusOther: ""
+    };
+
+    const userProfileFields = [
+      { key: "service", label: "Service", select: document.getElementById("profileServiceSelect"), other: document.getElementById("profileServiceOtherInput"), otherField: document.getElementById("profileServiceOtherField") },
+      { key: "teamRole", label: "Role", select: document.getElementById("profileTeamRoleSelect"), other: document.getElementById("profileTeamRoleOtherInput"), otherField: document.getElementById("profileTeamRoleOtherField") },
+      { key: "learnerLevel", label: "Learner level", select: document.getElementById("profileLearnerLevelSelect"), other: document.getElementById("profileLearnerLevelOtherInput"), otherField: document.getElementById("profileLearnerLevelOtherField") },
+      { key: "clinicalFocus", label: "Clinical focus", select: document.getElementById("profileClinicalFocusSelect"), other: document.getElementById("profileClinicalFocusOtherInput"), otherField: document.getElementById("profileClinicalFocusOtherField") }
+    ];
+
     const hostedAppUrl = "https://aaronge-2020.github.io/prerounding-checklist/";
     const openEvidenceUrl = "https://www.openevidence.com/";
     const sessionKey = "preRoundChecklistSessionV2";
+    const userProfileKey = "preRoundUserProfileV1";
     const deidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
     const deidentifierDtype = "q8";
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
@@ -2670,23 +3071,44 @@ Sensory level present: No / Yes, at ___`;
       elements.sourceReadyStatus.textContent = sourceReady ? "Source ready" : "Source needed";
       elements.checklistReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
       elements.findingsReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
+
+      if (!sourceReady) {
+        elements.nextActionTitle.textContent = "Prepare the source";
+        elements.nextActionCopy.textContent = "Paste a prior note or fill admission essentials, then copy a checklist prompt.";
+      } else if (!checklistReady) {
+        elements.nextActionTitle.textContent = "Build the checklist";
+        elements.nextActionCopy.textContent = "Paste the OpenEvidence checklist here, then build the bedside checklist.";
+      } else if (!findingsReady) {
+        elements.nextActionTitle.textContent = "Collect bedside findings";
+        elements.nextActionCopy.textContent = "Work through bedside questions and focused exam items, then generate findings.";
+      } else {
+        elements.nextActionTitle.textContent = "Copy the output";
+        elements.nextActionCopy.textContent = "Copy findings alone or copy the rounds note prompt for OpenEvidence.";
+      }
     }
 
     function updateStepRail(activeStep) {
       const hasPrompt = state.promptCollapsed || state.scrubbedNote || formatAdmissionContext();
       const hasChecklist = state.sections.length > 0;
       const hasOutput = Boolean(state.compiledText);
+      const compactLabels = {
+        source: "Step 1 of 4 - Source",
+        paste: "Step 2 of 4 - Checklist",
+        bedside: "Step 3 of 4 - Bedside",
+        output: "Step 4 of 4 - Output"
+      };
       const steps = [
         { element: elements.stepSource, key: "source", complete: Boolean(hasPrompt) },
         { element: elements.stepPaste, key: "paste", complete: hasChecklist },
         { element: elements.stepBedside, key: "bedside", complete: hasOutput },
-        { element: elements.stepOutput, key: "output", complete: false }
+        { element: elements.stepOutput, key: "output", complete: hasOutput && activeStep !== "output" }
       ];
 
       steps.forEach((step) => {
         step.element.classList.toggle("is-current", step.key === activeStep);
         step.element.classList.toggle("is-complete", step.complete && step.key !== activeStep);
       });
+      elements.workflowCompactLabel.textContent = compactLabels[activeStep] || compactLabels.source;
       updateGuidedStatus();
     }
 
@@ -2697,8 +3119,9 @@ Sensory level present: No / Yes, at ___`;
       elements.priorModeButton.parentElement.hidden = isCollapsed;
       elements.priorSourcePanel.hidden = isCollapsed;
       elements.admissionSourcePanel.hidden = isCollapsed;
+      elements.checklistPasteCard.hidden = !isCollapsed;
       updateSourcePrimaryActions();
-      updateStepRail("paste");
+      updateStepRail(isCollapsed ? "paste" : "source");
     }
 
     function setOutputMode(mode) {
@@ -2736,6 +3159,258 @@ Sensory level present: No / Yes, at ___`;
         return false;
       }
       return true;
+    }
+
+    function safeLocalStorageSet(key, value) {
+      try {
+        window.localStorage.setItem(key, value);
+      } catch (error) {
+        return false;
+      }
+      return true;
+    }
+
+    function safeLocalStorageGet(key) {
+      try {
+        return window.localStorage.getItem(key);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function safeLocalStorageRemove(key) {
+      try {
+        window.localStorage.removeItem(key);
+      } catch (error) {
+        return false;
+      }
+      return true;
+    }
+
+    function sanitizeProfileValue(value) {
+      return String(value || "")
+        .replace(/[<>]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function otherProfileKey(key) {
+      return `${key}Other`;
+    }
+
+    function selectOptionValues(select) {
+      return Array.from(select.options).map((option) => option.value || option.textContent);
+    }
+
+    function findProfileOption(field, value) {
+      const cleanValue = sanitizeProfileValue(value);
+      if (!cleanValue) {
+        return "";
+      }
+
+      const options = selectOptionValues(field.select);
+      const exact = options.find((option) => option.toLowerCase() === cleanValue.toLowerCase());
+      if (exact) {
+        return exact;
+      }
+
+      const normalized = cleanValue.toLowerCase();
+      if (field.key === "service") {
+        if (/\b(endocrine|endocrinology)\b/.test(normalized)) return "Endocrinology consult";
+        if (/\bcardio/.test(normalized)) return "Cardiology consult";
+        if (/\bneuro/.test(normalized)) return "Neurology";
+        if (/\bneph|renal|kidney/.test(normalized)) return "Nephrology";
+        if (/\bpulm|respiratory/.test(normalized)) return "Pulmonology";
+        if (/\binfectious|id consult|\bid\b/.test(normalized)) return "Infectious disease";
+        if (/\bgastro|hepatology|\bgi\b/.test(normalized)) return "Gastroenterology";
+        if (/\bicu|stepdown|critical/.test(normalized)) return "ICU/stepdown";
+        if (/\bed|emergency|admission/.test(normalized)) return "Emergency medicine/admission";
+        if (/\bsurg/.test(normalized)) return "Surgery";
+        if (/\bmedicine|med\b/.test(normalized)) return "General medicine";
+        if (/\bpeds|pediatric/.test(normalized)) return "Pediatrics";
+        if (/\bob|gyn|obstetric/.test(normalized)) return "OB/GYN";
+        if (/\bpsych/.test(normalized)) return "Psychiatry";
+      }
+
+      if (field.key === "clinicalFocus") {
+        if (/\bconsult/.test(normalized)) return "Consult question";
+        if (/\bactive|problem|trajectory|overnight|interval/.test(normalized)) return "Active problems and trajectory";
+        if (/\bmed|insulin|anticoag|antibiotic|safety/.test(normalized)) return "Medication safety";
+        if (/\bdischarge|dispo|barrier/.test(normalized)) return "Discharge readiness";
+        if (/\beducat|teach|counsel/.test(normalized)) return "Patient education";
+        if (/\btask|follow|pending|todo/.test(normalized)) return "Tasks and follow-up";
+        if (/\boverall|pre.?round/.test(normalized)) return "Overall prerounding";
+      }
+
+      return "Other";
+    }
+
+    function normalizeProfileChoice(profile, field, value) {
+      const cleanValue = sanitizeProfileValue(value);
+      const otherKey = otherProfileKey(field.key);
+      const option = findProfileOption(field, cleanValue);
+      profile[field.key] = option;
+      profile[otherKey] = option === "Other" ? cleanValue : "";
+    }
+
+    function normalizeUserProfile(profile = {}) {
+      const normalized = { ...userProfileDefaults };
+
+      userProfileFields.forEach((field) => {
+        const otherKey = otherProfileKey(field.key);
+        const rawValue = sanitizeProfileValue(profile[field.key]);
+        const rawOther = sanitizeProfileValue(profile[otherKey]);
+        const legacyValue = field.key === "clinicalFocus"
+          ? sanitizeProfileValue(profile.clinicalFocus || profile.defaultFocus || "")
+          : rawValue;
+
+        normalizeProfileChoice(normalized, field, legacyValue);
+        if (normalized[field.key] === "Other" && rawOther) {
+          normalized[otherKey] = rawOther;
+        }
+      });
+
+      return normalized;
+    }
+
+    function profileFieldValue(profile, field) {
+      if (!field) {
+        return "";
+      }
+      const value = sanitizeProfileValue(profile[field.key]);
+      if (value === "Other") {
+        return sanitizeProfileValue(profile[otherProfileKey(field.key)]);
+      }
+      return value;
+    }
+
+    function userProfileHasValues(profile = state.userProfile) {
+      return userProfileFields.some((field) => profileFieldValue(profile || {}, field));
+    }
+
+    function updateProfileStatus(message = "") {
+      elements.profileStatus.textContent = message || (userProfileHasValues() ? "Saved on this browser." : "No saved profile.");
+    }
+
+    function syncUserProfileFromFields(options = {}) {
+      const profile = {};
+      userProfileFields.forEach((field) => {
+        profile[field.key] = sanitizeProfileValue(field.select.value);
+        profile[otherProfileKey(field.key)] = field.select.value === "Other"
+          ? sanitizeProfileValue(field.other.value)
+          : "";
+      });
+      state.userProfile = normalizeUserProfile(profile);
+
+      if (options.save !== false) {
+        if (userProfileHasValues(state.userProfile)) {
+          safeLocalStorageSet(userProfileKey, JSON.stringify(state.userProfile));
+          updateProfileStatus("Saved on this browser.");
+        } else {
+          safeLocalStorageRemove(userProfileKey);
+          updateProfileStatus("No saved profile.");
+        }
+      }
+
+      return state.userProfile;
+    }
+
+    function restoreUserProfile() {
+      const saved = safeLocalStorageGet(userProfileKey);
+      let profile = { ...userProfileDefaults };
+
+      if (saved) {
+        try {
+          profile = normalizeUserProfile(JSON.parse(saved));
+        } catch (error) {
+          safeLocalStorageRemove(userProfileKey);
+        }
+      }
+
+      state.userProfile = profile;
+      userProfileFields.forEach((field) => {
+        const otherKey = otherProfileKey(field.key);
+        field.select.value = profile[field.key] || "";
+        field.other.value = profile[otherKey] || "";
+        field.otherField.hidden = field.select.value !== "Other";
+        requestAnimationFrame(() => autoResize(field.other));
+      });
+      if (saved && userProfileHasValues(profile)) {
+        safeLocalStorageSet(userProfileKey, JSON.stringify(profile));
+      }
+      updateProfileStatus();
+    }
+
+    function clearUserProfile() {
+      state.userProfile = { ...userProfileDefaults };
+      userProfileFields.forEach((field) => {
+        field.select.value = "";
+        field.other.value = "";
+        field.otherField.hidden = true;
+        autoResize(field.other);
+      });
+      safeLocalStorageRemove(userProfileKey);
+      updateProfileStatus("Saved profile cleared.");
+      showToast("Saved prompt profile cleared.");
+    }
+
+    function userProfileSuggestsConsult(profile) {
+      const service = profileFieldValue(profile, userProfileFields.find((field) => field.key === "service"));
+      const role = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
+      const focus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
+      return role === "Consult service" ||
+        focus === "Consult question" ||
+        /\bconsult\b/i.test(service);
+    }
+
+    function userProfileSuggestsPrimaryTeam(profile) {
+      const role = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
+      return role === "Primary team" ||
+        role === "Cross-cover" ||
+        role === "New admission";
+    }
+
+    function buildUserContextBlock() {
+      const profile = syncUserProfileFromFields({ save: false });
+      if (!userProfileHasValues(profile)) {
+        return "";
+      }
+
+      const lines = [
+        "<user_context>",
+        "Browser-saved prompt preferences; these are not patient-specific."
+      ];
+
+      userProfileFields.forEach((field) => {
+        const value = profileFieldValue(profile, field);
+        if (value) {
+          lines.push(`${field.label}: ${value}`);
+        }
+      });
+
+      const tailoring = [];
+      if (userProfileSuggestsConsult(profile)) {
+        tailoring.push("If this is a consult role, prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
+      }
+      if (userProfileSuggestsPrimaryTeam(profile)) {
+        tailoring.push("If this is a primary-team role, prioritize clinical trajectory, active problems, overnight events, discharge readiness, and task follow-up.");
+      }
+      const learnerLevel = profileFieldValue(profile, userProfileFields.find((field) => field.key === "learnerLevel"));
+      const clinicalFocus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
+      if (learnerLevel) {
+        tailoring.push(`Adapt explanation depth and expectations to: ${learnerLevel}.`);
+      }
+      if (clinicalFocus) {
+        tailoring.push(`Keep the clinical focus on: ${clinicalFocus}.`);
+      }
+
+      if (tailoring.length) {
+        lines.push("Tailoring instructions:");
+        tailoring.forEach((item) => lines.push(`- ${item}`));
+      }
+
+      lines.push("</user_context>");
+      return lines.join("\n");
     }
 
     function saveChecklistSession() {
@@ -2888,10 +3563,11 @@ Sensory level present: No / Yes, at ___`;
       const warningTotal = warnings.length;
       const highTotal = warnings.filter((warning) => warning.severity === "high").length;
       const mediumTotal = warnings.filter((warning) => warning.severity === "medium").length;
+      const subject = copyContext.subject || "prompt";
 
       elements.phiSafetyTitle.textContent = copyContext.title || "PHI safety check";
       elements.phiSafetyBadge.textContent = highTotal ? "High risk" : mediumTotal ? "Review" : "Check";
-      elements.phiSafetySummary.textContent = `${check.redactionPlaceholderCount} redacted placeholder${check.redactionPlaceholderCount === 1 ? "" : "s"} found in the prompt. ${warningTotal} possible remaining identifier${warningTotal === 1 ? "" : "s"} flagged before copy.`;
+      elements.phiSafetySummary.textContent = `${check.redactionPlaceholderCount} redacted placeholder${check.redactionPlaceholderCount === 1 ? "" : "s"} found in the ${subject}. ${warningTotal} possible remaining identifier${warningTotal === 1 ? "" : "s"} flagged before copy.`;
       elements.phiSafetyVerdict.textContent = warningTotal
         ? "Review possible identifiers before copying."
         : "No obvious identifiers found.";
@@ -2980,6 +3656,7 @@ Sensory level present: No / Yes, at ___`;
         toastOptions: options.toastOptions || options,
         reviewTarget: options.reviewTarget || "source",
         title: options.title || "PHI safety check",
+        subject: options.subject || "prompt",
         onCopied: options.onCopied
       };
       renderPhiSafetyPanel(check, state.pendingPhiCopy);
@@ -3003,6 +3680,20 @@ Sensory level present: No / Yes, at ___`;
         showScreen("pasteScreen");
         elements.checklistInput.focus({ preventScroll: true });
         elements.checklistInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      if (target === "utility") {
+        showScreen("pasteScreen");
+        elements.toolsDrawer.open = true;
+        elements.deidUtilityPanel.open = true;
+        if (!elements.utilityReview.hidden) {
+          elements.utilityScrubbedInput.focus({ preventScroll: true });
+          elements.utilityReview.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          elements.utilityRawInput.focus({ preventScroll: true });
+          elements.deidUtilityPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
         return;
       }
 
@@ -3826,9 +4517,9 @@ Sensory level present: No / Yes, at ___`;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
-      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy prompt for checklist";
+      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
       elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy prompt for teaching";
-      elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify note";
+      elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
     }
 
     async function scrubSoapNoteText(rawText) {
@@ -3881,6 +4572,94 @@ Sensory level present: No / Yes, at ___`;
       updateGuidedStatus();
     }
 
+    function clearUtilityReview() {
+      state.utilityScrubbedText = "";
+      state.utilityScrubResult = null;
+      elements.utilityScrubbedInput.value = "";
+      elements.utilityReview.hidden = true;
+      elements.utilityVerdict.textContent = "Review before copying.";
+      elements.utilityVerdict.classList.remove("is-warning");
+      elements.utilitySummary.textContent = "0 redactions";
+      elements.utilityCounts.innerHTML = "";
+      elements.utilityFlags.innerHTML = "";
+      elements.utilityStatus.textContent = "";
+    }
+
+    function syncUtilityScrubbedText() {
+      state.utilityScrubbedText = elements.utilityScrubbedInput.value.trim();
+    }
+
+    function renderUtilityScrubResult(result) {
+      state.utilityScrubResult = result;
+      state.utilityScrubbedText = result.text;
+      elements.utilityReview.hidden = false;
+      elements.utilityScrubbedInput.value = result.text;
+      const residualCount = result.residualWarnings?.length || 0;
+      elements.utilitySummary.textContent = `${result.redactionTotal} redaction${result.redactionTotal === 1 ? "" : "s"}; ${residualCount} review flag${residualCount === 1 ? "" : "s"}`;
+      elements.utilityVerdict.textContent = residualCount
+        ? "Review possible identifiers before copying."
+        : "No obvious identifiers found.";
+      elements.utilityVerdict.classList.toggle("is-warning", residualCount > 0);
+      elements.utilityCounts.innerHTML = "";
+      elements.utilityFlags.innerHTML = "";
+
+      const countLabels = Object.entries(result.counts).map(([label, value]) => `${label}: ${value}`);
+      if (residualCount) {
+        countLabels.push(`Residual flags: ${residualCount}`);
+      }
+      const flags = result.flags.length ? result.flags : ["No obvious leftover identifiers flagged. Review still required."];
+
+      countLabels.forEach((flag) => {
+        const item = document.createElement("li");
+        item.textContent = flag;
+        elements.utilityCounts.appendChild(item);
+      });
+
+      flags.forEach((flag) => {
+        const item = document.createElement("li");
+        item.textContent = flag;
+        elements.utilityFlags.appendChild(item);
+      });
+    }
+
+    function setUtilityBusy(isBusy) {
+      elements.utilityDeidButton.disabled = isBusy;
+      elements.utilityCopyButton.disabled = isBusy;
+      elements.utilityDeidButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.utilityCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.utilityDeidButton.textContent = isBusy ? "Working..." : "De-identify";
+      elements.utilityCopyButton.textContent = isBusy ? "Working..." : "Copy redacted text";
+    }
+
+    async function scrubUtilityText() {
+      const rawText = elements.utilityRawInput.value.trim();
+      if (!rawText) {
+        elements.utilityStatus.textContent = "Paste text to de-identify first.";
+        elements.utilityRawInput.focus();
+        return null;
+      }
+
+      setUtilityBusy(true);
+      elements.utilityStatus.textContent = "Running local deidentifier...";
+
+      let result;
+      try {
+        result = await scrubSoapNoteText(rawText);
+      } catch (error) {
+        elements.utilityStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
+        throw error;
+      } finally {
+        setUtilityBusy(false);
+      }
+
+      renderUtilityScrubResult(result);
+      elements.utilityStatus.textContent = "Redacted preview ready. Review before copying.";
+      requestAnimationFrame(() => {
+        elements.utilityReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+      return result;
+    }
+
     async function scrubCurrentSoapNote() {
       const rawPriorSource = buildRawPriorSourceText();
 
@@ -3928,12 +4707,13 @@ Sensory level present: No / Yes, at ___`;
       if (!scrubbedNote) {
         return "";
       }
+      const userContext = buildUserContextBlock();
 
       return `${checklistPrompt}
 
 <context_type>
 Prior SOAP note and/or lab results available.
-</context_type>
+</context_type>${userContext ? `\n\n${userContext}` : ""}
 
 <patient_context>
 De-identified patient note and labs:
@@ -3948,8 +4728,9 @@ Now produce the final checklist only.`;
       if (!scrubbedNote) {
         return "";
       }
+      const userContext = buildUserContextBlock();
 
-      return `${patientTeachingPromptInstructions}
+      return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
 <patient_context>
 De-identified SOAP note and labs:
@@ -3966,10 +4747,11 @@ Now teach me this patient.`;
         admissionFields[0].element.focus();
         return "";
       }
+      const userContext = buildUserContextBlock();
 
       return `${newAdmissionChecklistPrompt}
 
-<patient_context>
+${userContext ? `${userContext}\n\n` : ""}<patient_context>
 Admission intake information:
 ${admissionContext}
 </patient_context>
@@ -3985,6 +4767,7 @@ Now produce the final checklist only.`;
       syncScrubbedNote();
       const sourceBlocks = [];
       const admissionContext = formatAdmissionContext();
+      const userContext = buildUserContextBlock();
 
       if (state.scrubbedNote) {
         sourceBlocks.push(`De-identified source note:\n${state.scrubbedNote}`);
@@ -3995,7 +4778,7 @@ Now produce the final checklist only.`;
       }
 
       const promptIntro = presentationPromptIntro(Boolean(state.scrubbedNote), Boolean(admissionContext));
-      return `${promptIntro}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+      return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
     configureManifest();
@@ -4117,8 +4900,9 @@ Now produce the final checklist only.`;
       const issueText = auditResult.issues.length
         ? auditResult.issues.map((issue) => `- ${issue.message}`).join("\n")
         : "- Shorten and organize the checklist into the required bedside-first format.";
+      const userContext = buildUserContextBlock();
 
-      return `You are an experienced attending physician and clerkship coach. Rewrite the checklist below so it is shorter, bedside-first, and fully parseable by a checklist app.
+      return `You are an experienced attending physician and clerkship coach. Rewrite the checklist below so it is shorter, bedside-first, and fully parseable by a checklist app.${userContext ? `\n\n${userContext}` : ""}
 
 Fix these issues:
 ${issueText}
@@ -4888,6 +5672,7 @@ ${rawChecklist.trim()}`;
       if (!itemCount) {
         setError("I could not find checklist items. The checklist should have section headers plus lines like “How is your breathing?: Normal / A little hard / Very hard” or “Respiratory rate: __”. If OpenEvidence returned prose, copy the cleanup prompt and paste that into OpenEvidence.");
         elements.copyPastedCleanupPromptButton.hidden = false;
+        elements.toolsDrawer.open = true;
         setParseSummary(null);
         if (options.auto) {
           showToast("Checklist was pasted, but I could not find usable items.");
@@ -4959,6 +5744,24 @@ ${rawChecklist.trim()}`;
       tryBuildChecklist();
     });
 
+    userProfileFields.forEach((field) => {
+      field.select.addEventListener("change", () => {
+        field.otherField.hidden = field.select.value !== "Other";
+        if (field.select.value !== "Other") {
+          field.other.value = "";
+        }
+        autoResize(field.other);
+        syncUserProfileFromFields();
+      });
+
+      field.other.addEventListener("input", () => {
+        autoResize(field.other);
+        syncUserProfileFromFields();
+      });
+    });
+
+    elements.clearProfileButton.addEventListener("click", clearUserProfile);
+
     elements.copyPastedCleanupPromptButton.addEventListener("click", async () => {
       const rawChecklist = elements.checklistInput.value.trim();
       if (!rawChecklist) {
@@ -5013,6 +5816,42 @@ ${rawChecklist.trim()}`;
     });
 
     elements.scrubbedNoteInput.addEventListener("input", syncScrubbedNote);
+
+    elements.utilityRawInput.addEventListener("input", () => {
+      clearUtilityReview();
+      if (elements.utilityRawInput.value.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.utilityRawInput.addEventListener("focus", prepareDeidentifierModel);
+
+    elements.utilityRawInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
+    });
+
+    elements.utilityScrubbedInput.addEventListener("input", syncUtilityScrubbedText);
+
+    elements.utilityDeidButton.addEventListener("click", () => {
+      scrubUtilityText().catch((error) => {
+        console.error(error);
+      });
+    });
+
+    elements.utilityCopyButton.addEventListener("click", async () => {
+      syncUtilityScrubbedText();
+      if (!state.utilityScrubbedText) {
+        elements.utilityStatus.textContent = "De-identify text first.";
+        elements.utilityRawInput.focus();
+        return;
+      }
+
+      await copyPromptWithPhiWarning(state.utilityScrubbedText, elements.utilityStatus, "Redacted text copied.", {
+        title: "PHI safety check for redacted text",
+        subject: "text",
+        reviewTarget: "utility"
+      });
+    });
 
     elements.editSourceButton.addEventListener("click", () => {
       setPromptCollapsed(false);
@@ -5113,12 +5952,6 @@ ${rawChecklist.trim()}`;
           elements.checklistInput.focus();
         }
       }
-    });
-
-    elements.installGuideButton.addEventListener("click", () => {
-      elements.installPanel.open = true;
-      elements.installPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-      elements.installPanel.focus({ preventScroll: true });
     });
 
     elements.installButton.addEventListener("click", async () => {
@@ -5321,10 +6154,11 @@ ${rawChecklist.trim()}`;
     });
     elements.dismissPhiPanelButton.addEventListener("click", hidePhiSafetyPanel);
 
+    restoreUserProfile();
     const restoredSession = restoreChecklistSession();
     updateSourcePrimaryActions();
     updateChecklistPasteState();
-    updateStepRail(restoredSession ? "paste" : "source");
+    updateStepRail(restoredSession ? "bedside" : "source");
     elements.offlineHomeScreen.checked = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   </script>
 </body>
