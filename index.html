@@ -2367,7 +2367,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       createDeidentifier,
       DEFAULT_DTYPE,
       DEFAULT_FALLBACK_MODEL_ID,
-      DEFAULT_PRIMARY_MODEL_ID
+      DEFAULT_PRIMARY_MODEL_ID,
+      cleanupDeidArtifacts,
+      normalizeResidualTemporalPhi
     } from "./deid.js";
 
     env.allowLocalModels = false;
@@ -3765,18 +3767,19 @@ Sensory level present: No / Yes, at ___`;
         return false;
       }
 
-      const check = runPhiSafetyCheck(prompt);
+      const safePrompt = normalizeResidualTemporalPhi(cleanupDeidArtifacts(prompt));
+      const check = runPhiSafetyCheck(safePrompt);
       state.lastPhiSafetyCheck = check;
 
       if (!check.warnings.length) {
         state.pendingPhiCopy = null;
         hidePhiSafetyPanel();
-        await copyText(prompt, statusElement, successMessage, options.toastOptions || options);
+        await copyText(safePrompt, statusElement, successMessage, options.toastOptions || options);
         return true;
       }
 
       state.pendingPhiCopy = {
-        prompt,
+        prompt: safePrompt,
         statusElement,
         successMessage,
         toastOptions: options.toastOptions || options,

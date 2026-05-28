@@ -417,7 +417,8 @@ function normalizePhiEntity(rawText, entity) {
     placeholder: entity.placeholder || placeholderForLabel(label),
     source: entity.source || "model",
     score: entity.score || 0,
-    context: entity.context || ""
+    context: entity.context || "",
+    temporal: entity.temporal || null
   };
 }
 
@@ -692,6 +693,7 @@ export function mergeEntities(entities, rawText) {
       last.placeholder = placeholderForLabel(last.label);
       last.source = mergeSourceLabel(last.source, entity.source);
       last.context = [last.context, entity.context].filter(Boolean).join("; ");
+      last.temporal = last.temporal || entity.temporal || null;
       return;
     }
 
@@ -702,7 +704,8 @@ export function mergeEntities(entities, rawText) {
       placeholder: entity.placeholder || placeholderForLabel(entity.label),
       score: entity.score || 0,
       source: entity.source || "model",
-      context: entity.context || ""
+      context: entity.context || "",
+      temporal: entity.temporal || null
     });
   });
 
@@ -771,33 +774,154 @@ const monthNameToNumber = new Map([
   ["october", 10], ["nov", 11], ["november", 11], ["dec", 12], ["december", 12]
 ]);
 
-function parseDateSpanParts(value) {
-  const span = String(value || "").replace(/[,]/g, " ").replace(/\s+/g, " ").trim();
-  let match = span.match(/\b((?:19|20)\d{2})-(\d{1,2})-(\d{1,2})\b/);
-  if (match) {
-    return { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]), hasExplicitYear: true };
+function monthDiff(left, right) {
+  return (left.getUTCFullYear() - right.getUTCFullYear()) * 12 + (left.getUTCMonth() - right.getUTCMonth());
+}
+
+function timeBucketFromValue(value) {
+  const clean = String(value || "").trim().toUpperCase();
+  if (!clean) {
+    return "";
   }
 
-  match = span.match(/\b(0?[1-9]|1[0-2])[/-](0?[1-9]|[12]\d|3[01])(?:[/-]((?:19|20)?\d{2}))?\b/);
+  let hour = null;
+  let match = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/);
   if (match) {
-    const year = match[3]
-      ? match[3].length === 2 ? inferTwoDigitYear(match[3]) : Number(match[3])
-      : null;
+    hour = Number(match[1]);
+    if (match[3] === "PM" && hour < 12) hour += 12;
+    if (match[3] === "AM" && hour === 12) hour = 0;
+  } else {
+    match = clean.match(/^(\d{3,4})$/);
+    if (match) {
+      const digits = match[1].padStart(4, "0");
+      hour = Number(digits.slice(0, 2));
+    }
+  }
+
+  if (!Number.isFinite(hour) || hour < 0 || hour > 23) {
+    return "";
+  }
+  if (hour < 3) return "overnight";
+  if (hour < 9) return "early morning";
+  if (hour < 12) return "morning";
+  if (hour < 17) return "afternoon";
+  if (hour < 21) return "evening";
+  return "night";
+}
+
+function contextAroundSpan(rawText, start, end) {
+  return {
+    line: lineAroundSpan(rawText, start, end),
+    before: rawText.slice(Math.max(0, start - 96), start),
+    after: rawText.slice(end, Math.min(rawText.length, end + 64))
+  };
+}
+
+function linePrefixBefore(rawText, start) {
+  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  return rawText.slice(lineStart, start);
+}
+
+function hasClinicalTemporalContext(rawText, start, end) {
+  const { line, before, after } = contextAroundSpan(rawText, start, end);
+  const context = `${before} ${line} ${after}`.toLowerCase();
+  const prefix = linePrefixBefore(rawText, start);
+  return /^\s*(?:[\-\u2022*]\s*)?$/.test(prefix) ||
+    /\b(?:admit|admitted|admission|discharge|date|dos|encounter|collected|collection|result|resulted|received|drawn|ordered|specimen|vital|vitals|lab|labs|urine labs|ct|mri|pet|imaging|xray|ultrasound|procedure|surgery|started|start|onset|began|developed|changed|resolved|improved|worsened|edited by|as of|course by date|hospital course|today|current)\b/.test(context);
+}
+
+function isCourseDateLabel(rawText, start, end) {
+  const prefix = linePrefixBefore(rawText, start);
+  const after = rawText.slice(end, Math.min(rawText.length, end + 4));
+  return /^\s*(?:[\-\u2022*]\s*)?$/.test(prefix) && /^\s*:/.test(after);
+}
+
+function isLikelyTwoPartMonthYear(rawText, start, end, first, second, separator) {
+  const span = rawText.slice(start, end);
+  const prefix = linePrefixBefore(rawText, start);
+  const before = rawText.slice(Math.max(0, start - 32), start).toLowerCase();
+  if (/^\s*(?:[\-\u2022*]\s*)?$/.test(prefix) || /^\s*:/.test(rawText.slice(end, end + 2))) {
+    return false;
+  }
+  if (second.length === 4) {
+    return true;
+  }
+  if (separator === "/" && /^0[1-9]$/.test(first) && /^\d{2}$/.test(second) && /\b(?:in|since|from|during|on|ct|mri|pet|imaging|stress|echo|scan|nodule|history|diagnosed)\s*$/.test(before)) {
+    return true;
+  }
+  return false;
+}
+
+function parseTemporalSpan(value, context = {}) {
+  const span = String(value || "").replace(/[,]/g, " ").replace(/\s+/g, " ").trim();
+  const rawText = context.rawText || "";
+  const start = Number.isFinite(context.start) ? context.start : 0;
+  const end = Number.isFinite(context.end) ? context.end : start + span.length;
+
+  let match = span.match(/\b((?:19|20)\d{2})-(\d{1,2})-(\d{1,2})(?:[ T]+(\d{1,2}:\d{2})(?::\d{2})?)?\b/);
+  if (match) {
     return {
-      year,
-      month: Number(match[1]),
-      day: Number(match[2]),
-      hasExplicitYear: Boolean(match[3])
+      kind: "day",
+      year: Number(match[1]),
+      month: Number(match[2]),
+      day: Number(match[3]),
+      hasExplicitYear: true,
+      timeBucket: timeBucketFromValue(match[4])
     };
   }
 
-  match = span.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})(?:\s+((?:19|20)\d{2}))?\b/i);
+  match = span.match(/\b(0?[1-9]|1[0-2])([/-])(0?[1-9]|[12]\d|3[01])(?:[/-]((?:19|20)?\d{2}))?(?:\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/i);
+  if (match) {
+    if (!match[4] && isLikelyTwoPartMonthYear(rawText, start, end, match[1], match[3], match[2])) {
+      return {
+        kind: "month",
+        year: inferTwoDigitYear(match[3]),
+        month: Number(match[1]),
+        hasExplicitYear: true
+      };
+    }
+    const year = match[4]
+      ? match[4].length === 2 ? inferTwoDigitYear(match[4]) : Number(match[4])
+      : null;
+    return {
+      kind: "day",
+      year,
+      month: Number(match[1]),
+      day: Number(match[3]),
+      hasExplicitYear: Boolean(match[4]),
+      timeBucket: timeBucketFromValue(match[5])
+    };
+  }
+
+  match = span.match(/\b(0?[1-9]|1[0-2])([/-])((?:19|20)\d{2})\b/);
   if (match) {
     return {
+      kind: "month",
+      year: Number(match[3]),
+      month: Number(match[1]),
+      hasExplicitYear: true
+    };
+  }
+
+  match = span.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+((?:19|20)\d{2})\b/i);
+  if (match) {
+    return {
+      kind: "month",
+      year: Number(match[2]),
+      month: monthNameToNumber.get(match[1].replace(/\.$/, "").toLowerCase()),
+      hasExplicitYear: true
+    };
+  }
+
+  match = span.match(/\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})(?:\s+((?:19|20)\d{2}))?(?:\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/i);
+  if (match) {
+    return {
+      kind: "day",
       year: match[3] ? Number(match[3]) : null,
       month: monthNameToNumber.get(match[1].replace(/\.$/, "").toLowerCase()),
       day: Number(match[2]),
-      hasExplicitYear: Boolean(match[3])
+      hasExplicitYear: Boolean(match[3]),
+      timeBucket: timeBucketFromValue(match[4])
     };
   }
 
@@ -805,7 +929,7 @@ function parseDateSpanParts(value) {
 }
 
 function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
-  if (!parts || !parts.month || !parts.day) {
+  if (!parts || !parts.month || (parts.kind !== "month" && !parts.day)) {
     return null;
   }
 
@@ -814,12 +938,13 @@ function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
     return null;
   }
 
-  const date = new Date(Date.UTC(year, parts.month - 1, parts.day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== parts.month - 1 || date.getUTCDate() !== parts.day) {
+  const day = parts.kind === "month" ? 1 : parts.day;
+  const date = new Date(Date.UTC(year, parts.month - 1, day));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== parts.month - 1 || date.getUTCDate() !== day) {
     return null;
   }
 
-  if (!parts.hasExplicitYear && referenceDate && date.getTime() - referenceDate.getTime() > 7 * 86400000) {
+  if (parts.kind !== "month" && !parts.hasExplicitYear && referenceDate && date.getTime() - referenceDate.getTime() > 7 * 86400000) {
     return new Date(Date.UTC(year - 1, parts.month - 1, parts.day));
   }
 
@@ -834,93 +959,143 @@ function isCurrentSourceDateContext(entity) {
   return /\b(?:encounter|admit|admitted|admission|date of service|dos|collected|collection|result|resulted|received|drawn|specimen|ordered|vital|vitals|lab|labs|current|today|note date)\b/i.test(entity.context || "");
 }
 
-function relationToReferenceText(date, referenceDate) {
-  if (!date || !referenceDate) {
-    return "";
+function pushTemporalEntity(rawText, entities, start, end, source = "temporal", context = "") {
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+    return;
+  }
+  if (isSpanCovered(start, end, entities)) {
+    return;
+  }
+  const span = rawText.slice(start, end);
+  const temporal = parseTemporalSpan(span, { rawText, start, end });
+  if (!temporal) {
+    return;
+  }
+  if (temporal.kind === "day" && !temporal.hasExplicitYear && !hasClinicalTemporalContext(rawText, start, end)) {
+    return;
+  }
+  entities.push({
+    start,
+    end,
+    label: "DATE",
+    placeholder: "[DATE]",
+    score: 1,
+    source,
+    context: context || lineAroundSpan(rawText, start, end),
+    temporal
+  });
+}
+
+export function collectTemporalEntities(rawText) {
+  const text = String(rawText || "");
+  const entities = [];
+  const patterns = [
+    /\b(?:19|20)\d{2}-\d{1,2}-\d{1,2}(?:[ T]+\d{1,2}:\d{2}(?::\d{2})?)?\b/g,
+    /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/gi,
+    /\b(?:0?[1-9]|1[0-2])[/-](?:19|20)\d{2}\b/g,
+    /\b(?:0[1-9]|1[0-2])\/\d{2}\b/g,
+    /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(?:(?:0?[1-9]|[12]\d|3[01])(?:,?\s+(?:19|20)\d{2})?|(?:19|20)\d{2})(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\b/gi
+  ];
+
+  patterns.forEach((regex) => {
+    for (const match of text.matchAll(regex)) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
+        continue;
+      }
+      pushTemporalEntity(text, entities, start, end, "temporal");
+    }
+  });
+
+  return mergeEntities(entities, text);
+}
+
+function chooseCurrentSourceDate(temporalEntities) {
+  const explicitYears = temporalEntities
+    .map((entity) => entity.temporal || parseTemporalSpan(entity.span || "", entity))
+    .map((temporal) => temporal?.year)
+    .filter((year) => Number.isFinite(year));
+  const fallbackYear = explicitYears.length ? Math.max(...explicitYears) : new Date().getFullYear();
+  const dayEntities = temporalEntities
+    .map((entity) => ({
+      entity,
+      temporal: entity.temporal || parseTemporalSpan(entity.span || "", entity),
+      date: dateFromParts(entity.temporal || parseTemporalSpan(entity.span || "", entity), fallbackYear)
+    }))
+    .filter((info) => info.temporal?.kind === "day" && info.date);
+  if (!dayEntities.length) {
+    return null;
   }
 
-  const dayDiff = Math.round((referenceDate.getTime() - date.getTime()) / 86400000);
-  const absDays = Math.abs(dayDiff);
-  if (dayDiff === 0) {
-    return "current source date";
+  const prioritized = dayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
+  const pool = prioritized.length ? prioritized : dayEntities;
+  return pool.reduce((latest, info) => (
+    !latest || info.date > latest ? info.date : latest
+  ), null);
+}
+
+function formatMonthRelation(date, currentSourceDate, year) {
+  if (!date || !currentSourceDate) {
+    return year ? `month in ${year}` : "relative month";
   }
-  const direction = dayDiff > 0 ? "before" : "after";
-  if (absDays === 1) {
-    return `1 day ${direction} current source date`;
+  const diff = monthDiff(date, currentSourceDate);
+  const absDiff = Math.abs(diff);
+  if (diff === 0) {
+    return `same month as Day 0${year ? ` (${year})` : ""}`;
   }
-  if (absDays < 14) {
-    return `${absDays} days ${direction} current source date`;
+  const direction = diff < 0 ? "before" : "after";
+  return `about ${absDiff} month${absDiff === 1 ? "" : "s"} ${direction} Day 0${year ? ` (${year})` : ""}`;
+}
+
+function formatDayRelation(date, currentSourceDate, year, timeBucket = "") {
+  if (!date || !currentSourceDate) {
+    return year ? `relative day (${year})` : "relative day";
   }
-  if (absDays < 60) {
-    const weeks = Math.round(absDays / 7);
-    return `${weeks} week${weeks === 1 ? "" : "s"} ${direction} current source date`;
+  const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
+  const dayLabel = `Day ${dayDiff === 0 ? "0" : dayDiff > 0 ? `+${dayDiff}` : String(dayDiff)}`;
+  return `${dayLabel}${timeBucket ? ` ${timeBucket}` : ""}${year ? ` (${year})` : ""}`;
+}
+
+function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYear = null) {
+  const span = entity.span || "";
+  const temporal = entity.temporal || parseTemporalSpan(span, entity);
+  if (!temporal) {
+    return "relative date";
   }
-  if (absDays < 365) {
-    const months = Math.round(absDays / 30);
-    return `${months} month${months === 1 ? "" : "s"} ${direction} current source date`;
+  const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
+  const date = dateFromParts(temporal, year, currentSourceDate);
+  if (temporal.kind === "month") {
+    return formatMonthRelation(date, currentSourceDate, year);
   }
-  const years = Math.round(absDays / 365);
-  return `${years} year${years === 1 ? "" : "s"} ${direction} current source date`;
+  return formatDayRelation(date, currentSourceDate, year, temporal.timeBucket || "");
 }
 
 function buildDateTimeline(rawText, entities) {
-  const infos = entities
+  const dateEntities = mergeEntities([...entities, ...collectTemporalEntities(rawText)], rawText)
     .filter((entity) => entity.label === "DATE")
     .map((entity) => {
       const span = rawText.slice(entity.start, entity.end).trim();
-      return { entity, span, parts: parseDateSpanParts(span) };
+      const temporal = entity.temporal || parseTemporalSpan(span, { rawText, start: entity.start, end: entity.end });
+      return { entity, span, temporal };
     });
 
-  const explicitInfos = infos
-    .map((info) => ({ ...info, date: dateFromParts(info.parts) }))
-    .filter((info) => info.date);
-  const currentCandidates = explicitInfos.filter((info) => isCurrentSourceDateContext(info.entity));
-  const referencePool = currentCandidates.length ? currentCandidates : explicitInfos;
-  let referenceDate = referencePool.reduce((latest, info) => (
-    !latest || info.date > latest ? info.date : latest
-  ), null);
-  const fallbackYear = referenceDate ? referenceDate.getUTCFullYear() : new Date().getFullYear();
-
-  const datedInfos = infos
-    .map((info) => {
-      const date = dateFromParts(info.parts, fallbackYear, referenceDate);
-      return {
-        ...info,
-        date,
-        dateKey: date ? dateKeyFromDate(date) : info.span.toLowerCase().replace(/\s+/g, " "),
-        year: date ? date.getUTCFullYear() : info.parts?.year || null
-      };
-    });
-
-  if (!referenceDate) {
-    referenceDate = datedInfos.reduce((latest, info) => (
-      info.date && (!latest || info.date > latest) ? info.date : latest
-    ), null);
-  }
-
-  const chronologicalKeys = [...new Set(datedInfos.filter((info) => info.date).map((info) => info.dateKey))]
-    .sort((left, right) => left.localeCompare(right));
-  const chronologicalIndex = new Map(chronologicalKeys.map((key, index) => [key, index + 1]));
-  const spanIndex = new Map();
+  const currentSourceDate = chooseCurrentSourceDate(dateEntities.map((info) => ({
+    ...info.entity,
+    span: info.span,
+    temporal: info.temporal
+  })));
+  const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
   const placeholdersByEntity = new Map();
 
-  datedInfos.forEach((info) => {
+  dateEntities.forEach((info) => {
     const entityKey = `${info.entity.start}:${info.entity.end}`;
-    if (info.date && referenceDate && info.date.getTime() === referenceDate.getTime()) {
-      placeholdersByEntity.set(entityKey, `[CURRENT SOURCE DATE - ${info.date.getUTCFullYear()}]`);
-      return;
-    }
-
-    const fallbackKey = info.dateKey || info.span.toLowerCase().replace(/\s+/g, " ");
-    if (!spanIndex.has(fallbackKey)) {
-      spanIndex.set(fallbackKey, spanIndex.size + 1);
-    }
-    const dateNumber = info.date ? chronologicalIndex.get(info.dateKey) : spanIndex.get(fallbackKey);
-    const yearText = info.year ? ` - ${info.year}` : "";
-    const relation = relationToReferenceText(info.date, referenceDate);
-    placeholdersByEntity.set(entityKey, relation
-      ? `[DATE ${dateNumber}${yearText}, ${relation}]`
-      : `[DATE ${dateNumber}${yearText}]`);
+    placeholdersByEntity.set(entityKey, formatRelativeTemporalPlaceholder({
+      ...info.entity,
+      span: info.span,
+      temporal: info.temporal,
+      rawText
+    }, currentSourceDate, fallbackYear));
   });
 
   return placeholdersByEntity;
@@ -933,9 +1108,11 @@ function makeDateTimelinePlaceholder(entity, dateTimeline) {
 export function redactFromEntities(rawText, entities) {
   let cursor = 0;
   let output = "";
-  const dateTimeline = buildDateTimeline(rawText, entities);
+  const temporalEntities = collectTemporalEntities(rawText);
+  const allEntities = mergeEntities([...entities, ...temporalEntities], rawText);
+  const dateTimeline = buildDateTimeline(rawText, allEntities);
 
-  entities.forEach((entity) => {
+  allEntities.forEach((entity) => {
     output += rawText.slice(cursor, entity.start);
     output += entity.label === "DATE"
       ? makeDateTimelinePlaceholder(entity, dateTimeline)
@@ -944,7 +1121,88 @@ export function redactFromEntities(rawText, entities) {
   });
 
   output += rawText.slice(cursor);
-  return generalizeAgesOver89(output.trim());
+  return cleanupDeidArtifacts(normalizeResidualTemporalPhi(generalizeAgesOver89(output.trim())));
+}
+
+function oldTimelinePlaceholderToRelative(year, relation = "") {
+  const yearText = year ? ` (${year})` : "";
+  const normalized = String(relation || "").toLowerCase();
+  if (!normalized || /current source date/.test(normalized) && !/\b(?:before|after)\b/.test(normalized)) {
+    return `Day 0${yearText}`;
+  }
+
+  const match = normalized.match(/(\d+)\s+(day|days|week|weeks|month|months|year|years)\s+(before|after)\s+current source date/);
+  if (!match) {
+    return `relative date${yearText}`;
+  }
+
+  const amount = Number(match[1]);
+  const unit = match[2].replace(/s$/, "");
+  const direction = match[3];
+  if (unit === "day") {
+    const signed = direction === "before" ? -amount : amount;
+    return `Day ${signed === 0 ? "0" : signed > 0 ? `+${signed}` : String(signed)}${yearText}`;
+  }
+
+  return `about ${amount} ${unit}${amount === 1 ? "" : "s"} ${direction} Day 0${yearText}`;
+}
+
+function normalizeLegacyDatePlaceholders(text) {
+  return String(text || "")
+    .replace(/\[(CURRENT SOURCE DATE)(?:\s*-\s*((?:19|20)\d{2}))?\]/gi, (_, _label, year) => oldTimelinePlaceholderToRelative(year, "current source date"))
+    .replace(/\[DATE\s+\d+(?:\s*-\s*((?:19|20)\d{2}))?(?:,\s*([^\]]*?current source date))?\]/gi, (_, year, relation) => oldTimelinePlaceholderToRelative(year, relation));
+}
+
+function normalizeDayLabelTimes(text) {
+  return String(text || "").replace(/\b(Day\s+[+-]?\d+)(?:\s+\(((?:19|20)\d{2})\))?\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?!\d)/gi, (match, dayLabel, year, timeValue) => {
+    const bucket = timeBucketFromValue(timeValue);
+    if (!bucket) {
+      return match;
+    }
+    return `${dayLabel} ${bucket}${year ? ` (${year})` : ""}`;
+  });
+}
+
+function replaceTemporalEntitiesWithRelativeText(text) {
+  const sourceText = String(text || "");
+  const entities = collectTemporalEntities(sourceText);
+  if (!entities.length) {
+    return sourceText;
+  }
+
+  const currentSourceDate = chooseCurrentSourceDate(entities);
+  const fallbackYear = currentSourceDate ? currentSourceDate.getUTCFullYear() : new Date().getFullYear();
+  let cursor = 0;
+  let output = "";
+
+  entities.forEach((entity) => {
+    output += sourceText.slice(cursor, entity.start);
+    output += formatRelativeTemporalPlaceholder({
+      ...entity,
+      span: sourceText.slice(entity.start, entity.end),
+      rawText: sourceText
+    }, currentSourceDate, fallbackYear);
+    cursor = entity.end;
+  });
+
+  output += sourceText.slice(cursor);
+  return output;
+}
+
+export function cleanupDeidArtifacts(text) {
+  return String(text || "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
+    .replace(/\[(\d+(?:\.\d+)?)\s+\[NAME\]\s*(\d+(?:\.\d+)?)\s*([A-Z%/ ]{0,16})\]/gi, (_, left, right, unit) => `[${left}-${right}${unit ? ` ${unit.trim()}` : ""}]`)
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{4,}/g, "\n\n\n")
+    .trim();
+}
+
+export function normalizeResidualTemporalPhi(text) {
+  const withoutArtifacts = cleanupDeidArtifacts(text);
+  const withoutLegacy = normalizeLegacyDatePlaceholders(withoutArtifacts);
+  const withoutExactDates = replaceTemporalEntitiesWithRelativeText(withoutLegacy);
+  return cleanupDeidArtifacts(normalizeDayLabelTimes(withoutExactDates));
 }
 
 function summarizeEntities(entities) {

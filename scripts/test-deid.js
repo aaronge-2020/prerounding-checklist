@@ -99,19 +99,29 @@ Symptoms changed on 5/7
 Collected: 05/08/2026
 Follow-up on May 10, 2026
 Issue resolved on April 10, 2026
+PET stress in 3/2026
+Hospital Course by Date
+5/6: Started treatment
+5/8 0454: Morning labs drawn
 DOB: 03/14/1998`;
 const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText);
-assert.ok(timelineDateResult.text.includes("Admission date: [DATE 2 - 2026, 7 days before current source date]"), "admission date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Symptoms changed on [DATE 3 - 2026, 1 day before current source date]"), "yesterday-like change should be clear");
-assert.ok(timelineDateResult.text.includes("Collected: [CURRENT SOURCE DATE - 2026]"), "latest lab/vital style date should be labeled as current source date");
-assert.ok(timelineDateResult.text.includes("Follow-up on [DATE 5 - 2026, 2 days after current source date]"), "future date should preserve relation to current source date");
-assert.ok(timelineDateResult.text.includes("Issue resolved on [DATE 1 - 2026, 4 weeks before current source date]"), "older resolved issue date should preserve weeks-before relation");
+assert.ok(timelineDateResult.text.includes("Admission date: Day -7 (2026)"), "admission date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Symptoms changed on Day -1 (2026)"), "yesterday-like change should be clear");
+assert.ok(timelineDateResult.text.includes("Collected: Day 0 (2026)"), "latest lab/vital style date should be labeled as current source date");
+assert.ok(timelineDateResult.text.includes("Follow-up on Day +2 (2026)"), "future date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Issue resolved on Day -28 (2026)"), "older resolved issue date should preserve day-level relation");
+assert.ok(timelineDateResult.text.includes("PET stress in about 2 months before Day 0 (2026)"), "month/year dates should preserve month relation without exact month");
+assert.ok(timelineDateResult.text.includes("Day -2 (2026): Started treatment"), "course date labels should preserve order");
+assert.ok(timelineDateResult.text.includes("Day 0 early morning (2026): Morning labs drawn"), "date-attached time should be generalized");
 assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders should not create PHI warnings");
 assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
 assert.ok(!timelineDateResult.text.includes("05/08/2026"), "exact slash date should not leak");
 assert.ok(!timelineDateResult.text.includes("May 10, 2026"), "exact month-name date should not leak");
 assert.ok(!timelineDateResult.text.includes("April 10, 2026"), "older exact month-name date should not leak");
 assert.ok(!timelineDateResult.text.includes("5/7"), "timeline shorthand date should not leak when it has clinical date context");
+assert.ok(!timelineDateResult.text.includes("3/2026"), "month/year date should not leak");
+assert.ok(!timelineDateResult.text.includes("5/6"), "course shorthand date should not leak");
+assert.ok(!timelineDateResult.text.includes("0454"), "date-attached exact time should not leak");
 assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
 
 const guardText = clinicalGuardTerms.join("\n");
