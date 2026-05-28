@@ -94,6 +94,21 @@ for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chr
 assert.ok(!medicalFalsePositiveResult.text.includes("Nora W. Abrahimi"), "standalone middle-initial person name should be redacted");
 assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes("Nora W. Abrahimi")), "redacted person name should not remain as residual warning");
 
+const timelineDateText = `Admission date: 2026-05-08
+Collected: 05/09/2026
+Follow-up on May 10, 2026
+Symptoms started 5/7
+DOB: 03/14/1998`;
+const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText);
+assert.ok(timelineDateResult.text.includes("[DATE 1 - 2026]"), "first exact date should preserve year and timeline order");
+assert.ok(timelineDateResult.text.includes("[DATE 2 - 2026]"), "second exact date should preserve year and timeline order");
+assert.ok(timelineDateResult.text.includes("[DATE 3 - 2026]"), "month-name date should preserve year and timeline order");
+assert.ok(timelineDateResult.text.includes("Symptoms started 5/7"), "date-like values without date context should remain readable");
+assert.ok(!timelineDateResult.text.includes("2026-05-08"), "exact ISO date should not leak");
+assert.ok(!timelineDateResult.text.includes("05/09/2026"), "exact slash date should not leak");
+assert.ok(!timelineDateResult.text.includes("May 10, 2026"), "exact month-name date should not leak");
+assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
+
 const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);
 for (const term of clinicalGuardTerms) {

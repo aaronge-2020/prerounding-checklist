@@ -754,13 +754,50 @@ function generalizeAgesOver89(text) {
     .replace(/\b(?:9[0-9]|1[0-9]{2})\s*(?:M|F)\b/g, "90 or older");
 }
 
+function yearFromDateSpan(value) {
+  const span = String(value || "");
+  const fourDigit = span.match(/\b(19|20)\d{2}\b/);
+  if (fourDigit) {
+    return fourDigit[0];
+  }
+
+  const numericYear = span.match(/[/-](\d{2})\b/);
+  if (!numericYear) {
+    return "";
+  }
+
+  const twoDigitYear = Number(numericYear[1]);
+  const currentYear = new Date().getFullYear();
+  const currentCentury = Math.floor(currentYear / 100) * 100;
+  const currentTwoDigitYear = currentYear % 100;
+  const inferredYear = twoDigitYear <= currentTwoDigitYear + 1
+    ? currentCentury + twoDigitYear
+    : currentCentury - 100 + twoDigitYear;
+  return String(inferredYear);
+}
+
+function makeDateTimelinePlaceholder(rawText, entity, dateTimeline) {
+  const span = rawText.slice(entity.start, entity.end).trim();
+  const key = span.toLowerCase().replace(/\s+/g, " ");
+  if (!dateTimeline.has(key)) {
+    dateTimeline.set(key, dateTimeline.size + 1);
+  }
+
+  const dateNumber = dateTimeline.get(key);
+  const year = yearFromDateSpan(span);
+  return year ? `[DATE ${dateNumber} - ${year}]` : `[DATE ${dateNumber}]`;
+}
+
 export function redactFromEntities(rawText, entities) {
   let cursor = 0;
   let output = "";
+  const dateTimeline = new Map();
 
   entities.forEach((entity) => {
     output += rawText.slice(cursor, entity.start);
-    output += entity.placeholder || placeholderForLabel(entity.label);
+    output += entity.label === "DATE"
+      ? makeDateTimelinePlaceholder(rawText, entity, dateTimeline)
+      : entity.placeholder || placeholderForLabel(entity.label);
     cursor = entity.end;
   });
 
