@@ -181,12 +181,12 @@ const clinicalAnchorWords = new Set([
   "expand all", "collapse all", "expand all collapse all", "hospital progress", "hospital progress note",
   "primary cardiology", "primary cardiology service", "primary service", "code status", "full code",
   "cpr full code", "triage rfv", "recommend fu", "recommend fu cbc", "giving ivf", "cr endocrine", "cr. endocrine",
-  "ideally bp", "chg bath", "glucose bld"
+  "ideally bp", "chg bath", "glucose bld", "one-line summary"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
   "a", "all", "bath", "bld", "bp", "chg", "collapse", "cpr", "cr", "expand", "fu", "giving",
-  "ideally", "primary", "recommend", "rfv", "service", "triage"
+  "ideally", "line", "one-line", "primary", "recommend", "rfv", "service", "triage"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
@@ -376,6 +376,10 @@ function isLikelyDateFalsePositive(rawText, start, end) {
   const before = rawText.slice(Math.max(0, start - 40), start).toLowerCase();
   const after = rawText.slice(end, Math.min(rawText.length, end + 40)).toLowerCase();
 
+  if (!/\d|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/i.test(span)) {
+    return true;
+  }
+
   if (/^\/?\d{4}$/.test(span)) {
     return true;
   }
@@ -412,6 +416,24 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
   return nonNameClinicalPhrases.has(normalized) ||
     /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
     /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
+}
+
+function isLikelyAddressFalsePositive(rawText, start, end) {
+  const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
+  return /\b(?:creatinine|glucose|sodium|potassium|chloride|calcium|magnesium|phosphorus|bld|bun|egfr|labs?|vitals?|mmhg|mg|mcg|per dr)\b/i.test(span) ||
+    /\bDr\.\s+[A-Z]/.test(span);
+}
+
+function sentenceBreakIndexForName(span) {
+  const matches = [...String(span || "").matchAll(/\.\s+[A-Z]/g)];
+  for (const match of matches) {
+    const beforeDot = span.slice(0, match.index + 1);
+    if (/\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss|Mx|Prof|Professor)\.$/i.test(beforeDot.trim())) {
+      continue;
+    }
+    return match.index + 1;
+  }
+  return -1;
 }
 
 function refineNameLabel(label, rawText, start, end) {
@@ -632,10 +654,16 @@ function constrainPatternEntitySpan(rawText, label, start, end) {
     return { start: constrainedStart, end: constrainedEnd };
   }
 
+  let span = rawText.slice(constrainedStart, constrainedEnd);
+  const sentenceBreak = sentenceBreakIndexForName(span);
+  if (sentenceBreak > 0) {
+    constrainedEnd = constrainedStart + sentenceBreak;
+  }
+
   const lineEndIndex = rawText.indexOf("\n", constrainedEnd);
   const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
   const afterInLine = rawText.slice(constrainedEnd, lineEnd);
-  const span = rawText.slice(constrainedStart, constrainedEnd);
+  span = rawText.slice(constrainedStart, constrainedEnd);
   if (/^\s*[:#]/.test(afterInLine)) {
     const trailingHeader = span.match(/[ \t]+(?:Room|Rm|Bed|Unit|Floor|Ward|Pod|Bay|Location|Phone|Email|Address|DOB|MRN)$/i);
     if (trailingHeader) {
@@ -700,7 +728,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "DATE", regex: /\b\d{4}-\d{1,2}-\d{1,2}\b/g },
     { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, skip: isLikelyDateFalsePositive },
     { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi },
-    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi },
+    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
@@ -817,6 +845,10 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
 
     if (entity.label === "DATE") {
       return !isLikelyDateFalsePositive(rawText, entity.start, entity.end);
+    }
+
+    if (entity.label === "ADDRESS") {
+      return !isLikelyAddressFalsePositive(rawText, entity.start, entity.end);
     }
 
     if (entity.label === "NAME") {
@@ -1785,7 +1817,7 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, "exact calendar date", isLikelyDateFalsePositive);
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi, "exact calendar date");
   addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record Number|Medical Record(?! Number)|CSN|FIN|HAR|Encounter(?: ID| Number)|Account Number|Acct|Policy Number|Policy(?! Number)|Member(?: ID| Number)|Member(?! ID| Number)|Insurance(?: ID| Number)|Insurance(?! ID| Number)|Subscriber(?: ID| Number)|Subscriber(?! ID| Number)|Accession Number|Accession(?! Number)|Order(?: ID| Number)|Order(?! ID| Number)|Specimen(?: ID| Number)|Specimen(?! ID| Number)|Chart(?: ID| Number)|Chart(?! ID| Number)|Case(?: ID| Number)|Case(?! ID| Number)|Visit(?: ID| Number)|Visit(?! ID| Number)|License Number|License(?! Number)|Certificate Number|Certificate(?! Number)|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
-  addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address");
+  addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address", isLikelyAddressFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "ZIP or postal code", /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi, "geographic detail smaller than state");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi, "care location detail");
@@ -1798,7 +1830,7 @@ export function scanResidualPhi(text) {
   return warnings.map(({ key, ...warning }) => warning);
 }
 
-export function splitTextForModel(rawText, maxChars = 1800, overlap = 180) {
+export function splitTextForModel(rawText, maxChars = 700, overlap = 80) {
   if (rawText.length <= maxChars) {
     return [{ text: rawText, offset: 0 }];
   }
@@ -1822,6 +1854,38 @@ export function splitTextForModel(rawText, maxChars = 1800, overlap = 180) {
     start = nextStart <= start ? end : nextStart;
   }
   return chunks;
+}
+
+function splitChunkForRetry(chunk) {
+  const midpoint = Math.floor(chunk.text.length / 2);
+  const preferredBreaks = [
+    chunk.text.lastIndexOf("\n", midpoint),
+    chunk.text.indexOf("\n", midpoint),
+    chunk.text.lastIndexOf(". ", midpoint),
+    chunk.text.indexOf(". ", midpoint),
+    chunk.text.lastIndexOf(" ", midpoint),
+    chunk.text.indexOf(" ", midpoint)
+  ].filter((index) => index > 80 && index < chunk.text.length - 80);
+  let splitIndex = preferredBreaks.length
+    ? preferredBreaks.sort((left, right) => Math.abs(left - midpoint) - Math.abs(right - midpoint))[0]
+    : midpoint;
+  if (chunk.text.slice(splitIndex, splitIndex + 2) === ". ") {
+    splitIndex += 2;
+  } else if (chunk.text[splitIndex] === "\n" || chunk.text[splitIndex] === " ") {
+    splitIndex += 1;
+  }
+  splitIndex = Math.max(1, Math.min(chunk.text.length - 1, splitIndex));
+  return [
+    { text: chunk.text.slice(0, splitIndex), offset: chunk.offset },
+    { text: chunk.text.slice(splitIndex), offset: chunk.offset + splitIndex }
+  ].filter((part) => part.text.trim());
+}
+
+function looksLikeModelLengthError(error) {
+  const message = String(error?.message || error || "");
+  return /\b512\b/.test(message) ||
+    /broadcast.*dimension/i.test(message) ||
+    /maximum sequence|max(?:imum)? length|position embeddings|input_ids.*dims/i.test(message);
 }
 
 function overlapsAny(entity, entities) {
@@ -1954,14 +2018,30 @@ export function createDeidentifier(options = {}) {
     try {
       const model = await loadModel();
       const entities = [];
+      const failedChunks = [];
+      async function runChunk(chunk, depth = 0) {
+        try {
+          const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
+          entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
+        } catch (error) {
+          if (chunk.text.length > 180 && depth < 4 && looksLikeModelLengthError(error)) {
+            for (const part of splitChunkForRetry(chunk)) {
+              await runChunk(part, depth + 1);
+            }
+            return;
+          }
+          failedChunks.push({ offset: chunk.offset, length: chunk.text.length, error });
+          console.warn("Skipped one de-ID model chunk; structured redaction still runs for the full text.", error);
+        }
+      }
       for (const chunk of splitTextForModel(rawText)) {
-        const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
-        entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
+        await runChunk(chunk);
       }
       return {
         entities,
         modelId: model.modelId,
-        modelStatus: model.modelStatus
+        modelStatus: failedChunks.length ? `${model.modelStatus}; partial model pass` : model.modelStatus,
+        modelChunkFailures: failedChunks.length
       };
     } catch (error) {
       console.warn("Model unavailable; structured redaction only.", error);

@@ -175,6 +175,24 @@ const chgModelDeidentifier = createDeidentifier({
 const chgModelResult = await chgModelDeidentifier.deidentifyText(chgModelText);
 assert.equal(chgModelResult.text, chgModelText, "model location false positive must not redact CHG Bath");
 
+const longChunkText = `${"word ".repeat(220)}Ms. Lita Merrill-Stevenson is here. ${"word ".repeat(220)}`;
+const retryModelDeidentifier = createDeidentifier({
+  pipelineFactory: async () => async (input) => {
+    if (input.length > 360) {
+      throw new Error("Attempting to broadcast an axis by a dimension other than 1. 512 by 514");
+    }
+    const start = input.indexOf("Ms. Lita Merrill-Stevenson");
+    return start === -1
+      ? []
+      : [{ entity_group: "PERSON", start, end: start + "Ms. Lita Merrill-Stevenson".length, score: 0.99 }];
+  },
+  modelCandidates: [{ modelId: "mock-retry-model", options: {} }]
+});
+const retryModelResult = await retryModelDeidentifier.deidentifyText(longChunkText);
+assert.equal(retryModelResult.modelStatus, "primary model", "length retries should keep the model available");
+assert.ok(retryModelResult.text.includes("[NAME] is here"), "recursive chunk retry should still use model entities");
+assert.ok(!retryModelResult.text.includes("Lita Merrill-Stevenson"), "model entity in retried chunk should not leak");
+
 const timelineDateText = `Admission date: 2026-05-01
 Symptoms changed on 5/7
 Collected: 05/08/2026
