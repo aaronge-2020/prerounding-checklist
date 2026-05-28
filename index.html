@@ -2349,7 +2349,13 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
   </main>
 
   <script type="module">
-    import { env, pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+    import { env, pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0";
+    import {
+      createDeidentifier,
+      DEFAULT_DTYPE,
+      DEFAULT_FALLBACK_MODEL_ID,
+      DEFAULT_PRIMARY_MODEL_ID
+    } from "./deid.js";
 
     env.allowLocalModels = false;
     env.allowRemoteModels = true;
@@ -2548,12 +2554,24 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const openEvidenceUrl = "https://www.openevidence.com/";
     const sessionKey = "preRoundChecklistSessionV2";
     const userProfileKey = "preRoundUserProfileV1";
-    const primaryDeidentifierModelId = "rtrigoso/bert-small-pii-detection-ONNX";
-    const fallbackDeidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
-    const deidentifierDtype = "q8";
+    const primaryDeidentifierModelId = DEFAULT_PRIMARY_MODEL_ID;
+    const fallbackDeidentifierModelId = DEFAULT_FALLBACK_MODEL_ID;
+    const deidentifierDtype = DEFAULT_DTYPE;
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
     let deferredInstallPrompt = null;
-    let deidentifierPipelinePromise = null;
+    const deidentifier = createDeidentifier({
+      pipelineFactory: pipeline,
+      primaryModelId: primaryDeidentifierModelId,
+      fallbackModelId: fallbackDeidentifierModelId,
+      dtype: deidentifierDtype,
+      onModelStatus(update) {
+        state.modelReady = Boolean(update.ready);
+        elements.offlineModelReady.checked = Boolean(update.ready);
+        if (update.message) {
+          elements.modelStatus.textContent = update.message;
+        }
+      }
+    });
 
     const checklistPrompt = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
@@ -4765,50 +4783,11 @@ Sensory level present: No / Yes, at ___`;
     }
 
     async function loadDeidentifierPipeline() {
-      if (!deidentifierPipelinePromise) {
-        elements.modelStatus.textContent = "Preparing local PII model. First load can take a minute.";
-        elements.offlineModelReady.checked = false;
-        deidentifierPipelinePromise = (async () => {
-          const candidates = [
-            { modelId: primaryDeidentifierModelId, options: { dtype: deidentifierDtype } },
-            { modelId: primaryDeidentifierModelId, options: {} },
-            { modelId: fallbackDeidentifierModelId, options: { dtype: deidentifierDtype } }
-          ];
-          const errors = [];
-
-          for (const candidate of candidates) {
-            try {
-              const loadedPipeline = await pipeline("token-classification", candidate.modelId, candidate.options);
-              state.modelReady = true;
-              elements.offlineModelReady.checked = true;
-              const fallbackNote = candidate.modelId === fallbackDeidentifierModelId ? " Fallback model in use." : "";
-              elements.modelStatus.textContent = `Local PII model ready.${fallbackNote}`;
-              return {
-                pipeline: loadedPipeline,
-                modelId: candidate.modelId,
-                modelStatus: candidate.modelId === fallbackDeidentifierModelId ? "fallback model" : "primary model"
-              };
-            } catch (error) {
-              errors.push(error);
-              console.warn(`Could not load de-ID model ${candidate.modelId}.`, error);
-            }
-          }
-
-          state.modelReady = false;
-          elements.modelStatus.textContent = "Model unavailable; structured redaction only.";
-          elements.offlineModelReady.checked = false;
-          throw errors[errors.length - 1] || new Error("No de-ID model could be loaded.");
-        })().catch((error) => {
-          deidentifierPipelinePromise = null;
-          throw error;
-        });
-      }
-
-      return deidentifierPipelinePromise;
+      return deidentifier.loadModel();
     }
 
     function prepareDeidentifierModel() {
-      if (!deidentifierPipelinePromise) {
+      if (!deidentifier.isModelLoading() && !deidentifier.isModelReady()) {
         showToast("Preparing local de-ID model.");
       }
       loadDeidentifierPipeline().catch((error) => {
@@ -4843,26 +4822,7 @@ Sensory level present: No / Yes, at ___`;
     }
 
     async function detectModelEntities(rawText) {
-      try {
-        const model = await loadDeidentifierPipeline();
-        const entities = [];
-        for (const chunk of splitTextForModel(rawText)) {
-          const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
-          entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
-        }
-        return {
-          entities,
-          modelId: model.modelId,
-          modelStatus: model.modelStatus
-        };
-      } catch (error) {
-        console.warn("Model unavailable; structured redaction only.", error);
-        return {
-          entities: [],
-          modelId: null,
-          modelStatus: "Model unavailable; structured redaction only."
-        };
-      }
+      return deidentifier.detectModelEntities(rawText);
     }
 
     async function detectPhiEntities(rawText) {
@@ -4883,30 +4843,7 @@ Sensory level present: No / Yes, at ___`;
     }
 
     async function deidentifyText(rawText) {
-      const modelResult = await detectModelEntities(rawText);
-      let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(modelResult.entities, rawText));
-      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, entities), rawText));
-      const aliases = inferNameAliases(rawText, entities);
-      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, aliases), rawText));
-      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, aliases), rawText));
-      const text = redactFromEntities(rawText, entities);
-      const counts = summarizeEntities(entities);
-      const residualWarnings = scanResidualPhi(text);
-      const residualFlags = residualWarnings.slice(0, 12).map(formatPhiWarning);
-      const modelFlag = modelResult.modelStatus === "Model unavailable; structured redaction only."
-        ? ["Model unavailable; structured redaction only."]
-        : [`Model: ${modelResult.modelId}`];
-
-      return {
-        text,
-        counts,
-        redactionTotal: entities.length,
-        residualWarnings,
-        flags: [...modelFlag, ...residualFlags, ...entityFlags(rawText, entities)],
-        entities,
-        modelId: modelResult.modelId,
-        modelStatus: modelResult.modelStatus
-      };
+      return deidentifier.deidentifyText(rawText);
     }
 
     async function scrubSoapNoteText(rawText) {

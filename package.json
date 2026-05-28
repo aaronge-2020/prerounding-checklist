@@ -1,0 +1,15 @@
+{
+  "name": "prerounding-checklist",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:deid": "node scripts/test-deid.js",
+    "benchmark:deid": "node scripts/benchmark-deid.js",
+    "benchmark:deid:large": "node scripts/benchmark-deid.js --include-large",
+    "test:syntax": "node scripts/check-syntax.js"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.2.0"
+  }
+}
