@@ -2548,7 +2548,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const openEvidenceUrl = "https://www.openevidence.com/";
     const sessionKey = "preRoundChecklistSessionV2";
     const userProfileKey = "preRoundUserProfileV1";
-    const deidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
+    const primaryDeidentifierModelId = "rtrigoso/bert-small-pii-detection-ONNX";
+    const fallbackDeidentifierModelId = "onnx-community/stanford-deidentifier-base-ONNX";
     const deidentifierDtype = "q8";
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
     let deferredInstallPrompt = null;
@@ -3826,18 +3827,135 @@ Sensory level present: No / Yes, at ___`;
         .join("\n");
     }
 
+    const phiLabelMap = {
+      HCW: "PROVIDER NAME",
+      PATIENT: "PATIENT NAME",
+      PERSON: "NAME",
+      PER: "NAME",
+      NAME: "NAME",
+      FIRST_NAME: "NAME",
+      LAST_NAME: "NAME",
+      EMAIL_ADDRESS: "EMAIL",
+      EMAIL: "EMAIL",
+      PHONE_NUMBER: "PHONE",
+      PHONE: "PHONE",
+      FAX_NUMBER: "PHONE",
+      URL: "URL",
+      IP_ADDRESS: "IP",
+      IPV4: "IP",
+      IPV6: "IP",
+      DATE_TIME: "DATE",
+      DATE: "DATE",
+      DATE_OF_BIRTH: "DOB",
+      DOB: "DOB",
+      "DOB REDACTED": "DOB",
+      MEDICAL_RECORD: "MRN",
+      MEDICAL_RECORD_NUMBER: "MRN",
+      MRN: "MRN",
+      CSN: "ENCOUNTER ID",
+      FIN: "ENCOUNTER ID",
+      HAR: "ENCOUNTER ID",
+      ACCOUNT_NUMBER: "ID",
+      UNIQUE_ID: "ID",
+      CUSTOMER_ID: "ID",
+      ID_CARD: "ID",
+      INSURANCE_NUMBER: "ID",
+      HEALTH_PLAN_BENEFICIARY_NUMBER: "ID",
+      SSN: "ID",
+      US_SSN: "ID",
+      TAX_ID: "ID",
+      DRIVER_LICENSE: "ID",
+      US_DRIVER_LICENSE: "ID",
+      US_PASSPORT: "ID",
+      PASSPORT_NUMBER: "ID",
+      STREET_ADDRESS: "ADDRESS",
+      ADDRESS: "ADDRESS",
+      CITY: "LOCATION",
+      STATE: "LOCATION",
+      COUNTY: "LOCATION",
+      COUNTRY: "LOCATION",
+      POSTCODE: "LOCATION",
+      ZIPCODE: "LOCATION",
+      ZIP: "LOCATION",
+      LOCATION: "LOCATION",
+      HOSPITAL: "FACILITY",
+      FACILITY: "FACILITY",
+      ORGANIZATION: "ORGANIZATION",
+      COMPANY_NAME: "ORGANIZATION",
+      VENDOR: "ORGANIZATION",
+      ROOM: "ROOM",
+      UNIT: "ROOM",
+      BED: "ROOM",
+      BIOMETRIC: "ID",
+      VEHICLE: "ID",
+      VEHICLE_ID: "ID",
+      VEHICLE_IDENTIFIER: "ID",
+      DEVICE_ID: "ID",
+      DEVICE_IDENTIFIER: "ID",
+      MAC_ADDRESS: "ID",
+      IMEI: "ID"
+    };
+
+    const nameEntityLabels = new Set(["NAME", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME"]);
+
     function normalizePhiLabel(entityOrLabel) {
       const rawLabel = typeof entityOrLabel === "string"
         ? entityOrLabel
-        : entityOrLabel.entity_group || entityOrLabel.entity || "PHI";
-      const label = String(rawLabel).replace(/^[BI]-/, "").toUpperCase();
-      const labelMap = {
-        HCW: "NAME",
-        PATIENT: "NAME",
-        HOSPITAL: "LOCATION",
-        VENDOR: "ORGANIZATION"
+        : entityOrLabel.entity_group || entityOrLabel.entity || entityOrLabel.label || "PHI";
+      const label = String(rawLabel)
+        .replace(/^[BI]-/, "")
+        .replace(/[^A-Za-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .toUpperCase();
+      return phiLabelMap[label] || label.replace(/_/g, " ");
+    }
+
+    function placeholderForLabel(label) {
+      return `[${normalizePhiLabel(label)}]`;
+    }
+
+    function lineContext(rawText, start, end) {
+      const line = lineAroundSpan(rawText, start, end);
+      const before = rawText.slice(Math.max(0, start - 80), start);
+      const after = rawText.slice(end, Math.min(rawText.length, end + 80));
+      return `${before}\n${line}\n${after}`;
+    }
+
+    function refineNameLabel(label, rawText, start, end) {
+      const normalized = normalizePhiLabel(label);
+      if (!nameEntityLabels.has(normalized)) {
+        return normalized;
+      }
+
+      if (normalized !== "NAME") {
+        return normalized;
+      }
+
+      const span = rawText.slice(start, end).trim();
+      const context = lineContext(rawText, start, end).toLowerCase();
+      if (/^(?:dr|doctor)\.?\s+/i.test(span) || /\b(?:provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|follow-up with)\b/.test(context)) {
+        return "PROVIDER NAME";
+      }
+      if (/\b(?:emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|family)\b/.test(context)) {
+        return "CONTACT NAME";
+      }
+      if (/\b(?:patient name|pt name|patient|subjective|admitted|discharge planning)\b/.test(context)) {
+        return "PATIENT NAME";
+      }
+      return "NAME";
+    }
+
+    function normalizePhiEntity(rawText, entity) {
+      const label = refineNameLabel(entity.label, rawText, entity.start, entity.end);
+      return {
+        start: entity.start,
+        end: entity.end,
+        label,
+        placeholder: entity.placeholder || placeholderForLabel(label),
+        source: entity.source || "model",
+        score: entity.score || 0,
+        context: entity.context || ""
       };
-      return labelMap[label] || label;
     }
 
     function tokenToSearchText(token) {
@@ -3870,12 +3988,15 @@ Sensory level present: No / Yes, at ___`;
       return { start, end: start + tokenText.length };
     }
 
-    function modelPredictionsToEntities(rawText, predictions) {
+    function modelPredictionsToEntities(rawText, predictions, offset = 0) {
       const entities = [];
       let cursor = 0;
 
       predictions.forEach((prediction) => {
-        const span = findTokenSpan(rawText, prediction.word, cursor);
+        const hasOffsets = Number.isFinite(prediction.start) && Number.isFinite(prediction.end) && prediction.end > prediction.start;
+        const span = hasOffsets
+          ? { start: prediction.start, end: prediction.end }
+          : findTokenSpan(rawText, prediction.word, cursor);
         if (!span) {
           return;
         }
@@ -3888,9 +4009,10 @@ Sensory level present: No / Yes, at ___`;
         }
 
         entities.push({
-          start: span.start,
-          end: span.end,
+          start: offset + span.start,
+          end: offset + span.end,
           label,
+          placeholder: placeholderForLabel(label),
           score: prediction.score || 0,
           source: "model"
         });
@@ -3899,7 +4021,7 @@ Sensory level present: No / Yes, at ___`;
       return entities;
     }
 
-    function pushPatternEntity(entities, rawText, label, start, end, source = "pattern") {
+    function pushPatternEntity(entities, rawText, label, start, end, source = "structured", context = "") {
       if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
         return;
       }
@@ -3909,12 +4031,15 @@ Sensory level present: No / Yes, at ___`;
         return;
       }
 
+      const normalizedLabel = refineNameLabel(label, rawText, start, end);
       entities.push({
         start,
         end,
-        label,
+        label: normalizedLabel,
+        placeholder: placeholderForLabel(normalizedLabel),
         score: 1,
-        source
+        source,
+        context
       });
     }
 
@@ -4181,6 +4306,15 @@ Sensory level present: No / Yes, at ___`;
         return true;
       }
 
+      const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+      const lineEndIndex = rawText.indexOf("\n", end);
+      const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
+      const beforeInLine = rawText.slice(lineStart, start);
+      const afterInLine = rawText.slice(end, lineEnd);
+      if (!beforeInLine.trim() && /^\s*[:#]/.test(afterInLine)) {
+        return true;
+      }
+
       if (isLikelyChartHeadingPhrase(rawText, start, end)) {
         return true;
       }
@@ -4234,72 +4368,112 @@ Sensory level present: No / Yes, at ___`;
       }
     }
 
-    function addSafeHarborPatternEntities(rawText, entities = []) {
+    function addCapturedEntity(rawText, entities, label, regex, source = "structured identifier", groupIndex = 1, context = "") {
+      for (const match of rawText.matchAll(regex)) {
+        const value = match[groupIndex];
+        if (!value || !value.trim()) {
+          continue;
+        }
+        const valueOffset = match[0].indexOf(value);
+        if (valueOffset < 0) {
+          continue;
+        }
+        const leadingTrim = value.match(/^\s*/)[0].length;
+        const trailingTrim = value.match(/\s*$/)[0].length;
+        const start = match.index + valueOffset + leadingTrim;
+        const end = match.index + valueOffset + value.length - trailingTrim;
+        pushPatternEntity(entities, rawText, label, start, end, source, context || match[0].split(/[:#]/)[0].trim());
+      }
+    }
+
+    function addStructuredSafeHarborEntities(rawText, entities = []) {
+      const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
+
+      const capturedPatterns = [
+        { label: "PATIENT NAME", regex: /^\s*(?:Patient(?: Name)?|Pt(?: Name)?|Name)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$/gmi },
+        { label: "DOB", regex: new RegExp(String.raw`^\s*(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})\s*$`, "gmi") },
+        { label: "MRN", regex: /^\s*(?:MRN|Medical Record(?: Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+        { label: "ENCOUNTER ID", regex: /^\s*(?:CSN|FIN|HAR|Encounter(?: ID| Number))\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+        { label: "ID", regex: /^\s*(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+        { label: "DATE", regex: new RegExp(String.raw`^\s*(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)\s*[:#]\s*(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
+        { label: "PHONE", regex: /^\s*(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)\s*[:#]\s*((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$/gmi },
+        { label: "EMAIL", regex: /^\s*Email\s*[:#]\s*([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$/gmi },
+        { label: "ADDRESS", regex: /^\s*Address\s*[:#]\s*(.+)$/gmi },
+        { label: "FACILITY", regex: /^\s*(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80})\s*$/gmi },
+        { label: "ROOM", regex: /^\s*(?:Room|Rm|Bed|ICU room|ED room|Unit|Floor|Ward|Pod|Bay|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]*\d?[A-Z0-9-]*)\s*$/gmi },
+        { label: "PROVIDER NAME", regex: /^\s*(?:Primary endocrinologist|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider)\s*[:#]\s*((?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}|[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,2})/gmi },
+        { label: "CONTACT NAME", regex: /^\s*(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})/gmi },
+        { label: "ORGANIZATION", regex: /^\s*Preferred pharmacy\s*[:#]\s*([^,\n\r]{2,80})/gmi }
+      ];
+
+      capturedPatterns.forEach(({ label, regex }) => {
+        addCapturedEntity(rawText, entities, label, regex);
+      });
+
       const directPatterns = [
         { label: "EMAIL", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi },
         { label: "URL", regex: /\b(?:https?:\/\/|www\.)[^\s<>()]+/gi },
         { label: "IP", regex: /\b(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}\b/g },
-        { label: "SSN", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-        { label: "PHONE", regex: /\b(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b/g },
-        { label: "PHONE", regex: /\b(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)\s*[:#]?\s*(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b/gi },
-        { label: "DOB REDACTED", regex: /\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]?\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})\b/gi },
-        { label: "DATE", regex: /\b(?:Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Death date|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)\s*[:#]?\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})(?:\s+\d{1,2}:\d{2}(?:\s*[AP]M)?)?\b/gi },
+        { label: "ID", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+        { label: "PHONE", regex: /(?:\+?1[-.\s]?)?\(?\b\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
         { label: "DATE", regex: /\b\d{4}-\d{1,2}-\d{1,2}\b/g },
         { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, skip: isLikelyDateFalsePositive },
         { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi },
-        { label: "ID", regex: /\b(?:MRN|Medical Record(?: Number)?|CSN|FIN|HAR|Encounter(?: ID| Number)?|Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi },
-        { label: "ID", regex: /\bNPI\s*[:#]?\s*\d{10}\b/gi },
-        { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g },
-        { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
-        { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
-        { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi },
-        { label: "LOCATION", regex: /\b(?:Facility|Campus|Clinic|Hospital|Site|Service location|Lab location|Ordering location)\s*[:#]\s*[^\n\r]{2,80}/gi },
         { label: "ADDRESS", regex: /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?\s+[A-Za-z .-]+)?(?:,?\s+[A-Z]{2})?(?:\s+\d{5}(?:-\d{4})?)?/gi },
-        { label: "LOCATION", regex: /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi },
+        { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
         { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
         { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g },
-        { label: "NAME", regex: /\b(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?[ \t]+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
-        { label: "NAME", regex: /\b(?:Patient(?: name)?|Pt(?: name)?|Name|Provider|Attending|Resident|Fellow|Consultant|Surgeon|PCP|Primary care provider|Referring provider|Ordering provider|Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian)[ \t]*[:#][ \t]*[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,3}\b/gi },
-        { label: "NAME", regex: /\b(?:Patient initials|Pt initials|Initials)[ \t]*[:#]?[ \t]*[A-Z]{1,4}\b/gi },
-        { label: "BIOMETRIC", regex: /\b(?:full[-\s]?face photo(?:graph)?|fingerprint|voiceprint|retinal scan|iris scan|biometric identifier)\b/gi },
-        { label: "VEHICLE", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
+        { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
+        { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g },
+        { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
+        { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
       ];
 
       directPatterns.forEach(({ label, regex, skip }) => {
-        addRegexEntities(rawText, entities, label, regex, "pattern", skip);
+        addRegexEntities(rawText, entities, label, regex, "structured identifier", skip);
       });
-
-      const headerLinePattern = /^\s*(?:Patient(?: Name)?|Pt(?: Name)?|Name|DOB|Date of Birth|MRN|Medical Record(?: Number)?|CSN|FIN|HAR|Encounter(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Account(?: Number)?|Insurance(?: ID| Number)?|Policy(?: Number)?|Member(?: ID| Number)?|Subscriber(?: ID| Number)?|Room|Bed|Unit|Floor|Facility|Location|Campus|Ordering Provider|Provider|Referring Provider|Collected|Collection(?: Date| Time| Date\/Time)?|Result(?:ed| Date| Time| Date\/Time)?|Received(?: Date| Time| Date\/Time)?)\s*[:#].+$/gmi;
-      for (const match of rawText.matchAll(headerLinePattern)) {
-        const label = /DOB|Birth/i.test(match[0]) ? "DOB REDACTED" : /Room|Bed|Unit|Floor|Facility|Location|Campus/i.test(match[0]) ? "LOCATION" : /Name|Provider|Patient|Pt|Contact/i.test(match[0]) ? "NAME" : "ID";
-        pushPatternEntity(entities, rawText, label, match.index, match.index + match[0].length, "header");
-      }
 
       return entities;
     }
 
     function addPatternEntities(rawText, entities) {
-      return addSafeHarborPatternEntities(rawText, entities);
+      return addStructuredSafeHarborEntities(rawText, entities);
     }
 
     function labelPriority(label) {
-      const priorities = ["DOB REDACTED", "SSN", "EMAIL", "URL", "IP", "ID", "ADDRESS", "ROOM", "PHONE", "DATE", "NAME", "LOCATION", "ORGANIZATION"];
+      const priorities = ["DOB", "EMAIL", "PHONE", "MRN", "ENCOUNTER ID", "ID", "ADDRESS", "ROOM", "PATIENT NAME", "PROVIDER NAME", "CONTACT NAME", "NAME", "FACILITY", "ORGANIZATION", "LOCATION", "DATE", "URL", "IP"];
       const index = priorities.indexOf(label);
       return index === -1 ? priorities.length : index;
+    }
+
+    function mergeSourceLabel(existingSource, nextSource) {
+      if (!existingSource || existingSource === nextSource) {
+        return nextSource || existingSource || "model";
+      }
+      if (!nextSource || existingSource.includes(nextSource)) {
+        return existingSource;
+      }
+      return `${existingSource}+${nextSource}`;
     }
 
     function mergeEntities(entities, rawText) {
       const sorted = entities
         .filter((entity) => Number.isFinite(entity.start) && Number.isFinite(entity.end) && entity.end > entity.start)
+        .map((entity) => normalizePhiEntity(rawText, entity))
         .sort((a, b) => a.start - b.start || b.end - a.end);
       const merged = [];
 
       sorted.forEach((entity) => {
         const last = merged[merged.length - 1];
         const gap = last ? rawText.slice(last.end, entity.start) : "";
+        const tokenContinuation = last &&
+          entity.start >= last.end &&
+          last.label === entity.label &&
+          /model/.test(`${last.source} ${entity.source}`) &&
+          /^[\s.'-]{0,4}$/.test(gap);
         const shouldMerge = last && (
           entity.start <= last.end ||
-          entity.label === last.label && /^[\s.,;:/()[\]{}-]*$/.test(gap)
+          tokenContinuation
         );
 
         if (shouldMerge) {
@@ -4308,7 +4482,9 @@ Sensory level present: No / Yes, at ___`;
           if (labelPriority(entity.label) < labelPriority(last.label)) {
             last.label = entity.label;
           }
-          last.source = last.source === entity.source ? last.source : "model+pattern";
+          last.placeholder = placeholderForLabel(last.label);
+          last.source = mergeSourceLabel(last.source, entity.source);
+          last.context = [last.context, entity.context].filter(Boolean).join("; ");
           return;
         }
 
@@ -4316,8 +4492,10 @@ Sensory level present: No / Yes, at ___`;
           start: entity.start,
           end: entity.end,
           label: entity.label,
+          placeholder: entity.placeholder || placeholderForLabel(entity.label),
           score: entity.score || 0,
-          source: entity.source || "model"
+          source: entity.source || "model",
+          context: entity.context || ""
         });
       });
 
@@ -4355,7 +4533,7 @@ Sensory level present: No / Yes, at ___`;
 
       entities.forEach((entity) => {
         output += rawText.slice(cursor, entity.start);
-        output += entity.label === "DOB REDACTED" ? "[DOB REDACTED]" : `[${entity.label}]`;
+        output += entity.placeholder || placeholderForLabel(entity.label);
         cursor = entity.end;
       });
 
@@ -4365,7 +4543,8 @@ Sensory level present: No / Yes, at ___`;
 
     function summarizeEntities(entities) {
       return entities.reduce((counts, entity) => {
-        counts[entity.label] = (counts[entity.label] || 0) + 1;
+        const label = (entity.placeholder || placeholderForLabel(entity.label)).replace(/^\[|\]$/g, "");
+        counts[label] = (counts[label] || 0) + 1;
         return counts;
       }, {});
     }
@@ -4377,8 +4556,9 @@ Sensory level present: No / Yes, at ___`;
 
       return entities.slice(0, 12).map((entity) => {
         const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
-        const score = entity.source === "model" && entity.score ? ` ${(entity.score * 100).toFixed(0)}%` : "";
-        return `${entity.label}${score}: ${span}`;
+        const score = /model/.test(entity.source) && entity.score ? ` ${(entity.score * 100).toFixed(0)}%` : "";
+        const source = entity.source ? ` (${entity.source}${score})` : score;
+        return `${(entity.placeholder || placeholderForLabel(entity.label)).replace(/^\[|\]$/g, "")}${source}: ${span}`;
       });
     }
 
@@ -4387,7 +4567,7 @@ Sensory level present: No / Yes, at ___`;
       return snippet.length > 96 ? `${snippet.slice(0, 93)}...` : snippet;
     }
 
-    function addResidualWarning(warnings, severity, type, snippet, reason) {
+    function addResidualWarning(warnings, severity, type, snippet, reason, start = null, end = null, label = null) {
       const cleanSnippet = normalizeWarningSnippet(snippet);
       if (!cleanSnippet || cleanSnippet.startsWith("[") && cleanSnippet.endsWith("]")) {
         return;
@@ -4398,7 +4578,7 @@ Sensory level present: No / Yes, at ___`;
         return;
       }
 
-      warnings.push({ key, severity, type, snippet: cleanSnippet, reason });
+      warnings.push({ key, severity, type, snippet: cleanSnippet, reason, start, end, label });
     }
 
     function addResidualMatches(warnings, text, severity, type, regex, reason, shouldSkip = null) {
@@ -4406,8 +4586,113 @@ Sensory level present: No / Yes, at ___`;
         if (shouldSkip && shouldSkip(text, match.index, match.index + match[0].length, match)) {
           continue;
         }
-        addResidualWarning(warnings, severity, type, match[0], reason);
+        addResidualWarning(warnings, severity, type, match[0], reason, match.index, match.index + match[0].length);
       }
+    }
+
+    function escapeRegExp(value) {
+      return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function isSpanCovered(start, end, entities) {
+      return entities.some((entity) => start >= entity.start && end <= entity.end);
+    }
+
+    function isPlausibleNameText(value) {
+      const cleaned = String(value || "")
+        .replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, "")
+        .replace(/[,\s]+$/g, "")
+        .trim();
+      const normalized = normalizePhrase(cleaned);
+      if (!normalized || isLikelyClinicalNameLikePhrase(normalized) || nonNameClinicalPhrases.has(normalized)) {
+        return false;
+      }
+      const words = cleaned.split(/\s+/);
+      return words.length >= 2 && words.length <= 4 && words.every((word) => /^[A-Z][A-Za-z.'-]{1,}$/.test(word));
+    }
+
+    function aliasVariantsFromSpan(span) {
+      const withoutLabel = String(span || "")
+        .replace(/^[A-Za-z /().-]+[:#]\s*/, "")
+        .replace(/\s+(?:MD|DO|NP|PA-C|RN)\b\.?/gi, "")
+        .split(/\s+(?:mother|father|spouse|daughter|son|guardian|caregiver)\b/i)[0]
+        .split(/\s*,\s*/)[0]
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!isPlausibleNameText(withoutLabel)) {
+        return [];
+      }
+      const variants = [withoutLabel];
+      const withoutTitle = withoutLabel.replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, "").trim();
+      if (withoutTitle && withoutTitle !== withoutLabel && isPlausibleNameText(withoutTitle)) {
+        variants.push(withoutTitle);
+      }
+      return [...new Set(variants)];
+    }
+
+    function inferNameAliases(rawText, entities) {
+      const aliases = new Map();
+      entities.forEach((entity) => {
+        if (!nameEntityLabels.has(entity.label)) {
+          return;
+        }
+        const span = rawText.slice(entity.start, entity.end);
+        aliasVariantsFromSpan(span).forEach((alias) => {
+          const key = normalizePhrase(alias.replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, ""));
+          if (!key || aliases.has(key)) {
+            return;
+          }
+          aliases.set(key, {
+            text: alias,
+            label: entity.label === "NAME" ? refineNameLabel("NAME", rawText, entity.start, entity.end) : entity.label,
+            placeholder: entity.placeholder || placeholderForLabel(entity.label)
+          });
+        });
+      });
+      return aliases;
+    }
+
+    function addAliasRepeatEntities(rawText, entities, aliases) {
+      aliases.forEach((alias) => {
+        const variants = aliasVariantsFromSpan(alias.text);
+        variants.forEach((variant) => {
+          const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(variant)})(?=$|[^A-Za-z])`, "g");
+          for (const match of rawText.matchAll(regex)) {
+            const start = match.index + match[1].length;
+            const end = start + match[2].length;
+            if (isSpanCovered(start, end, entities)) {
+              continue;
+            }
+            pushPatternEntity(entities, rawText, alias.label, start, end, "alias repeat", `known alias: ${alias.text}`);
+          }
+        });
+      });
+      return entities;
+    }
+
+    function hasStrongNameContext(rawText, start, end) {
+      const span = rawText.slice(start, end);
+      const context = lineContext(rawText, start, end).toLowerCase();
+      return /^(?:dr|doctor|mr|mrs|ms|miss)\.?\s+/i.test(span) ||
+        /\b(?:patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|contact|can bring|confirm|before leaving|prescriptions to)\b/.test(context);
+    }
+
+    function promoteResidualNameEntities(rawText, entities, aliases) {
+      const namePattern = /\b(?:Dr\.?[ \t]+)?[A-Z][a-z]{2,}(?:[ \t]+[A-Z]\.?)?[ \t]+[A-Z][a-z]{2,}\b/g;
+      for (const match of rawText.matchAll(namePattern)) {
+        const start = match.index;
+        const end = start + match[0].length;
+        if (isSpanCovered(start, end, entities) || isLikelyNonNamePhrase(rawText, start, end)) {
+          continue;
+        }
+        const aliasKey = normalizePhrase(match[0].replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, ""));
+        if (!aliases.has(aliasKey) && !hasStrongNameContext(rawText, start, end)) {
+          continue;
+        }
+        const label = aliases.get(aliasKey)?.label || refineNameLabel("NAME", rawText, start, end);
+        pushPatternEntity(entities, rawText, label, start, end, "residual auto-fix", aliases.has(aliasKey) ? "known alias" : "strong name context");
+      }
+      return entities;
     }
 
     function scanResidualPhi(text) {
@@ -4423,7 +4708,7 @@ Sensory level present: No / Yes, at ___`;
       addResidualMatches(warnings, sourceText, "high", "exact date", /\b\d{4}-\d{1,2}-\d{1,2}\b/g, "exact calendar date");
       addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, "exact calendar date", isLikelyDateFalsePositive);
       addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi, "exact calendar date");
-      addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record(?: Number)?|CSN|FIN|HAR|Encounter(?: ID| Number)?|Account(?: Number)?|Acct|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
+      addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record(?: Number)?|CSN|FIN|HAR|Encounter(?: ID| Number)|Account(?: Number)?|Acct|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
       addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address");
       addResidualMatches(warnings, sourceText, "medium", "ZIP or postal code", /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi, "geographic detail smaller than state");
       addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");
@@ -4481,20 +4766,40 @@ Sensory level present: No / Yes, at ___`;
 
     async function loadDeidentifierPipeline() {
       if (!deidentifierPipelinePromise) {
-        elements.modelStatus.textContent = "Preparing local de-ID model. First load can take a minute.";
+        elements.modelStatus.textContent = "Preparing local PII model. First load can take a minute.";
         elements.offlineModelReady.checked = false;
-        deidentifierPipelinePromise = pipeline("token-classification", deidentifierModelId, {
-          dtype: deidentifierDtype
-        }).then((loadedPipeline) => {
-          state.modelReady = true;
-          elements.modelStatus.textContent = "Local de-ID model ready.";
-          elements.offlineModelReady.checked = true;
-          return loadedPipeline;
-        }).catch((error) => {
-          deidentifierPipelinePromise = null;
+        deidentifierPipelinePromise = (async () => {
+          const candidates = [
+            { modelId: primaryDeidentifierModelId, options: { dtype: deidentifierDtype } },
+            { modelId: primaryDeidentifierModelId, options: {} },
+            { modelId: fallbackDeidentifierModelId, options: { dtype: deidentifierDtype } }
+          ];
+          const errors = [];
+
+          for (const candidate of candidates) {
+            try {
+              const loadedPipeline = await pipeline("token-classification", candidate.modelId, candidate.options);
+              state.modelReady = true;
+              elements.offlineModelReady.checked = true;
+              const fallbackNote = candidate.modelId === fallbackDeidentifierModelId ? " Fallback model in use." : "";
+              elements.modelStatus.textContent = `Local PII model ready.${fallbackNote}`;
+              return {
+                pipeline: loadedPipeline,
+                modelId: candidate.modelId,
+                modelStatus: candidate.modelId === fallbackDeidentifierModelId ? "fallback model" : "primary model"
+              };
+            } catch (error) {
+              errors.push(error);
+              console.warn(`Could not load de-ID model ${candidate.modelId}.`, error);
+            }
+          }
+
           state.modelReady = false;
-          elements.modelStatus.textContent = "Could not prepare local de-ID model.";
+          elements.modelStatus.textContent = "Model unavailable; structured redaction only.";
           elements.offlineModelReady.checked = false;
+          throw errors[errors.length - 1] || new Error("No de-ID model could be loaded.");
+        })().catch((error) => {
+          deidentifierPipelinePromise = null;
           throw error;
         });
       }
@@ -4511,25 +4816,58 @@ Sensory level present: No / Yes, at ___`;
       });
     }
 
+    function splitTextForModel(rawText, maxChars = 1800, overlap = 180) {
+      if (rawText.length <= maxChars) {
+        return [{ text: rawText, offset: 0 }];
+      }
+
+      const chunks = [];
+      let start = 0;
+      while (start < rawText.length) {
+        let end = Math.min(rawText.length, start + maxChars);
+        if (end < rawText.length) {
+          const newline = rawText.lastIndexOf("\n", end);
+          if (newline > start + Math.floor(maxChars * 0.55)) {
+            end = newline + 1;
+          }
+        }
+
+        chunks.push({ text: rawText.slice(start, end), offset: start });
+        if (end >= rawText.length) {
+          break;
+        }
+        const nextStart = Math.max(0, end - overlap);
+        start = nextStart <= start ? end : nextStart;
+      }
+      return chunks;
+    }
+
+    async function detectModelEntities(rawText) {
+      try {
+        const model = await loadDeidentifierPipeline();
+        const entities = [];
+        for (const chunk of splitTextForModel(rawText)) {
+          const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
+          entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
+        }
+        return {
+          entities,
+          modelId: model.modelId,
+          modelStatus: model.modelStatus
+        };
+      } catch (error) {
+        console.warn("Model unavailable; structured redaction only.", error);
+        return {
+          entities: [],
+          modelId: null,
+          modelStatus: "Model unavailable; structured redaction only."
+        };
+      }
+    }
+
     async function detectPhiEntities(rawText) {
-      const deidentifier = await loadDeidentifierPipeline();
-      const predictions = await deidentifier(rawText, { ignore_labels: [] });
-      const modelEntities = modelPredictionsToEntities(rawText, predictions).filter((entity) => {
-        if (entity.label === "DATE") {
-          return !isLikelyDateFalsePositive(rawText, entity.start, entity.end);
-        }
-
-        if (entity.label === "NAME") {
-          return !isLikelyNonNamePhrase(rawText, entity.start, entity.end);
-        }
-
-        if (entity.label === "LOCATION") {
-          return !isLikelyLocationFalsePositive(rawText, entity.start, entity.end);
-        }
-
-        return true;
-      });
-      return filterLikelyFalsePositiveEntities(rawText, mergeEntities(addSafeHarborPatternEntities(rawText, modelEntities), rawText));
+      const result = await deidentifyText(rawText);
+      return result.entities;
     }
 
     function setScrubBusy(isBusy, primaryLabel) {
@@ -4544,21 +4882,35 @@ Sensory level present: No / Yes, at ___`;
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
     }
 
-    async function scrubSoapNoteText(rawText) {
-      const entities = await detectPhiEntities(rawText);
+    async function deidentifyText(rawText) {
+      const modelResult = await detectModelEntities(rawText);
+      let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(modelResult.entities, rawText));
+      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, entities), rawText));
+      const aliases = inferNameAliases(rawText, entities);
+      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, aliases), rawText));
+      entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, aliases), rawText));
       const text = redactFromEntities(rawText, entities);
       const counts = summarizeEntities(entities);
       const residualWarnings = scanResidualPhi(text);
       const residualFlags = residualWarnings.slice(0, 12).map(formatPhiWarning);
+      const modelFlag = modelResult.modelStatus === "Model unavailable; structured redaction only."
+        ? ["Model unavailable; structured redaction only."]
+        : [`Model: ${modelResult.modelId}`];
 
       return {
         text,
         counts,
         redactionTotal: entities.length,
         residualWarnings,
-        flags: [...residualFlags, ...entityFlags(rawText, entities)],
-        entities
+        flags: [...modelFlag, ...residualFlags, ...entityFlags(rawText, entities)],
+        entities,
+        modelId: modelResult.modelId,
+        modelStatus: modelResult.modelStatus
       };
+    }
+
+    async function scrubSoapNoteText(rawText) {
+      return deidentifyText(rawText);
     }
 
     function renderScrubResult(result) {
@@ -4692,7 +5044,7 @@ Sensory level present: No / Yes, at ___`;
       }
 
       setScrubBusy(true, "De-identifying...");
-      elements.promptStatus.textContent = "Running Stanford AIMI deidentifier locally...";
+      elements.promptStatus.textContent = "Running local PII deidentifier...";
 
       let result;
       try {
