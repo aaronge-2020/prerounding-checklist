@@ -6,7 +6,21 @@ export const clinicalGuardTerms = [
   "Anion Gap",
   "Type 1 Diabetes Mellitus",
   "Free T4",
-  "Beta-hydroxybutyrate"
+  "Beta-hydroxybutyrate",
+  "Atypical Chest",
+  "Chronic Pain",
+  "Home Escitalopram",
+  "Heart Healthy",
+  "Last Reading",
+  "Hour Range",
+  "Pulmonary Toilet",
+  "Bowel Management",
+  "Fall Risk",
+  "Suicide Risk",
+  "Elopement Risk",
+  "Elopmement Risk",
+  "Daily Labs",
+  "Immature Grans"
 ];
 
 const patients = [
@@ -165,8 +179,8 @@ function findAllSpans(text, value, label) {
   return spans;
 }
 
-function finalizeCase(id, category, text, record, requiredSnippets = []) {
-  const spans = identifierMap(record).flatMap(([label, value]) => findAllSpans(text, value, label));
+function finalizeCase(id, category, text, record, requiredSnippets = [], extraIdentifiers = []) {
+  const spans = [...identifierMap(record), ...extraIdentifiers].flatMap(([label, value]) => findAllSpans(text, value, label));
   const forbidden = [...new Set(spans.map((span) => span.text))];
   return {
     id,
@@ -396,6 +410,138 @@ Clinical phrases to preserve: Heart Rate, Blood Pressure, Insulin Glargine, Anio
   ]);
 }
 
+function hyphenatedIdentityCase(id, record) {
+  const patient = "Sita Gerrill-Stevenson";
+  const titleFull = "Ms. Sita Gerrill-Stevenson";
+  const titleSurname = "Ms. Gerrill-Stevenson";
+  const fuzzyTitleSurname = "Ms Merrill-Stevenson";
+  const surname = "Gerrill-Stevenson";
+  const customRecord = { ...record, patient };
+  const text = `Adversarial progress note
+One-line summary: ${titleFull} is a 57 y.o. female who presents with chest pain radiating to the shoulder.
+Overall Assessment:
+${fuzzyTitleSurname} is a 57-year-old woman admitted for work-up for atypical chest pain.
+Plan: follow up with ${titleSurname} after discharge. ${surname} will call if symptoms recur.
+
+#Atypical Chest Pain, resolved
+#Chronic Pain
+- Home Escitalopram 40mg daily
+# Diet: Heart Healthy
+Last Reading 24-Hour Range
+Pulmonary Toilet
+Bowel Management
+Fall Risk
+Suicide Risk
+Elopmement Risk
+Daily Labs
+Immature Grans (Abs): 0.01`;
+
+  return finalizeCase(id, "hyphenated-identity", text, customRecord, [
+    "#Atypical Chest Pain, resolved",
+    "Home Escitalopram"
+  ], [
+    ["PATIENT NAME", titleFull],
+    ["PATIENT NAME", titleSurname],
+    ["PATIENT NAME", fuzzyTitleSurname],
+    ["PATIENT NAME", surname]
+  ]);
+}
+
+function apostropheSuffixCase(id, record) {
+  const patient = "Liam O'Connor";
+  const titleFull = "Mr. Liam O'Connor Jr.";
+  const titleSurname = "Mr O'Connor";
+  const provider = "Dr. Tessa McAllister";
+  const customRecord = { ...record, patient, provider };
+  const text = `Admission note
+One-line summary: ${titleFull} is a 64-year-old man admitted for syncope.
+Patient Name: ${patient}
+Provider: ${provider}
+The patient reports dizziness. ${titleSurname} denies chest pain this morning.
+Follow-up with ${provider} after discharge.
+Clinical headings to preserve: Last Reading, Hour Range, Daily Labs, Immature Grans.`;
+
+  return finalizeCase(id, "apostrophe-suffix", text, customRecord, [
+    "Last Reading",
+    "Daily Labs"
+  ], [
+    ["PATIENT NAME", titleFull],
+    ["PATIENT NAME", titleSurname],
+    ["PROVIDER NAME", provider]
+  ]);
+}
+
+function providerSchedulingCase(id, record) {
+  const provider = "Dr. Noelle Parker";
+  const providerShort = "Dr Parker";
+  const customRecord = { ...record, provider };
+  const text = `Discharge coordination
+Patient Name: ${record.patient}
+MRN: ${record.mrn}
+Follow up with ${provider} in endocrine clinic.
+Scheduling with ${providerShort} should occur before discharge if possible.
+Provider Referral
+Abnormal Labs
+Pulmonary Toilet
+Bowel Management`;
+
+  return finalizeCase(id, "provider-scheduling", text, customRecord, [
+    "Provider Referral",
+    "Abnormal Labs",
+    "Pulmonary Toilet"
+  ], [
+    ["PROVIDER NAME", provider],
+    ["PROVIDER NAME", providerShort]
+  ]);
+}
+
+function sameSurnameFamilyCase(id, record) {
+  const patient = "Jordan Smith";
+  const contact = "Jamie Smith";
+  const customRecord = { ...record, patient, contact };
+  const text = `Patient Name: ${patient}
+Emergency contact: ${contact}, ${record.contactPhone}
+${patient} is admitted for pneumonia.
+Call ${contact} after rounds if the discharge plan changes.
+The word Smith alone appears in a teaching aside and should not be used as the only identity signal.`;
+
+  return finalizeCase(id, "same-surname-family", text, customRecord, [
+    "Smith alone"
+  ], [
+    ["PATIENT NAME", patient],
+    ["CONTACT NAME", contact]
+  ]);
+}
+
+function medicalFalsePositiveCase(id, record) {
+  const text = `Clean clinical table without patient identifiers
+#Atypical Chest Pain, resolved
+#Chronic Pain
+- Home Escitalopram 40mg daily
+# Diet: Heart Healthy
+Last Reading 24-Hour Range
+Pulmonary Toilet
+Bowel Management
+Fall Risk
+Suicide Risk
+Elopement Risk
+Elopmement Risk
+Daily Labs
+Immature Grans (Abs): 0.01
+Heart Rate 70
+Blood Pressure 159/81
+Anion Gap 7
+Type 1 Diabetes Mellitus teaching phrase
+Free T4 and Beta-hydroxybutyrate preserved`;
+
+  return finalizeCase(id, "medical-false-positive", text, record, [
+    "Atypical Chest Pain",
+    "Chronic Pain",
+    "Home Escitalopram",
+    "Immature Grans"
+  ]);
+}
+
 const templates = [
   endocrineDemo,
   generalMedicine,
@@ -406,14 +552,19 @@ const templates = [
   freeTextMessage,
   messyChart,
   cleanClinical,
-  strongContextFollowUp
+  strongContextFollowUp,
+  hyphenatedIdentityCase,
+  apostropheSuffixCase,
+  providerSchedulingCase,
+  sameSurnameFamilyCase,
+  medicalFalsePositiveCase
 ];
 
 export function makeDemoLikeCase() {
   return endocrineDemo("demo-dka-john-smith", makeRecord(0));
 }
 
-export function makeSyntheticCases(count = 100) {
+export function makeSyntheticCases(count = 250) {
   const cases = [];
   for (let index = 0; index < count; index += 1) {
     const template = templates[index % templates.length];

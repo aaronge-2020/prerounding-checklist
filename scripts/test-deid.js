@@ -40,6 +40,10 @@ function assertCaseClean(caseItem) {
 
   const highResiduals = result.residualWarnings.filter((warning) => warning.severity === "high");
   assert.deepEqual(highResiduals, [], `${caseItem.id} left high-risk residual warnings.`);
+  const medicalTermWarnings = result.residualWarnings.filter((warning) => (
+    caseItem.clinicalTerms.some((term) => warning.snippet?.toLowerCase().includes(term.toLowerCase()))
+  ));
+  assert.deepEqual(medicalTermWarnings, [], `${caseItem.id} flagged protected medical terms as names.`);
   return result;
 }
 
@@ -51,9 +55,37 @@ assert.ok(!demoResult.text.includes("Emily Johnson"), "demo should redact provid
 assert.ok(demoResult.text.includes("Patient Name: [PATIENT NAME]"), "demo should keep the patient header readable");
 assert.ok(demoResult.text.includes("Primary endocrinologist: [PROVIDER NAME]"), "demo should keep the provider header readable");
 
-const cases = makeSyntheticCases(100);
+const cases = makeSyntheticCases(250);
 for (const caseItem of cases) {
   assertCaseClean(caseItem);
+}
+
+const adversarialName = `One-line summary: Ms. Sita Gerrill-Stevenson is a 57 y.o. female.
+Overall Assessment:
+Ms Merrill-Stevenson is a 57-year-old woman admitted for work-up.
+Plan: follow up with Ms. Gerrill-Stevenson after discharge. Gerrill-Stevenson will call.`;
+const adversarialResult = deidentifyTextStructuredOnly(adversarialName);
+for (const leak of ["Sita Gerrill-Stevenson", "Ms Merrill-Stevenson", "Ms. Gerrill-Stevenson", "Gerrill-Stevenson"]) {
+  assert.ok(!adversarialResult.text.includes(leak), `identity alias should be redacted: ${leak}`);
+}
+
+const medicalFalsePositiveText = `#Atypical Chest Pain, resolved
+#Chronic Pain
+- Home Escitalopram 40mg daily
+# Diet: Heart Healthy
+Last Reading 24-Hour Range
+Pulmonary Toilet
+Bowel Management
+Fall Risk
+Suicide Risk
+Elopement Risk
+Elopmement Risk
+Daily Labs
+Immature Grans (Abs): 0.01`;
+const medicalFalsePositiveResult = deidentifyTextStructuredOnly(medicalFalsePositiveText);
+for (const term of ["Atypical Chest", "Chronic Pain", "Home Escitalopram", "Heart Healthy", "Last Reading", "Hour Range", "Pulmonary Toilet", "Bowel Management", "Fall Risk", "Suicide Risk", "Elopement Risk", "Elopmement Risk", "Daily Labs", "Immature Grans"]) {
+  assert.ok(medicalFalsePositiveResult.text.includes(term), `medical term should be preserved: ${term}`);
+  assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `medical term should not be a name warning: ${term}`);
 }
 
 const guardText = clinicalGuardTerms.join("\n");

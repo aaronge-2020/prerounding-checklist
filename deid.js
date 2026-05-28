@@ -97,6 +97,10 @@ const nameEntityLabels = new Set(["NAME", "PATIENT NAME", "PROVIDER NAME", "CONT
 
 const nonNameClinicalPhrases = new Set([
   "basic information", "chief complaint", "principal problem", "active problems", "resolved problems",
+  "atypical chest", "atypical chest pain", "chronic pain", "home escitalopram", "heart healthy",
+  "last reading", "hour range", "pulmonary toilet", "bowel management", "fall risk", "suicide risk",
+  "elopement risk", "elopmement risk", "daily labs", "immature grans", "provider referral",
+  "abnormal labs",
   "general neurology", "history problem", "past medical", "past medical history", "surgical history",
   "family history", "social history", "home meds", "home medications", "current medications",
   "current medication", "prior medications", "inpatient medications", "scheduled medications",
@@ -124,34 +128,35 @@ const nonNameClinicalPhrases = new Set([
 
 const nonNameClinicalWords = new Set([
   "abdomen", "abdominal", "absolute", "acetaminophen", "active", "activity", "acute", "admission",
-  "albumin", "alk", "alkaline", "allergies", "alt", "and", "anion", "anesthesia", "antibiotic",
+  "abnormal", "albumin", "alk", "alkaline", "allergies", "alt", "and", "anion", "anesthesia", "antibiotic",
   "anticoagulation", "arterial", "assessment", "ast", "atypical", "basophils", "base", "basic",
   "beta", "bicarbonate", "bilirubin", "blood", "bladder", "bowel", "brain", "bun", "burr",
   "calcium", "cardiac", "cardiology", "cardiovascular", "catheter", "cbc", "cells", "cervical",
   "chloride", "chief", "clinic", "cloudy", "coagulation", "code", "comment", "complaint", "complete",
   "consult", "coordination", "count", "course", "cranial", "creatinine", "critical", "culture",
-  "current", "decreased", "dermatology", "diabetes", "diagnoses", "diagnosis", "diet", "differential",
-  "dimer", "discharge", "drain", "dvt", "edema", "elevated", "emergency", "encephalopathy",
-  "endocrine", "endocrinology", "eosinophils", "esr", "exam", "excess", "failure", "family",
-  "ferritin", "fibrinogen", "follow", "free", "gap", "gastroenterology", "general", "glucose",
-  "gram", "granulation", "granulocytes", "gu", "hba1c", "hct", "heart", "hematocrit", "hematology",
-  "hemoglobin", "hepatology", "hgb", "high", "history", "home", "hospital", "hospitalist",
+  "current", "daily", "decreased", "dermatology", "diabetes", "diagnoses", "diagnosis", "diet", "differential",
+  "dimer", "discharge", "drain", "dvt", "edema", "elevated", "elopement", "elopmement",
+  "emergency", "encephalopathy", "endocrine", "endocrinology", "eosinophils", "escitalopram",
+  "esr", "exam", "excess", "failure", "fall", "family", "ferritin", "fibrinogen", "follow",
+  "free", "gap", "gastroenterology", "general", "glucose", "gram", "granulation", "granulocytes",
+  "grans", "gu", "hba1c", "hct", "healthy", "heart", "hematocrit", "hematology",
+  "hemoglobin", "hepatology", "hgb", "high", "history", "home", "hospital", "hospitalist", "hour",
   "hydroxybutyrate", "imaging", "immature", "impression", "infectious", "information", "injury",
   "inpatient", "intact", "intake", "iron", "kidney", "lab", "laboratory", "labs", "lactate",
-  "lactic", "level", "line", "lipase", "liver", "low", "lumbar", "lung", "lungs", "lymphocytes",
-  "magnesium", "maximum", "mean", "medical", "medication", "medications", "medicine", "meds",
+  "lactic", "last", "level", "line", "lipase", "liver", "low", "lumbar", "lung", "lungs", "lymphocytes",
+  "magnesium", "management", "maximum", "mean", "medical", "medication", "medications", "medicine", "meds",
   "mental", "microbiology", "minimum", "monocytes", "morphology", "motor", "musculoskeletal",
   "nephrology", "nerve", "neuro", "neurologic", "neurology", "neurosurgery", "neutrophils", "normal",
   "note", "objective", "obstetrics", "oncology", "operative", "orthopedics", "outpatient", "output",
   "palliative", "pathology", "past", "pco2", "pediatrics", "ph", "pharmacy", "phos", "phosphatase",
   "phosphate", "phosphorus", "physical", "platelet", "platelets", "plt", "po2", "potassium",
   "precautions", "principal", "prn", "problem", "problems", "procedure", "procalcitonin", "progress",
-  "protein", "psychiatry", "pt", "ptt", "pulmonary", "pulmonology", "radiology", "rare", "rate",
-  "rbc", "red", "reflex", "renal", "report", "resolved", "respiratory", "reticulated", "reticulocyte",
-  "review", "rheumatology", "saturation", "scheduled", "schistocytes", "see", "sensory", "severe",
+  "protein", "psychiatry", "pt", "ptt", "pulmonary", "pulmonology", "radiology", "range", "rare", "rate",
+  "rbc", "reading", "red", "referral", "reflex", "renal", "report", "resolved", "respiratory", "reticulated", "reticulocyte",
+  "review", "rheumatology", "risk", "saturation", "scheduled", "schistocytes", "see", "sensory", "severe",
   "sign", "signs", "sodium", "social", "spinal", "spine", "sputum", "stain", "status", "subjective",
-  "studies", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
-  "thoracic", "thyroid", "tibc", "tone", "total", "toxic", "transfer", "transferrin", "trauma",
+  "studies", "suicide", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
+  "thoracic", "thyroid", "tibc", "toilet", "tone", "total", "toxic", "transfer", "transferrin", "trauma",
   "treatment", "triglycerides", "troponin", "tsh", "turbid", "ua", "unit", "urinary", "urine",
   "urology", "vascular", "vital", "vitals", "warfarin", "wbc", "white", "wound"
 ]);
@@ -180,13 +185,21 @@ const medicationSaltOrFormWords = new Set([
 
 const medicationNameWords = new Set([
   "acetaminophen", "amlodipine", "aspirin", "atorvastatin", "azithromycin", "cefazolin", "cefepime",
-  "ceftriaxone", "duloxetine", "enoxaparin", "furosemide", "gabapentin", "heparin", "hydromorphone",
+  "ceftriaxone", "duloxetine", "enoxaparin", "escitalopram", "furosemide", "gabapentin", "heparin", "hydromorphone",
   "insulin", "levothyroxine", "lisinopril", "losartan", "metformin", "metoprolol", "ondansetron",
   "oxycodone", "pantoprazole", "pregabalin", "senna", "tamsulosin", "tramadol", "trazodone",
   "vancomycin", "warfarin"
 ]);
 
 const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
+const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
+const patientHonorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx)`;
+const nameWordPatternSource = String.raw`[A-Z][A-Za-z.'-]{1,}`;
+const namePartPatternSource = String.raw`(?:${nameWordPatternSource}|[A-Z]\.?)`;
+const fullNamePatternSource = String.raw`${namePartPatternSource}(?:[ \t]+${namePartPatternSource}){1,4}`;
+const titledNamePatternSource = String.raw`${honorificPatternSource}\.?\s+${namePartPatternSource}(?:[ \t]+${namePartPatternSource}){0,4}`;
+const suffixPattern = /^(?:jr|sr|ii|iii|iv|v)$/i;
+const credentialPattern = /^(?:md|do|np|pa-c|pa|rn|pharmd|phd)$/i;
 
 export function normalizePhiLabel(entityOrLabel) {
   const rawLabel = typeof entityOrLabel === "string"
@@ -285,7 +298,16 @@ function isLikelyChartHeadingPhrase(rawText, start, end) {
     return true;
   }
 
-  const line = normalizePhrase(lineAroundSpan(rawText, start, end));
+  const rawLine = lineAroundSpan(rawText, start, end);
+  const line = normalizePhrase(rawLine);
+  const beforeInLine = rawLine.slice(0, Math.max(0, rawLine.indexOf(span)));
+  if (/^\s*(?:#|[-*]|\d+\.)?\s*$/.test(beforeInLine) && /(?:^#|:?\s*$|, resolved\s*$|, improved\s*$|, stable\s*$)/i.test(rawLine)) {
+    const words = normalized.split(" ");
+    if (words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word) || medicationNameWords.has(word))) {
+      return true;
+    }
+  }
+
   if (line && line === normalized) {
     const words = normalized.split(" ");
     return words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
@@ -345,7 +367,9 @@ function isLikelyDateFalsePositive(rawText, start, end) {
     return true;
   }
 
-  return /^(?:\/|-)\d{2,4}$/.test(span) || /^\d{1,2}-\d{1,2}\s*(?:days?|weeks?|months?)\b/i.test(`${span} ${after}`);
+  return /^(?:\/|-)\d{2,4}$/.test(span) ||
+    /^\d{1,2}[- ][A-Za-z]+$/.test(span) ||
+    /^\d{1,2}-\d{1,2}\s*(?:days?|weeks?|months?)\b/i.test(`${span} ${after}`);
 }
 
 function isLikelyLocationFalsePositive(rawText, start, end) {
@@ -374,8 +398,9 @@ function refineNameLabel(label, rawText, start, end) {
   if (/^(?:dr|doctor)\.?\s+/i.test(span) || /\b(?:provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|follow-up with)\b/.test(sameLine)) {
     return "PROVIDER NAME";
   }
-  if (/\b(?:patient name|pt name|patient|subjective|admitted|discharge planning)\b/.test(sameLine) ||
-      /\b(?:patient name|pt name|subjective|admitted|discharge planning)\b/.test(broaderContext)) {
+  if (/\b(?:one-line summary|overall assessment|patient name|pt name|patient|subjective|admitted|discharge planning)\b/.test(sameLine) ||
+      /\b(?:one-line summary|overall assessment|patient name|pt name|subjective|admitted|discharge planning)\b/.test(broaderContext) ||
+      /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine)) {
     return "PATIENT NAME";
   }
   return "NAME";
@@ -686,6 +711,21 @@ export function mergeEntities(entities, rawText) {
 
 export function filterLikelyFalsePositiveEntities(rawText, entities) {
   return entities.filter((entity) => {
+    if (entity.label === "AGE") {
+      const age = Number(rawText.slice(entity.start, entity.end).match(/\d{1,3}/)?.[0] || 0);
+      return age >= 90;
+    }
+
+    if (nameEntityLabels.has(entity.label) && /model/.test(entity.source || "")) {
+      const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+      if (isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
+        return false;
+      }
+      if (!parsePersonName(span) && !hasStrongNameContext(rawText, entity.start, entity.end)) {
+        return false;
+      }
+    }
+
     if (entity.label === "DATE") {
       return !isLikelyDateFalsePositive(rawText, entity.start, entity.end);
     }
@@ -696,6 +736,11 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
 
     if (entity.label === "LOCATION") {
       return !isLikelyLocationFalsePositive(rawText, entity.start, entity.end);
+    }
+
+    if ((entity.label === "ORGANIZATION" || entity.label === "FACILITY") && /model/.test(entity.source || "")) {
+      const normalized = normalizePhrase(rawText.slice(entity.start, entity.end));
+      return !nonNameClinicalWords.has(normalized) && !nonNameClinicalPhrases.has(normalized);
     }
 
     return true;
@@ -780,6 +825,84 @@ function isSpanCovered(start, end, entities) {
   return entities.some((entity) => start >= entity.start && end <= entity.end);
 }
 
+function cleanNameText(value) {
+  return String(value || "")
+    .replace(/^[A-Za-z /().-]+[:#]\s*/, "")
+    .replace(/\s+(?:MD|DO|NP|PA-C|PA|RN|PharmD|PhD)\b\.?/gi, "")
+    .split(/\s+(?:mother|father|spouse|daughter|son|guardian|caregiver)\b/i)[0]
+    .split(/\s*,\s*/)[0]
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripHonorific(value) {
+  return String(value || "").replace(new RegExp(String.raw`^${honorificPatternSource}\.?\s+`, "i"), "").trim();
+}
+
+function normalizeNameKey(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[^A-Za-z'-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function normalizeNameLoose(value) {
+  return normalizeNameKey(value).replace(/[^a-z]/g, "");
+}
+
+function parsePersonName(value) {
+  const cleaned = cleanNameText(value);
+  if (!cleaned) {
+    return null;
+  }
+
+  const titleMatch = cleaned.match(new RegExp(String.raw`^(${honorificPatternSource})\.?\s+`, "i"));
+  const title = titleMatch ? titleMatch[1].replace(/\.$/, "") : "";
+  const withoutTitle = title ? cleaned.slice(titleMatch[0].length).trim() : cleaned;
+  const rawParts = withoutTitle
+    .split(/\s+/)
+    .map((part) => part.replace(/^[^A-Za-z]+|[^A-Za-z.'-]+$/g, ""))
+    .filter(Boolean)
+    .filter((part) => !suffixPattern.test(part) && !credentialPattern.test(part));
+  const realParts = rawParts.filter((part) => !/^[A-Z]\.?$/.test(part));
+
+  if (!realParts.length) {
+    return null;
+  }
+
+  const normalized = normalizePhrase(withoutTitle);
+  if (nonNameClinicalPhrases.has(normalized) || isLikelyClinicalNameLikePhrase(normalized)) {
+    return null;
+  }
+
+  const hasFullName = realParts.length >= 2;
+  const hasTitleSurname = Boolean(title) && realParts.length === 1;
+  if (!hasFullName && !hasTitleSurname) {
+    return null;
+  }
+
+  const surname = realParts[realParts.length - 1];
+  const first = hasFullName ? realParts[0] : "";
+  return {
+    original: cleaned,
+    title,
+    parts: rawParts,
+    realParts,
+    first,
+    surname,
+    key: normalizeNameKey(withoutTitle),
+    surnameKey: normalizeNameKey(surname),
+    looseSurnameKey: normalizeNameLoose(surname)
+  };
+}
+
+function isDistinctiveSurname(surname) {
+  const normalized = normalizeNameKey(surname);
+  return /[-']/.test(surname) || normalized.replace(/[^a-z]/g, "").length >= 9;
+}
+
 function isPlausibleNameText(value) {
   const cleaned = String(value || "")
     .replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, "")
@@ -794,60 +917,145 @@ function isPlausibleNameText(value) {
 }
 
 function aliasVariantsFromSpan(span) {
-  const withoutLabel = String(span || "")
-    .replace(/^[A-Za-z /().-]+[:#]\s*/, "")
-    .replace(/\s+(?:MD|DO|NP|PA-C|RN)\b\.?/gi, "")
-    .split(/\s+(?:mother|father|spouse|daughter|son|guardian|caregiver)\b/i)[0]
-    .split(/\s*,\s*/)[0]
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!isPlausibleNameText(withoutLabel)) {
+  const parsed = parsePersonName(span);
+  if (!parsed) {
     return [];
   }
-  const variants = [withoutLabel];
-  const withoutTitle = withoutLabel.replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, "").trim();
-  if (withoutTitle && withoutTitle !== withoutLabel && isPlausibleNameText(withoutTitle)) {
-    variants.push(withoutTitle);
+  const withoutTitle = parsed.parts.join(" ");
+  const variants = new Set([parsed.original, withoutTitle]);
+  if (parsed.title) {
+    variants.add(`${parsed.title} ${withoutTitle}`);
+    variants.add(`${parsed.title}. ${withoutTitle}`);
+    variants.add(`${parsed.title} ${parsed.surname}`);
+    variants.add(`${parsed.title}. ${parsed.surname}`);
   }
-  return [...new Set(variants)];
+  if (parsed.first && parsed.surname) {
+    variants.add(`${parsed.first} ${parsed.surname}`);
+  }
+  if (isDistinctiveSurname(parsed.surname)) {
+    variants.add(parsed.surname);
+  }
+  return [...variants].filter(Boolean);
 }
 
-function inferNameAliases(rawText, entities) {
-  const aliases = new Map();
+function addAlias(aliases, identity, text, options = {}) {
+  const clean = cleanNameText(text);
+  if (!clean) {
+    return;
+  }
+  const key = normalizeNameKey(clean);
+  if (!key || nonNameClinicalPhrases.has(key)) {
+    return;
+  }
+  if (!aliases.has(key) || !options.requiresStrongContext) {
+    aliases.set(key, {
+      text: clean,
+      label: identity.label,
+      placeholder: placeholderForLabel(identity.label),
+      identityId: identity.id,
+      requiresStrongContext: Boolean(options.requiresStrongContext),
+      source: options.source || "alias repeat",
+      surnameKey: identity.surnameKey,
+      looseSurnameKey: identity.looseSurnameKey
+    });
+  }
+}
+
+function buildAliasVariantsForIdentity(identity) {
+  const variants = [];
+  const full = identity.parts.join(" ");
+  if (full) {
+    variants.push({ text: full });
+  }
+  if (identity.title && full) {
+    variants.push({ text: `${identity.title} ${full}` });
+    variants.push({ text: `${identity.title}. ${full}` });
+  }
+  if (identity.first && identity.surname) {
+    variants.push({ text: `${identity.first} ${identity.surname}` });
+  }
+
+  const distinctive = isDistinctiveSurname(identity.surname);
+  if (identity.surname) {
+    variants.push({ text: identity.surname, requiresStrongContext: !distinctive });
+    const titles = identity.title ? [identity.title] : ["Mr", "Mrs", "Ms", "Miss", "Mx"];
+    titles.forEach((title) => {
+      variants.push({ text: `${title} ${identity.surname}` });
+      variants.push({ text: `${title}. ${identity.surname}` });
+    });
+  }
+
+  if (identity.surname.includes("-")) {
+    identity.surname.split("-").filter((part) => part.length >= 4).forEach((part) => {
+      variants.push({ text: part, requiresStrongContext: true });
+      if (identity.title) {
+        variants.push({ text: `${identity.title} ${part}`, requiresStrongContext: true });
+        variants.push({ text: `${identity.title}. ${part}`, requiresStrongContext: true });
+      }
+    });
+  }
+
+  return variants;
+}
+
+function buildIdentityGraph(rawText, entities) {
+  const identities = [];
+  const identityKeys = new Set();
   entities.forEach((entity) => {
     if (!nameEntityLabels.has(entity.label)) {
       return;
     }
-    const span = rawText.slice(entity.start, entity.end);
-    aliasVariantsFromSpan(span).forEach((alias) => {
-      const key = normalizePhrase(alias.replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, ""));
-      if (!key || aliases.has(key)) {
-        return;
-      }
-      aliases.set(key, {
-        text: alias,
-        label: entity.label === "NAME" ? refineNameLabel("NAME", rawText, entity.start, entity.end) : entity.label,
-        placeholder: entity.placeholder || placeholderForLabel(entity.label)
-      });
+    const parsed = parsePersonName(rawText.slice(entity.start, entity.end));
+    if (!parsed) {
+      return;
+    }
+    const label = entity.label === "NAME" ? refineNameLabel("NAME", rawText, entity.start, entity.end) : entity.label;
+    const key = `${label}|${parsed.key}|${parsed.surnameKey}`;
+    if (identityKeys.has(key)) {
+      return;
+    }
+    identityKeys.add(key);
+    identities.push({
+      id: `identity-${identities.length + 1}`,
+      label,
+      title: parsed.title,
+      first: parsed.first,
+      surname: parsed.surname,
+      surnameKey: parsed.surnameKey,
+      looseSurnameKey: parsed.looseSurnameKey,
+      parts: parsed.parts,
+      source: entity.source || "identity"
     });
   });
-  return aliases;
+
+  const aliases = new Map();
+  identities.forEach((identity) => {
+    buildAliasVariantsForIdentity(identity).forEach((variant) => {
+      addAlias(aliases, identity, variant.text, variant);
+    });
+  });
+  return { identities, aliases };
+}
+
+function inferNameAliases(rawText, entities) {
+  return buildIdentityGraph(rawText, entities).aliases;
 }
 
 function addAliasRepeatEntities(rawText, entities, aliases) {
   aliases.forEach((alias) => {
-    const variants = aliasVariantsFromSpan(alias.text);
-    variants.forEach((variant) => {
-      const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(variant)})(?=$|[^A-Za-z])`, "g");
-      for (const match of rawText.matchAll(regex)) {
-        const start = match.index + match[1].length;
-        const end = start + match[2].length;
-        if (isSpanCovered(start, end, entities)) {
-          continue;
-        }
-        pushPatternEntity(entities, rawText, alias.label, start, end, "alias repeat", `known alias: ${alias.text}`);
+    const regex = new RegExp(`(^|[^A-Za-z])(${escapeRegExp(alias.text)})(?=$|[^A-Za-z])`, "g");
+    for (const match of rawText.matchAll(regex)) {
+      const start = match.index + match[1].length;
+      const end = start + match[2].length;
+      const coveringEntity = entities.find((entity) => start >= entity.start && end <= entity.end);
+      if (coveringEntity && !/model/.test(coveringEntity.source || "")) {
+        continue;
       }
-    });
+      if (alias.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
+        continue;
+      }
+      pushPatternEntity(entities, rawText, alias.label, start, end, alias.source || "alias repeat", `known alias: ${alias.text}`);
+    }
   });
   return entities;
 }
@@ -856,24 +1064,152 @@ function hasStrongNameContext(rawText, start, end) {
   const span = rawText.slice(start, end);
   const sameLine = sameLineContext(rawText, start, end);
   return /^(?:dr|doctor|mr|mrs|ms|miss)\.?\s+/i.test(span) ||
-    /\b(?:patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|spoke with|call|called|contact|can bring|confirm|before leaving|prescriptions to)\b/.test(sameLine);
+    /\b(?:one-line summary|overall assessment|patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|follow up with|spoke with|call|called|contact|can bring|confirm|before leaving|prescriptions to|admitted|discharge|scheduling|appointment)\b/.test(sameLine) ||
+    /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine);
 }
 
-function promoteResidualNameEntities(rawText, entities, aliases) {
-  const namePattern = /\b(?:Dr\.?[ \t]+)?[A-Z][a-z]{2,}(?:[ \t]+[A-Z]\.?)?[ \t]+[A-Z][a-z]{2,}\b/g;
-  for (const match of rawText.matchAll(namePattern)) {
-    const start = match.index;
-    const end = start + match[0].length;
-    if (isSpanCovered(start, end, entities) || isLikelyNonNamePhrase(rawText, start, end)) {
+function addContextualCapturedName(rawText, entities, label, regex, source) {
+  for (const match of rawText.matchAll(regex)) {
+    const value = match[1];
+    if (!value) {
       continue;
     }
-    const aliasKey = normalizePhrase(match[0].replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, ""));
-    if (!aliases.has(aliasKey) && !hasStrongNameContext(rawText, start, end)) {
+    const start = match.index + match[0].indexOf(value);
+    const end = start + value.length;
+    const coveringEntity = entities.find((entity) => start >= entity.start && end <= entity.end);
+    if (coveringEntity && !/model/.test(coveringEntity.source || "")) {
       continue;
     }
-    const label = aliases.get(aliasKey)?.label || refineNameLabel("NAME", rawText, start, end);
-    pushPatternEntity(entities, rawText, label, start, end, "residual auto-fix", aliases.has(aliasKey) ? "known alias" : "strong name context");
+    if (isLikelyNonNamePhrase(rawText, start, end)) {
+      continue;
+    }
+    const parsed = parsePersonName(value);
+    if (!parsed) {
+      continue;
+    }
+    pushPatternEntity(entities, rawText, label, start, end, source);
   }
+}
+
+function addContextualPersonNameEntities(rawText, entities) {
+  const ageIntro = String.raw`(?:is|was|presents|presented|reports|states|has)\s+(?:an?\s+)?(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult|patient)\b`;
+  const contextualPatterns = [
+    {
+      label: "PATIENT NAME",
+      source: "patient identity",
+      regex: new RegExp(String.raw`\b((?:${patientHonorificPatternSource})\.?\s+${namePartPatternSource}(?:[ \t]+${namePartPatternSource}){0,4})\s+${ageIntro}`, "g")
+    },
+    {
+      label: "PATIENT NAME",
+      source: "patient identity",
+      regex: new RegExp(String.raw`\b(${fullNamePatternSource})\s+${ageIntro}`, "g")
+    },
+    {
+      label: "PATIENT NAME",
+      source: "patient identity",
+      regex: new RegExp(String.raw`\b(?:[Oo]ne-line summary|[Oo]verall [Aa]ssessment|[Ss]ubjective|HPI)\s*:\s*((?:${patientHonorificPatternSource}\.?\s+)?${fullNamePatternSource})(?=\s+(?:is|was|presents|presented|reports|states|has)\b)`, "g")
+    },
+    {
+      label: "PROVIDER NAME",
+      source: "provider identity",
+      regex: new RegExp(String.raw`\b(?:[Ff]ollow-?up with|[Ff]ollow up with|[Ss]cheduling with|[Ss]chedule with|[Aa]ppointment with|[Cc]onsulted|[Ss]een by|[Ss]taffed with|[Ss]igned by|[Pp]er)\s+((?:Dr|Doctor)\.?\s+${namePartPatternSource}(?:[ \t]+${namePartPatternSource}){0,3})`, "g")
+    },
+    {
+      label: "CONTACT NAME",
+      source: "contact identity",
+      regex: new RegExp(String.raw`\b(?:[Ss]poke with|[Cc]all|[Cc]alled|[Uu]pdate|[Uu]pdated)\s+(${fullNamePatternSource})(?=\s+(?:at|about|regarding|for|if)\b|[,.;])`, "g")
+    }
+  ];
+
+  contextualPatterns.forEach(({ label, regex, source }) => {
+    addContextualCapturedName(rawText, entities, label, regex, source);
+  });
+  return entities;
+}
+
+function editDistanceAtMostOne(a, b) {
+  if (!a || !b || Math.abs(a.length - b.length) > 1) {
+    return false;
+  }
+  if (a === b) {
+    return true;
+  }
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      i += 1;
+      j += 1;
+      continue;
+    }
+    edits += 1;
+    if (edits > 1) {
+      return false;
+    }
+    if (a.length > b.length) {
+      i += 1;
+    } else if (b.length > a.length) {
+      j += 1;
+    } else {
+      i += 1;
+      j += 1;
+    }
+  }
+  return edits + (a.length - i) + (b.length - j) <= 1;
+}
+
+function findAliasForCandidate(candidate, aliases) {
+  const exactKey = normalizeNameKey(candidate);
+  const strippedKey = normalizeNameKey(stripHonorific(candidate));
+  if (aliases.has(exactKey)) {
+    return aliases.get(exactKey);
+  }
+  if (aliases.has(strippedKey)) {
+    return aliases.get(strippedKey);
+  }
+  return null;
+}
+
+function findFuzzyIdentityForCandidate(candidate, graph) {
+  const parsed = parsePersonName(candidate);
+  if (!parsed || !parsed.looseSurnameKey || parsed.looseSurnameKey.length < 7) {
+    return null;
+  }
+  return graph.identities.find((identity) => (
+    identity.looseSurnameKey &&
+    isDistinctiveSurname(identity.surname) &&
+    editDistanceAtMostOne(parsed.looseSurnameKey, identity.looseSurnameKey)
+  )) || null;
+}
+
+function promoteResidualNameEntities(rawText, entities, graph) {
+  const patterns = [
+    new RegExp(String.raw`\b${titledNamePatternSource}\b`, "g"),
+    new RegExp(String.raw`\b${fullNamePatternSource}\b`, "g")
+  ];
+
+  patterns.forEach((namePattern) => {
+    for (const match of rawText.matchAll(namePattern)) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (isSpanCovered(start, end, entities) || isLikelyNonNamePhrase(rawText, start, end)) {
+        continue;
+      }
+      const alias = findAliasForCandidate(match[0], graph.aliases);
+      const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(match[0], graph);
+      if (!alias && !fuzzyIdentity && !hasStrongNameContext(rawText, start, end)) {
+        continue;
+      }
+      if (alias?.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
+        continue;
+      }
+      const label = alias?.label || fuzzyIdentity?.label || refineNameLabel("NAME", rawText, start, end);
+      const source = alias ? "alias repeat" : fuzzyIdentity ? "fuzzy alias" : "residual auto-fix";
+      const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : "strong name context";
+      pushPatternEntity(entities, rawText, label, start, end, source, context);
+    }
+  });
   return entities;
 }
 
@@ -896,7 +1232,7 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi, "care location detail");
   addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name");
-  addResidualMatches(warnings, sourceText, "medium", "possible full name", /\b(?:Dr\.?[ \t]+)?[A-Z][a-z]{2,}(?:[ \t]+[A-Z]\.?)?[ \t]+[A-Z][a-z]{2,}\b/g, "capitalized name-like phrase", isLikelyNonNamePhrase);
+  addResidualMatches(warnings, sourceText, "medium", "possible full name", new RegExp(String.raw`\b(?:${titledNamePatternSource}|${fullNamePatternSource})\b`, "g"), "capitalized name-like phrase", isLikelyNonNamePhrase);
   addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code");
   addResidualMatches(warnings, sourceText, "medium", "age over 89", /\b(?:Age\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})|(?:9[0-9]|1[0-9]{2})\s*(?:yo|y\/o|years? old|M|F|male|female))\b/gi, "age must be generalized");
   addResidualMatches(warnings, sourceText, "review", "rare identifying context", /\b(?:celebrity|publicized|news article|newspaper|police report|lawsuit|incarcerated|inmate|professional athlete|mayor|judge|teacher at|works at|employer|specific school|rare occupation|well-known)\b/gi, "context can identify a patient even without direct IDs");
@@ -934,6 +1270,32 @@ function overlapsAny(entity, entities) {
   return entities.some((other) => rangesOverlap(entity, other));
 }
 
+function entitySignature(entities) {
+  return entities
+    .map((entity) => `${entity.start}:${entity.end}:${entity.label}:${entity.source}`)
+    .sort()
+    .join("|");
+}
+
+function expandIdentityGraphEntities(rawText, seedEntities, maxPasses = 3) {
+  let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(seedEntities, rawText));
+  let graph = buildIdentityGraph(rawText, entities);
+  for (let pass = 0; pass < maxPasses; pass += 1) {
+    const before = entitySignature(entities);
+    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addContextualPersonNameEntities(rawText, entities), rawText));
+    graph = buildIdentityGraph(rawText, entities);
+    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, graph.aliases), rawText));
+    graph = buildIdentityGraph(rawText, entities);
+    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, graph), rawText));
+    graph = buildIdentityGraph(rawText, entities);
+    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, graph.aliases), rawText));
+    if (entitySignature(entities) === before) {
+      break;
+    }
+  }
+  return { entities, graph };
+}
+
 function deidentifyFromEntities(rawText, entities, modelResult = { modelId: null, modelStatus: "structured only" }) {
   const text = redactFromEntities(rawText, entities);
   const counts = summarizeEntities(entities);
@@ -961,10 +1323,7 @@ function formatPhiWarning(warning) {
 }
 
 export function deidentifyTextStructuredOnly(rawText) {
-  let entities = mergeEntities(addStructuredSafeHarborEntities(rawText, []), rawText);
-  const aliases = inferNameAliases(rawText, entities);
-  entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, aliases), rawText));
-  entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, aliases), rawText));
+  const { entities } = expandIdentityGraphEntities(rawText, addStructuredSafeHarborEntities(rawText, []));
   return deidentifyFromEntities(rawText, entities, { modelId: null, modelStatus: "structured only" });
 }
 
@@ -1062,10 +1421,7 @@ export function createDeidentifier(options = {}) {
 
     let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, []), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
-    let entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities([...structuredEntities, ...modelEntities], rawText));
-    const aliases = inferNameAliases(rawText, entities);
-    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addAliasRepeatEntities(rawText, entities, aliases), rawText));
-    entities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(promoteResidualNameEntities(rawText, entities, aliases), rawText));
+    const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
     return deidentifyFromEntities(rawText, entities, modelResult);
   }
 

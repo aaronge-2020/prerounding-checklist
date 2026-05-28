@@ -16,7 +16,7 @@ env.allowLocalModels = false;
 env.allowRemoteModels = true;
 
 const includeLarge = process.argv.includes("--include-large");
-const cases = makeSyntheticCases(100);
+const cases = makeSyntheticCases(250);
 
 function countNeedle(text, needle) {
   if (!needle) {
@@ -112,6 +112,9 @@ function evaluateCase(result, caseItem) {
   const residualWarnings = result.residualWarnings || [];
   const highRiskResidualCount = residualWarnings.filter((warning) => warning.severity === "high").length;
   const clinicalTermLoss = caseItem.clinicalTerms.filter((term) => !result.text.includes(term)).length;
+  const protectedMedicalWarningCount = residualWarnings.filter((warning) => (
+    caseItem.clinicalTerms.some((term) => warning.snippet?.toLowerCase().includes(term.toLowerCase()))
+  )).length;
   const missingRequiredSnippets = caseItem.requiredSnippets.filter((snippet) => !result.text.includes(snippet));
   const spanPrecision = scoreSpanPrecision(result, caseItem);
 
@@ -124,6 +127,7 @@ function evaluateCase(result, caseItem) {
     clean: leaks.length === 0,
     residualWarningCount: residualWarnings.length,
     highRiskResidualCount,
+    protectedMedicalWarningCount,
     malformedPreview: hasMalformedPreview(result.text) || missingRequiredSnippets.length > 0,
     missingRequiredSnippets,
     clinicalTermLoss,
@@ -137,6 +141,7 @@ function summarizeCandidate(candidate, caseScores, runtimes, loadMs, modelProfil
   const cleanCases = caseScores.filter((item) => item.clean).length;
   const residualWarningCount = caseScores.reduce((sum, item) => sum + item.residualWarningCount, 0);
   const highRiskResidualCount = caseScores.reduce((sum, item) => sum + item.highRiskResidualCount, 0);
+  const protectedMedicalWarningCount = caseScores.reduce((sum, item) => sum + item.protectedMedicalWarningCount, 0);
   const malformedPreviewCount = caseScores.filter((item) => item.malformedPreview).length;
   const clinicalFalsePositiveLoss = caseScores.reduce((sum, item) => sum + item.clinicalTermLoss, 0);
   const precisionNumerator = caseScores.reduce((sum, item) => sum + item.spanPrecision.truePositive, 0);
@@ -157,6 +162,7 @@ function summarizeCandidate(candidate, caseScores, runtimes, loadMs, modelProfil
     forbiddenStringLeaks: leakedIdentifierTotal,
     residualWarningCount,
     highRiskResidualCount,
+    protectedMedicalWarningCount,
     malformedPreviewCount,
     clinicalFalsePositiveLoss,
     coldLoadMs: loadMs,
@@ -165,11 +171,12 @@ function summarizeCandidate(candidate, caseScores, runtimes, loadMs, modelProfil
     mobileFeasible: Boolean(modelProfile?.mobileFeasible),
     passesGate: leakedIdentifierTotal === 0 &&
       highRiskResidualCount === 0 &&
+      protectedMedicalWarningCount === 0 &&
       malformedPreviewCount <= Math.floor(caseScores.length * 0.01) &&
       clinicalFalsePositiveLoss <= Math.floor(caseScores.length * 0.01),
     error: error ? String(error.message || error) : null,
     failures: caseScores
-      .filter((item) => !item.clean || item.highRiskResidualCount || item.malformedPreview || item.clinicalTermLoss)
+      .filter((item) => !item.clean || item.highRiskResidualCount || item.protectedMedicalWarningCount || item.malformedPreview || item.clinicalTermLoss)
       .slice(0, 8)
   };
 
@@ -217,6 +224,7 @@ async function benchmarkModelCandidate({ name, modelId, mode, profile }) {
         clean: false,
         residualWarningCount: 0,
         highRiskResidualCount: 0,
+        protectedMedicalWarningCount: 0,
         malformedPreview: true,
         missingRequiredSnippets: caseItem.requiredSnippets,
         clinicalTermLoss: 0,
@@ -301,6 +309,7 @@ function printSummary(results, winner) {
     Clean: result.cleanCases === null ? "n/a" : `${result.cleanCases}/${result.totalCases}`,
     Malformed: result.malformedPreviewCount === null ? "n/a" : `${result.malformedPreviewCount}/${result.totalCases}`,
     "High residuals": result.highRiskResidualCount ?? "n/a",
+    "Med warnings": result.protectedMedicalWarningCount ?? "n/a",
     "Mean ms": result.meanWarmRuntimeMs === null ? "n/a" : result.meanWarmRuntimeMs.toFixed(1),
     "Load ms": result.coldLoadMs === null ? "n/a" : result.coldLoadMs.toFixed(0),
     Gate: result.passesGate ? "pass" : "fail"
@@ -359,6 +368,7 @@ const report = {
   acceptanceGate: {
     directIdentifierLeaks: 0,
     highRiskResidualWarnings: 0,
+    protectedMedicalTermWarnings: 0,
     maxMalformedPreviewRate: 0.01,
     maxClinicalFalsePositiveLossRate: 0.01,
     tieBreakers: ["mobile feasibility", "model bytes", "mean warm runtime"]
