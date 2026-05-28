@@ -94,19 +94,24 @@ for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chr
 assert.ok(!medicalFalsePositiveResult.text.includes("Nora W. Abrahimi"), "standalone middle-initial person name should be redacted");
 assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes("Nora W. Abrahimi")), "redacted person name should not remain as residual warning");
 
-const timelineDateText = `Admission date: 2026-05-08
-Collected: 05/09/2026
+const timelineDateText = `Admission date: 2026-05-01
+Symptoms changed on 5/7
+Collected: 05/08/2026
 Follow-up on May 10, 2026
-Symptoms started 5/7
+Issue resolved on April 10, 2026
 DOB: 03/14/1998`;
 const timelineDateResult = deidentifyTextStructuredOnly(timelineDateText);
-assert.ok(timelineDateResult.text.includes("[DATE 1 - 2026]"), "first exact date should preserve year and timeline order");
-assert.ok(timelineDateResult.text.includes("[DATE 2 - 2026]"), "second exact date should preserve year and timeline order");
-assert.ok(timelineDateResult.text.includes("[DATE 3 - 2026]"), "month-name date should preserve year and timeline order");
-assert.ok(timelineDateResult.text.includes("Symptoms started 5/7"), "date-like values without date context should remain readable");
-assert.ok(!timelineDateResult.text.includes("2026-05-08"), "exact ISO date should not leak");
-assert.ok(!timelineDateResult.text.includes("05/09/2026"), "exact slash date should not leak");
+assert.ok(timelineDateResult.text.includes("Admission date: [DATE 2 - 2026, 7 days before current source date]"), "admission date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Symptoms changed on [DATE 3 - 2026, 1 day before current source date]"), "yesterday-like change should be clear");
+assert.ok(timelineDateResult.text.includes("Collected: [CURRENT SOURCE DATE - 2026]"), "latest lab/vital style date should be labeled as current source date");
+assert.ok(timelineDateResult.text.includes("Follow-up on [DATE 5 - 2026, 2 days after current source date]"), "future date should preserve relation to current source date");
+assert.ok(timelineDateResult.text.includes("Issue resolved on [DATE 1 - 2026, 4 weeks before current source date]"), "older resolved issue date should preserve weeks-before relation");
+assert.deepEqual(timelineDateResult.residualWarnings, [], "timeline placeholders should not create PHI warnings");
+assert.ok(!timelineDateResult.text.includes("2026-05-01"), "exact ISO date should not leak");
+assert.ok(!timelineDateResult.text.includes("05/08/2026"), "exact slash date should not leak");
 assert.ok(!timelineDateResult.text.includes("May 10, 2026"), "exact month-name date should not leak");
+assert.ok(!timelineDateResult.text.includes("April 10, 2026"), "older exact month-name date should not leak");
+assert.ok(!timelineDateResult.text.includes("5/7"), "timeline shorthand date should not leak when it has clinical date context");
 assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
 
 const guardText = clinicalGuardTerms.join("\n");
