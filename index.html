@@ -509,6 +509,32 @@
       padding: 18px;
     }
 
+    .phone-quick-card {
+      display: none;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding: 18px;
+    }
+
+    .phone-quick-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .checklist-first-summary {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(79, 152, 163, 0.32);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .checklist-first-summary .btn {
+      justify-self: start;
+    }
+
     .workflow-title {
       margin: 0 0 6px;
       color: var(--text);
@@ -1814,9 +1840,32 @@
         justify-content: center;
       }
     }
+
+    @media (max-width: 700px) {
+      .phone-quick-card {
+        display: grid;
+      }
+
+      body[data-checklist-first="true"] .hero {
+        padding-bottom: 10px;
+      }
+
+      body[data-checklist-first="true"] .hero h1 {
+        max-width: 15ch;
+        font-size: clamp(1.78rem, 10vw, 2.45rem);
+      }
+
+      body[data-checklist-first="true"] .hero .helper {
+        font-size: 0.94rem;
+      }
+
+      body[data-checklist-first="true"] .guide-sidebar {
+        display: none;
+      }
+    }
   </style>
 </head>
-<body data-screen="pasteScreen">
+<body data-screen="pasteScreen" data-checklist-first="false">
   <main class="app-shell" aria-live="polite">
     <nav class="workflow-rail" aria-label="Workflow progress">
       <span id="workflowCompactLabel" class="workflow-compact-label">Step 1 of 4 - Source</span>
@@ -2014,9 +2063,21 @@
         <p class="helper">Move through four stages: prepare the source, build the checklist, collect bedside findings, then generate the output.</p>
       </header>
 
+      <section id="phoneQuickStartCard" class="surface phone-quick-card" aria-labelledby="phoneQuickStartTitle">
+        <div>
+          <p class="eyebrow">Phone quick start</p>
+          <h2 id="phoneQuickStartTitle" class="workflow-title">Already have a checklist?</h2>
+          <p class="workflow-copy">Paste the checklist you copied from OpenEvidence and start bedside questions right away.</p>
+        </div>
+        <div class="phone-quick-actions">
+          <button id="startChecklistFirstButton" class="btn btn-primary btn-full" type="button">Paste checklist now</button>
+          <button id="showSourceWorkflowButton" class="btn btn-secondary btn-full" type="button">Create a checklist prompt instead</button>
+        </div>
+      </section>
+
       <div class="guided-layout">
         <div class="guided-main">
-      <section class="surface prompt-card" aria-labelledby="promptOneTitle">
+      <section id="sourceWorkflowCard" class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
           <p class="eyebrow">Source</p>
           <h2 id="promptOneTitle" class="workflow-title">What are you starting with?</h2>
@@ -2183,6 +2244,11 @@ Nursing concern: intermittent confusion overnight."></textarea>
 
       <div id="checklistPasteCard" class="surface paste-card" hidden>
         <p class="eyebrow">Checklist</p>
+        <div id="checklistFirstSummary" class="checklist-first-summary" hidden>
+          <p class="compact-summary-title">Checklist paste mode</p>
+          <p class="compact-summary-copy">Use this when you already copied a checklist from OpenEvidence on your phone.</p>
+          <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">Create checklist prompt instead</button>
+        </div>
         <label for="checklistInput">Checklist from OpenEvidence</label>
         <textarea id="checklistInput" class="paste-input" spellcheck="false" placeholder="Paste the checklist OpenEvidence generated.
 
@@ -2407,6 +2473,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubResult: null,
       admission: {},
       promptCollapsed: false,
+      checklistFirstMode: false,
       activeChecklistView: "bedside",
       activeSection: "all",
       collapsedSections: {},
@@ -2437,7 +2504,13 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
       outputScreen: document.getElementById("outputScreen"),
+      phoneQuickStartCard: document.getElementById("phoneQuickStartCard"),
+      startChecklistFirstButton: document.getElementById("startChecklistFirstButton"),
+      showSourceWorkflowButton: document.getElementById("showSourceWorkflowButton"),
+      sourceWorkflowCard: document.getElementById("sourceWorkflowCard"),
       checklistPasteCard: document.getElementById("checklistPasteCard"),
+      checklistFirstSummary: document.getElementById("checklistFirstSummary"),
+      showSourceFromPasteButton: document.getElementById("showSourceFromPasteButton"),
       nextActionTitle: document.getElementById("nextActionTitle"),
       nextActionCopy: document.getElementById("nextActionCopy"),
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
@@ -3171,6 +3244,84 @@ Sensory level present: No / Yes, at ___`;
         admissionFields.some((field) => field.element.value.trim());
     }
 
+    function isPhoneLikeViewport() {
+      const userAgent = navigator.userAgent || "";
+      return /iPhone|iPod/i.test(userAgent) || window.matchMedia("(max-width: 700px)").matches;
+    }
+
+    function hasSourceInput() {
+      return Boolean(
+        state.promptCollapsed ||
+        state.scrubbedNote ||
+        elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
+        admissionFields.some((field) => field.element.value.trim())
+      );
+    }
+
+    function hasChecklistPasteText() {
+      return Boolean(elements.checklistInput.value.trim());
+    }
+
+    function updateChecklistFirstControls() {
+      document.body.dataset.checklistFirst = state.checklistFirstMode ? "true" : "false";
+      elements.phoneQuickStartCard.hidden = state.checklistFirstMode || state.promptCollapsed || !isPhoneLikeViewport();
+      elements.sourceWorkflowCard.hidden = state.checklistFirstMode;
+      elements.checklistPasteCard.hidden = !(state.checklistFirstMode || state.promptCollapsed || hasChecklistPasteText());
+      elements.checklistFirstSummary.hidden = !state.checklistFirstMode;
+    }
+
+    function focusChecklistPasteBox() {
+      requestAnimationFrame(() => {
+        elements.checklistPasteCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.setTimeout(() => {
+          elements.checklistInput.focus({ preventScroll: true });
+        }, 120);
+      });
+    }
+
+    function setChecklistFirstMode(enabled, options = {}) {
+      state.checklistFirstMode = Boolean(enabled);
+
+      if (state.checklistFirstMode) {
+        state.promptCollapsed = false;
+        elements.promptCopiedSummary.hidden = true;
+        elements.promptStatus.textContent = "";
+        updateChecklistFirstControls();
+        updateSourcePrimaryActions();
+        updateStepRail("paste");
+        if (options.focus !== false) {
+          focusChecklistPasteBox();
+        }
+        if (!options.silent) {
+          showToast("Paste the OpenEvidence checklist here.");
+        }
+        return;
+      }
+
+      updateChecklistFirstControls();
+      updateSourcePrimaryActions();
+      updateStepRail(state.promptCollapsed ? "paste" : "source");
+      if (options.focus) {
+        elements.sourceWorkflowCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function maybeStartPhoneChecklistFirst(restoredSession) {
+      if (restoredSession || hasSourceInput() || hasChecklistState()) {
+        updateChecklistFirstControls();
+        return;
+      }
+
+      if (isPhoneLikeViewport()) {
+        setChecklistFirstMode(true, { focus: false, silent: true });
+        return;
+      }
+
+      updateChecklistFirstControls();
+    }
+
     function showToast(message, options = {}) {
       window.clearTimeout(showToast.timer);
       elements.toastMessage.textContent = message;
@@ -3204,24 +3355,20 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateGuidedStatus() {
-      const sourceReady = Boolean(
-        state.promptCollapsed ||
-        state.scrubbedNote ||
-        elements.rawSoapInput.value.trim() ||
-        elements.rawLabsInput.value.trim() ||
-        elements.rawHandoffInput.value.trim() ||
-        admissionFields.some((field) => field.element.value.trim())
-      );
+      const sourceReady = Boolean(state.checklistFirstMode || hasChecklistPasteText() || hasSourceInput());
       const checklistReady = state.sections.length > 0;
       const findingsReady = Boolean(state.compiledText);
       elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
       elements.checklistReadyStatus.classList.toggle("is-ready", checklistReady);
       elements.findingsReadyStatus.classList.toggle("is-ready", findingsReady);
-      elements.sourceReadyStatus.textContent = sourceReady ? "Source ready" : "Source needed";
+      elements.sourceReadyStatus.textContent = state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
       elements.checklistReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
       elements.findingsReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
 
-      if (!sourceReady) {
+      if (state.checklistFirstMode && !checklistReady) {
+        elements.nextActionTitle.textContent = "Paste the checklist";
+        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Build checklist.";
+      } else if (!sourceReady) {
         elements.nextActionTitle.textContent = "Prepare the source";
         elements.nextActionCopy.textContent = "Paste a prior note or fill admission essentials, then copy a checklist prompt.";
       } else if (!checklistReady) {
@@ -3237,7 +3384,7 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateStepRail(activeStep) {
-      const hasPrompt = state.promptCollapsed || state.scrubbedNote || formatAdmissionContext();
+      const hasPrompt = state.checklistFirstMode || hasChecklistPasteText() || state.promptCollapsed || state.scrubbedNote || formatAdmissionContext();
       const hasChecklist = state.sections.length > 0;
       const hasOutput = Boolean(state.compiledText);
       const compactLabels = {
@@ -3263,12 +3410,13 @@ Sensory level present: No / Yes, at ___`;
 
     function setPromptCollapsed(isCollapsed, message = "Paste it into OpenEvidence, then paste the returned checklist below.") {
       state.promptCollapsed = isCollapsed;
+      state.checklistFirstMode = false;
       elements.promptCopiedSummary.hidden = !isCollapsed;
       elements.promptCopiedCopy.textContent = message;
       elements.priorModeButton.parentElement.hidden = isCollapsed;
       elements.priorSourcePanel.hidden = isCollapsed;
       elements.admissionSourcePanel.hidden = isCollapsed;
-      elements.checklistPasteCard.hidden = !isCollapsed;
+      updateChecklistFirstControls();
       updateSourcePrimaryActions();
       updateStepRail(isCollapsed ? "paste" : "source");
     }
@@ -5515,7 +5663,7 @@ Now produce the final checklist only.`;
       } else if (name === "outputScreen") {
         updateStepRail("output");
       } else {
-        updateStepRail(state.promptCollapsed ? "paste" : "source");
+        updateStepRail(state.promptCollapsed || state.checklistFirstMode || hasChecklistPasteText() ? "paste" : "source");
       }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -6294,6 +6442,7 @@ ${rawChecklist.trim()}`;
       state.scrubResult = null;
       state.admission = {};
       state.promptCollapsed = false;
+      state.checklistFirstMode = false;
       state.activeChecklistView = "bedside";
       state.activeSection = "all";
       state.collapsedSections = {};
@@ -6324,7 +6473,9 @@ ${rawChecklist.trim()}`;
       updateChecklistPasteState();
       setError("");
       showScreen("pasteScreen");
-      elements.checklistInput.focus();
+      if (isPhoneLikeViewport()) {
+        setChecklistFirstMode(true, { focus: true, silent: true });
+      }
     }
 
     function updateParsePreview() {
@@ -6469,10 +6620,12 @@ ${rawChecklist.trim()}`;
     });
 
     elements.priorModeButton.addEventListener("click", () => {
+      setChecklistFirstMode(false);
       setSourceMode("prior");
     });
 
     elements.admissionModeButton.addEventListener("click", () => {
+      setChecklistFirstMode(false);
       setSourceMode("admission");
     });
 
@@ -6565,7 +6718,22 @@ ${rawChecklist.trim()}`;
       showToast("Source editing restored.");
     });
 
+    elements.startChecklistFirstButton.addEventListener("click", () => {
+      setChecklistFirstMode(true);
+    });
+
+    elements.showSourceWorkflowButton.addEventListener("click", () => {
+      setChecklistFirstMode(false, { focus: true });
+      showToast("Source workflow restored.");
+    });
+
+    elements.showSourceFromPasteButton.addEventListener("click", () => {
+      setChecklistFirstMode(false, { focus: true });
+      showToast("Source workflow restored.");
+    });
+
     elements.loadDemoSoapButton.addEventListener("click", () => {
+      setChecklistFirstMode(false);
       setSourceMode("prior");
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       elements.rawLabsInput.value = "";
@@ -6582,10 +6750,18 @@ ${rawChecklist.trim()}`;
       field.element.addEventListener("input", syncAdmissionFields);
     });
 
-    elements.checklistInput.addEventListener("input", updateParsePreview);
+    elements.checklistInput.addEventListener("input", () => {
+      updateParsePreview();
+      updateChecklistFirstControls();
+      updateStepRail(hasChecklistPasteText() || state.promptCollapsed || state.checklistFirstMode ? "paste" : "source");
+    });
 
     elements.checklistInput.addEventListener("paste", () => {
       window.setTimeout(() => {
+        if (isPhoneLikeViewport() && !state.sections.length) {
+          state.checklistFirstMode = true;
+          updateChecklistFirstControls();
+        }
         tryBuildChecklist({ auto: true });
       }, 0);
     });
@@ -6922,9 +7098,10 @@ ${rawChecklist.trim()}`;
 
     restoreUserProfile();
     const restoredSession = restoreChecklistSession();
+    maybeStartPhoneChecklistFirst(restoredSession);
     updateSourcePrimaryActions();
     updateChecklistPasteState();
-    updateStepRail(restoredSession ? "bedside" : "source");
+    updateStepRail(restoredSession ? "bedside" : state.checklistFirstMode ? "paste" : "source");
     elements.offlineHomeScreen.checked = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   </script>
 </body>
