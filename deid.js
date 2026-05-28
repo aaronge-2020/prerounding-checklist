@@ -100,7 +100,7 @@ const nonNameClinicalPhrases = new Set([
   "atypical chest", "atypical chest pain", "chronic pain", "home escitalopram", "heart healthy",
   "last reading", "hour range", "pulmonary toilet", "bowel management", "fall risk", "suicide risk",
   "elopement risk", "elopmement risk", "daily labs", "immature grans", "provider referral",
-  "abnormal labs",
+  "abnormal labs", "summary situational", "awareness action",
   "general neurology", "history problem", "past medical", "past medical history", "surgical history",
   "family history", "social history", "home meds", "home medications", "current medications",
   "current medication", "prior medications", "inpatient medications", "scheduled medications",
@@ -127,9 +127,9 @@ const nonNameClinicalPhrases = new Set([
 ]);
 
 const nonNameClinicalWords = new Set([
-  "abdomen", "abdominal", "absolute", "acetaminophen", "active", "activity", "acute", "admission",
+  "abdomen", "abdominal", "absolute", "acetaminophen", "action", "active", "activity", "acute", "admission",
   "abnormal", "albumin", "alk", "alkaline", "allergies", "alt", "and", "anion", "anesthesia", "antibiotic",
-  "anticoagulation", "arterial", "assessment", "ast", "atypical", "basophils", "base", "basic",
+  "anticoagulation", "arterial", "assessment", "ast", "atypical", "awareness", "basophils", "base", "basic",
   "beta", "bicarbonate", "bilirubin", "blood", "bladder", "bowel", "brain", "bun", "burr",
   "calcium", "cardiac", "cardiology", "cardiovascular", "catheter", "cbc", "cells", "cervical",
   "chloride", "chief", "clinic", "cloudy", "coagulation", "code", "comment", "complaint", "complete",
@@ -154,7 +154,7 @@ const nonNameClinicalWords = new Set([
   "protein", "psychiatry", "pt", "ptt", "pulmonary", "pulmonology", "radiology", "range", "rare", "rate",
   "rbc", "reading", "red", "referral", "reflex", "renal", "report", "resolved", "respiratory", "reticulated", "reticulocyte",
   "review", "rheumatology", "risk", "saturation", "scheduled", "schistocytes", "see", "sensory", "severe",
-  "sign", "signs", "sodium", "social", "spinal", "spine", "sputum", "stain", "status", "subjective",
+  "sign", "signs", "situational", "sodium", "social", "spinal", "spine", "sputum", "stain", "status", "subjective",
   "studies", "suicide", "summary", "surgery", "surgical", "systems", "t4", "team", "temperature", "therapy",
   "thoracic", "thyroid", "tibc", "toilet", "tone", "total", "toxic", "transfer", "transferrin", "trauma",
   "treatment", "triglycerides", "troponin", "tsh", "turbid", "ua", "unit", "urinary", "urine",
@@ -1183,6 +1183,21 @@ function findFuzzyIdentityForCandidate(candidate, graph) {
   )) || null;
 }
 
+function shouldAutoPromoteStandalonePersonName(candidate) {
+  const parsed = parsePersonName(candidate);
+  if (!parsed) {
+    return false;
+  }
+
+  const hasMiddleInitial = parsed.parts
+    .slice(1, -1)
+    .some((part) => /^[A-Z]\.?$/.test(part));
+  const surnameLength = normalizeNameLoose(parsed.surname).length;
+  return Boolean(parsed.title) ||
+    isDistinctiveSurname(parsed.surname) ||
+    hasMiddleInitial && surnameLength >= 6;
+}
+
 function promoteResidualNameEntities(rawText, entities, graph) {
   const patterns = [
     new RegExp(String.raw`\b${titledNamePatternSource}\b`, "g"),
@@ -1198,7 +1213,8 @@ function promoteResidualNameEntities(rawText, entities, graph) {
       }
       const alias = findAliasForCandidate(match[0], graph.aliases);
       const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(match[0], graph);
-      if (!alias && !fuzzyIdentity && !hasStrongNameContext(rawText, start, end)) {
+      const standalonePersonName = !alias && !fuzzyIdentity && shouldAutoPromoteStandalonePersonName(match[0]);
+      if (!alias && !fuzzyIdentity && !standalonePersonName && !hasStrongNameContext(rawText, start, end)) {
         continue;
       }
       if (alias?.requiresStrongContext && !hasStrongNameContext(rawText, start, end)) {
@@ -1206,7 +1222,7 @@ function promoteResidualNameEntities(rawText, entities, graph) {
       }
       const label = alias?.label || fuzzyIdentity?.label || refineNameLabel("NAME", rawText, start, end);
       const source = alias ? "alias repeat" : fuzzyIdentity ? "fuzzy alias" : "residual auto-fix";
-      const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : "strong name context";
+      const context = alias ? "known identity alias" : fuzzyIdentity ? `near ${fuzzyIdentity.surname}` : standalonePersonName ? "standalone person name pattern" : "strong name context";
       pushPatternEntity(entities, rawText, label, start, end, source, context);
     }
   });

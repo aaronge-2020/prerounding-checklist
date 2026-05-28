@@ -69,7 +69,9 @@ for (const leak of ["Sita Gerrill-Stevenson", "Ms Merrill-Stevenson", "Ms. Gerri
   assert.ok(!adversarialResult.text.includes(leak), `identity alias should be redacted: ${leak}`);
 }
 
-const medicalFalsePositiveText = `#Atypical Chest Pain, resolved
+const medicalFalsePositiveText = `Provider Referral
+Abnormal Labs
+#Atypical Chest Pain, resolved
 #Chronic Pain
 - Home Escitalopram 40mg daily
 # Diet: Heart Healthy
@@ -81,12 +83,16 @@ Suicide Risk
 Elopement Risk
 Elopmement Risk
 Daily Labs
-Immature Grans (Abs): 0.01`;
+Summary Situational Awareness Action
+Immature Grans (Abs): 0.01
+Nora W. Abrahimi`;
 const medicalFalsePositiveResult = deidentifyTextStructuredOnly(medicalFalsePositiveText);
-for (const term of ["Atypical Chest", "Chronic Pain", "Home Escitalopram", "Heart Healthy", "Last Reading", "Hour Range", "Pulmonary Toilet", "Bowel Management", "Fall Risk", "Suicide Risk", "Elopement Risk", "Elopmement Risk", "Daily Labs", "Immature Grans"]) {
+for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chronic Pain", "Home Escitalopram", "Heart Healthy", "Last Reading", "Hour Range", "Pulmonary Toilet", "Bowel Management", "Fall Risk", "Suicide Risk", "Elopement Risk", "Elopmement Risk", "Daily Labs", "Summary Situational", "Awareness Action", "Immature Grans"]) {
   assert.ok(medicalFalsePositiveResult.text.includes(term), `medical term should be preserved: ${term}`);
   assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `medical term should not be a name warning: ${term}`);
 }
+assert.ok(!medicalFalsePositiveResult.text.includes("Nora W. Abrahimi"), "standalone middle-initial person name should be redacted");
+assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes("Nora W. Abrahimi")), "redacted person name should not remain as residual warning");
 
 const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);
