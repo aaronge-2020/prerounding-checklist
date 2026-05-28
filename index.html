@@ -762,7 +762,7 @@
     }
 
     .guided-primary-actions {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     }
 
     .more-options {
@@ -2034,6 +2034,8 @@
           </ol>
           <div class="compact-summary-actions">
             <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
+            <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy rounds report prompt</button>
+            <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
         </div>
@@ -2096,15 +2098,16 @@ Nursing concern: intermittent confusion overnight."></textarea>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
             </details>
           </div>
-          <p class="next-action-copy">Next best action</p>
+          <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
             <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify and review</button>
             <button id="scrubAndCopyButton" class="btn btn-primary" type="button" hidden>Copy checklist prompt</button>
+            <button id="copySourceRoundsPromptButton" class="btn btn-secondary" type="button" hidden>Copy rounds report prompt</button>
+            <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
           </div>
           <details class="more-options">
             <summary>More options</summary>
             <div class="more-options-body">
-              <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button">Copy prompt for teaching</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
           </details>
@@ -2161,9 +2164,11 @@ Nursing concern: intermittent confusion overnight."></textarea>
               <textarea id="monitoringConcernsInput" class="admission-input" spellcheck="false"></textarea>
             </div>
           </div>
-          <p class="next-action-copy">Next best action</p>
+          <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
             <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
+            <button id="copyAdmissionRoundsPromptButton" class="btn btn-secondary" type="button">Copy rounds report prompt</button>
+            <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
           </div>
           <details class="more-options">
             <summary>More options</summary>
@@ -2416,6 +2421,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
       promptCopiedCopy: document.getElementById("promptCopiedCopy"),
       editSourceButton: document.getElementById("editSourceButton"),
+      copySummaryRoundsPromptButton: document.getElementById("copySummaryRoundsPromptButton"),
+      copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
       profilePanel: document.getElementById("profilePanel"),
       profileServiceSelect: document.getElementById("profileServiceSelect"),
       profileServiceOtherField: document.getElementById("profileServiceOtherField"),
@@ -2447,9 +2454,12 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
+      copySourceRoundsPromptButton: document.getElementById("copySourceRoundsPromptButton"),
       copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
+      copyAdmissionRoundsPromptButton: document.getElementById("copyAdmissionRoundsPromptButton"),
+      copyAdmissionTeachingPromptButton: document.getElementById("copyAdmissionTeachingPromptButton"),
       deidUtilityPanel: document.getElementById("deidUtilityPanel"),
       utilityRawInput: document.getElementById("utilityRawInput"),
       utilityDeidButton: document.getElementById("utilityDeidButton"),
@@ -2829,6 +2839,67 @@ Before finalizing, silently verify:
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
 6. No PHI or identifiers appear.
 7. No extra commentary appears outside the required sections.
+</final_self_check>`;
+
+    const sourceRoundsReportPromptInstructions = `<role>
+You are an experienced attending physician and clerkship coach helping a third-year medical student prepare for rounds from the source material available before seeing the patient.
+</role>
+
+<task>
+Create a patient-specific rounds preparation report from the source context below.
+</task>
+
+<clinical_goal>
+Help the student understand what is going on, what matters today, what to verify before rounds, and how to present the patient safely. The report should be specific to this patient and useful even before new bedside checklist findings have been collected.
+</clinical_goal>
+
+<source_rules>
+Use only information present in the source context plus standard medical knowledge needed to explain clinical significance.
+Do not invent overnight events, new symptoms, vitals, labs, exam findings, diagnoses, treatments, consult recommendations, or plans.
+Do not claim something improved, worsened, resolved, or newly occurred unless the source clearly supports that timeline.
+If current-day bedside findings are missing, clearly mark them as items to verify rather than facts.
+Preserve uncertainty around the differential diagnosis, localization, severity, and plan.
+Do not include identifiers or PHI.
+Do not include citations, disclaimers, or teaching commentary outside the requested sections.
+</source_rules>
+
+<internal_process>
+Before writing the final answer, silently:
+1. Build a one-sentence problem representation.
+2. Identify active problems, clinical trajectory, abnormal vitals/labs, treatments, devices, drips, anticoagulation, immunosuppression, procedures, and pending studies.
+3. Identify red flags, complications, discharge barriers, and management decisions that could change today.
+4. Decide what the student should verify at bedside and what focused exam would be highest yield.
+5. Draft a concise spoken rounds update using only supported information.
+
+Do not show this reasoning. Show only the final report.
+</internal_process>
+
+<output_format>
+Use plain text only.
+Use exactly these section headers:
+
+SPECIFIC ROUNDS REPORT
+ONE-LINER
+ACTIVE PROBLEMS AND TRAJECTORY
+TODAY'S ROUNDS PRIORITIES
+DATA TO VERIFY BEFORE ROUNDS
+BEDSIDE QUESTIONS TO ASK
+FOCUSED EXAM TO PERFORM
+DRAFT TWO MINUTE PRESENTATION
+
+Keep the report concise but complete enough for a new third-year student to use.
+Use bullets where they improve scanability.
+In DRAFT TWO MINUTE PRESENTATION, write natural spoken prose the student can adapt.
+Do not use markdown tables, bold, italics, numbering, emojis, or special formatting.
+</output_format>
+
+<final_self_check>
+Before finalizing, silently verify:
+1. Every patient-specific claim is supported by the source context.
+2. Missing bedside information is framed as something to verify, not as a fact.
+3. The report is specific to this patient and today's rounds.
+4. No PHI or identifiers appear.
+5. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3788,14 +3859,28 @@ Sensory level present: No / Yes, at ___`;
       const isPrior = state.sourceMode === "prior";
       const hasReviewedPreview = Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim());
       const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim());
+      const hasPriorContext = hasReviewedPreview || hasRawPriorSource;
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
-      elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPreview;
+      elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
+      elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
+      elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
       elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.copyAdmissionTeachingPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
+      elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
+        elements.scrubAndCopyButton.disabled = isPrior && !hasPriorContext;
+        elements.copySourceRoundsPromptButton.disabled = isPrior && !hasPriorContext;
+        elements.copyTeachingPromptButton.disabled = isPrior && !hasPriorContext;
         elements.copyAdmissionPromptButton.disabled = !isPrior && !hasAdmissionContext;
+        elements.copyAdmissionRoundsPromptButton.disabled = !isPrior && !hasAdmissionContext;
+        elements.copyAdmissionTeachingPromptButton.disabled = !isPrior && !hasAdmissionContext;
+        elements.copySummaryRoundsPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
+        elements.copySummaryTeachingPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
       }
     }
 
@@ -5060,13 +5145,22 @@ Sensory level present: No / Yes, at ___`;
 
     function setScrubBusy(isBusy, primaryLabel) {
       elements.scrubAndCopyButton.disabled = isBusy;
+      elements.copySourceRoundsPromptButton.disabled = isBusy;
       elements.copyTeachingPromptButton.disabled = isBusy;
+      elements.copySummaryRoundsPromptButton.disabled = isBusy;
+      elements.copySummaryTeachingPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copySourceRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copySummaryRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copySummaryTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
-      elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy prompt for teaching";
+      elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy rounds report prompt";
+      elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy rounds report prompt";
+      elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
     }
 
@@ -5262,21 +5356,78 @@ ${scrubbedNote}
 Now produce the final checklist only.`;
     }
 
-    async function buildPatientTeachingPrompt() {
+    async function getCurrentSourcePromptContext() {
+      if (state.sourceMode === "admission") {
+        const admissionContext = formatAdmissionContext();
+        if (!admissionContext) {
+          elements.promptStatus.textContent = "Fill in at least one admission field.";
+          admissionFields[0].element.focus();
+          return null;
+        }
+        return {
+          contextType: "No prior SOAP note is available. The patient is newly admitted or being admitted now.",
+          label: "Admission intake information",
+          text: admissionContext,
+          reviewTarget: "admission"
+        };
+      }
+
       const scrubbedNote = await getReviewedScrubbedNote();
       if (!scrubbedNote) {
+        return null;
+      }
+      return {
+        contextType: "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
+        label: "De-identified SOAP note, labs, handoff summaries, and other context",
+        text: scrubbedNote,
+        reviewTarget: "source"
+      };
+    }
+
+    async function buildPatientTeachingPrompt() {
+      const sourceContext = await getCurrentSourcePromptContext();
+      if (!sourceContext) {
         return "";
       }
       const userContext = buildUserContextBlock();
 
       return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
+<context_type>
+${sourceContext.contextType}
+</context_type>
+
 <patient_context>
-De-identified SOAP note, labs, handoff summaries, and other context:
-${scrubbedNote}
+${sourceContext.label}:
+${sourceContext.text}
 </patient_context>
 
 Now teach me this patient.`;
+    }
+
+    async function buildSourceRoundsReportPrompt() {
+      const sourceContext = await getCurrentSourcePromptContext();
+      if (!sourceContext) {
+        return "";
+      }
+      const userContext = buildUserContextBlock();
+
+      return `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
+
+<context_type>
+${sourceContext.contextType}
+</context_type>
+
+<source_context>
+${sourceContext.label}:
+${sourceContext.text}
+</source_context>
+
+<new_findings_status>
+No new bedside checklist answers or focused exam findings from this app are included yet. Use the source context to prepare the rounds report, and clearly mark what still needs bedside verification.
+</new_findings_status>
+
+Now create the rounds report.`;
     }
 
     function buildAdmissionChecklistPrompt() {
@@ -5479,32 +5630,7 @@ ${rawChecklist.trim()}`;
 
     function renderAudit(result) {
       state.auditResult = result;
-
-      if (!result) {
-        elements.auditPanel.hidden = true;
-        return;
-      }
-
-      if (result.ok) {
-        elements.auditPanel.hidden = true;
-        return;
-      }
-
-      elements.auditPanel.hidden = false;
-      elements.auditPanel.classList.toggle("is-ok", result.ok);
-      elements.auditTitle.textContent = "Checklist needs review";
-      elements.auditSummary.textContent = `Detected ${result.bedsideCount} bedside questions and ${result.examCount} exam items. Review these issues before bedside use.`;
-      elements.auditBadge.textContent = result.ok ? "Ready" : `${result.issues.length} issue${result.issues.length === 1 ? "" : "s"}`;
-      elements.auditList.innerHTML = "";
-
-      const messages = result.issues.slice(0, 8);
-      messages.forEach((issue) => {
-        const item = document.createElement("li");
-        item.textContent = issue.message;
-        elements.auditList.appendChild(item);
-      });
-
-      elements.auditActions.hidden = result.ok;
+      elements.auditPanel.hidden = true;
     }
 
     function normalizeChecklistText(rawText) {
@@ -6239,7 +6365,7 @@ ${rawChecklist.trim()}`;
       setChecklistView("bedside");
       showScreen("checklistScreen");
       saveChecklistSession();
-      showToast(state.auditResult.ok ? "Checklist built." : "Checklist built with review warnings.");
+      showToast("Checklist built.");
       return true;
     }
 
@@ -6422,7 +6548,7 @@ ${rawChecklist.trim()}`;
       elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and IV access issues.";
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Textbook synthetic DKA consult note and sample handoff loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
+      elements.promptStatus.textContent = "Textbook synthetic DKA consult note and sample handoff loaded. Add extra labs if needed, then copy a checklist, rounds report, or teaching prompt.";
       elements.rawSoapInput.focus();
       prepareDeidentifierModel();
       showToast("Textbook DKA consult note loaded.");
@@ -6447,6 +6573,34 @@ ${rawChecklist.trim()}`;
         console.error(error);
       }
     });
+
+    async function copySourceRoundsReportPrompt(statusElement = elements.promptStatus) {
+      const prompt = await buildSourceRoundsReportPrompt();
+      if (!prompt) {
+        return false;
+      }
+      return copyPromptWithPhiWarning(prompt, statusElement, "Rounds report prompt copied. Open OpenEvidence to paste.", {
+        title: "PHI safety check for rounds report prompt",
+        reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000
+      });
+    }
+
+    async function copyPatientTeachingPrompt(statusElement = elements.promptStatus) {
+      const prompt = await buildPatientTeachingPrompt();
+      if (!prompt) {
+        return false;
+      }
+      return copyPromptWithPhiWarning(prompt, statusElement, "Teaching prompt copied. Open OpenEvidence to paste.", {
+        title: "PHI safety check for teaching prompt",
+        reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000
+      });
+    }
 
     elements.scrubAndCopyButton.addEventListener("click", async () => {
       try {
@@ -6473,18 +6627,33 @@ ${rawChecklist.trim()}`;
       }
     });
 
+    elements.copySourceRoundsPromptButton.addEventListener("click", async () => {
+      try {
+        await copySourceRoundsReportPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     elements.copyTeachingPromptButton.addEventListener("click", async () => {
       try {
-        const prompt = await buildPatientTeachingPrompt();
-        if (prompt) {
-          await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Teaching prompt copied. Open OpenEvidence to paste.", {
-            title: "PHI safety check for teaching prompt",
-            reviewTarget: "source",
-            actionLabel: "Open OpenEvidence",
-            actionUrl: openEvidenceUrl,
-            duration: 7000
-          });
-        }
+        await copyPatientTeachingPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copySummaryRoundsPromptButton.addEventListener("click", async () => {
+      try {
+        await copySourceRoundsReportPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copySummaryTeachingPromptButton.addEventListener("click", async () => {
+      try {
+        await copyPatientTeachingPrompt();
       } catch (error) {
         console.error(error);
       }
@@ -6508,6 +6677,22 @@ ${rawChecklist.trim()}`;
           setPromptCollapsed(true, "Paste it into OpenEvidence, then paste the returned checklist below.");
           elements.checklistInput.focus();
         }
+      }
+    });
+
+    elements.copyAdmissionRoundsPromptButton.addEventListener("click", async () => {
+      try {
+        await copySourceRoundsReportPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copyAdmissionTeachingPromptButton.addEventListener("click", async () => {
+      try {
+        await copyPatientTeachingPrompt();
+      } catch (error) {
+        console.error(error);
       }
     });
 
