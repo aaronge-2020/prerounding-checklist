@@ -185,7 +185,7 @@ const clinicalAnchorWords = new Set([
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
-  "all", "bath", "bld", "bp", "chg", "collapse", "cpr", "cr", "expand", "fu", "giving",
+  "a", "all", "bath", "bld", "bp", "chg", "collapse", "cpr", "cr", "expand", "fu", "giving",
   "ideally", "primary", "recommend", "rfv", "service", "triage"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
@@ -281,8 +281,15 @@ function isLikelyMedicationPhrase(words) {
     words.every((word) => isLikelyMedicationWord(word) || medicationSaltOrFormWords.has(word) || nonNameClinicalWords.has(word));
 }
 
+function clinicalWordsFromNormalized(normalized) {
+  return String(normalized || "")
+    .replace(/\./g, "")
+    .split(" ")
+    .filter(Boolean);
+}
+
 function isLikelyClinicalNameLikePhrase(normalized) {
-  const words = normalized.split(" ");
+  const words = clinicalWordsFromNormalized(normalized);
   if (words.length < 2 || words.length > 5) {
     return false;
   }
@@ -318,14 +325,14 @@ function isLikelyChartHeadingPhrase(rawText, start, end) {
   const line = normalizePhrase(rawLine);
   const beforeInLine = rawLine.slice(0, Math.max(0, rawLine.indexOf(span)));
   if (/^\s*(?:#|[-*]|\d+\.)?\s*$/.test(beforeInLine) && /(?:^#|:?\s*$|, resolved\s*$|, improved\s*$|, stable\s*$)/i.test(rawLine)) {
-    const words = normalized.split(" ");
+    const words = clinicalWordsFromNormalized(normalized);
     if (words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word) || medicationNameWords.has(word))) {
       return true;
     }
   }
 
   if (line && line === normalized) {
-    const words = normalized.split(" ");
+    const words = clinicalWordsFromNormalized(normalized);
     return words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
   }
 
@@ -360,7 +367,7 @@ function isLikelyNonNamePhrase(rawText, start, end) {
     return true;
   }
 
-  const words = normalized.split(" ");
+  const words = clinicalWordsFromNormalized(normalized);
   return words.length >= 2 && words.length <= 5 && words.every((word) => nonNameClinicalWords.has(word));
 }
 
@@ -561,6 +568,18 @@ function pushPatternEntity(entities, rawText, label, start, end, source = "struc
     return;
   }
 
+  const constrained = constrainPatternEntitySpan(rawText, label, start, end);
+  start = constrained.start;
+  end = constrained.end;
+  if (end <= start) {
+    return;
+  }
+
+  const coveringEntity = entities.find((entity) => start >= entity.start && end <= entity.end);
+  if (coveringEntity && !/model/.test(coveringEntity.source || "")) {
+    return;
+  }
+
   const span = rawText.slice(start, end);
   if (!span.trim()) {
     return;
@@ -605,6 +624,43 @@ function addCapturedEntity(rawText, entities, label, regex, source = "structured
   }
 }
 
+function constrainPatternEntitySpan(rawText, label, start, end) {
+  let constrainedStart = start;
+  let constrainedEnd = end;
+  const normalizedLabel = normalizePhiLabel(label);
+  if (!nameEntityLabels.has(normalizedLabel)) {
+    return { start: constrainedStart, end: constrainedEnd };
+  }
+
+  const lineEndIndex = rawText.indexOf("\n", constrainedEnd);
+  const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
+  const afterInLine = rawText.slice(constrainedEnd, lineEnd);
+  const span = rawText.slice(constrainedStart, constrainedEnd);
+  if (/^\s*[:#]/.test(afterInLine)) {
+    const trailingHeader = span.match(/[ \t]+(?:Room|Rm|Bed|Unit|Floor|Ward|Pod|Bay|Location|Phone|Email|Address|DOB|MRN)$/i);
+    if (trailingHeader) {
+      constrainedEnd = constrainedStart + trailingHeader.index;
+    }
+  }
+
+  const leadingPer = rawText.slice(constrainedStart, constrainedEnd).match(/^Per[ \t]+(?=(?:Dr|Doctor)\b)/i);
+  if (leadingPer) {
+    constrainedStart += leadingPer[0].length;
+  }
+
+  while (constrainedStart < constrainedEnd && /[\s:;,#]/.test(rawText[constrainedStart])) {
+    constrainedStart += 1;
+  }
+  while (constrainedEnd > constrainedStart && /[\s:;,#]/.test(rawText[constrainedEnd - 1])) {
+    constrainedEnd -= 1;
+  }
+  if (constrainedEnd > constrainedStart && rawText[constrainedEnd - 1] === "." && !/[ \t][A-Z]\.$/.test(rawText.slice(constrainedStart, constrainedEnd))) {
+    constrainedEnd -= 1;
+  }
+
+  return { start: constrainedStart, end: constrainedEnd };
+}
+
 export function addStructuredSafeHarborEntities(rawText, entities = []) {
   const dateValue = String.raw`(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4})`;
 
@@ -628,7 +684,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "FACILITY", regex: /\b(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gi },
-    { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[,;\n\r]|$)/gi }
+    { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)/gi }
   ];
 
   capturedPatterns.forEach(({ label, regex }) => {
@@ -768,7 +824,10 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
     }
 
     if (entity.label === "LOCATION") {
-      return !isLikelyLocationFalsePositive(rawText, entity.start, entity.end);
+      const normalized = normalizePhrase(rawText.slice(entity.start, entity.end));
+      return !nonNameClinicalWords.has(normalized) &&
+        !nonNameClinicalPhrases.has(normalized) &&
+        !isLikelyLocationFalsePositive(rawText, entity.start, entity.end);
     }
 
     if (entity.label === "ORGANIZATION" || entity.label === "FACILITY") {

@@ -145,6 +145,14 @@ assert.ok(!chartChromeResult.text.includes("Dr. Hu"), "provider name should not 
 assert.ok(!chartChromeResult.text.includes("5/20/2026"), "exact date should not leak");
 assert.ok(chartChromeResult.flags.every((flag) => !flag.includes("5/20/2026")), "date detail should not display exact source date in review flags");
 
+const oneLineChartText = "One-line summary: Ms. Lita Merrill-Stevenson is a 57-year-old woman. Per Dr. Hu. Room: C3E 54-A. CHG Bath. GLUCOSE BLD.";
+const oneLineChartResult = deidentifyTextStructuredOnly(oneLineChartText);
+assert.equal(
+  oneLineChartResult.text,
+  "One-line summary: [PATIENT NAME] is a 57-year-old woman. Per [PROVIDER NAME]. Room: [ROOM]. CHG Bath. GLUCOSE BLD.",
+  "one-line chart exports should not merge provider, room, and chart labels into a name"
+);
+
 const ageText = "Overall Assessment: Ms Merrill-Stevenson is a 57-year-old woman.";
 const ageStart = ageText.indexOf("-year-old");
 const ageModelDeidentifier = createDeidentifier({
@@ -155,6 +163,17 @@ const ageModelDeidentifier = createDeidentifier({
 });
 const ageModelResult = await ageModelDeidentifier.deidentifyText(ageText);
 assert.ok(ageModelResult.text.includes("57-year-old woman"), "model date false positive must not corrupt ages under 90");
+
+const chgModelText = "CHG Bath. GLUCOSE BLD.";
+const chgStart = chgModelText.indexOf("CHG");
+const chgModelDeidentifier = createDeidentifier({
+  pipelineFactory: async () => async () => [
+    { entity_group: "LOCATION", start: chgStart, end: chgStart + "CHG".length, score: 0.88 }
+  ],
+  modelCandidates: [{ modelId: "mock-chg-location-model", options: {} }]
+});
+const chgModelResult = await chgModelDeidentifier.deidentifyText(chgModelText);
+assert.equal(chgModelResult.text, chgModelText, "model location false positive must not redact CHG Bath");
 
 const timelineDateText = `Admission date: 2026-05-01
 Symptoms changed on 5/7
