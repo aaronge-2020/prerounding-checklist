@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { deidentifyTextStructuredOnly, modelPredictionsToEntities } from "../deid.js";
+import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities } from "../deid.js";
 import { clinicalGuardTerms, makeDemoLikeCase, makeSyntheticCases } from "./deid-fixtures.js";
 
 function countNeedle(text, needle) {
@@ -93,6 +93,68 @@ for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chr
 }
 assert.ok(!medicalFalsePositiveResult.text.includes("Nora W. Abrahimi"), "standalone middle-initial person name should be redacted");
 assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes("Nora W. Abrahimi")), "redacted person name should not remain as residual warning");
+
+const chartChromeFalsePositiveText = `Expand All Collapse All
+HOSPITAL PROGRESS NOTE: Primary Cardiology Service
+CODE STATUS: CPR, Full Code
+Room: C3E 54-A
+Chief Complaint: Triage RFV: Provider Referral; Pain, Chest; and Abnormal Labs (K 2.5)
+One-line summary: Ms. Lita Merrill-Stevenson is a 57 y.o. female.
+Overall Assessment: Ms Merrill-Stevenson is a 57-year-old woman.
+Active Consultants: Endocrinology, Bariatric surgery, IR
+Running Hospital Course by Date
+5/20/2026
+Recommend FU CBC
+Giving IVF
+Cr. Endocrine
+BP elevated
+Ideally BP should be <160 systolic
+Per Dr. Hu
+CHG Bath
+GLUCOSE BLD`;
+const chartChromeResult = deidentifyTextStructuredOnly(chartChromeFalsePositiveText);
+for (const term of [
+  "Expand All Collapse All",
+  "Primary Cardiology Service",
+  "Full Code",
+  "Triage RFV",
+  "Endocrinology",
+  "Running Hospital Course",
+  "Recommend FU CBC",
+  "Giving IVF",
+  "Cr. Endocrine",
+  "BP elevated",
+  "Ideally BP",
+  "CHG Bath",
+  "GLUCOSE BLD"
+]) {
+  assert.ok(chartChromeResult.text.includes(term), `chart chrome term should be preserved: ${term}`);
+  assert.ok(!chartChromeResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `chart chrome term should not be a residual warning: ${term}`);
+  assert.ok(!chartChromeResult.entities.some((entity) => {
+    const snippet = chartChromeFalsePositiveText.slice(entity.start, entity.end);
+    return snippet.includes(term);
+  }), `chart chrome term should not be a redaction entity: ${term}`);
+}
+assert.ok(chartChromeResult.text.includes("Room: [ROOM]"), "room should still be redacted");
+assert.ok(chartChromeResult.text.includes("One-line summary: [PATIENT NAME] is a 57 y.o. female."), "patient name should still be redacted");
+assert.ok(chartChromeResult.text.includes("Overall Assessment: [PATIENT NAME] is a 57-year-old woman."), "patient alias should still be redacted");
+assert.ok(chartChromeResult.text.includes("Per [PROVIDER NAME]"), "provider name should still be redacted");
+assert.ok(!chartChromeResult.text.includes("Lita Merrill-Stevenson"), "full patient name should not leak");
+assert.ok(!chartChromeResult.text.includes("Ms Merrill-Stevenson"), "patient alias should not leak");
+assert.ok(!chartChromeResult.text.includes("Dr. Hu"), "provider name should not leak");
+assert.ok(!chartChromeResult.text.includes("5/20/2026"), "exact date should not leak");
+assert.ok(chartChromeResult.flags.every((flag) => !flag.includes("5/20/2026")), "date detail should not display exact source date in review flags");
+
+const ageText = "Overall Assessment: Ms Merrill-Stevenson is a 57-year-old woman.";
+const ageStart = ageText.indexOf("-year-old");
+const ageModelDeidentifier = createDeidentifier({
+  pipelineFactory: async () => async () => [
+    { entity_group: "DATE", start: ageStart, end: ageStart + "-year-old".length, score: 0.92 }
+  ],
+  modelCandidates: [{ modelId: "mock-age-date-model", options: {} }]
+});
+const ageModelResult = await ageModelDeidentifier.deidentifyText(ageText);
+assert.ok(ageModelResult.text.includes("57-year-old woman"), "model date false positive must not corrupt ages under 90");
 
 const timelineDateText = `Admission date: 2026-05-01
 Symptoms changed on 5/7

@@ -2369,11 +2369,31 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       DEFAULT_FALLBACK_MODEL_ID,
       DEFAULT_PRIMARY_MODEL_ID,
       cleanupDeidArtifacts,
-      normalizeResidualTemporalPhi
+      normalizeResidualTemporalPhi,
+      scanResidualPhi as scanResidualPhiShared
     } from "./deid.js";
 
     env.allowLocalModels = false;
     env.allowRemoteModels = true;
+    const browserCacheAvailable = typeof caches !== "undefined";
+    env.useBrowserCache = browserCacheAvailable;
+    env.useWasmCache = browserCacheAvailable;
+    if (env.backends?.onnx?.wasm) {
+      const onnxRuntimeWebVersion = "1.26.0-dev.20260416-b7804b056c";
+      const onnxRuntimeBase = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${onnxRuntimeWebVersion}/dist/`;
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent || "");
+      env.backends.onnx.wasm.wasmPaths = isSafari
+        ? {
+            mjs: `${onnxRuntimeBase}ort-wasm-simd-threaded.mjs`,
+            wasm: `${onnxRuntimeBase}ort-wasm-simd-threaded.wasm`
+          }
+        : {
+            mjs: `${onnxRuntimeBase}ort-wasm-simd-threaded.asyncify.mjs`,
+            wasm: `${onnxRuntimeBase}ort-wasm-simd-threaded.asyncify.wasm`
+          };
+      env.backends.onnx.wasm.numThreads = 1;
+      env.backends.onnx.wasm.proxy = false;
+    }
 
     const state = {
       sections: [],
@@ -2586,6 +2606,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       primaryModelId: primaryDeidentifierModelId,
       fallbackModelId: fallbackDeidentifierModelId,
       dtype: deidentifierDtype,
+      device: "wasm",
       onModelStatus(update) {
         state.modelReady = Boolean(update.ready);
         elements.offlineModelReady.checked = Boolean(update.ready);
@@ -5083,7 +5104,7 @@ Sensory level present: No / Yes, at ___`;
     function runPhiSafetyCheck(text) {
       const promptText = String(text || "");
       const reviewText = extractPhiReviewText(promptText);
-      const warnings = scanResidualPhi(reviewText);
+      const warnings = scanResidualPhiShared(reviewText);
       const redactionPlaceholderCount = (promptText.match(/\[(?:DOB REDACTED|[A-Z][A-Z0-9 -]{1,32})\]/g) || []).length;
       const severityCounts = warnings.reduce((counts, warning) => {
         counts[warning.severity] = (counts[warning.severity] || 0) + 1;

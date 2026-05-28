@@ -177,6 +177,22 @@ const clinicalAnchorWords = new Set([
   "treatment", "triglycerides", "troponin", "tsh", "urine", "vital", "vitals", "warfarin", "wbc"
 ]);
 
+[
+  "expand all", "collapse all", "expand all collapse all", "hospital progress", "hospital progress note",
+  "primary cardiology", "primary cardiology service", "primary service", "code status", "full code",
+  "cpr full code", "triage rfv", "recommend fu", "recommend fu cbc", "giving ivf", "cr endocrine", "cr. endocrine",
+  "ideally bp", "chg bath", "glucose bld"
+].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
+
+[
+  "all", "bath", "bld", "bp", "chg", "collapse", "cpr", "cr", "expand", "fu", "giving",
+  "ideally", "primary", "recommend", "rfv", "service", "triage"
+].forEach((word) => nonNameClinicalWords.add(word));
+
+[
+  "bp", "chg", "endocrine", "fu", "rfv", "triage"
+].forEach((word) => clinicalAnchorWords.add(word));
+
 const medicationSaltOrFormWords = new Set([
   "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl",
   "hydrochloride", "injection", "lactate", "magnesium", "oral", "potassium", "sodium", "succinate",
@@ -357,6 +373,10 @@ function isLikelyDateFalsePositive(rawText, start, end) {
     return true;
   }
 
+  if (/(?:year[-\s]*old|years old|y\.?o\.?|yo)$/i.test(span) || /^[-\s]*(?:year[-\s]*old|years old|y\.?o\.?|yo)$/i.test(span)) {
+    return true;
+  }
+
   const hasDateContext = /(admit|admitted|admission|discharge|date|dos|collected|collection|result|received|drawn|ordered|started|start|onset|began|developed|changed|resolved|improved|worsened|since|through|from|to|on)\W*$/.test(before);
 
   if (/^\d{1,2}[/-]\d{1,2}$/.test(span) && !hasDateContext) {
@@ -376,6 +396,15 @@ function isLikelyLocationFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).trim();
   return /^hospital\s+(?:course|problem|problems|day|stay|medicine|admission|course had)\b/i.test(span) ||
     /^[a-z]/.test(span) && !/\b(?:clinic|medical center|health system|room|unit|floor|ward)\b/i.test(span);
+}
+
+function isLikelyOrganizationFalsePositive(rawText, start, end) {
+  const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
+  const after = rawText.slice(end, Math.min(rawText.length, end + 32));
+  const normalized = normalizePhrase(span);
+  return nonNameClinicalPhrases.has(normalized) ||
+    /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
+    /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
 }
 
 function refineNameLabel(label, rawText, start, end) {
@@ -615,10 +644,10 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "DATE", regex: /\b\d{4}-\d{1,2}-\d{1,2}\b/g },
     { label: "DATE", regex: /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, skip: isLikelyDateFalsePositive },
     { label: "DATE", regex: /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi },
-    { label: "ADDRESS", regex: /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?\s+[A-Za-z .-]+)?(?:,?\s+[A-Z]{2})?(?:\s+\d{5}(?:-\d{4})?)?/gi },
+    { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
-    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g },
+    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
     { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
     { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g },
     { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
@@ -719,11 +748,12 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       return age >= 90;
     }
 
+    if (nameEntityLabels.has(entity.label) && isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
+      return false;
+    }
+
     if (nameEntityLabels.has(entity.label) && /model/.test(entity.source || "")) {
       const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
-      if (isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
-        return false;
-      }
       if (!parsePersonName(span) && !hasStrongNameContext(rawText, entity.start, entity.end)) {
         return false;
       }
@@ -741,9 +771,14 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
       return !isLikelyLocationFalsePositive(rawText, entity.start, entity.end);
     }
 
-    if ((entity.label === "ORGANIZATION" || entity.label === "FACILITY") && /model/.test(entity.source || "")) {
+    if (entity.label === "ORGANIZATION" || entity.label === "FACILITY") {
       const normalized = normalizePhrase(rawText.slice(entity.start, entity.end));
-      return !nonNameClinicalWords.has(normalized) && !nonNameClinicalPhrases.has(normalized);
+      if (isLikelyOrganizationFalsePositive(rawText, entity.start, entity.end)) {
+        return false;
+      }
+      if (/model/.test(entity.source || "")) {
+        return !nonNameClinicalWords.has(normalized) && !nonNameClinicalPhrases.has(normalized);
+      }
     }
 
     return true;
@@ -1219,7 +1254,9 @@ function entityFlags(rawText, entities) {
   }
 
   return entities.slice(0, 12).map((entity) => {
-    const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+    const span = entity.label === "DATE"
+      ? "exact date converted to relative timeline"
+      : rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
     const score = /model/.test(entity.source) && entity.score ? ` ${(entity.score * 100).toFixed(0)}%` : "";
     const source = entity.source ? ` (${entity.source}${score})` : score;
     return `${(entity.placeholder || placeholderForLabel(entity.label)).replace(/^\[|\]$/g, "")}${source}: ${span}`;
@@ -1689,11 +1726,11 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?\b/g, "exact calendar date", isLikelyDateFalsePositive);
   addResidualMatches(warnings, sourceText, "high", "exact date", /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+\d{4})?\b/gi, "exact calendar date");
   addResidualMatches(warnings, sourceText, "high", "identifier", /\b(?:MRN|Medical Record Number|Medical Record(?! Number)|CSN|FIN|HAR|Encounter(?: ID| Number)|Account Number|Acct|Policy Number|Policy(?! Number)|Member(?: ID| Number)|Member(?! ID| Number)|Insurance(?: ID| Number)|Insurance(?! ID| Number)|Subscriber(?: ID| Number)|Subscriber(?! ID| Number)|Accession Number|Accession(?! Number)|Order(?: ID| Number)|Order(?! ID| Number)|Specimen(?: ID| Number)|Specimen(?! ID| Number)|Chart(?: ID| Number)|Chart(?! ID| Number)|Case(?: ID| Number)|Case(?! ID| Number)|Visit(?: ID| Number)|Visit(?! ID| Number)|License Number|License(?! Number)|Certificate Number|Certificate(?! Number)|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\b(?:\s*[:#]\s*|\s+)(?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,}\b/gi, "record, insurance, device, or other unique code");
-  addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}\s+[A-Z0-9][A-Za-z0-9.'-]*(?:\s+[A-Za-z0-9.'-]+){0,5}\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address");
+  addResidualMatches(warnings, sourceText, "high", "street address", /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b/gi, "street address");
   addResidualMatches(warnings, sourceText, "medium", "ZIP or postal code", /\b(?:ZIP|Zip code|Postal code)\s*[:#]?\s*\d{5}(?:-\d{4})?\b/gi, "geographic detail smaller than state");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Room|Rm|Bed|ICU room|ED room)\b\s*[:#]?\s*[A-Z0-9-]*\d[A-Z0-9-]*\b/gi, "care location detail");
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi, "care location detail");
-  addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name");
+  addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name", isLikelyOrganizationFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "possible full name", new RegExp(String.raw`\b(?:${titledNamePatternSource}|${fullNamePatternSource})\b`, "g"), "capitalized name-like phrase", isLikelyNonNamePhrase);
   addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code");
   addResidualMatches(warnings, sourceText, "medium", "age over 89", /\b(?:Age\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})|(?:9[0-9]|1[0-9]{2})\s*(?:yo|y\/o|years? old|M|F|male|female))\b/gi, "age must be generalized");
@@ -1791,10 +1828,19 @@ export function deidentifyTextStructuredOnly(rawText) {
 
 export function createDeidentifier(options = {}) {
   const pipelineFactory = options.pipelineFactory || null;
+  const pipelineDevice = options.device || "";
+  const dtype = options.dtype || DEFAULT_DTYPE;
+  const withStableRuntime = (candidateOptions = {}) => ({
+    ...candidateOptions,
+    ...(candidateOptions.device || pipelineDevice
+      ? { device: candidateOptions.device || pipelineDevice }
+      : {})
+  });
   const modelCandidates = options.modelCandidates || [
-    { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: { dtype: options.dtype || DEFAULT_DTYPE } },
-    { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: {} },
-    { modelId: options.fallbackModelId || DEFAULT_FALLBACK_MODEL_ID, options: { dtype: options.dtype || DEFAULT_DTYPE } }
+    { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: withStableRuntime({ dtype }) },
+    { modelId: options.primaryModelId || DEFAULT_PRIMARY_MODEL_ID, options: withStableRuntime({}) },
+    { modelId: options.fallbackModelId || DEFAULT_FALLBACK_MODEL_ID, options: withStableRuntime({ dtype }) },
+    { modelId: options.fallbackModelId || DEFAULT_FALLBACK_MODEL_ID, options: withStableRuntime({}) }
   ].filter((candidate) => candidate.modelId);
   const onModelStatus = typeof options.onModelStatus === "function" ? options.onModelStatus : () => {};
   let modelPromise = null;
