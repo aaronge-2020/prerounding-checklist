@@ -2041,7 +2041,7 @@
         <div class="source-toggle" role="group" aria-label="Checklist source">
           <button id="priorModeButton" type="button" aria-pressed="true">
             <span class="source-choice-title">I have a prior note</span>
-            <span class="source-choice-copy">Paste SOAP note and labs.</span>
+            <span class="source-choice-copy">Paste SOAP note, labs, and handoff.</span>
           </button>
           <button id="admissionModeButton" type="button" aria-pressed="false">
             <span class="source-choice-title">This is a new admission</span>
@@ -2052,7 +2052,7 @@
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
           <div class="guided-step">
             <p class="eyebrow">Source details</p>
-            <h3 id="priorSourceTitle" class="guided-step-title">Paste note and labs</h3>
+            <h3 id="priorSourceTitle" class="guided-step-title">Paste note, labs, and handoff</h3>
             <p class="guided-step-copy">Raw text stays in this browser. The prompt will use only the editable de-identified preview.</p>
           </div>
           <label for="rawSoapInput">Raw SOAP note</label>
@@ -2069,7 +2069,15 @@ A/P: Hyperglycemia, AKI, infection rule-out..."></textarea>
 Example:
 Na 132, K 3.4, Cr 1.5, glucose 412
 UA: ketones negative, WBC present"></textarea>
-          <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers in notes or lab headers, so review the preview before pasting into OpenEvidence.</p>
+          <label for="rawHandoffInput">Handoff / other information</label>
+          <span class="field-caption">Optional. Paste sign-out summaries, overnight events, to-dos, consultant updates, nursing concerns, or details that are not in the SOAP note.</span>
+          <textarea id="rawHandoffInput" class="lab-input" spellcheck="false" placeholder="Paste handoff notes or other context here.
+
+Example:
+Night team: no acute events.
+To do: follow blood cultures, recheck potassium, confirm insulin transition plan.
+Nursing concern: intermittent confusion overnight."></textarea>
+          <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers in notes, lab headers, or handoff text, so review the preview before pasting into OpenEvidence.</p>
           <p id="modelStatus" class="model-status" role="status" aria-live="polite"></p>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
@@ -2081,8 +2089,8 @@ UA: ketones negative, WBC present"></textarea>
             </div>
             <p id="scrubVerdict" class="scrub-verdict">Review before copying.</p>
             <ul id="scrubCounts" class="flag-list" aria-label="Redaction counts"></ul>
-            <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note and labs</label>
-            <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note and labs preview..."></textarea>
+            <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note, labs, and handoff</label>
+            <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note, labs, and handoff preview..."></textarea>
             <details class="review-details">
               <summary>Review details</summary>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
@@ -2367,6 +2375,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       sourceMode: "prior",
       rawSoapNote: "",
       rawLabs: "",
+      rawHandoff: "",
       scrubbedNote: "",
       scrubResult: null,
       admission: {},
@@ -2429,6 +2438,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
       rawSoapInput: document.getElementById("rawSoapInput"),
       rawLabsInput: document.getElementById("rawLabsInput"),
+      rawHandoffInput: document.getElementById("rawHandoffInput"),
       modelStatus: document.getElementById("modelStatus"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
@@ -3062,6 +3072,7 @@ Sensory level present: No / Yes, at ___`;
         elements.checklistInput.value.trim() ||
         elements.rawSoapInput.value.trim() ||
         elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
         elements.scrubbedNoteInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim());
     }
@@ -3102,6 +3113,9 @@ Sensory level present: No / Yes, at ___`;
       const sourceReady = Boolean(
         state.promptCollapsed ||
         state.scrubbedNote ||
+        elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim())
       );
       const checklistReady = state.sections.length > 0;
@@ -3773,7 +3787,7 @@ Sensory level present: No / Yes, at ___`;
     function updateSourcePrimaryActions() {
       const isPrior = state.sourceMode === "prior";
       const hasReviewedPreview = Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim());
-      const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim());
+      const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim());
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
@@ -3788,7 +3802,9 @@ Sensory level present: No / Yes, at ___`;
     function syncRawSoapNote() {
       state.rawSoapNote = elements.rawSoapInput.value;
       state.rawLabs = elements.rawLabsInput.value;
+      state.rawHandoff = elements.rawHandoffInput.value;
       updateSourcePrimaryActions();
+      updateGuidedStatus();
     }
 
     function buildRawPriorSourceText() {
@@ -3801,6 +3817,10 @@ Sensory level present: No / Yes, at ___`;
 
       if (state.rawLabs.trim()) {
         blocks.push(`ADDITIONAL LABS AND RESULTS:\n${state.rawLabs.trim()}`);
+      }
+
+      if (state.rawHandoff.trim()) {
+        blocks.push(`HANDOFF SUMMARY AND OTHER CONTEXT:\n${state.rawHandoff.trim()}`);
       }
 
       return blocks.join("\n\n");
@@ -4744,8 +4764,10 @@ Sensory level present: No / Yes, at ___`;
       const text = String(promptText || "");
       const blocks = [];
       const blockPatterns = [
+        /De-identified patient note, labs, handoff summaries, and other context:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified patient note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified patient note:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
+        /De-identified SOAP note, labs, handoff summaries, and other context:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
         /De-identified SOAP note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
         /Admission intake information:\n([\s\S]*?)(?:\n<\/patient_context>|\n\n<new_admission_focus>|\n\nNew checklist answers and exam findings:|$)/gi,
         /De-identified source note:\n([\s\S]*?)(?:\n\nAdmission intake information:|\n\nNew checklist answers and exam findings:|$)/gi,
@@ -4975,8 +4997,8 @@ Sensory level present: No / Yes, at ___`;
       const rawPriorSource = buildRawPriorSourceText();
 
       if (!rawPriorSource) {
-        elements.promptStatus.textContent = "Paste a SOAP note or labs first.";
-        (elements.rawSoapInput.value.trim() ? elements.rawLabsInput : elements.rawSoapInput).focus();
+        elements.promptStatus.textContent = "Paste a SOAP note, labs, handoff, or other context first.";
+        elements.rawSoapInput.focus();
         return null;
       }
 
@@ -4996,7 +5018,7 @@ Sensory level present: No / Yes, at ___`;
       state.scrubResult = result;
       state.scrubbedNote = result.text;
       renderScrubResult(result);
-      elements.promptStatus.textContent = "De-identified note and labs preview ready. Review before pasting into OpenEvidence.";
+      elements.promptStatus.textContent = "De-identified note, labs, and handoff preview ready. Review before pasting into OpenEvidence.";
       requestAnimationFrame(() => {
         elements.scrubReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
@@ -5023,11 +5045,11 @@ Sensory level present: No / Yes, at ___`;
       return `${checklistPrompt}
 
 <context_type>
-Prior SOAP note and/or lab results available.
+Prior SOAP note, lab results, handoff summaries, and/or other context available.
 </context_type>${userContext ? `\n\n${userContext}` : ""}
 
 <patient_context>
-De-identified patient note and labs:
+De-identified patient note, labs, handoff summaries, and other context:
 ${scrubbedNote}
 </patient_context>
 
@@ -5044,7 +5066,7 @@ Now produce the final checklist only.`;
       return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
 <patient_context>
-De-identified SOAP note and labs:
+De-identified SOAP note, labs, handoff summaries, and other context:
 ${scrubbedNote}
 </patient_context>
 
@@ -5911,6 +5933,7 @@ ${rawChecklist.trim()}`;
       state.sourceMode = "prior";
       state.rawSoapNote = "";
       state.rawLabs = "";
+      state.rawHandoff = "";
       state.scrubbedNote = "";
       state.scrubResult = null;
       state.admission = {};
@@ -5930,6 +5953,7 @@ ${rawChecklist.trim()}`;
       elements.parseSummary.textContent = "";
       elements.rawSoapInput.value = "";
       elements.rawLabsInput.value = "";
+      elements.rawHandoffInput.value = "";
       admissionFields.forEach((field) => {
         field.element.value = "";
       });
@@ -6100,7 +6124,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim() || state.rawLabs.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -6115,7 +6139,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim() || state.rawLabs.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -6123,6 +6147,21 @@ ${rawChecklist.trim()}`;
     elements.rawLabsInput.addEventListener("focus", prepareDeidentifierModel);
 
     elements.rawLabsInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
+    });
+
+    elements.rawHandoffInput.addEventListener("input", () => {
+      syncRawSoapNote();
+      clearScrubPreview();
+      elements.promptStatus.textContent = "";
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.rawHandoffInput.addEventListener("focus", prepareDeidentifierModel);
+
+    elements.rawHandoffInput.addEventListener("paste", () => {
       window.setTimeout(prepareDeidentifierModel, 0);
     });
 
@@ -6174,9 +6213,10 @@ ${rawChecklist.trim()}`;
       setSourceMode("prior");
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       elements.rawLabsInput.value = "";
+      elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and IV access issues.";
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Textbook synthetic DKA consult note loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
+      elements.promptStatus.textContent = "Textbook synthetic DKA consult note and sample handoff loaded. Add extra labs if needed, then copy a checklist prompt or teaching prompt.";
       elements.rawSoapInput.focus();
       prepareDeidentifierModel();
       showToast("Textbook DKA consult note loaded.");
