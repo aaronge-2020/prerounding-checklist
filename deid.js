@@ -199,13 +199,13 @@ const clinicalAnchorWords = new Set([
 
 [
   "a/p", "a1c", "aki", "bmp", "breath", "cad", "cbc", "cc", "chest", "chf", "ckd", "cmp", "copd",
-  "dka", "doe", "ed", "hpi", "icu", "illness", "of", "pain", "pmh", "present", "psh", "ros",
+  "dka", "ed", "hpi", "icu", "illness", "of", "pain", "pmh", "present", "psh", "ros",
   "shortness", "soap", "sob", "t1dm", "t2dm", "tsh"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
   "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chest", "chf", "ckd", "cmp", "copd", "dka",
-  "doe", "ed", "hpi", "icu", "pmh", "present", "psh", "ros", "shortness", "soap", "sob", "t1dm",
+  "ed", "hpi", "icu", "pmh", "present", "psh", "ros", "shortness", "soap", "sob", "t1dm",
   "t2dm", "tsh"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
@@ -316,7 +316,12 @@ function normalizeClinicalGuardToken(value) {
 }
 
 function isProtectedClinicalAcronymToken(value) {
-  return protectedClinicalAcronyms.has(normalizeClinicalGuardToken(value));
+  const raw = String(value || "").replace(/^[^A-Za-z0-9/]+|[^A-Za-z0-9/]+$/g, "");
+  const normalized = normalizeClinicalGuardToken(raw);
+  if (!protectedClinicalAcronyms.has(normalized)) {
+    return false;
+  }
+  return /[0-9/]/.test(raw) || raw === raw.toUpperCase();
 }
 
 function isLikelyClinicalNameLikePhrase(normalized) {
@@ -351,22 +356,27 @@ function isClinicalGuardOnlyText(value) {
     return true;
   }
 
-  const words = clinicalWordsFromNormalized(normalized)
-    .map(normalizeClinicalGuardToken)
-    .filter(Boolean);
+  const words = String(value || "")
+    .replace(/\./g, "")
+    .split(" ")
+    .map((word) => ({
+      raw: word,
+      normalized: normalizeClinicalGuardToken(word)
+    }))
+    .filter((word) => word.normalized);
   if (!words.length || words.length > 6) {
     return false;
   }
 
   return words.every((word) => (
-    protectedClinicalAcronyms.has(word) ||
-    nonNameClinicalWords.has(word) ||
-    medicationNameWords.has(word) ||
-    medicationSaltOrFormWords.has(word)
+    isProtectedClinicalAcronymToken(word.raw) ||
+    nonNameClinicalWords.has(word.normalized) ||
+    medicationNameWords.has(word.normalized) ||
+    medicationSaltOrFormWords.has(word.normalized)
   )) && words.some((word) => (
-    protectedClinicalAcronyms.has(word) ||
-    clinicalAnchorWords.has(word) ||
-    medicationNameWords.has(word)
+    isProtectedClinicalAcronymToken(word.raw) ||
+    clinicalAnchorWords.has(word.normalized) ||
+    medicationNameWords.has(word.normalized)
   ));
 }
 
