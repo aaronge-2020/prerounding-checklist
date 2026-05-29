@@ -30,10 +30,26 @@ if (!scriptMatch) {
   throw new Error("Could not find the module script in index.html.");
 }
 
+const moduleScript = scriptMatch[1];
+if (!/from\s+["']\.\/deid\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the shared deid.js module.");
+}
+for (const importedName of ["createDeidentifier", "cleanupDeidArtifacts", "normalizeResidualTemporalPhi"]) {
+  if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
+    throw new Error(`index.html must use shared ${importedName} from deid.js.`);
+  }
+}
+if (!/\bscanResidualPhi\s+as\s+scanResidualPhiShared\b/.test(moduleScript)) {
+  throw new Error("index.html must import shared scanResidualPhi as scanResidualPhiShared.");
+}
+if (/\bfunction\s+(?:modelPredictionsToEntities|addStructuredSafeHarborEntities|filterLikelyFalsePositiveEntities|scanResidualPhi)\b/.test(moduleScript)) {
+  throw new Error("index.html contains duplicate inline de-id helpers; keep de-identification logic in deid.js.");
+}
+
 const scratch = mkdtempSync(join(tmpdir(), "preround-syntax-"));
 try {
   const modulePath = join(scratch, "index-inline.mjs");
-  writeFileSync(modulePath, scriptMatch[1], "utf8");
+  writeFileSync(modulePath, moduleScript, "utf8");
   runNodeCheck(modulePath);
 } finally {
   rmSync(scratch, { recursive: true, force: true });

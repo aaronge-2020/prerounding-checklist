@@ -97,7 +97,11 @@ const nameEntityLabels = new Set(["NAME", "PATIENT NAME", "PROVIDER NAME", "CONT
 
 const nonNameClinicalPhrases = new Set([
   "basic information", "chief complaint", "principal problem", "active problems", "resolved problems",
+  "synthetic demo soap note",
   "atypical chest", "atypical chest pain", "chronic pain", "home escitalopram", "heart healthy",
+  "chest pain", "shortness of breath", "present illness", "history of present illness",
+  "hpi", "pmh", "psh", "ros", "a/p", "soap", "cc", "ed", "icu", "dka", "aki", "ckd", "chf",
+  "copd", "cad", "t1dm", "t2dm", "cbc", "bmp", "cmp", "tsh", "a1c",
   "last reading", "hour range", "pulmonary toilet", "bowel management", "fall risk", "suicide risk",
   "elopement risk", "elopmement risk", "daily labs", "immature grans", "provider referral",
   "abnormal labs", "summary situational", "awareness action",
@@ -192,6 +196,23 @@ const clinicalAnchorWords = new Set([
 [
   "bp", "chg", "endocrine", "fu", "rfv", "triage"
 ].forEach((word) => clinicalAnchorWords.add(word));
+
+[
+  "a/p", "a1c", "aki", "bmp", "breath", "cad", "cbc", "cc", "chest", "chf", "ckd", "cmp", "copd",
+  "dka", "doe", "ed", "hpi", "icu", "illness", "of", "pain", "pmh", "present", "psh", "ros",
+  "shortness", "soap", "sob", "t1dm", "t2dm", "tsh"
+].forEach((word) => nonNameClinicalWords.add(word));
+
+[
+  "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chest", "chf", "ckd", "cmp", "copd", "dka",
+  "doe", "ed", "hpi", "icu", "pmh", "present", "psh", "ros", "shortness", "soap", "sob", "t1dm",
+  "t2dm", "tsh"
+].forEach((word) => clinicalAnchorWords.add(word));
+
+const protectedClinicalAcronyms = new Set([
+  "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chf", "ckd", "cmp", "copd", "dka",
+  "doe", "ed", "hpi", "icu", "pmh", "psh", "ros", "soap", "sob", "t1dm", "t2dm", "tsh"
+]);
 
 const medicationSaltOrFormWords = new Set([
   "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl",
@@ -288,6 +309,16 @@ function clinicalWordsFromNormalized(normalized) {
     .filter(Boolean);
 }
 
+function normalizeClinicalGuardToken(value) {
+  return String(value || "")
+    .replace(/^[^A-Za-z0-9/]+|[^A-Za-z0-9/]+$/g, "")
+    .toLowerCase();
+}
+
+function isProtectedClinicalAcronymToken(value) {
+  return protectedClinicalAcronyms.has(normalizeClinicalGuardToken(value));
+}
+
 function isLikelyClinicalNameLikePhrase(normalized) {
   const words = clinicalWordsFromNormalized(normalized);
   if (words.length < 2 || words.length > 5) {
@@ -308,6 +339,59 @@ function isLikelyClinicalNameLikePhrase(normalized) {
 
   return words.every((word) => nonNameClinicalWords.has(word)) &&
     words.some((word) => clinicalAnchorWords.has(word));
+}
+
+function isClinicalGuardOnlyText(value) {
+  const normalized = normalizePhrase(value);
+  if (!normalized) {
+    return false;
+  }
+
+  if (nonNameClinicalPhrases.has(normalized)) {
+    return true;
+  }
+
+  const words = clinicalWordsFromNormalized(normalized)
+    .map(normalizeClinicalGuardToken)
+    .filter(Boolean);
+  if (!words.length || words.length > 6) {
+    return false;
+  }
+
+  return words.every((word) => (
+    protectedClinicalAcronyms.has(word) ||
+    nonNameClinicalWords.has(word) ||
+    medicationNameWords.has(word) ||
+    medicationSaltOrFormWords.has(word)
+  )) && words.some((word) => (
+    protectedClinicalAcronyms.has(word) ||
+    clinicalAnchorWords.has(word) ||
+    medicationNameWords.has(word)
+  ));
+}
+
+function hasExplicitIdentifierContext(rawText, start, end) {
+  const lineStart = rawText.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+  const beforeInLine = rawText.slice(lineStart, start).toLowerCase();
+  return /\b(?:patient(?:\s+name)?|pt(?:\s+name)?|name|provider|attending|resident|fellow|consultant|surgeon|pcp|primary care provider|referring provider|ordering provider|primary endocrinologist|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\s*[:#]\s*$/.test(beforeInLine);
+}
+
+function isProtectedClinicalEntityFalsePositive(rawText, entity) {
+  const label = normalizePhiLabel(entity.label);
+  if (!nameEntityLabels.has(label) && label !== "LOCATION" && label !== "FACILITY" && label !== "ORGANIZATION") {
+    return false;
+  }
+
+  const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+  if (!isClinicalGuardOnlyText(span)) {
+    return false;
+  }
+
+  if (nameEntityLabels.has(label) && hasExplicitIdentifierContext(rawText, entity.start, entity.end) && parsePersonName(span)) {
+    return false;
+  }
+
+  return true;
 }
 
 function isLikelyChartHeadingPhrase(rawText, start, end) {
@@ -351,7 +435,7 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   const lineEnd = lineEndIndex === -1 ? rawText.length : lineEndIndex;
   const beforeInLine = rawText.slice(lineStart, start);
   const afterInLine = rawText.slice(end, lineEnd);
-  if (!beforeInLine.trim() && /^\s*[:#]/.test(afterInLine)) {
+  if (/^\s*(?:#|[-*]|\d+\.)?\s*$/.test(beforeInLine) && /^\s*[:#]/.test(afterInLine)) {
     return true;
   }
 
@@ -575,6 +659,10 @@ export function modelPredictionsToEntities(rawText, predictions, offset = 0) {
       return;
     }
 
+    if (isProtectedClinicalEntityFalsePositive(rawText, constrained)) {
+      return;
+    }
+
     entities.push({
       ...constrained,
       start: offset + constrained.start,
@@ -608,6 +696,15 @@ function pushPatternEntity(entities, rawText, label, start, end, source = "struc
   }
 
   const normalizedLabel = refineNameLabel(label, rawText, start, end);
+  if (isProtectedClinicalEntityFalsePositive(rawText, {
+    start,
+    end,
+    label: normalizedLabel,
+    source
+  })) {
+    return;
+  }
+
   entities.push({
     start,
     end,
@@ -733,6 +830,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
     { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
+    { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
     { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g },
     { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
     { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
@@ -830,6 +928,10 @@ export function filterLikelyFalsePositiveEntities(rawText, entities) {
     if (entity.label === "AGE") {
       const age = Number(rawText.slice(entity.start, entity.end).match(/\d{1,3}/)?.[0] || 0);
       return age >= 90;
+    }
+
+    if (isProtectedClinicalEntityFalsePositive(rawText, entity)) {
+      return false;
     }
 
     if (nameEntityLabels.has(entity.label) && isLikelyNonNamePhrase(rawText, entity.start, entity.end)) {
@@ -1426,9 +1528,21 @@ function normalizeNameLoose(value) {
   return normalizeNameKey(value).replace(/[^a-z]/g, "");
 }
 
+function isLikelyHumanNamePart(part) {
+  const token = String(part || "").replace(/^[^A-Za-z]+|[^A-Za-z.'-]+$/g, "");
+  if (!/^[A-Za-z][A-Za-z.'-]{1,}$/.test(token) || !/[a-z]/.test(token)) {
+    return false;
+  }
+  return !isProtectedClinicalAcronymToken(token) && !nonNameClinicalWords.has(normalizeClinicalGuardToken(token));
+}
+
 function parsePersonName(value) {
   const cleaned = cleanNameText(value);
   if (!cleaned) {
+    return null;
+  }
+
+  if (sentenceBreakIndexForName(cleaned) > 0) {
     return null;
   }
 
@@ -1448,6 +1562,10 @@ function parsePersonName(value) {
 
   const normalized = normalizePhrase(withoutTitle);
   if (nonNameClinicalPhrases.has(normalized) || isLikelyClinicalNameLikePhrase(normalized)) {
+    return null;
+  }
+
+  if (!realParts.some(isLikelyHumanNamePart)) {
     return null;
   }
 
@@ -1478,16 +1596,7 @@ function isDistinctiveSurname(surname) {
 }
 
 function isPlausibleNameText(value) {
-  const cleaned = String(value || "")
-    .replace(/^(?:Dr|Doctor|Mr|Mrs|Ms|Miss)\.?\s+/i, "")
-    .replace(/[,\s]+$/g, "")
-    .trim();
-  const normalized = normalizePhrase(cleaned);
-  if (!normalized || isLikelyClinicalNameLikePhrase(normalized) || nonNameClinicalPhrases.has(normalized)) {
-    return false;
-  }
-  const words = cleaned.split(/\s+/);
-  return words.length >= 2 && words.length <= 4 && words.every((word) => /^[A-Z][A-Za-z.'-]{1,}$/.test(word));
+  return Boolean(parsePersonName(value));
 }
 
 function aliasVariantsFromSpan(span) {
@@ -1782,12 +1891,18 @@ function promoteResidualNameEntities(rawText, entities, graph) {
     for (const match of rawText.matchAll(namePattern)) {
       const start = match.index;
       const end = start + match[0].length;
+      const candidate = match[0];
       if (isSpanCovered(start, end, entities) || isLikelyNonNamePhrase(rawText, start, end)) {
         continue;
       }
-      const alias = findAliasForCandidate(match[0], graph.aliases);
-      const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(match[0], graph);
-      const standalonePersonName = !alias && !fuzzyIdentity && shouldAutoPromoteStandalonePersonName(match[0]);
+
+      if (sentenceBreakIndexForName(candidate) > 0 || isClinicalGuardOnlyText(candidate) || !parsePersonName(candidate)) {
+        continue;
+      }
+
+      const alias = findAliasForCandidate(candidate, graph.aliases);
+      const fuzzyIdentity = alias ? null : findFuzzyIdentityForCandidate(candidate, graph);
+      const standalonePersonName = !alias && !fuzzyIdentity && shouldAutoPromoteStandalonePersonName(candidate);
       if (!alias && !fuzzyIdentity && !standalonePersonName && !hasStrongNameContext(rawText, start, end)) {
         continue;
       }

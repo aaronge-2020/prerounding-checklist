@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities } from "../deid.js";
-import { clinicalGuardTerms, makeDemoLikeCase, makeSyntheticCases } from "./deid-fixtures.js";
+import { assertDeidCase } from "./deid-adversarial.js";
+import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "./deid-fixtures.js";
 
 function countNeedle(text, needle) {
   if (!needle) {
@@ -227,6 +228,10 @@ const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);
 for (const term of clinicalGuardTerms) {
   assert.ok(guardResult.text.includes(term), `clinical term should be preserved: ${term}`);
+}
+
+for (const caseItem of makeAdversarialCases()) {
+  assertDeidCase(caseItem, deidentifyTextStructuredOnly(caseItem.text));
 }
 
 const ambiguous = "Assessment: The Blue Ridge protocol was discussed as a teaching phrase.";

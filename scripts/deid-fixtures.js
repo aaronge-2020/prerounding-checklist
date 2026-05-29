@@ -1,4 +1,33 @@
 export const clinicalGuardTerms = [
+  "HPI",
+  "PMH",
+  "PSH",
+  "ROS",
+  "A/P",
+  "SOAP",
+  "CC",
+  "ED",
+  "ICU",
+  "SOB",
+  "DOE",
+  "DKA",
+  "AKI",
+  "CKD",
+  "CHF",
+  "COPD",
+  "CAD",
+  "T1DM",
+  "T2DM",
+  "CBC",
+  "BMP",
+  "CMP",
+  "TSH",
+  "A1c",
+  "Chest Pain",
+  "Shortness Of Breath",
+  "History of Present Illness",
+  "Present Illness",
+  "Past Medical History",
   "Heart Rate",
   "Blood Pressure",
   "General: Awake",
@@ -182,13 +211,20 @@ function findAllSpans(text, value, label) {
 function finalizeCase(id, category, text, record, requiredSnippets = [], extraIdentifiers = []) {
   const spans = [...identifierMap(record), ...extraIdentifiers].flatMap(([label, value]) => findAllSpans(text, value, label));
   const forbidden = [...new Set(spans.map((span) => span.text))];
+  const clinicalTerms = clinicalGuardTerms.filter((term) => text.includes(term));
+  const mustPreserve = [...new Set([...requiredSnippets, ...clinicalTerms])];
   return {
     id,
     category,
+    tags: [category, "synthetic", "regression"],
     text,
+    mustRedact: forbidden,
+    mustPreserve,
+    forbiddenWarningSnippets: clinicalTerms,
+    expectedPlaceholders: requiredSnippets,
     forbidden,
     groundTruthSpans: spans,
-    clinicalTerms: clinicalGuardTerms.filter((term) => text.includes(term)),
+    clinicalTerms,
     requiredSnippets
   };
 }
@@ -571,4 +607,108 @@ export function makeSyntheticCases(count = 250) {
     cases.push(template(`case-${String(index + 1).padStart(3, "0")}`, makeRecord(index)));
   }
   return cases;
+}
+
+function makeAdversarialCase(id, category, text, {
+  mustRedact = [],
+  mustPreserve = [],
+  forbiddenWarningSnippets = mustPreserve,
+  expectedPlaceholders = [],
+  tags = []
+} = {}) {
+  const preserve = [...new Set(mustPreserve)];
+  return {
+    id,
+    category,
+    tags: [...new Set([category, "adversarial", ...tags])],
+    text,
+    mustRedact: [...new Set(mustRedact)],
+    mustPreserve: preserve,
+    forbiddenWarningSnippets: [...new Set(forbiddenWarningSnippets)],
+    expectedPlaceholders: [...new Set(expectedPlaceholders)],
+    forbidden: [...new Set(mustRedact)],
+    groundTruthSpans: mustRedact.flatMap((value) => findAllSpans(text, value, "NAME")),
+    clinicalTerms: preserve,
+    requiredSnippets: [...new Set(expectedPlaceholders)]
+  };
+}
+
+export function makeAdversarialCases() {
+  return [
+    makeAdversarialCase(
+      "adv-dka-residual-promotion",
+      "residual-name-false-positive",
+      `HPI:
+Chest Pain
+Past Medical History
+Assessment Plan
+Shortness Of Breath
+Daily Labs
+
+HPI: Ms. Jane Doe is a 57-year-old woman with DKA. Per Dr. Hu. Room: C3E 54-A.`,
+      {
+        mustRedact: ["Ms. Jane Doe", "Dr. Hu", "C3E 54-A"],
+        mustPreserve: ["HPI", "Chest Pain", "Past Medical History", "Assessment Plan", "Shortness Of Breath", "Daily Labs", "DKA"],
+        expectedPlaceholders: ["HPI: [PATIENT NAME] is a 57-year-old woman with DKA.", "Per [PROVIDER NAME]", "Room: [ROOM]"],
+        tags: ["acronym", "multi-sentence", "known-bug"]
+      }
+    ),
+    makeAdversarialCase(
+      "adv-clinical-acronym-block",
+      "clinical-acronym-guard",
+      `Patient Name: Alicia Rivera
+PMH: T1DM, CKD, CAD, CHF, COPD
+HPI: SOB and DOE with DKA, AKI, and abnormal BMP.
+ROS: chest pain denied.
+A/P: trend CBC, CMP, TSH, and A1c.`,
+      {
+        mustRedact: ["Alicia Rivera"],
+        mustPreserve: ["PMH", "T1DM", "CKD", "CAD", "CHF", "COPD", "HPI", "SOB", "DOE", "DKA", "AKI", "BMP", "ROS", "A/P", "CBC", "CMP", "TSH", "A1c"],
+        expectedPlaceholders: ["Patient Name: [PATIENT NAME]"],
+        tags: ["acronym", "section-header"]
+      }
+    ),
+    makeAdversarialCase(
+      "adv-name-contains-hpi-token",
+      "identifier-context-override",
+      `Patient Name: Hpi Tran
+DOB: 01/02/1980
+HPI: Hpi Tran is admitted with AKI and DKA.
+History of Present Illness: Chest Pain resolved.`,
+      {
+        mustRedact: ["Hpi Tran", "01/02/1980"],
+        mustPreserve: ["HPI", "History of Present Illness", "Chest Pain", "AKI", "DKA"],
+        expectedPlaceholders: ["Patient Name: [PATIENT NAME]", "DOB: [DOB]"],
+        tags: ["identifier-context", "acronym"]
+      }
+    ),
+    makeAdversarialCase(
+      "adv-chart-row-newline-loss",
+      "formatting-stress",
+      "Patient Name: Marcus Chen | DOB: 03/04/1979 | MRN: MC-2040274 | HPI: SOB with DKA. PMH: T2DM. Per Dr. Noelle Parker. Room: B12-4.",
+      {
+        mustRedact: ["Marcus Chen", "03/04/1979", "MC-2040274", "Dr. Noelle Parker", "B12-4"],
+        mustPreserve: ["HPI", "SOB", "DKA", "PMH", "T2DM"],
+        expectedPlaceholders: ["Patient Name: [PATIENT NAME]", "Per [PROVIDER NAME]", "Room: [ROOM]"],
+        tags: ["one-line", "chart-export"]
+      }
+    ),
+    makeAdversarialCase(
+      "adv-title-case-medical-phrases",
+      "name-like-clinical-phrase",
+      `Clean clinical text only:
+Chest Pain
+Shortness Of Breath
+Present Illness
+Daily Labs
+Insulin Glargine
+Warfarin Sodium
+Blue Ridge protocol
+May-Thurner syndrome`,
+      {
+        mustPreserve: ["Chest Pain", "Shortness Of Breath", "Present Illness", "Daily Labs", "Insulin Glargine", "Warfarin Sodium", "Blue Ridge protocol", "May-Thurner syndrome"],
+        tags: ["false-positive", "title-case"]
+      }
+    )
+  ];
 }
