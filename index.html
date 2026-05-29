@@ -2207,6 +2207,18 @@ Example:
 Night team: no acute events.
 To do: follow blood cultures, recheck potassium, confirm insulin transition plan.
 Nursing concern: intermittent confusion overnight."></textarea>
+          <label for="rawMedicationInput">Medication orders / MAR</label>
+          <span class="field-caption">Optional. Paste active medication orders plus MAR administration rows to check whether ordered doses appear to have been given.</span>
+          <textarea id="rawMedicationInput" class="lab-input" spellcheck="false" placeholder="Paste medication orders and MAR administrations here.
+
+Example:
+Medication Orders:
+atorvastatin 40 mg PO nightly
+enoxaparin 40 mg subcutaneous daily
+
+MAR:
+atorvastatin 20 mg given Day 0 evening
+enoxaparin 40 mg held by provider"></textarea>
           <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers in notes, lab headers, or handoff text, so review the preview before pasting into OpenEvidence.</p>
           <p id="modelStatus" class="model-status" role="status" aria-live="polite"></p>
           <div id="scrubReview" class="scrub-review" hidden>
@@ -2224,6 +2236,11 @@ Nursing concern: intermittent confusion overnight."></textarea>
             <details class="review-details">
               <summary>Review details</summary>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
+            </details>
+            <p id="medAuditStatus" class="context-status is-empty">Medication audit: no medication/MAR text provided.</p>
+            <details id="medAuditDetails" class="review-details" hidden>
+              <summary>Medication audit details</summary>
+              <ul id="medAuditList" class="flag-list" aria-label="Medication administration audit findings"></ul>
             </details>
           </div>
           <p class="next-action-copy">Choose what you want to make</p>
@@ -2526,6 +2543,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       normalizeResidualTemporalPhi,
       scanResidualPhi as scanResidualPhiShared
     } from "./deid.js";
+    import {
+      auditMedicationAdministration,
+      formatMedicationAuditForPrompt,
+      medicationAuditActionCount
+    } from "./med-audit.js";
 
     env.allowLocalModels = false;
     env.allowRemoteModels = true;
@@ -2557,8 +2579,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawSoapNote: "",
       rawLabs: "",
       rawHandoff: "",
+      rawMedicationText: "",
       scrubbedNote: "",
       scrubResult: null,
+      medicationAudit: null,
       admission: {},
       promptCollapsed: false,
       checklistFirstMode: false,
@@ -2632,6 +2656,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawSoapInput: document.getElementById("rawSoapInput"),
       rawLabsInput: document.getElementById("rawLabsInput"),
       rawHandoffInput: document.getElementById("rawHandoffInput"),
+      rawMedicationInput: document.getElementById("rawMedicationInput"),
       modelStatus: document.getElementById("modelStatus"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
@@ -2639,6 +2664,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubSummary: document.getElementById("scrubSummary"),
       scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
+      medAuditStatus: document.getElementById("medAuditStatus"),
+      medAuditDetails: document.getElementById("medAuditDetails"),
+      medAuditList: document.getElementById("medAuditList"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
       exportPriorContextButton: document.getElementById("exportPriorContextButton"),
       copySourceRoundsPromptButton: document.getElementById("copySourceRoundsPromptButton"),
@@ -2820,7 +2848,8 @@ Before writing the final answer, silently identify:
 2. The key clinical uncertainties for today.
 3. Bedside questions that clarify symptom trajectory, red flags, function, safety, treatment response, and patient concerns.
 4. Focused physical exam findings that would confirm improvement, worsening, complications, or management-relevant severity.
-5. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
+5. If a Medication Administration Audit is provided, identify only medication-administration issues that should change a safety-critical symptom question, focused exam item, or bedside check today.
+6. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
 
 Do not show this reasoning. Show only the final checklist.
 </internal_process>
@@ -2849,6 +2878,7 @@ For reflex exams, prefer a summary pattern item unless exact right-left reflexes
 
 Do not include generic review-of-systems questions.
 Do not include a full head-to-toe exam.
+If a Medication Administration Audit is provided, use it only for high-yield bedside safety checks. Do not add routine medication reconciliation questions or make the checklist longer because of it.
 Do not include teaching, explanations, citations, caveats, or oral presentation text.
 Do not mention that the note is de-identified.
 </content_rules>
@@ -2986,6 +3016,7 @@ Synthesize the information into clinically meaningful language. Emphasize today'
 Use only information present in the source context or the new checklist findings.
 Do not invent diagnoses, test results, treatments, vitals, exam findings, or plans.
 Do not invent trends. Only call a finding improved, worse, new, stable, high, or low if that is supported by the source context, the new checklist findings, or clinically unambiguous reference context.
+If a Medication Administration Audit is provided, treat it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Mention only clinically relevant medication peculiarities, missed/not-documented administrations, held/refused/not-given medications, or dose/frequency/route mismatches. Use cautious language such as "verify in MAR" or "not found in pasted MAR"; do not call something a medication error or clinically inappropriate dose unless the source itself supports that.
 Do not over-localize neurologic findings. Preserve uncertainty around differential diagnosis and localization unless the source clearly supports a conclusion.
 Ignore items marked not assessed, [not assessed], left blank, containing only underscores, or otherwise not answered.
 If a checklist finding conflicts with the source context, state the discordance clearly and clinically.
@@ -3001,10 +3032,11 @@ Before writing the final answer, silently:
 3. Extract the clinically important objective and focused exam findings.
 4. Identify the highest-impact interval changes and red flags.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context or checklist findings.
-6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
-7. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
-8. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
-9. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
+6. Review any Medication Administration Audit and decide which medication administration issues matter for today's assessment, management, or team follow-up.
+7. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+8. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
+9. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
+10. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
@@ -3130,11 +3162,12 @@ Before finalizing, silently verify:
 10. If service or role context was provided, SUBJECTIVE under Management to date includes a supported summary of what our service has done or is following.
 11. If this is a consult workflow, SUBJECTIVE under One-liner includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
 12. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
-13. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
-14. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
-15. The output is concise, with no boilerplate and no copied checklist labels.
-16. No PHI or identifiers appear.
-17. No extra commentary appears outside the required sections.
+13. Any Medication Administration Audit findings are mentioned only when clinically relevant, worded as items to verify, and integrated into Medications, Management to date, or the relevant problem plan without clutter.
+14. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
+15. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
+16. The output is concise, with no boilerplate and no copied checklist labels.
+17. No PHI or identifiers appear.
+18. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -3153,6 +3186,7 @@ Help the student understand what is going on, what matters today, what to verify
 Use only information present in the source context plus standard medical knowledge needed to explain clinical significance.
 Do not invent overnight events, new symptoms, vitals, labs, exam findings, diagnoses, treatments, consult recommendations, or plans.
 Do not claim something improved, worsened, resolved, or newly occurred unless the source clearly supports that timeline.
+If a Medication Administration Audit is provided, treat it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Mention only clinically relevant medication peculiarities, missed/not-documented administrations, held/refused/not-given medications, or dose/frequency/route mismatches. Use cautious language such as "verify in MAR" or "not found in pasted MAR"; do not call something a medication error or clinically inappropriate dose unless the source itself supports that.
 If current-day bedside findings are missing, clearly mark them as items to verify rather than facts.
 Preserve uncertainty around the differential diagnosis, localization, severity, and plan.
 Do not include identifiers or PHI.
@@ -3166,8 +3200,9 @@ Before writing the final answer, silently:
 3. Identify red flags, complications, discharge barriers, and management decisions that could change today.
 4. Decide what the student should verify at bedside and what focused exam would be highest yield.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context.
-6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
-7. Draft a concise spoken rounds update using only supported information.
+6. Review any Medication Administration Audit and decide which medication administration issues matter for rounds, team follow-up, or medication reconciliation.
+7. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+8. Draft a concise spoken rounds update using only supported information.
 
 Do not show this reasoning. Show only the final report.
 </internal_process>
@@ -3288,11 +3323,12 @@ Before finalizing, silently verify:
 7. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
 9. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
-10. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
-11. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
-12. The output is concise, with no boilerplate and no copied source-note blocks.
-13. No PHI or identifiers appear.
-14. The output includes all required section headers and no extra commentary.
+10. Any Medication Administration Audit findings are mentioned only when clinically relevant, worded as items to verify, and integrated into medication reconciliation, rounds priorities, or the relevant problem plan without clutter.
+11. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
+12. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
+13. The output is concise, with no boilerplate and no copied source-note blocks.
+14. No PHI or identifiers appear.
+15. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3314,6 +3350,7 @@ Make the teaching practical for bedside care, prerounding, presenting, and follo
 Use only information present in the note plus standard medical knowledge needed to explain it.
 Do not invent missing history, diagnoses, test results, exam findings, treatments, or plans.
 If something is uncertain or missing, say what cannot be concluded and what the student should clarify.
+If a Medication Administration Audit is provided, explain it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Teach the student to verify flagged items in the live MAR and to avoid calling something a medication error unless confirmed by the team or chart.
 Do not include identifiers or PHI.
 Do not give patient-specific orders as if you are the treating team. Frame management as what the team appears to be doing, what the student should understand, and what questions to ask.
 </source_rules>
@@ -3361,7 +3398,7 @@ DATA INTERPRETATION
 Explain the important vitals, physical exam findings, labs, imaging, microbiology, and trends. Say what is normal, abnormal, improving, worsening, or uncertain only when supported.
 
 MEDICATIONS AND TREATMENTS
-Explain the important medications, fluids, oxygen or respiratory support, procedures, consults, and pending studies. Include why they are being used, what to monitor, and common adverse effects or safety issues relevant to this patient.
+Explain the important medications, fluids, oxygen or respiratory support, procedures, consults, and pending studies. Include why they are being used, what to monitor, common adverse effects or safety issues relevant to this patient, and any clinically relevant Medication Administration Audit findings that should be verified before rounds.
 
 WHAT TO DO BEFORE ROUNDS
 Give a practical prerounding checklist for this patient: what to ask, what to examine, what labs or studies to check, what tasks to follow up, and what changes would be urgent.
@@ -3391,6 +3428,7 @@ Give a focused study plan for tonight: 5 to 8 topics, why each matters for this 
 
 UNCERTAINTIES AND SAFETY CHECKS
 List what is missing, what could be dangerous if missed, and what claims should not be made from the note alone.
+If a Medication Administration Audit is present, include missed/not-documented administrations, held/refused medications, dose/frequency/route mismatches, or unexpected administrations as verification tasks only when clinically relevant.
 </output_format>
 
 <final_self_check>
@@ -3404,10 +3442,11 @@ Before finalizing, silently verify:
 7. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
 9. HOW TO PRESENT THIS PATIENT organizes medications by indication or PMH problem and does not guess unclear indications.
-10. HOW TO PRESENT THIS PATIENT tailors content to the selected service and avoids endocrine-only labels unless endocrine issues are relevant.
-11. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
-12. No PHI or identifiers appear.
-13. The output helps the student understand, preround, present, and care thoughtfully.
+10. Medication Administration Audit findings are explained as items to verify, not definitive errors, and only clinically relevant items are elevated.
+11. HOW TO PRESENT THIS PATIENT tailors content to the selected service and avoids endocrine-only labels unless endocrine issues are relevant.
+12. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
+13. No PHI or identifiers appear.
+14. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -3573,6 +3612,7 @@ Sensory level present: No / Yes, at ___`;
         elements.rawSoapInput.value.trim() ||
         elements.rawLabsInput.value.trim() ||
         elements.rawHandoffInput.value.trim() ||
+        elements.rawMedicationInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim())
       );
     }
@@ -3709,7 +3749,7 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateStepRail(activeStep) {
-      const hasPrompt = state.checklistFirstMode || hasChecklistPasteText() || state.promptCollapsed || state.scrubbedNote || formatAdmissionContext();
+      const hasPrompt = state.checklistFirstMode || hasChecklistPasteText() || state.promptCollapsed || state.scrubbedNote || elements.rawMedicationInput.value.trim() || formatAdmissionContext();
       const hasChecklist = state.sections.length > 0;
       const hasOutput = Boolean(state.compiledText);
       const compactLabels = {
@@ -4273,16 +4313,26 @@ Sensory level present: No / Yes, at ___`;
       const admissionContext = formatAdmissionContext();
       let message = "No patient context imported.";
       let hasContext = false;
+      let audit = null;
 
       if (state.scrubbedNote) {
         message = "Rounds prompt will include this browser's de-identified source context.";
         hasContext = true;
+        audit = currentMedicationAuditFromText(state.scrubbedNote);
       } else if (admissionContext) {
         message = "Rounds prompt will include this browser's admission context.";
         hasContext = true;
       } else if (state.importedContext) {
         message = "Rounds prompt will include imported laptop context.";
         hasContext = true;
+        audit = auditMedicationAdministration(state.importedContext.text);
+      }
+
+      const auditCount = medicationAuditActionCount(audit);
+      if (audit?.hasMedicationSource) {
+        message += auditCount
+          ? ` Medication audit has ${auditCount} item${auditCount === 1 ? "" : "s"} to verify.`
+          : " Medication audit found no pasted-MAR discrepancies.";
       }
 
       elements.sourceContextStatus.textContent = message;
@@ -4679,7 +4729,7 @@ Sensory level present: No / Yes, at ___`;
     function updateSourcePrimaryActions() {
       const isPrior = state.sourceMode === "prior";
       const hasReviewedPreview = Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim());
-      const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim());
+      const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim());
       const hasPriorContext = hasReviewedPreview || hasRawPriorSource;
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
@@ -4715,6 +4765,7 @@ Sensory level present: No / Yes, at ___`;
       state.rawSoapNote = elements.rawSoapInput.value;
       state.rawLabs = elements.rawLabsInput.value;
       state.rawHandoff = elements.rawHandoffInput.value;
+      state.rawMedicationText = elements.rawMedicationInput.value;
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
@@ -4735,12 +4786,61 @@ Sensory level present: No / Yes, at ___`;
         blocks.push(`HANDOFF SUMMARY AND OTHER CONTEXT:\n${state.rawHandoff.trim()}`);
       }
 
+      if (state.rawMedicationText.trim()) {
+        blocks.push(`MEDICATION ORDERS AND ADMINISTRATION RECORD:\n${state.rawMedicationText.trim()}`);
+      }
+
       return blocks.join("\n\n");
+    }
+
+    function currentMedicationAuditFromText(text) {
+      const audit = auditMedicationAdministration(text);
+      state.medicationAudit = audit.hasMedicationSource ? audit : null;
+      return state.medicationAudit;
+    }
+
+    function currentMedicationAuditPromptBlock() {
+      if (state.scrubbedNote) {
+        return formatMedicationAuditForPrompt(currentMedicationAuditFromText(state.scrubbedNote));
+      }
+      if (state.importedContext?.text) {
+        return formatMedicationAuditForPrompt(auditMedicationAdministration(state.importedContext.text));
+      }
+      return "";
+    }
+
+    function renderMedicationAudit(audit) {
+      if (!elements.medAuditStatus || !elements.medAuditDetails || !elements.medAuditList) {
+        return;
+      }
+      const actionable = medicationAuditActionCount(audit);
+      if (!audit?.hasMedicationSource) {
+        elements.medAuditStatus.textContent = "Medication audit: no medication/MAR text provided.";
+        elements.medAuditStatus.classList.add("is-empty");
+        elements.medAuditDetails.hidden = true;
+        elements.medAuditList.innerHTML = "";
+        return;
+      }
+      elements.medAuditStatus.textContent = actionable
+        ? `Medication audit: ${actionable} item${actionable === 1 ? "" : "s"} to verify.`
+        : "Medication audit: no discrepancies detected in pasted MAR text.";
+      elements.medAuditStatus.classList.toggle("is-empty", actionable === 0);
+      elements.medAuditDetails.hidden = false;
+      elements.medAuditList.innerHTML = "";
+      const findings = audit.issues.length
+        ? audit.issues.map((item) => `${item.category}: ${item.message}`)
+        : ["No missed doses, held/refused doses, or dose/frequency/route mismatches detected from pasted medication/MAR text. Verify against the live MAR before rounds."];
+      findings.forEach((finding) => {
+        const item = document.createElement("li");
+        item.textContent = finding;
+        elements.medAuditList.appendChild(item);
+      });
     }
 
     function clearScrubPreview() {
       state.scrubbedNote = "";
       state.scrubResult = null;
+      state.medicationAudit = null;
       elements.scrubbedNoteInput.value = "";
       elements.scrubReview.hidden = true;
       elements.scrubVerdict.textContent = "Review before copying.";
@@ -4748,6 +4848,7 @@ Sensory level present: No / Yes, at ___`;
       elements.scrubSummary.textContent = "0 redactions";
       elements.scrubCounts.innerHTML = "";
       elements.scrubFlags.innerHTML = "";
+      renderMedicationAudit(null);
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
@@ -4755,6 +4856,8 @@ Sensory level present: No / Yes, at ___`;
 
     function syncScrubbedNote() {
       state.scrubbedNote = elements.scrubbedNoteInput.value.trim();
+      currentMedicationAuditFromText(state.scrubbedNote);
+      renderMedicationAudit(state.medicationAudit);
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
@@ -4790,6 +4893,7 @@ Sensory level present: No / Yes, at ___`;
         /De-identified patient note:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified SOAP note, labs, handoff summaries, and other context:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
         /De-identified SOAP note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
+        /Medication Administration Audit:\n([\s\S]*?)(?:\n\nNew checklist answers and exam findings:|\n\nNow create|\n\nNow teach|$)/gi,
         /Admission intake information:\n([\s\S]*?)(?:\n<\/patient_context>|\n\n<new_admission_focus>|\n\nNew checklist answers and exam findings:|$)/gi,
         /De-identified source note:\n([\s\S]*?)(?:\n\nAdmission intake information:|\n\nNew checklist answers and exam findings:|$)/gi,
         /Checklist to rewrite:\n([\s\S]*)$/gi,
@@ -4937,6 +5041,7 @@ Sensory level present: No / Yes, at ___`;
         item.textContent = flag;
         elements.scrubFlags.appendChild(item);
       });
+      renderMedicationAudit(currentMedicationAuditFromText(result.text));
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
@@ -5087,7 +5192,7 @@ Prior SOAP note, lab results, handoff summaries, and/or other context available.
 <patient_context>
 De-identified patient note, labs, handoff summaries, and other context:
 ${scrubbedNote}
-</patient_context>
+</patient_context>${currentMedicationAuditPromptBlock() ? `\n\n<medication_administration_audit>\n${currentMedicationAuditPromptBlock()}\n</medication_administration_audit>` : ""}
 
 Now produce the final checklist only.`;
     }
@@ -5143,6 +5248,7 @@ Now produce the final checklist only.`;
         return "";
       }
       const userContext = buildUserContextBlock();
+      const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(sourceContext.text));
 
       return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
@@ -5153,7 +5259,7 @@ ${sourceContext.contextType}
 <patient_context>
 ${sourceContext.label}:
 ${sourceContext.text}
-</patient_context>
+</patient_context>${medicationAuditBlock ? `\n\n<medication_administration_audit>\n${medicationAuditBlock}\n</medication_administration_audit>` : ""}
 
 Now teach me this patient.`;
     }
@@ -5164,6 +5270,7 @@ Now teach me this patient.`;
         return "";
       }
       const userContext = buildUserContextBlock();
+      const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(sourceContext.text));
 
       return `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
@@ -5174,7 +5281,7 @@ ${sourceContext.contextType}
 <source_context>
 ${sourceContext.label}:
 ${sourceContext.text}
-</source_context>
+</source_context>${medicationAuditBlock ? `\n\n<medication_administration_audit>\n${medicationAuditBlock}\n</medication_administration_audit>` : ""}
 
 <new_findings_status>
 No new bedside checklist answers or focused exam findings from this app are included yet. Use the source context to prepare the rounds report, and clearly mark what still needs bedside verification.
@@ -5229,7 +5336,9 @@ Now produce the final checklist only.`;
       }
 
       const promptIntro = presentationPromptIntro(Boolean(state.scrubbedNote || importedContext), Boolean(admissionContext || importedContext?.sourceMode === "admission"));
-      return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+      const medicationAuditSource = state.scrubbedNote || importedContext?.text || "";
+      const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(medicationAuditSource));
+      return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}${medicationAuditBlock ? `\n\n<medication_administration_audit>\n${medicationAuditBlock}\n</medication_administration_audit>` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
     configureManifest();
@@ -6027,8 +6136,10 @@ ${rawChecklist.trim()}`;
       state.rawSoapNote = "";
       state.rawLabs = "";
       state.rawHandoff = "";
+      state.rawMedicationText = "";
       state.scrubbedNote = "";
       state.scrubResult = null;
+      state.medicationAudit = null;
       state.admission = {};
       state.promptCollapsed = false;
       state.checklistFirstMode = false;
@@ -6055,6 +6166,7 @@ ${rawChecklist.trim()}`;
       elements.rawSoapInput.value = "";
       elements.rawLabsInput.value = "";
       elements.rawHandoffInput.value = "";
+      elements.rawMedicationInput.value = "";
       admissionFields.forEach((field) => {
         field.element.value = "";
       });
@@ -6231,7 +6343,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim() || state.rawMedicationText.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -6246,7 +6358,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim() || state.rawMedicationText.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -6261,7 +6373,7 @@ ${rawChecklist.trim()}`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "";
-      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim()) {
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim() || state.rawMedicationText.trim()) {
         prepareDeidentifierModel();
       }
     });
@@ -6269,6 +6381,21 @@ ${rawChecklist.trim()}`;
     elements.rawHandoffInput.addEventListener("focus", prepareDeidentifierModel);
 
     elements.rawHandoffInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
+    });
+
+    elements.rawMedicationInput.addEventListener("input", () => {
+      syncRawSoapNote();
+      clearScrubPreview();
+      elements.promptStatus.textContent = "";
+      if (state.rawSoapNote.trim() || state.rawLabs.trim() || state.rawHandoff.trim() || state.rawMedicationText.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.rawMedicationInput.addEventListener("focus", prepareDeidentifierModel);
+
+    elements.rawMedicationInput.addEventListener("paste", () => {
       window.setTimeout(prepareDeidentifierModel, 0);
     });
 
@@ -6336,6 +6463,17 @@ ${rawChecklist.trim()}`;
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       elements.rawLabsInput.value = "";
       elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and IV access issues.";
+      elements.rawMedicationInput.value = `Medication Orders:
+insulin glargine 18 units subcutaneous nightly
+insulin lispro correction scale subcutaneous with meals and bedtime
+ceftriaxone 1 g IV daily
+heparin 5000 units subcutaneous q8h
+
+MAR:
+insulin glargine 12 units given Day 0 evening
+insulin lispro correction scale given Day 0 with breakfast
+ceftriaxone 1 g given Day 0 morning
+heparin 5000 units held by provider`;
       syncRawSoapNote();
       clearScrubPreview();
       elements.promptStatus.textContent = "Textbook synthetic DKA consult note and sample handoff loaded. Add extra labs if needed, then copy a checklist, rounds report, or teaching prompt.";

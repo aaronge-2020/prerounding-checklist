@@ -6,6 +6,7 @@
   "scripts": {
     "test:deid": "node scripts/test-deid.js",
     "test:deid:adversarial": "node scripts/test-deid-adversarial.js",
+    "test:med-audit": "node scripts/test-med-audit.js",
     "generate:deid:adversarial": "node scripts/generate-deid-adversarial-cases.js",
     "benchmark:deid": "node scripts/benchmark-deid.js",
     "benchmark:deid:large": "node scripts/benchmark-deid.js --include-large",
