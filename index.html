@@ -3010,15 +3010,15 @@ Do not show this reasoning. Show only the final presentation.
 </internal_process>
 
 <service_specific_rounds_rule>
-If user_context includes a selected Service or Role, include a concise service-specific contribution summary at the end of SUBJECTIVE AND INTERVAL EVENTS in the TWO MINUTE ROUNDS PRESENTATION.
+If user_context includes a selected Service or Role, include a concise service-specific contribution summary in SUBJECTIVE under "Management to date" in the TWO MINUTE ROUNDS PRESENTATION.
 This should summarize what our service has done for the patient so far, such as the consult question addressed, recommendations made, medication changes advised, diagnostic workup followed, procedures coordinated, patient counseling performed, or pending follow-up.
 If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
-Also include the same service-specific contribution summary at the end of SUBJECTIVE in the DETAILED INTERVAL SOAP NOTE when service or role context is provided.
+Also include the same service-specific contribution summary in SUBJECTIVE under "Management to date" in the DETAILED INTERVAL SOAP NOTE when service or role context is provided.
 Do not include service-specific actions unless they are supported by the source context, admission context, or new checklist findings.
 </service_specific_rounds_rule>
 
 <consult_rounds_rule>
-If user_context indicates a consult service, consult role, or consult-focused workflow, the opening ONE-LINER AND TRAJECTORY must state, when supported by the source:
+If user_context indicates a consult service, consult role, or consult-focused workflow, SUBJECTIVE under "One-liner" must state, when supported by the source:
 1. How the patient was admitted or presented.
 2. The chief complaint or reason for presentation.
 3. Exactly what our service is consulted for or what consult question we are answering.
@@ -3027,11 +3027,10 @@ Keep the one-liner natural and concise, but make the consult reason explicit eno
 </consult_rounds_rule>
 
 <assessment_and_plan_rules>
-ASSESSMENT AND PLAN in the TWO MINUTE ROUNDS PRESENTATION and ASSESSMENT in the DETAILED INTERVAL SOAP NOTE must begin with a recap statement that names the primary working diagnosis or leading clinical problem and explains the key evidence supporting it.
-After the recap statement, include the most relevant alternative diagnoses or explanations and briefly explain why they are less likely than the primary working diagnosis when the source supports that comparison.
+ASSESSMENT in both the TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE must begin with a summary statement of the patient.
+Then use problem-based assessment for each endocrine problem, including the most likely diagnosis with supporting justification and relevant differentials with reasoning for or against each.
 Preserve uncertainty when the diagnosis, localization, or mechanism is not settled.
-PLAN in the DETAILED INTERVAL SOAP NOTE must be organized by problem. For each problem, state what will be done, why it matters, and what needs monitoring, follow-up, or escalation when supported by the source.
-In the concise presentation, the plan may be prose, but it must still connect each major action to the clinical reason for doing it.
+PLAN in both outputs must include problem list with management, pending studies, contingency guidance, and follow-up/disposition when supported by the source.
 Do not invent plans, consultant recommendations, diagnoses, or differential reasoning not supported by the source context or checklist findings.
 </assessment_and_plan_rules>
 
@@ -3042,23 +3041,40 @@ Use exactly these top-level section headers:
 TWO MINUTE ROUNDS PRESENTATION
 DETAILED INTERVAL SOAP NOTE
 
-Under TWO MINUTE ROUNDS PRESENTATION, use exactly these subsections:
-ONE-LINER AND TRAJECTORY
-SUBJECTIVE AND INTERVAL EVENTS
-OBJECTIVE AND FOCUSED EXAM
-ASSESSMENT AND PLAN
-KEY INTERVAL CHANGES
-
-Keep TWO MINUTE ROUNDS PRESENTATION short enough to say in about 2 minutes. Write the first four presentation subsections as concise prose, not bullets. KEY INTERVAL CHANGES must contain 3 to 4 concise bullets and is the only presentation subsection where bullets are allowed.
-
-Under DETAILED INTERVAL SOAP NOTE, use exactly these subsections:
+Under both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE, use exactly these SOAP section headers:
 SUBJECTIVE
 OBJECTIVE
 ASSESSMENT
 PLAN
 
-The SOAP note should be more detailed than the presentation and ready to paste into a note. It may use concise bullets under OBJECTIVE and PLAN if that improves readability. Do not simply copy checklist labels; synthesize them into clinical language.
-Do not use markdown tables, bold, italics, numbering, emojis, or special formatting.
+Within SUBJECTIVE, use exactly these labels in this order:
+One-liner: Include chief complaint, reason for admission, relevant PMH, and reason for consult.
+HPI: Summarize the history of present illness with focus on the endocrine problem.
+PMH: Include relevant past medical history.
+Medications: Include the current medication list, with attention to relevant endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable.
+Allergies: Include documented allergies or state not specified in source.
+Pertinent Family/Social History: Include when relevant, such as family history of MEN syndromes, thyroid cancer, diabetes, or social history including alcohol or substance use.
+Management to date: Summarize what the primary team and/or consult service has done so far.
+
+Within OBJECTIVE, use exactly these labels in this order:
+Vitals: Include current vitals and clinically important trends when supported.
+Glycemic data: Include glucose trends, insulin drip or sliding scale usage, and time in range when applicable.
+Physical exam: Focus on pertinent endocrine findings such as thyroid exam, skin changes, visual fields, volume status, edema, wounds, injection sites, or adrenal/diabetes-related findings when relevant.
+Labs: Include relevant hormone levels, metabolic panels, HbA1c, ketones, osmolality, calcium/phosphorus, thyroid studies, adrenal labs, renal function, and other endocrine-relevant labs when supported.
+Imaging/Other results: Include ultrasound, nuclear medicine studies, CT/MRI, pathology, prior outside records, cultures, telemetry, or other relevant results when supported.
+
+Within ASSESSMENT, use exactly these labels in this order:
+Summary statement: Give a concise synthesis of who the patient is and the central endocrine problem or problems.
+Problem-based assessment: For each endocrine problem, list the most likely diagnosis with supporting justification and relevant differentials with reasoning for or against each.
+
+Within PLAN, use exactly these labels in this order:
+Problem list with management: Give the specific plan for each identified problem.
+Pending studies: Include labs, imaging, or other tests that have been ordered and are awaited.
+Contingency guidance: Include "if X, then Y" guidance for the primary team when supported, such as insulin, steroid, electrolyte, blood pressure, thyroid, calcium, or adrenal contingencies.
+Follow-up/Disposition: State whether the consult service will continue to follow, when to re-consult, and outpatient follow-up recommendations when supported.
+
+Keep TWO MINUTE ROUNDS PRESENTATION short enough to say in about 2 minutes while preserving the SOAP structure. The DETAILED INTERVAL SOAP NOTE should be more detailed and ready to paste into a note. Do not simply copy checklist labels; synthesize them into clinical language.
+Do not use markdown tables, bold, italics, emojis, or extra formatting beyond the specified section headers and labels.
 </output_format>
 
 <final_self_check>
@@ -3068,12 +3084,15 @@ Before finalizing, silently verify:
 3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE.
 4. Objective facts are separated from assessment.
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
-6. ASSESSMENT AND PLAN and ASSESSMENT start with a primary-diagnosis recap and supported differential reasoning.
-7. PLAN is organized by problem with what to do and why, without unsupported recommendations.
-8. If service or role context was provided, SUBJECTIVE AND INTERVAL EVENTS and SUBJECTIVE end with a supported summary of what our service has done or is following.
-9. If this is a consult workflow, ONE-LINER AND TRAJECTORY includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-10. No PHI or identifiers appear.
-11. No extra commentary appears outside the required sections.
+6. Both outputs use only SUBJECTIVE, OBJECTIVE, ASSESSMENT, and PLAN section headers under their top-level title.
+7. SUBJECTIVE contains one-liner, HPI, PMH, medications, allergies, pertinent family/social history, and management to date.
+8. OBJECTIVE contains vitals, glycemic data, physical exam, labs, and imaging/other results.
+9. ASSESSMENT contains summary statement and problem-based assessment with primary diagnosis support and differential reasoning.
+10. PLAN contains problem list with management, pending studies, contingency guidance, and follow-up/disposition.
+11. If service or role context was provided, SUBJECTIVE under Management to date includes a supported summary of what our service has done or is following.
+12. If this is a consult workflow, SUBJECTIVE under One-liner includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
+13. No PHI or identifiers appear.
+14. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -3112,15 +3131,14 @@ Do not show this reasoning. Show only the final report.
 </internal_process>
 
 <service_specific_rounds_rule>
-If user_context includes a selected Service or Role, the DRAFT TWO MINUTE PRESENTATION must include a concise service-specific contribution summary in the subjective or interval-events portion of the presentation.
-Place it after the patient-reported symptoms, interval events, or current subjective update, before objective data.
+If user_context includes a selected Service or Role, the DRAFT TWO MINUTE PRESENTATION must include a concise service-specific contribution summary in SUBJECTIVE under "Management to date."
 This should summarize what our service has done for the patient so far, such as the consult question addressed, recommendations made, medication changes advised, diagnostic workup followed, procedures coordinated, patient counseling performed, or pending follow-up.
 If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
 Do not include service-specific actions unless they are supported by the source context.
 </service_specific_rounds_rule>
 
 <consult_rounds_rule>
-If user_context indicates a consult service, consult role, or consult-focused workflow, ONE-LINER and the opening sentence of DRAFT TWO MINUTE PRESENTATION must state, when supported by the source:
+If user_context indicates a consult service, consult role, or consult-focused workflow, ONE-LINER and SUBJECTIVE under "One-liner" in DRAFT TWO MINUTE PRESENTATION must state, when supported by the source:
 1. How the patient was admitted or presented.
 2. The chief complaint or reason for presentation.
 3. Exactly what our service is consulted for or what consult question we are answering.
@@ -3128,10 +3146,10 @@ If any of these details are not present in the source, say that the admission co
 </consult_rounds_rule>
 
 <assessment_and_plan_rules>
-ACTIVE PROBLEMS AND TRAJECTORY and the assessment portion of DRAFT TWO MINUTE PRESENTATION must begin with a recap statement naming the primary working diagnosis or leading clinical problem and the key evidence supporting it.
-Include the most relevant alternative diagnoses or explanations and briefly explain why they are less likely than the primary working diagnosis when the source supports that comparison.
+ACTIVE PROBLEMS AND TRAJECTORY and ASSESSMENT in DRAFT TWO MINUTE PRESENTATION must begin with a summary statement of the patient and the central endocrine problem or problems.
+Then use problem-based assessment for each endocrine problem, including the most likely diagnosis with supporting justification and relevant differentials with reasoning for or against each.
 Preserve uncertainty when the diagnosis, localization, or mechanism is not settled.
-In DRAFT TWO MINUTE PRESENTATION, list or clearly name the major problems and explain what the team or service plans to do for each problem and why, using only supported source information.
+In PLAN in DRAFT TWO MINUTE PRESENTATION, include problem list with management, pending studies, contingency guidance, and follow-up/disposition when supported by the source.
 If the source does not document a plan for a problem, state what needs clarification or follow-up rather than inventing recommendations.
 </assessment_and_plan_rules>
 
@@ -3150,8 +3168,38 @@ DRAFT TWO MINUTE PRESENTATION
 
 Keep the report concise but complete enough for a new third-year student to use.
 Use bullets where they improve scanability.
-In DRAFT TWO MINUTE PRESENTATION, write natural spoken prose the student can adapt.
-Do not use markdown tables, bold, italics, numbering, emojis, or special formatting.
+In DRAFT TWO MINUTE PRESENTATION, write natural spoken prose the student can adapt using exactly these SOAP section headers:
+SUBJECTIVE
+OBJECTIVE
+ASSESSMENT
+PLAN
+
+Within SUBJECTIVE, use exactly these labels in this order:
+One-liner: Include chief complaint, reason for admission, relevant PMH, and reason for consult.
+HPI: Summarize the history of present illness with focus on the endocrine problem.
+PMH: Include relevant past medical history.
+Medications: Include the current medication list, with attention to relevant endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable.
+Allergies: Include documented allergies or state not specified in source.
+Pertinent Family/Social History: Include when relevant, such as family history of MEN syndromes, thyroid cancer, diabetes, or social history including alcohol or substance use.
+Management to date: Summarize what the primary team and/or consult service has done so far.
+
+Within OBJECTIVE, use exactly these labels in this order:
+Vitals
+Glycemic data
+Physical exam
+Labs
+Imaging/Other results
+
+Within ASSESSMENT, use exactly these labels in this order:
+Summary statement
+Problem-based assessment
+
+Within PLAN, use exactly these labels in this order:
+Problem list with management
+Pending studies
+Contingency guidance
+Follow-up/Disposition
+Do not use markdown tables, bold, italics, emojis, or extra formatting beyond the specified section headers and labels.
 </output_format>
 
 <final_self_check>
@@ -3159,12 +3207,14 @@ Before finalizing, silently verify:
 1. Every patient-specific claim is supported by the source context.
 2. Missing bedside information is framed as something to verify, not as a fact.
 3. The report is specific to this patient and today's rounds.
-4. The assessment content starts with a supported primary-diagnosis recap and differential reasoning.
-5. The plan content is organized by problem with actions and rationale when supported by the source.
-6. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
-7. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
-8. No PHI or identifiers appear.
-9. The output includes all required section headers and no extra commentary.
+4. DRAFT TWO MINUTE PRESENTATION uses SUBJECTIVE, OBJECTIVE, ASSESSMENT, and PLAN.
+5. DRAFT TWO MINUTE PRESENTATION includes the required subjective, objective, assessment, and plan labels from the endocrine consult outline.
+6. The assessment content includes a summary statement and problem-based endocrine assessment with diagnosis support and differential reasoning.
+7. The plan content includes problem list with management, pending studies, contingency guidance, and follow-up/disposition when supported by the source.
+8. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
+9. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
+10. No PHI or identifiers appear.
+11. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3239,11 +3289,15 @@ WHAT TO DO BEFORE ROUNDS
 Give a practical prerounding checklist for this patient: what to ask, what to examine, what labs or studies to check, what tasks to follow up, and what changes would be urgent.
 
 HOW TO PRESENT THIS PATIENT
-Give a short presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
-If user_context includes a selected Service or Role, the presentation template must include a concise service-specific contribution summary at the end of the subjective or interval-events portion. It should summarize what our service has done for the patient so far using only supported source information. If completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.
-If user_context indicates a consult service, consult role, or consult-focused workflow, the opening one-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when supported by the source. If any of those details are missing, say they are not specified rather than inventing them.
-The presentation template must include an assessment recap that names the primary working diagnosis or leading clinical problem, explains the key supporting evidence, and briefly contrasts the most relevant alternative diagnoses or explanations when the source supports that comparison.
-The plan portion must be organized by problem and should state what will be done for each problem and why. Do not invent plans or recommendations that are not supported by the source.
+Give a short SOAP presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
+The presentation template must use exactly these sections: SUBJECTIVE, OBJECTIVE, ASSESSMENT, PLAN.
+SUBJECTIVE must include, in order: One-liner with chief complaint, reason for admission, relevant PMH, and reason for consult; HPI with focus on the endocrine problem; PMH; Medications with attention to relevant endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications; Allergies; Pertinent Family/Social History when relevant; Management to date.
+OBJECTIVE must include, in order: Vitals; Glycemic data; Physical exam focused on pertinent endocrine findings; Labs; Imaging/Other results.
+ASSESSMENT must include, in order: Summary statement; Problem-based assessment. For each endocrine problem, include the most likely diagnosis with supporting justification and relevant differentials with reasoning for or against each.
+PLAN must include, in order: Problem list with management; Pending studies; Contingency guidance; Follow-up/Disposition.
+If user_context includes a selected Service or Role, SUBJECTIVE under Management to date must include a concise service-specific contribution summary using only supported source information. If completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.
+If user_context indicates a consult service, consult role, or consult-focused workflow, SUBJECTIVE under One-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when supported by the source. If any of those details are missing, say they are not specified rather than inventing them.
+Do not invent plans or recommendations that are not supported by the source.
 
 QUESTIONS TO ASK THE TEAM
 Give thoughtful questions the student can ask the intern, resident, attending, consultants, nurse, pharmacist, or case manager.
@@ -3264,11 +3318,12 @@ Before finalizing, silently verify:
 2. Every patient-specific claim is supported by the note.
 3. Uncertainty is preserved when the note is incomplete.
 4. The explanation is appropriate for an early third-year medical student.
-5. HOW TO PRESENT THIS PATIENT includes a supported assessment recap, differential reasoning, and problem-based plan with rationale.
-6. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
-7. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-8. No PHI or identifiers appear.
-9. The output helps the student understand, preround, present, and care thoughtfully.
+5. HOW TO PRESENT THIS PATIENT uses SUBJECTIVE, OBJECTIVE, ASSESSMENT, and PLAN with the required endocrine consult outline labels.
+6. HOW TO PRESENT THIS PATIENT includes a supported assessment summary, problem-based endocrine assessment, diagnosis justification, differential reasoning, and plan with contingency and follow-up guidance.
+7. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
+8. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
+9. No PHI or identifiers appear.
+10. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -3879,14 +3934,14 @@ Sensory level present: No / Yes, at ___`;
       const service = profileFieldValue(profile, userProfileFields.find((field) => field.key === "service"));
       const teamRole = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
       if (userProfileSuggestsConsult(profile)) {
-        tailoring.push("This is a consult-oriented workflow. In rounds presentations and reports, the opening one-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when those details are supported by the source. If a detail is not documented, say it is not specified rather than inventing it. Prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
+        tailoring.push("This is a consult-oriented workflow. In rounds presentations and reports, SUBJECTIVE under One-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, relevant PMH, and exactly what our service is consulted for when those details are supported by the source. If a detail is not documented, say it is not specified rather than inventing it. Prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
       }
       if (userProfileSuggestsPrimaryTeam(profile)) {
         tailoring.push("If this is a primary-team role, prioritize clinical trajectory, active problems, overnight events, discharge readiness, and task follow-up.");
       }
       if (service || teamRole) {
         const serviceContext = [service, teamRole].filter(Boolean).join(" / ");
-        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. At the end of the subjective or interval-events section, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. In the assessment, begin with the primary working diagnosis or leading clinical problem and the reasoning supporting it, then briefly contrast the most relevant less-likely differentials when supported. In the plan, organize by problem and explain what will be done and why.`);
+        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. Use the endocrine consult SOAP structure requested by the user: SUBJECTIVE with one-liner, HPI focused on the endocrine problem, PMH, medications, allergies, pertinent family/social history, and management to date; OBJECTIVE with vitals, glycemic data, physical exam, labs, and imaging/other results; ASSESSMENT with summary statement and problem-based assessment including diagnosis justification and differential reasoning; PLAN with problem list and management, pending studies, contingency guidance, and follow-up/disposition. In SUBJECTIVE under Management to date, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.`);
       }
       const learnerLevel = profileFieldValue(profile, userProfileFields.find((field) => field.key === "learnerLevel"));
       const clinicalFocus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
