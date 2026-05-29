@@ -3001,9 +3001,10 @@ Before writing the final answer, silently:
 3. Extract the clinically important objective and focused exam findings.
 4. Identify the highest-impact interval changes and red flags.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context or checklist findings.
-6. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
-7. Determine how the findings affect today's assessment, monitoring needs, and plan.
-8. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
+6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+7. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
+8. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
+9. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
@@ -3015,6 +3016,24 @@ If no completed service-specific actions are supported by the source, state what
 Also include the same service-specific contribution summary at the end of SUBJECTIVE in the DETAILED INTERVAL SOAP NOTE when service or role context is provided.
 Do not include service-specific actions unless they are supported by the source context, admission context, or new checklist findings.
 </service_specific_rounds_rule>
+
+<consult_rounds_rule>
+If user_context indicates a consult service, consult role, or consult-focused workflow, the opening ONE-LINER AND TRAJECTORY must state, when supported by the source:
+1. How the patient was admitted or presented.
+2. The chief complaint or reason for presentation.
+3. Exactly what our service is consulted for or what consult question we are answering.
+If any of these details are not present in the source context or checklist findings, say that the admission context, chief complaint, or consult question is not specified rather than inventing it.
+Keep the one-liner natural and concise, but make the consult reason explicit enough that the primary team would understand why our service is involved.
+</consult_rounds_rule>
+
+<assessment_and_plan_rules>
+ASSESSMENT AND PLAN in the TWO MINUTE ROUNDS PRESENTATION and ASSESSMENT in the DETAILED INTERVAL SOAP NOTE must begin with a recap statement that names the primary working diagnosis or leading clinical problem and explains the key evidence supporting it.
+After the recap statement, include the most relevant alternative diagnoses or explanations and briefly explain why they are less likely than the primary working diagnosis when the source supports that comparison.
+Preserve uncertainty when the diagnosis, localization, or mechanism is not settled.
+PLAN in the DETAILED INTERVAL SOAP NOTE must be organized by problem. For each problem, state what will be done, why it matters, and what needs monitoring, follow-up, or escalation when supported by the source.
+In the concise presentation, the plan may be prose, but it must still connect each major action to the clinical reason for doing it.
+Do not invent plans, consultant recommendations, diagnoses, or differential reasoning not supported by the source context or checklist findings.
+</assessment_and_plan_rules>
 
 <output_format>
 Use plain text only.
@@ -3049,9 +3068,12 @@ Before finalizing, silently verify:
 3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE.
 4. Objective facts are separated from assessment.
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
-6. If service or role context was provided, SUBJECTIVE AND INTERVAL EVENTS and SUBJECTIVE end with a supported summary of what our service has done or is following.
-7. No PHI or identifiers appear.
-8. No extra commentary appears outside the required sections.
+6. ASSESSMENT AND PLAN and ASSESSMENT start with a primary-diagnosis recap and supported differential reasoning.
+7. PLAN is organized by problem with what to do and why, without unsupported recommendations.
+8. If service or role context was provided, SUBJECTIVE AND INTERVAL EVENTS and SUBJECTIVE end with a supported summary of what our service has done or is following.
+9. If this is a consult workflow, ONE-LINER AND TRAJECTORY includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
+10. No PHI or identifiers appear.
+11. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -3083,7 +3105,8 @@ Before writing the final answer, silently:
 3. Identify red flags, complications, discharge barriers, and management decisions that could change today.
 4. Decide what the student should verify at bedside and what focused exam would be highest yield.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context.
-6. Draft a concise spoken rounds update using only supported information.
+6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+7. Draft a concise spoken rounds update using only supported information.
 
 Do not show this reasoning. Show only the final report.
 </internal_process>
@@ -3095,6 +3118,22 @@ This should summarize what our service has done for the patient so far, such as 
 If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
 Do not include service-specific actions unless they are supported by the source context.
 </service_specific_rounds_rule>
+
+<consult_rounds_rule>
+If user_context indicates a consult service, consult role, or consult-focused workflow, ONE-LINER and the opening sentence of DRAFT TWO MINUTE PRESENTATION must state, when supported by the source:
+1. How the patient was admitted or presented.
+2. The chief complaint or reason for presentation.
+3. Exactly what our service is consulted for or what consult question we are answering.
+If any of these details are not present in the source, say that the admission context, chief complaint, or consult question is not specified rather than inventing it.
+</consult_rounds_rule>
+
+<assessment_and_plan_rules>
+ACTIVE PROBLEMS AND TRAJECTORY and the assessment portion of DRAFT TWO MINUTE PRESENTATION must begin with a recap statement naming the primary working diagnosis or leading clinical problem and the key evidence supporting it.
+Include the most relevant alternative diagnoses or explanations and briefly explain why they are less likely than the primary working diagnosis when the source supports that comparison.
+Preserve uncertainty when the diagnosis, localization, or mechanism is not settled.
+In DRAFT TWO MINUTE PRESENTATION, list or clearly name the major problems and explain what the team or service plans to do for each problem and why, using only supported source information.
+If the source does not document a plan for a problem, state what needs clarification or follow-up rather than inventing recommendations.
+</assessment_and_plan_rules>
 
 <output_format>
 Use plain text only.
@@ -3120,9 +3159,12 @@ Before finalizing, silently verify:
 1. Every patient-specific claim is supported by the source context.
 2. Missing bedside information is framed as something to verify, not as a fact.
 3. The report is specific to this patient and today's rounds.
-4. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
-5. No PHI or identifiers appear.
-6. The output includes all required section headers and no extra commentary.
+4. The assessment content starts with a supported primary-diagnosis recap and differential reasoning.
+5. The plan content is organized by problem with actions and rationale when supported by the source.
+6. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
+7. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
+8. No PHI or identifiers appear.
+9. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3199,6 +3241,9 @@ Give a practical prerounding checklist for this patient: what to ask, what to ex
 HOW TO PRESENT THIS PATIENT
 Give a short presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
 If user_context includes a selected Service or Role, the presentation template must include a concise service-specific contribution summary at the end of the subjective or interval-events portion. It should summarize what our service has done for the patient so far using only supported source information. If completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.
+If user_context indicates a consult service, consult role, or consult-focused workflow, the opening one-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when supported by the source. If any of those details are missing, say they are not specified rather than inventing them.
+The presentation template must include an assessment recap that names the primary working diagnosis or leading clinical problem, explains the key supporting evidence, and briefly contrasts the most relevant alternative diagnoses or explanations when the source supports that comparison.
+The plan portion must be organized by problem and should state what will be done for each problem and why. Do not invent plans or recommendations that are not supported by the source.
 
 QUESTIONS TO ASK THE TEAM
 Give thoughtful questions the student can ask the intern, resident, attending, consultants, nurse, pharmacist, or case manager.
@@ -3219,9 +3264,11 @@ Before finalizing, silently verify:
 2. Every patient-specific claim is supported by the note.
 3. Uncertainty is preserved when the note is incomplete.
 4. The explanation is appropriate for an early third-year medical student.
-5. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
-6. No PHI or identifiers appear.
-7. The output helps the student understand, preround, present, and care thoughtfully.
+5. HOW TO PRESENT THIS PATIENT includes a supported assessment recap, differential reasoning, and problem-based plan with rationale.
+6. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
+7. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
+8. No PHI or identifiers appear.
+9. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -3832,14 +3879,14 @@ Sensory level present: No / Yes, at ___`;
       const service = profileFieldValue(profile, userProfileFields.find((field) => field.key === "service"));
       const teamRole = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
       if (userProfileSuggestsConsult(profile)) {
-        tailoring.push("If this is a consult role, prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
+        tailoring.push("This is a consult-oriented workflow. In rounds presentations and reports, the opening one-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when those details are supported by the source. If a detail is not documented, say it is not specified rather than inventing it. Prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
       }
       if (userProfileSuggestsPrimaryTeam(profile)) {
         tailoring.push("If this is a primary-team role, prioritize clinical trajectory, active problems, overnight events, discharge readiness, and task follow-up.");
       }
       if (service || teamRole) {
         const serviceContext = [service, teamRole].filter(Boolean).join(" / ");
-        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. At the end of the subjective or interval-events section, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.`);
+        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. At the end of the subjective or interval-events section, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. In the assessment, begin with the primary working diagnosis or leading clinical problem and the reasoning supporting it, then briefly contrast the most relevant less-likely differentials when supported. In the plan, organize by problem and explain what will be done and why.`);
       }
       const learnerLevel = profileFieldValue(profile, userProfileFields.find((field) => field.key === "learnerLevel"));
       const clinicalFocus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
