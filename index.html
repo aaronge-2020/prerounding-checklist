@@ -3044,11 +3044,20 @@ Put each fact in the section where it belongs:
 Do not restate the full HPI in the assessment.
 Do not restate objective values in the plan unless the value directly drives an action.
 Do not copy the same medication, lab trend, imaging result, or management step into multiple subsections.
-For medication lists, include clinically relevant current medications and endocrine-relevant therapies; omit noncontributory PRNs or routine medications unless they affect the active problem.
+For medication lists, include clinically relevant current medications and endocrine-relevant therapies; organize medications by indication or PMH problem so it is clear why the patient is taking each medication; omit noncontributory PRNs or routine medications unless they affect the active problem.
 For labs and imaging, include only values and results that affect assessment, plan, or safety.
 TWO MINUTE ROUNDS PRESENTATION must be especially compact: usually 1 short sentence per label, with no repeated content.
 DETAILED INTERVAL SOAP NOTE may be fuller, but should still avoid duplicate sentences, duplicate lists, and boilerplate.
 </concision_and_no_repetition_rules>
+
+<medication_organization_rules>
+Medication information must be organized by why the patient is taking the medication, not alphabetically and not as an unstructured list.
+In PMH, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
+In Medications, group clinically relevant meds by indication or problem, matching the PMH/problem language when possible, for example "Diabetes:", "Adrenal insufficiency:", "Hypothyroidism:", "Hypertension:", "Osteoporosis:", or "Anticoagulation:".
+For each medication group, include the medication names and clinically important regimen details when supported, especially insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, diabetes medications, antihypertensives, anticoagulants, or medications that affect endocrine interpretation.
+If the indication for a medication is not supported by the source, place it under "Indication not specified" rather than guessing.
+Do not repeat the full medication list in both PMH and Medications. PMH should orient the problems; Medications should organize the current therapies by indication.
+</medication_organization_rules>
 
 <output_format>
 Use plain text only.
@@ -3066,8 +3075,8 @@ PLAN
 Within SUBJECTIVE, use exactly these labels in this order:
 One-liner: Include chief complaint, reason for admission, relevant PMH, and reason for consult.
 HPI: Summarize the history of present illness with focus on the endocrine problem.
-PMH: Include relevant past medical history.
-Medications: Include clinically relevant current medications, with attention to endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable. Omit noncontributory PRNs or routine medications unless they affect the active problem.
+PMH: Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
+Medications: Organize clinically relevant current medications by indication or PMH problem, with attention to endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable. Omit noncontributory PRNs or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
 Allergies: Include documented allergies or state not specified in source.
 Pertinent Family/Social History: Include when relevant, such as family history of MEN syndromes, thyroid cancer, diabetes, or social history including alcohol or substance use.
 Management to date: Summarize what the primary team and/or consult service has done so far.
@@ -3107,10 +3116,11 @@ Before finalizing, silently verify:
 10. PLAN contains problem list with management, pending studies, contingency guidance, and follow-up/disposition.
 11. If service or role context was provided, SUBJECTIVE under Management to date includes a supported summary of what our service has done or is following.
 12. If this is a consult workflow, SUBJECTIVE under One-liner includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-13. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
-14. The output is concise, with no boilerplate and no copied checklist labels.
-15. No PHI or identifiers appear.
-16. No extra commentary appears outside the required sections.
+13. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
+14. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
+15. The output is concise, with no boilerplate and no copied checklist labels.
+16. No PHI or identifiers appear.
+17. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -3177,10 +3187,18 @@ Put each fact in the section where it belongs: subjective story in SUBJECTIVE, m
 Do not restate the full HPI in the assessment.
 Do not restate objective values in the plan unless the value directly drives an action.
 Do not copy the same medication, lab trend, imaging result, or management step into multiple subsections.
-For medication lists, include clinically relevant current medications and endocrine-relevant therapies; omit noncontributory PRNs or routine medications unless they affect the active problem.
+For medication lists, include clinically relevant current medications and endocrine-relevant therapies; organize medications by indication or PMH problem so it is clear why the patient is taking each medication; omit noncontributory PRNs or routine medications unless they affect the active problem.
 For labs and imaging, include only values and results that affect assessment, plan, or safety.
 DRAFT TWO MINUTE PRESENTATION must be compact enough to speak on rounds without dragging; usually 1 short sentence per label is enough.
 </concision_and_no_repetition_rules>
+
+<medication_organization_rules>
+Medication information must be organized by why the patient is taking the medication, not alphabetically and not as an unstructured list.
+In PMH, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
+In Medications, group clinically relevant meds by indication or problem, matching the PMH/problem language when possible.
+If the indication for a medication is not supported by the source, place it under "Indication not specified" rather than guessing.
+Do not repeat the full medication list in both PMH and Medications.
+</medication_organization_rules>
 
 <output_format>
 Use plain text only.
@@ -3206,8 +3224,8 @@ PLAN
 Within SUBJECTIVE, use exactly these labels in this order:
 One-liner: Include chief complaint, reason for admission, relevant PMH, and reason for consult.
 HPI: Summarize the history of present illness with focus on the endocrine problem.
-PMH: Include relevant past medical history.
-Medications: Include clinically relevant current medications, with attention to endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable. Omit noncontributory PRNs or routine medications unless they affect the active problem.
+PMH: Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
+Medications: Organize clinically relevant current medications by indication or PMH problem, with attention to endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications when applicable. Omit noncontributory PRNs or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
 Allergies: Include documented allergies or state not specified in source.
 Pertinent Family/Social History: Include when relevant, such as family history of MEN syndromes, thyroid cancer, diabetes, or social history including alcohol or substance use.
 Management to date: Summarize what the primary team and/or consult service has done so far.
@@ -3242,10 +3260,11 @@ Before finalizing, silently verify:
 7. The plan content includes problem list with management, pending studies, contingency guidance, and follow-up/disposition when supported by the source.
 8. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
 9. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
-10. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
-11. The output is concise, with no boilerplate and no copied source-note blocks.
-12. No PHI or identifiers appear.
-13. The output includes all required section headers and no extra commentary.
+10. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
+11. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
+12. The output is concise, with no boilerplate and no copied source-note blocks.
+13. No PHI or identifiers appear.
+14. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3322,7 +3341,8 @@ Give a practical prerounding checklist for this patient: what to ask, what to ex
 HOW TO PRESENT THIS PATIENT
 Give a short SOAP presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
 The presentation template must use exactly these sections: SUBJECTIVE, OBJECTIVE, ASSESSMENT, PLAN.
-SUBJECTIVE must include, in order: One-liner with chief complaint, reason for admission, relevant PMH, and reason for consult; HPI with focus on the endocrine problem; PMH; Medications with attention to clinically relevant endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications; Allergies; Pertinent Family/Social History when relevant; Management to date.
+SUBJECTIVE must include, in order: One-liner with chief complaint, reason for admission, relevant PMH, and reason for consult; HPI with focus on the endocrine problem; PMH organized by active or clinically important problem; Medications organized by indication or PMH problem with attention to clinically relevant endocrine medications such as insulin regimen, steroids, thyroid replacement, osteoporosis medications, adrenal medications, or diabetes medications; Allergies; Pertinent Family/Social History when relevant; Management to date.
+Medication information must make clear why the patient is taking each clinically relevant medication when supported by the source. Do not list medications alphabetically or as an unstructured dump. If the medication indication is not supported by the source, place it under "Indication not specified" rather than guessing.
 OBJECTIVE must include, in order: Vitals; Glycemic data; Physical exam focused on pertinent endocrine findings; Labs; Imaging/Other results.
 ASSESSMENT must include, in order: Summary statement; Problem-based assessment. For each endocrine problem, include the most likely diagnosis with supporting justification and relevant differentials with reasoning for or against each.
 PLAN must include, in order: Problem list with management; Pending studies; Contingency guidance; Follow-up/Disposition.
@@ -3354,9 +3374,10 @@ Before finalizing, silently verify:
 6. HOW TO PRESENT THIS PATIENT includes a supported assessment summary, problem-based endocrine assessment, diagnosis justification, differential reasoning, and plan with contingency and follow-up guidance.
 7. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-9. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
-10. No PHI or identifiers appear.
-11. The output helps the student understand, preround, present, and care thoughtfully.
+9. HOW TO PRESENT THIS PATIENT organizes medications by indication or PMH problem and does not guess unclear indications.
+10. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
+11. No PHI or identifiers appear.
+12. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -3974,7 +3995,7 @@ Sensory level present: No / Yes, at ___`;
       }
       if (service || teamRole) {
         const serviceContext = [service, teamRole].filter(Boolean).join(" / ");
-        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. Use the endocrine consult SOAP structure requested by the user: SUBJECTIVE with one-liner, HPI focused on the endocrine problem, PMH, medications, allergies, pertinent family/social history, and management to date; OBJECTIVE with vitals, glycemic data, physical exam, labs, and imaging/other results; ASSESSMENT with summary statement and problem-based assessment including diagnosis justification and differential reasoning; PLAN with problem list and management, pending studies, contingency guidance, and follow-up/disposition. In SUBJECTIVE under Management to date, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. Keep final notes concise and avoid repeating the same fact, medication, lab, imaging result, or management action across sections.`);
+        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. Use the endocrine consult SOAP structure requested by the user: SUBJECTIVE with one-liner, HPI focused on the endocrine problem, PMH organized by active problem, medications organized by indication or PMH problem, allergies, pertinent family/social history, and management to date; OBJECTIVE with vitals, glycemic data, physical exam, labs, and imaging/other results; ASSESSMENT with summary statement and problem-based assessment including diagnosis justification and differential reasoning; PLAN with problem list and management, pending studies, contingency guidance, and follow-up/disposition. In SUBJECTIVE under Management to date, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. Keep final notes concise and avoid repeating the same fact, medication, lab, imaging result, or management action across sections. If a medication indication is not supported, label it as indication not specified rather than guessing.`);
       }
       const learnerLevel = profileFieldValue(profile, userProfileFields.find((field) => field.key === "learnerLevel"));
       const clinicalFocus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
