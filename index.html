@@ -2893,12 +2893,21 @@ Before writing the final answer, silently:
 2. Extract the clinically important new subjective findings.
 3. Extract the clinically important objective and focused exam findings.
 4. Identify the highest-impact interval changes and red flags.
-5. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
-6. Determine how the findings affect today's assessment, monitoring needs, and plan.
-7. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
+5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context or checklist findings.
+6. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
+7. Determine how the findings affect today's assessment, monitoring needs, and plan.
+8. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
+
+<service_specific_rounds_rule>
+If user_context includes a selected Service or Role, include a concise service-specific contribution summary at the end of SUBJECTIVE AND INTERVAL EVENTS in the TWO MINUTE ROUNDS PRESENTATION.
+This should summarize what our service has done for the patient so far, such as the consult question addressed, recommendations made, medication changes advised, diagnostic workup followed, procedures coordinated, patient counseling performed, or pending follow-up.
+If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
+Also include the same service-specific contribution summary at the end of SUBJECTIVE in the DETAILED INTERVAL SOAP NOTE when service or role context is provided.
+Do not include service-specific actions unless they are supported by the source context, admission context, or new checklist findings.
+</service_specific_rounds_rule>
 
 <output_format>
 Use plain text only.
@@ -2933,8 +2942,9 @@ Before finalizing, silently verify:
 3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE.
 4. Objective facts are separated from assessment.
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
-6. No PHI or identifiers appear.
-7. No extra commentary appears outside the required sections.
+6. If service or role context was provided, SUBJECTIVE AND INTERVAL EVENTS and SUBJECTIVE end with a supported summary of what our service has done or is following.
+7. No PHI or identifiers appear.
+8. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -2965,10 +2975,19 @@ Before writing the final answer, silently:
 2. Identify active problems, clinical trajectory, abnormal vitals/labs, treatments, devices, drips, anticoagulation, immunosuppression, procedures, and pending studies.
 3. Identify red flags, complications, discharge barriers, and management decisions that could change today.
 4. Decide what the student should verify at bedside and what focused exam would be highest yield.
-5. Draft a concise spoken rounds update using only supported information.
+5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context.
+6. Draft a concise spoken rounds update using only supported information.
 
 Do not show this reasoning. Show only the final report.
 </internal_process>
+
+<service_specific_rounds_rule>
+If user_context includes a selected Service or Role, the DRAFT TWO MINUTE PRESENTATION must include a concise service-specific contribution summary in the subjective or interval-events portion of the presentation.
+Place it after the patient-reported symptoms, interval events, or current subjective update, before objective data.
+This should summarize what our service has done for the patient so far, such as the consult question addressed, recommendations made, medication changes advised, diagnostic workup followed, procedures coordinated, patient counseling performed, or pending follow-up.
+If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
+Do not include service-specific actions unless they are supported by the source context.
+</service_specific_rounds_rule>
 
 <output_format>
 Use plain text only.
@@ -2994,8 +3013,9 @@ Before finalizing, silently verify:
 1. Every patient-specific claim is supported by the source context.
 2. Missing bedside information is framed as something to verify, not as a fact.
 3. The report is specific to this patient and today's rounds.
-4. No PHI or identifiers appear.
-5. The output includes all required section headers and no extra commentary.
+4. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
+5. No PHI or identifiers appear.
+6. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -3071,6 +3091,7 @@ Give a practical prerounding checklist for this patient: what to ask, what to ex
 
 HOW TO PRESENT THIS PATIENT
 Give a short presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
+If user_context includes a selected Service or Role, the presentation template must include a concise service-specific contribution summary at the end of the subjective or interval-events portion. It should summarize what our service has done for the patient so far using only supported source information. If completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.
 
 QUESTIONS TO ASK THE TEAM
 Give thoughtful questions the student can ask the intern, resident, attending, consultants, nurse, pharmacist, or case manager.
@@ -3091,8 +3112,9 @@ Before finalizing, silently verify:
 2. Every patient-specific claim is supported by the note.
 3. Uncertainty is preserved when the note is incomplete.
 4. The explanation is appropriate for an early third-year medical student.
-5. No PHI or identifiers appear.
-6. The output helps the student understand, preround, present, and care thoughtfully.
+5. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
+6. No PHI or identifiers appear.
+7. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -3686,11 +3708,17 @@ Sensory level present: No / Yes, at ___`;
       });
 
       const tailoring = [];
+      const service = profileFieldValue(profile, userProfileFields.find((field) => field.key === "service"));
+      const teamRole = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
       if (userProfileSuggestsConsult(profile)) {
         tailoring.push("If this is a consult role, prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
       }
       if (userProfileSuggestsPrimaryTeam(profile)) {
         tailoring.push("If this is a primary-team role, prioritize clinical trajectory, active problems, overnight events, discharge readiness, and task follow-up.");
+      }
+      if (service || teamRole) {
+        const serviceContext = [service, teamRole].filter(Boolean).join(" / ");
+        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. At the end of the subjective or interval-events section, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.`);
       }
       const learnerLevel = profileFieldValue(profile, userProfileFields.find((field) => field.key === "learnerLevel"));
       const clinicalFocus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
