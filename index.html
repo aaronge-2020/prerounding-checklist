@@ -535,6 +535,72 @@
       justify-self: start;
     }
 
+    .transfer-panel,
+    .import-context-card {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(79, 152, 163, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.075);
+    }
+
+    .transfer-panel[hidden],
+    .import-context-card[hidden] {
+      display: none !important;
+    }
+
+    .transfer-code {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      min-height: 44px;
+      align-items: center;
+      border: 1px solid rgba(106, 179, 189, 0.44);
+      border-radius: 999px;
+      padding: 0 14px;
+      color: #effdff;
+      background: rgba(79, 152, 163, 0.16);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      overflow-wrap: anywhere;
+    }
+
+    .transfer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .transfer-status,
+    .context-status {
+      min-height: 22px;
+      margin: 0;
+      color: var(--accent-strong);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .context-status.is-empty {
+      color: var(--muted);
+    }
+
+    .transfer-code-input {
+      min-height: 46px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 13px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.18);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 1rem;
+      font-weight: 850;
+      letter-spacing: 0.03em;
+    }
+
     .workflow-title {
       margin: 0 0 6px;
       color: var(--text);
@@ -2095,6 +2161,7 @@
           </ol>
           <div class="compact-summary-actions">
             <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
+            <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Send context to phone</button>
             <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy rounds report prompt</button>
             <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
@@ -2163,6 +2230,7 @@ Nursing concern: intermittent confusion overnight."></textarea>
           <div class="prompt-actions guided-primary-actions">
             <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify and review</button>
             <button id="scrubAndCopyButton" class="btn btn-primary" type="button" hidden>Copy checklist prompt</button>
+            <button id="exportPriorContextButton" class="btn btn-secondary" type="button" hidden>Send context to phone</button>
             <button id="copySourceRoundsPromptButton" class="btn btn-secondary" type="button" hidden>Copy rounds report prompt</button>
             <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
           </div>
@@ -2228,6 +2296,7 @@ Nursing concern: intermittent confusion overnight."></textarea>
           <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
             <button id="copyAdmissionPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
+            <button id="exportAdmissionContextButton" class="btn btn-secondary" type="button">Send context to phone</button>
             <button id="copyAdmissionRoundsPromptButton" class="btn btn-secondary" type="button">Copy rounds report prompt</button>
             <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
           </div>
@@ -2239,6 +2308,12 @@ Nursing concern: intermittent confusion overnight."></textarea>
           </details>
         </section>
 
+        <div id="transferExportPanel" class="transfer-panel" hidden>
+          <p class="compact-summary-title">Context file ready</p>
+          <p class="compact-summary-copy">AirDrop or save the downloaded file to your phone. Enter this transfer code on the phone to import it.</p>
+          <div id="transferCodeDisplay" class="transfer-code" aria-label="Transfer code"></div>
+          <p id="transferExportStatus" class="transfer-status" role="status" aria-live="polite"></p>
+        </div>
         <p id="promptStatus" class="prompt-status" role="status" aria-live="polite"></p>
       </section>
 
@@ -2247,6 +2322,18 @@ Nursing concern: intermittent confusion overnight."></textarea>
         <div id="checklistFirstSummary" class="checklist-first-summary" hidden>
           <p class="compact-summary-title">Checklist paste mode</p>
           <p class="compact-summary-copy">Use this when you already copied a checklist from OpenEvidence on your phone.</p>
+          <div id="importContextCard" class="import-context-card">
+            <p class="compact-summary-title">Laptop context</p>
+            <p class="compact-summary-copy">Import the encrypted context file from your laptop before generating the final rounds prompt.</p>
+            <label for="transferCodeInput">Transfer code</label>
+            <input id="transferCodeInput" class="transfer-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <div class="transfer-actions">
+              <button id="importContextButton" class="btn btn-secondary" type="button">Import laptop context</button>
+              <button id="clearImportedContextButton" class="btn btn-quiet" type="button" hidden>Clear imported context</button>
+            </div>
+            <input id="contextImportFile" type="file" accept=".json,application/json" hidden>
+            <p id="importContextStatus" class="transfer-status" role="status" aria-live="polite">No patient context imported.</p>
+          </div>
           <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">Create checklist prompt instead</button>
         </div>
         <label for="checklistInput">Checklist from OpenEvidence</label>
@@ -2385,6 +2472,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
           <button id="assessedOnlyButton" type="button" aria-pressed="true">Assessed only</button>
           <button id="fullOutputButton" type="button" aria-pressed="false">Full with not assessed</button>
         </div>
+        <p id="sourceContextStatus" class="context-status is-empty" role="status" aria-live="polite">No patient context imported.</p>
         <label for="outputText">Compiled findings</label>
         <textarea id="outputText" class="output-box" readonly></textarea>
         <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
@@ -2487,6 +2575,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       pendingPhiCopy: null,
       lastPhiSafetyCheck: null,
       userProfile: {},
+      importedContext: null,
+      transferCode: "",
       utilityScrubbedText: "",
       utilityScrubResult: null
     };
@@ -2516,6 +2606,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
       promptCopiedCopy: document.getElementById("promptCopiedCopy"),
       editSourceButton: document.getElementById("editSourceButton"),
+      exportSummaryContextButton: document.getElementById("exportSummaryContextButton"),
       copySummaryRoundsPromptButton: document.getElementById("copySummaryRoundsPromptButton"),
       copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
       profilePanel: document.getElementById("profilePanel"),
@@ -2549,12 +2640,23 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
+      exportPriorContextButton: document.getElementById("exportPriorContextButton"),
       copySourceRoundsPromptButton: document.getElementById("copySourceRoundsPromptButton"),
       copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
+      exportAdmissionContextButton: document.getElementById("exportAdmissionContextButton"),
       copyAdmissionRoundsPromptButton: document.getElementById("copyAdmissionRoundsPromptButton"),
       copyAdmissionTeachingPromptButton: document.getElementById("copyAdmissionTeachingPromptButton"),
+      transferExportPanel: document.getElementById("transferExportPanel"),
+      transferCodeDisplay: document.getElementById("transferCodeDisplay"),
+      transferExportStatus: document.getElementById("transferExportStatus"),
+      importContextCard: document.getElementById("importContextCard"),
+      transferCodeInput: document.getElementById("transferCodeInput"),
+      importContextButton: document.getElementById("importContextButton"),
+      clearImportedContextButton: document.getElementById("clearImportedContextButton"),
+      contextImportFile: document.getElementById("contextImportFile"),
+      importContextStatus: document.getElementById("importContextStatus"),
       deidUtilityPanel: document.getElementById("deidUtilityPanel"),
       utilityRawInput: document.getElementById("utilityRawInput"),
       utilityDeidButton: document.getElementById("utilityDeidButton"),
@@ -2612,6 +2714,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       outputText: document.getElementById("outputText"),
       assessedOnlyButton: document.getElementById("assessedOnlyButton"),
       fullOutputButton: document.getElementById("fullOutputButton"),
+      sourceContextStatus: document.getElementById("sourceContextStatus"),
       copyButton: document.getElementById("copyButton"),
       copyPresentationPromptButton: document.getElementById("copyPresentationPromptButton"),
       editButton: document.getElementById("editButton"),
@@ -2668,7 +2771,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const hostedAppUrl = "https://aaronge-2020.github.io/prerounding-checklist/";
     const openEvidenceUrl = "https://www.openevidence.com/";
     const sessionKey = "preRoundChecklistSessionV2";
+    const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
+    const contextExportType = "prerounds-context-export";
+    const contextSchemaVersion = 1;
+    const contextKdfIterations = 250000;
     const primaryDeidentifierModelId = DEFAULT_PRIMARY_MODEL_ID;
     const fallbackDeidentifierModelId = DEFAULT_FALLBACK_MODEL_ID;
     const deidentifierDtype = DEFAULT_DTYPE;
@@ -3258,6 +3365,7 @@ Sensory level present: No / Yes, at ___`;
 
     function hasEnteredData() {
       return hasChecklistState() ||
+        state.importedContext ||
         elements.checklistInput.value.trim() ||
         elements.rawSoapInput.value.trim() ||
         elements.rawLabsInput.value.trim() ||
@@ -3274,6 +3382,7 @@ Sensory level present: No / Yes, at ___`;
     function hasSourceInput() {
       return Boolean(
         state.promptCollapsed ||
+        state.importedContext ||
         state.scrubbedNote ||
         elements.rawSoapInput.value.trim() ||
         elements.rawLabsInput.value.trim() ||
@@ -3331,7 +3440,15 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function maybeStartPhoneChecklistFirst(restoredSession) {
-      if (restoredSession || hasSourceInput() || hasChecklistState()) {
+      const hasLocalSource = Boolean(
+        state.promptCollapsed ||
+        state.scrubbedNote ||
+        elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
+        admissionFields.some((field) => field.element.value.trim())
+      );
+      if (restoredSession || hasLocalSource || hasChecklistState()) {
         updateChecklistFirstControls();
         return;
       }
@@ -3383,7 +3500,7 @@ Sensory level present: No / Yes, at ___`;
       elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
       elements.checklistReadyStatus.classList.toggle("is-ready", checklistReady);
       elements.findingsReadyStatus.classList.toggle("is-ready", findingsReady);
-      elements.sourceReadyStatus.textContent = state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
+      elements.sourceReadyStatus.textContent = state.importedContext ? "Laptop context ready" : state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
       elements.checklistReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
       elements.findingsReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
 
@@ -3690,14 +3807,18 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function buildUserContextBlock() {
-      const profile = syncUserProfileFromFields({ save: false });
+      const localProfile = syncUserProfileFromFields({ save: false });
+      const importedProfile = normalizeUserProfile(state.importedContext?.userProfile || {});
+      const profile = userProfileHasValues(localProfile) ? localProfile : importedProfile;
       if (!userProfileHasValues(profile)) {
         return "";
       }
 
       const lines = [
         "<user_context>",
-        "Browser-saved prompt preferences; these are not patient-specific."
+        userProfileHasValues(localProfile)
+          ? "Browser-saved prompt preferences; these are not patient-specific."
+          : "Imported laptop prompt preferences; these are not patient-specific."
       ];
 
       userProfileFields.forEach((field) => {
@@ -3759,6 +3880,274 @@ Sensory level present: No / Yes, at ___`;
 
     function clearChecklistSession() {
       safeStorageRemove(sessionKey);
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let index = 0; index < bytes.length; index += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+      }
+      return btoa(binary);
+    }
+
+    function base64ToBytes(value) {
+      const binary = atob(String(value || ""));
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      return bytes;
+    }
+
+    function downloadTextFile(filename, text, type = "application/json;charset=utf-8") {
+      const blob = new Blob([text], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function normalizeTransferCode(value) {
+      return String(value || "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+    }
+
+    function formatTransferCode(value) {
+      const clean = normalizeTransferCode(value);
+      return clean.match(/.{1,4}/g)?.join("-") || "";
+    }
+
+    function generateTransferCode() {
+      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      const code = Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join("");
+      return formatTransferCode(code);
+    }
+
+    async function deriveTransferKey(code, salt, usage) {
+      const keyMaterial = await window.crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(normalizeTransferCode(code)),
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+      );
+      return window.crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt,
+          iterations: contextKdfIterations,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        usage
+      );
+    }
+
+    async function encryptContextPayload(payload, transferCode) {
+      const salt = window.crypto.getRandomValues(new Uint8Array(16));
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveTransferKey(transferCode, salt, ["encrypt"]);
+      const plaintext = new TextEncoder().encode(JSON.stringify(payload));
+      const ciphertext = await window.crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plaintext);
+      return {
+        type: contextExportType,
+        schemaVersion: contextSchemaVersion,
+        createdAt: new Date().toISOString(),
+        kdf: {
+          name: "PBKDF2",
+          hash: "SHA-256",
+          iterations: contextKdfIterations,
+          salt: bytesToBase64(salt)
+        },
+        encryption: {
+          name: "AES-GCM",
+          iv: bytesToBase64(iv)
+        },
+        payload: bytesToBase64(new Uint8Array(ciphertext))
+      };
+    }
+
+    async function decryptContextExport(exportFile, transferCode) {
+      if (!exportFile || exportFile.type !== contextExportType || exportFile.schemaVersion !== contextSchemaVersion) {
+        throw new Error("This is not a compatible Pre-Rounds context file.");
+      }
+      if (!transferCode || normalizeTransferCode(transferCode).length < 12) {
+        throw new Error("Enter the transfer code from the laptop.");
+      }
+      const salt = base64ToBytes(exportFile.kdf?.salt);
+      const iv = base64ToBytes(exportFile.encryption?.iv);
+      const ciphertext = base64ToBytes(exportFile.payload);
+      const key = await deriveTransferKey(transferCode, salt, ["decrypt"]);
+      const plaintext = await window.crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
+      return JSON.parse(new TextDecoder().decode(plaintext));
+    }
+
+    function normalizeImportedContext(context) {
+      if (!context || context.schemaVersion !== contextSchemaVersion || !context.text || !context.label) {
+        throw new Error("The context file is missing required patient context.");
+      }
+      return {
+        schemaVersion: contextSchemaVersion,
+        importedAt: new Date().toISOString(),
+        createdAt: context.createdAt || "",
+        sourceMode: context.sourceMode === "admission" ? "admission" : "prior",
+        contextType: sanitizeProfileValue(context.contextType || ""),
+        label: sanitizeProfileValue(context.label || "De-identified source note"),
+        text: String(context.text || "").trim(),
+        userProfile: normalizeUserProfile(context.userProfile || {}),
+        redactionSummary: context.redactionSummary || null
+      };
+    }
+
+    function saveImportedContext() {
+      if (!state.importedContext) {
+        safeStorageRemove(importedContextKey);
+        return;
+      }
+      safeStorageSet(importedContextKey, JSON.stringify(state.importedContext));
+    }
+
+    function restoreImportedContext() {
+      const saved = safeStorageGet(importedContextKey);
+      if (!saved) {
+        updateContextStatus();
+        return false;
+      }
+      try {
+        state.importedContext = normalizeImportedContext(JSON.parse(saved));
+        updateContextStatus();
+        return true;
+      } catch (error) {
+        state.importedContext = null;
+        safeStorageRemove(importedContextKey);
+        updateContextStatus();
+        return false;
+      }
+    }
+
+    function clearImportedContext() {
+      state.importedContext = null;
+      safeStorageRemove(importedContextKey);
+      updateContextStatus();
+    }
+
+    function importedContextSummary() {
+      if (!state.importedContext) {
+        return "";
+      }
+      const mode = state.importedContext.sourceMode === "admission" ? "admission context" : "de-identified source context";
+      return `Imported laptop ${mode}.`;
+    }
+
+    function updateContextStatus() {
+      const admissionContext = formatAdmissionContext();
+      let message = "No patient context imported.";
+      let hasContext = false;
+
+      if (state.scrubbedNote) {
+        message = "Rounds prompt will include this browser's de-identified source context.";
+        hasContext = true;
+      } else if (admissionContext) {
+        message = "Rounds prompt will include this browser's admission context.";
+        hasContext = true;
+      } else if (state.importedContext) {
+        message = "Rounds prompt will include imported laptop context.";
+        hasContext = true;
+      }
+
+      elements.sourceContextStatus.textContent = message;
+      elements.sourceContextStatus.classList.toggle("is-empty", !hasContext);
+      elements.importContextStatus.textContent = state.importedContext
+        ? importedContextSummary()
+        : "No patient context imported.";
+      elements.clearImportedContextButton.hidden = !state.importedContext;
+    }
+
+    function buildTransferPayload(sourceContext) {
+      const profile = syncUserProfileFromFields({ save: false });
+      const redactionSummary = state.sourceMode === "prior" && state.scrubResult
+        ? {
+            redactionTotal: state.scrubResult.redactionTotal || 0,
+            counts: state.scrubResult.counts || {},
+            residualWarningCount: state.scrubResult.residualWarnings?.length || 0
+          }
+        : null;
+
+      return {
+        schemaVersion: contextSchemaVersion,
+        createdAt: new Date().toISOString(),
+        sourceMode: state.sourceMode === "admission" ? "admission" : "prior",
+        contextType: sourceContext.contextType,
+        label: sourceContext.label,
+        text: sourceContext.text,
+        userProfile: normalizeUserProfile(profile),
+        redactionSummary
+      };
+    }
+
+    async function exportContextToPhone(statusElement = elements.promptStatus) {
+      if (!window.crypto?.subtle) {
+        statusElement.textContent = "Encrypted export is not available in this browser.";
+        return false;
+      }
+      const sourceContext = await getCurrentSourcePromptContext();
+      if (!sourceContext) {
+        return false;
+      }
+      const transferCode = generateTransferCode();
+      const exportPayload = buildTransferPayload(sourceContext);
+      const encryptedFile = await encryptContextPayload(exportPayload, transferCode);
+      const fileText = JSON.stringify(encryptedFile, null, 2);
+      downloadTextFile("pre-rounds-context.prerounds-context.json", fileText);
+      state.transferCode = transferCode;
+      elements.transferExportPanel.hidden = false;
+      elements.transferCodeDisplay.textContent = transferCode;
+      elements.transferExportStatus.textContent = "Encrypted context file downloaded. AirDrop or save it to your phone, then enter this code during import.";
+      statusElement.textContent = "Encrypted context file ready for phone transfer.";
+      showToast("Context file downloaded. Keep the transfer code visible.");
+      return true;
+    }
+
+    async function importContextFromFile(file) {
+      if (!window.crypto?.subtle) {
+        elements.importContextStatus.textContent = "Encrypted import is not available in this browser.";
+        return false;
+      }
+      const code = elements.transferCodeInput.value.trim();
+      if (!code) {
+        elements.importContextStatus.textContent = "Enter the transfer code from the laptop first.";
+        elements.transferCodeInput.focus();
+        return false;
+      }
+      let exportFile;
+      try {
+        exportFile = JSON.parse(await file.text());
+      } catch (error) {
+        elements.importContextStatus.textContent = "That file is not a readable context export.";
+        return false;
+      }
+      try {
+        const decrypted = await decryptContextExport(exportFile, code);
+        state.importedContext = normalizeImportedContext(decrypted);
+        saveImportedContext();
+        updateContextStatus();
+        elements.transferCodeInput.value = "";
+        elements.contextImportFile.value = "";
+        showToast("Laptop context imported.");
+        return true;
+      } catch (error) {
+        elements.importContextStatus.textContent = "Could not unlock this file. Check the transfer code and try again.";
+        elements.contextImportFile.value = "";
+        return false;
+      }
     }
 
     function getAppLink() {
@@ -4009,6 +4398,16 @@ Sensory level present: No / Yes, at ___`;
         return;
       }
 
+      if (target === "imported") {
+        showScreen("pasteScreen");
+        setChecklistFirstMode(true, { focus: false, silent: true });
+        elements.importContextCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        elements.importContextStatus.textContent = state.importedContext
+          ? `${importedContextSummary()} Review the original laptop preview if needed.`
+          : "No patient context imported.";
+        return;
+      }
+
       if (target === "utility") {
         showScreen("pasteScreen");
         elements.toolsDrawer.open = true;
@@ -4064,21 +4463,27 @@ Sensory level present: No / Yes, at ___`;
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
       elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
+      elements.exportPriorContextButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPreview;
       elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
       elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
       elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.exportAdmissionContextButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionTeachingPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.exportSummaryContextButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
         elements.scrubAndCopyButton.disabled = isPrior && !hasPriorContext;
+        elements.exportPriorContextButton.disabled = isPrior && !hasReviewedPreview;
         elements.copySourceRoundsPromptButton.disabled = isPrior && !hasPriorContext;
         elements.copyTeachingPromptButton.disabled = isPrior && !hasPriorContext;
         elements.copyAdmissionPromptButton.disabled = !isPrior && !hasAdmissionContext;
+        elements.exportAdmissionContextButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionRoundsPromptButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionTeachingPromptButton.disabled = !isPrior && !hasAdmissionContext;
+        elements.exportSummaryContextButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
         elements.copySummaryRoundsPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
         elements.copySummaryTeachingPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
       }
@@ -4123,12 +4528,14 @@ Sensory level present: No / Yes, at ___`;
       elements.scrubFlags.innerHTML = "";
       updateSourcePrimaryActions();
       updateGuidedStatus();
+      updateContextStatus();
     }
 
     function syncScrubbedNote() {
       state.scrubbedNote = elements.scrubbedNoteInput.value.trim();
       updateSourcePrimaryActions();
       updateGuidedStatus();
+      updateContextStatus();
     }
 
     function syncAdmissionFields() {
@@ -5345,20 +5752,26 @@ Sensory level present: No / Yes, at ___`;
 
     function setScrubBusy(isBusy, primaryLabel) {
       elements.scrubAndCopyButton.disabled = isBusy;
+      elements.exportPriorContextButton.disabled = isBusy;
       elements.copySourceRoundsPromptButton.disabled = isBusy;
       elements.copyTeachingPromptButton.disabled = isBusy;
+      elements.exportSummaryContextButton.disabled = isBusy;
       elements.copySummaryRoundsPromptButton.disabled = isBusy;
       elements.copySummaryTeachingPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.exportPriorContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySourceRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.exportSummaryContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
+      elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Send context to phone";
       elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy rounds report prompt";
       elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Send context to phone";
       elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy rounds report prompt";
       elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
@@ -5560,6 +5973,14 @@ Now produce the final checklist only.`;
       if (state.sourceMode === "admission") {
         const admissionContext = formatAdmissionContext();
         if (!admissionContext) {
+          if (state.importedContext?.sourceMode === "admission") {
+            return {
+              contextType: state.importedContext.contextType || "No prior SOAP note is available. The patient is newly admitted or being admitted now.",
+              label: state.importedContext.label || "Admission intake information",
+              text: state.importedContext.text,
+              reviewTarget: "imported"
+            };
+          }
           elements.promptStatus.textContent = "Fill in at least one admission field.";
           admissionFields[0].element.focus();
           return null;
@@ -5569,6 +5990,15 @@ Now produce the final checklist only.`;
           label: "Admission intake information",
           text: admissionContext,
           reviewTarget: "admission"
+        };
+      }
+
+      if (!state.scrubResult && !state.scrubbedNote && state.importedContext) {
+        return {
+          contextType: state.importedContext.contextType || "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
+          label: state.importedContext.label || "De-identified source note",
+          text: state.importedContext.text,
+          reviewTarget: "imported"
         };
       }
 
@@ -5657,6 +6087,7 @@ Now produce the final checklist only.`;
       syncScrubbedNote();
       const sourceBlocks = [];
       const admissionContext = formatAdmissionContext();
+      const importedContext = !state.scrubbedNote && !admissionContext ? state.importedContext : null;
       const userContext = buildUserContextBlock();
 
       if (state.scrubbedNote) {
@@ -5667,7 +6098,14 @@ Now produce the final checklist only.`;
         sourceBlocks.push(`Admission intake information:\n${admissionContext}`);
       }
 
-      const promptIntro = presentationPromptIntro(Boolean(state.scrubbedNote), Boolean(admissionContext));
+      if (importedContext) {
+        const label = importedContext.sourceMode === "admission"
+          ? "Admission intake information"
+          : "De-identified source note";
+        sourceBlocks.push(`${label}:\n${importedContext.text}`);
+      }
+
+      const promptIntro = presentationPromptIntro(Boolean(state.scrubbedNote || importedContext), Boolean(admissionContext || importedContext?.sourceMode === "admission"));
       return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
@@ -6480,9 +6918,16 @@ ${rawChecklist.trim()}`;
       state.lastClearSnapshot = null;
       state.newChecklistConfirming = false;
       state.compiledText = "";
+      state.importedContext = null;
+      state.transferCode = "";
       elements.outputText.value = "";
       elements.copyStatus.textContent = "";
       elements.promptStatus.textContent = "";
+      elements.transferExportPanel.hidden = true;
+      elements.transferCodeDisplay.textContent = "";
+      elements.transferExportStatus.textContent = "";
+      elements.transferCodeInput.value = "";
+      elements.contextImportFile.value = "";
       elements.parseSummary.textContent = "";
       elements.rawSoapInput.value = "";
       elements.rawLabsInput.value = "";
@@ -6492,6 +6937,7 @@ ${rawChecklist.trim()}`;
       });
       clearScrubPreview();
       clearChecklistSession();
+      clearImportedContext();
       renderAudit(null);
       setPromptCollapsed(false);
       setOutputMode("assessed");
@@ -6500,6 +6946,7 @@ ${rawChecklist.trim()}`;
       elements.checklistInput.value = "";
       updateChecklistPasteState();
       setError("");
+      updateContextStatus();
       showScreen("pasteScreen");
       if (isPhoneLikeViewport()) {
         setChecklistFirstMode(true, { focus: true, silent: true });
@@ -6802,6 +7249,57 @@ ${rawChecklist.trim()}`;
       }
     });
 
+    elements.exportPriorContextButton.addEventListener("click", async () => {
+      try {
+        setSourceMode("prior");
+        await exportContextToPhone();
+      } catch (error) {
+        console.error(error);
+        elements.promptStatus.textContent = "Could not create the encrypted context file.";
+      }
+    });
+
+    elements.exportSummaryContextButton.addEventListener("click", async () => {
+      try {
+        await exportContextToPhone();
+      } catch (error) {
+        console.error(error);
+        elements.promptStatus.textContent = "Could not create the encrypted context file.";
+      }
+    });
+
+    elements.exportAdmissionContextButton.addEventListener("click", async () => {
+      try {
+        setSourceMode("admission");
+        await exportContextToPhone();
+      } catch (error) {
+        console.error(error);
+        elements.promptStatus.textContent = "Could not create the encrypted context file.";
+      }
+    });
+
+    elements.importContextButton.addEventListener("click", () => {
+      if (!elements.transferCodeInput.value.trim()) {
+        elements.importContextStatus.textContent = "Enter the transfer code from the laptop first.";
+        elements.transferCodeInput.focus();
+        return;
+      }
+      elements.contextImportFile.click();
+    });
+
+    elements.contextImportFile.addEventListener("change", async () => {
+      const file = elements.contextImportFile.files?.[0];
+      if (!file) {
+        return;
+      }
+      await importContextFromFile(file);
+    });
+
+    elements.clearImportedContextButton.addEventListener("click", () => {
+      clearImportedContext();
+      showToast("Imported laptop context cleared.");
+    });
+
     async function copySourceRoundsReportPrompt(statusElement = elements.promptStatus) {
       const prompt = await buildSourceRoundsReportPrompt();
       if (!prompt) {
@@ -7049,6 +7547,7 @@ ${rawChecklist.trim()}`;
       elements.outputText.value = state.compiledText;
       elements.copyStatus.textContent = "";
       setOutputMode("assessed");
+      updateContextStatus();
       saveChecklistSession();
       showScreen("outputScreen");
     });
@@ -7056,7 +7555,7 @@ ${rawChecklist.trim()}`;
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
       await copyPromptWithPhiWarning(buildPresentationPrompt(), elements.copyStatus, "Prompt copied. Open OpenEvidence to paste.", {
         title: "PHI safety check for presentation prompt",
-        reviewTarget: state.scrubbedNote ? "source" : "output",
+        reviewTarget: state.scrubbedNote ? "source" : state.importedContext ? "imported" : "output",
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000
@@ -7125,10 +7624,12 @@ ${rawChecklist.trim()}`;
     elements.dismissPhiPanelButton.addEventListener("click", hidePhiSafetyPanel);
 
     restoreUserProfile();
+    restoreImportedContext();
     const restoredSession = restoreChecklistSession();
     maybeStartPhoneChecklistFirst(restoredSession);
     updateSourcePrimaryActions();
     updateChecklistPasteState();
+    updateContextStatus();
     updateStepRail(restoredSession ? "bedside" : state.checklistFirstMode ? "paste" : "source");
     elements.offlineHomeScreen.checked = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   </script>
