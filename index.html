@@ -358,7 +358,7 @@
     body[data-screen="checklistScreen"] .workflow-rail {
       position: static;
       display: block;
-      margin: -4px 0 8px;
+      margin: -8px 0 6px;
       border: 0;
       border-radius: 0;
       padding: 0 2px;
@@ -369,18 +369,23 @@
 
     body[data-screen="checklistScreen"] .workflow-compact-label {
       display: inline-flex;
-      min-height: 32px;
+      min-height: 28px;
       align-items: center;
       border: 1px solid rgba(79, 152, 163, 0.34);
       border-radius: 999px;
-      padding: 0 10px;
+      padding: 0 9px;
       color: var(--accent-strong);
       background: rgba(79, 152, 163, 0.08);
-      font-size: 0.74rem;
+      font-size: 0.7rem;
       font-weight: 900;
     }
 
     body[data-screen="checklistScreen"] .workflow-rail .step-pill {
+      display: none;
+    }
+
+    body[data-screen="checklistScreen"] .workflow-status-line,
+    body[data-screen="checklistScreen"] .tools-drawer {
       display: none;
     }
 
@@ -1403,13 +1408,18 @@
       position: sticky;
       top: max(8px, env(safe-area-inset-top));
       z-index: 8;
-      margin: 0 -4px 10px;
+      margin: 0 0 10px;
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 18px;
-      padding: 8px;
+      padding: 6px;
       background: rgba(28, 27, 25, 0.92);
       box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
       backdrop-filter: blur(18px);
+    }
+
+    body[data-screen="checklistScreen"] .progress-panel {
+      border-radius: 15px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
     }
 
     .progress-top {
@@ -1439,15 +1449,16 @@
     }
 
     .view-guidance {
-      margin: 8px 1px 0;
+      margin: 5px 1px 0;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.74rem;
       font-weight: 800;
+      line-height: 1.15;
     }
 
     .progress-track {
       height: 4px;
-      margin-top: 7px;
+      margin-top: 5px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
       overflow: hidden;
@@ -1469,11 +1480,13 @@
 
     .checklist-utilities {
       display: grid;
-      gap: 10px;
-      margin: 0 -4px 14px;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 8px;
+      align-items: stretch;
+      margin: 0 0 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 10px;
+      border-radius: 15px;
+      padding: 7px;
       background: rgba(255, 255, 255, 0.026);
     }
 
@@ -1494,6 +1507,10 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+    }
+
+    .checklist-utilities > .tool-row {
+      min-width: 0;
     }
 
     .checklist-utilities > .tool-row .mini-btn:first-child {
@@ -1538,7 +1555,7 @@
 
     .section-drawer summary {
       min-height: 44px;
-      padding: 11px 13px;
+      padding: 11px 12px;
       color: var(--accent-strong);
       font-size: 0.88rem;
     }
@@ -1552,128 +1569,301 @@
 
     .checklist-list {
       display: grid;
-      gap: 14px;
+      gap: 12px;
       padding-bottom: calc(var(--bottom-bar-height) + env(safe-area-inset-bottom));
     }
 
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 18px 2px 0;
-      min-height: 44px;
+    .finding-section {
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.024), rgba(255, 255, 255, 0.006)), rgba(28, 27, 25, 0.86);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
       scroll-margin-top: 112px;
-      color: var(--accent-strong);
-      font-size: 0.76rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
 
-    .section-toggle {
-      display: flex;
+    .finding-section.is-hidden,
+    .finding-row.is-hidden {
+      display: none;
+    }
+
+    .finding-section-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 8px;
       align-items: center;
-      gap: 9px;
-      min-height: 44px;
-      max-width: 100%;
-      padding: 0;
-      color: inherit;
-      background: transparent;
-      font: inherit;
-      letter-spacing: inherit;
-      text-align: left;
-      text-transform: inherit;
+      min-height: 46px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 9px 0 10px;
+      background: rgba(255, 255, 255, 0.028);
     }
 
-    .section-chevron {
+    .finding-section-toggle {
+      display: flex;
+      min-width: 0;
+      min-height: 46px;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      color: var(--accent-strong);
+      background: transparent;
+      text-align: left;
+    }
+
+    .finding-section-chevron {
       display: grid;
       place-items: center;
       flex: 0 0 24px;
       width: 24px;
       height: 24px;
-      border: 1px solid rgba(106, 179, 189, 0.26);
-      border-radius: 999px;
+      border: 1px solid rgba(106, 179, 189, 0.28);
+      border-radius: 7px;
       color: var(--accent-strong);
       background: rgba(106, 179, 189, 0.08);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
+      font-weight: 900;
       line-height: 1;
+      transition: transform 150ms ease;
     }
 
-    .section-label.is-collapsed .section-chevron {
+    .finding-section.is-collapsed .finding-section-chevron {
       transform: rotate(-90deg);
     }
 
-    .section-name {
+    .finding-section-name {
+      min-width: 0;
       overflow-wrap: anywhere;
+      color: var(--accent-strong);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .section-label.is-hidden,
-    .question-card.is-hidden {
+    .finding-section-meta {
+      min-height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.16);
+      font-size: 0.72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .finding-section.is-complete .finding-section-meta {
+      border-color: rgba(79, 152, 163, 0.42);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.1);
+    }
+
+    .finding-section-actions {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .finding-section-action {
+      min-height: 44px;
+      border: 1px solid rgba(106, 179, 189, 0.28);
+      border-radius: 999px;
+      padding: 0 10px;
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.08);
+      font-size: 0.72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .finding-section-action:hover {
+      border-color: rgba(106, 179, 189, 0.5);
+      background: rgba(79, 152, 163, 0.15);
+    }
+
+    .finding-section-action:disabled {
       display: none;
     }
 
-    .section-meta {
-      color: var(--quiet);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0;
-      text-transform: none;
+    .finding-section-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: rgba(255, 255, 255, 0.055);
     }
 
-    .section-label::after {
-      content: "";
-      height: 1px;
-      flex: 1;
-      background: linear-gradient(90deg, rgba(106, 179, 189, 0.38), transparent);
+    .finding-section.is-collapsed .finding-section-body {
+      display: none;
     }
 
-    .question-card {
-      padding: 16px;
+    .finding-row {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      border-left: 3px solid transparent;
+      padding: 10px 11px;
+      background: rgba(28, 27, 25, 0.98);
       scroll-margin-top: 112px;
     }
 
-    .question-title {
-      margin: 0 0 13px;
+    .finding-row[data-answered="true"] {
+      border-left-color: rgba(106, 179, 189, 0.74);
+      background: linear-gradient(90deg, rgba(79, 152, 163, 0.08), rgba(28, 27, 25, 0.98) 52%);
+    }
+
+    .finding-row:focus-within {
+      background: rgba(34, 33, 30, 0.98);
+      box-shadow: inset 0 0 0 1px rgba(106, 179, 189, 0.2);
+    }
+
+    .finding-row-bedside {
+      padding: 12px 11px;
+    }
+
+    .finding-label {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .finding-title {
+      margin: 0;
       color: var(--text);
-      font-size: 1rem;
-      font-weight: 800;
+      font-size: 0.98rem;
+      font-weight: 850;
       line-height: 1.25;
     }
 
-    .chip-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
+    .finding-row-exam .finding-title {
+      font-size: 0.9rem;
+      line-height: 1.22;
     }
 
-    .chip-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .chip {
-      min-height: 44px;
-      border: 1px solid var(--border-strong);
+    .finding-state {
+      display: inline-flex;
+      flex: 0 0 10px;
+      width: 10px;
+      min-height: 10px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 999px;
-      padding: 8px 14px;
-      color: #ddd8ce;
-      background: rgba(255, 255, 255, 0.045);
-      font-size: 0.94rem;
-      font-weight: 800;
-      line-height: 1.2;
-      transition: background 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
+      padding: 0;
+      color: var(--quiet);
+      background: rgba(255, 255, 255, 0.032);
+      font-size: 0;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
-    .chip:hover {
-      border-color: rgba(106, 179, 189, 0.44);
-      background: rgba(255, 255, 255, 0.072);
+    .finding-row[data-answered="true"] .finding-state {
+      border-color: rgba(79, 152, 163, 0.38);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.1);
     }
 
-    .chip[aria-pressed="true"] {
+    .finding-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .finding-row-bedside .finding-options {
+      grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+      gap: 6px;
+    }
+
+    .finding-options.count-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .finding-options.count-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .finding-options.count-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .finding-options.is-scale {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .finding-options.is-scale.count-5 {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .finding-option {
+      display: inline-flex;
+      min-height: 44px;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 11px;
+      padding: 7px 8px;
+      color: #ded9d0;
+      background: rgba(255, 255, 255, 0.044);
+      font-size: 0.84rem;
+      font-weight: 850;
+      line-height: 1.15;
+      text-align: center;
+      overflow-wrap: anywhere;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .finding-option:hover {
+      border-color: rgba(106, 179, 189, 0.38);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .finding-option[aria-pressed="true"] {
       border-color: var(--accent-border);
       color: #effdff;
-      background: var(--accent-soft);
-      box-shadow: inset 0 0 0 1px rgba(106, 179, 189, 0.22);
+      background: rgba(79, 152, 163, 0.42);
+      box-shadow: inset 0 0 0 1px rgba(106, 179, 189, 0.24), 0 8px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .finding-option[aria-pressed="true"]::before {
+      content: "✓";
+      margin-right: 5px;
+      font-weight: 900;
+    }
+
+    .finding-options.is-scale .finding-option[aria-pressed="true"]::before {
+      content: "";
+      margin: 0;
+    }
+
+    .finding-option.is-normal[aria-pressed="true"] {
+      border-color: rgba(106, 179, 189, 0.86);
+      color: #f2feff;
+      background: linear-gradient(180deg, rgba(82, 166, 178, 0.64), rgba(79, 152, 163, 0.44));
+    }
+
+    .finding-option.is-concerning[aria-pressed="true"] {
+      border-color: rgba(216, 139, 125, 0.78);
+      color: #fff2ed;
+      background: linear-gradient(180deg, rgba(157, 86, 70, 0.62), rgba(105, 54, 44, 0.5));
+      box-shadow: inset 0 0 0 1px rgba(255, 208, 190, 0.12), 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .finding-note {
+      min-height: 46px;
+      border-radius: 12px;
+      padding: 10px 11px;
+      font-size: 0.9rem;
+      line-height: 1.32;
+    }
+
+    .finding-row-exam .finding-note {
+      min-height: 44px;
+      font-size: 0.86rem;
     }
 
     .bottom-bar {
@@ -1832,8 +2022,32 @@
         padding: 22px;
       }
 
-      .question-card {
-        padding: 18px;
+      .finding-section-body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .finding-row-bedside,
+      .finding-row-general {
+        grid-column: 1 / -1;
+      }
+
+      .finding-row-exam {
+        padding: 11px;
+      }
+
+      .finding-options.count-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 980px) {
+      .finding-section-body {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .finding-row-bedside,
+      .finding-row-general {
+        grid-column: 1 / -1;
       }
     }
 
@@ -1893,8 +2107,54 @@
         grid-column: auto;
       }
 
-      .chip {
+      .finding-section-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 0 8px;
+      }
+
+      .finding-section-actions {
+        grid-column: 1 / -1;
+        justify-content: stretch;
+        margin-top: -3px;
+        padding-bottom: 7px;
+      }
+
+      .finding-section-action {
         flex: 1 1 auto;
+      }
+
+      .finding-row {
+        padding: 9px 9px 9px 10px;
+      }
+
+      .finding-row-bedside {
+        padding: 11px 9px 11px 10px;
+      }
+
+      .finding-options,
+      .finding-row-bedside .finding-options {
+        grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+      }
+
+      .finding-options.count-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .finding-options.count-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .finding-options.count-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .finding-options.is-scale {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .finding-options.is-scale .finding-option {
+        padding-right: 4px;
+        padding-left: 4px;
       }
 
       .toast {
@@ -2798,6 +3058,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
 
     const hostedAppUrl = "https://aaronge-2020.github.io/prerounding-checklist/";
     const openEvidenceUrl = "https://www.openevidence.com/";
+    const openEvidencePromptTargetChars = 20000;
+    const openEvidencePromptHardMaxChars = 22000;
     const sessionKey = "preRoundChecklistSessionV2";
     const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
@@ -4620,26 +4882,232 @@ Sensory level present: No / Yes, at ___`;
       hidePhiSafetyPanel();
     }
 
+    function promptLengthLabel(length) {
+      return length >= 1000 ? `${Math.round(length / 100) / 10}k` : String(length);
+    }
+
+    function isLowValueChartLine(line) {
+      return /^(?:Expand All|Collapse All|Edited by:|If blank, item is not applicable|Present for IBR|Antibiotics|Airway|CHG Bath|Sleep|Activity|Plan|IV Meds|Infusions|PRN Meds|Scheduled Meds|Medications)$/i.test(line.trim()) ||
+        /^\[\s*\]$/.test(line.trim()) ||
+        /^[\s|,;.-]+$/.test(line.trim());
+    }
+
+    function scoreClinicalPromptLine(line, index) {
+      const text = line.trim();
+      if (!text) {
+        return 4;
+      }
+      if (isLowValueChartLine(text)) {
+        return -50;
+      }
+
+      let score = index < 35 ? 34 : 0;
+      if (/^(?:SOAP NOTE|HANDOFF SUMMARY|ADDITIONAL LABS|MEDICATION ORDERS|Chief Complaint|Admitting Diagnosis|One-line summary|Interval History|Yesterday|Overnight|This AM|Assessment|ASSESSMENT|Plan|OBJECTIVE|Vitals|Vital Signs|Physical Exam|Labs|Imaging|Hospital Course|Course by Date|Pending|Consult|Active Consultants|Medication Administration Audit)/i.test(text)) {
+        score += 95;
+      }
+      if (/^#/.test(text) || /^[A-Z][A-Z0-9 /&()-]{3,}:?$/.test(text)) {
+        score += 58;
+      }
+      if (/\b(?:Day\s[-+0-9]|today|yesterday|overnight|this AM|last few days|past 24|past 72|current|pending|held|started|stopped|increased|decreased|worsening|improved|resolved|new|acute|critical|consult|recommend|follow|monitor|recheck|trend|baseline|admitted|presented|chief|reason|diagnosis)\b/i.test(text)) {
+        score += 44;
+      }
+      if (/\b(?:Na|Sodium|K|Potassium|Cr|Creatinine|BUN|WBC|Hemoglobin|Hgb|Platelets|Glucose|A1c|Troponin|BNP|AST|ALT|Bilirubin|Calcium|Magnesium|Phosphorus|pH|CO2|anion gap|lactate|culture|MRI|CT|CTA|CXR|ultrasound|echo|EKG|ECG|telemetry|BP|SpO2|Temp|HR|RR)\b/i.test(text)) {
+        score += 36;
+      }
+      if (/\b(?:mg|mcg|units|mL|PO|IV|subcutaneous|BID|TID|Q\d|daily|nightly|drip|infusion|insulin|steroid|anticoag|heparin|enoxaparin|warfarin|apixaban|held|refused|given|administered)\b/i.test(text)) {
+        score += 24;
+      }
+      if (/\b(?:high|low|abnormal|positive|negative|\(H\)|\(L\)|\*|from|to|down|up|range|ratio)\b/i.test(text)) {
+        score += 20;
+      }
+      if (text.length > 180) {
+        score -= Math.min(26, Math.floor((text.length - 180) / 40));
+      }
+      return score;
+    }
+
+    function compactClinicalTextForPrompt(text, maxChars) {
+      const clean = String(text || "")
+        .replace(/\u0004/g, "")
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{4,}/g, "\n\n")
+        .trim();
+
+      if (clean.length <= maxChars) {
+        return clean;
+      }
+
+      const suffix = "\n\n[Source context shortened locally to fit OpenEvidence. High-yield chronology, active problems, plans, abnormal data, medication safety items, and recent trends were prioritized.]";
+      const budget = Math.max(1200, maxChars - suffix.length);
+      const rawLines = clean.split(/\r?\n/);
+      const candidates = rawLines.map((line, index) => ({
+        index,
+        line: line.trimEnd(),
+        score: scoreClinicalPromptLine(line, index)
+      })).filter((entry) => entry.line.trim() && entry.score >= 0);
+
+      const selected = new Set();
+      const sorted = [...candidates].sort((a, b) => b.score - a.score || a.index - b.index);
+      let used = 0;
+
+      for (const entry of sorted) {
+        const added = entry.line.length + 1;
+        if (used + added > budget) {
+          continue;
+        }
+        selected.add(entry.index);
+        used += added;
+
+        for (let lookback = entry.index - 1; lookback >= 0 && lookback >= entry.index - 2; lookback -= 1) {
+          const prior = rawLines[lookback]?.trimEnd() || "";
+          if (prior && (/^[A-Z][A-Z0-9 /&()-]{3,}:?$/.test(prior.trim()) || /^#/.test(prior.trim()))) {
+            const priorAdded = prior.length + 1;
+            if (!selected.has(lookback) && used + priorAdded <= budget) {
+              selected.add(lookback);
+              used += priorAdded;
+            }
+            break;
+          }
+        }
+      }
+
+      const orderedLines = rawLines
+        .map((line, index) => selected.has(index) ? line.trimEnd() : "")
+        .filter(Boolean);
+
+      let compacted = orderedLines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+      if (!compacted) {
+        compacted = clean.slice(0, budget).trim();
+      }
+      if (compacted.length > budget) {
+        compacted = compacted.slice(0, budget).replace(/\s+\S*$/, "").trim();
+      }
+      return `${compacted}${suffix}`;
+    }
+
+    function compactMedicationAuditForPrompt(text, maxChars = 2600) {
+      const clean = String(text || "").trim();
+      if (clean.length <= maxChars) {
+        return clean;
+      }
+      const lines = clean.split(/\r?\n/).filter((line) => line.trim());
+      const kept = [];
+      let used = 0;
+      for (const line of lines) {
+        const isHeader = /^[A-Z][A-Za-z /-]+:$/.test(line.trim()) || /^Medication Administration Audit/i.test(line);
+        const isActionable = /\b(?:missed|not documented|mismatch|held|refused|not given|without matching order|verify|unexpected|dose|route|frequency|timing)\b/i.test(line);
+        if (!isHeader && !isActionable) {
+          continue;
+        }
+        const added = line.length + 1;
+        if (used + added > maxChars) {
+          break;
+        }
+        kept.push(line);
+        used += added;
+      }
+      return `${kept.join("\n").trim()}\n\n[Medication audit shortened locally; verify details in the live MAR.]`;
+    }
+
+    function compactXmlPromptBlock(prompt, tag, maxChars, formatter = compactClinicalTextForPrompt) {
+      const regex = new RegExp(`<${tag}>\\n([\\s\\S]*?)\\n<\\/${tag}>`, "g");
+      return prompt.replace(regex, (full, inner) => {
+        const compacted = formatter(inner, maxChars);
+        return compacted === inner ? full : `<${tag}>\n${compacted}\n</${tag}>`;
+      });
+    }
+
+    function compactLabeledPromptBlock(prompt, label, nextLabels, maxChars) {
+      const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const lookahead = nextLabels.length
+        ? `(?=\\n\\n(?:${nextLabels.map((item) => item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}):|\\n\\n<medication_administration_audit>|\\n\\nNew checklist answers|$)`
+        : "(?=\\n\\n<medication_administration_audit>|\\n\\nNew checklist answers|$)";
+      const regex = new RegExp(`${escapedLabel}:\\n([\\s\\S]*?)${lookahead}`, "g");
+      return prompt.replace(regex, (full, content) => {
+        const compacted = compactClinicalTextForPrompt(content, maxChars);
+        return `${label}:\n${compacted}`;
+      });
+    }
+
+    function stripOptionalPromptBlocks(prompt) {
+      return ["format_examples", "neurologic_case_style_example", "final_self_check", "teaching_method"].reduce((text, tag) => {
+        return text.replace(new RegExp(`\\n?<${tag}>[\\s\\S]*?<\\/${tag}>\\n?`, "g"), "\n");
+      }, prompt).replace(/\n{4,}/g, "\n\n").trim();
+    }
+
+    function fitPromptForOpenEvidence(prompt) {
+      const original = String(prompt || "");
+      let text = original;
+      let shortened = false;
+
+      if (text.length > openEvidencePromptTargetChars) {
+        text = compactXmlPromptBlock(text, "patient_context", 8500);
+        text = compactXmlPromptBlock(text, "source_context", 8500);
+        text = compactXmlPromptBlock(text, "medication_administration_audit", 2600, compactMedicationAuditForPrompt);
+        text = compactLabeledPromptBlock(text, "De-identified source note", ["Admission intake information"], 8500);
+        text = compactLabeledPromptBlock(text, "Admission intake information", ["De-identified source note"], 5000);
+        shortened = text !== original;
+      }
+
+      if (text.length > openEvidencePromptTargetChars) {
+        text = stripOptionalPromptBlocks(text);
+        shortened = true;
+      }
+
+      if (text.length > openEvidencePromptTargetChars) {
+        text = compactXmlPromptBlock(text, "patient_context", 5000);
+        text = compactXmlPromptBlock(text, "source_context", 5000);
+        text = compactXmlPromptBlock(text, "medication_administration_audit", 1600, compactMedicationAuditForPrompt);
+        text = compactLabeledPromptBlock(text, "De-identified source note", ["Admission intake information"], 5000);
+        text = compactLabeledPromptBlock(text, "Admission intake information", ["De-identified source note"], 3200);
+        shortened = true;
+      }
+
+      if (text.length > openEvidencePromptHardMaxChars) {
+        const keepTailLabel = "New checklist answers and exam findings:";
+        const tailIndex = text.indexOf(keepTailLabel);
+        const tail = tailIndex >= 0 ? text.slice(tailIndex) : "";
+        const tailBudget = tail ? Math.min(tail.length, 5000) : 0;
+        const headBudget = openEvidencePromptHardMaxChars - tailBudget - 240;
+        text = `${text.slice(0, Math.max(2000, headBudget)).trim()}\n\n[Prompt shortened locally to fit OpenEvidence. Repetitive source details were omitted.]\n\n${tail ? tail.slice(0, tailBudget).trim() : ""}`.trim();
+        shortened = true;
+      }
+
+      return {
+        text,
+        shortened,
+        originalLength: original.length,
+        finalLength: text.length
+      };
+    }
+
     async function copyPromptWithPhiWarning(prompt, statusElement, successMessage, options = {}) {
       if (!prompt) {
         return false;
       }
 
-      const safePrompt = normalizeResidualTemporalPhi(cleanupDeidArtifacts(prompt));
+      const normalizedPrompt = normalizeResidualTemporalPhi(cleanupDeidArtifacts(prompt));
+      const fittedPrompt = options.fitToOpenEvidence === false
+        ? { text: normalizedPrompt, shortened: false, originalLength: normalizedPrompt.length, finalLength: normalizedPrompt.length }
+        : fitPromptForOpenEvidence(normalizedPrompt);
+      const safePrompt = fittedPrompt.text;
       const check = runPhiSafetyCheck(safePrompt);
       state.lastPhiSafetyCheck = check;
+      const promptSuccessMessage = fittedPrompt.shortened
+        ? `${successMessage} Shortened from ${promptLengthLabel(fittedPrompt.originalLength)} to ${promptLengthLabel(fittedPrompt.finalLength)} characters to fit OpenEvidence.`
+        : successMessage;
 
       if (!check.warnings.length) {
         state.pendingPhiCopy = null;
         hidePhiSafetyPanel();
-        await copyText(safePrompt, statusElement, successMessage, options.toastOptions || options);
+        await copyText(safePrompt, statusElement, promptSuccessMessage, options.toastOptions || options);
         return true;
       }
 
       state.pendingPhiCopy = {
         prompt: safePrompt,
         statusElement,
-        successMessage,
+        successMessage: promptSuccessMessage,
         toastOptions: options.toastOptions || options,
         reviewTarget: options.reviewTarget || "source",
         title: options.title || "PHI safety check",
@@ -5826,9 +6294,10 @@ ${rawChecklist.trim()}`;
       const total = active.total;
       const answered = active.answered;
       const percentage = total ? Math.round((answered / total) * 100) : 0;
+      const compactTabs = window.matchMedia("(max-width: 430px)").matches;
       elements.progressCount.textContent = `${viewLabel(state.activeChecklistView)} ${answered} of ${total}`;
       elements.utilityProgress.textContent = `${answered} of ${total}`;
-      elements.bedsideViewButton.textContent = formatProgress("Bedside", bedside);
+      elements.bedsideViewButton.textContent = formatProgress(compactTabs ? "Bed" : "Bedside", bedside);
       elements.examViewButton.textContent = formatProgress("Exam", exam);
       elements.unansweredViewButton.textContent = `Unanswered ${unanswered.total}`;
       elements.allViewButton.textContent = formatProgress("All", overall);
@@ -5845,20 +6314,95 @@ ${rawChecklist.trim()}`;
     }
 
     function updateChecklistGuidance() {
+      const compact = window.matchMedia("(max-width: 430px)").matches;
       if (state.activeChecklistView === "bedside") {
-        elements.viewGuidance.textContent = "You are asking the patient these questions.";
+        elements.viewGuidance.textContent = compact ? "Ask the patient." : "You are asking the patient these questions.";
       } else if (state.activeChecklistView === "exam") {
-        elements.viewGuidance.textContent = "You are examining the patient.";
+        elements.viewGuidance.textContent = compact ? "Document exam findings." : "You are examining the patient.";
       } else if (state.activeChecklistView === "unanswered") {
-        elements.viewGuidance.textContent = "Only unfinished bedside or exam items are showing.";
+        elements.viewGuidance.textContent = compact ? "Only unfinished items." : "Only unfinished bedside or exam items are showing.";
       } else {
-        elements.viewGuidance.textContent = "All bedside questions and exam items are showing.";
+        elements.viewGuidance.textContent = compact ? "All items." : "All bedside questions and exam items are showing.";
       }
     }
 
     function autoResize(textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+
+    function optionVisualTone(option, item = null) {
+      const value = option.toLowerCase().replace(/\s+/g, " ").trim();
+      const label = (item?.label || "").toLowerCase();
+      if (/^(?:absent|not present)$/.test(value) && /\b(?:petechiae|bruising|bleeding|blood|fever|swelling|tenderness|drainage|edema|rash|pain)\b/.test(label)) {
+        return "normal";
+      }
+      if (/^(?:present|yes)\b/.test(value) && /\b(?:petechiae|bruising|bleeding|blood|fever|swelling|tenderness|drainage|edema|rash)\b/.test(label)) {
+        return "concerning";
+      }
+      if (/^(?:no|none|normal|nl|intact|clear|regular|room air|symmetric|baseline|downgoing|negative|better|improved|gone|resolved|patent|warm|dry|strong)\b/.test(value) || /\b(?:normal|intact|clear|regular|room air|symmetric|baseline|downgoing|patent)\b/.test(value)) {
+        return "normal";
+      }
+      if (/\b(?:yes|worse|severe|very hard|absent|diminished|brisk|clonus|upgoing|irregular|pain|bleeding|blood|weak|unable|neither|fever|hypothermia|chills|swelling|tender|drainage|infiltrated|increased|crackles|wheezes|rhonchi|murmur|gallop|rub)\b/.test(value)) {
+        return "concerning";
+      }
+      return "neutral";
+    }
+
+    function isScaleOptionSet(options = []) {
+      if (options.length < 5 || options.length > 6) {
+        return false;
+      }
+      return options.every((option, index) => option.trim() === String(index));
+    }
+
+    function normalOptionForItem(item) {
+      if (!item.options?.length) {
+        return "";
+      }
+
+      const label = item.label.toLowerCase();
+      if (/\bstrength\b/.test(label) && item.options.includes("5")) {
+        return "5";
+      }
+
+      return item.options.find((option) => {
+        const value = option.toLowerCase().replace(/\s+/g, " ").trim();
+        if (/^(?:normal|nl|intact|clear|regular|room air|symmetric|baseline|downgoing|negative|patent|strong)\b/.test(value)) {
+          return true;
+        }
+        return /^(?:no|none|absent|not present)$/.test(value) && /\b(?:petechiae|bruising|bleeding|blood|fever|swelling|tenderness|drainage|edema|rash|pain|murmur|gallop|rub)\b/.test(label);
+      }) || "";
+    }
+
+    function sectionHasNormalOptions(section) {
+      return section.category === "exam" && section.items.some((item) => normalOptionForItem(item));
+    }
+
+    function markSectionNormal(section) {
+      let changed = 0;
+      section.items.forEach((item) => {
+        const normalOption = normalOptionForItem(item);
+        if (normalOption && !state.answers[item.id]) {
+          state.answers[item.id] = normalOption;
+          changed += 1;
+        }
+      });
+
+      if (changed) {
+        renderChecklist();
+        showToast(`${changed} exam ${changed === 1 ? "item" : "items"} marked normal.`);
+      } else {
+        showToast("No open normal options in this section.");
+      }
+    }
+
+    function optionGroupClasses(item) {
+      const classes = ["finding-options", `count-${Math.min(item.options.length, 6)}`];
+      if (isScaleOptionSet(item.options)) {
+        classes.push("is-scale");
+      }
+      return classes.join(" ");
     }
 
     function renderSectionJump() {
@@ -5938,15 +6482,20 @@ ${rawChecklist.trim()}`;
       state.sections.forEach((section, sectionIndex) => {
         const stats = sectionStats(section);
         const collapsed = isSectionCollapsed(section, sectionIndex);
-        const sectionLabel = document.createElement("div");
-        sectionLabel.className = "section-label";
-        sectionLabel.classList.toggle("is-collapsed", collapsed);
-        sectionLabel.id = `section-${sectionIndex}`;
-        sectionLabel.dataset.section = section.title;
+        const sectionBlock = document.createElement("section");
+        sectionBlock.className = "finding-section";
+        sectionBlock.classList.toggle("is-collapsed", collapsed);
+        sectionBlock.id = `section-${sectionIndex}`;
+        sectionBlock.dataset.section = section.title;
+
+        const sectionHeader = document.createElement("div");
+        sectionHeader.className = "finding-section-header";
+
         const sectionButton = document.createElement("button");
         sectionButton.type = "button";
-        sectionButton.className = "section-toggle";
+        sectionButton.className = "finding-section-toggle";
         sectionButton.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        sectionButton.setAttribute("aria-controls", `section-body-${sectionIndex}`);
         sectionButton.addEventListener("click", () => {
           const key = sectionKey(section, sectionIndex);
           state.collapsedSections[key] = !state.collapsedSections[key];
@@ -5954,68 +6503,102 @@ ${rawChecklist.trim()}`;
         });
 
         const chevron = document.createElement("span");
-        chevron.className = "section-chevron";
+        chevron.className = "finding-section-chevron";
         chevron.setAttribute("aria-hidden", "true");
         chevron.textContent = "v";
 
         const sectionName = document.createElement("span");
-        sectionName.className = "section-name";
+        sectionName.className = "finding-section-name";
         sectionName.textContent = section.title;
 
         sectionButton.appendChild(chevron);
         sectionButton.appendChild(sectionName);
-        sectionLabel.appendChild(sectionButton);
+        sectionHeader.appendChild(sectionButton);
         if (stats.total) {
           const meta = document.createElement("span");
-          meta.className = "section-meta";
+          meta.className = "finding-section-meta";
           meta.textContent = `${stats.answered}/${stats.total}`;
-          sectionLabel.appendChild(meta);
+          sectionHeader.appendChild(meta);
         }
-        elements.checklistList.appendChild(sectionLabel);
 
-        let visibleItems = 0;
+        if (sectionHasNormalOptions(section)) {
+          const actions = document.createElement("div");
+          actions.className = "finding-section-actions";
+
+          const markNormalButton = document.createElement("button");
+          markNormalButton.type = "button";
+          markNormalButton.className = "finding-section-action";
+          markNormalButton.textContent = "Mark normal";
+          markNormalButton.setAttribute("aria-label", `Mark open normal findings in ${section.title}`);
+          markNormalButton.disabled = !section.items.some((item) => normalOptionForItem(item) && !state.answers[item.id]);
+          markNormalButton.addEventListener("click", () => {
+            markSectionNormal(section);
+          });
+
+          actions.appendChild(markNormalButton);
+          sectionHeader.appendChild(actions);
+        }
+
+        const sectionBody = document.createElement("div");
+        sectionBody.className = "finding-section-body";
+        sectionBody.id = `section-body-${sectionIndex}`;
+
+        sectionBlock.appendChild(sectionHeader);
+        sectionBlock.appendChild(sectionBody);
+        sectionBlock.classList.toggle("is-complete", Boolean(stats.total && stats.answered === stats.total));
+
         let sectionHasVisibleContent = false;
         section.items.forEach((item) => {
           const answered = isItemAnswered(item);
           const hiddenByView = !itemMatchesView(item);
           const hiddenBySection = state.activeSection !== "all" && state.activeSection !== section.title;
           sectionHasVisibleContent = sectionHasVisibleContent || !(hiddenByView || hiddenBySection);
-          const card = document.createElement("article");
-          card.className = "surface question-card";
-          card.classList.toggle("is-hidden", hiddenByView || hiddenBySection || collapsed);
-          card.id = `section-items-${sectionIndex}-${item.id}`;
-          card.dataset.itemId = item.id;
-          card.dataset.section = section.title;
-          card.dataset.answered = answered ? "true" : "false";
-          visibleItems += hiddenByView || hiddenBySection || collapsed ? 0 : 1;
+          const row = document.createElement("article");
+          row.className = `finding-row finding-row-${item.category || "general"}`;
+          row.classList.toggle("is-hidden", hiddenByView || hiddenBySection);
+          row.id = `section-items-${sectionIndex}-${item.id}`;
+          row.dataset.itemId = item.id;
+          row.dataset.section = section.title;
+          row.dataset.answered = answered ? "true" : "false";
+
+          const labelWrap = document.createElement("div");
+          labelWrap.className = "finding-label";
 
           const title = document.createElement("h3");
-          title.className = "question-title";
+          title.className = "finding-title";
           title.textContent = item.label;
-          card.appendChild(title);
+
+          const stateBadge = document.createElement("span");
+          stateBadge.className = "finding-state";
+          stateBadge.textContent = answered ? "Answered" : "Unanswered";
+          stateBadge.setAttribute("aria-label", answered ? "Answered" : "Unanswered");
+
+          labelWrap.appendChild(title);
+          labelWrap.appendChild(stateBadge);
+          row.appendChild(labelWrap);
 
           if (item.options.length) {
             const group = document.createElement("div");
-            group.className = "chip-group";
+            group.className = optionGroupClasses(item);
             group.setAttribute("role", "group");
             group.setAttribute("aria-label", item.label);
 
             item.options.forEach((option) => {
-              const chip = document.createElement("button");
-              chip.type = "button";
-              chip.className = "chip";
-              chip.textContent = option;
-              chip.setAttribute("aria-pressed", state.answers[item.id] === option ? "true" : "false");
-              chip.addEventListener("click", () => {
+              const optionButton = document.createElement("button");
+              optionButton.type = "button";
+              optionButton.className = `finding-option is-${optionVisualTone(option, item)}`;
+              optionButton.textContent = option;
+              optionButton.setAttribute("aria-pressed", state.answers[item.id] === option ? "true" : "false");
+              optionButton.addEventListener("click", () => {
                 state.answers[item.id] = state.answers[item.id] === option ? "" : option;
                 renderChecklist();
                 updateProgress();
                 saveChecklistSession();
               });
-              group.appendChild(chip);
+              group.appendChild(optionButton);
             });
 
-            card.appendChild(group);
+            row.appendChild(group);
           }
 
           if (item.hasNotes) {
@@ -6026,9 +6609,9 @@ ${rawChecklist.trim()}`;
 
             const noteInput = document.createElement("textarea");
             noteInput.id = `note-${item.id}`;
-            noteInput.className = "note-input";
+            noteInput.className = "note-input finding-note";
             noteInput.rows = 1;
-            noteInput.placeholder = item.category === "bedside" ? "Patient response, other answer, or detail..." : "Add note...";
+            noteInput.placeholder = item.category === "bedside" ? "Response or detail..." : "Detail...";
             noteInput.value = state.notes[item.id] || "";
             noteInput.addEventListener("input", () => {
               state.notes[item.id] = noteInput.value;
@@ -6037,15 +6620,16 @@ ${rawChecklist.trim()}`;
               saveChecklistSession();
             });
 
-            card.appendChild(noteLabel);
-            card.appendChild(noteInput);
+            row.appendChild(noteLabel);
+            row.appendChild(noteInput);
             requestAnimationFrame(() => autoResize(noteInput));
           }
 
-          elements.checklistList.appendChild(card);
+          sectionBody.appendChild(row);
         });
 
-        sectionLabel.classList.toggle("is-hidden", !sectionHasVisibleContent);
+        sectionBlock.classList.toggle("is-hidden", !sectionHasVisibleContent);
+        elements.checklistList.appendChild(sectionBlock);
       });
 
       updateProgress();
@@ -6433,7 +7017,8 @@ ${rawChecklist.trim()}`;
       await copyPromptWithPhiWarning(state.utilityScrubbedText, elements.utilityStatus, "Redacted text copied.", {
         title: "PHI safety check for redacted text",
         subject: "text",
-        reviewTarget: "utility"
+        reviewTarget: "utility",
+        fitToOpenEvidence: false
       });
     });
 
@@ -6883,6 +7468,9 @@ heparin 5000 units held by provider`;
       });
     });
     elements.dismissPhiPanelButton.addEventListener("click", hidePhiSafetyPanel);
+    window.addEventListener("resize", () => {
+      updateProgress();
+    });
 
     restoreUserProfile();
     restoreImportedContext();
