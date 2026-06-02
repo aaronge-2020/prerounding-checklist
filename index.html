@@ -2564,6 +2564,7 @@
             <summary>More tools / fallback</summary>
             <div class="more-options-body">
               <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
+              <button id="copySummaryMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
               <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
             </div>
           </details>
@@ -2640,7 +2641,7 @@ Night team: no acute events.
 To do: follow blood cultures, recheck potassium, confirm insulin transition plan.
 Nursing concern: intermittent confusion overnight."></textarea>
           <label for="rawMedicationInput">Medication orders / MAR</label>
-          <span class="field-caption">Optional. Paste active medication orders plus MAR administration rows to check whether ordered doses appear to have been given.</span>
+          <span class="field-caption">Optional. Paste active medication orders plus MAR rows as source context. The app de-identifies this text; medication safety review happens only through the optional OpenEvidence prompt.</span>
           <textarea id="rawMedicationInput" class="lab-input" spellcheck="false" placeholder="Paste medication orders and MAR administrations here.
 
 Example:
@@ -2669,11 +2670,6 @@ enoxaparin 40 mg held by provider"></textarea>
               <summary>Review details</summary>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
             </details>
-            <p id="medAuditStatus" class="context-status is-empty">Medication audit: no medication/MAR text provided.</p>
-            <details id="medAuditDetails" class="review-details" hidden>
-              <summary>Medication audit details</summary>
-              <ul id="medAuditList" class="flag-list" aria-label="Medication administration audit findings"></ul>
-            </details>
           </div>
           <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
@@ -2685,6 +2681,7 @@ enoxaparin 40 mg held by provider"></textarea>
             <summary>More tools / fallback</summary>
             <div class="more-options-body">
               <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
+              <button id="copyMedicationSafetyPromptButton" class="btn btn-secondary" type="button" hidden>Copy medication safety prompt</button>
               <button id="exportPriorContextButton" class="btn btn-secondary" type="button" hidden>Download encrypted context file</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
@@ -2981,11 +2978,6 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       normalizeResidualTemporalPhi,
       scanResidualPhi as scanResidualPhiShared
     } from "./deid.js";
-    import {
-      auditMedicationAdministration,
-      formatMedicationAuditForPrompt,
-      medicationAuditActionCount
-    } from "./med-audit.js";
 
     env.allowLocalModels = false;
     env.allowRemoteModels = true;
@@ -3020,7 +3012,6 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawMedicationText: "",
       scrubbedNote: "",
       scrubResult: null,
-      medicationAudit: null,
       admission: {},
       promptCollapsed: false,
       checklistFirstMode: false,
@@ -3080,6 +3071,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       copySummaryRoundsPromptButton: document.getElementById("copySummaryRoundsPromptButton"),
       copySummaryChecklistPromptButton: document.getElementById("copySummaryChecklistPromptButton"),
       copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
+      copySummaryMedicationSafetyPromptButton: document.getElementById("copySummaryMedicationSafetyPromptButton"),
       conversationStatusCard: document.getElementById("conversationStatusCard"),
       conversationCaseKey: document.getElementById("conversationCaseKey"),
       conversationStatusText: document.getElementById("conversationStatusText"),
@@ -3123,13 +3115,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubSummary: document.getElementById("scrubSummary"),
       scrubCounts: document.getElementById("scrubCounts"),
       scrubFlags: document.getElementById("scrubFlags"),
-      medAuditStatus: document.getElementById("medAuditStatus"),
-      medAuditDetails: document.getElementById("medAuditDetails"),
-      medAuditList: document.getElementById("medAuditList"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
       exportPriorContextButton: document.getElementById("exportPriorContextButton"),
       copySourceRoundsPromptButton: document.getElementById("copySourceRoundsPromptButton"),
       copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
+      copyMedicationSafetyPromptButton: document.getElementById("copyMedicationSafetyPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
       copyAdmissionPromptButton: document.getElementById("copyAdmissionPromptButton"),
       exportAdmissionContextButton: document.getElementById("exportAdmissionContextButton"),
@@ -3312,8 +3302,7 @@ Before writing the final answer, silently identify:
 2. The key clinical uncertainties for today.
 3. Bedside questions that clarify symptom trajectory, red flags, function, safety, treatment response, and patient concerns.
 4. Focused physical exam findings that would confirm improvement, worsening, complications, or management-relevant severity.
-5. If a Medication Administration Audit is provided, identify only medication-administration issues that should change a safety-critical symptom question, focused exam item, or bedside check today.
-6. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
+5. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
 
 Do not show this reasoning. Show only the final checklist.
 </internal_process>
@@ -3342,7 +3331,6 @@ For reflex exams, prefer a summary pattern item unless exact right-left reflexes
 
 Do not include generic review-of-systems questions.
 Do not include a full head-to-toe exam.
-If a Medication Administration Audit is provided, use it only for high-yield bedside safety checks. Do not add routine medication reconciliation questions or make the checklist longer because of it.
 Do not include teaching, explanations, citations, caveats, or oral presentation text.
 Do not mention that the note is de-identified.
 </content_rules>
@@ -3480,7 +3468,7 @@ Synthesize the information into clinically meaningful language. Emphasize today'
 Use only information present in the source context or the new checklist findings.
 Do not invent diagnoses, test results, treatments, vitals, exam findings, or plans.
 Do not invent trends. Only call a finding improved, worse, new, stable, high, or low if that is supported by the source context, the new checklist findings, or clinically unambiguous reference context.
-If a Medication Administration Audit is provided, treat it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Mention only clinically relevant medication peculiarities, missed/not-documented administrations, held/refused/not-given medications, or dose/frequency/route mismatches. Use cautious language such as "verify in MAR" or "not found in pasted MAR"; do not call something a medication error or clinically inappropriate dose unless the source itself supports that.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in MAR" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
 Do not over-localize neurologic findings. Preserve uncertainty around differential diagnosis and localization unless the source clearly supports a conclusion.
 Ignore items marked not assessed, [not assessed], left blank, containing only underscores, or otherwise not answered.
 If a checklist finding conflicts with the source context, state the discordance clearly and clinically.
@@ -3496,11 +3484,10 @@ Before writing the final answer, silently:
 3. Extract the clinically important objective and focused exam findings.
 4. Identify the highest-impact interval changes and red flags.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context or checklist findings.
-6. Review any Medication Administration Audit and decide which medication administration issues matter for today's assessment, management, or team follow-up.
-7. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
-8. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
-9. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
-10. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
+6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+7. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
+8. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
+9. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
@@ -3626,7 +3613,7 @@ Before finalizing, silently verify:
 10. If service or role context was provided, SUBJECTIVE under Management to date includes a supported summary of what our service has done or is following.
 11. If this is a consult workflow, SUBJECTIVE under One-liner includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
 12. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
-13. Any Medication Administration Audit findings are mentioned only when clinically relevant, worded as items to verify, and integrated into Medications, Management to date, or the relevant problem plan without clutter.
+13. Any separately generated medication safety findings are mentioned only when clinically relevant, worded as items to verify, and integrated into Medications, Management to date, or the relevant problem plan without clutter.
 14. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
 15. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
 16. The output is concise, with no boilerplate and no copied checklist labels.
@@ -3721,7 +3708,7 @@ Help the student understand what is going on, what matters today, what to verify
 Use only information present in the source context plus standard medical knowledge needed to explain clinical significance.
 Do not invent overnight events, new symptoms, vitals, labs, exam findings, diagnoses, treatments, consult recommendations, or plans.
 Do not claim something improved, worsened, resolved, or newly occurred unless the source clearly supports that timeline.
-If a Medication Administration Audit is provided, treat it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Mention only clinically relevant medication peculiarities, missed/not-documented administrations, held/refused/not-given medications, or dose/frequency/route mismatches. Use cautious language such as "verify in MAR" or "not found in pasted MAR"; do not call something a medication error or clinically inappropriate dose unless the source itself supports that.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in MAR" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
 If current-day bedside findings are missing, clearly mark them as items to verify rather than facts.
 Preserve uncertainty around the differential diagnosis, localization, severity, and plan.
 Do not include identifiers or PHI.
@@ -3735,9 +3722,8 @@ Before writing the final answer, silently:
 3. Identify red flags, complications, discharge barriers, and management decisions that could change today.
 4. Decide what the student should verify at bedside and what focused exam would be highest yield.
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context.
-6. Review any Medication Administration Audit and decide which medication administration issues matter for rounds, team follow-up, or medication reconciliation.
-7. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
-8. Draft a concise spoken rounds update using only supported information.
+6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
+7. Draft a concise spoken rounds update using only supported information.
 
 Do not show this reasoning. Show only the final report.
 </internal_process>
@@ -3858,7 +3844,7 @@ Before finalizing, silently verify:
 7. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
 9. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
-10. Any Medication Administration Audit findings are mentioned only when clinically relevant, worded as items to verify, and integrated into medication reconciliation, rounds priorities, or the relevant problem plan without clutter.
+10. Any separately generated medication safety findings are mentioned only when clinically relevant, worded as items to verify, and integrated into medication reconciliation, rounds priorities, or the relevant problem plan without clutter.
 11. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
 12. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
 13. The output is concise, with no boilerplate and no copied source-note blocks.
@@ -3885,7 +3871,7 @@ Make the teaching practical for bedside care, prerounding, presenting, and follo
 Use only information present in the note plus standard medical knowledge needed to explain it.
 Do not invent missing history, diagnoses, test results, exam findings, treatments, or plans.
 If something is uncertain or missing, say what cannot be concluded and what the student should clarify.
-If a Medication Administration Audit is provided, explain it as an ordered-versus-given verification aid from pasted Epic orders/MAR text. Teach the student to verify flagged items in the live MAR and to avoid calling something a medication error unless confirmed by the team or chart.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, explain them as items to verify with the chart, live MAR, pharmacist, or team. Avoid calling something a medication error unless confirmed by the team or chart.
 Do not include identifiers or PHI.
 Do not give patient-specific orders as if you are the treating team. Frame management as what the team appears to be doing, what the student should understand, and what questions to ask.
 </source_rules>
@@ -3933,7 +3919,7 @@ DATA INTERPRETATION
 Explain the important vitals, physical exam findings, labs, imaging, microbiology, and trends. Say what is normal, abnormal, improving, worsening, or uncertain only when supported.
 
 MEDICATIONS AND TREATMENTS
-Explain the important medications, fluids, oxygen or respiratory support, procedures, consults, and pending studies. Include why they are being used, what to monitor, common adverse effects or safety issues relevant to this patient, and any clinically relevant Medication Administration Audit findings that should be verified before rounds.
+Explain the important medications, fluids, oxygen or respiratory support, procedures, consults, and pending studies. Include why they are being used, what to monitor, and common adverse effects or safety issues relevant to this patient.
 
 WHAT TO DO BEFORE ROUNDS
 Give a practical prerounding checklist for this patient: what to ask, what to examine, what labs or studies to check, what tasks to follow up, and what changes would be urgent.
@@ -3963,7 +3949,7 @@ Give a focused study plan for tonight: 5 to 8 topics, why each matters for this 
 
 UNCERTAINTIES AND SAFETY CHECKS
 List what is missing, what could be dangerous if missed, and what claims should not be made from the note alone.
-If a Medication Administration Audit is present, include missed/not-documented administrations, held/refused medications, dose/frequency/route mismatches, or unexpected administrations as verification tasks only when clinically relevant.
+If separate OpenEvidence medication safety findings are present earlier in the same conversation, include only clinically relevant verified concerns as safety checks.
 </output_format>
 
 <final_self_check>
@@ -3977,11 +3963,74 @@ Before finalizing, silently verify:
 7. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
 9. HOW TO PRESENT THIS PATIENT organizes medications by indication or PMH problem and does not guess unclear indications.
-10. Medication Administration Audit findings are explained as items to verify, not definitive errors, and only clinically relevant items are elevated.
+10. Separately generated medication safety findings are explained as items to verify, not definitive errors, and only clinically relevant items are elevated.
 11. HOW TO PRESENT THIS PATIENT tailors content to the selected service and avoids endocrine-only labels unless endocrine issues are relevant.
 12. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
 13. No PHI or identifiers appear.
 14. The output helps the student understand, preround, present, and care thoughtfully.
+</final_self_check>`;
+
+    const medicationSafetyPromptInstructions = `<role>
+You are an experienced attending physician and medication safety reviewer helping a third-year medical student prepare for rounds.
+</role>
+
+<task>
+Review the patient context already provided earlier in this same OpenEvidence conversation and identify medication-related issues that should be verified before rounds.
+</task>
+
+<same_conversation_context>
+Use the patient context, medication orders, MAR/administration record, active diagnoses, vitals, labs, renal function, hepatic function, weight, allergies, procedures, service context, and clinical trajectory already provided earlier in this same OpenEvidence conversation.
+Do not ask the user to paste the entire source note again unless this conversation truly does not contain medication orders or MAR context.
+</same_conversation_context>
+
+<safety_focus>
+Look specifically for possible medical errors or items that seem off, including:
+- unusual doses, dose ranges, or frequencies
+- renal, hepatic, age, weight, or route-related dose concerns
+- duplicate therapy or therapeutic overlap
+- contraindications or medication-disease conflicts
+- medication-lab mismatches such as potassium, creatinine, INR, glucose, sodium, QT risk, platelets, or drug levels
+- missed, held, refused, delayed, or not-documented administrations
+- medications administered without an obvious matching active order
+- high-risk interactions or combinations
+- timing issues around procedures, anticoagulation, insulin, steroids, antibiotics, vasopressors, electrolytes, opioids, sedatives, immunosuppressants, antiepileptics, and chemotherapy
+- missing prophylaxis, missing home critical meds, or meds that may need restart/hold clarification
+</safety_focus>
+
+<caution_rules>
+Use cautious verification language.
+Do not declare a medication error unless the provided chart context directly proves it.
+Use phrases such as "verify in MAR", "possible concern", "not found in provided MAR", "may be appropriate if...", "ask pharmacy/team", and "needs confirmation".
+Distinguish true high-priority safety concerns from routine medication reconciliation noise.
+Ignore issues that are speculative, unsupported, or clinically low-yield for rounds.
+</caution_rules>
+
+<output_format>
+Use plain text only.
+Use exactly these section headers:
+
+HIGH PRIORITY VERIFY BEFORE ROUNDS
+POSSIBLE DOSE OR SAFETY CONCERNS
+POSSIBLE MISSED HELD OR UNEXPECTED ADMINISTRATIONS
+QUESTIONS TO ASK TEAM OR NURSING
+LIKELY OKAY OR NO ACTION NEEDED
+
+Under each section, use concise bullets.
+For each concern, include:
+- medication or medication class
+- what seems off
+- why it matters clinically for this patient
+- exactly what to verify before rounds
+If no important issue is found in a section, write "None found from the provided context."
+</output_format>
+
+<final_self_check>
+Before finalizing, silently verify:
+1. Every concern is grounded in the prior conversation context.
+2. No full source note is repeated.
+3. No PHI or identifiers appear.
+4. The output helps the student catch possible medication safety problems before rounds.
+5. The output is cautious and does not overstate unconfirmed errors.
 </final_self_check>`;
 
     function presentationPromptIntro() {
@@ -4931,7 +4980,6 @@ Sensory level present: No / Yes, at ___`;
       const admissionContext = formatAdmissionContext();
       let message = "Normal workflow uses the same OpenEvidence conversation.";
       let hasContext = false;
-      let audit = null;
 
       if (state.conversationContextReady) {
         message = "Update prompt will use the same OpenEvidence conversation context.";
@@ -4939,21 +4987,12 @@ Sensory level present: No / Yes, at ___`;
       } else if (state.scrubbedNote) {
         message = "Fallback mode: update prompt can include this browser's de-identified source context.";
         hasContext = true;
-        audit = currentMedicationAuditFromText(state.scrubbedNote);
       } else if (admissionContext) {
         message = "Fallback mode: update prompt can include this browser's admission context.";
         hasContext = true;
       } else if (state.importedContext) {
         message = "Fallback mode: update prompt can include imported context.";
         hasContext = true;
-        audit = auditMedicationAdministration(state.importedContext.text);
-      }
-
-      const auditCount = medicationAuditActionCount(audit);
-      if (audit?.hasMedicationSource) {
-        message += auditCount
-          ? ` Medication audit has ${auditCount} item${auditCount === 1 ? "" : "s"} to verify.`
-          : " Medication audit found no pasted-MAR discrepancies.";
       }
 
       elements.sourceContextStatus.textContent = message;
@@ -5272,7 +5311,7 @@ Sensory level present: No / Yes, at ___`;
       }
 
       let score = index < 35 ? 34 : 0;
-      if (/^(?:SOAP NOTE|HANDOFF SUMMARY|ADDITIONAL LABS|MEDICATION ORDERS|Chief Complaint|Admitting Diagnosis|One-line summary|Interval History|Yesterday|Overnight|This AM|Assessment|ASSESSMENT|Plan|OBJECTIVE|Vitals|Vital Signs|Physical Exam|Labs|Imaging|Hospital Course|Course by Date|Pending|Consult|Active Consultants|Medication Administration Audit)/i.test(text)) {
+      if (/^(?:SOAP NOTE|HANDOFF SUMMARY|ADDITIONAL LABS|MEDICATION ORDERS|Chief Complaint|Admitting Diagnosis|One-line summary|Interval History|Yesterday|Overnight|This AM|Assessment|ASSESSMENT|Plan|OBJECTIVE|Vitals|Vital Signs|Physical Exam|Labs|Imaging|Hospital Course|Course by Date|Pending|Consult|Active Consultants)/i.test(text)) {
         score += 95;
       }
       if (/^#/.test(text) || /^[A-Z][A-Z0-9 /&()-]{3,}:?$/.test(text)) {
@@ -5355,30 +5394,6 @@ Sensory level present: No / Yes, at ___`;
       return `${compacted}${suffix}`;
     }
 
-    function compactMedicationAuditForPrompt(text, maxChars = 2600) {
-      const clean = String(text || "").trim();
-      if (clean.length <= maxChars) {
-        return clean;
-      }
-      const lines = clean.split(/\r?\n/).filter((line) => line.trim());
-      const kept = [];
-      let used = 0;
-      for (const line of lines) {
-        const isHeader = /^[A-Z][A-Za-z /-]+:$/.test(line.trim()) || /^Medication Administration Audit/i.test(line);
-        const isActionable = /\b(?:missed|not documented|mismatch|held|refused|not given|without matching order|verify|unexpected|dose|route|frequency|timing)\b/i.test(line);
-        if (!isHeader && !isActionable) {
-          continue;
-        }
-        const added = line.length + 1;
-        if (used + added > maxChars) {
-          break;
-        }
-        kept.push(line);
-        used += added;
-      }
-      return `${kept.join("\n").trim()}\n\n[Medication audit shortened locally; verify details in the live MAR.]`;
-    }
-
     function compactXmlPromptBlock(prompt, tag, maxChars, formatter = compactClinicalTextForPrompt) {
       const regex = new RegExp(`<${tag}>\\n([\\s\\S]*?)\\n<\\/${tag}>`, "g");
       return prompt.replace(regex, (full, inner) => {
@@ -5390,8 +5405,8 @@ Sensory level present: No / Yes, at ___`;
     function compactLabeledPromptBlock(prompt, label, nextLabels, maxChars) {
       const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const lookahead = nextLabels.length
-        ? `(?=\\n\\n(?:${nextLabels.map((item) => item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}):|\\n\\n<medication_administration_audit>|\\n\\nNew checklist answers|$)`
-        : "(?=\\n\\n<medication_administration_audit>|\\n\\nNew checklist answers|$)";
+        ? `(?=\\n\\n(?:${nextLabels.map((item) => item.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}):|\\n\\nNew checklist answers|$)`
+        : "(?=\\n\\nNew checklist answers|$)";
       const regex = new RegExp(`${escapedLabel}:\\n([\\s\\S]*?)${lookahead}`, "g");
       return prompt.replace(regex, (full, content) => {
         const compacted = compactClinicalTextForPrompt(content, maxChars);
@@ -5413,7 +5428,6 @@ Sensory level present: No / Yes, at ___`;
       if (text.length > openEvidencePromptTargetChars) {
         text = compactXmlPromptBlock(text, "patient_context", 8500);
         text = compactXmlPromptBlock(text, "source_context", 8500);
-        text = compactXmlPromptBlock(text, "medication_administration_audit", 2600, compactMedicationAuditForPrompt);
         text = compactLabeledPromptBlock(text, "De-identified source note", ["Admission intake information"], 8500);
         text = compactLabeledPromptBlock(text, "Admission intake information", ["De-identified source note"], 5000);
         shortened = text !== original;
@@ -5427,7 +5441,6 @@ Sensory level present: No / Yes, at ___`;
       if (text.length > openEvidencePromptTargetChars) {
         text = compactXmlPromptBlock(text, "patient_context", 5000);
         text = compactXmlPromptBlock(text, "source_context", 5000);
-        text = compactXmlPromptBlock(text, "medication_administration_audit", 1600, compactMedicationAuditForPrompt);
         text = compactLabeledPromptBlock(text, "De-identified source note", ["Admission intake information"], 5000);
         text = compactLabeledPromptBlock(text, "Admission intake information", ["De-identified source note"], 3200);
         shortened = true;
@@ -5484,7 +5497,7 @@ Sensory level present: No / Yes, at ___`;
       lines.forEach((line) => {
         const trimmed = line.trim();
         const startsClinicalSection =
-          /^(SOAP NOTE|ADDITIONAL LABS|HANDOFF SUMMARY|MEDICATION ORDERS|Medication Administration Audit|Chief Complaint|Admitting Diagnosis|One-line summary|Interval History|ASSESSMENT|Assessment|Plan|OBJECTIVE|Objective|Vital Signs|Vitals|Physical Exam|Labs|Imaging|Hospital Course|Course by Date|Pending|Consult|Active Consultants|Medications|Scheduled Medications|PRN Medications)\b/i.test(trimmed) ||
+          /^(SOAP NOTE|ADDITIONAL LABS|HANDOFF SUMMARY|MEDICATION ORDERS|Chief Complaint|Admitting Diagnosis|One-line summary|Interval History|ASSESSMENT|Assessment|Plan|OBJECTIVE|Objective|Vital Signs|Vitals|Physical Exam|Labs|Imaging|Hospital Course|Course by Date|Pending|Consult|Active Consultants|Medications|Scheduled Medications|PRN Medications)\b/i.test(trimmed) ||
           /^#{1,3}\s*\S/.test(trimmed) ||
           /^[A-Z][A-Z0-9 /&()+-]{6,}:?$/.test(trimmed);
 
@@ -5581,7 +5594,7 @@ ${chunk}
 
 <same_conversation_context>
 The de-identified patient source context was provided in the previous CASE CONTEXT MESSAGE prompts in this same OpenEvidence conversation.
-Use all previous messages for this case, including notes, labs/results, handoff, medication/MAR audit, service profile, consult question, hospital course, and chronology.
+Use all previous messages for this case, including notes, labs/results, handoff, medication orders/MAR source text, service profile, consult question, hospital course, and chronology.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier messages.
 </same_conversation_context>
 
@@ -5864,6 +5877,7 @@ Now create the initial rounds report for this case.`;
       elements.exportPriorContextButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPreview;
       elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
+      elements.copyMedicationSafetyPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.exportAdmissionContextButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
@@ -5872,12 +5886,14 @@ Now create the initial rounds report for this case.`;
       elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       elements.copySummaryChecklistPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasReviewedPriorContext : hasAdmissionContext);
       elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
+      elements.copySummaryMedicationSafetyPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasReviewedPriorContext : false);
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
         elements.scrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
         elements.exportPriorContextButton.disabled = isPrior && !hasReviewedPreview;
         elements.copySourceRoundsPromptButton.disabled = isPrior && !hasReviewedPriorContext;
         elements.copyTeachingPromptButton.disabled = isPrior && !hasReviewedPriorContext;
+        elements.copyMedicationSafetyPromptButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
         elements.copyAdmissionPromptButton.disabled = !isPrior && (!hasAdmissionContext || !initialCopied);
         elements.exportAdmissionContextButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionRoundsPromptButton.disabled = !isPrior && !hasAdmissionContext;
@@ -5886,6 +5902,7 @@ Now create the initial rounds report for this case.`;
         elements.copySummaryRoundsPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
         elements.copySummaryChecklistPromptButton.disabled = isPrior ? (!hasReviewedPriorContext || !initialCopied) : (!hasAdmissionContext || !initialCopied);
         elements.copySummaryTeachingPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
+        elements.copySummaryMedicationSafetyPromptButton.disabled = isPrior ? (!hasReviewedPriorContext || !initialCopied) : true;
       }
     }
 
@@ -5921,54 +5938,9 @@ Now create the initial rounds report for this case.`;
       return blocks.join("\n\n");
     }
 
-    function currentMedicationAuditFromText(text) {
-      const audit = auditMedicationAdministration(text);
-      state.medicationAudit = audit.hasMedicationSource ? audit : null;
-      return state.medicationAudit;
-    }
-
-    function currentMedicationAuditPromptBlock() {
-      if (state.scrubbedNote) {
-        return formatMedicationAuditForPrompt(currentMedicationAuditFromText(state.scrubbedNote));
-      }
-      if (state.importedContext?.text) {
-        return formatMedicationAuditForPrompt(auditMedicationAdministration(state.importedContext.text));
-      }
-      return "";
-    }
-
-    function renderMedicationAudit(audit) {
-      if (!elements.medAuditStatus || !elements.medAuditDetails || !elements.medAuditList) {
-        return;
-      }
-      const actionable = medicationAuditActionCount(audit);
-      if (!audit?.hasMedicationSource) {
-        elements.medAuditStatus.textContent = "Medication audit: no medication/MAR text provided.";
-        elements.medAuditStatus.classList.add("is-empty");
-        elements.medAuditDetails.hidden = true;
-        elements.medAuditList.innerHTML = "";
-        return;
-      }
-      elements.medAuditStatus.textContent = actionable
-        ? `Medication audit: ${actionable} item${actionable === 1 ? "" : "s"} to verify.`
-        : "Medication audit: no discrepancies detected in pasted MAR text.";
-      elements.medAuditStatus.classList.toggle("is-empty", actionable === 0);
-      elements.medAuditDetails.hidden = false;
-      elements.medAuditList.innerHTML = "";
-      const findings = audit.issues.length
-        ? audit.issues.map((item) => `${item.category}: ${item.message}`)
-        : ["No missed doses, held/refused doses, or dose/frequency/route mismatches detected from pasted medication/MAR text. Verify against the live MAR before rounds."];
-      findings.forEach((finding) => {
-        const item = document.createElement("li");
-        item.textContent = finding;
-        elements.medAuditList.appendChild(item);
-      });
-    }
-
     function clearScrubPreview() {
       state.scrubbedNote = "";
       state.scrubResult = null;
-      state.medicationAudit = null;
       elements.scrubbedNoteInput.value = "";
       elements.scrubReview.hidden = true;
       elements.scrubVerdict.textContent = "Review before copying.";
@@ -5976,7 +5948,6 @@ Now create the initial rounds report for this case.`;
       elements.scrubSummary.textContent = "0 redactions";
       elements.scrubCounts.innerHTML = "";
       elements.scrubFlags.innerHTML = "";
-      renderMedicationAudit(null);
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
@@ -5984,8 +5955,6 @@ Now create the initial rounds report for this case.`;
 
     function syncScrubbedNote() {
       state.scrubbedNote = elements.scrubbedNoteInput.value.trim();
-      currentMedicationAuditFromText(state.scrubbedNote);
-      renderMedicationAudit(state.medicationAudit);
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
@@ -6025,7 +5994,6 @@ Now create the initial rounds report for this case.`;
         /De-identified patient note:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified SOAP note, labs, handoff summaries, and other context:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
         /De-identified SOAP note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow teach|$)/gi,
-        /Medication Administration Audit:\n([\s\S]*?)(?:\n\nNew checklist answers and exam findings:|\n\nNow create|\n\nNow teach|$)/gi,
         /Admission intake information:\n([\s\S]*?)(?:\n<\/patient_context>|\n\n<new_admission_focus>|\n\nNew checklist answers and exam findings:|$)/gi,
         /De-identified source note:\n([\s\S]*?)(?:\n\nAdmission intake information:|\n\nNew checklist answers and exam findings:|$)/gi,
         /Checklist to rewrite:\n([\s\S]*)$/gi,
@@ -6114,28 +6082,34 @@ Now create the initial rounds report for this case.`;
       elements.exportPriorContextButton.disabled = isBusy;
       elements.copySourceRoundsPromptButton.disabled = isBusy;
       elements.copyTeachingPromptButton.disabled = isBusy;
+      elements.copyMedicationSafetyPromptButton.disabled = isBusy;
       elements.exportSummaryContextButton.disabled = isBusy;
       elements.copySummaryRoundsPromptButton.disabled = isBusy;
       elements.copySummaryChecklistPromptButton.disabled = isBusy;
       elements.copySummaryTeachingPromptButton.disabled = isBusy;
+      elements.copySummaryMedicationSafetyPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.exportPriorContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySourceRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copyMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.exportSummaryContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryChecklistPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copySummaryMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
       elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
       elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
       elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.copyMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
       elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
       elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
       elements.copySummaryChecklistPromptButton.textContent = isBusy ? "Working..." : "Copy checklist prompt";
       elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.copySummaryMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
     }
 
@@ -6176,7 +6150,6 @@ Now create the initial rounds report for this case.`;
         item.textContent = flag;
         elements.scrubFlags.appendChild(item);
       });
-      renderMedicationAudit(currentMedicationAuditFromText(result.text));
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
@@ -6317,11 +6290,11 @@ Now create the initial rounds report for this case.`;
       return `${checklistPrompt}
 
 <context_type>
-Prior SOAP note, lab results, handoff summaries, medication/MAR audit, and/or other context were already provided earlier in this same OpenEvidence conversation.
+Prior SOAP note, lab results, handoff summaries, medication orders/MAR source text, and/or other context were already provided earlier in this same OpenEvidence conversation.
 </context_type>${userContext ? `\n\n${userContext}` : ""}
 
 <same_conversation_context>
-Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication/MAR audit, selected service profile, consult question, hospital course, and chronology.
+Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication orders/MAR source text, selected service profile, consult question, hospital course, and chronology.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
 
@@ -6379,7 +6352,6 @@ Now produce the final bedside pre-rounding checklist only.`;
         return "";
       }
       const userContext = buildUserContextBlock();
-      const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(sourceContext.text));
 
       return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
@@ -6390,9 +6362,20 @@ ${sourceContext.contextType}
 <patient_context>
 ${sourceContext.label}:
 ${sourceContext.text}
-</patient_context>${medicationAuditBlock ? `\n\n<medication_administration_audit>\n${medicationAuditBlock}\n</medication_administration_audit>` : ""}
+</patient_context>
 
 Now teach me this patient.`;
+    }
+
+    function buildMedicationSafetyPrompt() {
+      const userContext = buildUserContextBlock();
+      return `${medicationSafetyPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
+
+<workflow_note>
+The initial rounds prompt has already been copied into this OpenEvidence conversation. Use that existing context for medication safety review, including any de-identified medication orders and MAR text included earlier.
+</workflow_note>
+
+Now perform the medication safety review only.`;
     }
 
     async function buildSourceRoundsReportPromptPackage() {
@@ -6401,10 +6384,9 @@ Now teach me this patient.`;
         return null;
       }
       const userContext = buildUserContextBlock();
-      const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(sourceContext.text));
       const caseKey = "";
       const contextText = `${sourceContext.label}:
-${sourceContext.text}${medicationAuditBlock ? `\n\nMedication Administration Audit:\n${medicationAuditBlock}` : ""}`;
+${sourceContext.text}`;
 
       const singlePrompt = `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
@@ -6486,8 +6468,6 @@ Now produce the final checklist only.`;
       const promptIntro = sourceBlocks.length
         ? presentationPromptIntro(Boolean(state.scrubbedNote || importedContext), Boolean(admissionContext || importedContext?.sourceMode === "admission"))
         : sameConversationPresentationPromptInstructions;
-      const medicationAuditSource = state.scrubbedNote || importedContext?.text || "";
-      const medicationAuditBlock = sourceBlocks.length ? formatMedicationAuditForPrompt(auditMedicationAdministration(medicationAuditSource)) : "";
       const sameConversationBlock = sourceBlocks.length ? "" : `
 
 <same_conversation_context>
@@ -6497,7 +6477,7 @@ Update that earlier rounds report using only the new bedside interview and focus
 Do not ask the user to paste the entire source note again unless this conversation truly does not contain the earlier patient context.
 If source context is missing from this conversation, say that the prior context is missing rather than inventing it.
 </same_conversation_context>`;
-      return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sameConversationBlock}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}${medicationAuditBlock ? `\n\n<medication_administration_audit>\n${medicationAuditBlock}\n</medication_administration_audit>` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+      return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sameConversationBlock}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
     }
 
     configureManifest();
@@ -7414,7 +7394,6 @@ ${rawChecklist.trim()}`;
       state.rawMedicationText = "";
       state.scrubbedNote = "";
       state.scrubResult = null;
-      state.medicationAudit = null;
       state.admission = {};
       state.promptCollapsed = false;
       state.checklistFirstMode = false;
@@ -7889,6 +7868,18 @@ heparin 5000 units held by provider`;
       });
     }
 
+    async function copyMedicationSafetyPrompt(statusElement = elements.promptStatus) {
+      const prompt = buildMedicationSafetyPrompt();
+      return copyPromptWithPhiWarning(prompt, statusElement, "Medication safety prompt copied. Paste it into the same OpenEvidence conversation.", {
+        title: "PHI safety check for medication safety prompt",
+        reviewTarget: "source",
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000,
+        fitToOpenEvidence: false
+      });
+    }
+
     elements.scrubAndCopyButton.addEventListener("click", async () => {
       try {
         const prompt = await buildPriorChecklistPrompt();
@@ -7933,6 +7924,14 @@ heparin 5000 units held by provider`;
       }
     });
 
+    elements.copyMedicationSafetyPromptButton.addEventListener("click", async () => {
+      try {
+        await copyMedicationSafetyPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
     elements.copySummaryRoundsPromptButton.addEventListener("click", async () => {
       try {
         await copySourceRoundsReportPrompt();
@@ -7952,6 +7951,14 @@ heparin 5000 units held by provider`;
     elements.copySummaryTeachingPromptButton.addEventListener("click", async () => {
       try {
         await copyPatientTeachingPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copySummaryMedicationSafetyPromptButton.addEventListener("click", async () => {
+      try {
+        await copyMedicationSafetyPrompt();
       } catch (error) {
         console.error(error);
       }
