@@ -26,6 +26,9 @@ for (const file of files) {
 }
 
 const html = readFileSync("index.html", "utf8");
+if (/Use one OpenEvidence conversation for the patient/i.test(html)) {
+  throw new Error("Remove implementation-style OpenEvidence workflow copy from the visible UI.");
+}
 const scriptMatch = html.match(/<script\s+type="module">([\s\S]*?)<\/script>/i);
 if (!scriptMatch) {
   throw new Error("Could not find the module script in index.html.");
@@ -48,6 +51,17 @@ if (/\bfunction\s+(?:modelPredictionsToEntities|addStructuredSafeHarborEntities|
 }
 if (!/PHI safety check for medication safety prompt[\s\S]{0,400}reviewScope:\s*"source-free"/.test(moduleScript)) {
   throw new Error("Medication safety prompt must be marked source-free for PHI review.");
+}
+for (const requiredSnippet of [
+  "cleanOutputLabel",
+  "cleanOutputValue",
+  "dashOptionMatch",
+  "questionOptionMatch",
+  "format-fix prompt"
+]) {
+  if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
+    throw new Error(`Expected checklist usability guardrail not found: ${requiredSnippet}`);
+  }
 }
 const worker = readFileSync("deid-worker.js", "utf8");
 if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
