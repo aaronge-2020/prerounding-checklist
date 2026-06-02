@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 
 const files = [
   "deid.js",
+  "deid-worker.js",
   "scripts/deid-fixtures.js",
   "scripts/test-deid.js",
   "scripts/benchmark-deid.js",
@@ -34,7 +35,7 @@ const moduleScript = scriptMatch[1];
 if (!/from\s+["']\.\/deid\.js["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared deid.js module.");
 }
-for (const importedName of ["createDeidentifier", "cleanupDeidArtifacts", "normalizeResidualTemporalPhi"]) {
+for (const importedName of ["cleanupDeidArtifacts", "deidentifyTextStructuredOnly", "normalizeResidualTemporalPhi"]) {
   if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
     throw new Error(`index.html must use shared ${importedName} from deid.js.`);
   }
@@ -44,6 +45,10 @@ if (!/\bscanResidualPhi\s+as\s+scanResidualPhiShared\b/.test(moduleScript)) {
 }
 if (/\bfunction\s+(?:modelPredictionsToEntities|addStructuredSafeHarborEntities|filterLikelyFalsePositiveEntities|scanResidualPhi)\b/.test(moduleScript)) {
   throw new Error("index.html contains duplicate inline de-id helpers; keep de-identification logic in deid.js.");
+}
+const worker = readFileSync("deid-worker.js", "utf8");
+if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
+  throw new Error("deid-worker.js must run the shared deidentifier from deid.js.");
 }
 
 const scratch = mkdtempSync(join(tmpdir(), "preround-syntax-"));

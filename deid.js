@@ -2098,19 +2098,29 @@ export function createDeidentifier(options = {}) {
     onModelStatus(update);
   }
 
-  async function loadModel() {
+  function reportProgress(callback, update) {
+    if (typeof callback === "function") {
+      callback(update);
+    }
+  }
+
+  async function loadModel(loadOptions = {}) {
+    const onProgress = loadOptions.onProgress;
     if (!pipelineFactory) {
       throw new Error("No model pipeline factory configured.");
     }
     if (loadedModel) {
+      reportProgress(onProgress, { stage: "model-ready", message: "Local PII model ready.", percent: 0.18 });
       return loadedModel;
     }
     if (!modelPromise) {
       setStatus({ message: "Preparing local PII model. First load can take a minute.", ready: false });
+      reportProgress(onProgress, { stage: "model-loading", message: "Preparing local PII model. First load can take a minute.", percent: 0.04 });
       modelPromise = (async () => {
         const errors = [];
         for (const candidate of modelCandidates) {
           try {
+            reportProgress(onProgress, { stage: "model-loading", message: `Loading ${candidate.modelId}...`, percent: 0.08 });
             const loadedPipeline = await pipelineFactory("token-classification", candidate.modelId, candidate.options || {});
             loadedModel = {
               pipeline: loadedPipeline,
@@ -2123,6 +2133,7 @@ export function createDeidentifier(options = {}) {
               modelId: loadedModel.modelId,
               modelStatus: loadedModel.modelStatus
             });
+            reportProgress(onProgress, { stage: "model-ready", message: "Local PII model ready.", percent: 0.18 });
             return loadedModel;
           } catch (error) {
             errors.push(error);
@@ -2139,13 +2150,21 @@ export function createDeidentifier(options = {}) {
     return modelPromise;
   }
 
-  async function detectModelEntities(rawText) {
+  async function detectModelEntities(rawText, detectOptions = {}) {
+    const onProgress = detectOptions.onProgress;
     try {
-      const model = await loadModel();
+      const model = await loadModel({ onProgress });
       const entities = [];
       const failedChunks = [];
+      const chunks = splitTextForModel(rawText);
+      let completedChunks = 0;
       async function runChunk(chunk, depth = 0) {
         try {
+          reportProgress(onProgress, {
+            stage: "model-running",
+            message: `Scanning with local model (${Math.min(completedChunks + 1, chunks.length)} of ${chunks.length})...`,
+            percent: 0.18 + (completedChunks / Math.max(1, chunks.length)) * 0.5
+          });
           const predictions = await model.pipeline(chunk.text, { ignore_labels: [] });
           entities.push(...modelPredictionsToEntities(chunk.text, predictions || [], chunk.offset));
         } catch (error) {
@@ -2159,8 +2178,14 @@ export function createDeidentifier(options = {}) {
           console.warn("Skipped one de-ID model chunk; structured redaction still runs for the full text.", error);
         }
       }
-      for (const chunk of splitTextForModel(rawText)) {
+      for (const chunk of chunks) {
         await runChunk(chunk);
+        completedChunks += 1;
+        reportProgress(onProgress, {
+          stage: "model-running",
+          message: `Local model pass ${completedChunks} of ${chunks.length} complete...`,
+          percent: 0.18 + (completedChunks / Math.max(1, chunks.length)) * 0.5
+        });
       }
       return {
         entities,
@@ -2170,6 +2195,7 @@ export function createDeidentifier(options = {}) {
       };
     } catch (error) {
       console.warn("Model unavailable; structured redaction only.", error);
+      reportProgress(onProgress, { stage: "structured-fallback", message: "Model unavailable; using structured redaction.", percent: 0.2 });
       return {
         entities: [],
         modelId: null,
@@ -2180,21 +2206,31 @@ export function createDeidentifier(options = {}) {
 
   async function deidentifyText(rawText, runOptions = {}) {
     const mode = runOptions.mode || options.mode || "hybrid";
+    const onProgress = runOptions.onProgress;
+    reportProgress(onProgress, { stage: "starting", message: "Starting local de-identification...", percent: 0.02 });
     if (mode === "structured-only") {
+      reportProgress(onProgress, { stage: "structured", message: "Running structured redaction...", percent: 0.25 });
       return deidentifyTextStructuredOnly(rawText);
     }
 
-    const modelResult = await detectModelEntities(rawText);
+    const modelResult = await detectModelEntities(rawText, { onProgress });
+    reportProgress(onProgress, { stage: "filtering", message: "Filtering model findings...", percent: 0.7 });
     let modelEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(modelResult.entities, rawText));
 
     if (mode === "model-only") {
+      reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.9 });
       return deidentifyFromEntities(rawText, modelEntities, modelResult);
     }
 
+    reportProgress(onProgress, { stage: "structured", message: "Running structured redaction and date conversion...", percent: 0.76 });
     let structuredEntities = filterLikelyFalsePositiveEntities(rawText, mergeEntities(addStructuredSafeHarborEntities(rawText, []), rawText));
     modelEntities = modelEntities.filter((entity) => !overlapsAny(entity, structuredEntities));
+    reportProgress(onProgress, { stage: "aliases", message: "Checking repeated names and aliases...", percent: 0.84 });
     const { entities } = expandIdentityGraphEntities(rawText, [...structuredEntities, ...modelEntities]);
-    return deidentifyFromEntities(rawText, entities, modelResult);
+    reportProgress(onProgress, { stage: "redacting", message: "Creating redacted preview...", percent: 0.92 });
+    const result = deidentifyFromEntities(rawText, entities, modelResult);
+    reportProgress(onProgress, { stage: "complete", message: "De-identified preview ready.", percent: 1 });
+    return result;
   }
 
   return {

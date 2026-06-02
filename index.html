@@ -1030,6 +1030,52 @@
       font-weight: 800;
     }
 
+    .deid-progress-panel {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(79, 152, 163, 0.3);
+      border-radius: 14px;
+      padding: 11px 12px;
+      color: #d3edf0;
+      background: rgba(79, 152, 163, 0.1);
+    }
+
+    .deid-progress-panel[hidden] {
+      display: none !important;
+    }
+
+    .deid-progress-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .deid-progress-track {
+      overflow: hidden;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(246, 242, 232, 0.12);
+    }
+
+    .deid-progress-fill {
+      width: 8%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transition: width 180ms ease;
+    }
+
+    .deid-progress-detail {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 750;
+    }
+
     .scrub-review {
       display: grid;
       gap: 10px;
@@ -2654,6 +2700,16 @@ atorvastatin 20 mg given Day 0 evening
 enoxaparin 40 mg held by provider"></textarea>
           <p class="phi-note">The deidentifier model downloads on first use, then runs locally. Automated de-identification reduces PHI risk but can miss identifiers in notes, lab headers, or handoff text, so review the preview before pasting into OpenEvidence.</p>
           <p id="modelStatus" class="model-status" role="status" aria-live="polite"></p>
+          <div id="deidProgressPanel" class="deid-progress-panel" role="status" aria-live="polite" aria-atomic="false" hidden>
+            <div class="deid-progress-top">
+              <span id="deidProgressLabel">De-identifying...</span>
+              <span id="deidProgressPercent">0%</span>
+            </div>
+            <div class="deid-progress-track" aria-hidden="true">
+              <div id="deidProgressFill" class="deid-progress-fill"></div>
+            </div>
+            <p id="deidProgressDetail" class="deid-progress-detail">Starting local scrubber...</p>
+          </div>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
               <div>
@@ -2968,38 +3024,12 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
   </main>
 
   <script type="module">
-    import { env, pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0";
     import {
-      createDeidentifier,
-      DEFAULT_DTYPE,
-      DEFAULT_FALLBACK_MODEL_ID,
-      DEFAULT_PRIMARY_MODEL_ID,
       cleanupDeidArtifacts,
+      deidentifyTextStructuredOnly,
       normalizeResidualTemporalPhi,
       scanResidualPhi as scanResidualPhiShared
     } from "./deid.js";
-
-    env.allowLocalModels = false;
-    env.allowRemoteModels = true;
-    const browserCacheAvailable = typeof caches !== "undefined";
-    env.useBrowserCache = browserCacheAvailable;
-    env.useWasmCache = browserCacheAvailable;
-    if (env.backends?.onnx?.wasm) {
-      const onnxRuntimeWebVersion = "1.26.0-dev.20260416-b7804b056c";
-      const onnxRuntimeBase = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${onnxRuntimeWebVersion}/dist/`;
-      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent || "");
-      env.backends.onnx.wasm.wasmPaths = isSafari
-        ? {
-            mjs: `${onnxRuntimeBase}ort-wasm-simd-threaded.mjs`,
-            wasm: `${onnxRuntimeBase}ort-wasm-simd-threaded.wasm`
-          }
-        : {
-            mjs: `${onnxRuntimeBase}ort-wasm-simd-threaded.asyncify.mjs`,
-            wasm: `${onnxRuntimeBase}ort-wasm-simd-threaded.asyncify.wasm`
-          };
-      env.backends.onnx.wasm.numThreads = 1;
-      env.backends.onnx.wasm.proxy = false;
-    }
 
     const state = {
       sections: [],
@@ -3109,6 +3139,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawHandoffInput: document.getElementById("rawHandoffInput"),
       rawMedicationInput: document.getElementById("rawMedicationInput"),
       modelStatus: document.getElementById("modelStatus"),
+      deidProgressPanel: document.getElementById("deidProgressPanel"),
+      deidProgressLabel: document.getElementById("deidProgressLabel"),
+      deidProgressPercent: document.getElementById("deidProgressPercent"),
+      deidProgressFill: document.getElementById("deidProgressFill"),
+      deidProgressDetail: document.getElementById("deidProgressDetail"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
       scrubVerdict: document.getElementById("scrubVerdict"),
@@ -3258,25 +3293,13 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const contextExportType = "prerounds-context-export";
     const contextSchemaVersion = 1;
     const contextKdfIterations = 250000;
-    const primaryDeidentifierModelId = DEFAULT_PRIMARY_MODEL_ID;
-    const fallbackDeidentifierModelId = DEFAULT_FALLBACK_MODEL_ID;
-    const deidentifierDtype = DEFAULT_DTYPE;
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
     let deferredInstallPrompt = null;
-    const deidentifier = createDeidentifier({
-      pipelineFactory: pipeline,
-      primaryModelId: primaryDeidentifierModelId,
-      fallbackModelId: fallbackDeidentifierModelId,
-      dtype: deidentifierDtype,
-      device: "wasm",
-      onModelStatus(update) {
-        state.modelReady = Boolean(update.ready);
-        elements.offlineModelReady.checked = Boolean(update.ready);
-        if (update.message) {
-          elements.modelStatus.textContent = update.message;
-        }
-      }
-    });
+    let deidWorker = null;
+    let deidWorkerReady = false;
+    let deidWorkerLoading = false;
+    let deidRequestId = 0;
+    const pendingDeidRequests = new Map();
 
     const checklistPrompt = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
@@ -6029,47 +6052,127 @@ Now create the initial rounds report for this case.`;
       };
     }
 
-    async function loadDeidentifierPipeline() {
-      return deidentifier.loadModel();
-    }
-
-    function prepareDeidentifierModel() {
-      if (!deidentifier.isModelLoading() && !deidentifier.isModelReady()) {
-        showToast("Preparing local de-ID model.");
-      }
-      loadDeidentifierPipeline().catch((error) => {
-        console.error(error);
+    function waitForPaint() {
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve));
       });
     }
 
-    function splitTextForModel(rawText, maxChars = 1800, overlap = 180) {
-      if (rawText.length <= maxChars) {
-        return [{ text: rawText, offset: 0 }];
-      }
-
-      const chunks = [];
-      let start = 0;
-      while (start < rawText.length) {
-        let end = Math.min(rawText.length, start + maxChars);
-        if (end < rawText.length) {
-          const newline = rawText.lastIndexOf("\n", end);
-          if (newline > start + Math.floor(maxChars * 0.55)) {
-            end = newline + 1;
-          }
-        }
-
-        chunks.push({ text: rawText.slice(start, end), offset: start });
-        if (end >= rawText.length) {
-          break;
-        }
-        const nextStart = Math.max(0, end - overlap);
-        start = nextStart <= start ? end : nextStart;
-      }
-      return chunks;
+    function showDeidProgress(message = "Starting local scrubber...", percent = 0.02, detail = "") {
+      elements.deidProgressPanel.hidden = false;
+      updateDeidProgress({ message, percent, detail });
     }
 
-    async function detectModelEntities(rawText) {
-      return deidentifier.detectModelEntities(rawText);
+    function updateDeidProgress(update = {}) {
+      const percent = Math.max(0.02, Math.min(1, Number(update.percent) || 0.02));
+      const percentText = `${Math.round(percent * 100)}%`;
+      elements.deidProgressPanel.hidden = false;
+      elements.deidProgressLabel.textContent = update.message || "De-identifying...";
+      elements.deidProgressPercent.textContent = percentText;
+      elements.deidProgressFill.style.width = percentText;
+      elements.deidProgressDetail.textContent = update.detail || "This runs locally in your browser. You can keep the tab open while it works.";
+      if (update.message) {
+        elements.modelStatus.textContent = update.message;
+      }
+    }
+
+    function hideDeidProgress(delay = 0) {
+      window.setTimeout(() => {
+        elements.deidProgressPanel.hidden = true;
+      }, delay);
+    }
+
+    function handleDeidWorkerMessage(event) {
+      const { type, requestId, result, error, update } = event.data || {};
+
+      if (type === "status") {
+        state.modelReady = Boolean(update?.ready);
+        elements.offlineModelReady.checked = Boolean(update?.ready);
+        if (update?.message) {
+          elements.modelStatus.textContent = update.message;
+        }
+        return;
+      }
+
+      if (type === "progress") {
+        const pending = pendingDeidRequests.get(requestId);
+        if (typeof pending?.onProgress === "function") {
+          pending.onProgress(update);
+        } else if (update?.message) {
+          elements.modelStatus.textContent = update.message;
+        }
+        return;
+      }
+
+      const pending = pendingDeidRequests.get(requestId);
+      if (!pending) {
+        return;
+      }
+      pendingDeidRequests.delete(requestId);
+
+      if (type === "result") {
+        pending.resolve(result);
+        return;
+      }
+
+      if (type === "error") {
+        pending.reject(new Error(error?.message || "De-identification worker failed."));
+      }
+    }
+
+    function getDeidWorker() {
+      if (deidWorker) {
+        return deidWorker;
+      }
+      if (typeof Worker === "undefined") {
+        throw new Error("This browser does not support Web Workers.");
+      }
+      deidWorker = new Worker(new URL("./deid-worker.js", import.meta.url), { type: "module" });
+      deidWorker.addEventListener("message", handleDeidWorkerMessage);
+      deidWorker.addEventListener("error", (error) => {
+        pendingDeidRequests.forEach((pending) => pending.reject(error));
+        pendingDeidRequests.clear();
+        deidWorkerReady = false;
+        deidWorkerLoading = false;
+        elements.modelStatus.textContent = "Worker unavailable; using structured redaction fallback.";
+      });
+      return deidWorker;
+    }
+
+    function sendDeidWorkerRequest(type, payload = {}, onProgress = null) {
+      const worker = getDeidWorker();
+      const requestId = ++deidRequestId;
+      return new Promise((resolve, reject) => {
+        pendingDeidRequests.set(requestId, { resolve, reject, onProgress });
+        worker.postMessage({ requestId, type, ...payload });
+      });
+    }
+
+    async function loadDeidentifierPipeline() {
+      if (deidWorkerReady || deidWorkerLoading) {
+        return true;
+      }
+      deidWorkerLoading = true;
+      try {
+        await sendDeidWorkerRequest("prepare");
+        deidWorkerReady = true;
+        state.modelReady = true;
+        elements.offlineModelReady.checked = true;
+        return true;
+      } finally {
+        deidWorkerLoading = false;
+      }
+    }
+
+    function prepareDeidentifierModel() {
+      if (deidWorkerLoading || deidWorkerReady) {
+        return;
+      }
+      elements.modelStatus.textContent = "Preparing local de-ID model in the background...";
+      loadDeidentifierPipeline().catch((error) => {
+        console.warn(error);
+        elements.modelStatus.textContent = "Model not ready yet. De-identification can still run with structured redaction.";
+      });
     }
 
     async function detectPhiEntities(rawText) {
@@ -6114,7 +6217,38 @@ Now create the initial rounds report for this case.`;
     }
 
     async function deidentifyText(rawText) {
-      return deidentifier.deidentifyText(rawText);
+      try {
+        const result = await sendDeidWorkerRequest("deidentify", { text: rawText }, updateDeidProgress);
+        updateDeidProgress({
+          message: "De-identified preview ready.",
+          percent: 1,
+          detail: "Review the redacted preview before copying anything to OpenEvidence."
+        });
+        return result;
+      } catch (error) {
+        console.warn("Worker de-identification failed; using structured redaction fallback.", error);
+        if (String(rawText || "").length > 20000) {
+          updateDeidProgress({
+            message: "De-identification worker unavailable.",
+            percent: 1,
+            detail: "Reload the page and try again. The app will not run a large fallback on the page thread."
+          });
+          throw new Error("De-identification worker unavailable. Reload the page and try again.");
+        }
+        updateDeidProgress({
+          message: "Worker unavailable; using structured redaction fallback...",
+          percent: 0.2,
+          detail: "The page remains responsive. Review the preview carefully before copying."
+        });
+        await waitForPaint();
+        const result = deidentifyTextStructuredOnly(rawText);
+        updateDeidProgress({
+          message: "Structured redaction complete.",
+          percent: 1,
+          detail: "Review the preview carefully before copying."
+        });
+        return result;
+      }
     }
 
     async function scrubSoapNoteText(rawText) {
@@ -6223,12 +6357,20 @@ Now create the initial rounds report for this case.`;
 
       setUtilityBusy(true);
       elements.utilityStatus.textContent = "Running local deidentifier...";
+      showDeidProgress("Starting local de-identification...", 0.02, "The scrubber runs away from the page UI so the app stays responsive.");
+      await waitForPaint();
 
       let result;
       try {
         result = await scrubSoapNoteText(rawText);
       } catch (error) {
         elements.utilityStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
+        updateDeidProgress({
+          message: "De-identification stopped.",
+          percent: 1,
+          detail: "Try again, or review the structured fallback message if one appears."
+        });
+        hideDeidProgress(1600);
         throw error;
       } finally {
         setUtilityBusy(false);
@@ -6236,6 +6378,7 @@ Now create the initial rounds report for this case.`;
 
       renderUtilityScrubResult(result);
       elements.utilityStatus.textContent = "Redacted preview ready. Review before copying.";
+      hideDeidProgress(900);
       requestAnimationFrame(() => {
         elements.utilityReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
@@ -6253,12 +6396,21 @@ Now create the initial rounds report for this case.`;
 
       setScrubBusy(true, "De-identifying...");
       elements.promptStatus.textContent = "Running local PII deidentifier...";
+      showDeidProgress("Starting local de-identification...", 0.02, "The scrubber runs away from the page UI so the app stays responsive.");
+      showToast("De-identifying in the background. This can take a minute for long Epic notes.", { duration: 5000 });
+      await waitForPaint();
 
       let result;
       try {
         result = await scrubSoapNoteText(rawPriorSource);
       } catch (error) {
         elements.promptStatus.textContent = "Could not load or run the deidentifier model. Check your network and try again.";
+        updateDeidProgress({
+          message: "De-identification stopped.",
+          percent: 1,
+          detail: "Try again. The app will keep the raw text local."
+        });
+        hideDeidProgress(1600);
         throw error;
       } finally {
         setScrubBusy(false);
@@ -6268,6 +6420,7 @@ Now create the initial rounds report for this case.`;
       state.scrubbedNote = result.text;
       renderScrubResult(result);
       elements.promptStatus.textContent = "De-identified note, labs, and handoff preview ready. Review before pasting into OpenEvidence.";
+      hideDeidProgress(900);
       requestAnimationFrame(() => {
         elements.scrubReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
