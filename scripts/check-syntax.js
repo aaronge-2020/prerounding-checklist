@@ -46,6 +46,9 @@ if (!/\bscanResidualPhi\s+as\s+scanResidualPhiShared\b/.test(moduleScript)) {
 if (/\bfunction\s+(?:modelPredictionsToEntities|addStructuredSafeHarborEntities|filterLikelyFalsePositiveEntities|scanResidualPhi)\b/.test(moduleScript)) {
   throw new Error("index.html contains duplicate inline de-id helpers; keep de-identification logic in deid.js.");
 }
+if (!/PHI safety check for medication safety prompt[\s\S]{0,400}reviewScope:\s*"source-free"/.test(moduleScript)) {
+  throw new Error("Medication safety prompt must be marked source-free for PHI review.");
+}
 const worker = readFileSync("deid-worker.js", "utf8");
 if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
   throw new Error("deid-worker.js must run the shared deidentifier from deid.js.");

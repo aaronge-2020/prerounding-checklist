@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities } from "../deid.js";
+import { createDeidentifier, deidentifyTextStructuredOnly, modelPredictionsToEntities, scanResidualPhi } from "../deid.js";
 import { assertDeidCase } from "./deid-adversarial.js";
 import { clinicalGuardTerms, makeAdversarialCases, makeDemoLikeCase, makeSyntheticCases } from "./deid-fixtures.js";
 
@@ -152,6 +152,37 @@ assert.equal(
   oneLineChartResult.text,
   "One-line summary: [PATIENT NAME] is a 57-year-old woman. Per [PROVIDER NAME]. Room: [ROOM]. CHG Bath. GLUCOSE BLD.",
   "one-line chart exports should not merge provider, room, and chart labels into a name"
+);
+
+const promptHeadingResidualText = `HIGH PRIORITY VERIFY BEFORE ROUNDS
+POSSIBLE DOSE OR SAFETY CONCERNS
+POSSIBLE MISSED HELD OR UNEXPECTED ADMINISTRATIONS
+QUESTIONS TO ASK TEAM OR NURSING
+LIKELY OKAY OR NO ACTION NEEDED
+No PHI`;
+const promptHeadingWarnings = scanResidualPhi(promptHeadingResidualText);
+assert.deepEqual(promptHeadingWarnings, [], "prompt/output headings must not be flagged as possible full names");
+
+const realResidualPhiText = `Patient: Nora W. Abrahimi
+One-line summary: Ms. Lita Merrill-Stevenson is a 57 y.o. female.
+Per Dr. Hu
+DOB: 5/20/2026
+MRN: 123456
+Room: C3E 54-A
+Phone: 555-123-4567
+Email: patient@example.com
+Address: 123 Main Street
+Accession Number: AB123456`;
+const realResidualPhiWarnings = scanResidualPhi(realResidualPhiText);
+for (const snippet of ["Nora W. Abrahimi", "Ms. Lita Merrill-Stevenson", "Dr. Hu", "DOB: 5/20/2026", "MRN: 123456", "555-123-4567", "patient@example.com", "123 Main Street", "Accession Number: AB123456"]) {
+  assert.ok(
+    realResidualPhiWarnings.some((warning) => warning.snippet?.includes(snippet)),
+    `real residual PHI should still be flagged: ${snippet}`
+  );
+}
+assert.ok(
+  realResidualPhiWarnings.some((warning) => warning.type === "unit or room" && warning.snippet?.includes("Room")),
+  "room/unit identifiers should still be flagged"
 );
 
 const ageText = "Overall Assessment: Ms Merrill-Stevenson is a 57-year-old woman.";

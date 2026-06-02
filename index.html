@@ -5639,7 +5639,8 @@ Now create the initial rounds report for this case.`;
           kind,
           caseKey,
           mode: "single",
-          prompts: [{ label: "Prompt", text: normalizedSingle }],
+          contextText,
+          prompts: [{ label: "Prompt", text: normalizedSingle, reviewScope: "source", reviewText: contextText }],
           onComplete
         };
       }
@@ -5647,17 +5648,22 @@ Now create the initial rounds report for this case.`;
       const chunks = chunkClinicalContext(contextText, openEvidencePacketTargetChars);
       const packetPrompts = chunks.map((chunk, index) => ({
         label: `Message ${index + 1} of ${chunks.length}`,
-        text: buildContextPacket({ caseKey, contextType, chunk, index, total: chunks.length })
+        text: buildContextPacket({ caseKey, contextType, chunk, index, total: chunks.length }),
+        reviewScope: "source",
+        reviewText: chunk
       }));
       packetPrompts.push({
         label: "Final message",
-        text: finalTaskPrompt
+        text: finalTaskPrompt,
+        reviewScope: "source-free",
+        reviewText: ""
       });
 
       return {
         kind,
         caseKey,
         mode: "packets",
+        contextText,
         prompts: packetPrompts.map((prompt) => {
           const normalizedText = normalizeResidualTemporalPhi(cleanupDeidArtifacts(prompt.text));
           if (normalizedText.length > openEvidencePacketHardMaxChars) {
@@ -5737,6 +5743,8 @@ Now create the initial rounds report for this case.`;
 
       const copied = await copyPromptWithPhiWarning(packageDefinition.prompts[0].text, statusElement, successMessage, {
         ...options,
+        reviewScope: packageDefinition.prompts[0].reviewScope || options.reviewScope,
+        reviewText: packageDefinition.prompts[0].reviewText || options.reviewText || packageDefinition.contextText,
         fitToOpenEvidence: false,
         onCopied: packageDefinition.onComplete
       });
@@ -5760,6 +5768,8 @@ Now create the initial rounds report for this case.`;
           title: "PHI safety check for OpenEvidence message",
           subject: current.label.toLowerCase(),
           reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
+          reviewScope: current.reviewScope || (current.label === "Final message" ? "source-free" : "source"),
+          reviewText: current.reviewText,
           actionLabel: "Open OpenEvidence",
           actionUrl: openEvidenceUrl,
           duration: 7000,
@@ -5783,7 +5793,7 @@ Now create the initial rounds report for this case.`;
         ? { text: normalizedPrompt, shortened: false, originalLength: normalizedPrompt.length, finalLength: normalizedPrompt.length }
         : fitPromptForOpenEvidence(normalizedPrompt);
       const safePrompt = fittedPrompt.text;
-      const check = runPhiSafetyCheck(safePrompt);
+      const check = runPhiSafetyCheck(safePrompt, options);
       state.lastPhiSafetyCheck = check;
       const promptSuccessMessage = fittedPrompt.shortened
         ? `${successMessage} Shortened from ${promptLengthLabel(fittedPrompt.originalLength)} to ${promptLengthLabel(fittedPrompt.finalLength)} characters to fit OpenEvidence.`
@@ -5804,6 +5814,8 @@ Now create the initial rounds report for this case.`;
         reviewTarget: options.reviewTarget || "source",
         title: options.title || "PHI safety check",
         subject: options.subject || "prompt",
+        reviewScope: options.reviewScope || reviewScopeFromTarget(options.reviewTarget),
+        reviewText: options.reviewText,
         onCopied: options.onCopied
       };
       renderPhiSafetyPanel(check, state.pendingPhiCopy);
@@ -6008,10 +6020,12 @@ Now create the initial rounds report for this case.`;
 
     // De-identification logic lives in deid.js. Keep this file on the shared implementation so tests cover the app path.
 
-    function extractPhiReviewText(promptText) {
+    function extractPhiReviewTextFromBlocks(promptText) {
       const text = String(promptText || "");
       const blocks = [];
       const blockPatterns = [
+        /<source_context>\n([\s\S]*?)\n<\/source_context>/gi,
+        /<patient_context_packet>\n([\s\S]*?)\n<\/patient_context_packet>/gi,
         /De-identified patient note, labs, handoff summaries, and other context:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified patient note and labs:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
         /De-identified patient note:\n([\s\S]*?)(?:\n<\/patient_context>|\n\nNow produce|$)/gi,
@@ -6031,14 +6045,60 @@ Now create the initial rounds report for this case.`;
         }
       });
 
-      return blocks.length ? blocks.join("\n\n") : text;
+      return blocks.length ? blocks.join("\n\n") : "";
     }
 
-    function runPhiSafetyCheck(text) {
+    function reviewScopeFromTarget(reviewTarget) {
+      if (reviewTarget === "output") {
+        return "findings";
+      }
+      if (reviewTarget === "source" || reviewTarget === "admission" || reviewTarget === "imported") {
+        return "source";
+      }
+      if (reviewTarget === "paste" || reviewTarget === "utility") {
+        return "custom";
+      }
+      return "source";
+    }
+
+    function normalizeReviewText(text) {
+      return normalizeResidualTemporalPhi(cleanupDeidArtifacts(text || ""));
+    }
+
+    function resolvePhiReviewText(promptText, options = {}) {
+      const reviewScope = options.reviewScope || reviewScopeFromTarget(options.reviewTarget);
+      if (reviewScope === "source-free") {
+        return { reviewText: "", scopeWarning: null };
+      }
+
+      if (typeof options.reviewText === "string") {
+        return { reviewText: normalizeReviewText(options.reviewText), scopeWarning: null };
+      }
+
+      const extractedText = extractPhiReviewTextFromBlocks(promptText);
+      if (extractedText) {
+        return { reviewText: normalizeReviewText(extractedText), scopeWarning: null };
+      }
+
+      return {
+        reviewText: "",
+        scopeWarning: {
+          severity: "review",
+          type: "review scope",
+          snippet: "Patient text could not be isolated for PHI scan",
+          reason: "copy path expected patient-originated text"
+        }
+      };
+    }
+
+    function runPhiSafetyCheck(text, options = {}) {
       const promptText = String(text || "");
-      const reviewText = extractPhiReviewText(promptText);
-      const warnings = scanResidualPhiShared(reviewText);
-      const redactionPlaceholderCount = (promptText.match(/\[(?:DOB REDACTED|[A-Z][A-Z0-9 -]{1,32})\]/g) || []).length;
+      const { reviewText, scopeWarning } = resolvePhiReviewText(promptText, options);
+      const warnings = reviewText ? scanResidualPhiShared(reviewText) : [];
+      if (scopeWarning) {
+        warnings.push(scopeWarning);
+      }
+      const redactionPlaceholderCount = (reviewText.match(/\[(?:DOB REDACTED|[A-Z][A-Z0-9 -]{1,32})\]/g) || []).length;
       const severityCounts = warnings.reduce((counts, warning) => {
         counts[warning.severity] = (counts[warning.severity] || 0) + 1;
         return counts;
@@ -6631,6 +6691,15 @@ Do not ask the user to paste the entire source note again unless this conversati
 If source context is missing from this conversation, say that the prior context is missing rather than inventing it.
 </same_conversation_context>`;
       return `${promptIntro}${userContext ? `\n\n${userContext}` : ""}${sameConversationBlock}${sourceBlocks.length ? `\n\n${sourceBlocks.join("\n\n")}` : ""}\n\nNew checklist answers and exam findings:\n${state.compiledText}`;
+    }
+
+    function buildPresentationPhiReviewText() {
+      const admissionContext = formatAdmissionContext();
+      const useImportedFallback = Boolean(!state.conversationCaseKey && !state.conversationContextReady && !state.scrubbedNote && !admissionContext && state.importedContext);
+      return [
+        useImportedFallback ? state.importedContext.text : "",
+        state.compiledText
+      ].filter((value) => String(value || "").trim()).join("\n\n");
     }
 
     configureManifest();
@@ -7742,7 +7811,9 @@ ${rawChecklist.trim()}`;
       });
       await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Cleanup prompt copied.", {
         title: "PHI safety check for cleanup prompt",
-        reviewTarget: "paste"
+        reviewTarget: "paste",
+        reviewScope: "custom",
+        reviewText: rawChecklist
       });
     });
 
@@ -7858,6 +7929,8 @@ ${rawChecklist.trim()}`;
         title: "PHI safety check for redacted text",
         subject: "text",
         reviewTarget: "utility",
+        reviewScope: "custom",
+        reviewText: state.utilityScrubbedText,
         fitToOpenEvidence: false
       });
     });
@@ -8026,6 +8099,7 @@ heparin 5000 units held by provider`;
       return copyPromptWithPhiWarning(prompt, statusElement, "Medication safety prompt copied. Paste it into the same OpenEvidence conversation.", {
         title: "PHI safety check for medication safety prompt",
         reviewTarget: "source",
+        reviewScope: "source-free",
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000,
@@ -8040,6 +8114,7 @@ heparin 5000 units held by provider`;
           const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Checklist prompt copied. Paste it into the same OpenEvidence conversation.", {
             title: "PHI safety check for checklist prompt",
             reviewTarget: "source",
+            reviewScope: "source-free",
             actionLabel: "Open OpenEvidence",
             actionUrl: openEvidenceUrl,
             duration: 7000,
@@ -8123,6 +8198,7 @@ heparin 5000 units held by provider`;
         const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Checklist prompt copied. Paste it into the same OpenEvidence conversation.", {
           title: "PHI safety check for admission prompt",
           reviewTarget: "admission",
+          reviewScope: "source-free",
           actionLabel: "Open OpenEvidence",
           actionUrl: openEvidenceUrl,
           duration: 7000,
@@ -8283,7 +8359,9 @@ heparin 5000 units held by provider`;
       const prompt = buildCleanupPrompt(state.checklistRawText || elements.checklistInput.value, state.auditResult || validateChecklist(state.sections));
       await copyPromptWithPhiWarning(prompt, elements.copyStatus, "Cleanup prompt copied.", {
         title: "PHI safety check for cleanup prompt",
-        reviewTarget: "paste"
+        reviewTarget: "paste",
+        reviewScope: "custom",
+        reviewText: state.checklistRawText || elements.checklistInput.value
       });
     });
 
@@ -8304,9 +8382,12 @@ heparin 5000 units held by provider`;
     });
 
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
-      const copied = await copyPromptWithPhiWarning(buildPresentationPrompt(), elements.copyStatus, "Update prompt copied. Paste it into the same OpenEvidence conversation.", {
+      const prompt = buildPresentationPrompt();
+      const copied = await copyPromptWithPhiWarning(prompt, elements.copyStatus, "Update prompt copied. Paste it into the same OpenEvidence conversation.", {
         title: "PHI safety check for presentation prompt",
         reviewTarget: state.importedContext && !state.conversationCaseKey && !state.conversationContextReady ? "imported" : "output",
+        reviewScope: "custom",
+        reviewText: buildPresentationPhiReviewText(),
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000,
@@ -8365,7 +8446,7 @@ heparin 5000 units held by provider`;
         return;
       }
 
-      const check = runPhiSafetyCheck(state.pendingPhiCopy.prompt);
+      const check = runPhiSafetyCheck(state.pendingPhiCopy.prompt, state.pendingPhiCopy);
       state.lastPhiSafetyCheck = check;
       renderPhiSafetyPanel(check, state.pendingPhiCopy);
       state.pendingPhiCopy.statusElement.textContent = check.warnings.length

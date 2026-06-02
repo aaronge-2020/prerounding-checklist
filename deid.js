@@ -185,7 +185,7 @@ const clinicalAnchorWords = new Set([
   "expand all", "collapse all", "expand all collapse all", "hospital progress", "hospital progress note",
   "primary cardiology", "primary cardiology service", "primary service", "code status", "full code",
   "cpr full code", "triage rfv", "recommend fu", "recommend fu cbc", "giving ivf", "cr endocrine", "cr. endocrine",
-  "ideally bp", "chg bath", "glucose bld", "one-line summary"
+  "ideally bp", "chg bath", "glucose bld", "one-line summary", "no phi"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
@@ -212,6 +212,17 @@ const clinicalAnchorWords = new Set([
 const protectedClinicalAcronyms = new Set([
   "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chf", "ckd", "cmp", "copd", "dka",
   "doe", "ed", "hpi", "icu", "pmh", "psh", "ros", "soap", "sob", "t1dm", "t2dm", "tsh"
+]);
+
+const promptHeadingWords = new Set([
+  "high", "priority", "verify", "before", "rounds", "possible", "dose", "or", "safety",
+  "concerns", "missed", "held", "unexpected", "administrations", "questions", "to", "ask",
+  "team", "nursing", "likely", "okay", "no", "action", "needed", "phi", "review", "details"
+]);
+
+const promptHeadingAnchorWords = new Set([
+  "priority", "rounds", "safety", "concerns", "administrations", "questions", "nursing",
+  "missed", "held", "unexpected", "okay", "action", "phi"
 ]);
 
 const medicationSaltOrFormWords = new Set([
@@ -346,6 +357,24 @@ function isLikelyClinicalNameLikePhrase(normalized) {
     words.some((word) => clinicalAnchorWords.has(word));
 }
 
+function isLikelyPromptInstructionHeading(value) {
+  const span = String(value || "").replace(/\s+/g, " ").trim();
+  if (!span || span.length > 96) {
+    return false;
+  }
+  const normalized = normalizePhrase(span);
+  const words = clinicalWordsFromNormalized(normalized);
+  if (words.length < 2 || words.length > 8) {
+    return false;
+  }
+  const letterChars = span.replace(/[^A-Za-z]/g, "");
+  if (!letterChars || letterChars !== letterChars.toUpperCase()) {
+    return false;
+  }
+  return words.every((word) => promptHeadingWords.has(word)) &&
+    words.some((word) => promptHeadingAnchorWords.has(word));
+}
+
 function isClinicalGuardOnlyText(value) {
   const normalized = normalizePhrase(value);
   if (!normalized) {
@@ -437,6 +466,10 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const normalized = normalizePhrase(span);
   if (!normalized) {
+    return true;
+  }
+
+  if (isLikelyPromptInstructionHeading(span)) {
     return true;
   }
 
