@@ -526,6 +526,34 @@
       gap: 10px;
     }
 
+    .simple-workflow-strip {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 16px;
+      border: 1px solid rgba(79, 152, 163, 0.26);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      background: rgba(79, 152, 163, 0.06);
+    }
+
+    .simple-workflow-strip p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .simple-workflow-strip strong {
+      color: var(--accent-strong);
+      font-weight: 900;
+    }
+
+    @media (min-width: 720px) {
+      .simple-workflow-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     .checklist-first-summary {
       display: grid;
       gap: 10px;
@@ -572,6 +600,18 @@
       gap: 8px;
       align-items: center;
       justify-content: space-between;
+    }
+
+    .advanced-inline-details {
+      justify-self: start;
+    }
+
+    .advanced-inline-details > summary {
+      min-height: 36px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 900;
     }
 
     .case-key {
@@ -2476,18 +2516,23 @@
       <header class="hero">
         <p class="eyebrow">Bedside workflow</p>
         <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
-        <p class="helper">Move through four stages: prepare the source, build the checklist, collect bedside findings, then generate the output.</p>
+        <p class="helper">Use one OpenEvidence conversation for the patient: understand them on your laptop, collect findings on your phone, then update the same conversation.</p>
       </header>
+
+      <div class="simple-workflow-strip" aria-label="Simple workflow">
+        <p><strong>Laptop:</strong> Epic info → initial report → checklist</p>
+        <p><strong>Phone:</strong> checklist → bedside findings → update report</p>
+      </div>
 
       <section id="phoneQuickStartCard" class="surface phone-quick-card" aria-labelledby="phoneQuickStartTitle">
         <div>
-          <p class="eyebrow">Phone quick start</p>
-          <h2 id="phoneQuickStartTitle" class="workflow-title">Already have a checklist?</h2>
-          <p class="workflow-copy">Paste the checklist you copied from OpenEvidence and start bedside questions right away.</p>
+          <p class="eyebrow">Phone</p>
+          <h2 id="phoneQuickStartTitle" class="workflow-title">Paste checklist from OpenEvidence</h2>
+          <p class="workflow-copy">Use this at the bedside after you copied the checklist from the same OpenEvidence conversation.</p>
         </div>
         <div class="phone-quick-actions">
           <button id="startChecklistFirstButton" class="btn btn-primary btn-full" type="button">Paste checklist now</button>
-          <button id="showSourceWorkflowButton" class="btn btn-secondary btn-full" type="button">Create a checklist prompt instead</button>
+          <button id="showSourceWorkflowButton" class="btn btn-secondary btn-full" type="button">Start from Epic info</button>
         </div>
       </section>
 
@@ -2495,9 +2540,9 @@
         <div class="guided-main">
       <section id="sourceWorkflowCard" class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
-          <p class="eyebrow">Source</p>
-          <h2 id="promptOneTitle" class="workflow-title">What are you starting with?</h2>
-          <p class="workflow-copy">Pick one. The app will tell you the next best action after that.</p>
+          <p class="eyebrow">Laptop</p>
+          <h2 id="promptOneTitle" class="workflow-title">Paste Epic info</h2>
+          <p class="workflow-copy">Paste the chart information, de-identify it, then copy the initial rounds prompt into OpenEvidence.</p>
         </div>
 
         <div id="promptCopiedSummary" class="compact-summary" hidden>
@@ -2505,33 +2550,39 @@
           <p id="promptCopiedCopy" class="compact-summary-copy">Paste it into OpenEvidence, then paste the returned checklist below.</p>
           <ol class="handoff-list">
             <li>Open the same OpenEvidence conversation.</li>
-            <li>Paste each copied prompt in order.</li>
+            <li>Paste the initial rounds prompt, then the checklist prompt.</li>
             <li>Copy the checklist OpenEvidence returns.</li>
-            <li>Return here, paste the checklist, and go bedside.</li>
+            <li>Open this website on your phone, paste the checklist, and go bedside.</li>
           </ol>
           <div class="compact-summary-actions">
             <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
-            <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy prompt 1: pre-bedside report</button>
-            <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
-            <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Send context to phone</button>
+            <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial rounds prompt</button>
+            <button id="copySummaryChecklistPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
+          <details class="more-options">
+            <summary>More tools / fallback</summary>
+            <div class="more-options-body">
+              <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
+              <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
+            </div>
+          </details>
         </div>
 
         <div id="conversationStatusCard" class="conversation-card" hidden>
           <div class="conversation-heading">
             <div>
-              <p class="eyebrow">OpenEvidence conversation</p>
+              <p class="eyebrow">OpenEvidence</p>
               <p class="compact-summary-title">Use one conversation for this patient</p>
             </div>
-            <span id="conversationCaseKey" class="case-key">Not started</span>
           </div>
-          <p id="conversationStatusText" class="compact-summary-copy">Start by copying the pre-bedside rounds report prompt into OpenEvidence. Keep that same conversation open on laptop and phone.</p>
+          <p id="conversationStatusText" class="compact-summary-copy">Copy the initial rounds prompt first. Then copy the checklist prompt into the same OpenEvidence conversation.</p>
           <ul class="conversation-steps" aria-label="OpenEvidence conversation progress">
-            <li id="conversationStepContext">Context loaded and pre-bedside report requested</li>
-            <li id="conversationStepChecklist">Checklist requested from same conversation</li>
-            <li id="conversationStepFindings">Bedside findings added from phone</li>
+            <li id="conversationStepContext">Initial rounds prompt copied</li>
+            <li id="conversationStepChecklist">Checklist prompt copied</li>
+            <li id="conversationStepFindings">Update prompt copied from bedside findings</li>
           </ul>
+          <span id="conversationCaseKey" class="case-key" hidden>Same conversation</span>
         </div>
 
         <div id="packetPanel" class="packet-panel" hidden>
@@ -2540,22 +2591,22 @@
               <p class="eyebrow">Large case</p>
               <p id="packetTitle" class="compact-summary-title">This case needs multiple OpenEvidence messages</p>
             </div>
-            <p id="packetProgress" class="packet-progress">Packet 1 of 1</p>
+            <p id="packetProgress" class="packet-progress">Message 1 of 1</p>
           </div>
-          <p id="packetCopy" class="packet-copy">Copy each packet into the same OpenEvidence conversation. The final packet asks for the report.</p>
+          <p id="packetCopy" class="packet-copy">Copy each message into the same OpenEvidence conversation. The final message asks for the initial rounds report.</p>
           <div class="compact-summary-actions">
-            <button id="copyPacketButton" class="btn btn-primary" type="button">Copy packet</button>
-            <button id="cancelPacketButton" class="btn btn-secondary" type="button">Cancel packets</button>
+            <button id="copyPacketButton" class="btn btn-primary" type="button">Copy message</button>
+            <button id="cancelPacketButton" class="btn btn-secondary" type="button">Cancel messages</button>
           </div>
         </div>
 
         <div class="source-toggle" role="group" aria-label="Checklist source">
           <button id="priorModeButton" type="button" aria-pressed="true">
-            <span class="source-choice-title">I have a prior note</span>
-            <span class="source-choice-copy">Paste SOAP note, labs, and handoff.</span>
+            <span class="source-choice-title">Epic info</span>
+            <span class="source-choice-copy">Prior note, labs, handoff, MAR.</span>
           </button>
           <button id="admissionModeButton" type="button" aria-pressed="false">
-            <span class="source-choice-title">This is a new admission</span>
+            <span class="source-choice-title">New admission</span>
             <span class="source-choice-copy">Fill a short intake form.</span>
           </button>
         </div>
@@ -2563,8 +2614,8 @@
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
           <div class="guided-step">
             <p class="eyebrow">Source details</p>
-            <h3 id="priorSourceTitle" class="guided-step-title">Paste note, labs, and handoff</h3>
-            <p class="guided-step-copy">Raw text stays in this browser. The prompt will use only the editable de-identified preview.</p>
+            <h3 id="priorSourceTitle" class="guided-step-title">Paste Epic info</h3>
+            <p class="guided-step-copy">Raw text stays in this browser. OpenEvidence only gets the de-identified preview.</p>
           </div>
           <label for="rawSoapInput">Raw SOAP note</label>
           <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here.
@@ -2627,14 +2678,14 @@ enoxaparin 40 mg held by provider"></textarea>
           <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
             <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify and review</button>
-            <button id="copySourceRoundsPromptButton" class="btn btn-primary" type="button" hidden>Copy prompt 1: pre-bedside report</button>
-            <button id="scrubAndCopyButton" class="btn btn-secondary" type="button" hidden>Copy prompt 2: checklist</button>
-            <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
-            <button id="exportPriorContextButton" class="btn btn-secondary" type="button" hidden>Send context to phone</button>
+            <button id="copySourceRoundsPromptButton" class="btn btn-primary" type="button" hidden>Copy initial rounds prompt</button>
+            <button id="scrubAndCopyButton" class="btn btn-secondary" type="button" hidden>Copy checklist prompt</button>
           </div>
           <details class="more-options">
-            <summary>More options</summary>
+            <summary>More tools / fallback</summary>
             <div class="more-options-body">
+              <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
+              <button id="exportPriorContextButton" class="btn btn-secondary" type="button" hidden>Download encrypted context file</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
           </details>
@@ -2693,14 +2744,14 @@ enoxaparin 40 mg held by provider"></textarea>
           </div>
           <p class="next-action-copy">Choose what you want to make</p>
           <div class="prompt-actions guided-primary-actions">
-            <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy prompt 1: pre-bedside report</button>
-            <button id="copyAdmissionPromptButton" class="btn btn-secondary" type="button">Copy prompt 2: checklist</button>
-            <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
-            <button id="exportAdmissionContextButton" class="btn btn-secondary" type="button">Send context to phone</button>
+            <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy initial rounds prompt</button>
+            <button id="copyAdmissionPromptButton" class="btn btn-secondary" type="button">Copy checklist prompt</button>
           </div>
           <details class="more-options">
-            <summary>More options</summary>
+            <summary>More tools / fallback</summary>
             <div class="more-options-body">
+              <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
+              <button id="exportAdmissionContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
           </details>
@@ -2708,7 +2759,7 @@ enoxaparin 40 mg held by provider"></textarea>
 
         <div id="transferExportPanel" class="transfer-panel" hidden>
           <p class="compact-summary-title">Context file ready</p>
-          <p class="compact-summary-copy">AirDrop or save the downloaded file to your phone. Enter this transfer code on the phone to import it.</p>
+          <p class="compact-summary-copy">Fallback only. If you use the same OpenEvidence conversation, you usually do not need this file.</p>
           <div id="transferCodeDisplay" class="transfer-code" aria-label="Transfer code"></div>
           <p id="transferExportStatus" class="transfer-status" role="status" aria-live="polite"></p>
         </div>
@@ -2716,25 +2767,30 @@ enoxaparin 40 mg held by provider"></textarea>
       </section>
 
       <div id="checklistPasteCard" class="surface paste-card" hidden>
-        <p class="eyebrow">Checklist</p>
+        <p class="eyebrow">Phone bedside step</p>
         <div id="checklistFirstSummary" class="checklist-first-summary" hidden>
-          <p class="compact-summary-title">Checklist paste mode</p>
-          <p class="compact-summary-copy">Use this when you already copied a checklist from the same OpenEvidence conversation on your phone.</p>
-          <div id="importContextCard" class="import-context-card">
-            <p class="compact-summary-title">Laptop context</p>
-            <p class="compact-summary-copy">Optional fallback. If you keep using the same OpenEvidence conversation, you usually do not need this.</p>
-            <label for="transferCodeInput">Transfer code</label>
-            <input id="transferCodeInput" class="transfer-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
-            <div class="transfer-actions">
-              <button id="importContextButton" class="btn btn-secondary" type="button">Import laptop context</button>
-              <button id="clearImportedContextButton" class="btn btn-quiet" type="button" hidden>Clear imported context</button>
+          <p class="compact-summary-title">Paste checklist from OpenEvidence</p>
+          <p class="compact-summary-copy">Copy the checklist from the OpenEvidence app, paste it here, then go see the patient.</p>
+          <details class="more-options">
+            <summary>More tools / fallback</summary>
+            <div class="more-options-body">
+              <div id="importContextCard" class="import-context-card">
+                <p class="compact-summary-title">Fallback: encrypted context file</p>
+                <p class="compact-summary-copy">Use this only if you cannot use the same OpenEvidence conversation.</p>
+                <label for="transferCodeInput">Transfer code</label>
+                <input id="transferCodeInput" class="transfer-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+                <div class="transfer-actions">
+                  <button id="importContextButton" class="btn btn-secondary" type="button">Import context file</button>
+                  <button id="clearImportedContextButton" class="btn btn-quiet" type="button" hidden>Clear imported context</button>
+                </div>
+                <input id="contextImportFile" type="file" accept=".json,application/json" hidden>
+                <p id="importContextStatus" class="transfer-status" role="status" aria-live="polite">No fallback context imported.</p>
+              </div>
+              <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">Start from Epic info</button>
             </div>
-            <input id="contextImportFile" type="file" accept=".json,application/json" hidden>
-            <p id="importContextStatus" class="transfer-status" role="status" aria-live="polite">No patient context imported.</p>
-          </div>
-          <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">Create checklist prompt instead</button>
+          </details>
         </div>
-        <label for="checklistInput">Checklist from OpenEvidence</label>
+        <label for="checklistInput">Paste checklist from OpenEvidence</label>
         <textarea id="checklistInput" class="paste-input" spellcheck="false" placeholder="Paste the checklist OpenEvidence generated.
 
 It should start like:
@@ -2779,7 +2835,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         <aside class="guide-sidebar" aria-labelledby="nextActionTitle">
           <p class="eyebrow">Current task</p>
           <h2 id="nextActionTitle" class="guide-sidebar-title">Prepare the source</h2>
-          <p id="nextActionCopy" class="guide-sidebar-copy">Paste a prior note or fill admission essentials, then copy a checklist prompt for OpenEvidence.</p>
+          <p id="nextActionCopy" class="guide-sidebar-copy">Paste Epic info, de-identify it, then copy the initial rounds prompt.</p>
           <ol class="guide-sidebar-list">
             <li>Source ready</li>
             <li>Checklist built</li>
@@ -2862,7 +2918,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       <header class="hero">
         <p class="eyebrow">OpenEvidence</p>
         <h2 id="outputTitle">Findings</h2>
-        <p class="helper">Copy the rounds note prompt with these findings attached, then paste it into OpenEvidence for a presentation and detailed SOAP update.</p>
+        <p class="helper">Copy the update prompt, then paste it into the same OpenEvidence conversation to update your initial rounds presentation.</p>
       </header>
 
       <div class="surface output-card">
@@ -2870,13 +2926,13 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
           <button id="assessedOnlyButton" type="button" aria-pressed="true">Assessed only</button>
           <button id="fullOutputButton" type="button" aria-pressed="false">Full with not assessed</button>
         </div>
-        <p id="sourceContextStatus" class="context-status is-empty" role="status" aria-live="polite">No patient context imported.</p>
-        <p id="openEvidenceContextStatus" class="context-status is-empty" role="status" aria-live="polite">Use the same OpenEvidence conversation for the final rounds prompt.</p>
+        <p id="sourceContextStatus" class="context-status is-empty" role="status" aria-live="polite">Normal workflow uses the same OpenEvidence conversation.</p>
+        <p id="openEvidenceContextStatus" class="context-status is-empty" role="status" aria-live="polite">Use the same OpenEvidence conversation for the update prompt.</p>
         <label for="outputText">Compiled findings</label>
         <textarea id="outputText" class="output-box" readonly></textarea>
         <p id="copyStatus" class="status-line" role="status" aria-live="polite"></p>
         <div class="output-actions">
-          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy final rounds prompt</button>
+          <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy update prompt</button>
           <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           <button id="copyButton" class="btn btn-secondary" type="button">Copy Findings Only</button>
           <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
@@ -2983,6 +3039,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       userProfile: {},
       importedContext: null,
       conversationCaseKey: "",
+      initialRoundsPromptCopied: false,
+      checklistPromptCopied: false,
+      bedsideFindingsReady: false,
       conversationContextReady: false,
       conversationChecklistReady: false,
       conversationFinalReady: false,
@@ -3019,6 +3078,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       editSourceButton: document.getElementById("editSourceButton"),
       exportSummaryContextButton: document.getElementById("exportSummaryContextButton"),
       copySummaryRoundsPromptButton: document.getElementById("copySummaryRoundsPromptButton"),
+      copySummaryChecklistPromptButton: document.getElementById("copySummaryChecklistPromptButton"),
       copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
       conversationStatusCard: document.getElementById("conversationStatusCard"),
       conversationCaseKey: document.getElementById("conversationCaseKey"),
@@ -3579,7 +3639,7 @@ You are an experienced attending physician and clerkship coach helping a third-y
 </role>
 
 <task>
-Use the patient context already provided earlier in this same OpenEvidence conversation plus the new checklist findings below to update the pre-bedside rounds report.
+Use the patient context and initial rounds presentation already provided earlier in this same OpenEvidence conversation plus the new checklist findings below to update the report.
 Create two outputs:
 1. TWO MINUTE ROUNDS PRESENTATION
 2. DETAILED INTERVAL SOAP NOTE
@@ -4112,28 +4172,32 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function conversationReferenceLine() {
-      return state.conversationCaseKey
-        ? `Case key: ${state.conversationCaseKey}.`
-        : "Use the current patient case in this same OpenEvidence conversation.";
+      return "Use the current patient case in this same OpenEvidence conversation.";
     }
 
     function markConversationStep(step) {
       if (step === "context") {
+        state.initialRoundsPromptCopied = true;
         state.conversationContextReady = true;
       }
       if (step === "checklist") {
+        state.checklistPromptCopied = true;
         state.conversationChecklistReady = true;
       }
       if (step === "final") {
+        state.bedsideFindingsReady = true;
         state.conversationFinalReady = true;
       }
       updateConversationStatus();
     }
 
     function invalidateConversationContext() {
-      if (!state.conversationContextReady && !state.conversationChecklistReady && !state.conversationFinalReady && !state.activePacketFlow) {
+      if (!state.initialRoundsPromptCopied && !state.checklistPromptCopied && !state.bedsideFindingsReady && !state.conversationContextReady && !state.conversationChecklistReady && !state.conversationFinalReady && !state.activePacketFlow) {
         return;
       }
+      state.initialRoundsPromptCopied = false;
+      state.checklistPromptCopied = false;
+      state.bedsideFindingsReady = false;
       state.conversationContextReady = false;
       state.conversationChecklistReady = false;
       state.conversationFinalReady = false;
@@ -4156,18 +4220,18 @@ Sensory level present: No / Yes, at ___`;
 
       elements.conversationStatusCard.hidden = !visible;
       elements.conversationCaseKey.textContent = state.conversationCaseKey || "Not started";
-      elements.conversationStepContext.classList.toggle("is-complete", state.conversationContextReady);
-      elements.conversationStepChecklist.classList.toggle("is-complete", state.conversationChecklistReady);
-      elements.conversationStepFindings.classList.toggle("is-complete", state.conversationFinalReady);
+      elements.conversationStepContext.classList.toggle("is-complete", state.initialRoundsPromptCopied || state.conversationContextReady);
+      elements.conversationStepChecklist.classList.toggle("is-complete", state.checklistPromptCopied || state.conversationChecklistReady);
+      elements.conversationStepFindings.classList.toggle("is-complete", state.bedsideFindingsReady || state.conversationFinalReady);
 
-      if (state.conversationFinalReady) {
-        elements.conversationStatusText.textContent = "Final findings prompt copied. Paste it into the same OpenEvidence conversation to update the rounds report.";
-      } else if (state.conversationChecklistReady) {
-        elements.conversationStatusText.textContent = "Checklist prompt copied. Paste the returned checklist here or on your phone, then return to the same OpenEvidence conversation for the final report.";
-      } else if (state.conversationContextReady) {
-        elements.conversationStatusText.textContent = "Pre-bedside report prompt copied. Next, copy prompt 2 to generate the checklist in the same OpenEvidence conversation.";
+      if (state.bedsideFindingsReady || state.conversationFinalReady) {
+        elements.conversationStatusText.textContent = "Update prompt copied. Paste it into the same OpenEvidence conversation to update the initial rounds presentation.";
+      } else if (state.checklistPromptCopied || state.conversationChecklistReady) {
+        elements.conversationStatusText.textContent = "Checklist prompt copied. Open OpenEvidence on your phone, copy the checklist, then paste it here.";
+      } else if (state.initialRoundsPromptCopied || state.conversationContextReady) {
+        elements.conversationStatusText.textContent = "Initial rounds prompt copied. After you understand the patient, copy the checklist prompt into the same OpenEvidence conversation.";
       } else {
-        elements.conversationStatusText.textContent = "Start by copying prompt 1 into OpenEvidence. Keep that same conversation open on laptop and phone.";
+        elements.conversationStatusText.textContent = "Copy the initial rounds prompt first. Keep using this same OpenEvidence conversation for the checklist and update prompt.";
       }
     }
 
@@ -4276,7 +4340,7 @@ Sensory level present: No / Yes, at ___`;
       elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
       elements.checklistReadyStatus.classList.toggle("is-ready", checklistReady);
       elements.findingsReadyStatus.classList.toggle("is-ready", findingsReady);
-      elements.sourceReadyStatus.textContent = state.importedContext ? "Laptop context ready" : state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
+      elements.sourceReadyStatus.textContent = state.importedContext ? "Fallback context ready" : state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
       elements.checklistReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
       elements.findingsReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
 
@@ -4284,19 +4348,19 @@ Sensory level present: No / Yes, at ___`;
         elements.nextActionTitle.textContent = "Paste the checklist";
         elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Build checklist.";
       } else if (!sourceReady) {
-        elements.nextActionTitle.textContent = "Prepare the source";
-        elements.nextActionCopy.textContent = "Paste a prior note or fill admission essentials, then copy prompt 1 for a pre-bedside rounds report.";
+        elements.nextActionTitle.textContent = "Paste Epic info";
+        elements.nextActionCopy.textContent = "Paste Epic info, de-identify it, then copy the initial rounds prompt.";
       } else if (!checklistReady) {
-        elements.nextActionTitle.textContent = state.conversationContextReady ? "Generate the checklist" : "Copy prompt 1";
-        elements.nextActionCopy.textContent = state.conversationContextReady
-          ? "Copy prompt 2 into the same OpenEvidence conversation, then paste the returned checklist here."
-          : "Send the de-identified context to OpenEvidence first for a pre-bedside rounds report.";
+        elements.nextActionTitle.textContent = state.initialRoundsPromptCopied ? "Copy checklist prompt" : "Copy initial rounds prompt";
+        elements.nextActionCopy.textContent = state.initialRoundsPromptCopied
+          ? "Copy the checklist prompt into the same OpenEvidence conversation, then paste the checklist here or on your phone."
+          : "Paste the initial rounds prompt into OpenEvidence to understand the patient first.";
       } else if (!findingsReady) {
         elements.nextActionTitle.textContent = "Collect bedside findings";
         elements.nextActionCopy.textContent = "Work through bedside questions and focused exam items, then generate findings.";
       } else {
-        elements.nextActionTitle.textContent = "Copy the output";
-        elements.nextActionCopy.textContent = "Copy findings alone or copy the rounds note prompt for OpenEvidence.";
+        elements.nextActionTitle.textContent = "Copy update prompt";
+        elements.nextActionCopy.textContent = "Paste the update prompt into the same OpenEvidence conversation to revise the initial rounds presentation.";
       }
       updateConversationStatus();
     }
@@ -4326,7 +4390,7 @@ Sensory level present: No / Yes, at ___`;
       updateGuidedStatus();
     }
 
-    function setPromptCollapsed(isCollapsed, message = "Paste it into OpenEvidence, then paste the returned checklist below.") {
+    function setPromptCollapsed(isCollapsed, message = "Open OpenEvidence on your phone, copy the checklist, then paste it here.") {
       state.promptCollapsed = isCollapsed;
       state.checklistFirstMode = false;
       elements.promptCopiedSummary.hidden = !isCollapsed;
@@ -4860,29 +4924,27 @@ Sensory level present: No / Yes, at ___`;
         return "";
       }
       const mode = state.importedContext.sourceMode === "admission" ? "admission context" : "de-identified source context";
-      return `Imported laptop ${mode}.`;
+      return `Imported fallback ${mode}.`;
     }
 
     function updateContextStatus() {
       const admissionContext = formatAdmissionContext();
-      let message = "No patient context imported.";
+      let message = "Normal workflow uses the same OpenEvidence conversation.";
       let hasContext = false;
       let audit = null;
 
       if (state.conversationContextReady) {
-        message = state.conversationCaseKey
-          ? `Rounds prompt will use ${state.conversationCaseKey} in the same OpenEvidence conversation.`
-          : "Rounds prompt will use the same OpenEvidence conversation context.";
+        message = "Update prompt will use the same OpenEvidence conversation context.";
         hasContext = true;
       } else if (state.scrubbedNote) {
-        message = "Rounds prompt will include this browser's de-identified source context.";
+        message = "Fallback mode: update prompt can include this browser's de-identified source context.";
         hasContext = true;
         audit = currentMedicationAuditFromText(state.scrubbedNote);
       } else if (admissionContext) {
-        message = "Rounds prompt will include this browser's admission context.";
+        message = "Fallback mode: update prompt can include this browser's admission context.";
         hasContext = true;
       } else if (state.importedContext) {
-        message = "Rounds prompt will include imported laptop context.";
+        message = "Fallback mode: update prompt can include imported context.";
         hasContext = true;
         audit = auditMedicationAdministration(state.importedContext.text);
       }
@@ -4897,20 +4959,18 @@ Sensory level present: No / Yes, at ___`;
       elements.sourceContextStatus.textContent = message;
       elements.sourceContextStatus.classList.toggle("is-empty", !hasContext);
       if (state.importedContext) {
-        elements.openEvidenceContextStatus.textContent = "Final prompt can use imported laptop context if you are not in the same OpenEvidence conversation.";
+        elements.openEvidenceContextStatus.textContent = "Fallback context is imported. Normal workflow still uses the same OpenEvidence conversation.";
         elements.openEvidenceContextStatus.classList.remove("is-empty");
-      } else if (state.conversationCaseKey || state.checklistFirstMode || state.sections.length || state.compiledText) {
-        elements.openEvidenceContextStatus.textContent = state.conversationCaseKey
-          ? `Final prompt will reference ${state.conversationCaseKey} in the same OpenEvidence conversation.`
-          : "Final prompt will assume you are pasting into the same OpenEvidence conversation used on your laptop.";
+      } else if (state.checklistFirstMode || state.sections.length || state.compiledText) {
+        elements.openEvidenceContextStatus.textContent = "Update prompt assumes you are pasting into the same OpenEvidence conversation used on your laptop.";
         elements.openEvidenceContextStatus.classList.remove("is-empty");
       } else {
-        elements.openEvidenceContextStatus.textContent = "Use the same OpenEvidence conversation for the final rounds prompt.";
+        elements.openEvidenceContextStatus.textContent = "Use the same OpenEvidence conversation for the update prompt.";
         elements.openEvidenceContextStatus.classList.add("is-empty");
       }
       elements.importContextStatus.textContent = state.importedContext
         ? importedContextSummary()
-        : "No patient context imported.";
+        : "No fallback context imported.";
       elements.clearImportedContextButton.hidden = !state.importedContext;
     }
 
@@ -4954,9 +5014,9 @@ Sensory level present: No / Yes, at ___`;
       state.transferCode = transferCode;
       elements.transferExportPanel.hidden = false;
       elements.transferCodeDisplay.textContent = transferCode;
-      elements.transferExportStatus.textContent = "Encrypted context file downloaded. AirDrop or save it to your phone, then enter this code during import.";
-      statusElement.textContent = "Encrypted context file ready for phone transfer.";
-      showToast("Context file downloaded. Keep the transfer code visible.");
+      elements.transferExportStatus.textContent = "Encrypted fallback context file downloaded. Use this only if the same OpenEvidence conversation is unavailable.";
+      statusElement.textContent = "Encrypted fallback context file ready.";
+      showToast("Fallback context file downloaded. Keep the transfer code visible.");
       return true;
     }
 
@@ -4985,7 +5045,7 @@ Sensory level present: No / Yes, at ___`;
         updateContextStatus();
         elements.transferCodeInput.value = "";
         elements.contextImportFile.value = "";
-        showToast("Laptop context imported.");
+        showToast("Fallback context imported.");
         return true;
       } catch (error) {
         elements.importContextStatus.textContent = "Could not unlock this file. Check the transfer code and try again.";
@@ -5500,13 +5560,12 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function buildContextPacket({ caseKey, contextType, chunk, index, total }) {
-      return `CASE CONTEXT PACKET ${index + 1} OF ${total}
-Case key: ${caseKey}
+      return `CASE CONTEXT MESSAGE ${index + 1} OF ${total}
 
-You are receiving de-identified clinical context for one patient case. Absorb this packet into the same OpenEvidence conversation under the case key above.
+You are receiving de-identified clinical context for one patient case. Absorb this message into the same OpenEvidence conversation.
 Do not generate a rounds report, checklist, teaching guide, assessment, or plan yet.
-After reading this packet, reply only:
-Packet ${index + 1} received.
+After reading this message, reply only:
+Message ${index + 1} received.
 
 <context_type>
 ${contextType}
@@ -5521,10 +5580,9 @@ ${chunk}
       return `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
 <same_conversation_context>
-Case key: ${caseKey}
-The de-identified patient source context was provided in the previous CASE CONTEXT PACKET messages in this same OpenEvidence conversation.
-Use all previous packets for this case, including notes, labs/results, handoff, medication/MAR audit, service profile, consult question, hospital course, and chronology.
-Do not ask the user to paste the source context again unless this conversation does not contain the packets.
+The de-identified patient source context was provided in the previous CASE CONTEXT MESSAGE prompts in this same OpenEvidence conversation.
+Use all previous messages for this case, including notes, labs/results, handoff, medication/MAR audit, service profile, consult question, hospital course, and chronology.
+Do not ask the user to paste the source context again unless this conversation does not contain the earlier messages.
 </same_conversation_context>
 
 <context_type>
@@ -5535,7 +5593,7 @@ ${contextType}
 No new bedside checklist answers or focused exam findings from this app are included yet. Use the source context already provided in this conversation to prepare the rounds report, and clearly mark what still needs bedside verification.
 </new_findings_status>
 
-Now create the pre-bedside rounds report for this case.`;
+Now create the initial rounds report for this case.`;
     }
 
     function createPromptPackage({ kind, caseKey, singlePrompt, contextType, contextText, finalTaskPrompt, onComplete }) {
@@ -5552,11 +5610,11 @@ Now create the pre-bedside rounds report for this case.`;
 
       const chunks = chunkClinicalContext(contextText, openEvidencePacketTargetChars);
       const packetPrompts = chunks.map((chunk, index) => ({
-        label: `Packet ${index + 1} of ${chunks.length}`,
+        label: `Message ${index + 1} of ${chunks.length}`,
         text: buildContextPacket({ caseKey, contextType, chunk, index, total: chunks.length })
       }));
       packetPrompts.push({
-        label: "Final task prompt",
+        label: "Final message",
         text: finalTaskPrompt
       });
 
@@ -5587,13 +5645,13 @@ Now create the pre-bedside rounds report for this case.`;
 
       const current = flow.prompts[flow.index];
       elements.packetPanel.hidden = false;
-      elements.packetTitle.textContent = `This case needs ${flow.prompts.length} OpenEvidence messages`;
+      elements.packetTitle.textContent = `This source needs ${flow.prompts.length} OpenEvidence messages`;
       elements.packetProgress.textContent = `${current.label} (${flow.index + 1}/${flow.prompts.length})`;
       elements.packetCopy.textContent = flow.index === flow.prompts.length - 1
-        ? "Paste this final task prompt into the same OpenEvidence conversation after all context packets. It will ask for the pre-bedside rounds report."
-        : "Paste this context packet into the same OpenEvidence conversation. OpenEvidence should acknowledge it and wait.";
+        ? "Paste this final message into the same OpenEvidence conversation. It asks for the initial rounds presentation."
+        : "Paste this message into the same OpenEvidence conversation. OpenEvidence should acknowledge it and wait.";
       elements.copyPacketButton.textContent = flow.index === flow.prompts.length - 1
-        ? "Copy final task prompt"
+        ? "Copy final message"
         : `Copy ${current.label.toLowerCase()}`;
     }
 
@@ -5627,7 +5685,7 @@ Now create the pre-bedside rounds report for this case.`;
       };
       renderPacketFlow();
       elements.packetPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      statusElement.textContent = `This case is too large for one OpenEvidence prompt. Copy ${packageDefinition.prompts.length} messages in order.`;
+      statusElement.textContent = `This Epic source is too large for one OpenEvidence prompt. Copy ${packageDefinition.prompts.length} messages in order.`;
       showToast(`Large case: copy ${packageDefinition.prompts.length} OpenEvidence messages in order.`, { duration: 6000 });
     }
 
@@ -5663,7 +5721,7 @@ Now create the pre-bedside rounds report for this case.`;
         flow.statusElement || elements.promptStatus,
         `${current.label} copied. Paste it into the same OpenEvidence conversation.`,
         {
-          title: "PHI safety check for OpenEvidence packet",
+          title: "PHI safety check for OpenEvidence message",
           subject: current.label.toLowerCase(),
           reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
           actionLabel: "Open OpenEvidence",
@@ -5742,7 +5800,7 @@ Now create the pre-bedside rounds report for this case.`;
         elements.importContextCard.scrollIntoView({ behavior: "smooth", block: "center" });
         elements.importContextStatus.textContent = state.importedContext
           ? `${importedContextSummary()} Review the original laptop preview if needed.`
-          : "No patient context imported.";
+          : "No fallback context imported.";
         return;
       }
 
@@ -5797,32 +5855,36 @@ Now create the pre-bedside rounds report for this case.`;
       const hasReviewedPreview = Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim());
       const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim());
       const hasPriorContext = hasReviewedPreview || hasRawPriorSource;
+      const hasReviewedPriorContext = Boolean(hasReviewedPreview);
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
+      const initialCopied = state.initialRoundsPromptCopied || state.conversationContextReady;
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
-      elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext || !state.conversationContextReady;
+      elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.exportPriorContextButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPreview;
-      elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
-      elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasPriorContext;
-      elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed || !state.conversationContextReady;
+      elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
+      elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
+      elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.exportAdmissionContextButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionTeachingPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.exportSummaryContextButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
+      elements.copySummaryChecklistPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasReviewedPriorContext : hasAdmissionContext);
       elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
-        elements.scrubAndCopyButton.disabled = isPrior && (!hasPriorContext || !state.conversationContextReady);
+        elements.scrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
         elements.exportPriorContextButton.disabled = isPrior && !hasReviewedPreview;
-        elements.copySourceRoundsPromptButton.disabled = isPrior && !hasPriorContext;
-        elements.copyTeachingPromptButton.disabled = isPrior && !hasPriorContext;
-        elements.copyAdmissionPromptButton.disabled = !isPrior && (!hasAdmissionContext || !state.conversationContextReady);
+        elements.copySourceRoundsPromptButton.disabled = isPrior && !hasReviewedPriorContext;
+        elements.copyTeachingPromptButton.disabled = isPrior && !hasReviewedPriorContext;
+        elements.copyAdmissionPromptButton.disabled = !isPrior && (!hasAdmissionContext || !initialCopied);
         elements.exportAdmissionContextButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionRoundsPromptButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionTeachingPromptButton.disabled = !isPrior && !hasAdmissionContext;
         elements.exportSummaryContextButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
         elements.copySummaryRoundsPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
+        elements.copySummaryChecklistPromptButton.disabled = isPrior ? (!hasReviewedPriorContext || !initialCopied) : (!hasAdmissionContext || !initialCopied);
         elements.copySummaryTeachingPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
       }
     }
@@ -5929,16 +5991,20 @@ Now create the pre-bedside rounds report for this case.`;
       updateContextStatus();
     }
 
-    function syncAdmissionFields() {
+    function readAdmissionFields() {
       admissionFields.forEach((field) => {
         state.admission[field.key] = field.element.value.trim();
       });
+    }
+
+    function syncAdmissionFields() {
+      readAdmissionFields();
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
 
     function formatAdmissionContext() {
-      syncAdmissionFields();
+      readAdmissionFields();
       return admissionFields
         .map((field) => {
           const value = state.admission[field.key];
@@ -6050,6 +6116,7 @@ Now create the pre-bedside rounds report for this case.`;
       elements.copyTeachingPromptButton.disabled = isBusy;
       elements.exportSummaryContextButton.disabled = isBusy;
       elements.copySummaryRoundsPromptButton.disabled = isBusy;
+      elements.copySummaryChecklistPromptButton.disabled = isBusy;
       elements.copySummaryTeachingPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
@@ -6058,14 +6125,16 @@ Now create the pre-bedside rounds report for this case.`;
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.exportSummaryContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copySummaryChecklistPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
-      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy prompt 2: checklist";
-      elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Send context to phone";
-      elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy prompt 1: pre-bedside report";
+      elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
+      elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
+      elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
       elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
-      elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Send context to phone";
-      elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy prompt 1: pre-bedside report";
+      elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
+      elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
+      elements.copySummaryChecklistPromptButton.textContent = isBusy ? "Working..." : "Copy checklist prompt";
       elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
     }
@@ -6243,7 +6312,6 @@ Now create the pre-bedside rounds report for this case.`;
     }
 
     async function buildPriorChecklistPrompt() {
-      const caseKey = ensureConversationCaseKey();
       const userContext = buildUserContextBlock();
 
       return `${checklistPrompt}
@@ -6253,7 +6321,6 @@ Prior SOAP note, lab results, handoff summaries, medication/MAR audit, and/or ot
 </context_type>${userContext ? `\n\n${userContext}` : ""}
 
 <same_conversation_context>
-Case key: ${caseKey}
 Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication/MAR audit, selected service profile, consult question, hospital course, and chronology.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
@@ -6335,15 +6402,11 @@ Now teach me this patient.`;
       }
       const userContext = buildUserContextBlock();
       const medicationAuditBlock = formatMedicationAuditForPrompt(auditMedicationAdministration(sourceContext.text));
-      const caseKey = ensureConversationCaseKey();
+      const caseKey = "";
       const contextText = `${sourceContext.label}:
 ${sourceContext.text}${medicationAuditBlock ? `\n\nMedication Administration Audit:\n${medicationAuditBlock}` : ""}`;
 
       const singlePrompt = `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
-
-<case_key>
-${caseKey}
-</case_key>
 
 <context_type>
 ${sourceContext.contextType}
@@ -6357,8 +6420,8 @@ ${contextText}
 No new bedside checklist answers or focused exam findings from this app are included yet. Use the source context to prepare the rounds report, and clearly mark what still needs bedside verification.
 </new_findings_status>
 
-Remember this case under the case key above for follow-up checklist and final rounds prompts in this same OpenEvidence conversation.
-Now create the pre-bedside rounds report.`;
+Keep this patient context available in this same OpenEvidence conversation for the later checklist prompt and bedside update prompt.
+Now create the initial rounds report.`;
 
       const finalTaskPrompt = buildPacketFinalTask({
         caseKey,
@@ -6376,8 +6439,8 @@ Now create the pre-bedside rounds report.`;
         onComplete: () => {
           markConversationStep("context");
           updateSourcePrimaryActions();
-          elements.promptStatus.textContent = "Prompt 1 copied. Paste it into OpenEvidence, keep the same conversation open, then copy prompt 2 for the checklist.";
-          showToast("Prompt 1 copied. Next: copy prompt 2 for the checklist.", { duration: 6500 });
+          elements.promptStatus.textContent = "Initial rounds prompt copied. Paste it into OpenEvidence. After you understand the patient, copy the checklist prompt here.";
+          showToast("Initial rounds prompt copied. Next: copy the checklist prompt.", { duration: 6500 });
         }
       });
     }
@@ -6389,13 +6452,11 @@ Now create the pre-bedside rounds report.`;
         admissionFields[0].element.focus();
         return "";
       }
-      const caseKey = ensureConversationCaseKey();
       const userContext = buildUserContextBlock();
 
       return `${newAdmissionChecklistPrompt}
 
 ${userContext ? `${userContext}\n\n` : ""}<same_conversation_context>
-Case key: ${caseKey}
 Use the admission intake context already provided earlier in this same OpenEvidence conversation, including chief concern, service, course so far, objective data, treatments, pending tasks, and monitoring concerns.
 Do not ask the user to paste the admission context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
@@ -6415,14 +6476,6 @@ Now produce the final checklist only.`;
       const importedContext = useImportedFallback ? state.importedContext : null;
       const userContext = buildUserContextBlock();
 
-      if (!state.conversationContextReady && state.scrubbedNote) {
-        sourceBlocks.push(`De-identified source note:\n${state.scrubbedNote}`);
-      }
-
-      if (!state.conversationContextReady && admissionContext) {
-        sourceBlocks.push(`Admission intake information:\n${admissionContext}`);
-      }
-
       if (importedContext) {
         const label = importedContext.sourceMode === "admission"
           ? "Admission intake information"
@@ -6439,7 +6492,7 @@ Now produce the final checklist only.`;
 
 <same_conversation_context>
 ${conversationReferenceLine()}
-Use the patient context and pre-bedside rounds report already provided earlier in this same OpenEvidence conversation.
+Use the patient context and initial rounds presentation already provided earlier in this same OpenEvidence conversation.
 Update that earlier rounds report using only the new bedside interview and focused exam findings below.
 Do not ask the user to paste the entire source note again unless this conversation truly does not contain the earlier patient context.
 If source context is missing from this conversation, say that the prior context is missing rather than inventing it.
@@ -7376,6 +7429,9 @@ ${rawChecklist.trim()}`;
       state.compiledText = "";
       state.importedContext = null;
       state.conversationCaseKey = "";
+      state.initialRoundsPromptCopied = false;
+      state.checklistPromptCopied = false;
+      state.bedsideFindingsReady = false;
       state.conversationContextReady = false;
       state.conversationChecklistReady = false;
       state.conversationFinalReady = false;
@@ -7503,6 +7559,7 @@ ${rawChecklist.trim()}`;
         state.checklistRawText = parsed.checklistText || "";
         state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
         state.compiledText = parsed.compiledText || "";
+        state.bedsideFindingsReady = Boolean(state.compiledText);
         elements.checklistInput.value = parsed.checklistText || "";
         updateChecklistPasteState();
         setOutputMode(state.outputMode);
@@ -7694,8 +7751,11 @@ ${rawChecklist.trim()}`;
     });
 
     elements.loadDemoSoapButton.addEventListener("click", () => {
+      showScreen("pasteScreen");
+      setPromptCollapsed(false);
       setChecklistFirstMode(false);
       setSourceMode("prior");
+      invalidateConversationContext();
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       elements.rawLabsInput.value = "";
       elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and IV access issues.";
@@ -7712,8 +7772,9 @@ ceftriaxone 1 g given Day 0 morning
 heparin 5000 units held by provider`;
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Textbook synthetic DKA consult note and sample handoff loaded. Add extra labs if needed, then copy a checklist, rounds report, or teaching prompt.";
-      elements.rawSoapInput.focus();
+      elements.promptStatus.textContent = "Textbook synthetic DKA consult note, sample handoff, and sample MAR loaded. Next: de-identify and review.";
+      elements.sourceWorkflowCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      elements.rawSoapInput.focus({ preventScroll: true });
       prepareDeidentifierModel();
       showToast("Textbook DKA consult note loaded.");
     });
@@ -7797,7 +7858,7 @@ heparin 5000 units held by provider`;
 
     elements.clearImportedContextButton.addEventListener("click", () => {
       clearImportedContext();
-      showToast("Imported laptop context cleared.");
+      showToast("Fallback context cleared.");
     });
 
     async function copySourceRoundsReportPrompt(statusElement = elements.promptStatus) {
@@ -7805,7 +7866,7 @@ heparin 5000 units held by provider`;
       if (!promptPackage) {
         return false;
       }
-      return copyPromptPackage(promptPackage, statusElement, "Prompt 1 copied. Paste it into OpenEvidence for the pre-bedside rounds report.", {
+      return copyPromptPackage(promptPackage, statusElement, "Initial rounds prompt copied. Paste it into OpenEvidence.", {
         title: "PHI safety check for rounds report prompt",
         reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
         actionLabel: "Open OpenEvidence",
@@ -7832,7 +7893,7 @@ heparin 5000 units held by provider`;
       try {
         const prompt = await buildPriorChecklistPrompt();
         if (prompt) {
-          const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Prompt 2 copied. Paste it into the same OpenEvidence conversation for the checklist.", {
+          const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Checklist prompt copied. Paste it into the same OpenEvidence conversation.", {
             title: "PHI safety check for checklist prompt",
             reviewTarget: "source",
             actionLabel: "Open OpenEvidence",
@@ -7841,13 +7902,13 @@ heparin 5000 units held by provider`;
             fitToOpenEvidence: false,
             onCopied: () => {
               markConversationStep("checklist");
-              setPromptCollapsed(true, "Paste prompt 2 into the same OpenEvidence conversation, then paste the returned checklist below.");
+              setPromptCollapsed(true, "Open OpenEvidence on your phone, copy the checklist, then paste it here.");
               elements.checklistInput.focus();
             }
           });
           if (copied) {
             markConversationStep("checklist");
-            setPromptCollapsed(true, "Paste prompt 2 into the same OpenEvidence conversation, then paste the returned checklist below.");
+            setPromptCollapsed(true, "Open OpenEvidence on your phone, copy the checklist, then paste it here.");
             elements.checklistInput.focus();
           }
         }
@@ -7880,6 +7941,14 @@ heparin 5000 units held by provider`;
       }
     });
 
+    elements.copySummaryChecklistPromptButton.addEventListener("click", () => {
+      if (state.sourceMode === "admission") {
+        elements.copyAdmissionPromptButton.click();
+        return;
+      }
+      elements.scrubAndCopyButton.click();
+    });
+
     elements.copySummaryTeachingPromptButton.addEventListener("click", async () => {
       try {
         await copyPatientTeachingPrompt();
@@ -7891,7 +7960,7 @@ heparin 5000 units held by provider`;
     elements.copyAdmissionPromptButton.addEventListener("click", async () => {
       const prompt = buildAdmissionChecklistPrompt();
       if (prompt) {
-        const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Prompt 2 copied. Paste it into the same OpenEvidence conversation for the checklist.", {
+        const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Checklist prompt copied. Paste it into the same OpenEvidence conversation.", {
           title: "PHI safety check for admission prompt",
           reviewTarget: "admission",
           actionLabel: "Open OpenEvidence",
@@ -7900,13 +7969,13 @@ heparin 5000 units held by provider`;
           fitToOpenEvidence: false,
           onCopied: () => {
             markConversationStep("checklist");
-            setPromptCollapsed(true, "Paste prompt 2 into the same OpenEvidence conversation, then paste the returned checklist below.");
+            setPromptCollapsed(true, "Open OpenEvidence on your phone, copy the checklist, then paste it here.");
             elements.checklistInput.focus();
           }
         });
         if (copied) {
           markConversationStep("checklist");
-          setPromptCollapsed(true, "Paste prompt 2 into the same OpenEvidence conversation, then paste the returned checklist below.");
+          setPromptCollapsed(true, "Open OpenEvidence on your phone, copy the checklist, then paste it here.");
           elements.checklistInput.focus();
         }
       }
@@ -7933,14 +8002,14 @@ heparin 5000 units held by provider`;
         await copyActivePacket();
       } catch (error) {
         console.error(error);
-        elements.promptStatus.textContent = "Could not copy this packet.";
+        elements.promptStatus.textContent = "Could not copy this message.";
       }
     });
 
     elements.cancelPacketButton.addEventListener("click", () => {
       state.activePacketFlow = null;
       renderPacketFlow();
-      elements.promptStatus.textContent = "Packet flow cancelled. You can copy prompt 1 again when ready.";
+      elements.promptStatus.textContent = "Message flow cancelled. You can copy the initial rounds prompt again when ready.";
     });
 
     elements.installButton.addEventListener("click", async () => {
@@ -8065,6 +8134,7 @@ heparin 5000 units held by provider`;
     elements.generateButton.addEventListener("click", () => {
       state.outputMode = "assessed";
       state.compiledText = compileFindings("assessed");
+      state.bedsideFindingsReady = true;
       elements.outputText.value = state.compiledText;
       elements.copyStatus.textContent = "";
       setOutputMode("assessed");
@@ -8074,9 +8144,9 @@ heparin 5000 units held by provider`;
     });
 
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
-      const copied = await copyPromptWithPhiWarning(buildPresentationPrompt(), elements.copyStatus, "Final rounds prompt copied. Paste it into the same OpenEvidence conversation.", {
+      const copied = await copyPromptWithPhiWarning(buildPresentationPrompt(), elements.copyStatus, "Update prompt copied. Paste it into the same OpenEvidence conversation.", {
         title: "PHI safety check for presentation prompt",
-        reviewTarget: state.scrubbedNote ? "source" : state.importedContext ? "imported" : "output",
+        reviewTarget: state.importedContext && !state.conversationCaseKey && !state.conversationContextReady ? "imported" : "output",
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000,
