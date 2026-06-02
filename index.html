@@ -328,6 +328,10 @@
       backdrop-filter: blur(16px);
     }
 
+    .workflow-rail[data-steps="3"] {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
     .workflow-compact-label {
       display: none;
     }
@@ -526,6 +530,43 @@
       gap: 10px;
     }
 
+    .device-mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+
+    .device-mode-switch button {
+      display: grid;
+      gap: 4px;
+      min-height: 58px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.035);
+      text-align: left;
+      font-weight: 900;
+    }
+
+    .device-mode-switch button span {
+      color: var(--quiet);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .device-mode-switch button[aria-pressed="true"] {
+      border-color: var(--accent-border);
+      color: #effdff;
+      background: var(--accent-soft);
+      box-shadow: inset 0 0 0 1px rgba(79, 152, 163, 0.14);
+    }
+
+    .device-mode-switch button[aria-pressed="true"] span {
+      color: #b8dce1;
+    }
+
     .simple-workflow-strip {
       display: grid;
       gap: 8px;
@@ -566,6 +607,32 @@
 
     .checklist-first-summary .btn {
       justify-self: start;
+    }
+
+    .laptop-handoff-card {
+      display: grid;
+      gap: 13px;
+      margin-bottom: 16px;
+      padding: 18px;
+      border-color: rgba(79, 152, 163, 0.36);
+      background: linear-gradient(180deg, rgba(79, 152, 163, 0.11), rgba(255, 255, 255, 0.02)), var(--surface);
+    }
+
+    .laptop-handoff-card[hidden],
+    .phone-instructions-panel[hidden] {
+      display: none !important;
+    }
+
+    .phone-instructions-panel {
+      display: grid;
+      gap: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.14);
+      font-size: 0.9rem;
+      font-weight: 750;
     }
 
     .transfer-panel,
@@ -786,6 +853,20 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+    }
+
+    .session-recovery-banner {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(79, 152, 163, 0.36);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .session-recovery-banner[hidden] {
+      display: none !important;
     }
 
     .source-toggle {
@@ -1632,6 +1713,21 @@
       line-height: 1.15;
     }
 
+    .current-section-label {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 28px;
+      align-items: center;
+      margin: 6px 1px 0;
+      border: 1px solid rgba(79, 152, 163, 0.3);
+      border-radius: 999px;
+      padding: 0 9px;
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.08);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
     .progress-track {
       height: 4px;
       margin-top: 5px;
@@ -2344,6 +2440,11 @@
     }
 
     @media (max-width: 700px) {
+      body[data-device-mode="bedside"] .simple-workflow-strip,
+      body[data-device-mode="bedside"] > main > .tools-drawer {
+        display: none;
+      }
+
       .phone-quick-card {
         display: grid;
       }
@@ -2367,14 +2468,14 @@
     }
   </style>
 </head>
-<body data-screen="pasteScreen" data-checklist-first="false">
+<body data-screen="pasteScreen" data-checklist-first="false" data-device-mode="prepare">
   <main class="app-shell" aria-live="polite">
-    <nav class="workflow-rail" aria-label="Workflow progress">
-      <span id="workflowCompactLabel" class="workflow-compact-label">Step 1 of 4 - Source</span>
+    <nav id="workflowRail" class="workflow-rail" data-steps="3" aria-label="Workflow progress">
+      <span id="workflowCompactLabel" class="workflow-compact-label">Laptop: Epic → Report → Checklist</span>
       <div id="stepSource" class="step-pill is-current">1 Source</div>
       <div id="stepPaste" class="step-pill">2 Checklist</div>
       <div id="stepBedside" class="step-pill">3 Bedside</div>
-      <div id="stepOutput" class="step-pill">4 Output</div>
+      <div id="stepOutput" class="step-pill" hidden>4 Output</div>
     </nav>
     <div class="workflow-status-line" aria-label="Workflow status">
       <span id="sourceReadyStatus">Source ready</span>
@@ -2560,10 +2661,21 @@
 
     <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
       <header class="hero">
-        <p class="eyebrow">Bedside workflow</p>
+        <p id="pasteEyebrow" class="eyebrow">Laptop prepare</p>
         <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
-        <p class="helper">Turn de-identified chart context into a bedside checklist, then use your bedside findings to update rounds.</p>
+        <p id="pasteHelper" class="helper">Paste Epic context, de-identify it, and copy the prompts you need before leaving your laptop.</p>
       </header>
+
+      <div class="device-mode-switch" role="group" aria-label="Workflow mode">
+        <button id="prepareModeButton" type="button" aria-pressed="true">
+          Laptop
+          <span>Prepare case</span>
+        </button>
+        <button id="bedsideModeButton" type="button" aria-pressed="false">
+          Phone
+          <span>Bedside checklist</span>
+        </button>
+      </div>
 
       <div class="simple-workflow-strip" aria-label="Simple workflow">
         <p><strong>Laptop:</strong> chart context → first report → checklist</p>
@@ -2582,7 +2694,31 @@
         </div>
       </section>
 
-      <div class="guided-layout">
+      <section id="laptopHandoffCard" class="surface laptop-handoff-card" aria-labelledby="laptopHandoffTitle" hidden>
+        <div>
+          <p class="eyebrow">Laptop step complete</p>
+          <h2 id="laptopHandoffTitle" class="workflow-title">Finish on your phone</h2>
+          <p class="workflow-copy">Open OpenEvidence on your phone, copy the checklist it generated, then paste it into this app at bedside.</p>
+        </div>
+        <ol class="handoff-list">
+          <li>Open OpenEvidence on your phone.</li>
+          <li>Copy the generated checklist.</li>
+          <li>Open this app on your phone.</li>
+          <li>Paste the checklist and start bedside documentation.</li>
+        </ol>
+        <div class="compact-summary-actions">
+          <a class="btn btn-primary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
+          <button id="copyHandoffLinkButton" class="btn btn-secondary" type="button">Copy app link</button>
+          <button id="showPhoneInstructionsButton" class="btn btn-secondary" type="button">Show phone instructions</button>
+          <button id="useChecklistOnLaptopButton" class="btn btn-quiet" type="button">Use checklist on this laptop</button>
+        </div>
+        <div id="phoneInstructionsPanel" class="phone-instructions-panel" hidden>
+          <p>On iPhone: open OpenEvidence, copy the checklist, open this app, then tap Phone → Paste checklist.</p>
+          <p>If the phone cannot use the same OpenEvidence chat, use the encrypted context file in More tools.</p>
+        </div>
+      </section>
+
+      <div id="guidedLayout" class="guided-layout">
         <div class="guided-main">
       <section id="sourceWorkflowCard" class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
@@ -2602,14 +2738,14 @@
           </ol>
           <div class="compact-summary-actions">
             <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
-            <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial rounds prompt</button>
+            <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial report prompt</button>
             <button id="copySummaryChecklistPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
           </div>
           <details class="more-options">
             <summary>More tools / fallback</summary>
             <div class="more-options-body">
-              <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
+              <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
               <button id="copySummaryMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
               <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
             </div>
@@ -2729,14 +2865,14 @@ enoxaparin 40 mg held by provider"></textarea>
           </div>
           <p class="next-action-copy">Next best action</p>
           <div class="prompt-actions guided-primary-actions">
-            <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify and review</button>
-            <button id="copySourceRoundsPromptButton" class="btn btn-primary" type="button" hidden>Copy initial rounds prompt</button>
+            <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify</button>
+            <button id="copySourceRoundsPromptButton" class="btn btn-primary" type="button" hidden>Copy initial report prompt</button>
             <button id="scrubAndCopyButton" class="btn btn-secondary" type="button" hidden>Copy checklist prompt</button>
           </div>
           <details class="more-options">
             <summary>More tools / fallback</summary>
             <div class="more-options-body">
-              <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Copy teaching prompt</button>
+              <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Teach me this patient</button>
               <button id="copyMedicationSafetyPromptButton" class="btn btn-secondary" type="button" hidden>Copy medication safety prompt</button>
               <button id="exportPriorContextButton" class="btn btn-secondary" type="button" hidden>Download encrypted context file</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
@@ -2797,13 +2933,13 @@ enoxaparin 40 mg held by provider"></textarea>
           </div>
           <p class="next-action-copy">Next best action</p>
           <div class="prompt-actions guided-primary-actions">
-            <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy initial rounds prompt</button>
+            <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy initial report prompt</button>
             <button id="copyAdmissionPromptButton" class="btn btn-secondary" type="button">Copy checklist prompt</button>
           </div>
           <details class="more-options">
             <summary>More tools / fallback</summary>
             <div class="more-options-body">
-              <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Copy teaching prompt</button>
+              <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
               <button id="exportAdmissionContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
@@ -2821,6 +2957,14 @@ enoxaparin 40 mg held by provider"></textarea>
 
       <div id="checklistPasteCard" class="surface paste-card" hidden>
         <p class="eyebrow">Phone bedside step</p>
+        <div id="sessionRecoveryBanner" class="session-recovery-banner" hidden>
+          <p class="compact-summary-title">Recovered bedside checklist from this tab</p>
+          <p class="compact-summary-copy">Your checklist answers and notes are still available in this browser session.</p>
+          <div class="compact-summary-actions">
+            <button id="continueRecoveredButton" class="btn btn-primary" type="button">Continue</button>
+            <button id="startOverRecoveredButton" class="btn btn-secondary" type="button">Start over</button>
+          </div>
+        </div>
         <div id="checklistFirstSummary" class="checklist-first-summary" hidden>
           <p class="compact-summary-title">Paste checklist from OpenEvidence</p>
           <p class="compact-summary-copy">Copy the checklist from the OpenEvidence app, paste it here, then go see the patient.</p>
@@ -2853,7 +2997,7 @@ Since yesterday, are you feeling better?: Better / Same / Worse / Other ___"></t
         <p id="parseSummary" class="parse-summary" role="status" aria-live="polite"></p>
         <p id="pasteError" class="inline-error" role="alert"></p>
         <div class="actions">
-          <button id="buildButton" class="btn btn-primary btn-full" type="button">Build checklist</button>
+          <button id="buildButton" class="btn btn-primary btn-full" type="button">Start bedside checklist</button>
         </div>
 
         <details class="more-options">
@@ -2915,6 +3059,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
           <div id="progressFill" class="progress-fill"></div>
         </div>
         <p id="viewGuidance" class="view-guidance">You are asking the patient these questions.</p>
+        <p id="currentSectionLabel" class="current-section-label">Current: Bedside</p>
         <div class="progress-breakdown" aria-label="Checklist progress by view">
           <span id="bedsideProgress" class="progress-pill">Bedside 0/0</span>
           <span id="examProgress" class="progress-pill">Exam 0/0</span>
@@ -3069,10 +3214,16 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       activePacketFlow: null,
       transferCode: "",
       utilityScrubbedText: "",
-      utilityScrubResult: null
+      utilityScrubResult: null,
+      deviceWorkflowMode: "prepare",
+      laptopPrepareStep: "source",
+      phoneBedsideStep: "paste",
+      useChecklistOnLaptop: false,
+      recoveredChecklistAvailable: false
     };
 
     const elements = {
+      workflowRail: document.getElementById("workflowRail"),
       stepSource: document.getElementById("stepSource"),
       stepPaste: document.getElementById("stepPaste"),
       stepBedside: document.getElementById("stepBedside"),
@@ -3085,13 +3236,27 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
       outputScreen: document.getElementById("outputScreen"),
+      pasteEyebrow: document.getElementById("pasteEyebrow"),
+      pasteTitle: document.getElementById("pasteTitle"),
+      pasteHelper: document.getElementById("pasteHelper"),
+      prepareModeButton: document.getElementById("prepareModeButton"),
+      bedsideModeButton: document.getElementById("bedsideModeButton"),
       phoneQuickStartCard: document.getElementById("phoneQuickStartCard"),
       startChecklistFirstButton: document.getElementById("startChecklistFirstButton"),
       showSourceWorkflowButton: document.getElementById("showSourceWorkflowButton"),
+      guidedLayout: document.getElementById("guidedLayout"),
       sourceWorkflowCard: document.getElementById("sourceWorkflowCard"),
       checklistPasteCard: document.getElementById("checklistPasteCard"),
       checklistFirstSummary: document.getElementById("checklistFirstSummary"),
       showSourceFromPasteButton: document.getElementById("showSourceFromPasteButton"),
+      laptopHandoffCard: document.getElementById("laptopHandoffCard"),
+      copyHandoffLinkButton: document.getElementById("copyHandoffLinkButton"),
+      showPhoneInstructionsButton: document.getElementById("showPhoneInstructionsButton"),
+      useChecklistOnLaptopButton: document.getElementById("useChecklistOnLaptopButton"),
+      phoneInstructionsPanel: document.getElementById("phoneInstructionsPanel"),
+      sessionRecoveryBanner: document.getElementById("sessionRecoveryBanner"),
+      continueRecoveredButton: document.getElementById("continueRecoveredButton"),
+      startOverRecoveredButton: document.getElementById("startOverRecoveredButton"),
       nextActionTitle: document.getElementById("nextActionTitle"),
       nextActionCopy: document.getElementById("nextActionCopy"),
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
@@ -3204,6 +3369,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       examProgress: document.getElementById("examProgress"),
       overallProgress: document.getElementById("overallProgress"),
       viewGuidance: document.getElementById("viewGuidance"),
+      currentSectionLabel: document.getElementById("currentSectionLabel"),
       bedsideViewButton: document.getElementById("bedsideViewButton"),
       examViewButton: document.getElementById("examViewButton"),
       unansweredViewButton: document.getElementById("unansweredViewButton"),
@@ -4252,14 +4418,17 @@ Sensory level present: No / Yes, at ___`;
       if (step === "context") {
         state.initialRoundsPromptCopied = true;
         state.conversationContextReady = true;
+        state.laptopPrepareStep = "initialCopied";
       }
       if (step === "checklist") {
         state.checklistPromptCopied = true;
         state.conversationChecklistReady = true;
+        state.laptopPrepareStep = "checklistCopied";
       }
       if (step === "final") {
         state.bedsideFindingsReady = true;
         state.conversationFinalReady = true;
+        state.phoneBedsideStep = "output";
       }
       updateConversationStatus();
     }
@@ -4275,9 +4444,38 @@ Sensory level present: No / Yes, at ___`;
       state.conversationChecklistReady = false;
       state.conversationFinalReady = false;
       state.activePacketFlow = null;
+      state.laptopPrepareStep = state.scrubbedNote ? "review" : "source";
       renderPacketFlow();
       updateConversationStatus();
       updateSourcePrimaryActions();
+    }
+
+    function isBedsideWorkflow() {
+      return state.deviceWorkflowMode === "bedside";
+    }
+
+    function isLaptopHandoffReady() {
+      return state.deviceWorkflowMode === "prepare" &&
+        state.promptCollapsed &&
+        (state.checklistPromptCopied || state.conversationChecklistReady || state.laptopPrepareStep === "checklistCopied") &&
+        !state.useChecklistOnLaptop;
+    }
+
+    function updateDeviceModeChrome() {
+      const bedsideMode = isBedsideWorkflow();
+      document.body.dataset.deviceMode = state.deviceWorkflowMode;
+      elements.prepareModeButton.setAttribute("aria-pressed", bedsideMode ? "false" : "true");
+      elements.bedsideModeButton.setAttribute("aria-pressed", bedsideMode ? "true" : "false");
+
+      if (bedsideMode) {
+        elements.pasteEyebrow.textContent = "Phone bedside";
+        elements.pasteTitle.textContent = "Paste Checklist";
+        elements.pasteHelper.textContent = "Paste the checklist from OpenEvidence, document bedside answers, then copy the update prompt.";
+      } else {
+        elements.pasteEyebrow.textContent = "Laptop prepare";
+        elements.pasteTitle.textContent = "Prepare Patient for Rounds";
+        elements.pasteHelper.textContent = "Paste Epic context, de-identify it, and copy the prompts you need before leaving your laptop.";
+      }
     }
 
     function updateConversationStatus() {
@@ -4309,11 +4507,17 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateChecklistFirstControls() {
-      document.body.dataset.checklistFirst = state.checklistFirstMode ? "true" : "false";
-      elements.phoneQuickStartCard.hidden = state.checklistFirstMode || state.promptCollapsed || !isPhoneLikeViewport();
-      elements.sourceWorkflowCard.hidden = state.checklistFirstMode;
-      elements.checklistPasteCard.hidden = !(state.checklistFirstMode || state.promptCollapsed || hasChecklistPasteText());
-      elements.checklistFirstSummary.hidden = !state.checklistFirstMode;
+      const bedsideMode = isBedsideWorkflow();
+      const laptopHandoffReady = isLaptopHandoffReady();
+      document.body.dataset.checklistFirst = bedsideMode ? "true" : "false";
+      updateDeviceModeChrome();
+      elements.laptopHandoffCard.hidden = !laptopHandoffReady;
+      elements.guidedLayout.hidden = laptopHandoffReady;
+      elements.phoneQuickStartCard.hidden = bedsideMode || state.promptCollapsed || !isPhoneLikeViewport();
+      elements.sourceWorkflowCard.hidden = bedsideMode || laptopHandoffReady;
+      elements.checklistPasteCard.hidden = !(bedsideMode || state.useChecklistOnLaptop || hasChecklistPasteText());
+      elements.checklistFirstSummary.hidden = !(bedsideMode || state.useChecklistOnLaptop);
+      elements.sessionRecoveryBanner.hidden = !state.recoveredChecklistAvailable;
     }
 
     function focusChecklistPasteBox() {
@@ -4325,11 +4529,34 @@ Sensory level present: No / Yes, at ___`;
       });
     }
 
+    function focusLaptopHandoffCard() {
+      requestAnimationFrame(() => {
+        elements.laptopHandoffCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    function handleChecklistPromptCopied() {
+      const shouldPasteHere = state.useChecklistOnLaptop || isBedsideWorkflow();
+      markConversationStep("checklist");
+      setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it into the phone app.");
+      if (shouldPasteHere) {
+        state.useChecklistOnLaptop = true;
+        updateChecklistFirstControls();
+        updateStepRail("paste");
+        focusChecklistPasteBox();
+      } else {
+        focusLaptopHandoffCard();
+      }
+    }
+
     function setChecklistFirstMode(enabled, options = {}) {
       state.checklistFirstMode = Boolean(enabled);
+      state.deviceWorkflowMode = state.checklistFirstMode ? "bedside" : "prepare";
+      state.phoneBedsideStep = state.checklistFirstMode && state.sections.length ? "checklist" : "paste";
 
       if (state.checklistFirstMode) {
         state.promptCollapsed = false;
+        state.useChecklistOnLaptop = false;
         elements.promptCopiedSummary.hidden = true;
         elements.promptStatus.textContent = "";
         updateChecklistFirstControls();
@@ -4344,11 +4571,33 @@ Sensory level present: No / Yes, at ___`;
         return;
       }
 
+      if (!options.keepLaptopChecklist) {
+        state.useChecklistOnLaptop = false;
+      }
       updateChecklistFirstControls();
       updateSourcePrimaryActions();
       updateStepRail(state.promptCollapsed ? "paste" : "source");
       if (options.focus) {
-        elements.sourceWorkflowCard.scrollIntoView({ behavior: "smooth", block: "start" });
+        (isLaptopHandoffReady() ? elements.laptopHandoffCard : elements.sourceWorkflowCard).scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function setDeviceWorkflowMode(mode, options = {}) {
+      if (mode === "bedside") {
+        setChecklistFirstMode(true, options);
+        return;
+      }
+
+      state.deviceWorkflowMode = "prepare";
+      state.checklistFirstMode = false;
+      if (!options.keepLaptopChecklist) {
+        state.useChecklistOnLaptop = false;
+      }
+      updateChecklistFirstControls();
+      updateSourcePrimaryActions();
+      updateStepRail(state.promptCollapsed ? "paste" : "source");
+      if (options.focus) {
+        (isLaptopHandoffReady() ? elements.laptopHandoffCard : elements.sourceWorkflowCard).scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
 
@@ -4359,9 +4608,12 @@ Sensory level present: No / Yes, at ___`;
         elements.rawSoapInput.value.trim() ||
         elements.rawLabsInput.value.trim() ||
         elements.rawHandoffInput.value.trim() ||
+        elements.rawMedicationInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim())
       );
       if (restoredSession || hasLocalSource || hasChecklistState()) {
+        state.deviceWorkflowMode = restoredSession ? "bedside" : state.deviceWorkflowMode;
+        state.checklistFirstMode = state.deviceWorkflowMode === "bedside";
         updateChecklistFirstControls();
         return;
       }
@@ -4407,19 +4659,39 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateGuidedStatus() {
+      const bedsideMode = isBedsideWorkflow();
       const sourceReady = Boolean(state.checklistFirstMode || hasChecklistPasteText() || hasSourceInput());
       const checklistReady = state.sections.length > 0;
       const findingsReady = Boolean(state.compiledText);
-      elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
-      elements.checklistReadyStatus.classList.toggle("is-ready", checklistReady);
-      elements.findingsReadyStatus.classList.toggle("is-ready", findingsReady);
-      elements.sourceReadyStatus.textContent = state.importedContext ? "Fallback context ready" : state.checklistFirstMode ? "Source skipped" : sourceReady ? "Source ready" : "Source needed";
-      elements.checklistReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
-      elements.findingsReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
 
-      if (state.checklistFirstMode && !checklistReady) {
+      if (bedsideMode) {
+        elements.sourceReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
+        elements.checklistReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
+        elements.findingsReadyStatus.textContent = state.conversationFinalReady ? "Update copied" : "Update needed";
+        elements.sourceReadyStatus.classList.toggle("is-ready", checklistReady);
+        elements.checklistReadyStatus.classList.toggle("is-ready", findingsReady);
+        elements.findingsReadyStatus.classList.toggle("is-ready", Boolean(state.conversationFinalReady));
+      } else {
+        const epicReady = Boolean(state.scrubbedNote || elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim() || formatAdmissionContext());
+        const reportCopied = Boolean(state.initialRoundsPromptCopied || state.conversationContextReady);
+        const checklistCopied = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
+        elements.sourceReadyStatus.textContent = epicReady ? "Epic ready" : "Epic needed";
+        elements.checklistReadyStatus.textContent = reportCopied ? "Report copied" : "Report needed";
+        elements.findingsReadyStatus.textContent = checklistCopied ? "Checklist copied" : "Checklist needed";
+        elements.sourceReadyStatus.classList.toggle("is-ready", epicReady);
+        elements.checklistReadyStatus.classList.toggle("is-ready", reportCopied);
+        elements.findingsReadyStatus.classList.toggle("is-ready", checklistCopied);
+      }
+
+      if (isLaptopHandoffReady()) {
+        elements.nextActionTitle.textContent = "Laptop step complete";
+        elements.nextActionCopy.textContent = "Finish the bedside checklist on your phone.";
+      } else if (state.useChecklistOnLaptop && !checklistReady) {
+        elements.nextActionTitle.textContent = "Paste checklist";
+        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Start bedside checklist.";
+      } else if (bedsideMode && !checklistReady) {
         elements.nextActionTitle.textContent = "Paste the checklist";
-        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Build checklist.";
+        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Start bedside checklist.";
       } else if (!sourceReady) {
         elements.nextActionTitle.textContent = "Paste Epic info";
         elements.nextActionCopy.textContent = "Paste Epic info, de-identify it, then copy the initial rounds prompt.";
@@ -4439,33 +4711,72 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function updateStepRail(activeStep) {
-      const hasPrompt = state.checklistFirstMode || hasChecklistPasteText() || state.promptCollapsed || state.scrubbedNote || elements.rawMedicationInput.value.trim() || formatAdmissionContext();
-      const hasChecklist = state.sections.length > 0;
-      const hasOutput = Boolean(state.compiledText);
-      const compactLabels = {
-        source: "Step 1 of 4 - Source",
-        paste: "Step 2 of 4 - Checklist",
-        bedside: "Step 3 of 4 - Bedside",
-        output: "Step 4 of 4 - Output"
-      };
-      const steps = [
-        { element: elements.stepSource, key: "source", complete: Boolean(hasPrompt) },
-        { element: elements.stepPaste, key: "paste", complete: hasChecklist },
-        { element: elements.stepBedside, key: "bedside", complete: hasOutput },
-        { element: elements.stepOutput, key: "output", complete: hasOutput && activeStep !== "output" }
-      ];
+      const bedsideMode = isBedsideWorkflow();
+      elements.workflowRail.dataset.steps = "3";
+      elements.workflowRail.dataset.flow = bedsideMode ? "bedside" : "prepare";
+      elements.stepOutput.hidden = true;
+
+      let steps;
+      let currentKey;
+
+      if (bedsideMode) {
+        elements.workflowCompactLabel.textContent = "Phone: Paste → Bedside → Update";
+        elements.stepSource.textContent = "Paste";
+        elements.stepPaste.textContent = "Bedside";
+        elements.stepBedside.textContent = "Update";
+        elements.sourceReadyStatus.textContent = state.sections.length ? "Checklist ready" : "Checklist needed";
+        elements.checklistReadyStatus.textContent = state.compiledText ? "Findings ready" : "Findings needed";
+        elements.findingsReadyStatus.textContent = state.conversationFinalReady ? "Update copied" : "Update needed";
+        elements.sourceReadyStatus.classList.toggle("is-ready", state.sections.length > 0);
+        elements.checklistReadyStatus.classList.toggle("is-ready", Boolean(state.compiledText));
+        elements.findingsReadyStatus.classList.toggle("is-ready", Boolean(state.conversationFinalReady));
+        currentKey = activeStep === "output" ? "update" : activeStep === "bedside" ? "bedside" : "paste";
+        steps = [
+          { element: elements.stepSource, key: "paste", complete: state.sections.length > 0 },
+          { element: elements.stepPaste, key: "bedside", complete: Boolean(state.compiledText) },
+          { element: elements.stepBedside, key: "update", complete: Boolean(state.conversationFinalReady) }
+        ];
+      } else {
+        const sourceReady = Boolean(state.scrubbedNote || elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim() || formatAdmissionContext());
+        const reportCopied = Boolean(state.initialRoundsPromptCopied || state.conversationContextReady);
+        const checklistCopied = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
+        elements.workflowCompactLabel.textContent = "Laptop: Epic → Report → Checklist";
+        elements.stepSource.textContent = "Epic";
+        elements.stepPaste.textContent = "Report";
+        elements.stepBedside.textContent = "Checklist";
+        elements.sourceReadyStatus.textContent = sourceReady ? "Epic ready" : "Epic needed";
+        elements.checklistReadyStatus.textContent = reportCopied ? "Report copied" : "Report needed";
+        elements.findingsReadyStatus.textContent = checklistCopied ? "Checklist copied" : "Checklist needed";
+        elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
+        elements.checklistReadyStatus.classList.toggle("is-ready", reportCopied);
+        elements.findingsReadyStatus.classList.toggle("is-ready", checklistCopied);
+        currentKey = checklistCopied ? "checklist" : reportCopied || activeStep === "paste" ? "report" : "epic";
+        steps = [
+          { element: elements.stepSource, key: "epic", complete: sourceReady },
+          { element: elements.stepPaste, key: "report", complete: reportCopied },
+          { element: elements.stepBedside, key: "checklist", complete: checklistCopied }
+        ];
+      }
 
       steps.forEach((step) => {
-        step.element.classList.toggle("is-current", step.key === activeStep);
-        step.element.classList.toggle("is-complete", step.complete && step.key !== activeStep);
+        step.element.hidden = false;
+        step.element.classList.toggle("is-current", step.key === currentKey);
+        step.element.classList.toggle("is-complete", step.complete && step.key !== currentKey);
       });
-      elements.workflowCompactLabel.textContent = compactLabels[activeStep] || compactLabels.source;
       updateGuidedStatus();
     }
 
     function setPromptCollapsed(isCollapsed, message = "Copy OpenEvidence's checklist, then paste it here or on your phone.") {
       state.promptCollapsed = isCollapsed;
       state.checklistFirstMode = false;
+      state.deviceWorkflowMode = "prepare";
+      if (isCollapsed) {
+        state.laptopPrepareStep = "checklistCopied";
+      } else {
+        state.useChecklistOnLaptop = false;
+        elements.phoneInstructionsPanel.hidden = true;
+        elements.showPhoneInstructionsButton.textContent = "Show phone instructions";
+      }
       elements.promptCopiedSummary.hidden = !isCollapsed;
       elements.promptCopiedCopy.textContent = message;
       elements.priorModeButton.parentElement.hidden = isCollapsed;
@@ -5977,6 +6288,7 @@ Now create the initial rounds report for this case.`;
     function clearScrubPreview() {
       state.scrubbedNote = "";
       state.scrubResult = null;
+      state.laptopPrepareStep = "source";
       elements.scrubbedNoteInput.value = "";
       elements.scrubReview.hidden = true;
       elements.scrubVerdict.textContent = "Review before copying.";
@@ -6195,7 +6507,7 @@ Now create the initial rounds report for this case.`;
         pendingDeidRequests.clear();
         deidWorkerReady = false;
         deidWorkerLoading = false;
-        elements.modelStatus.textContent = "Worker unavailable; using structured redaction fallback.";
+        elements.modelStatus.textContent = "Model unavailable; structured scrubber is running.";
       });
       return deidWorker;
     }
@@ -6232,7 +6544,7 @@ Now create the initial rounds report for this case.`;
       elements.modelStatus.textContent = "Preparing local de-ID model in the background...";
       loadDeidentifierPipeline().catch((error) => {
         console.warn(error);
-        elements.modelStatus.textContent = "Model not ready yet. De-identification can still run with structured redaction.";
+        elements.modelStatus.textContent = "Model unavailable; structured scrubber will run during de-identification.";
       });
     }
 
@@ -6266,15 +6578,15 @@ Now create the initial rounds report for this case.`;
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
       elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
-      elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
-      elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial report prompt";
+      elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Teach me this patient";
       elements.copyMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
       elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
-      elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial rounds prompt";
+      elements.copySummaryRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial report prompt";
       elements.copySummaryChecklistPromptButton.textContent = isBusy ? "Working..." : "Copy checklist prompt";
-      elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Copy teaching prompt";
+      elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Teach me this patient";
       elements.copySummaryMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
-      elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify and review";
+      elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify";
     }
 
     async function deidentifyText(rawText) {
@@ -6297,7 +6609,7 @@ Now create the initial rounds report for this case.`;
           throw new Error("De-identification worker unavailable. Reload the page and try again.");
         }
         updateDeidProgress({
-          message: "Worker unavailable; using structured redaction fallback...",
+          message: "Model unavailable; structured scrubber is running.",
           percent: 0.2,
           detail: "The page remains responsive. Review the preview carefully before copying."
         });
@@ -6479,6 +6791,7 @@ Now create the initial rounds report for this case.`;
 
       state.scrubResult = result;
       state.scrubbedNote = result.text;
+      state.laptopPrepareStep = "review";
       renderScrubResult(result);
       elements.promptStatus.textContent = "De-identified note, labs, and handoff preview ready. Review before pasting into OpenEvidence.";
       hideDeidProgress(900);
@@ -7226,6 +7539,8 @@ ${rawChecklist.trim()}`;
 
     function updateChecklistGuidance() {
       const compact = window.matchMedia("(max-width: 430px)").matches;
+      const activeSectionLabel = state.activeSection !== "all" ? state.activeSection : viewLabel(state.activeChecklistView);
+      elements.currentSectionLabel.textContent = `Current: ${activeSectionLabel}`;
       if (state.activeChecklistView === "bedside") {
         elements.viewGuidance.textContent = compact ? "Ask the patient." : "You are asking the patient these questions.";
       } else if (state.activeChecklistView === "exam") {
@@ -7675,6 +7990,11 @@ ${rawChecklist.trim()}`;
       state.conversationFinalReady = false;
       state.activePacketFlow = null;
       state.transferCode = "";
+      state.deviceWorkflowMode = isPhoneLikeViewport() ? "bedside" : "prepare";
+      state.laptopPrepareStep = "source";
+      state.phoneBedsideStep = "paste";
+      state.useChecklistOnLaptop = false;
+      state.recoveredChecklistAvailable = false;
       elements.outputText.value = "";
       elements.copyStatus.textContent = "";
       elements.promptStatus.textContent = "";
@@ -7767,6 +8087,8 @@ ${rawChecklist.trim()}`;
       state.checklistRawText = normalizedText;
       state.auditResult = validateChecklist(sections);
       state.lastClearSnapshot = null;
+      state.phoneBedsideStep = "checklist";
+      state.recoveredChecklistAvailable = false;
       setParseSummary(sections, "Built");
       renderAudit(state.auditResult);
       setChecklistView("bedside");
@@ -7804,15 +8126,24 @@ ${rawChecklist.trim()}`;
         state.outputMode = parsed.outputMode === "full" ? "full" : "assessed";
         state.compiledText = parsed.compiledText || "";
         state.bedsideFindingsReady = Boolean(state.compiledText);
+        state.deviceWorkflowMode = "bedside";
+        state.checklistFirstMode = true;
+        state.phoneBedsideStep = state.compiledText ? "output" : "checklist";
+        state.recoveredChecklistAvailable = true;
         elements.checklistInput.value = parsed.checklistText || "";
         updateChecklistPasteState();
         setOutputMode(state.outputMode);
         setParseSummary(state.sections, "Recovered");
         renderAudit(state.auditResult);
         setChecklistView(state.activeChecklistView);
-        showToast("Recovered checklist from this browser session.", {
-          actionLabel: "Resume",
-          onAction: () => showScreen("checklistScreen")
+        updateChecklistFirstControls();
+        showToast("Recovered bedside checklist from this tab.", {
+          actionLabel: "Continue",
+          onAction: () => {
+            state.recoveredChecklistAvailable = false;
+            updateChecklistFirstControls();
+            showScreen("checklistScreen");
+          }
         });
         return true;
       } catch (error) {
@@ -7842,6 +8173,51 @@ ${rawChecklist.trim()}`;
     });
 
     elements.clearProfileButton.addEventListener("click", clearUserProfile);
+
+    elements.prepareModeButton.addEventListener("click", () => {
+      setDeviceWorkflowMode("prepare", { focus: true });
+    });
+
+    elements.bedsideModeButton.addEventListener("click", () => {
+      setDeviceWorkflowMode("bedside", { focus: true });
+    });
+
+    elements.copyHandoffLinkButton.addEventListener("click", async () => {
+      try {
+        await copyAppLink();
+        elements.promptStatus.textContent = "App link copied. Open it on your phone.";
+        showToast("App link copied.");
+      } catch (error) {
+        elements.promptStatus.textContent = "Copy the browser address and open it on your phone.";
+      }
+    });
+
+    elements.showPhoneInstructionsButton.addEventListener("click", () => {
+      const nextHidden = !elements.phoneInstructionsPanel.hidden ? true : false;
+      elements.phoneInstructionsPanel.hidden = nextHidden;
+      elements.showPhoneInstructionsButton.textContent = nextHidden ? "Show phone instructions" : "Hide phone instructions";
+    });
+
+    elements.useChecklistOnLaptopButton.addEventListener("click", () => {
+      state.useChecklistOnLaptop = true;
+      state.deviceWorkflowMode = "prepare";
+      state.checklistFirstMode = false;
+      updateChecklistFirstControls();
+      updateStepRail("paste");
+      focusChecklistPasteBox();
+      showToast("Laptop checklist entry enabled.");
+    });
+
+    elements.continueRecoveredButton.addEventListener("click", () => {
+      state.recoveredChecklistAvailable = false;
+      updateChecklistFirstControls();
+      showScreen("checklistScreen");
+    });
+
+    elements.startOverRecoveredButton.addEventListener("click", () => {
+      state.recoveredChecklistAvailable = false;
+      resetApp();
+    });
 
     elements.copyPastedCleanupPromptButton.addEventListener("click", async () => {
       const rawChecklist = elements.checklistInput.value.trim();
@@ -8162,16 +8538,10 @@ heparin 5000 units held by provider`;
             actionUrl: openEvidenceUrl,
             duration: 7000,
             fitToOpenEvidence: false,
-            onCopied: () => {
-              markConversationStep("checklist");
-              setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it here or on your phone.");
-              elements.checklistInput.focus();
-            }
+            onCopied: handleChecklistPromptCopied
           });
           if (copied) {
-            markConversationStep("checklist");
-            setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it here or on your phone.");
-            elements.checklistInput.focus();
+            handleChecklistPromptCopied();
           }
         }
       } catch (error) {
@@ -8246,16 +8616,10 @@ heparin 5000 units held by provider`;
           actionUrl: openEvidenceUrl,
           duration: 7000,
           fitToOpenEvidence: false,
-          onCopied: () => {
-            markConversationStep("checklist");
-            setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it here or on your phone.");
-            elements.checklistInput.focus();
-          }
+          onCopied: handleChecklistPromptCopied
         });
         if (copied) {
-          markConversationStep("checklist");
-          setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it here or on your phone.");
-          elements.checklistInput.focus();
+          handleChecklistPromptCopied();
         }
       }
     });
@@ -8416,6 +8780,7 @@ heparin 5000 units held by provider`;
       state.outputMode = "assessed";
       state.compiledText = compileFindings("assessed");
       state.bedsideFindingsReady = true;
+      state.phoneBedsideStep = "output";
       elements.outputText.value = state.compiledText;
       elements.copyStatus.textContent = "";
       setOutputMode("assessed");

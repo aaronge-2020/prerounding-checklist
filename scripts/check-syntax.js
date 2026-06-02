@@ -57,11 +57,22 @@ for (const requiredSnippet of [
   "cleanOutputValue",
   "dashOptionMatch",
   "questionOptionMatch",
-  "format-fix prompt"
+  "format-fix prompt",
+  "deviceWorkflowMode",
+  "laptopHandoffCard",
+  "Use checklist on this laptop",
+  "Start bedside checklist",
+  "Teach me this patient"
 ]) {
   if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
     throw new Error(`Expected checklist usability guardrail not found: ${requiredSnippet}`);
   }
+}
+if (/>\s*Build checklist\s*</i.test(html) || /Copy teaching prompt/i.test(html)) {
+  throw new Error("Old workflow labels should not be visible in the app.");
+}
+if (!/elements\.checklistPasteCard\.hidden\s*=\s*!\(bedsideMode\s*\|\|\s*state\.useChecklistOnLaptop\s*\|\|\s*hasChecklistPasteText\(\)\)/.test(moduleScript)) {
+  throw new Error("Laptop mode must not show the checklist paste card by default after prompt copy.");
 }
 const worker = readFileSync("deid-worker.js", "utf8");
 if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
