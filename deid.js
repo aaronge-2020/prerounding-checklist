@@ -1298,16 +1298,32 @@ function dateFromParts(parts, fallbackYear = null, referenceDate = null) {
   }
 
   const day = parts.kind === "month" ? 1 : parts.day;
-  const date = new Date(Date.UTC(year, parts.month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== parts.month - 1 || date.getUTCDate() !== day) {
-    return null;
+  const makeDate = (candidateYear) => {
+    const candidate = new Date(Date.UTC(candidateYear, parts.month - 1, day));
+    if (candidate.getUTCFullYear() !== candidateYear || candidate.getUTCMonth() !== parts.month - 1 || candidate.getUTCDate() !== day) {
+      return null;
+    }
+    return candidate;
+  };
+
+  if (parts.kind !== "month" && !parts.hasExplicitYear && referenceDate) {
+    const referenceYear = referenceDate.getUTCFullYear();
+    const candidateYears = [...new Set([year, referenceYear - 1, referenceYear, referenceYear + 1])];
+    return candidateYears
+      .map((candidateYear) => makeDate(candidateYear))
+      .filter(Boolean)
+      .sort((left, right) => {
+        const leftDiff = left.getTime() - referenceDate.getTime();
+        const rightDiff = right.getTime() - referenceDate.getTime();
+        const absoluteDelta = Math.abs(leftDiff) - Math.abs(rightDiff);
+        if (absoluteDelta !== 0) {
+          return absoluteDelta;
+        }
+        return leftDiff - rightDiff;
+      })[0] || null;
   }
 
-  if (parts.kind !== "month" && !parts.hasExplicitYear && referenceDate && date.getTime() - referenceDate.getTime() > 7 * 86400000) {
-    return new Date(Date.UTC(year - 1, parts.month - 1, parts.day));
-  }
-
-  return date;
+  return makeDate(year);
 }
 
 function dateKeyFromDate(date) {
@@ -1315,7 +1331,80 @@ function dateKeyFromDate(date) {
 }
 
 function isCurrentSourceDateContext(entity) {
-  return /\b(?:encounter|admit|admitted|admission|date of service|dos|collected|collection|result|resulted|received|drawn|specimen|ordered|vital|vitals|lab|labs|current|today|note date)\b/i.test(entity.context || "");
+  return /\b(?:encounter date|date of service|dos|collected|collection|result|resulted|received|drawn|specimen|vital|vitals|lab|labs|current|today|this am|note date|as of)\b/i.test(entity.context || "");
+}
+
+function temporalContextDirection(entity) {
+  const context = String(entity.context || "").toLowerCase();
+  if (isCurrentSourceDateContext(entity)) {
+    return "current";
+  }
+  if (/\b(?:follow[-\s]?up|appointment|scheduled|planned|will|future|repeat|outpatient|after discharge|pending)\b/.test(context)) {
+    return "future";
+  }
+  if (/\b(?:prior|previous|history|historical|since|diagnosed|seen on|as far back|ago|presented|admitted|started|began|developed|resolved|improved|worsened|showed|demonstrated|on admission|hospital course|course by date|course)\b/.test(context)) {
+    return "past";
+  }
+  return "neutral";
+}
+
+function inferYearForMissingTemporal(temporal, temporalEntities, fallbackYear) {
+  if (!temporal || temporal.hasExplicitYear || !fallbackYear) {
+    return temporal?.year || fallbackYear;
+  }
+
+  const explicitInfos = temporalEntities
+    .map((entity) => ({
+      entity,
+      temporal: entity.temporal || parseTemporalSpan(entity.span || "", entity)
+    }))
+    .filter((info) => info.temporal?.year)
+    .map((info) => ({
+      ...info,
+      date: dateFromParts(info.temporal, info.temporal.year)
+    }))
+    .filter((info) => info.date);
+
+  if (!explicitInfos.length) {
+    return fallbackYear;
+  }
+
+  const candidateYears = [...new Set([
+    fallbackYear - 1,
+    fallbackYear,
+    fallbackYear + 1,
+    ...explicitInfos.flatMap((info) => [info.temporal.year - 1, info.temporal.year, info.temporal.year + 1])
+  ])].filter((year) => Number.isFinite(year));
+
+  const day = temporal.kind === "month" ? 1 : temporal.day;
+  const candidates = candidateYears
+    .map((year) => {
+      const date = new Date(Date.UTC(year, temporal.month - 1, day));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== temporal.month - 1 || date.getUTCDate() !== day) {
+        return null;
+      }
+
+      const score = explicitInfos.reduce((total, info) => {
+        const diffDays = Math.round((info.date.getTime() - date.getTime()) / 86400000);
+        const direction = temporalContextDirection(info.entity);
+        if (direction === "past" && diffDays > 7) {
+          return total + 10000 + diffDays;
+        }
+        if (direction === "future" && diffDays < -7) {
+          return total + 10000 + Math.abs(diffDays);
+        }
+        if (direction === "current") {
+          return total + Math.abs(diffDays) * 8;
+        }
+        return total + Math.min(Math.abs(diffDays), 365) / 365;
+      }, Math.abs(year - fallbackYear) * 0.01);
+
+      return { year, score };
+    })
+    .filter(Boolean)
+    .sort((left, right) => left.score - right.score || Math.abs(left.year - fallbackYear) - Math.abs(right.year - fallbackYear));
+
+  return candidates[0]?.year || fallbackYear;
 }
 
 function pushTemporalEntity(rawText, entities, start, end, source = "temporal", context = "") {
@@ -1371,16 +1460,45 @@ export function collectTemporalEntities(rawText) {
 }
 
 function chooseCurrentSourceDate(temporalEntities) {
-  const explicitYears = temporalEntities
-    .map((entity) => entity.temporal || parseTemporalSpan(entity.span || "", entity))
-    .map((temporal) => temporal?.year)
-    .filter((year) => Number.isFinite(year));
-  const fallbackYear = explicitYears.length ? Math.max(...explicitYears) : new Date().getFullYear();
-  const dayEntities = temporalEntities
+  const parsedEntities = temporalEntities
     .map((entity) => ({
       entity,
-      temporal: entity.temporal || parseTemporalSpan(entity.span || "", entity),
-      date: dateFromParts(entity.temporal || parseTemporalSpan(entity.span || "", entity), fallbackYear)
+      temporal: entity.temporal || parseTemporalSpan(entity.span || "", entity)
+    }))
+    .filter((info) => info.temporal);
+  const explicitYears = parsedEntities
+    .map((info) => info.temporal?.year)
+    .filter((year) => Number.isFinite(year));
+  const fallbackYear = explicitYears.length ? Math.max(...explicitYears) : new Date().getFullYear();
+
+  const explicitDayEntities = parsedEntities
+    .filter((info) => info.temporal.kind === "day" && info.temporal.hasExplicitYear)
+    .map((info) => ({
+      ...info,
+      date: dateFromParts(info.temporal, info.temporal.year)
+    }))
+    .filter((info) => info.date);
+  const explicitCurrent = explicitDayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
+  if (explicitCurrent.length) {
+    return explicitCurrent.reduce((latest, info) => (
+      !latest || info.date > latest ? info.date : latest
+    ), null);
+  }
+
+  const explicitAnchor = explicitDayEntities.reduce((latest, info) => (
+    !latest || info.date > latest ? info.date : latest
+  ), null);
+  const dateForInfo = (info) => {
+    const inferredYear = info.temporal.hasExplicitYear
+      ? info.temporal.year
+      : inferYearForMissingTemporal(info.temporal, temporalEntities, explicitAnchor?.getUTCFullYear() || fallbackYear);
+    return dateFromParts(info.temporal, inferredYear, explicitAnchor);
+  };
+
+  const dayEntities = parsedEntities
+    .map((info) => ({
+      ...info,
+      date: dateForInfo(info)
     }))
     .filter((info) => info.temporal?.kind === "day" && info.date);
   if (!dayEntities.length) {
@@ -1388,7 +1506,19 @@ function chooseCurrentSourceDate(temporalEntities) {
   }
 
   const prioritized = dayEntities.filter((info) => isCurrentSourceDateContext(info.entity));
-  const pool = prioritized.length ? prioritized : dayEntities;
+  if (prioritized.length) {
+    return prioritized.reduce((latest, info) => (
+      !latest || info.date > latest ? info.date : latest
+    ), null);
+  }
+
+  if (!explicitAnchor && dayEntities.some((info) => !info.temporal.hasExplicitYear)) {
+    return dayEntities.reduce((latest, info) => (
+      !latest || info.entity.start > latest.entity.start ? info : latest
+    ), null).date;
+  }
+
+  const pool = dayEntities;
   return pool.reduce((latest, info) => (
     !latest || info.date > latest ? info.date : latest
   ), null);
@@ -1423,11 +1553,12 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
     return "relative date";
   }
   const year = temporal.year || fallbackYear || currentSourceDate?.getUTCFullYear() || null;
+  const timelineYear = currentSourceDate?.getUTCFullYear() || year;
   const date = dateFromParts(temporal, year, currentSourceDate);
   if (temporal.kind === "month") {
-    return formatMonthRelation(date, currentSourceDate, year);
+    return formatMonthRelation(date, currentSourceDate, timelineYear);
   }
-  return formatDayRelation(date, currentSourceDate, year, temporal.timeBucket || "");
+  return formatDayRelation(date, currentSourceDate, timelineYear, temporal.timeBucket || "");
 }
 
 function buildDateTimeline(rawText, entities) {

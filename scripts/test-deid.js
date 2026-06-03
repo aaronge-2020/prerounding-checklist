@@ -345,6 +345,31 @@ assert.ok(!timelineDateResult.text.includes("5/6"), "course shorthand date shoul
 assert.ok(!timelineDateResult.text.includes("0454"), "date-attached exact time should not leak");
 assert.ok(!timelineDateResult.text.includes("03/14/1998"), "DOB exact date should not leak");
 
+const crossYearTimelineText = `Hospital Course by Date
+12/31: Admitted overnight
+1/1: Creatinine improving
+Current labs 1/2 0600: Creatinine stable
+Follow-up on 1/3`;
+const crossYearTimelineResult = deidentifyTextStructuredOnly(crossYearTimelineText);
+assert.ok(crossYearTimelineResult.text.includes("Day -2"), "Dec 31 should resolve to two days before Jan 2, not the following December");
+assert.ok(crossYearTimelineResult.text.includes("Day -1"), "Jan 1 should resolve to one day before Jan 2");
+assert.ok(crossYearTimelineResult.text.includes("Current labs Day 0 early morning"), "current shorthand lab date should anchor the chart timeline");
+assert.ok(crossYearTimelineResult.text.includes("Follow-up on Day +1"), "near-future shorthand follow-up should remain chronological");
+assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(crossYearTimelineResult.text), "cross-year shorthand dates should not produce near-one-year offsets");
+
+const priorMonthYearAnchorText = `Prior transplant evaluation in 11/2025
+PET stress in 12/2025
+Labs 1/2 0454: Creatinine stable
+12/31: Admitted for monitoring
+1/1: Symptoms improved`;
+const priorMonthYearAnchorResult = deidentifyTextStructuredOnly(priorMonthYearAnchorText);
+assert.ok(priorMonthYearAnchorResult.text.includes("Prior transplant evaluation in about 2 months before Day 0 (2026)"), "prior month/year should make Jan shorthand resolve to the following year");
+assert.ok(priorMonthYearAnchorResult.text.includes("PET stress in about 1 month before Day 0 (2026)"), "month/year history should remain relative to inferred Day 0");
+assert.ok(priorMonthYearAnchorResult.text.includes("Labs Day 0 early morning (2026)"), "no-year current labs should infer the year from prior explicit history");
+assert.ok(priorMonthYearAnchorResult.text.includes("Day -2 (2026): Admitted for monitoring"), "Dec shorthand should attach to the prior year relative to Jan Day 0");
+assert.ok(priorMonthYearAnchorResult.text.includes("Day -1 (2026): Symptoms improved"), "Jan shorthand should stay in the inferred current year");
+assert.ok(!/Day [+-]?(?:36[0-9]|3[7-9]\d)/.test(priorMonthYearAnchorResult.text), "month/year anchors should not create near-one-year offsets");
+
 const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);
 for (const term of clinicalGuardTerms) {
