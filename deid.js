@@ -215,17 +215,20 @@ const clinicalAnchorWords = new Set([
 
 [
   "on prednisone", "car echo", "add nephrovite", "elevated lipids", "heart attack",
-  "dna amplification", "rna amplification", "pcr amplification", "viral dna", "viral rna"
+  "dna amplification", "rna amplification", "pcr amplification", "viral dna", "viral rna",
+  "please hold on day", "for renal biopsy", "do not", "or hr", "prn route",
+  "low blood sugar", "sterile water"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
   "add", "amplification", "attack", "car", "dna", "echo", "lipid", "lipids",
-  "nephrovite", "on", "prednisone", "rna"
+  "biopsy", "day", "do", "for", "hold", "hr", "nephrovite", "not", "on",
+  "or", "please", "prednisone", "rna", "route", "sterile", "sugar", "water"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
   "amplification", "attack", "dna", "echo", "lipid", "lipids", "nephrovite",
-  "prednisone", "rna"
+  "biopsy", "blood", "hr", "prednisone", "renal", "rna", "route", "sugar"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([
@@ -265,6 +268,14 @@ const medicationNameWords = new Set([
   "vancomycin", "warfarin"
 ]);
 ["nephrovite", "prednisone"].forEach((word) => medicationNameWords.add(word));
+
+const clinicalInstructionWords = new Set([
+  "add", "do", "for", "hold", "not", "on", "or", "please", "prn", "route"
+]);
+
+const clinicalInstructionAnchorWords = new Set([
+  "biopsy", "blood", "day", "hr", "renal", "route", "sugar", "water"
+]);
 
 const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
 const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
@@ -372,6 +383,10 @@ function isLikelyClinicalNameLikePhrase(normalized) {
     return true;
   }
 
+  if (isLikelyClinicalInstructionPhrase(normalized)) {
+    return true;
+  }
+
   if (words.length === 2 && medicationNameWords.has(words[0]) && medicationSaltOrFormWords.has(words[1])) {
     return true;
   }
@@ -382,6 +397,28 @@ function isLikelyClinicalNameLikePhrase(normalized) {
 
   return words.every((word) => nonNameClinicalWords.has(word)) &&
     words.some((word) => clinicalAnchorWords.has(word));
+}
+
+function isLikelyClinicalInstructionPhrase(normalized) {
+  const words = clinicalWordsFromNormalized(normalized);
+  if (words.length < 2 || words.length > 7) {
+    return false;
+  }
+
+  return words.every((word) => (
+    clinicalInstructionWords.has(word) ||
+    clinicalInstructionAnchorWords.has(word) ||
+    nonNameClinicalWords.has(word) ||
+    clinicalAnchorWords.has(word) ||
+    medicationNameWords.has(word) ||
+    medicationSaltOrFormWords.has(word)
+  )) &&
+    words.some((word) => clinicalInstructionWords.has(word)) &&
+    words.some((word) => (
+      clinicalInstructionAnchorWords.has(word) ||
+      clinicalAnchorWords.has(word) ||
+      medicationNameWords.has(word)
+    ));
 }
 
 function isLikelyPromptInstructionHeading(value) {
@@ -417,6 +454,10 @@ function isClinicalGuardOnlyText(value) {
   }
 
   if (nonNameClinicalPhrases.has(normalized)) {
+    return true;
+  }
+
+  if (isLikelyClinicalInstructionPhrase(normalized)) {
     return true;
   }
 
