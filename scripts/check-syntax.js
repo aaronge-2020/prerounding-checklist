@@ -4,9 +4,11 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const files = [
+  "checklist.js",
   "deid.js",
   "deid-worker.js",
   "scripts/deid-fixtures.js",
+  "scripts/test-checklist.js",
   "scripts/test-deid.js",
   "scripts/benchmark-deid.js",
   "scripts/check-syntax.js"
@@ -38,9 +40,17 @@ const moduleScript = scriptMatch[1];
 if (!/from\s+["']\.\/deid\.js["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared deid.js module.");
 }
+if (!/from\s+["']\.\/checklist\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the shared checklist.js module.");
+}
 for (const importedName of ["cleanupDeidArtifacts", "deidentifyTextStructuredOnly", "normalizeResidualTemporalPhi"]) {
   if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
     throw new Error(`index.html must use shared ${importedName} from deid.js.`);
+  }
+}
+for (const importedName of ["parseChecklist", "validateChecklist", "normalizeChecklistText", "buildCleanupPrompt"]) {
+  if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
+    throw new Error(`index.html must use shared ${importedName} from checklist.js.`);
   }
 }
 if (!/\bscanResidualPhi\s+as\s+scanResidualPhiShared\b/.test(moduleScript)) {
@@ -55,8 +65,6 @@ if (!/PHI safety check for medication safety prompt[\s\S]{0,400}reviewScope:\s*"
 for (const requiredSnippet of [
   "cleanOutputLabel",
   "cleanOutputValue",
-  "dashOptionMatch",
-  "questionOptionMatch",
   "format-fix prompt",
   "deviceWorkflowMode",
   "laptopHandoffCard",
@@ -77,6 +85,20 @@ if (!/elements\.checklistPasteCard\.hidden\s*=\s*!\(bedsideMode\s*\|\|\s*state\.
 const worker = readFileSync("deid-worker.js", "utf8");
 if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
   throw new Error("deid-worker.js must run the shared deidentifier from deid.js.");
+}
+
+const checklistModule = readFileSync("checklist.js", "utf8");
+for (const requiredSnippet of [
+  "Parent checklist titles must be the exact all-caps lines above, with no colon.",
+  "categoryForChecklistTitle",
+  "dashOptionMatch",
+  "questionOptionMatch",
+  "BEDSIDE QUESTION CHECKLIST",
+  "TARGETED PHYSICAL EXAM CHECKLIST"
+]) {
+  if (!checklistModule.includes(requiredSnippet)) {
+    throw new Error(`Expected shared checklist guardrail not found: ${requiredSnippet}`);
+  }
 }
 
 const scratch = mkdtempSync(join(tmpdir(), "preround-syntax-"));

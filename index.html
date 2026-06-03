@@ -3337,6 +3337,15 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       normalizeResidualTemporalPhi,
       scanResidualPhi as scanResidualPhiShared
     } from "./deid.js";
+    import {
+      annotateChecklistSections,
+      buildCleanupPrompt,
+      checklistPrompt,
+      newAdmissionChecklistPrompt,
+      normalizeChecklistText,
+      parseChecklist,
+      validateChecklist
+    } from "./checklist.js";
 
     const state = {
       sections: [],
@@ -3646,178 +3655,6 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     let deidWorkerLoading = false;
     let deidRequestId = 0;
     const pendingDeidRequests = new Map();
-
-    const checklistPrompt = `<role>
-You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
-</role>
-
-<task>
-Create a patient-specific bedside pre-rounding checklist from the clinical context below.
-
-Your final answer must contain exactly two plain-text checklists:
-BEDSIDE QUESTION CHECKLIST
-TARGETED PHYSICAL EXAM CHECKLIST
-
-You must include both checklists. Never omit the bedside question checklist.
-</task>
-
-<clinical_goal>
-The checklist should help the student quickly determine today's clinical trajectory, severity, red flags, response to treatment, functional status, and management-relevant changes. Include only items that could affect today's rounds presentation, assessment, monitoring, treatment plan, discharge readiness, or escalation decisions.
-</clinical_goal>
-
-<internal_process>
-Before writing the final answer, silently identify:
-1. The patient's active problems and reason for hospitalization or admission.
-2. The key clinical uncertainties for today.
-3. Bedside questions that clarify symptom trajectory, red flags, function, safety, treatment response, and patient concerns.
-4. Focused physical exam findings that would confirm improvement, worsening, complications, or management-relevant severity.
-5. Items that are generic, low-yield, redundant, or not supported by the context, and remove them.
-
-Do not show this reasoning. Show only the final checklist.
-</internal_process>
-
-<content_rules>
-For the bedside question checklist:
-Use patient-friendly language with no medical jargon.
-Write each bedside item as a direct history question the student can say out loud to the patient.
-Every bedside item label must end with a question mark before the colon.
-Do not write shorthand clinical label fragments for bedside items.
-Do not put exam maneuvers, commands, performance tests, or clinician-observed findings in the bedside question checklist.
-Never ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out the tongue, follow your finger, or perform an exam maneuver in the bedside question checklist. Those belong only in the targeted physical exam checklist.
-Focus on what the patient can report: symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, and concerns.
-Use 6 to 8 bedside questions. If more seem useful, choose the highest-yield questions rather than exceeding 8.
-When the patient might answer outside the choices, include Other ___ as the final option.
-
-For the targeted physical exam checklist:
-Use concise clinical labels appropriate for a medical student.
-Focus on focused exam findings, vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
-Use 10 to 14 exam items total. Never exceed 16 exam items.
-Organize exam items by exam system and exam type using focused section headers. Use relevant headers such as VITAL SIGNS AND SUPPORT, RESPIRATORY EXAM, MUSCULOSKELETAL STRENGTH EXAM, NEUROLOGIC REFLEX EXAM, NEUROLOGIC SENSORY EXAM, BULBAR CRANIAL NERVE EXAM, ABDOMINAL EXAM, VOLUME EXAM, SKIN LINES AND WOUNDS, or FUNCTIONAL SAFETY EXAM.
-Use no more than 4 items in any one exam section.
-Prefer grouped screening items over exhaustive right-left muscle and reflex inventories.
-For strength exams, organize by body region rather than listing every individual muscle unless a specific muscle group is critical today.
-For reflex exams, prefer a summary pattern item unless exact right-left reflexes are critical today.
-
-Do not include generic review-of-systems questions.
-Do not include a full head-to-toe exam.
-Do not include teaching, explanations, citations, caveats, or oral presentation text.
-Do not mention that the note is de-identified.
-</content_rules>
-
-<format_rules>
-Use plain text only.
-Do not use markdown, bullets, numbering, bold, italics, tables, emojis, or special formatting.
-Section headers must be ALL CAPS with no punctuation.
-Every checklist item must be on a single line.
-Every checklist item must use exactly this format:
-Label: Option A / Option B / Option C
-
-Use concise labels.
-Use structured options whenever possible.
-Use ___ only when structured options are not adequate, such as numeric values, locations, brief descriptions, or device settings.
-Mixed structured-plus-free-text options are allowed when useful, for example:
-Ability to count in one breath: 20 or more / Less than 20, stops at ___
-Put ___ only at the end of the entire checklist item.
-Do not place ___ before another slash-separated option.
-Do not write blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
-For 0 to 5 strength ratings, use selectable chips:
-Shoulder abduction strength right: 0 / 1 / 2 / 3 / 4 / 5
-For conditional details, put the option requiring the detail last:
-Sensory level present: No / Yes, at ___
-Oxygen support and flow rate: Room air / Nasal cannula / Face mask / Ventilator / Other ___
-
-The final answer must begin with:
-BEDSIDE QUESTION CHECKLIST
-
-The final answer must not include any text before or after the two checklists.
-</format_rules>
-
-<format_examples>
-BEDSIDE QUESTION CHECKLIST
-SYMPTOM TRAJECTORY
-Since yesterday, is your main symptom better, the same, or worse?: Better / Same / Worse / Other ___
-Have you noticed any new or worsening symptom?: Yes / No / Other ___
-How is your breathing right now?: Normal / A little hard / Very hard / Other ___
-FUNCTION AND SAFETY
-Have you been able to get out of bed safely?: Yes / No / Not tried / Other ___
-Do you feel dizzy when sitting or standing?: Yes / No / Other ___
-What is your main concern today?: ___
-
-TARGETED PHYSICAL EXAM CHECKLIST
-VITAL SIGNS AND SUPPORT
-Respiratory rate: ___
-Oxygen support and flow rate: Room air / Nasal cannula / Face mask / Ventilator / Other ___
-Heart rate and rhythm: Regular / Irregular
-RESPIRATORY EXAM
-Work of breathing: Normal / Mildly increased / Markedly increased
-Lung exam: Clear / Crackles / Wheezes / Diminished
-MUSCULOSKELETAL STRENGTH EXAM
-Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
-Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
-Lower extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
-Lower extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
-NEUROLOGIC REFLEX EXAM
-Overall reflex pattern: Absent / Diminished / Normal / Brisk / Clonus
-Babinski signs: Downgoing bilaterally / Upgoing right / Upgoing left / Upgoing both / Equivocal
-NEUROLOGIC SENSORY EXAM
-Sensory level present: No / Yes, at ___
-</format_examples>
-
-<neurologic_case_style_example>
-For a patient with progressive weakness, sensory symptoms, possible cord disease, and respiratory risk, prefer this style:
-
-BEDSIDE QUESTION CHECKLIST
-BREATHING AND SWALLOWING
-Are you having any trouble breathing while resting?: No / Yes, mild / Yes, severe / Other ___
-Have you had any trouble swallowing food, water, pills, or saliva?: No / Yes / Other ___
-SYMPTOM TRAJECTORY
-Since yesterday, has your weakness changed?: Better / Same / Worse / Other ___
-Has numbness or tingling moved higher on your body?: No / Yes, location ___
-RED FLAGS
-Have you had any new trouble controlling urine or bowel movements?: No / Yes / Other ___
-What is your biggest concern today?: ___
-
-TARGETED PHYSICAL EXAM CHECKLIST
-VITAL SIGNS AND SUPPORT
-Respiratory rate: ___
-SpO2: ___
-Oxygen support and flow rate: Room air / Nasal cannula / Face mask / BiPAP / Ventilator / Other ___
-RESPIRATORY EXAM
-Work of breathing: Normal / Mildly increased / Markedly increased
-MUSCULOSKELETAL STRENGTH EXAM
-Upper extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
-Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
-Lower extremity strength right: 0 / 1 / 2 / 3 / 4 / 5
-Lower extremity strength left: 0 / 1 / 2 / 3 / 4 / 5
-NEUROLOGIC REFLEX EXAM
-Overall reflex pattern: Absent / Diminished / Normal / Brisk / Clonus
-Babinski signs: Downgoing bilaterally / Upgoing right / Upgoing left / Upgoing both / Equivocal
-NEUROLOGIC SENSORY EXAM
-Sensory level present: No / Yes, at ___
-BULBAR CRANIAL NERVE EXAM
-Palate elevation and gag reflex: Normal / Diminished / Absent
-</neurologic_case_style_example>
-
-<final_self_check>
-Before finalizing, silently verify:
-1. Both required checklist titles are present.
-2. There is at least one bedside-question section and one exam section.
-3. Every bedside label is a real patient-facing history question ending in a question mark.
-4. No bedside item asks the patient to perform an exam maneuver.
-5. Exam items are focused, grouped by exam system or exam type, and management-relevant.
-6. The bedside checklist has 6 to 8 items.
-7. The targeted physical exam checklist has 10 to 14 items and no more than 16 items.
-8. No exam section contains more than 4 items.
-9. Every item is parseable as Label: options.
-10. No bullets, numbering, markdown, explanations, citations, or extra prose appear.
-11. No item uses ___ / 5, ___ / 10, ___ / ___, or a blank before another slash option.
-</final_self_check>`;
-
-    const newAdmissionChecklistPrompt = `${checklistPrompt}
-
-<context_type>
-No prior SOAP note is available. The patient is newly admitted or being admitted now.
-</context_type>`;
 
     const presentationPromptInstructions = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval SOAP note.
@@ -7557,112 +7394,6 @@ If source context is missing from this conversation, say that the prior context 
       updateNextActionControls();
     }
 
-    function isBedsideExamManeuver(label) {
-      return /\b(?:squeeze|lift|wiggle|count\s+(?:aloud|out loud)|count\s+to|cough|stick\s+out|tongue|palate|gag|reflex|strength|babinski|clonus|hoffmann|follow\s+(?:my|your)|finger-to-nose|walk|stand)\b/i.test(label);
-    }
-
-    function hasBadBlankFormat(item) {
-      const rawValue = item.rawValue || "";
-      return /_{2,3}\s*\/\s*(?:\d|_|[A-Za-z])/.test(rawValue) || /_{2,3}[\s\S]*\/[\s\S]*(?:\S)/.test(rawValue) && !/\/[^/]*_{2,3}\s*$/.test(rawValue);
-    }
-
-    function validateChecklist(sections) {
-      const issues = [];
-      const bedsideItems = sections.flatMap((section) => section.items).filter((item) => item.category === "bedside");
-      const examSections = sections.filter((section) => section.category === "exam" && section.items.length > 0);
-      const examItems = examSections.flatMap((section) => section.items);
-      const seenLabels = new Map();
-
-      if (bedsideItems.length < 5) {
-        issues.push({ type: "bedside-count-low", message: `Bedside checklist has only ${bedsideItems.length} patient questions. Aim for 6 to 8.` });
-      } else if (bedsideItems.length > 8) {
-        issues.push({ type: "bedside-count-high", message: `Bedside checklist has ${bedsideItems.length} patient questions. Aim for 6 to 8.` });
-      }
-
-      if (examItems.length > 16) {
-        issues.push({ type: "exam-count-high", message: `Focused exam has ${examItems.length} items. Aim for 10 to 14 and never more than 16.` });
-      }
-
-      examSections.forEach((section) => {
-        if (section.items.length > 4) {
-          issues.push({ type: "exam-section-long", message: `${section.title} has ${section.items.length} exam items. Keep each exam section to 4 or fewer.` });
-        }
-      });
-
-      sections.forEach((section) => {
-        section.items.forEach((item) => {
-          const normalizedLabel = item.label.toLowerCase().replace(/\s+/g, " ").trim();
-          if (seenLabels.has(normalizedLabel)) {
-            issues.push({ type: "duplicate-label", message: `Duplicate item label: ${item.label}` });
-          } else {
-            seenLabels.set(normalizedLabel, true);
-          }
-
-          if (hasBadBlankFormat(item)) {
-            issues.push({ type: "bad-blank-format", message: `Possible bad blank format: ${item.label}` });
-          }
-
-          if (item.category === "bedside") {
-            if (!item.label.trim().endsWith("?")) {
-              issues.push({ type: "bedside-question-format", message: `Bedside item should be a direct question ending in ?: ${item.label}` });
-            }
-            if (isBedsideExamManeuver(item.label)) {
-              issues.push({ type: "bedside-exam-maneuver", message: `Bedside item may be an exam maneuver, not history: ${item.label}` });
-            }
-          }
-        });
-      });
-
-      return {
-        ok: issues.length === 0,
-        issues,
-        bedsideCount: bedsideItems.length,
-        examCount: examItems.length
-      };
-    }
-
-    function buildCleanupPrompt(rawChecklist, auditResult) {
-      const issueText = auditResult.issues.length
-        ? auditResult.issues.map((issue) => `- ${issue.message}`).join("\n")
-        : "- Shorten and organize the checklist into the required bedside-first format.";
-      const userContext = buildUserContextBlock();
-
-      return `You are an experienced attending physician and clerkship coach. Rewrite the checklist below so it is shorter, bedside-first, and fully parseable by a checklist app.${userContext ? `\n\n${userContext}` : ""}
-
-Fix these issues:
-${issueText}
-
-Rules:
-Use plain text only.
-Return exactly two checklists:
-BEDSIDE QUESTION CHECKLIST
-TARGETED PHYSICAL EXAM CHECKLIST
-
-BEDSIDE QUESTION CHECKLIST:
-Use 6 to 8 true patient history questions.
-Every bedside label must be a direct question ending in ? before the colon.
-Do not include exam maneuvers, commands, or observed findings in bedside questions.
-Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out their tongue, follow a finger, or perform a physical exam task.
-Use patient-friendly language and include Other ___ when answers may not fit the choices.
-
-TARGETED PHYSICAL EXAM CHECKLIST:
-Use 10 to 14 focused exam items total and never more than 16.
-Group exam items by exam system or exam type.
-Use no more than 4 items per exam section.
-Prefer grouped screening items over exhaustive right-left inventories.
-
-Formatting:
-Section headers must be ALL CAPS with no punctuation.
-Every item must be one line in this exact format:
-Label: Option A / Option B / Option C
-Put ___ only at the end of an option or item.
-Do not use ___ / 5 or blanks before another slash option.
-Do not include explanations before or after the rewritten checklist.
-
-Checklist to rewrite:
-${rawChecklist.trim()}`;
-    }
-
     function renderAudit(result) {
       state.auditResult = result;
       elements.auditList.innerHTML = "";
@@ -7684,95 +7415,6 @@ ${rawChecklist.trim()}`;
         item.textContent = `${result.issues.length - 8} more issue${result.issues.length - 8 === 1 ? "" : "s"} not shown.`;
         elements.auditList.appendChild(item);
       }
-    }
-
-    function normalizeChecklistText(rawText) {
-      return rawText
-        .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "")
-        .replace(/[“”]/g, "\"")
-        .replace(/[‘’]/g, "'")
-        .replace(/[–—]/g, "-")
-        .replace(/[：]/g, ":")
-        .replace(/[∕／]/g, "/")
-        .split(/\r?\n/)
-        .map((line) => {
-          let cleaned = line
-            .trim()
-            .replace(/\*\*(.*?)\*\*/g, "$1")
-            .replace(/^#{1,6}\s+/, "")
-            .replace(/^(?:[>*•‣▪▫◦-]+|[☐☑☒✓✔]|\[[ xX]\])\s+/, "")
-            .replace(/^\(?\d+[\.)]\s+/, "")
-            .replace(/\s{2,}/g, " ")
-            .trim();
-
-          if (!cleaned.includes(":")) {
-            const dashOptionMatch = cleaned.match(/^(.{3,140}?)\s+-\s+(.+(?:\/|_{2,3}).*)$/);
-            if (dashOptionMatch) {
-              cleaned = `${dashOptionMatch[1].trim()}: ${dashOptionMatch[2].trim()}`;
-            } else {
-              const questionOptionMatch = cleaned.match(/^(.+\?)\s+(.+(?:\/|_{2,3}).*)$/);
-              if (questionOptionMatch) {
-                cleaned = `${questionOptionMatch[1].trim()}: ${questionOptionMatch[2].trim()}`;
-              }
-            }
-          }
-
-          const colonIndex = cleaned.indexOf(":");
-          if (colonIndex === -1) {
-            return cleaned;
-          }
-          return `${cleaned.slice(0, colonIndex).trim()}: ${cleaned.slice(colonIndex + 1).replace(/\s*\/\s*/g, " / ").replace(/\s{2,}/g, " ").trim()}`;
-        })
-        .join("\n");
-    }
-
-    function normalizeHeader(line) {
-      return line.trim().toUpperCase();
-    }
-
-    function categoryForChecklistTitle(title) {
-      if (title === "BEDSIDE QUESTION CHECKLIST") {
-        return "bedside";
-      }
-      if (title === "TARGETED PHYSICAL EXAM CHECKLIST") {
-        return "exam";
-      }
-      return "";
-    }
-
-    function annotateChecklistSections(sections) {
-      let activeCategory = "general";
-      return sections.map((section) => {
-        const title = normalizeHeader(section.title || "CHECKLIST");
-        const titleCategory = categoryForChecklistTitle(title);
-        if (titleCategory) {
-          activeCategory = titleCategory;
-        }
-
-        const category = section.category || activeCategory;
-        return {
-          ...section,
-          title,
-          category,
-          items: (section.items || []).map((item) => {
-            const itemCategory = item.category || category;
-            return {
-              ...item,
-              category: itemCategory,
-              hasNotes: Boolean(item.hasNotes || itemCategory === "bedside" && item.options && item.options.length)
-            };
-          })
-        };
-      });
-    }
-
-    function isAllCapsLine(line) {
-      const letters = line.replace(/[^A-Za-z]/g, "");
-      return letters.length > 0 && line === line.toUpperCase();
-    }
-
-    function makeItemId(sectionIndex, itemIndex) {
-      return `s${sectionIndex}i${itemIndex}`;
     }
 
     function sectionKey(section, index) {
@@ -7798,165 +7440,6 @@ ${rawChecklist.trim()}`;
         }
         return collapsed;
       }, {});
-    }
-
-    function ensureSection(sections) {
-      if (!sections.length) {
-        sections.push({ title: "CHECKLIST", category: "general", items: [] });
-      }
-      return sections[sections.length - 1];
-    }
-
-    function stripTrailingNotePlaceholder(value) {
-      const match = value.match(/\s*_{2,3}\s*$/);
-      if (!match) {
-        return { text: value.trim(), hasNotes: false };
-      }
-      return {
-        text: value.slice(0, match.index).trim(),
-        hasNotes: true
-      };
-    }
-
-    function isBlankFractionValue(value) {
-      const parts = value.split("/").map((part) => part.trim()).filter(Boolean);
-      if (parts.length < 2) {
-        return false;
-      }
-
-      const placeholderParts = parts.filter((part) => /^_{2,3}$/.test(part)).length;
-      const denominatorParts = parts.filter((part) => /^(?:\d{1,3}|mmHg|mg\/dL|L|%)$/i.test(part)).length;
-      return placeholderParts > 0 && placeholderParts + denominatorParts === parts.length;
-    }
-
-    function cleanOptionText(value) {
-      return value
-        .replace(/_{2,3}/g, "")
-        .replace(/\s{2,}/g, " ")
-        .replace(/\s+([,;:])/g, "$1")
-        .trim();
-    }
-
-    function parseOptionText(value) {
-      if (isBlankFractionValue(value)) {
-        return {
-          options: [],
-          hasNotes: true
-        };
-      }
-
-      const hasInlineNotes = /_{2,3}/.test(value);
-      const noteParse = stripTrailingNotePlaceholder(value);
-      const parseText = hasInlineNotes ? value : noteParse.text;
-      const options = parseText.includes("/")
-        ? parseText.split("/").map(cleanOptionText).filter(Boolean)
-        : [cleanOptionText(noteParse.text)].filter(Boolean);
-      return {
-        options,
-        hasNotes: noteParse.hasNotes || hasInlineNotes
-      };
-    }
-
-    function isLikelyOptionLine(line) {
-      if (!line || line.includes(":") || isAllCapsLine(line)) {
-        return false;
-      }
-      const optionText = stripTrailingNotePlaceholder(line).text;
-      const wordCount = optionText.split(/\s+/).filter(Boolean).length;
-      return line.includes("__") || wordCount > 0 && wordCount <= 6;
-    }
-
-    function addQuestion(sections, label, options, hasNotes, rawValue = "") {
-      const currentSection = ensureSection(sections);
-      const itemId = makeItemId(sections.length - 1, currentSection.items.length);
-      const category = currentSection.category || "general";
-      currentSection.items.push({
-        id: itemId,
-        label,
-        options,
-        rawValue,
-        category,
-        hasNotes: Boolean(hasNotes || category === "bedside" && options.length)
-      });
-    }
-
-    function parseChecklist(rawText) {
-      rawText = normalizeChecklistText(rawText);
-      const lines = [];
-      let blockId = 0;
-
-      rawText.split(/\r?\n/).forEach((rawLine) => {
-        const text = rawLine.trim();
-        if (!text) {
-          blockId += 1;
-          return;
-        }
-        lines.push({ text, blockId });
-      });
-
-      const sections = [];
-      let activeCategory = "general";
-
-      for (let index = 0; index < lines.length; index += 1) {
-        const line = lines[index].text;
-
-        if (!line.includes(":") && !isAllCapsLine(line)) {
-          const nextLine = lines[index + 1];
-          if (nextLine && nextLine.blockId === lines[index].blockId && isLikelyOptionLine(nextLine.text)) {
-            const options = [];
-            let hasNotes = false;
-            let optionIndex = index + 1;
-
-            while (
-              optionIndex < lines.length &&
-              lines[optionIndex].blockId === lines[index].blockId &&
-              isLikelyOptionLine(lines[optionIndex].text)
-            ) {
-              const optionParse = parseOptionText(lines[optionIndex].text);
-              options.push(...optionParse.options);
-              hasNotes = hasNotes || optionParse.hasNotes;
-              optionIndex += 1;
-            }
-
-            if (options.length || hasNotes) {
-              addQuestion(sections, line, options, hasNotes, options.join(" / "));
-              index = optionIndex - 1;
-              continue;
-            }
-          }
-        }
-
-        if (!line.includes(":")) {
-          if (isAllCapsLine(line) || (!line.includes("/") && !line.includes("__"))) {
-            const title = normalizeHeader(line);
-            const titleCategory = categoryForChecklistTitle(title);
-            if (titleCategory) {
-              activeCategory = titleCategory;
-            }
-            sections.push({ title, category: activeCategory, items: [] });
-          }
-          continue;
-        }
-
-        const colonIndex = line.indexOf(":");
-        const label = line.slice(0, colonIndex).trim();
-        const rawValue = line.slice(colonIndex + 1).trim();
-
-        if (!label) {
-          continue;
-        }
-
-        const optionParse = parseOptionText(rawValue);
-
-        if (!optionParse.options.length && !optionParse.hasNotes) {
-          sections.push({ title: normalizeHeader(label), category: activeCategory, items: [] });
-          continue;
-        }
-
-        addQuestion(sections, label, optionParse.options, optionParse.hasNotes, rawValue);
-      }
-
-      return annotateChecklistSections(sections.filter((section) => section.items.length || section.title));
     }
 
     function isItemAnswered(item) {
@@ -8738,7 +8221,7 @@ ${rawChecklist.trim()}`;
       }
       const prompt = buildCleanupPrompt(rawChecklist, {
         issues: [{ message: "The app could not find parseable checklist items." }]
-      });
+      }, { userContext: buildUserContextBlock() });
       await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Cleanup prompt copied.", {
         title: "PHI safety check for cleanup prompt",
         reviewTarget: "paste",
@@ -9274,7 +8757,11 @@ heparin 5000 units held by provider`;
     });
 
     elements.copyCleanupPromptButton.addEventListener("click", async () => {
-      const prompt = buildCleanupPrompt(state.checklistRawText || elements.checklistInput.value, state.auditResult || validateChecklist(state.sections));
+      const prompt = buildCleanupPrompt(
+        state.checklistRawText || elements.checklistInput.value,
+        state.auditResult || validateChecklist(state.sections),
+        { userContext: buildUserContextBlock() }
+      );
       await copyPromptWithPhiWarning(prompt, elements.copyStatus, "Cleanup prompt copied.", {
         title: "PHI safety check for cleanup prompt",
         reviewTarget: "paste",

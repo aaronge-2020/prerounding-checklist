@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test:deid": "node scripts/test-deid.js",
+    "test:checklist": "node scripts/test-checklist.js",
     "test:deid:adversarial": "node scripts/test-deid-adversarial.js",
     "generate:deid:adversarial": "node scripts/generate-deid-adversarial-cases.js",
     "benchmark:deid": "node scripts/benchmark-deid.js",
