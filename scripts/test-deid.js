@@ -163,6 +163,22 @@ No PHI`;
 const promptHeadingWarnings = scanResidualPhi(promptHeadingResidualText);
 assert.deepEqual(promptHeadingWarnings, [], "prompt/output headings must not be flagged as possible full names");
 
+const appGeneratedSourceLabelResidualText = `De-identified SOAP note, labs, handoff summaries, and other context:
+[PATIENT NAME] is feeling better today.
+
+De-identified source note:
+Current inpatient medications
+
+Translated SOAP Note
+Subjective`;
+const appGeneratedSourceLabelWarnings = scanResidualPhi(appGeneratedSourceLabelResidualText);
+for (const snippet of ["De-identified SOAP", "De-identified source", "Translated SOAP"]) {
+  assert.ok(
+    !appGeneratedSourceLabelWarnings.some((warning) => warning.snippet?.includes(snippet)),
+    `app-generated source labels must not be flagged as possible full names: ${snippet}`
+  );
+}
+
 const realResidualPhiText = `Patient: Nora W. Abrahimi
 One-line summary: Ms. Lita Merrill-Stevenson is a 57 y.o. female.
 Per Dr. Hu

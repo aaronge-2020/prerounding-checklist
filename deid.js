@@ -225,6 +225,9 @@ const promptHeadingAnchorWords = new Set([
   "missed", "held", "unexpected", "okay", "action", "phi"
 ]);
 
+const appGeneratedSourceLabelPattern =
+  /^(?:de[-\s]?identified|redacted|translated|scrubbed)\s+(?:soap|source|patient|clinical|chart|note|text|preview|message|context)(?:\s+(?:note|text|preview|context))?$/i;
+
 const medicationSaltOrFormWords = new Set([
   "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl",
   "hydrochloride", "injection", "lactate", "magnesium", "oral", "potassium", "sodium", "succinate",
@@ -375,6 +378,14 @@ function isLikelyPromptInstructionHeading(value) {
     words.some((word) => promptHeadingAnchorWords.has(word));
 }
 
+function isLikelyAppGeneratedSourceLabel(value) {
+  const span = String(value || "").replace(/\s+/g, " ").trim();
+  if (!span || span.length > 80) {
+    return false;
+  }
+  return appGeneratedSourceLabelPattern.test(span);
+}
+
 function isClinicalGuardOnlyText(value) {
   const normalized = normalizePhrase(value);
   if (!normalized) {
@@ -470,6 +481,10 @@ function isLikelyNonNamePhrase(rawText, start, end) {
   }
 
   if (isLikelyPromptInstructionHeading(span)) {
+    return true;
+  }
+
+  if (isLikelyAppGeneratedSourceLabel(span)) {
     return true;
   }
 
