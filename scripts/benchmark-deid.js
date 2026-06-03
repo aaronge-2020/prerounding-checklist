@@ -3,8 +3,6 @@ import { performance } from "node:perf_hooks";
 import { env, pipeline } from "@huggingface/transformers";
 import {
   DEFAULT_DTYPE,
-  DEFAULT_FALLBACK_MODEL_ID,
-  DEFAULT_PRIMARY_MODEL_ID,
   MODEL_PROFILES,
   OPENMED_MODEL_ID,
   createDeidentifier,
@@ -327,25 +325,25 @@ results.push(await benchmarkStructuredOnly());
 
 results.push(await benchmarkModelCandidate({
   name: "rtrigoso model-only",
-  modelId: DEFAULT_PRIMARY_MODEL_ID,
+  modelId: MODEL_PROFILES.rtrigoso.id,
   mode: "model-only",
   profile: MODEL_PROFILES.rtrigoso
 }));
 results.push(await benchmarkModelCandidate({
   name: "rtrigoso hybrid",
-  modelId: DEFAULT_PRIMARY_MODEL_ID,
+  modelId: MODEL_PROFILES.rtrigoso.id,
   mode: "hybrid",
   profile: MODEL_PROFILES.rtrigoso
 }));
 results.push(await benchmarkModelCandidate({
   name: "Stanford model-only",
-  modelId: DEFAULT_FALLBACK_MODEL_ID,
+  modelId: MODEL_PROFILES.stanford.id,
   mode: "model-only",
   profile: MODEL_PROFILES.stanford
 }));
 results.push(await benchmarkModelCandidate({
   name: "Stanford hybrid",
-  modelId: DEFAULT_FALLBACK_MODEL_ID,
+  modelId: MODEL_PROFILES.stanford.id,
   mode: "hybrid",
   profile: MODEL_PROFILES.stanford
 }));

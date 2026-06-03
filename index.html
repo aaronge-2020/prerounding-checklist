@@ -328,10 +328,6 @@
       backdrop-filter: blur(16px);
     }
 
-    .workflow-rail[data-steps="3"] {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
     .workflow-compact-label {
       display: none;
     }
@@ -359,36 +355,6 @@
       color: rgba(255, 255, 255, 0.22);
     }
 
-    body[data-screen="checklistScreen"] .workflow-rail {
-      position: static;
-      display: block;
-      margin: -8px 0 6px;
-      border: 0;
-      border-radius: 0;
-      padding: 0 2px;
-      background: transparent;
-      box-shadow: none;
-      backdrop-filter: none;
-    }
-
-    body[data-screen="checklistScreen"] .workflow-compact-label {
-      display: inline-flex;
-      min-height: 28px;
-      align-items: center;
-      border: 1px solid rgba(79, 152, 163, 0.34);
-      border-radius: 999px;
-      padding: 0 9px;
-      color: var(--accent-strong);
-      background: rgba(79, 152, 163, 0.08);
-      font-size: 0.7rem;
-      font-weight: 900;
-    }
-
-    body[data-screen="checklistScreen"] .workflow-rail .step-pill {
-      display: none;
-    }
-
-    body[data-screen="checklistScreen"] .workflow-status-line,
     body[data-screen="checklistScreen"] .tools-drawer {
       display: none;
     }
@@ -474,6 +440,15 @@
       color: #d8d3ca;
       font-size: 0.88rem;
       font-weight: 750;
+    }
+
+    .next-action-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .next-action-buttons .btn {
+      min-height: 44px;
     }
 
     @media (min-width: 900px) {
@@ -977,6 +952,36 @@
       font-weight: 800;
     }
 
+    .profile-preview {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(106, 179, 189, 0.24);
+      border-radius: 14px;
+      padding: 11px;
+      background: rgba(0, 0, 0, 0.13);
+    }
+
+    .profile-preview[hidden] {
+      display: none !important;
+    }
+
+    .profile-preview-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 900;
+    }
+
+    .profile-preview pre {
+      max-height: 180px;
+      margin: 0;
+      overflow: auto;
+      color: #d8d3ca;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
     .source-panel {
       display: none;
       gap: 13px;
@@ -1061,6 +1066,78 @@
       color: var(--muted);
       font-size: 0.9rem;
       font-weight: 650;
+    }
+
+    .source-completeness-panel,
+    .checklist-preview-panel {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .source-completeness-panel[hidden],
+    .checklist-preview-panel[hidden] {
+      display: none !important;
+    }
+
+    .status-chip-grid,
+    .checklist-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .status-chip {
+      min-height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 8px 10px;
+      color: var(--quiet);
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.8rem;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .status-chip.is-ready {
+      border-color: rgba(79, 152, 163, 0.5);
+      color: #dffcff;
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .status-chip.is-warning {
+      border-color: rgba(216, 139, 125, 0.36);
+      color: #e9c3bd;
+      background: rgba(216, 139, 125, 0.1);
+    }
+
+    .status-chip strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.86rem;
+    }
+
+    .checklist-preview-item {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .checklist-preview-value {
+      display: block;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .checklist-preview-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
     }
 
     .prompt-actions {
@@ -1238,6 +1315,41 @@
       background: rgba(255, 255, 255, 0.046);
       font-size: 0.82rem;
       font-weight: 800;
+    }
+
+    .review-group-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .review-group-grid[hidden] {
+      display: none !important;
+    }
+
+    .review-group {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .review-group-title {
+      margin: 0 0 7px;
+      color: var(--text);
+      font-size: 0.83rem;
+      font-weight: 900;
+    }
+
+    .review-group-examples {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #ded8ce;
+      font-size: 0.8rem;
+      font-weight: 700;
     }
 
     .review-details {
@@ -2331,20 +2443,25 @@
       .phi-warning-groups,
       .admission-grid,
       .profile-grid,
+      .status-chip-grid,
+      .checklist-preview-grid,
+      .review-group-grid,
       .install-actions,
       .install-steps {
         grid-template-columns: 1fr;
       }
 
       .workflow-rail {
-        display: block;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         padding: 5px;
       }
 
       .workflow-compact-label {
         display: inline-flex;
+        grid-column: 1 / -1;
         min-height: 32px;
         align-items: center;
+        justify-content: center;
         border: 1px solid rgba(79, 152, 163, 0.34);
         border-radius: 999px;
         padding: 0 10px;
@@ -2355,7 +2472,10 @@
       }
 
       .step-pill {
-        display: none;
+        display: inline-flex;
+        min-height: 34px;
+        padding: 4px 5px;
+        font-size: 0.67rem;
       }
 
       .checklist-tabs {
@@ -2470,19 +2590,21 @@
 </head>
 <body data-screen="pasteScreen" data-checklist-first="false" data-device-mode="prepare">
   <main class="app-shell" aria-live="polite">
-    <nav id="workflowRail" class="workflow-rail" data-steps="3" aria-label="Workflow progress">
-      <span id="workflowCompactLabel" class="workflow-compact-label">Laptop: Epic → Report → Checklist</span>
+    <nav id="workflowRail" class="workflow-rail" data-steps="4" aria-label="Workflow progress">
+      <span id="workflowCompactLabel" class="workflow-compact-label">Source -> Checklist -> Bedside -> Output</span>
       <div id="stepSource" class="step-pill is-current">1 Source</div>
       <div id="stepPaste" class="step-pill">2 Checklist</div>
       <div id="stepBedside" class="step-pill">3 Bedside</div>
-      <div id="stepOutput" class="step-pill" hidden>4 Output</div>
+      <div id="stepOutput" class="step-pill">4 Output</div>
     </nav>
     <div class="workflow-status-line" aria-label="Workflow status">
       <span id="sourceReadyStatus">Source ready</span>
-      <span class="status-arrow" aria-hidden="true">→</span>
+      <span class="status-arrow" aria-hidden="true">-></span>
       <span id="checklistReadyStatus">Checklist ready</span>
-      <span class="status-arrow" aria-hidden="true">→</span>
+      <span class="status-arrow" aria-hidden="true">-></span>
       <span id="findingsReadyStatus">Findings ready</span>
+      <span class="status-arrow" aria-hidden="true">-></span>
+      <span id="outputReadyStatus">Output ready</span>
     </div>
 
     <details id="toolsDrawer" class="tools-drawer">
@@ -2570,6 +2692,10 @@
               <button id="clearProfileButton" class="btn btn-quiet" type="button">Clear saved profile</button>
               <p id="profileStatus" class="profile-status" role="status" aria-live="polite"></p>
             </div>
+            <div id="profileContextPreview" class="profile-preview" hidden>
+              <p class="profile-preview-title">Prompt context preview</p>
+              <pre id="profileContextPreviewText"></pre>
+            </div>
           </div>
         </details>
 
@@ -2592,6 +2718,7 @@
               </div>
               <p id="utilityVerdict" class="scrub-verdict">Review before copying.</p>
               <ul id="utilityCounts" class="flag-list" aria-label="Utility redaction counts"></ul>
+              <div id="utilityReviewGroups" class="review-group-grid" hidden></div>
               <label for="utilityScrubbedInput" class="sr-only">Redacted text preview</label>
               <textarea id="utilityScrubbedInput" class="deid-preview" spellcheck="false" placeholder="Redacted text preview..."></textarea>
               <details class="review-details">
@@ -2800,6 +2927,15 @@
             <h3 id="priorSourceTitle" class="guided-step-title">Paste Epic info</h3>
             <p class="guided-step-copy">Review the scrubbed preview before copying. Raw text is not stored.</p>
           </div>
+          <div id="sourceCompletenessPanel" class="source-completeness-panel" aria-label="Source completeness">
+            <p class="guided-step-copy">Source completeness</p>
+            <div class="status-chip-grid">
+              <div id="sourceNoteChip" class="status-chip"><strong>Note</strong><span>Missing</span></div>
+              <div id="sourceLabsChip" class="status-chip"><strong>Labs</strong><span>Optional</span></div>
+              <div id="sourceHandoffChip" class="status-chip"><strong>Handoff</strong><span>Optional</span></div>
+              <div id="sourceMedicationChip" class="status-chip"><strong>MAR</strong><span>Optional</span></div>
+            </div>
+          </div>
           <label for="rawSoapInput">Raw SOAP note</label>
           <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here.
 
@@ -2856,6 +2992,7 @@ enoxaparin 40 mg held by provider"></textarea>
             </div>
             <p id="scrubVerdict" class="scrub-verdict">Review before copying.</p>
             <ul id="scrubCounts" class="flag-list" aria-label="Redaction counts"></ul>
+            <div id="scrubReviewGroups" class="review-group-grid" hidden></div>
             <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note, labs, and handoff</label>
             <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note, labs, and handoff preview..."></textarea>
             <details class="review-details">
@@ -2995,6 +3132,27 @@ BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
 Since yesterday, are you feeling better?: Better / Same / Worse / Other ___"></textarea>
         <p id="parseSummary" class="parse-summary" role="status" aria-live="polite"></p>
+        <div id="checklistPreviewPanel" class="checklist-preview-panel" hidden>
+          <p class="guided-step-copy">Parse preview</p>
+          <div class="checklist-preview-grid">
+            <div class="checklist-preview-item">
+              <span id="previewSectionCount" class="checklist-preview-value">0</span>
+              <span class="checklist-preview-label">sections</span>
+            </div>
+            <div class="checklist-preview-item">
+              <span id="previewBedsideCount" class="checklist-preview-value">0</span>
+              <span class="checklist-preview-label">bedside questions</span>
+            </div>
+            <div class="checklist-preview-item">
+              <span id="previewExamCount" class="checklist-preview-value">0</span>
+              <span class="checklist-preview-label">exam items</span>
+            </div>
+            <div class="checklist-preview-item">
+              <span id="previewQualityLabel" class="checklist-preview-value">Review</span>
+              <span class="checklist-preview-label">quality</span>
+            </div>
+          </div>
+        </div>
         <p id="pasteError" class="inline-error" role="alert"></p>
         <div class="actions">
           <button id="buildButton" class="btn btn-primary btn-full" type="button">Start bedside checklist</button>
@@ -3033,6 +3191,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
           <p class="eyebrow">Current task</p>
           <h2 id="nextActionTitle" class="guide-sidebar-title">Prepare the source</h2>
           <p id="nextActionCopy" class="guide-sidebar-copy">Paste Epic info, de-identify it, then copy the initial rounds prompt.</p>
+          <div class="next-action-buttons">
+            <button id="nextActionPrimaryButton" class="btn btn-primary" type="button">De-identify and review</button>
+            <button id="nextActionSecondaryButton" class="btn btn-secondary" type="button">Open Tools</button>
+          </div>
           <ol class="guide-sidebar-list">
             <li>Source ready</li>
             <li>Checklist built</li>
@@ -3232,6 +3394,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       sourceReadyStatus: document.getElementById("sourceReadyStatus"),
       checklistReadyStatus: document.getElementById("checklistReadyStatus"),
       findingsReadyStatus: document.getElementById("findingsReadyStatus"),
+      outputReadyStatus: document.getElementById("outputReadyStatus"),
       toolsDrawer: document.getElementById("toolsDrawer"),
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
@@ -3259,6 +3422,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       startOverRecoveredButton: document.getElementById("startOverRecoveredButton"),
       nextActionTitle: document.getElementById("nextActionTitle"),
       nextActionCopy: document.getElementById("nextActionCopy"),
+      nextActionPrimaryButton: document.getElementById("nextActionPrimaryButton"),
+      nextActionSecondaryButton: document.getElementById("nextActionSecondaryButton"),
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
       promptCopiedCopy: document.getElementById("promptCopiedCopy"),
       editSourceButton: document.getElementById("editSourceButton"),
@@ -3294,6 +3459,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       profileClinicalFocusOtherInput: document.getElementById("profileClinicalFocusOtherInput"),
       clearProfileButton: document.getElementById("clearProfileButton"),
       profileStatus: document.getElementById("profileStatus"),
+      profileContextPreview: document.getElementById("profileContextPreview"),
+      profileContextPreviewText: document.getElementById("profileContextPreviewText"),
       priorModeButton: document.getElementById("priorModeButton"),
       admissionModeButton: document.getElementById("admissionModeButton"),
       priorSourcePanel: document.getElementById("priorSourcePanel"),
@@ -3303,6 +3470,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawLabsInput: document.getElementById("rawLabsInput"),
       rawHandoffInput: document.getElementById("rawHandoffInput"),
       rawMedicationInput: document.getElementById("rawMedicationInput"),
+      sourceCompletenessPanel: document.getElementById("sourceCompletenessPanel"),
+      sourceNoteChip: document.getElementById("sourceNoteChip"),
+      sourceLabsChip: document.getElementById("sourceLabsChip"),
+      sourceHandoffChip: document.getElementById("sourceHandoffChip"),
+      sourceMedicationChip: document.getElementById("sourceMedicationChip"),
       modelStatus: document.getElementById("modelStatus"),
       deidProgressPanel: document.getElementById("deidProgressPanel"),
       deidProgressLabel: document.getElementById("deidProgressLabel"),
@@ -3314,6 +3486,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubVerdict: document.getElementById("scrubVerdict"),
       scrubSummary: document.getElementById("scrubSummary"),
       scrubCounts: document.getElementById("scrubCounts"),
+      scrubReviewGroups: document.getElementById("scrubReviewGroups"),
       scrubFlags: document.getElementById("scrubFlags"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
       exportPriorContextButton: document.getElementById("exportPriorContextButton"),
@@ -3341,6 +3514,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       utilitySummary: document.getElementById("utilitySummary"),
       utilityVerdict: document.getElementById("utilityVerdict"),
       utilityCounts: document.getElementById("utilityCounts"),
+      utilityReviewGroups: document.getElementById("utilityReviewGroups"),
       utilityScrubbedInput: document.getElementById("utilityScrubbedInput"),
       utilityFlags: document.getElementById("utilityFlags"),
       utilityCopyButton: document.getElementById("utilityCopyButton"),
@@ -3348,6 +3522,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       promptStatus: document.getElementById("promptStatus"),
       checklistInput: document.getElementById("checklistInput"),
       parseSummary: document.getElementById("parseSummary"),
+      checklistPreviewPanel: document.getElementById("checklistPreviewPanel"),
+      previewSectionCount: document.getElementById("previewSectionCount"),
+      previewBedsideCount: document.getElementById("previewBedsideCount"),
+      previewExamCount: document.getElementById("previewExamCount"),
+      previewQualityLabel: document.getElementById("previewQualityLabel"),
       pasteError: document.getElementById("pasteError"),
       copyPastedCleanupPromptButton: document.getElementById("copyPastedCleanupPromptButton"),
       buildButton: document.getElementById("buildButton"),
@@ -3456,6 +3635,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const sessionKey = "preRoundChecklistSessionV2";
     const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
+    const deviceModeKey = "preRoundDeviceModeV1";
     const contextExportType = "prerounds-context-export";
     const contextSchemaVersion = 1;
     const contextKdfIterations = 250000;
@@ -4395,6 +4575,55 @@ Sensory level present: No / Yes, at ___`;
       return Boolean(elements.checklistInput.value.trim());
     }
 
+    function setStatusChip(chip, ready, statusText, warning = false) {
+      if (!chip) {
+        return;
+      }
+      chip.classList.toggle("is-ready", Boolean(ready));
+      chip.classList.toggle("is-warning", Boolean(warning));
+      const status = chip.querySelector("span");
+      if (status) {
+        status.textContent = statusText;
+      }
+    }
+
+    function updateSourceCompleteness() {
+      const noteReady = Boolean(elements.rawSoapInput.value.trim());
+      const labsReady = Boolean(elements.rawLabsInput.value.trim());
+      const handoffReady = Boolean(elements.rawHandoffInput.value.trim());
+      const medicationReady = Boolean(elements.rawMedicationInput.value.trim());
+      const hasAny = noteReady || labsReady || handoffReady || medicationReady;
+
+      setStatusChip(elements.sourceNoteChip, noteReady, noteReady ? "Ready" : hasAny ? "Missing" : "Start here", hasAny && !noteReady);
+      setStatusChip(elements.sourceLabsChip, labsReady, labsReady ? "Included" : "Optional");
+      setStatusChip(elements.sourceHandoffChip, handoffReady, handoffReady ? "Included" : "Optional");
+      setStatusChip(elements.sourceMedicationChip, medicationReady, medicationReady ? "Included" : "Optional");
+    }
+
+    function renderChecklistPreview(sections) {
+      if (!sections || !sections.length) {
+        elements.checklistPreviewPanel.hidden = true;
+        return;
+      }
+
+      const bedsideCount = sections.flatMap((section) => section.items).filter((item) => item.category === "bedside").length;
+      const examCount = sections.flatMap((section) => section.items).filter((item) => item.category === "exam").length;
+      const itemCount = sections.reduce((total, section) => total + section.items.length, 0);
+      const audit = itemCount ? validateChecklist(sections) : null;
+
+      elements.previewSectionCount.textContent = String(sections.length);
+      elements.previewBedsideCount.textContent = String(bedsideCount);
+      elements.previewExamCount.textContent = String(examCount);
+      elements.previewQualityLabel.textContent = !itemCount ? "Empty" : audit?.ok ? "Ready" : "Review";
+      elements.checklistPreviewPanel.hidden = !itemCount;
+    }
+
+    function renderUserContextPreview() {
+      const preview = buildUserContextBlock();
+      elements.profileContextPreview.hidden = !preview;
+      elements.profileContextPreviewText.textContent = preview;
+    }
+
     function generateCaseKey() {
       const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
       const bytes = new Uint8Array(4);
@@ -4431,6 +4660,8 @@ Sensory level present: No / Yes, at ___`;
         state.phoneBedsideStep = "output";
       }
       updateConversationStatus();
+      updateSourcePrimaryActions();
+      updateStepRail(elements.outputScreen.classList.contains("is-active") ? "output" : elements.checklistScreen.classList.contains("is-active") ? "bedside" : state.promptCollapsed ? "paste" : "source");
     }
 
     function invalidateConversationContext() {
@@ -4553,6 +4784,9 @@ Sensory level present: No / Yes, at ___`;
       state.checklistFirstMode = Boolean(enabled);
       state.deviceWorkflowMode = state.checklistFirstMode ? "bedside" : "prepare";
       state.phoneBedsideStep = state.checklistFirstMode && state.sections.length ? "checklist" : "paste";
+      if (options.save !== false) {
+        safeLocalStorageSet(deviceModeKey, state.deviceWorkflowMode);
+      }
 
       if (state.checklistFirstMode) {
         state.promptCollapsed = false;
@@ -4590,6 +4824,9 @@ Sensory level present: No / Yes, at ___`;
 
       state.deviceWorkflowMode = "prepare";
       state.checklistFirstMode = false;
+      if (options.save !== false) {
+        safeLocalStorageSet(deviceModeKey, "prepare");
+      }
       if (!options.keepLaptopChecklist) {
         state.useChecklistOnLaptop = false;
       }
@@ -4618,8 +4855,14 @@ Sensory level present: No / Yes, at ___`;
         return;
       }
 
+      const savedMode = safeLocalStorageGet(deviceModeKey);
+      if (savedMode === "bedside" || savedMode === "prepare") {
+        setDeviceWorkflowMode(savedMode, { focus: false, silent: true, save: false });
+        return;
+      }
+
       if (isPhoneLikeViewport()) {
-        setChecklistFirstMode(true, { focus: false, silent: true });
+        setChecklistFirstMode(true, { focus: false, silent: true, save: false });
         return;
       }
 
@@ -4658,105 +4901,186 @@ Sensory level present: No / Yes, at ___`;
       elements.toast.classList.remove("is-visible");
     }
 
-    function updateGuidedStatus() {
-      const bedsideMode = isBedsideWorkflow();
-      const sourceReady = Boolean(state.checklistFirstMode || hasChecklistPasteText() || hasSourceInput());
-      const checklistReady = state.sections.length > 0;
+    function workflowFacts() {
+      const rawPriorReady = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim());
+      const admissionReady = Boolean(formatAdmissionContext());
+      const sourceReviewed = Boolean(state.scrubbedNote || state.scrubResult || state.importedContext || state.promptCollapsed || (state.sourceMode === "admission" && admissionReady));
+      const sourceInputReady = Boolean(rawPriorReady || admissionReady || state.importedContext || state.promptCollapsed);
+      const checklistBuilt = state.sections.length > 0;
+      const checklistPromptReady = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
+      const checklistPasted = hasChecklistPasteText();
       const findingsReady = Boolean(state.compiledText);
+      const outputCopied = Boolean(state.conversationFinalReady);
 
-      if (bedsideMode) {
-        elements.sourceReadyStatus.textContent = checklistReady ? "Checklist ready" : "Checklist needed";
-        elements.checklistReadyStatus.textContent = findingsReady ? "Findings ready" : "Findings needed";
-        elements.findingsReadyStatus.textContent = state.conversationFinalReady ? "Update copied" : "Update needed";
-        elements.sourceReadyStatus.classList.toggle("is-ready", checklistReady);
-        elements.checklistReadyStatus.classList.toggle("is-ready", findingsReady);
-        elements.findingsReadyStatus.classList.toggle("is-ready", Boolean(state.conversationFinalReady));
-      } else {
-        const epicReady = Boolean(state.scrubbedNote || elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim() || formatAdmissionContext());
-        const reportCopied = Boolean(state.initialRoundsPromptCopied || state.conversationContextReady);
-        const checklistCopied = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
-        elements.sourceReadyStatus.textContent = epicReady ? "Epic ready" : "Epic needed";
-        elements.checklistReadyStatus.textContent = reportCopied ? "Report copied" : "Report needed";
-        elements.findingsReadyStatus.textContent = checklistCopied ? "Checklist copied" : "Checklist needed";
-        elements.sourceReadyStatus.classList.toggle("is-ready", epicReady);
-        elements.checklistReadyStatus.classList.toggle("is-ready", reportCopied);
-        elements.findingsReadyStatus.classList.toggle("is-ready", checklistCopied);
-      }
+      return {
+        rawPriorReady,
+        admissionReady,
+        sourceInputReady,
+        sourceReviewed,
+        checklistBuilt,
+        checklistPromptReady,
+        checklistPasted,
+        findingsReady,
+        outputCopied
+      };
+    }
 
+    function updateWorkflowStatusLine(facts = workflowFacts()) {
+      elements.sourceReadyStatus.textContent = facts.sourceReviewed
+        ? "Source ready"
+        : facts.sourceInputReady
+          ? "Review source"
+          : "Source needed";
+      elements.checklistReadyStatus.textContent = facts.checklistBuilt
+        ? "Checklist built"
+        : facts.checklistPromptReady
+          ? "Checklist copied"
+          : facts.checklistPasted
+            ? "Checklist pasted"
+            : "Checklist needed";
+      elements.findingsReadyStatus.textContent = facts.findingsReady
+        ? "Findings ready"
+        : facts.checklistBuilt
+          ? "Bedside active"
+          : "Bedside needed";
+      elements.outputReadyStatus.textContent = facts.outputCopied
+        ? "Output copied"
+        : facts.findingsReady
+          ? "Output ready"
+          : "Output needed";
+
+      elements.sourceReadyStatus.classList.toggle("is-ready", facts.sourceReviewed);
+      elements.checklistReadyStatus.classList.toggle("is-ready", facts.checklistBuilt || facts.checklistPromptReady);
+      elements.findingsReadyStatus.classList.toggle("is-ready", facts.findingsReady);
+      elements.outputReadyStatus.classList.toggle("is-ready", facts.outputCopied);
+    }
+
+    function nextActionState(facts = workflowFacts()) {
       if (isLaptopHandoffReady()) {
-        elements.nextActionTitle.textContent = "Laptop step complete";
-        elements.nextActionCopy.textContent = "Finish the bedside checklist on your phone.";
-      } else if (state.useChecklistOnLaptop && !checklistReady) {
-        elements.nextActionTitle.textContent = "Paste checklist";
-        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Start bedside checklist.";
-      } else if (bedsideMode && !checklistReady) {
-        elements.nextActionTitle.textContent = "Paste the checklist";
-        elements.nextActionCopy.textContent = "Paste the checklist OpenEvidence generated, then tap Start bedside checklist.";
-      } else if (!sourceReady) {
-        elements.nextActionTitle.textContent = "Paste Epic info";
-        elements.nextActionCopy.textContent = "Paste Epic info, de-identify it, then copy the initial rounds prompt.";
-      } else if (!checklistReady) {
-        elements.nextActionTitle.textContent = state.initialRoundsPromptCopied ? "Copy checklist prompt" : "Copy initial rounds prompt";
-        elements.nextActionCopy.textContent = state.initialRoundsPromptCopied
-          ? "Copy the checklist prompt, then paste the returned checklist here or on your phone."
-          : "Paste the initial rounds prompt into OpenEvidence to understand the patient first.";
-      } else if (!findingsReady) {
-        elements.nextActionTitle.textContent = "Collect bedside findings";
-        elements.nextActionCopy.textContent = "Work through bedside questions and focused exam items, then generate findings.";
-      } else {
-        elements.nextActionTitle.textContent = "Copy update prompt";
-        elements.nextActionCopy.textContent = "Paste the update prompt where you made the initial report.";
+        return {
+          title: "Laptop step complete",
+          copy: "Finish the bedside checklist on your phone, or keep working on this laptop.",
+          label: "Show handoff",
+          action: "handoff"
+        };
       }
+
+      if (elements.outputScreen.classList.contains("is-active") || facts.findingsReady) {
+        return {
+          title: "Copy update prompt",
+          copy: "Paste the update prompt where you made the initial report.",
+          label: "Copy update prompt",
+          action: "copy-output"
+        };
+      }
+
+      if (elements.checklistScreen.classList.contains("is-active") || facts.checklistBuilt) {
+        return {
+          title: "Collect bedside findings",
+          copy: "Work through bedside questions and focused exam items, then generate findings.",
+          label: "Generate findings",
+          action: "generate-findings"
+        };
+      }
+
+      if (state.useChecklistOnLaptop || isBedsideWorkflow() || state.promptCollapsed || facts.checklistPasted) {
+        return {
+          title: "Build bedside checklist",
+          copy: "Paste the checklist OpenEvidence generated, then start the bedside checklist.",
+          label: "Build checklist",
+          action: "build-checklist",
+          disabled: !facts.checklistPasted
+        };
+      }
+
+      if (state.sourceMode === "prior") {
+        if (!facts.rawPriorReady) {
+          return {
+            title: "Paste Epic info",
+            copy: "Paste a note, labs, handoff, or MAR. The app will de-identify locally before any prompt is copied.",
+            label: "Focus source",
+            action: "focus-source"
+          };
+        }
+        if (!facts.sourceReviewed) {
+          return {
+            title: "De-identify and review",
+            copy: "Run the local de-identifier and inspect the preview before copying prompts.",
+            label: "De-identify and review",
+            action: "deidentify"
+          };
+        }
+      }
+
+      if (state.sourceMode === "admission" && !facts.admissionReady) {
+        return {
+          title: "Fill admission basics",
+          copy: "Chief concern and service are enough to generate a starter report and checklist.",
+          label: "Focus admission",
+          action: "focus-admission"
+        };
+      }
+
+      if (!(state.initialRoundsPromptCopied || state.conversationContextReady)) {
+        return {
+          title: "Copy initial report prompt",
+          copy: "Paste the initial rounds prompt into OpenEvidence first so the checklist has case context.",
+          label: "Copy initial report prompt",
+          action: "copy-initial"
+        };
+      }
+
+      return {
+        title: "Copy checklist prompt",
+        copy: "Copy the checklist prompt, then paste the returned checklist here or on your phone.",
+        label: "Copy checklist prompt",
+        action: "copy-checklist"
+      };
+    }
+
+    function updateNextActionControls() {
+      const action = nextActionState();
+      elements.nextActionTitle.textContent = action.title;
+      elements.nextActionCopy.textContent = action.copy;
+      elements.nextActionPrimaryButton.textContent = action.label;
+      elements.nextActionPrimaryButton.dataset.action = action.action;
+      elements.nextActionPrimaryButton.disabled = Boolean(action.disabled);
+      elements.nextActionSecondaryButton.textContent = isBedsideWorkflow() ? "Laptop mode" : "Open Tools";
+    }
+
+    function updateGuidedStatus() {
+      const facts = workflowFacts();
+      updateWorkflowStatusLine(facts);
+      updateNextActionControls();
       updateConversationStatus();
     }
 
     function updateStepRail(activeStep) {
-      const bedsideMode = isBedsideWorkflow();
-      elements.workflowRail.dataset.steps = "3";
-      elements.workflowRail.dataset.flow = bedsideMode ? "bedside" : "prepare";
-      elements.stepOutput.hidden = true;
+      const facts = workflowFacts();
+      elements.workflowRail.dataset.steps = "4";
+      elements.workflowRail.dataset.flow = isBedsideWorkflow() ? "bedside" : "prepare";
+      elements.workflowCompactLabel.textContent = "Source -> Checklist -> Bedside -> Output";
+      elements.stepSource.textContent = "1 Source";
+      elements.stepPaste.textContent = "2 Checklist";
+      elements.stepBedside.textContent = "3 Bedside";
+      elements.stepOutput.textContent = "4 Output";
+      elements.stepOutput.hidden = false;
 
-      let steps;
-      let currentKey;
-
-      if (bedsideMode) {
-        elements.workflowCompactLabel.textContent = "Phone: Paste → Bedside → Update";
-        elements.stepSource.textContent = "Paste";
-        elements.stepPaste.textContent = "Bedside";
-        elements.stepBedside.textContent = "Update";
-        elements.sourceReadyStatus.textContent = state.sections.length ? "Checklist ready" : "Checklist needed";
-        elements.checklistReadyStatus.textContent = state.compiledText ? "Findings ready" : "Findings needed";
-        elements.findingsReadyStatus.textContent = state.conversationFinalReady ? "Update copied" : "Update needed";
-        elements.sourceReadyStatus.classList.toggle("is-ready", state.sections.length > 0);
-        elements.checklistReadyStatus.classList.toggle("is-ready", Boolean(state.compiledText));
-        elements.findingsReadyStatus.classList.toggle("is-ready", Boolean(state.conversationFinalReady));
-        currentKey = activeStep === "output" ? "update" : activeStep === "bedside" ? "bedside" : "paste";
-        steps = [
-          { element: elements.stepSource, key: "paste", complete: state.sections.length > 0 },
-          { element: elements.stepPaste, key: "bedside", complete: Boolean(state.compiledText) },
-          { element: elements.stepBedside, key: "update", complete: Boolean(state.conversationFinalReady) }
-        ];
-      } else {
-        const sourceReady = Boolean(state.scrubbedNote || elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim() || formatAdmissionContext());
-        const reportCopied = Boolean(state.initialRoundsPromptCopied || state.conversationContextReady);
-        const checklistCopied = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
-        elements.workflowCompactLabel.textContent = "Laptop: Epic → Report → Checklist";
-        elements.stepSource.textContent = "Epic";
-        elements.stepPaste.textContent = "Report";
-        elements.stepBedside.textContent = "Checklist";
-        elements.sourceReadyStatus.textContent = sourceReady ? "Epic ready" : "Epic needed";
-        elements.checklistReadyStatus.textContent = reportCopied ? "Report copied" : "Report needed";
-        elements.findingsReadyStatus.textContent = checklistCopied ? "Checklist copied" : "Checklist needed";
-        elements.sourceReadyStatus.classList.toggle("is-ready", sourceReady);
-        elements.checklistReadyStatus.classList.toggle("is-ready", reportCopied);
-        elements.findingsReadyStatus.classList.toggle("is-ready", checklistCopied);
-        currentKey = checklistCopied ? "checklist" : reportCopied || activeStep === "paste" ? "report" : "epic";
-        steps = [
-          { element: elements.stepSource, key: "epic", complete: sourceReady },
-          { element: elements.stepPaste, key: "report", complete: reportCopied },
-          { element: elements.stepBedside, key: "checklist", complete: checklistCopied }
-        ];
+      let currentKey = "source";
+      if (activeStep === "output") {
+        currentKey = "output";
+      } else if (activeStep === "bedside") {
+        currentKey = "bedside";
+      } else if (activeStep === "paste" || state.promptCollapsed || state.checklistFirstMode || state.useChecklistOnLaptop || facts.checklistPasted || facts.checklistPromptReady) {
+        currentKey = "checklist";
       }
+
+      const steps = [
+        { element: elements.stepSource, key: "source", complete: facts.sourceReviewed },
+        { element: elements.stepPaste, key: "checklist", complete: facts.checklistBuilt },
+        { element: elements.stepBedside, key: "bedside", complete: facts.findingsReady },
+        { element: elements.stepOutput, key: "output", complete: facts.outputCopied }
+      ];
 
       steps.forEach((step) => {
         step.element.hidden = false;
@@ -4764,6 +5088,74 @@ Sensory level present: No / Yes, at ___`;
         step.element.classList.toggle("is-complete", step.complete && step.key !== currentKey);
       });
       updateGuidedStatus();
+    }
+
+    function runNextAction() {
+      const action = elements.nextActionPrimaryButton.dataset.action || nextActionState().action;
+      if (action === "handoff") {
+        focusLaptopHandoffCard();
+        return;
+      }
+      if (action === "copy-output") {
+        elements.copyPresentationPromptButton.click();
+        return;
+      }
+      if (action === "generate-findings") {
+        if (!elements.checklistScreen.classList.contains("is-active")) {
+          showScreen("checklistScreen");
+          return;
+        }
+        elements.generateButton.click();
+        return;
+      }
+      if (action === "build-checklist") {
+        if (!elements.checklistPasteCard.hidden) {
+          tryBuildChecklist();
+          return;
+        }
+        focusChecklistPasteBox();
+        return;
+      }
+      if (action === "focus-source") {
+        setSourceMode("prior");
+        elements.rawSoapInput.focus({ preventScroll: true });
+        elements.priorSourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (action === "focus-admission") {
+        setSourceMode("admission");
+        admissionFields[0].element.focus({ preventScroll: true });
+        elements.admissionSourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (action === "deidentify") {
+        elements.scrubPreviewButton.click();
+        return;
+      }
+      if (action === "copy-initial") {
+        if (state.sourceMode === "admission") {
+          elements.copyAdmissionRoundsPromptButton.click();
+        } else {
+          elements.copySourceRoundsPromptButton.click();
+        }
+        return;
+      }
+      if (action === "copy-checklist") {
+        if (state.sourceMode === "admission") {
+          elements.copyAdmissionPromptButton.click();
+        } else {
+          elements.scrubAndCopyButton.click();
+        }
+      }
+    }
+
+    function runSecondaryAction() {
+      if (isBedsideWorkflow()) {
+        setDeviceWorkflowMode("prepare", { focus: true, keepLaptopChecklist: true });
+        return;
+      }
+      elements.toolsDrawer.open = true;
+      elements.toolsDrawer.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     function setPromptCollapsed(isCollapsed, message = "Copy OpenEvidence's checklist, then paste it here or on your phone.") {
@@ -4796,6 +5188,7 @@ Sensory level present: No / Yes, at ___`;
       elements.outputText.value = state.compiledText;
       saveChecklistSession();
       updateGuidedStatus();
+      updateStepRail(elements.outputScreen.classList.contains("is-active") ? "output" : elements.checklistScreen.classList.contains("is-active") ? "bedside" : "paste");
     }
 
     function safeStorageSet(key, value) {
@@ -4953,6 +5346,7 @@ Sensory level present: No / Yes, at ___`;
 
     function updateProfileStatus(message = "") {
       elements.profileStatus.textContent = message || (userProfileHasValues() ? "Saved on this browser." : "No saved profile.");
+      renderUserContextPreview();
     }
 
     function syncUserProfileFromFields(options = {}) {
@@ -6206,6 +6600,7 @@ Now create the initial rounds report for this case.`;
       elements.priorSourcePanel.classList.toggle("is-active", isPrior);
       elements.admissionSourcePanel.classList.toggle("is-active", !isPrior);
       elements.promptStatus.textContent = "";
+      updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
@@ -6258,6 +6653,7 @@ Now create the initial rounds report for this case.`;
       state.rawLabs = elements.rawLabsInput.value;
       state.rawHandoff = elements.rawHandoffInput.value;
       state.rawMedicationText = elements.rawMedicationInput.value;
+      updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
     }
@@ -6295,7 +6691,10 @@ Now create the initial rounds report for this case.`;
       elements.scrubVerdict.classList.remove("is-warning");
       elements.scrubSummary.textContent = "0 redactions";
       elements.scrubCounts.innerHTML = "";
+      elements.scrubReviewGroups.innerHTML = "";
+      elements.scrubReviewGroups.hidden = true;
       elements.scrubFlags.innerHTML = "";
+      updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
@@ -6628,7 +7027,91 @@ Now create the initial rounds report for this case.`;
       return deidentifyText(rawText);
     }
 
-    function renderScrubResult(result) {
+    function reviewGroupForEntity(entity) {
+      const text = `${entity.placeholder || ""} ${entity.label || ""} ${entity.source || ""}`.toLowerCase();
+      if (/patient/.test(text)) return "Patient identity";
+      if (/provider|doctor|clinician|referring/.test(text)) return "Provider identity";
+      if (/contact|mother|father|spouse|family|emergency/.test(text)) return "Contact identity";
+      if (/facility|organization|hospital|clinic|pharmacy|location|address|room|unit|bed/.test(text)) return "Facilities and locations";
+      if (/phone|email|url|ip|mrn|csn|encounter|account|insurance|member|policy|ssn|id/.test(text)) return "IDs and contact";
+      if (/dob|date|birth|time/.test(text)) return "Dates";
+      return "Other redactions";
+    }
+
+    function reviewGroupForWarning(warning) {
+      const type = String(warning.type || "").toLowerCase();
+      if (/(name|initial)/.test(type)) return "Manual review: names";
+      if (/(date|dob|age)/.test(type)) return "Manual review: dates";
+      if (/(id|mrn|csn|ssn|email|phone|fax|url|ip|account|policy|member)/.test(type)) return "Manual review: IDs";
+      if (/(location|facility|address|zip|room|unit|bed|floor|hospital|clinic)/.test(type)) return "Manual review: locations";
+      return "Manual review";
+    }
+
+    function appendReviewGroup(groups, groupName, detail) {
+      if (!groups.has(groupName)) {
+        groups.set(groupName, []);
+      }
+      groups.get(groupName).push(detail);
+    }
+
+    function renderReviewGroups(container, result, rawText = "") {
+      if (!container) {
+        return;
+      }
+      const groups = new Map();
+      const raw = String(rawText || "");
+
+      (result.entities || []).forEach((entity) => {
+        const start = Number(entity.start);
+        const end = Number(entity.end);
+        const span = Number.isFinite(start) && Number.isFinite(end) && end > start
+          ? raw.slice(start, end).replace(/\s+/g, " ").trim()
+          : "";
+        const placeholder = entity.placeholder || entity.label || "Identifier";
+        const source = entity.source || "detected";
+        appendReviewGroup(groups, reviewGroupForEntity(entity), {
+          title: placeholder.replace(/^\[|\]$/g, ""),
+          detail: span ? `${span} (${source})` : source
+        });
+      });
+
+      (result.residualWarnings || []).forEach((warning) => {
+        appendReviewGroup(groups, reviewGroupForWarning(warning), {
+          title: String(warning.type || "Review").toUpperCase(),
+          detail: warning.snippet || warning.reason || "Review this phrase"
+        });
+      });
+
+      container.innerHTML = "";
+      container.hidden = groups.size === 0;
+      if (!groups.size) {
+        return;
+      }
+
+      Array.from(groups.entries()).slice(0, 8).forEach(([groupName, details]) => {
+        const card = document.createElement("div");
+        card.className = "review-group";
+        const title = document.createElement("p");
+        title.className = "review-group-title";
+        title.textContent = `${groupName} (${details.length})`;
+        const list = document.createElement("ul");
+        list.className = "review-group-examples";
+        details.slice(0, 3).forEach((entry) => {
+          const item = document.createElement("li");
+          item.textContent = `${entry.title}: ${entry.detail}`;
+          list.appendChild(item);
+        });
+        if (details.length > 3) {
+          const item = document.createElement("li");
+          item.textContent = `${details.length - 3} more in review details`;
+          list.appendChild(item);
+        }
+        card.append(title, list);
+        container.appendChild(card);
+      });
+    }
+
+    function renderScrubResult(result, rawText = "") {
       elements.scrubReview.hidden = false;
       elements.scrubbedNoteInput.value = result.text;
       const residualCount = result.residualWarnings?.length || 0;
@@ -6639,6 +7122,7 @@ Now create the initial rounds report for this case.`;
       elements.scrubVerdict.classList.toggle("is-warning", residualCount > 0);
       elements.scrubCounts.innerHTML = "";
       elements.scrubFlags.innerHTML = "";
+      renderReviewGroups(elements.scrubReviewGroups, result, rawText);
 
       const countLabels = Object.entries(result.counts).map(([label, value]) => `${label}: ${value}`);
       if (residualCount) {
@@ -6670,6 +7154,8 @@ Now create the initial rounds report for this case.`;
       elements.utilityVerdict.classList.remove("is-warning");
       elements.utilitySummary.textContent = "0 redactions";
       elements.utilityCounts.innerHTML = "";
+      elements.utilityReviewGroups.innerHTML = "";
+      elements.utilityReviewGroups.hidden = true;
       elements.utilityFlags.innerHTML = "";
       elements.utilityStatus.textContent = "";
     }
@@ -6691,6 +7177,7 @@ Now create the initial rounds report for this case.`;
       elements.utilityVerdict.classList.toggle("is-warning", residualCount > 0);
       elements.utilityCounts.innerHTML = "";
       elements.utilityFlags.innerHTML = "";
+      renderReviewGroups(elements.utilityReviewGroups, result, elements.utilityRawInput.value);
 
       const countLabels = Object.entries(result.counts).map(([label, value]) => `${label}: ${value}`);
       if (residualCount) {
@@ -6792,7 +7279,7 @@ Now create the initial rounds report for this case.`;
       state.scrubResult = result;
       state.scrubbedNote = result.text;
       state.laptopPrepareStep = "review";
-      renderScrubResult(result);
+      renderScrubResult(result, rawPriorSource);
       elements.promptStatus.textContent = "De-identified note, labs, and handoff preview ready. Review before pasting into OpenEvidence.";
       hideDeidProgress(900);
       requestAnimationFrame(() => {
@@ -7052,6 +7539,7 @@ If source context is missing from this conversation, say that the prior context 
     function setParseSummary(sections, prefix = "Detected") {
       if (!sections || !sections.length) {
         elements.parseSummary.textContent = "";
+        renderChecklistPreview(null);
         return;
       }
 
@@ -7059,12 +7547,14 @@ If source context is missing from this conversation, say that the prior context 
       const chipCount = sections.reduce((total, section) => total + section.items.filter((item) => item.options.length > 0).length, 0);
       const noteCount = sections.reduce((total, section) => total + section.items.filter((item) => item.hasNotes).length, 0);
       elements.parseSummary.textContent = `${prefix}: ${sections.length} sections, ${itemCount} items, ${chipCount} chip questions, ${noteCount} note fields.`;
+      renderChecklistPreview(sections);
     }
 
     function updateChecklistPasteState() {
       const hasChecklistText = Boolean(elements.checklistInput.value.trim());
       elements.buildButton.disabled = !hasChecklistText;
       elements.buildButton.setAttribute("aria-disabled", hasChecklistText ? "false" : "true");
+      updateNextActionControls();
     }
 
     function isBedsideExamManeuver(label) {
@@ -7175,7 +7665,25 @@ ${rawChecklist.trim()}`;
 
     function renderAudit(result) {
       state.auditResult = result;
-      elements.auditPanel.hidden = true;
+      elements.auditList.innerHTML = "";
+      if (!result || result.ok) {
+        elements.auditPanel.hidden = true;
+        return;
+      }
+
+      elements.auditPanel.hidden = false;
+      elements.auditBadge.textContent = "Review";
+      elements.auditSummary.textContent = `${result.issues.length} checklist quality issue${result.issues.length === 1 ? "" : "s"} found. Copy the format-fix prompt if OpenEvidence returned something hard to use.`;
+      result.issues.slice(0, 8).forEach((issue) => {
+        const item = document.createElement("li");
+        item.textContent = issue.message;
+        elements.auditList.appendChild(item);
+      });
+      if (result.issues.length > 8) {
+        const item = document.createElement("li");
+        item.textContent = `${result.issues.length - 8} more issue${result.issues.length - 8 === 1 ? "" : "s"} not shown.`;
+        elements.auditList.appendChild(item);
+      }
     }
 
     function normalizeChecklistText(rawText) {
@@ -8174,6 +8682,9 @@ ${rawChecklist.trim()}`;
 
     elements.clearProfileButton.addEventListener("click", clearUserProfile);
 
+    elements.nextActionPrimaryButton.addEventListener("click", runNextAction);
+    elements.nextActionSecondaryButton.addEventListener("click", runSecondaryAction);
+
     elements.prepareModeButton.addEventListener("click", () => {
       setDeviceWorkflowMode("prepare", { focus: true });
     });
@@ -8875,6 +9386,8 @@ heparin 5000 units held by provider`;
     restoreImportedContext();
     const restoredSession = restoreChecklistSession();
     maybeStartPhoneChecklistFirst(restoredSession);
+    updateSourceCompleteness();
+    renderUserContextPreview();
     updateSourcePrimaryActions();
     updateChecklistPasteState();
     updateContextStatus();

@@ -1,20 +1,20 @@
-export const DEFAULT_PRIMARY_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX";
-export const DEFAULT_FALLBACK_MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
+export const DEFAULT_PRIMARY_MODEL_ID = "onnx-community/stanford-deidentifier-base-ONNX";
+export const DEFAULT_FALLBACK_MODEL_ID = "rtrigoso/bert-small-pii-detection-ONNX";
 export const OPENMED_MODEL_ID = "sidupadhyay/OpenMed-PII-SuperClinical-Small-44M-v1-ONNX";
 export const DEFAULT_DTYPE = "q8";
 
 export const MODEL_PROFILES = {
   rtrigoso: {
-    id: DEFAULT_PRIMARY_MODEL_ID,
+    id: DEFAULT_FALLBACK_MODEL_ID,
     mobileFeasible: true,
     expectedQuantizedBytes: 28845474,
-    notes: "Small Transformers.js ONNX PII model; fastest mobile candidate."
+    notes: "Small Transformers.js ONNX PII model; fastest mobile fallback, but did not pass the current benchmark gate."
   },
   stanford: {
-    id: DEFAULT_FALLBACK_MODEL_ID,
+    id: DEFAULT_PRIMARY_MODEL_ID,
     mobileFeasible: false,
     expectedQuantizedBytes: 109651017,
-    notes: "Clinical deidentifier fallback; larger but more stable in current benchmarks."
+    notes: "Clinical deidentifier primary; larger, but selected by the current benchmark gate."
   },
   openmed: {
     id: OPENMED_MODEL_ID,
