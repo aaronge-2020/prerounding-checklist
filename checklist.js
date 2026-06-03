@@ -132,7 +132,12 @@ export const newAdmissionChecklistPrompt = `${checklistPrompt}
 
 <context_type>
 No prior SOAP note is available. The patient is newly admitted or being admitted now.
-</context_type>`;
+</context_type>
+
+<new_patient_history_goal>
+Use the bedside questions to fill the highest-yield remaining gaps for a full first-history admission write-up: chief complaint, HPI timing and symptom character, relevant PMH, medications, allergies, surgical history, health maintenance, family history, social history, ROS positives and negatives, function, safety, and patient concerns.
+Prefer broad, patient-friendly questions with structured answer choices so the student can capture a lot with minimal typing.
+</new_patient_history_goal>`;
 
 function normalizeHeaderText(value) {
   return String(value || "")
