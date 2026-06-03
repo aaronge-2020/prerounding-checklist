@@ -1446,31 +1446,6 @@
       display: none !important;
     }
 
-    .review-next-actions {
-      display: grid;
-      gap: 10px;
-      border: 1px solid rgba(106, 179, 189, 0.26);
-      border-radius: 8px;
-      padding: 11px;
-      background: rgba(79, 152, 163, 0.08);
-    }
-
-    .review-next-actions[hidden] {
-      display: none !important;
-    }
-
-    .review-next-actions-copy {
-      margin: 0;
-      color: #d8d3ca;
-      font-size: 0.86rem;
-      font-weight: 800;
-      line-height: 1.35;
-    }
-
-    .review-next-actions .prompt-actions {
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    }
-
     .status-chip-grid,
     .checklist-preview-grid {
       display: grid;
@@ -3468,13 +3443,6 @@ enoxaparin 40 mg held by provider"></textarea>
             <p id="scrubVerdict" class="scrub-verdict">Review before copying.</p>
             <ul id="scrubCounts" class="flag-list" aria-label="Redaction counts"></ul>
             <div id="scrubReviewGroups" class="review-group-grid" hidden></div>
-            <div id="scrubReviewActions" class="review-next-actions" hidden>
-              <p class="review-next-actions-copy">Preview looks ready? Copy the next prompt from here.</p>
-              <div class="prompt-actions">
-                <button id="reviewCopySourceRoundsPromptButton" class="btn btn-primary" type="button">Copy initial report prompt</button>
-                <button id="reviewScrubAndCopyButton" class="btn btn-secondary" type="button">Copy checklist prompt</button>
-              </div>
-            </div>
             <label for="scrubbedNoteInput" class="sr-only">Scrubbed patient note, labs, and handoff</label>
             <textarea id="scrubbedNoteInput" class="scrubbed-note-input" spellcheck="false" placeholder="Scrubbed note, labs, and handoff preview..."></textarea>
             <details class="review-details">
@@ -4393,12 +4361,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       scrubCounts: document.getElementById("scrubCounts"),
       scrubReviewGroups: document.getElementById("scrubReviewGroups"),
       scrubFlags: document.getElementById("scrubFlags"),
-      scrubReviewActions: document.getElementById("scrubReviewActions"),
       scrubAndCopyButton: document.getElementById("scrubAndCopyButton"),
-      reviewScrubAndCopyButton: document.getElementById("reviewScrubAndCopyButton"),
       exportPriorContextButton: document.getElementById("exportPriorContextButton"),
       copySourceRoundsPromptButton: document.getElementById("copySourceRoundsPromptButton"),
-      reviewCopySourceRoundsPromptButton: document.getElementById("reviewCopySourceRoundsPromptButton"),
       copyTeachingPromptButton: document.getElementById("copyTeachingPromptButton"),
       copyMedicationSafetyPromptButton: document.getElementById("copyMedicationSafetyPromptButton"),
       scrubPreviewButton: document.getElementById("scrubPreviewButton"),
@@ -7553,7 +7518,6 @@ Now create the initial rounds report for this case.`;
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
       elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
-      elements.scrubReviewActions.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.exportPriorContextButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPreview;
       elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
@@ -7571,10 +7535,8 @@ Now create the initial rounds report for this case.`;
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
         elements.scrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
-        elements.reviewScrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
         elements.exportPriorContextButton.disabled = isPrior && !hasReviewedPreview;
         elements.copySourceRoundsPromptButton.disabled = isPrior && !hasReviewedPriorContext;
-        elements.reviewCopySourceRoundsPromptButton.disabled = isPrior && !hasReviewedPriorContext;
         elements.copyTeachingPromptButton.disabled = isPrior && !hasReviewedPriorContext;
         elements.copyMedicationSafetyPromptButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
         elements.copyAdmissionPromptButton.disabled = !isPrior && (!hasAdmissionContext || !initialCopied);
@@ -7636,7 +7598,6 @@ Now create the initial rounds report for this case.`;
       elements.scrubReviewGroups.innerHTML = "";
       elements.scrubReviewGroups.hidden = true;
       elements.scrubFlags.innerHTML = "";
-      elements.scrubReviewActions.hidden = true;
       updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
@@ -7900,10 +7861,8 @@ Now create the initial rounds report for this case.`;
 
     function setScrubBusy(isBusy, primaryLabel) {
       elements.scrubAndCopyButton.disabled = isBusy;
-      elements.reviewScrubAndCopyButton.disabled = isBusy;
       elements.exportPriorContextButton.disabled = isBusy;
       elements.copySourceRoundsPromptButton.disabled = isBusy;
-      elements.reviewCopySourceRoundsPromptButton.disabled = isBusy;
       elements.copyTeachingPromptButton.disabled = isBusy;
       elements.copyMedicationSafetyPromptButton.disabled = isBusy;
       elements.exportSummaryContextButton.disabled = isBusy;
@@ -7914,10 +7873,8 @@ Now create the initial rounds report for this case.`;
       elements.copyAdmissionMedicationSafetyPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
-      elements.reviewScrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.exportPriorContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySourceRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
-      elements.reviewCopySourceRoundsPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copyMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.exportSummaryContextButton.setAttribute("aria-busy", isBusy ? "true" : "false");
@@ -7928,10 +7885,8 @@ Now create the initial rounds report for this case.`;
       elements.copyAdmissionMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
-      elements.reviewScrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
       elements.exportPriorContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
       elements.copySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial report prompt";
-      elements.reviewCopySourceRoundsPromptButton.textContent = isBusy ? "Working..." : "Copy initial report prompt";
       elements.copyTeachingPromptButton.textContent = isBusy ? "Working..." : "Teach me this patient";
       elements.copyMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
       elements.exportSummaryContextButton.textContent = isBusy ? "Working..." : "Download encrypted context file";
@@ -9894,20 +9849,12 @@ heparin 5000 units held by provider`;
       }
     });
 
-    elements.reviewScrubAndCopyButton.addEventListener("click", () => {
-      elements.scrubAndCopyButton.click();
-    });
-
     elements.copySourceRoundsPromptButton.addEventListener("click", async () => {
       try {
         await copySourceRoundsReportPrompt();
       } catch (error) {
         console.error(error);
       }
-    });
-
-    elements.reviewCopySourceRoundsPromptButton.addEventListener("click", () => {
-      elements.copySourceRoundsPromptButton.click();
     });
 
     elements.copyTeachingPromptButton.addEventListener("click", async () => {
