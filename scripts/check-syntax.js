@@ -93,6 +93,9 @@ for (const requiredSnippet of [
   "categoryForChecklistTitle",
   "dashOptionMatch",
   "questionOptionMatch",
+  "physical_exam_reference",
+  "Renal graft tenderness",
+  "Patellar reflexes",
   "BEDSIDE QUESTION CHECKLIST",
   "TARGETED PHYSICAL EXAM CHECKLIST"
 ]) {

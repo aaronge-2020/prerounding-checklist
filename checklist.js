@@ -18,6 +18,42 @@ Use ___ only for a short free-text detail, and put it at the end of the option o
 Do not use blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
 Do not use markdown, bullets, numbering, tables, explanations, citations, or text before or after the two checklists.`;
 
+const physicalExamReference = `<physical_exam_reference>
+Use this as a clinical menu for selecting focused exam items. Do not output the whole menu. Select only the exam domains that match the patient's active problems, risks, abnormal data, treatments, or consult question.
+
+Core exam domains:
+VITAL SIGNS AND SUPPORT: temperature, heart rate, respiratory rate, blood pressure, oxygen saturation, oxygen or ventilatory support, pain score, intake/output when relevant.
+GENERAL AND VOLUME: distress, mental status, appearance, mucous membranes, JVP, edema, capillary refill, skin turgor, weight trend when relevant.
+CARDIOPULMONARY: work of breathing, anterior/posterior/lateral lung sounds, wheezes/crackles/rhonchi/diminished bases, heart rhythm, murmurs/rubs/gallops, peripheral pulses, lower-extremity edema.
+ABDOMINAL AND RENAL: distension, tenderness, rebound/guarding, bowel sounds, hepatosplenomegaly when relevant, Murphy sign, CVA tenderness, bladder distension, graft tenderness for renal transplant.
+NEUROLOGIC CRANIAL NERVES: visual acuity, visual fields, pupils, extraocular movements, facial sensation, facial symmetry, hearing screen, palate elevation, tongue protrusion, shoulder shrug.
+NEUROLOGIC MOTOR: pronator drift, deltoid, biceps, triceps, wrist extension/flexion, grip, finger abduction, hip flexion, knee extension/flexion, ankle dorsiflexion/plantarflexion.
+NEUROLOGIC SENSORY: light touch, pinprick, vibration, proprioception, sensory level, symmetric distal sensation.
+NEUROLOGIC REFLEXES AND COORDINATION: biceps, brachioradialis, triceps, patellar, Achilles, Babinski, clonus, finger-to-nose, rapid alternating movements, heel-to-shin, gait, Romberg.
+HEENT AND ENDOCRINE-RELEVANT: sclera/conjunctiva, oral mucosa, oropharynx, thyroid inspection/palpation, cervical/supraclavicular lymph nodes, visual fields for pituitary/optic concerns.
+MUSCULOSKELETAL: focused joint inspection, palpation, range of motion, swelling, deformity, tenderness, warmth, shoulder impingement tests, wrist carpal tunnel tests, straight-leg raise, knee effusion/laxity tests, spine range of motion when relevant.
+SKIN WOUNDS LINES AND SAFETY: rashes, petechiae/bruising, ulcers, diabetic foot wounds, sacrum/heels, IV/central line site, surgical wounds, drains, bleeding, infection signs, fall-risk mobility screen.
+
+Selection rules:
+For neurologic weakness, numbness, spine disease, altered mental status, pituitary/visual symptoms, stroke, seizure, or neuromuscular disease, choose focused neurologic sections from cranial nerves, motor, sensory, reflexes, coordination, and gait rather than a generic neuro exam.
+For dyspnea, hypoxia, pneumonia, asthma/COPD, heart failure, hypercapnia, or respiratory support, include respiratory effort, oxygen support, lung fields, single-breath count only if neuromuscular or ventilatory weakness is relevant, and volume/cardiac signs when relevant.
+For chest pain, arrhythmia, heart failure, hypertension, syncope, or edema, include cardiopulmonary and vascular/volume findings such as rhythm, murmurs, JVP, pulses, edema, and lung crackles.
+For abdominal pain, infection, GI bleeding, diarrhea, renal colic, urinary symptoms, transplant, or AKI, include abdominal tenderness/distension, peritoneal signs only when relevant, CVA tenderness, volume status, and graft tenderness for kidney transplant.
+For diabetes, DKA, endocrine, steroid, thyroid, adrenal, pituitary, or electrolyte cases, include volume status, mental status, thyroid/neck findings when relevant, foot/skin findings when relevant, visual fields for sellar disease, and injection/IV site checks when treatments make them safety-critical.
+For anticoagulation, thrombocytopenia, anemia, heparin, GI bleed risk, or falling hemoglobin, include bleeding-focused skin and mucosal findings such as petechiae, bruising, melena report belongs in bedside questions, and IV/surgical-site bleeding when relevant.
+For musculoskeletal or pain complaints, include the affected joint or spine inspection, palpation, range of motion, neurovascular status distal to injury, and only the special maneuvers that directly test the suspected problem.
+
+Documentation option style:
+Prefer finding labels that document the result, not how to perform the maneuver.
+Good: Pupils: Equal and reactive / Unequal / Nonreactive
+Good: Extraocular movements: Intact / Limited / Diplopia
+Good: Shoulder range of motion: Full / Limited by pain / Unable
+Good: Patellar reflexes: Absent / Diminished / Normal / Brisk / Clonus
+Good: Renal graft tenderness: Absent / Present / Not applicable
+Avoid: Ask patient to follow your finger, tap reflex hammer, palpate abdomen, perform straight leg raise.
+Use 0 / 1 / 2 / 3 / 4 / 5 only for strength ratings. Do not write ___ / 5.
+</physical_exam_reference>`;
+
 export const checklistPrompt = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
 </role>
@@ -54,6 +90,8 @@ Prefer grouped screening items over exhaustive right-left inventories.
 Do not include generic review-of-systems questions, a full head-to-toe exam, teaching, explanations, citations, caveats, or oral presentation text.
 Do not mention that the note is de-identified.
 </content_rules>
+
+${physicalExamReference}
 
 <format_contract>
 ${checklistContract}
