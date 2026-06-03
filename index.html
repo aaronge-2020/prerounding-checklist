@@ -3049,20 +3049,20 @@
 <body data-screen="pasteScreen" data-checklist-first="false" data-device-mode="prepare">
   <main class="app-shell" aria-live="polite">
     <nav id="workflowRail" class="workflow-rail" data-steps="4" aria-label="Workflow progress">
-      <span id="workflowCompactLabel" class="workflow-compact-label">Source -> Checklist -> Bedside -> Output</span>
-      <div id="stepSource" class="step-pill is-current">1 Source</div>
+      <span id="workflowCompactLabel" class="workflow-compact-label">Chart info -> Checklist -> Bedside -> Update</span>
+      <div id="stepSource" class="step-pill is-current">1 Chart info</div>
       <div id="stepPaste" class="step-pill">2 Checklist</div>
       <div id="stepBedside" class="step-pill">3 Bedside</div>
-      <div id="stepOutput" class="step-pill">4 Output</div>
+      <div id="stepOutput" class="step-pill">4 Update</div>
     </nav>
     <div class="workflow-status-line" aria-label="Workflow status">
-      <span id="sourceReadyStatus">Source ready</span>
+      <span id="sourceReadyStatus">Chart info ready</span>
       <span class="status-arrow" aria-hidden="true">-></span>
       <span id="checklistReadyStatus">Checklist ready</span>
       <span class="status-arrow" aria-hidden="true">-></span>
       <span id="findingsReadyStatus">Findings ready</span>
       <span class="status-arrow" aria-hidden="true">-></span>
-      <span id="outputReadyStatus">Output ready</span>
+      <span id="outputReadyStatus">Update ready</span>
     </div>
 
     <details id="toolsDrawer" class="tools-drawer">
@@ -3238,7 +3238,7 @@
             <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Prepare the de-ID model once while online before relying on it offline.</label></li>
             <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
           </ul>
-          <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist fallback.</p>
+          <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist backup.</p>
           <p id="installStatus" class="install-status" role="status" aria-live="polite"></p>
         </details>
       </div>
@@ -3246,7 +3246,7 @@
 
     <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
       <header class="hero">
-        <p id="pasteEyebrow" class="eyebrow">Laptop prepare</p>
+        <p id="pasteEyebrow" class="eyebrow">Prepare on laptop</p>
         <h1 id="pasteTitle">Pre-Rounding Checklist Builder</h1>
         <p id="pasteHelper" class="helper">Paste Epic context, de-identify it, and copy the prompts you need before leaving your laptop.</p>
       </header>
@@ -3281,7 +3281,7 @@
 
       <section id="laptopHandoffCard" class="surface laptop-handoff-card" aria-labelledby="laptopHandoffTitle" hidden>
         <div>
-          <p class="eyebrow">Phone handoff ready</p>
+          <p class="eyebrow">Ready for phone</p>
           <h2 id="laptopHandoffTitle" class="workflow-title">Checklist prompt copied</h2>
           <p class="workflow-copy">Copy OpenEvidence's checklist on your phone, or keep using the prompt tools below before you leave the laptop.</p>
         </div>
@@ -3297,7 +3297,7 @@
         </div>
         <div id="phoneInstructionsPanel" class="phone-instructions-panel" hidden>
           <p>On iPhone: open OpenEvidence, copy the checklist, open this app, then tap Phone → Paste checklist.</p>
-          <p>If the phone cannot use the same OpenEvidence chat, use the encrypted context file in More tools.</p>
+          <p>If the phone cannot use the same OpenEvidence chat, use the encrypted context file in More options.</p>
         </div>
       </section>
 
@@ -3311,7 +3311,7 @@
         </div>
 
         <div id="promptCopiedSummary" class="compact-summary prompt-hub" hidden>
-          <p class="compact-summary-title">OpenEvidence prompt toolkit</p>
+          <p class="compact-summary-title">OpenEvidence prompts</p>
           <p id="promptCopiedCopy" class="compact-summary-copy">Keep this open after each copy. Use the next prompt you need, then paste the checklist when OpenEvidence returns it.</p>
           <div class="compact-summary-actions prompt-hub-actions">
             <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial report prompt</button>
@@ -3322,7 +3322,7 @@
             <button id="editSourceButton" class="btn btn-quiet" type="button">Edit source</button>
           </div>
           <details class="more-options">
-            <summary>Phone fallback</summary>
+            <summary>Move to phone</summary>
             <div class="more-options-body">
               <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
             </div>
@@ -3373,12 +3373,12 @@
 
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
           <div class="guided-step">
-            <p class="eyebrow">Source details</p>
+            <p class="eyebrow">Chart info</p>
             <h3 id="priorSourceTitle" class="guided-step-title">Paste Epic info</h3>
             <p class="guided-step-copy">Review the scrubbed preview before copying. Raw text is not stored.</p>
           </div>
-          <div id="sourceCompletenessPanel" class="source-completeness-panel" aria-label="Source completeness">
-            <p class="guided-step-copy">Source completeness</p>
+          <div id="sourceCompletenessPanel" class="source-completeness-panel" aria-label="Chart information included">
+            <p class="guided-step-copy">Chart info included</p>
             <div class="status-chip-grid">
               <div id="sourceNoteChip" class="status-chip"><strong>Note</strong><span>Missing</span></div>
               <div id="sourceLabsChip" class="status-chip"><strong>Labs</strong><span>Optional</span></div>
@@ -3409,7 +3409,7 @@ Night team: no acute events.
 To do: follow blood cultures, recheck potassium, confirm insulin transition plan.
 Nursing concern: intermittent confusion overnight."></textarea>
           <label for="rawMedicationInput">Medication orders / MAR</label>
-          <span class="field-caption">Optional source context. Paste active orders and MAR rows if they help explain today’s medication questions.</span>
+          <span class="field-caption">Optional chart context. Paste active orders and MAR rows if they help explain today's medication questions.</span>
           <textarea id="rawMedicationInput" class="lab-input" spellcheck="false" placeholder="Paste medication orders and MAR administrations here.
 
 Example:
@@ -3450,14 +3450,14 @@ enoxaparin 40 mg held by provider"></textarea>
               <ul id="scrubFlags" class="flag-list" aria-label="Review flags"></ul>
             </details>
           </div>
-          <p class="next-action-copy">Next best action</p>
+          <p class="next-action-copy">Copy prompts</p>
           <div class="prompt-actions guided-primary-actions">
             <button id="scrubPreviewButton" class="btn btn-primary" type="button">De-identify</button>
             <button id="copySourceRoundsPromptButton" class="btn btn-primary" type="button" hidden>Copy initial report prompt</button>
             <button id="scrubAndCopyButton" class="btn btn-secondary" type="button" hidden>Copy checklist prompt</button>
           </div>
           <details class="more-options">
-            <summary>More tools / fallback</summary>
+            <summary>More options</summary>
             <div class="more-options-body">
               <button id="copyTeachingPromptButton" class="btn btn-secondary" type="button" hidden>Teach me this patient</button>
               <button id="copyMedicationSafetyPromptButton" class="btn btn-secondary" type="button" hidden>Copy medication safety prompt</button>
@@ -3930,13 +3930,13 @@ enoxaparin 40 mg held by provider"></textarea>
                 </div>
               </div>
               <p id="admissionNextGap" class="intake-next-gap">Next: start with the chief concern or HPI.</p>
-              <p class="next-action-copy">Next best action</p>
+              <p class="next-action-copy">Copy prompts</p>
               <div class="prompt-actions guided-primary-actions">
                 <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy initial report prompt</button>
                 <button id="copyAdmissionPromptButton" class="btn btn-secondary" type="button">Copy checklist prompt</button>
               </div>
               <details class="more-options">
-                <summary>More tools / fallback</summary>
+                <summary>More options</summary>
                 <div class="more-options-body">
                   <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
                   <button id="copyAdmissionMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
@@ -3958,7 +3958,7 @@ enoxaparin 40 mg held by provider"></textarea>
       </section>
 
       <div id="checklistPasteCard" class="surface paste-card" hidden>
-        <p class="eyebrow">Phone bedside step</p>
+        <p class="eyebrow">At bedside</p>
         <div id="sessionRecoveryBanner" class="session-recovery-banner" hidden>
           <p class="compact-summary-title">Recovered bedside checklist from this tab</p>
           <p class="compact-summary-copy">Your checklist answers and notes are still available in this browser session.</p>
@@ -3971,10 +3971,10 @@ enoxaparin 40 mg held by provider"></textarea>
           <p class="compact-summary-title">Paste checklist from OpenEvidence</p>
           <p class="compact-summary-copy">Copy the checklist from the OpenEvidence app, paste it here, then go see the patient.</p>
           <details class="more-options">
-            <summary>More tools / fallback</summary>
+            <summary>More options</summary>
             <div class="more-options-body">
               <div id="importContextCard" class="import-context-card">
-                <p class="compact-summary-title">Fallback context file</p>
+                <p class="compact-summary-title">Phone context file</p>
                 <p class="compact-summary-copy">Import only when the phone needs patient context that OpenEvidence does not already have.</p>
                 <label for="transferCodeInput">Transfer code</label>
                 <input id="transferCodeInput" class="transfer-code-input" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
@@ -4053,18 +4053,18 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       </div>
         </div>
         <aside class="guide-sidebar" aria-labelledby="nextActionTitle">
-          <p class="eyebrow">Current task</p>
+          <p class="eyebrow">Continue</p>
           <h2 id="nextActionTitle" class="guide-sidebar-title">Prepare the source</h2>
           <p id="nextActionCopy" class="guide-sidebar-copy">Paste Epic info, de-identify it, then copy the initial rounds prompt.</p>
           <div class="next-action-buttons">
             <button id="nextActionPrimaryButton" class="btn btn-primary" type="button">De-identify and review</button>
-            <button id="nextActionSecondaryButton" class="btn btn-secondary" type="button">Open Tools</button>
+            <button id="nextActionSecondaryButton" class="btn btn-secondary" type="button">Tools</button>
           </div>
           <ol class="guide-sidebar-list">
-            <li>Source ready</li>
-            <li>Checklist built</li>
+            <li>Chart info ready</li>
+            <li>Checklist ready</li>
             <li>Bedside findings captured</li>
-            <li>Output copied</li>
+            <li>Update copied</li>
           </ol>
         </aside>
       </div>
@@ -4134,7 +4134,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       <div class="bottom-bar" role="region" aria-label="Checklist actions">
         <div class="bottom-inner">
           <button id="clearButton" class="btn btn-secondary" type="button">Clear All</button>
-          <button id="generateButton" class="btn btn-primary" type="button">Generate Findings</button>
+          <button id="generateButton" class="btn btn-primary" type="button">Prepare Update</button>
         </div>
       </div>
     </section>
@@ -4147,11 +4147,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       </header>
 
       <div class="surface output-card">
-        <div class="output-mode" role="group" aria-label="Output mode">
+        <div class="output-mode" role="group" aria-label="Update content">
           <button id="assessedOnlyButton" type="button" aria-pressed="true">Assessed only</button>
           <button id="fullOutputButton" type="button" aria-pressed="false">Full with not assessed</button>
         </div>
-        <p id="sourceContextStatus" class="context-status is-empty" role="status" aria-live="polite">No source context is attached to this update.</p>
+        <p id="sourceContextStatus" class="context-status is-empty" role="status" aria-live="polite">No chart context is attached to this update.</p>
         <p id="openEvidenceContextStatus" class="context-status is-empty" role="status" aria-live="polite">Paste the update where you made the initial report.</p>
         <label for="outputText">Compiled findings</label>
         <textarea id="outputText" class="output-box" readonly></textarea>
@@ -4159,9 +4159,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         <div class="output-actions">
           <button id="copyPresentationPromptButton" class="btn btn-primary" type="button">Copy update prompt</button>
           <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
-          <button id="copyButton" class="btn btn-secondary" type="button">Copy Findings Only</button>
+          <button id="copyButton" class="btn btn-secondary" type="button">Copy findings only</button>
           <button id="editButton" class="btn btn-secondary" type="button">Edit</button>
-          <button id="newButton" class="btn btn-quiet" type="button">New Checklist</button>
+          <button id="newButton" class="btn btn-quiet" type="button">Start over</button>
         </div>
       </div>
     </section>
@@ -5590,11 +5590,11 @@ Sensory level present: No / Yes, at ___`;
       elements.bedsideModeButton.setAttribute("aria-pressed", bedsideMode ? "true" : "false");
 
       if (bedsideMode) {
-        elements.pasteEyebrow.textContent = "Phone bedside";
+        elements.pasteEyebrow.textContent = "At bedside";
         elements.pasteTitle.textContent = "Paste Checklist";
         elements.pasteHelper.textContent = "Paste the checklist from OpenEvidence, document bedside answers, then copy the update prompt.";
       } else {
-        elements.pasteEyebrow.textContent = "Laptop prepare";
+        elements.pasteEyebrow.textContent = "Prepare on laptop";
         elements.pasteTitle.textContent = "Prepare Patient for Rounds";
         elements.pasteHelper.textContent = "Paste Epic context, de-identify it, and copy the prompts you need before leaving your laptop.";
       }
@@ -5660,7 +5660,7 @@ Sensory level present: No / Yes, at ___`;
     function handleChecklistPromptCopied() {
       const shouldPasteHere = state.useChecklistOnLaptop || isBedsideWorkflow();
       markConversationStep("checklist");
-      setPromptCollapsed(true, "Checklist prompt copied. Prompt tools stay available here; copy OpenEvidence's checklist when you are ready.");
+      setPromptCollapsed(true, "Checklist prompt copied. The prompt buttons stay available here; copy OpenEvidence's checklist when you are ready.");
       if (shouldPasteHere) {
         state.useChecklistOnLaptop = true;
         updateChecklistFirstControls();
@@ -5818,27 +5818,27 @@ Sensory level present: No / Yes, at ___`;
 
     function updateWorkflowStatusLine(facts = workflowFacts()) {
       elements.sourceReadyStatus.textContent = facts.sourceReviewed
-        ? "Source ready"
+        ? "Chart info ready"
         : facts.sourceInputReady
-          ? "Review source"
-          : "Source needed";
+          ? "Review chart info"
+          : "Add chart info";
       elements.checklistReadyStatus.textContent = facts.checklistBuilt
-        ? "Checklist built"
+        ? "Checklist ready"
         : facts.checklistPromptReady
           ? "Checklist copied"
-          : facts.checklistPasted
+        : facts.checklistPasted
             ? "Checklist pasted"
-            : "Checklist needed";
+            : "Add checklist";
       elements.findingsReadyStatus.textContent = facts.findingsReady
         ? "Findings ready"
         : facts.checklistBuilt
           ? "Bedside active"
-          : "Bedside needed";
+          : "Ready for bedside";
       elements.outputReadyStatus.textContent = facts.outputCopied
-        ? "Output copied"
+        ? "Update copied"
         : facts.findingsReady
-          ? "Output ready"
-          : "Output needed";
+          ? "Update ready"
+          : "Update pending";
 
       elements.sourceReadyStatus.classList.toggle("is-ready", facts.sourceReviewed);
       elements.checklistReadyStatus.classList.toggle("is-ready", facts.checklistBuilt || facts.checklistPromptReady);
@@ -5850,8 +5850,8 @@ Sensory level present: No / Yes, at ___`;
       if (isLaptopHandoffReady()) {
         return {
           title: "Checklist prompt copied",
-          copy: "Paste OpenEvidence's checklist on your phone, or keep using the prompt toolkit below.",
-          label: "Use checklist here",
+          copy: "Paste OpenEvidence's checklist on your phone, or keep using the prompt buttons below.",
+          label: "Paste checklist here",
           action: "use-laptop-checklist"
         };
       }
@@ -5867,18 +5867,18 @@ Sensory level present: No / Yes, at ___`;
 
       if (elements.checklistScreen.classList.contains("is-active") || facts.checklistBuilt) {
         return {
-          title: "Collect bedside findings",
-          copy: "Work through bedside questions and focused exam items, then generate findings.",
-          label: "Generate findings",
+          title: "Document bedside visit",
+          copy: "Work through bedside questions and focused exam items, then prepare the update prompt.",
+          label: "Prepare update prompt",
           action: "generate-findings"
         };
       }
 
       if (state.useChecklistOnLaptop || isBedsideWorkflow() || state.promptCollapsed || facts.checklistPasted) {
         return {
-          title: "Build bedside checklist",
+          title: "Paste checklist",
           copy: "Paste the checklist OpenEvidence generated, then start the bedside checklist.",
-          label: "Build checklist",
+          label: "Start bedside checklist",
           action: "build-checklist",
           disabled: !facts.checklistPasted
         };
@@ -5889,7 +5889,7 @@ Sensory level present: No / Yes, at ___`;
           return {
             title: "Paste Epic info",
             copy: "Paste a note, labs, handoff, or MAR. The app will de-identify locally before any prompt is copied.",
-            label: "Focus source",
+            label: "Go to Epic info",
             action: "focus-source"
           };
         }
@@ -5905,9 +5905,9 @@ Sensory level present: No / Yes, at ___`;
 
       if (state.sourceMode === "admission" && !facts.admissionReady) {
         return {
-          title: "Fill admission basics",
+          title: "Fill first history",
           copy: "Capture the first-history sections, then copy the initial report prompt.",
-          label: "Focus admission",
+          label: "Go to first history",
           action: "focus-admission"
         };
       }
@@ -5936,7 +5936,7 @@ Sensory level present: No / Yes, at ___`;
       elements.nextActionPrimaryButton.textContent = action.label;
       elements.nextActionPrimaryButton.dataset.action = action.action;
       elements.nextActionPrimaryButton.disabled = Boolean(action.disabled);
-      elements.nextActionSecondaryButton.textContent = isBedsideWorkflow() ? "Laptop mode" : "Open Tools";
+      elements.nextActionSecondaryButton.textContent = isBedsideWorkflow() ? "Prepare on laptop" : "Tools";
     }
 
     function updateGuidedStatus() {
@@ -5950,11 +5950,11 @@ Sensory level present: No / Yes, at ___`;
       const facts = workflowFacts();
       elements.workflowRail.dataset.steps = "4";
       elements.workflowRail.dataset.flow = isBedsideWorkflow() ? "bedside" : "prepare";
-      elements.workflowCompactLabel.textContent = "Source -> Checklist -> Bedside -> Output";
-      elements.stepSource.textContent = "1 Source";
+      elements.workflowCompactLabel.textContent = "Chart info -> Checklist -> Bedside -> Update";
+      elements.stepSource.textContent = "1 Chart info";
       elements.stepPaste.textContent = "2 Checklist";
       elements.stepBedside.textContent = "3 Bedside";
-      elements.stepOutput.textContent = "4 Output";
+      elements.stepOutput.textContent = "4 Update";
       elements.stepOutput.hidden = false;
 
       let currentKey = "source";
@@ -6601,26 +6601,26 @@ Sensory level present: No / Yes, at ___`;
       if (!state.importedContext) {
         return "";
       }
-      const mode = state.importedContext.sourceMode === "admission" ? "admission context" : "de-identified source context";
-      return `Imported fallback ${mode}.`;
+      const mode = state.importedContext.sourceMode === "admission" ? "admission context" : "de-identified chart info";
+      return `Imported ${mode}.`;
     }
 
     function updateContextStatus() {
       const admissionContext = formatAdmissionContext();
-      let message = "No source context is attached to this update.";
+      let message = "No chart context is attached to this update.";
       let hasContext = false;
 
       if (state.conversationContextReady) {
         message = "Update prompt will rely on the earlier OpenEvidence report.";
         hasContext = true;
       } else if (state.scrubbedNote) {
-        message = "Fallback available: this browser has de-identified source context.";
+        message = "Saved context available: this browser has de-identified chart info.";
         hasContext = true;
       } else if (admissionContext) {
-        message = "Fallback available: this browser has admission context.";
+        message = "Saved context available: this browser has admission context.";
         hasContext = true;
       } else if (state.importedContext) {
-        message = "Fallback available: imported context is loaded.";
+        message = "Imported context is loaded.";
         hasContext = true;
       }
 
@@ -6682,7 +6682,7 @@ Sensory level present: No / Yes, at ___`;
       state.transferCode = transferCode;
       elements.transferExportPanel.hidden = false;
       elements.transferCodeDisplay.textContent = transferCode;
-      elements.transferExportStatus.textContent = "Encrypted context file downloaded. Use only if the phone needs fallback context.";
+      elements.transferExportStatus.textContent = "Encrypted context file downloaded. Use only if the phone needs patient context.";
       statusElement.textContent = "Encrypted context file ready.";
       showToast("Context file downloaded. Keep the transfer code visible.");
       return true;
@@ -7908,12 +7908,12 @@ Now create the initial rounds report for this case.`;
         });
         return result;
       } catch (error) {
-        console.warn("Worker de-identification failed; using structured redaction fallback.", error);
+        console.warn("Worker de-identification failed; using backup structured redaction.", error);
         if (String(rawText || "").length > 20000) {
           updateDeidProgress({
             message: "De-identification worker unavailable.",
             percent: 1,
-            detail: "Reload the page and try again. The app will not run a large fallback on the page thread."
+            detail: "Reload the page and try again. The app will not process a very large note on the page thread."
           });
           throw new Error("De-identification worker unavailable. Reload the page and try again.");
         }
@@ -8138,7 +8138,7 @@ Now create the initial rounds report for this case.`;
         updateDeidProgress({
           message: "De-identification stopped.",
           percent: 1,
-          detail: "Try again, or review the structured fallback message if one appears."
+          detail: "Try again, or review the backup redaction message if one appears."
         });
         hideDeidProgress(1600);
         throw error;
@@ -9649,7 +9649,7 @@ If source context is missing from this conversation, say that the prior context 
     elements.editSourceButton.addEventListener("click", () => {
       setPromptCollapsed(false);
       elements.promptStatus.textContent = "";
-      showToast("Source editing restored.");
+      showToast("Chart info editing restored.");
     });
 
     elements.startChecklistFirstButton.addEventListener("click", () => {
@@ -9658,12 +9658,12 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.showSourceWorkflowButton.addEventListener("click", () => {
       setChecklistFirstMode(false, { focus: true });
-      showToast("Source workflow restored.");
+      showToast("Chart info entry restored.");
     });
 
     elements.showSourceFromPasteButton.addEventListener("click", () => {
       setChecklistFirstMode(false, { focus: true });
-      showToast("Source workflow restored.");
+      showToast("Chart info entry restored.");
     });
 
     elements.loadDemoSoapButton.addEventListener("click", () => {
@@ -10145,15 +10145,15 @@ heparin 5000 units held by provider`;
       if (!state.newChecklistConfirming && hasEnteredData()) {
         state.newChecklistConfirming = true;
         elements.newButton.textContent = "Tap Again to Reset";
-        showToast("Tap New Checklist again to reset everything.");
+        showToast("Tap Start over again to reset everything.");
         window.setTimeout(() => {
           state.newChecklistConfirming = false;
-          elements.newButton.textContent = "New Checklist";
+          elements.newButton.textContent = "Start over";
         }, 5000);
         return;
       }
 
-      elements.newButton.textContent = "New Checklist";
+      elements.newButton.textContent = "Start over";
       resetApp();
       showToast("Ready for a new checklist.");
     });
