@@ -831,6 +831,15 @@
       gap: 10px;
     }
 
+    .prompt-hub-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    }
+
+    .prompt-hub-actions .btn {
+      width: 100%;
+    }
+
     .session-recovery-banner {
       display: grid;
       gap: 10px;
@@ -3297,19 +3306,17 @@
 
       <section id="laptopHandoffCard" class="surface laptop-handoff-card" aria-labelledby="laptopHandoffTitle" hidden>
         <div>
-          <p class="eyebrow">Laptop step complete</p>
-          <h2 id="laptopHandoffTitle" class="workflow-title">Finish on your phone</h2>
-          <p class="workflow-copy">Open OpenEvidence on your phone, copy the checklist it generated, then paste it into this app at bedside.</p>
+          <p class="eyebrow">Phone handoff ready</p>
+          <h2 id="laptopHandoffTitle" class="workflow-title">Checklist prompt copied</h2>
+          <p class="workflow-copy">Copy OpenEvidence's checklist on your phone, or keep using the prompt tools below before you leave the laptop.</p>
         </div>
         <ol class="handoff-list">
-          <li>Open OpenEvidence on your phone.</li>
+          <li>Open the same OpenEvidence chat on your phone.</li>
           <li>Copy the generated checklist.</li>
-          <li>Open this app on your phone.</li>
-          <li>Paste the checklist and start bedside documentation.</li>
+          <li>Paste the checklist into this app when you are ready for bedside documentation.</li>
         </ol>
         <div class="compact-summary-actions">
           <a class="btn btn-primary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
-          <button id="copyHandoffLinkButton" class="btn btn-secondary" type="button">Copy app link</button>
           <button id="showPhoneInstructionsButton" class="btn btn-secondary" type="button">Show phone instructions</button>
           <button id="useChecklistOnLaptopButton" class="btn btn-quiet" type="button">Use checklist on this laptop</button>
         </div>
@@ -3328,26 +3335,20 @@
           <p class="workflow-copy">Paste chart notes, labs, handoff, or MAR. De-identify locally before copying any prompt.</p>
         </div>
 
-        <div id="promptCopiedSummary" class="compact-summary" hidden>
-          <p class="compact-summary-title">Ready for OpenEvidence</p>
-          <p id="promptCopiedCopy" class="compact-summary-copy">Paste the prompt, copy the checklist OpenEvidence returns, then paste it below.</p>
-          <ol class="handoff-list">
-            <li>Paste the initial rounds prompt.</li>
-            <li>After reading the report, paste the checklist prompt.</li>
-            <li>Copy the returned checklist.</li>
-            <li>Paste it here or on your phone before going bedside.</li>
-          </ol>
-          <div class="compact-summary-actions">
-            <button id="editSourceButton" class="btn btn-secondary" type="button">Edit Source</button>
+        <div id="promptCopiedSummary" class="compact-summary prompt-hub" hidden>
+          <p class="compact-summary-title">OpenEvidence prompt toolkit</p>
+          <p id="promptCopiedCopy" class="compact-summary-copy">Keep this open after each copy. Use the next prompt you need, then paste the checklist when OpenEvidence returns it.</p>
+          <div class="compact-summary-actions prompt-hub-actions">
             <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial report prompt</button>
             <button id="copySummaryChecklistPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
+            <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
+            <button id="copySummaryMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
             <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
+            <button id="editSourceButton" class="btn btn-quiet" type="button">Edit source</button>
           </div>
           <details class="more-options">
-            <summary>More tools / fallback</summary>
+            <summary>Phone fallback</summary>
             <div class="more-options-body">
-              <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
-              <button id="copySummaryMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
               <button id="exportSummaryContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
             </div>
           </details>
@@ -3970,6 +3971,7 @@ enoxaparin 40 mg held by provider"></textarea>
                 <summary>More tools / fallback</summary>
                 <div class="more-options-body">
                   <button id="copyAdmissionTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
+                  <button id="copyAdmissionMedicationSafetyPromptButton" class="btn btn-secondary" type="button">Copy medication safety prompt</button>
                   <button id="exportAdmissionContextButton" class="btn btn-secondary" type="button">Download encrypted context file</button>
                   <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
                 </div>
@@ -4317,7 +4319,6 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       checklistFirstSummary: document.getElementById("checklistFirstSummary"),
       showSourceFromPasteButton: document.getElementById("showSourceFromPasteButton"),
       laptopHandoffCard: document.getElementById("laptopHandoffCard"),
-      copyHandoffLinkButton: document.getElementById("copyHandoffLinkButton"),
       showPhoneInstructionsButton: document.getElementById("showPhoneInstructionsButton"),
       useChecklistOnLaptopButton: document.getElementById("useChecklistOnLaptopButton"),
       phoneInstructionsPanel: document.getElementById("phoneInstructionsPanel"),
@@ -4405,6 +4406,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       exportAdmissionContextButton: document.getElementById("exportAdmissionContextButton"),
       copyAdmissionRoundsPromptButton: document.getElementById("copyAdmissionRoundsPromptButton"),
       copyAdmissionTeachingPromptButton: document.getElementById("copyAdmissionTeachingPromptButton"),
+      copyAdmissionMedicationSafetyPromptButton: document.getElementById("copyAdmissionMedicationSafetyPromptButton"),
       admissionHpiChip: document.getElementById("admissionHpiChip"),
       admissionBackgroundChip: document.getElementById("admissionBackgroundChip"),
       admissionMedsChip: document.getElementById("admissionMedsChip"),
@@ -5667,9 +5669,9 @@ Sensory level present: No / Yes, at ___`;
       document.body.dataset.checklistFirst = bedsideMode ? "true" : "false";
       updateDeviceModeChrome();
       elements.laptopHandoffCard.hidden = !laptopHandoffReady;
-      elements.guidedLayout.hidden = laptopHandoffReady;
+      elements.guidedLayout.hidden = false;
       elements.phoneQuickStartCard.hidden = bedsideMode || state.promptCollapsed || !isPhoneLikeViewport();
-      elements.sourceWorkflowCard.hidden = bedsideMode || laptopHandoffReady;
+      elements.sourceWorkflowCard.hidden = bedsideMode;
       elements.checklistPasteCard.hidden = !(bedsideMode || state.useChecklistOnLaptop || hasChecklistPasteText());
       elements.checklistFirstSummary.hidden = !(bedsideMode || state.useChecklistOnLaptop);
       elements.sessionRecoveryBanner.hidden = !state.recoveredChecklistAvailable;
@@ -5693,14 +5695,14 @@ Sensory level present: No / Yes, at ___`;
     function handleChecklistPromptCopied() {
       const shouldPasteHere = state.useChecklistOnLaptop || isBedsideWorkflow();
       markConversationStep("checklist");
-      setPromptCollapsed(true, "Copy OpenEvidence's checklist, then paste it into the phone app.");
+      setPromptCollapsed(true, "Checklist prompt copied. Prompt tools stay available here; copy OpenEvidence's checklist when you are ready.");
       if (shouldPasteHere) {
         state.useChecklistOnLaptop = true;
         updateChecklistFirstControls();
         updateStepRail("paste");
         focusChecklistPasteBox();
       } else {
-        focusLaptopHandoffCard();
+        elements.sourceWorkflowCard.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
 
@@ -5882,10 +5884,10 @@ Sensory level present: No / Yes, at ___`;
     function nextActionState(facts = workflowFacts()) {
       if (isLaptopHandoffReady()) {
         return {
-          title: "Laptop step complete",
-          copy: "Finish the bedside checklist on your phone, or keep working on this laptop.",
-          label: "Show handoff",
-          action: "handoff"
+          title: "Checklist prompt copied",
+          copy: "Paste OpenEvidence's checklist on your phone, or keep using the prompt toolkit below.",
+          label: "Use checklist here",
+          action: "use-laptop-checklist"
         };
       }
 
@@ -6016,6 +6018,15 @@ Sensory level present: No / Yes, at ___`;
 
     function runNextAction() {
       const action = elements.nextActionPrimaryButton.dataset.action || nextActionState().action;
+      if (action === "use-laptop-checklist") {
+        state.useChecklistOnLaptop = true;
+        state.deviceWorkflowMode = "prepare";
+        state.checklistFirstMode = false;
+        updateChecklistFirstControls();
+        updateStepRail("paste");
+        focusChecklistPasteBox();
+        return;
+      }
       if (action === "handoff") {
         focusLaptopHandoffCard();
         return;
@@ -7537,6 +7548,8 @@ Now create the initial rounds report for this case.`;
       const hasReviewedPriorContext = Boolean(hasReviewedPreview);
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
       const initialCopied = state.initialRoundsPromptCopied || state.conversationContextReady;
+      const summaryContextReady = isPrior ? hasPriorContext : hasAdmissionContext;
+      const summaryChecklistContextReady = isPrior ? hasReviewedPriorContext : hasAdmissionContext;
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
       elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
@@ -7549,11 +7562,12 @@ Now create the initial rounds report for this case.`;
       elements.exportAdmissionContextButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
       elements.copyAdmissionTeachingPromptButton.hidden = isPrior || state.promptCollapsed;
-      elements.exportSummaryContextButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
-      elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
-      elements.copySummaryChecklistPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasReviewedPriorContext : hasAdmissionContext);
-      elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasPriorContext : hasAdmissionContext);
-      elements.copySummaryMedicationSafetyPromptButton.hidden = !state.promptCollapsed || !(isPrior ? hasReviewedPriorContext : false);
+      elements.copyAdmissionMedicationSafetyPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.exportSummaryContextButton.hidden = !state.promptCollapsed || !summaryContextReady;
+      elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
+      elements.copySummaryChecklistPromptButton.hidden = !state.promptCollapsed || !summaryChecklistContextReady;
+      elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
+      elements.copySummaryMedicationSafetyPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
       if (!isBusy) {
         elements.scrubPreviewButton.disabled = isPrior && !hasRawPriorSource;
         elements.scrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !initialCopied);
@@ -7567,11 +7581,12 @@ Now create the initial rounds report for this case.`;
         elements.exportAdmissionContextButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionRoundsPromptButton.disabled = !isPrior && !hasAdmissionContext;
         elements.copyAdmissionTeachingPromptButton.disabled = !isPrior && !hasAdmissionContext;
-        elements.exportSummaryContextButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
-        elements.copySummaryRoundsPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
-        elements.copySummaryChecklistPromptButton.disabled = isPrior ? (!hasReviewedPriorContext || !initialCopied) : (!hasAdmissionContext || !initialCopied);
-        elements.copySummaryTeachingPromptButton.disabled = isPrior ? !hasPriorContext : !hasAdmissionContext;
-        elements.copySummaryMedicationSafetyPromptButton.disabled = isPrior ? (!hasReviewedPriorContext || !initialCopied) : true;
+        elements.copyAdmissionMedicationSafetyPromptButton.disabled = !isPrior && (!hasAdmissionContext || !initialCopied);
+        elements.exportSummaryContextButton.disabled = !summaryContextReady;
+        elements.copySummaryRoundsPromptButton.disabled = !summaryContextReady;
+        elements.copySummaryChecklistPromptButton.disabled = !summaryChecklistContextReady || !initialCopied;
+        elements.copySummaryTeachingPromptButton.disabled = !summaryContextReady;
+        elements.copySummaryMedicationSafetyPromptButton.disabled = !summaryContextReady || !initialCopied;
       }
     }
 
@@ -7896,6 +7911,7 @@ Now create the initial rounds report for this case.`;
       elements.copySummaryChecklistPromptButton.disabled = isBusy;
       elements.copySummaryTeachingPromptButton.disabled = isBusy;
       elements.copySummaryMedicationSafetyPromptButton.disabled = isBusy;
+      elements.copyAdmissionMedicationSafetyPromptButton.disabled = isBusy;
       elements.scrubPreviewButton.disabled = isBusy;
       elements.scrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.reviewScrubAndCopyButton.setAttribute("aria-busy", isBusy ? "true" : "false");
@@ -7909,6 +7925,7 @@ Now create the initial rounds report for this case.`;
       elements.copySummaryChecklistPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryTeachingPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.copySummaryMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.copyAdmissionMedicationSafetyPromptButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubPreviewButton.setAttribute("aria-busy", isBusy ? "true" : "false");
       elements.scrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
       elements.reviewScrubAndCopyButton.textContent = isBusy && primaryLabel ? primaryLabel : "Copy checklist prompt";
@@ -7922,6 +7939,7 @@ Now create the initial rounds report for this case.`;
       elements.copySummaryChecklistPromptButton.textContent = isBusy ? "Working..." : "Copy checklist prompt";
       elements.copySummaryTeachingPromptButton.textContent = isBusy ? "Working..." : "Teach me this patient";
       elements.copySummaryMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
+      elements.copyAdmissionMedicationSafetyPromptButton.textContent = isBusy ? "Working..." : "Copy medication safety prompt";
       elements.scrubPreviewButton.textContent = isBusy ? "Working..." : "De-identify";
     }
 
@@ -9511,16 +9529,6 @@ If source context is missing from this conversation, say that the prior context 
       setDeviceWorkflowMode("bedside", { focus: true });
     });
 
-    elements.copyHandoffLinkButton.addEventListener("click", async () => {
-      try {
-        await copyAppLink();
-        elements.promptStatus.textContent = "App link copied. Open it on your phone.";
-        showToast("App link copied.");
-      } catch (error) {
-        elements.promptStatus.textContent = "Copy the browser address and open it on your phone.";
-      }
-    });
-
     elements.showPhoneInstructionsButton.addEventListener("click", () => {
       const nextHidden = !elements.phoneInstructionsPanel.hidden ? true : false;
       elements.phoneInstructionsPanel.hidden = nextHidden;
@@ -9980,6 +9988,14 @@ heparin 5000 units held by provider`;
     elements.copyAdmissionTeachingPromptButton.addEventListener("click", async () => {
       try {
         await copyPatientTeachingPrompt();
+      } catch (error) {
+        console.error(error);
+      }
+    });
+
+    elements.copyAdmissionMedicationSafetyPromptButton.addEventListener("click", async () => {
+      try {
+        await copyMedicationSafetyPrompt();
       } catch (error) {
         console.error(error);
       }
