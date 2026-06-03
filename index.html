@@ -3950,6 +3950,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
     const deviceModeKey = "preRoundDeviceModeV1";
+    const studentExamReferenceUrl = "physical_exam_reference.csv";
+    const studentExamReferenceMaxRows = 30;
     const contextExportType = "prerounds-context-export";
     const contextSchemaVersion = 1;
     const contextKdfIterations = 250000;
@@ -3960,6 +3962,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     let deidWorkerLoading = false;
     let deidRequestId = 0;
     const pendingDeidRequests = new Map();
+    let studentExamReferenceRows = null;
+    let studentExamReferenceLoadPromise = null;
 
     const presentationPromptInstructions = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval SOAP note.
@@ -7514,10 +7518,240 @@ Now create the initial rounds report for this case.`;
       return state.scrubbedNote;
     }
 
+    function parseCsvRow(line) {
+      const fields = [];
+      let value = "";
+      let inQuotes = false;
+      for (let index = 0; index < line.length; index += 1) {
+        const char = line[index];
+        if (char === "\"") {
+          if (inQuotes && line[index + 1] === "\"") {
+            value += "\"";
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          fields.push(value);
+          value = "";
+        } else {
+          value += char;
+        }
+      }
+      fields.push(value);
+      return fields.map((field) => field.trim());
+    }
+
+    function parseStudentExamReferenceCsv(csvText) {
+      const lines = String(csvText || "").split(/\r?\n/).filter((line) => line.trim());
+      if (lines.length < 2) {
+        return [];
+      }
+      const headers = parseCsvRow(lines[0]);
+      return lines.slice(1).map((line) => {
+        const fields = parseCsvRow(line);
+        if (fields.length !== headers.length) {
+          return null;
+        }
+        return headers.reduce((row, header, index) => {
+          row[header] = fields[index] || "";
+          return row;
+        }, {});
+      }).filter(Boolean);
+    }
+
+    async function loadStudentExamReferenceRows() {
+      if (studentExamReferenceRows) {
+        return studentExamReferenceRows;
+      }
+      if (!studentExamReferenceLoadPromise) {
+        studentExamReferenceLoadPromise = fetch(studentExamReferenceUrl, { cache: "force-cache" })
+          .then((response) => response.ok ? response.text() : "")
+          .then((csvText) => {
+            studentExamReferenceRows = parseStudentExamReferenceCsv(csvText);
+            return studentExamReferenceRows;
+          })
+          .catch(() => {
+            studentExamReferenceRows = [];
+            return studentExamReferenceRows;
+          });
+      }
+      return studentExamReferenceLoadPromise;
+    }
+
+    function normalizedExamText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9+%/.\s-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function contextHasAny(context, terms) {
+      return terms.some((term) => context.includes(term));
+    }
+
+    const studentExamReferenceBoosts = [
+      {
+        context: ["weak", "weakness", "numb", "numbness", "tingling", "stroke", "seizure", "encephalopathy", "confusion", "myelopathy", "radiculopathy", "spine", "visual", "vision", "pituitary", "bulbar"],
+        row: ["neuro", "cranial", "motor", "sensory", "sensation", "reflex", "coordination", "gait", "romberg", "visual", "palate", "tongue"],
+        score: 18
+      },
+      {
+        context: ["dyspnea", "shortness of breath", "hypoxia", "oxygen", "pneumonia", "copd", "asthma", "hypercapnia", "respiratory", "ventilator", "bipap"],
+        row: ["cardiopulmonary", "pulmonary", "lung", "respiratory", "thorax", "oxygen", "heart sounds", "jvp", "edema"],
+        score: 18
+      },
+      {
+        context: ["chest pain", "heart failure", "arrhythmia", "syncope", "hypertension", "hypotension", "murmur", "troponin", "telemetry", "edema"],
+        row: ["cardiopulmonary", "cardiac", "vascular", "jvp", "pulse", "edema", "heart", "carotid", "pmi"],
+        score: 18
+      },
+      {
+        context: ["abdominal", "abdomen", "belly", "diarrhea", "constipation", "vomiting", "nausea", "gi bleed", "melena", "hematochezia", "peritonitis", "appendicitis", "cholecystitis"],
+        row: ["abdomen", "abdominal", "bowel", "murphy", "rebound", "psoas", "obturator", "liver", "spleen"],
+        score: 18
+      },
+      {
+        context: ["aki", "kidney", "renal", "creatinine", "transplant", "pyelonephritis", "flank", "urinary", "urine", "cva tenderness", "graft"],
+        row: ["abdomen", "renal", "cva", "volume", "jvp", "edema", "vascular", "abdominal"],
+        score: 18
+      },
+      {
+        context: ["dka", "diabetes", "glucose", "insulin", "hypoglycemia", "hyperglycemia", "thyroid", "adrenal", "pituitary", "steroid", "calcium", "electrolyte", "endocrine"],
+        row: ["vital", "volume", "mental", "thyroid", "visual", "foot", "skin", "vascular", "neuro", "heent", "cardiopulmonary"],
+        score: 16
+      },
+      {
+        context: ["pain", "joint", "shoulder", "elbow", "wrist", "hand", "hip", "knee", "ankle", "foot", "back", "neck", "trauma", "fracture", "sprain"],
+        row: ["msk", "musculoskeletal", "shoulder", "elbow", "wrist", "hand", "hip", "knee", "ankle", "foot", "spine", "range of motion", "advanced maneuvers"],
+        score: 16
+      },
+      {
+        context: ["anticoag", "heparin", "enoxaparin", "warfarin", "thrombocytopenia", "platelet", "anemia", "hemoglobin", "bleeding", "bruising", "petechiae"],
+        row: ["skin", "bleeding", "wound", "line", "mouth", "mucosa", "abdomen", "vascular"],
+        score: 14
+      },
+      {
+        context: ["infection", "fever", "sepsis", "immunosuppressed", "leukocytosis", "bandemia", "toxic granulation", "wound", "line", "drain"],
+        row: ["vital", "skin", "wound", "line", "lung", "abdomen", "heent", "cva", "lymph"],
+        score: 14
+      }
+    ];
+
+    function scoreStudentExamReferenceRow(row, context) {
+      const rowText = normalizedExamText(Object.values(row).join(" "));
+      if (!context || !rowText) {
+        return 0;
+      }
+      let score = 0;
+      for (const boost of studentExamReferenceBoosts) {
+        if (contextHasAny(context, boost.context) && contextHasAny(rowText, boost.row)) {
+          score += boost.score;
+        }
+      }
+
+      const includeTerms = normalizedExamText(row.include_when).split(/\s+/).filter((term) => term.length >= 5);
+      score += includeTerms.filter((term) => context.includes(term)).slice(0, 8).length * 3;
+
+      const labelTerms = normalizedExamText(`${row.maneuver_or_finding} ${row.suggested_checklist_label}`).split(/\s+/).filter((term) => term.length >= 5);
+      score += labelTerms.filter((term) => context.includes(term)).slice(0, 5).length * 4;
+
+      if (/vital|temperature|heart rate|respiratory rate|blood pressure/i.test(row.maneuver_or_finding) && /fever|sepsis|infection|shock|dyspnea|dka|hypertension|hypotension/i.test(context)) {
+        score += 8;
+      }
+      return score;
+    }
+
+    function selectStudentExamReferenceRows(rows, contextText) {
+      const context = normalizedExamText(contextText);
+      if (!rows.length || !context) {
+        return [];
+      }
+      const scored = rows
+        .map((row, index) => ({ row, index, score: scoreStudentExamReferenceRow(row, context) }))
+        .filter((entry) => entry.score > 0)
+        .sort((a, b) => b.score - a.score || a.index - b.index);
+
+      const selected = [];
+      const perSystem = new Map();
+      for (const entry of scored) {
+        const system = entry.row.exam_system || "Other";
+        const count = perSystem.get(system) || 0;
+        if (count >= 9 && selected.length < 18) {
+          continue;
+        }
+        selected.push(entry.row);
+        perSystem.set(system, count + 1);
+        if (selected.length >= studentExamReferenceMaxRows) {
+          break;
+        }
+      }
+      return selected;
+    }
+
+    function truncatePromptField(value, maxLength = 120) {
+      const text = String(value || "").replace(/\s+/g, " ").trim();
+      return text.length > maxLength ? `${text.slice(0, maxLength - 1).trim()}...` : text;
+    }
+
+    function formatStudentExamReferenceBlock(rows) {
+      if (!rows.length) {
+        return "";
+      }
+      const lines = [
+        "<student_exam_reference>",
+        "These are patient-relevant examples from the student's learned physical exam toolkit. This reference is not exhaustive and is not a restriction.",
+        "Do not limit yourself to this reference. Use it as a floor, not a ceiling. Add other clinically important, evidence-based, safe, bedside-feasible exam items when patient-specific reasoning supports them.",
+        "Use the reference to avoid missing student-performable maneuvers, then choose the final concise exam checklist from patient-specific reasoning plus this reference.",
+        "",
+        "Relevant reference rows:"
+      ];
+
+      for (const row of rows) {
+        const location = [row.exam_system, row.section, row.region_or_subsection].filter(Boolean).join(" > ");
+        lines.push(`- ${location}: ${truncatePromptField(row.maneuver_or_finding, 70)} | label: ${truncatePromptField(row.suggested_checklist_label, 60)} | options: ${truncatePromptField(row.suggested_options, 90)} | use when: ${truncatePromptField(row.include_when, 110)}`);
+      }
+
+      lines.push("</student_exam_reference>");
+      return lines.join("\n");
+    }
+
+    function replaceStudentExamReferenceBlock(prompt, referenceBlock) {
+      if (!referenceBlock) {
+        return prompt;
+      }
+      if (/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/.test(prompt)) {
+        return prompt.replace(/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/, referenceBlock);
+      }
+      return prompt.replace("<format_contract>", `${referenceBlock}\n\n<format_contract>`);
+    }
+
+    function buildStudentExamReferenceContext(mode) {
+      const parts = [buildUserContextBlock()];
+      if (mode === "admission") {
+        parts.push(formatAdmissionContext());
+      } else {
+        syncScrubbedNote();
+        parts.push(state.scrubbedNote);
+        if (!state.scrubbedNote && state.importedContext?.text) {
+          parts.push(state.importedContext.text);
+        }
+      }
+      return parts.filter(Boolean).join("\n\n");
+    }
+
+    async function addStudentExamReferenceToPrompt(prompt, contextText) {
+      const rows = await loadStudentExamReferenceRows();
+      const selectedRows = selectStudentExamReferenceRows(rows, contextText);
+      const referenceBlock = formatStudentExamReferenceBlock(selectedRows);
+      return replaceStudentExamReferenceBlock(prompt, referenceBlock);
+    }
+
     async function buildPriorChecklistPrompt() {
       const userContext = buildUserContextBlock();
 
-      return `${checklistPrompt}
+      const prompt = `${checklistPrompt}
 
 <context_type>
 Prior SOAP note, lab results, handoff summaries, medication orders/MAR source text, and/or other context were already provided earlier in this same OpenEvidence conversation.
@@ -7529,6 +7763,8 @@ Do not ask the user to paste the source context again unless this conversation d
 </same_conversation_context>
 
 Now produce the final bedside pre-rounding checklist only.`;
+
+      return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("prior"));
     }
 
     async function getCurrentSourcePromptContext() {
@@ -7657,7 +7893,7 @@ Now create the initial rounds report.`;
       });
     }
 
-    function buildAdmissionChecklistPrompt() {
+    async function buildAdmissionChecklistPrompt() {
       const admissionContext = formatAdmissionContext();
       if (!admissionContext) {
         elements.promptStatus.textContent = "Fill in at least one admission field.";
@@ -7666,7 +7902,7 @@ Now create the initial rounds report.`;
       }
       const userContext = buildUserContextBlock();
 
-      return `${newAdmissionChecklistPrompt}
+      const prompt = `${newAdmissionChecklistPrompt}
 
 ${userContext ? `${userContext}\n\n` : ""}<same_conversation_context>
 Use the admission intake context already provided earlier in this same OpenEvidence conversation, including chief concern, demographics, HPI, PMH, surgical history, health maintenance, medications, allergies, social history, family history, ROS, course so far, objective data, treatments, pending tasks, and monitoring concerns.
@@ -7678,6 +7914,8 @@ Because no prior SOAP note is available, design the checklist to fill remaining 
 </new_admission_focus>
 
 Now produce the final checklist only.`;
+
+      return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("admission"));
     }
 
     function buildPresentationPrompt() {
@@ -8988,7 +9226,7 @@ heparin 5000 units held by provider`;
     });
 
     elements.copyAdmissionPromptButton.addEventListener("click", async () => {
-      const prompt = buildAdmissionChecklistPrompt();
+      const prompt = await buildAdmissionChecklistPrompt();
       if (prompt) {
         const copied = await copyPromptWithPhiWarning(prompt, elements.promptStatus, "Checklist prompt copied. Paste it into OpenEvidence.", {
           title: "PHI safety check for admission prompt",

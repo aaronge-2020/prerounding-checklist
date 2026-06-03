@@ -70,7 +70,11 @@ for (const requiredSnippet of [
   "laptopHandoffCard",
   "Use checklist on this laptop",
   "Start bedside checklist",
-  "Teach me this patient"
+  "Teach me this patient",
+  "loadStudentExamReferenceRows",
+  "selectStudentExamReferenceRows",
+  "student_exam_reference",
+  "Do not limit yourself to this reference"
 ]) {
   if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
     throw new Error(`Expected checklist usability guardrail not found: ${requiredSnippet}`);
@@ -93,7 +97,8 @@ for (const requiredSnippet of [
   "categoryForChecklistTitle",
   "dashOptionMatch",
   "questionOptionMatch",
-  "physical_exam_reference",
+  "student_exam_reference",
+  "Use it as a floor, not a ceiling",
   "Renal graft tenderness",
   "Patellar reflexes",
   "BEDSIDE QUESTION CHECKLIST",
@@ -101,6 +106,19 @@ for (const requiredSnippet of [
 ]) {
   if (!checklistModule.includes(requiredSnippet)) {
     throw new Error(`Expected shared checklist guardrail not found: ${requiredSnippet}`);
+  }
+}
+
+const examReferenceCsv = readFileSync("physical_exam_reference.csv", "utf8");
+for (const requiredSnippet of [
+  "exam_system,section,region_or_subsection,maneuver_or_finding",
+  "Visual acuity",
+  "Auscultate heart with diaphragm and bell",
+  "Patellar grind Clarke test",
+  "Stethoscope hygiene"
+]) {
+  if (!examReferenceCsv.includes(requiredSnippet)) {
+    throw new Error(`Expected physical exam CSV reference not found: ${requiredSnippet}`);
   }
 }
 

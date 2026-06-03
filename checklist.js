@@ -18,8 +18,10 @@ Use ___ only for a short free-text detail, and put it at the end of the option o
 Do not use blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
 Do not use markdown, bullets, numbering, tables, explanations, citations, or text before or after the two checklists.`;
 
-const physicalExamReference = `<physical_exam_reference>
-Use this as a clinical menu for selecting focused exam items. Do not output the whole menu. Select only the exam domains that match the patient's active problems, risks, abnormal data, treatments, or consult question.
+const studentExamReferenceFallback = `<student_exam_reference>
+Use this as a compact fallback reference for exam maneuvers the student has learned and can reliably perform. This is not the full universe of useful physical exam findings.
+Do not limit yourself to this reference. Use it as a floor, not a ceiling. If an additional bedside exam finding is clinically important, evidence-based, safe, and feasible for a third-year medical student, include it even if it is not listed here.
+Do not output the whole reference. Select only the exam domains that match the patient's active problems, risks, abnormal data, treatments, or consult question.
 
 Core exam domains:
 VITAL SIGNS AND SUPPORT: temperature, heart rate, respiratory rate, blood pressure, oxygen saturation, oxygen or ventilatory support, pain score, intake/output when relevant.
@@ -52,7 +54,7 @@ Good: Patellar reflexes: Absent / Diminished / Normal / Brisk / Clonus
 Good: Renal graft tenderness: Absent / Present / Not applicable
 Avoid: Ask patient to follow your finger, tap reflex hammer, palpate abdomen, perform straight leg raise.
 Use 0 / 1 / 2 / 3 / 4 / 5 only for strength ratings. Do not write ___ / 5.
-</physical_exam_reference>`;
+</student_exam_reference>`;
 
 export const checklistPrompt = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
@@ -81,6 +83,10 @@ Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, 
 When the patient might answer outside the choices, include Other ___ as the final option.
 
 For the targeted physical exam checklist:
+First reason from the patient's active problems, abnormal vitals/labs/trends, consult question, treatments, devices/support, and likely complications.
+Use broader clinical knowledge, medical literature, and bedside clinical reasoning to choose the most important exam findings.
+Use the student exam reference as a completeness check for maneuvers the student has learned, but do not restrict the final exam checklist to that reference.
+You may add exam items not listed in the reference when they are clinically important, evidence-based, safe, and feasible at bedside for a third-year medical student.
 Use 10 to 14 focused exam items total. Never exceed 16 exam items.
 Group exam items by exam system or exam type.
 Use no more than 4 items in any one exam subsection.
@@ -91,7 +97,7 @@ Do not include generic review-of-systems questions, a full head-to-toe exam, tea
 Do not mention that the note is de-identified.
 </content_rules>
 
-${physicalExamReference}
+${studentExamReferenceFallback}
 
 <format_contract>
 ${checklistContract}
