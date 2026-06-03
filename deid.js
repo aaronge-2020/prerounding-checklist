@@ -27,6 +27,10 @@ export const MODEL_PROFILES = {
 const phiLabelMap = {
   HCW: "PROVIDER NAME",
   PATIENT: "PATIENT NAME",
+  CONTACT: "CONTACT NAME",
+  DOCTOR: "PROVIDER NAME",
+  PHYSICIAN: "PROVIDER NAME",
+  PROVIDER: "PROVIDER NAME",
   PERSON: "NAME",
   PER: "NAME",
   NAME: "NAME",
@@ -209,6 +213,21 @@ const clinicalAnchorWords = new Set([
   "t2dm", "tsh"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
+[
+  "on prednisone", "car echo", "add nephrovite", "elevated lipids", "heart attack",
+  "dna amplification", "rna amplification", "pcr amplification", "viral dna", "viral rna"
+].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
+
+[
+  "add", "amplification", "attack", "car", "dna", "echo", "lipid", "lipids",
+  "nephrovite", "on", "prednisone", "rna"
+].forEach((word) => nonNameClinicalWords.add(word));
+
+[
+  "amplification", "attack", "dna", "echo", "lipid", "lipids", "nephrovite",
+  "prednisone", "rna"
+].forEach((word) => clinicalAnchorWords.add(word));
+
 const protectedClinicalAcronyms = new Set([
   "a/p", "a1c", "aki", "bmp", "cad", "cbc", "cc", "chf", "ckd", "cmp", "copd", "dka",
   "doe", "ed", "hpi", "icu", "pmh", "psh", "ros", "soap", "sob", "t1dm", "t2dm", "tsh"
@@ -228,6 +247,10 @@ const promptHeadingAnchorWords = new Set([
 const appGeneratedSourceLabelPattern =
   /^(?:de[-\s]?identified|redacted|translated|scrubbed)\s+(?:soap|source|patient|clinical|chart|note|text|preview|message|context)(?:\s+(?:note|text|preview|context))?$/i;
 
+const broadNonPhiLocationWords = new Set([
+  "india"
+]);
+
 const medicationSaltOrFormWords = new Set([
   "acetate", "bromide", "calcium", "chloride", "citrate", "extended", "fumarate", "hcl",
   "hydrochloride", "injection", "lactate", "magnesium", "oral", "potassium", "sodium", "succinate",
@@ -241,6 +264,7 @@ const medicationNameWords = new Set([
   "oxycodone", "pantoprazole", "pregabalin", "senna", "tamsulosin", "tramadol", "trazodone",
   "vancomycin", "warfarin"
 ]);
+["nephrovite", "prednisone"].forEach((word) => medicationNameWords.add(word));
 
 const medicationClassOrStemPattern = /(?:^cef|cillin$|cycline$|floxacin$|mycin$|azole$|avir$|pril$|sartan$|olol$|dipine$|statin$|parin$|prazole$|tidine$|zepam$|zolam$|azepam$|azide$|semide$|thiazide$|gliflozin$|gliptin$|tide$|caine$|sone$|mab$|nib$)/i;
 const honorificPatternSource = String.raw`(?:Mr|Mrs|Ms|Miss|Mx|Dr|Doctor|Prof|Professor)`;
@@ -433,6 +457,11 @@ function isProtectedClinicalEntityFalsePositive(rawText, entity) {
   }
 
   const span = rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+  const normalized = normalizePhrase(span);
+  if ((label === "LOCATION" || label === "FACILITY" || label === "ORGANIZATION") && broadNonPhiLocationWords.has(normalized)) {
+    return true;
+  }
+
   if (!isClinicalGuardOnlyText(span)) {
     return false;
   }
@@ -547,7 +576,9 @@ function isLikelyDateFalsePositive(rawText, start, end) {
 
 function isLikelyLocationFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).trim();
-  return /^hospital\s+(?:course|problem|problems|day|stay|medicine|admission|course had)\b/i.test(span) ||
+  const normalized = normalizePhrase(span);
+  return broadNonPhiLocationWords.has(normalized) ||
+    /^hospital\s+(?:course|problem|problems|day|stay|medicine|admission|course had)\b/i.test(span) ||
     /^[a-z]/.test(span) && !/\b(?:clinic|medical center|health system|room|unit|floor|ward)\b/i.test(span);
 }
 
@@ -555,7 +586,8 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const after = rawText.slice(end, Math.min(rawText.length, end + 32));
   const normalized = normalizePhrase(span);
-  return nonNameClinicalPhrases.has(normalized) ||
+  return broadNonPhiLocationWords.has(normalized) ||
+    nonNameClinicalPhrases.has(normalized) ||
     /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
     /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
 }

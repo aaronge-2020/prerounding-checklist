@@ -95,6 +95,56 @@ for (const term of ["Provider Referral", "Abnormal Labs", "Atypical Chest", "Chr
 assert.ok(!medicalFalsePositiveResult.text.includes("Nora W. Abrahimi"), "standalone middle-initial person name should be redacted");
 assert.ok(!medicalFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes("Nora W. Abrahimi")), "redacted person name should not remain as residual warning");
 
+const userReportedFalsePositiveText = `On Prednisone
+CAR Echo
+Add Nephrovite
+Elevated Lipids
+Heart Attack
+DNA Amplification
+RNA Amplification
+Patient identity: Sivramiah Shantharam
+Provider: Qazi Khan
+Provider: Khanjan Harish Nagarsheth
+Patient previously received dialysis in India.`;
+const userReportedFalsePositiveResult = deidentifyTextStructuredOnly(userReportedFalsePositiveText);
+for (const term of ["On Prednisone", "CAR Echo", "Add Nephrovite", "Elevated Lipids", "Heart Attack", "DNA Amplification", "RNA Amplification", "India"]) {
+  assert.ok(userReportedFalsePositiveResult.text.includes(term), `clinical/result phrase should be preserved: ${term}`);
+  assert.ok(!userReportedFalsePositiveResult.residualWarnings.some((warning) => warning.snippet?.includes(term)), `clinical/result phrase should not be a residual warning: ${term}`);
+  assert.ok(!userReportedFalsePositiveResult.entities.some((entity) => {
+    const snippet = userReportedFalsePositiveText.slice(entity.start, entity.end);
+    return snippet.includes(term);
+  }), `clinical/result phrase should not be a redaction entity: ${term}`);
+}
+for (const leak of ["Sivramiah Shantharam", "Qazi Khan", "Khanjan Harish Nagarsheth"]) {
+  assert.ok(!userReportedFalsePositiveResult.text.includes(leak), `true person name should still be redacted: ${leak}`);
+}
+
+const modelFalsePositiveText = "On Prednisone. CAR Echo. Add Nephrovite. Elevated Lipids. Heart Attack. DNA Amplification. RNA Amplification. Patient previously received dialysis in India. Sivramiah Shantharam saw Dr. Qazi Khan.";
+const modelFalsePositivePredictions = [
+  ["PATIENT", "On Prednisone"],
+  ["NAME", "CAR Echo"],
+  ["NAME", "Add Nephrovite"],
+  ["CONTACT", "Elevated Lipids"],
+  ["CONTACT", "Heart Attack"],
+  ["NAME", "DNA Amplification"],
+  ["NAME", "RNA Amplification"],
+  ["LOCATION", "India"],
+  ["PATIENT", "Sivramiah Shantharam"],
+  ["DOCTOR", "Qazi Khan"]
+].map(([entity_group, phrase]) => ({
+  entity_group,
+  start: modelFalsePositiveText.indexOf(phrase),
+  end: modelFalsePositiveText.indexOf(phrase) + phrase.length,
+  score: 0.99
+}));
+const modelFalsePositiveEntities = modelPredictionsToEntities(modelFalsePositiveText, modelFalsePositivePredictions);
+for (const term of ["On Prednisone", "CAR Echo", "Add Nephrovite", "Elevated Lipids", "Heart Attack", "DNA Amplification", "RNA Amplification", "India"]) {
+  assert.ok(!modelFalsePositiveEntities.some((entity) => modelFalsePositiveText.slice(entity.start, entity.end) === term), `model false positive should be suppressed: ${term}`);
+}
+for (const term of ["Sivramiah Shantharam", "Qazi Khan"]) {
+  assert.ok(modelFalsePositiveEntities.some((entity) => modelFalsePositiveText.slice(entity.start, entity.end) === term), `real model-detected name should be retained: ${term}`);
+}
+
 const chartChromeFalsePositiveText = `Expand All Collapse All
 HOSPITAL PROGRESS NOTE: Primary Cardiology Service
 CODE STATUS: CPR, Full Code
