@@ -18,7 +18,7 @@ Use ___ only for a short free-text detail, and put it at the end of the option o
 Do not use blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
 Do not use markdown, bullets, numbering, tables, explanations, citations, or text before or after the two checklists.`;
 
-const studentExamReferenceFallback = `<student_exam_reference>
+const studentExamReferenceFallback = `Student exam reference (student_exam_reference; optional reminder, not exhaustive):
 Use this as a compact fallback reference for exam maneuvers the student has learned and can reliably perform. This is not the full universe of useful physical exam findings.
 Do not limit yourself to this reference. Use it as a floor, not a ceiling. If an additional bedside exam finding is clinically important, evidence-based, safe, and feasible for a third-year medical student, include it even if it is not listed here.
 Do not output the whole reference. Select only the exam domains that match the patient's active problems, risks, abnormal data, treatments, or consult question.
@@ -54,56 +54,43 @@ Good: Patellar reflexes: Absent / Diminished / Normal / Brisk / Clonus
 Good: Renal graft tenderness: Absent / Present / Not applicable
 Avoid: Ask patient to follow your finger, tap reflex hammer, palpate abdomen, perform straight leg raise.
 Use 0 / 1 / 2 / 3 / 4 / 5 only for strength ratings. Do not write ___ / 5.
-</student_exam_reference>`;
+End student_exam_reference.`;
 
-export const checklistPrompt = `<role>
-You are an experienced attending physician and clerkship coach helping a third-year medical student pre-round efficiently and safely.
-</role>
+export const checklistPrompt = `Clinical question:
+I am a third-year medical student preparing for inpatient rounds. Based on the patient context already available in this OpenEvidence conversation, please create a focused bedside pre-rounding checklist I can use today.
 
-<task>
-Create a patient-specific bedside pre-rounding checklist from the clinical context already available in this OpenEvidence conversation.
-Your final answer must contain exactly two plain-text checklists:
+The checklist should help me identify today's clinical trajectory, severity, red flags, response to treatment, functional status, discharge readiness, and management-relevant changes.
+
+Please include exactly two plain-text checklists:
 BEDSIDE QUESTION CHECKLIST
 TARGETED PHYSICAL EXAM CHECKLIST
-Never omit either checklist.
-</task>
 
-<clinical_goal>
-The checklist should help the student quickly determine today's clinical trajectory, severity, red flags, response to treatment, functional status, discharge readiness, and management-relevant changes.
-Include only items that could affect today's rounds presentation, assessment, monitoring, treatment plan, discharge readiness, or escalation decisions.
-</clinical_goal>
+Bedside question checklist:
+- Include 6 to 8 true history questions that I can say out loud to the patient.
+- Use patient-friendly language with no medical jargon.
+- Focus on symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, treatment access, discharge readiness, and the patient's concerns.
+- Do not include physical exam maneuvers, clinician-observed findings, or performance commands.
+- Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out the tongue, follow a finger, walk, stand, or perform a physical exam task.
+- When the patient might answer outside the choices, include Other ___ as the final option.
 
-<content_rules>
-For the bedside question checklist:
-Use patient-friendly language with no medical jargon.
-Write 6 to 8 direct history questions the student can say out loud to the patient.
-Focus on symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, treatment access, discharge readiness, and patient concerns.
-Do not include exam maneuvers, commands, performance tests, or clinician-observed findings.
-Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out the tongue, follow your finger, walk, stand, or perform a physical exam task.
-When the patient might answer outside the choices, include Other ___ as the final option.
-
-For the targeted physical exam checklist:
-First reason from the patient's active problems, abnormal vitals/labs/trends, consult question, treatments, devices/support, and likely complications.
-Use broader clinical knowledge, medical literature, and bedside clinical reasoning to choose the most important exam findings.
-Use the student exam reference as a completeness check for maneuvers the student has learned, but do not restrict the final exam checklist to that reference.
-You may add exam items not listed in the reference when they are clinically important, evidence-based, safe, and feasible at bedside for a third-year medical student.
-Use 10 to 14 focused exam items total. Never exceed 16 exam items.
-Group exam items by exam system or exam type.
-Use no more than 4 items in any one exam subsection.
-Focus on vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
-Prefer grouped screening items over exhaustive right-left inventories.
+Targeted physical exam checklist:
+- Include 10 to 14 focused exam findings total. Do not exceed 16.
+- Choose findings from the patient's active problems, abnormal vitals/labs/trends, consult question, treatments, devices/support, and likely complications.
+- Group findings by exam system or exam type, with no more than 4 items in any one exam subsection.
+- Prefer grouped screening findings over exhaustive right-left inventories.
+- Include vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific findings only when relevant.
+- Use the student exam reference below as a completeness check for exam maneuvers I have learned, but do not restrict yourself to it. Add other clinically important, evidence-based, safe, bedside-feasible exam findings when they matter for this patient.
+- Write documentation-ready findings, not technique instructions.
 
 Do not include generic review-of-systems questions, a full head-to-toe exam, teaching, explanations, citations, caveats, or oral presentation text.
-Do not mention that the note is de-identified.
-</content_rules>
+Do not mention de-identification.
 
 ${studentExamReferenceFallback}
 
-<format_contract>
+Output format rules:
 ${checklistContract}
-</format_contract>
 
-<output_template>
+Example format:
 BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
 Since yesterday, is your main symptom better, the same, or worse?: Better / Same / Worse / Other ___
@@ -119,31 +106,16 @@ Oxygen support and flow rate: Room air / Nasal cannula / Face mask / Ventilator 
 RESPIRATORY EXAM
 Work of breathing: Normal / Mildly increased / Markedly increased
 Lung exam: Clear / Crackles / Wheezes / Diminished
-</output_template>
 
-<final_self_check>
-Before finalizing, silently verify:
-1. Both exact parent checklist titles are present.
-2. There is at least one bedside subsection and one exam subsection.
-3. Every bedside label is a patient-facing question ending in ?.
-4. No bedside item asks the patient to perform an exam maneuver.
-5. The bedside checklist has 6 to 8 items.
-6. The targeted physical exam checklist has 10 to 14 items and no more than 16 items.
-7. No exam subsection contains more than 4 items.
-8. Every item is parseable as Label: options.
-9. No item uses ___ / 5, ___ / 10, ___ / ___, or a blank before another slash option.
-</final_self_check>`;
+Before you finish, check that both parent checklist titles are present, every bedside label ends in a question mark before the colon, no bedside item is a physical exam command, the exam checklist stays concise, and every item is parseable as Label: options.`;
 
 export const newAdmissionChecklistPrompt = `${checklistPrompt}
 
-<context_type>
-No prior SOAP note is available. The patient is newly admitted or being admitted now.
-</context_type>
-
-<new_patient_history_goal>
-Use the bedside questions to fill the highest-yield remaining gaps for a full first-history admission write-up: chief complaint, HPI timing and symptom character, relevant PMH, medications, allergies, surgical history, health maintenance, family history, social history, ROS positives and negatives, function, safety, and patient concerns.
+New admission focus:
+No prior subjective/objective/assessment/plan note is available. The patient is newly admitted or being admitted now.
+Use the bedside questions to fill the highest-yield remaining gaps for a full first-history admission write-up: chief complaint, history of present illness timing and symptom character, relevant past medical history, medications, allergies, surgical history, health maintenance, family history, social history, review of systems positives and negatives, function, safety, and patient concerns.
 Prefer broad, patient-friendly questions with structured answer choices so the student can capture a lot with minimal typing.
-</new_patient_history_goal>`;
+`;
 
 function normalizeHeaderText(value) {
   return String(value || "")

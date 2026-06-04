@@ -8500,7 +8500,7 @@ Now create the initial rounds report for this case.`;
         return "";
       }
       const lines = [
-        "<student_exam_reference>",
+        "Student exam reference (student_exam_reference; optional reminder, not exhaustive):",
         "These are patient-relevant examples from the student's learned physical exam toolkit. This reference is not exhaustive and is not a restriction.",
         "Do not limit yourself to this reference. Use it as a floor, not a ceiling. Add other clinically important, evidence-based, safe, bedside-feasible exam items when patient-specific reasoning supports them.",
         "Use the reference to avoid missing student-performable maneuvers, then choose the final concise exam checklist from patient-specific reasoning plus this reference.",
@@ -8513,7 +8513,7 @@ Now create the initial rounds report for this case.`;
         lines.push(`- ${location}: ${truncatePromptField(row.maneuver_or_finding, 70)} | label: ${truncatePromptField(row.suggested_checklist_label, 60)} | options: ${truncatePromptField(row.suggested_options, 90)} | use when: ${truncatePromptField(row.include_when, 110)}`);
       }
 
-      lines.push("</student_exam_reference>");
+      lines.push("End student_exam_reference.");
       return lines.join("\n");
     }
 
@@ -8524,7 +8524,10 @@ Now create the initial rounds report for this case.`;
       if (/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/.test(prompt)) {
         return prompt.replace(/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/, referenceBlock);
       }
-      return prompt.replace("<format_contract>", `${referenceBlock}\n\n<format_contract>`);
+      if (/Student exam reference \(student_exam_reference[\s\S]*?End student_exam_reference\./.test(prompt)) {
+        return prompt.replace(/Student exam reference \(student_exam_reference[\s\S]*?End student_exam_reference\./, referenceBlock);
+      }
+      return `${prompt}\n\n${referenceBlock}`;
     }
 
     function buildStudentExamReferenceContext(mode) {
@@ -8548,21 +8551,27 @@ Now create the initial rounds report for this case.`;
       return replaceStudentExamReferenceBlock(prompt, referenceBlock);
     }
 
-    async function buildPriorChecklistPrompt() {
+    function plainChecklistUserContextBlock() {
       const userContext = buildUserContextBlock();
+      if (!userContext) {
+        return "";
+      }
+      return userContext
+        .replace(/^<user_context>\s*/i, "Prompt preferences, not patient-specific:\n")
+        .replace(/\s*<\/user_context>\s*$/i, "")
+        .trim();
+    }
+
+    async function buildPriorChecklistPrompt() {
+      const userContext = plainChecklistUserContextBlock();
 
       const prompt = `${checklistPrompt}
 
-<context_type>
-Prior source note, lab results, handoff summaries, medication orders/medication administration record source text, and/or other context were already provided earlier in this same OpenEvidence conversation.
-</context_type>${userContext ? `\n\n${userContext}` : ""}
+Patient context for this request:
+Prior source note, lab results, handoff summaries, medication orders/medication administration record source text, selected service profile, consult question, hospital course, and chronology were already provided earlier in this same OpenEvidence conversation.
+Use that earlier context. Do not ask me to paste the source context again unless this conversation truly does not contain it.${userContext ? `\n\n${userContext}` : ""}
 
-<same_conversation_context>
-Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication orders/medication administration record source text, selected service profile, consult question, hospital course, and chronology.
-Do not ask the user to paste the source context again unless this conversation does not contain the earlier context.
-</same_conversation_context>
-
-Now produce the final bedside pre-rounding checklist only.`;
+Please produce the bedside pre-rounding checklist now.`;
 
       return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("prior"));
     }
@@ -8700,20 +8709,16 @@ Now create the initial rounds report.`;
         admissionFields[0].element.focus();
         return "";
       }
-      const userContext = buildUserContextBlock();
+      const userContext = plainChecklistUserContextBlock();
 
       const prompt = `${newAdmissionChecklistPrompt}
 
-${userContext ? `${userContext}\n\n` : ""}<same_conversation_context>
-Use the admission intake context already provided earlier in this same OpenEvidence conversation, including chief concern, demographics, history of present illness, past medical history, surgical history, health maintenance, medications, allergies, social history, family history, review of systems, course so far, objective data, treatments, pending tasks, and monitoring concerns.
-Do not ask the user to paste the admission context again unless this conversation does not contain the earlier context.
-</same_conversation_context>
+Patient context for this request:
+Admission intake context was already provided earlier in this same OpenEvidence conversation, including chief concern, demographics, history of present illness, past medical history, surgical history, health maintenance, medications, allergies, social history, family history, review of systems, course so far, objective data, treatments, pending tasks, and monitoring concerns.
+Use that earlier context. Do not ask me to paste the admission context again unless this conversation truly does not contain it.
+Because no prior source note is available, design the checklist to fill remaining first-history gaps for a full admission write-up while still establishing baseline severity, clarifying trajectory since presentation, identifying red flags, assessing response to initial treatments, and guiding today's admission plan.${userContext ? `\n\n${userContext}` : ""}
 
-<new_admission_focus>
-Because no prior source note is available, design the checklist to fill remaining first-history gaps for a full admission write-up while still establishing baseline severity, clarifying trajectory since presentation, identifying red flags, assessing response to initial treatments, and guiding today's admission plan.
-</new_admission_focus>
-
-Now produce the final checklist only.`;
+Please produce the checklist now.`;
 
       return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("admission"));
     }

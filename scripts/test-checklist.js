@@ -160,9 +160,10 @@ assert.ok(normalized.includes("How are you?: Better / Worse / Other ___"), "norm
 
 assert.ok(checklistPrompt.includes("Parent checklist titles must be the exact all-caps lines above, with no colon."), "main prompt should include strict parent-title contract");
 assert.ok(!checklistPrompt.includes("BEDSIDE QUESTION CHECKLIST:"), "main prompt should not show colon after parent title");
-assert.ok(checklistPrompt.includes("<student_exam_reference>"), "main prompt should include the student exam reference block");
+assert.ok(checklistPrompt.includes("Student exam reference (student_exam_reference"), "main prompt should include the plain student exam reference block");
+assert.ok(!checklistPrompt.includes("<student_exam_reference>"), "main prompt should avoid XML-style student exam reference tags");
 assert.ok(checklistPrompt.includes("Use it as a floor, not a ceiling"), "exam reference should guide, not restrict, OpenEvidence");
-assert.ok(newAdmissionChecklistPrompt.includes("No prior SOAP note is available"), "new admission prompt should retain admission context");
+assert.ok(newAdmissionChecklistPrompt.includes("No prior subjective/objective/assessment/plan note is available"), "new admission prompt should retain admission context without unexplained abbreviation");
 assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission write-up"), "new admission prompt should prioritize first-history write-up gaps");
 
 const cleanupPrompt = buildCleanupPrompt("BEDSIDE QUESTION CHECKLIST:", { issues: [{ message: "Example issue" }] }, { userContext: "<user_context>\nService: Endocrinology\n</user_context>" });
