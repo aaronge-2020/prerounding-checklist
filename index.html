@@ -2867,8 +2867,25 @@
         grid-template-columns: 1fr;
       }
 
+      body[data-device-mode="bedside"] .source-toggle {
+        display: none;
+      }
+
+      body[data-device-mode="bedside"] #sourceWorkflowCard {
+        padding: 12px;
+      }
+
+      body[data-device-mode="bedside"] #admissionSourcePanel {
+        gap: 12px;
+      }
+
+      .admission-bedside-header {
+        padding: 12px;
+      }
+
       .intake-section {
-        padding: 10px;
+        padding: 12px;
+        scroll-margin-top: 96px;
       }
 
       .intake-section-title-row {
@@ -2881,14 +2898,40 @@
       }
 
       .intake-phase-rail {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        overflow: visible;
+        position: sticky;
+        top: 8px;
+        z-index: 15;
+        display: flex;
+        overflow-x: auto;
+        padding: 7px;
+        background: rgba(20, 20, 19, 0.94);
+        backdrop-filter: blur(12px);
       }
 
       .intake-phase-button {
-        min-width: 0;
-        grid-template-columns: auto minmax(96px, 1fr);
+        min-width: 142px;
+        min-height: 52px;
+        grid-template-columns: auto minmax(78px, 1fr);
+        padding: 7px;
+      }
+
+      .intake-phase-text em,
+      .intake-phase-status {
+        display: none;
+      }
+
+      .quick-chip {
+        min-height: 44px;
+        font-size: 0.84rem;
+      }
+
+      .admission-input {
+        min-height: 104px;
+        font-size: 16px;
+      }
+
+      .admission-input-primary {
+        min-height: 148px;
       }
     }
 
@@ -3193,7 +3236,7 @@
 
         <div class="tool-section">
           <p class="tool-title">Demo</p>
-          <p class="tool-copy">Load a textbook synthetic DKA consult note to try the full workflow.</p>
+          <p class="tool-copy">Load a textbook synthetic diabetic ketoacidosis consult note to try the full workflow.</p>
           <button id="loadDemoSoapButton" class="btn btn-secondary" type="button">Load demo note</button>
         </div>
 
@@ -3258,7 +3301,7 @@
         </button>
         <button id="bedsideModeButton" type="button" aria-pressed="false">
           Phone
-          <span>Bedside checklist</span>
+          <span>Bedside / intake</span>
         </button>
       </div>
 
@@ -3270,12 +3313,12 @@
       <section id="phoneQuickStartCard" class="surface phone-quick-card" aria-labelledby="phoneQuickStartTitle">
         <div>
           <p class="eyebrow">Phone</p>
-          <h2 id="phoneQuickStartTitle" class="workflow-title">Paste checklist from OpenEvidence</h2>
-          <p class="workflow-copy">Fast start for bedside use. Paste the checklist, document answers, and copy the update prompt.</p>
+          <h2 id="phoneQuickStartTitle" class="workflow-title">Bedside phone workflow</h2>
+          <p class="workflow-copy">Paste an OpenEvidence checklist, or start a new patient intake when there is no prior note.</p>
         </div>
         <div class="phone-quick-actions">
           <button id="startChecklistFirstButton" class="btn btn-primary btn-full" type="button">Paste checklist now</button>
-          <button id="showSourceWorkflowButton" class="btn btn-secondary btn-full" type="button">Start from Epic info</button>
+          <button id="showSourceWorkflowButton" class="btn btn-secondary btn-full" type="button">New patient intake</button>
         </div>
       </section>
 
@@ -3305,9 +3348,9 @@
         <div class="guided-main">
       <section id="sourceWorkflowCard" class="surface prompt-card" aria-labelledby="promptOneTitle">
         <div>
-          <p class="eyebrow">Laptop</p>
+          <p id="sourceWorkflowEyebrow" class="eyebrow">Laptop</p>
           <h2 id="promptOneTitle" class="workflow-title">Paste Epic info</h2>
-          <p class="workflow-copy">Paste chart notes, labs, handoff, or MAR. De-identify locally before copying any prompt.</p>
+          <p id="sourceWorkflowCopy" class="workflow-copy">Paste chart notes, labs, handoff, or medication administration record text. De-identify locally before copying any prompt.</p>
         </div>
 
         <div id="promptCopiedSummary" class="compact-summary prompt-hub" hidden>
@@ -3363,7 +3406,7 @@
         <div class="source-toggle" role="group" aria-label="Checklist source">
           <button id="priorModeButton" type="button" aria-pressed="true">
             <span class="source-choice-title">Epic info</span>
-            <span class="source-choice-copy">Notes, labs, handoff, MAR.</span>
+            <span class="source-choice-copy">Notes, labs, handoff, medication administration record.</span>
           </button>
           <button id="admissionModeButton" type="button" aria-pressed="false">
             <span class="source-choice-title">New admission</span>
@@ -3383,41 +3426,41 @@
               <div id="sourceNoteChip" class="status-chip"><strong>Note</strong><span>Missing</span></div>
               <div id="sourceLabsChip" class="status-chip"><strong>Labs</strong><span>Optional</span></div>
               <div id="sourceHandoffChip" class="status-chip"><strong>Handoff</strong><span>Optional</span></div>
-              <div id="sourceMedicationChip" class="status-chip"><strong>MAR</strong><span>Optional</span></div>
+              <div id="sourceMedicationChip" class="status-chip"><strong>Medication record</strong><span>Optional</span></div>
             </div>
           </div>
-          <label for="rawSoapInput">Raw SOAP note</label>
-          <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the SOAP note here.
+          <label for="rawSoapInput">Raw subjective, objective, assessment, and plan note</label>
+          <textarea id="rawSoapInput" class="patient-note-input" spellcheck="false" placeholder="Paste the subjective, objective, assessment, and plan note here.
 
 Example:
 S: Patient reports thirst and polyuria...
 O: Vitals stable...
 A/P: Hyperglycemia, AKI, infection rule-out..."></textarea>
           <label for="rawLabsInput">Labs / results</label>
-          <span class="field-caption">Optional. Paste CBC, BMP, cultures, imaging impressions, or trends from the chart.</span>
+          <span class="field-caption">Optional. Paste blood counts, metabolic panels, cultures, imaging impressions, or trends from the chart.</span>
           <textarea id="rawLabsInput" class="lab-input" spellcheck="false" placeholder="Paste labs or result tables here.
 
 Example:
 Na 132, K 3.4, Cr 1.5, glucose 412
 UA: ketones negative, WBC present"></textarea>
           <label for="rawHandoffInput">Handoff / other information</label>
-          <span class="field-caption">Optional. Paste sign-out summaries, overnight events, to-dos, consultant updates, nursing concerns, or details that are not in the SOAP note.</span>
+          <span class="field-caption">Optional. Paste sign-out summaries, overnight events, to-dos, consultant updates, nursing concerns, or details that are not in the subjective/objective/assessment/plan note.</span>
           <textarea id="rawHandoffInput" class="lab-input" spellcheck="false" placeholder="Paste handoff notes or other context here.
 
 Example:
 Night team: no acute events.
 To do: follow blood cultures, recheck potassium, confirm insulin transition plan.
 Nursing concern: intermittent confusion overnight."></textarea>
-          <label for="rawMedicationInput">Medication orders / MAR</label>
-          <span class="field-caption">Optional chart context. Paste active orders and MAR rows if they help explain today's medication questions.</span>
-          <textarea id="rawMedicationInput" class="lab-input" spellcheck="false" placeholder="Paste medication orders and MAR administrations here.
+          <label for="rawMedicationInput">Medication orders / medication administration record</label>
+          <span class="field-caption">Optional chart context. Paste active orders and medication administration record rows if they help explain today's medication questions.</span>
+          <textarea id="rawMedicationInput" class="lab-input" spellcheck="false" placeholder="Paste medication orders and medication administration record administrations here.
 
 Example:
 Medication Orders:
-atorvastatin 40 mg PO nightly
+atorvastatin 40 mg by mouth nightly
 enoxaparin 40 mg subcutaneous daily
 
-MAR:
+Medication administration record:
 atorvastatin 20 mg given Day 0 evening
 enoxaparin 40 mg held by provider"></textarea>
           <p class="phi-note">De-identification runs in your browser. Review the scrubbed preview before copying.</p>
@@ -3486,12 +3529,12 @@ enoxaparin 40 mg held by provider"></textarea>
               </button>
               <button class="intake-phase-button" type="button" data-intake-section-target="intakeHpi" data-intake-status-key="hpi">
                 <span class="intake-phase-number">2</span>
-                <span class="intake-phase-text"><strong>HPI</strong><em>timing, red flags</em></span>
+                <span class="intake-phase-text"><strong>Illness story</strong><em>timing, red flags</em></span>
                 <span class="intake-phase-status">Start</span>
               </button>
               <button class="intake-phase-button" type="button" data-intake-section-target="intakeBackground" data-intake-status-key="background">
                 <span class="intake-phase-number">3</span>
-                <span class="intake-phase-text"><strong>Background</strong><em>PMH, baseline</em></span>
+                <span class="intake-phase-text"><strong>Background</strong><em>medical history, baseline</em></span>
                 <span class="intake-phase-status">Missing</span>
               </button>
               <button class="intake-phase-button" type="button" data-intake-section-target="intakeMeds" data-intake-status-key="meds">
@@ -3501,7 +3544,7 @@ enoxaparin 40 mg held by provider"></textarea>
               </button>
               <button class="intake-phase-button" type="button" data-intake-section-target="intakeSocialRos" data-intake-status-key="socialRos">
                 <span class="intake-phase-number">5</span>
-                <span class="intake-phase-text"><strong>Social + ROS</strong><em>home, ROS</em></span>
+                <span class="intake-phase-text"><strong>Social + symptoms</strong><em>home, review</em></span>
                 <span class="intake-phase-status">Missing</span>
               </button>
               <button class="intake-phase-button" type="button" data-intake-section-target="intakeCourse" data-intake-status-key="course">
@@ -3560,7 +3603,7 @@ enoxaparin 40 mg held by provider"></textarea>
               <section id="intakeHpi" class="intake-section" data-intake-phase="hpi" aria-labelledby="intakeHpiTitle">
                 <div class="intake-section-head">
                   <div class="intake-section-title-row">
-                    <h4 id="intakeHpiTitle">HPI story</h4>
+                    <h4 id="intakeHpiTitle">History of present illness story</h4>
                     <span class="intake-section-cue">Timeline first</span>
                   </div>
                   <p class="intake-question">When did this start, how has it changed, what makes it better or worse, and what symptoms travel with it?</p>
@@ -3598,7 +3641,7 @@ enoxaparin 40 mg held by provider"></textarea>
                     <div class="quick-row">
                       <span class="quick-row-label">High-yield context</span>
                       <div class="quick-chip-row">
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="briefHpiInput" data-quick-value="Poor oral intake">Poor PO intake</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="briefHpiInput" data-quick-value="Poor oral intake">Poor oral intake</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="briefHpiInput" data-quick-value="Recent fall">Recent fall</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="briefHpiInput" data-quick-value="Recent sick contacts">Sick contacts</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="briefHpiInput" data-quick-value="Recent travel">Travel</button>
@@ -3610,7 +3653,7 @@ enoxaparin 40 mg held by provider"></textarea>
                   </div>
                 </div>
                 <div>
-                  <label for="briefHpiInput">Brief HPI / key symptoms</label>
+                  <label for="briefHpiInput">Brief history of present illness / key symptoms</label>
                   <span class="field-caption">Timing, symptom character, associated symptoms, severity, treatments tried, and patient concerns.</span>
                   <textarea id="briefHpiInput" class="admission-input admission-input-primary" spellcheck="false" placeholder="What changed, when it started, what has helped, and what worries the patient most."></textarea>
                 </div>
@@ -3627,17 +3670,17 @@ enoxaparin 40 mg held by provider"></textarea>
                 <div class="quick-cluster-grid">
                   <div class="quick-cluster">
                     <div class="quick-row">
-                      <span class="quick-row-label">PMH</span>
+                      <span class="quick-row-label">Past medical history</span>
                       <div class="quick-chip-row">
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Hypertension">HTN</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Diabetes">DM</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Coronary artery disease">CAD</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Atrial fibrillation or flutter">Afib/flutter</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Hypertension">Hypertension</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Diabetes">Diabetes</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Coronary artery disease">Coronary disease</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Atrial fibrillation or flutter">Atrial fibrillation</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Heart valve disease or replacement">Valve disease</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Chronic kidney disease">CKD</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Liver disease or ascites">Liver/ascites</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="No diabetes reported">No DM</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="No renal disease reported">No renal dz</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Chronic kidney disease">Kidney disease</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="Liver disease or ascites">Liver disease</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="No diabetes reported">No diabetes</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="No renal disease reported">No kidney disease</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="relevantHistoryInput" data-quick-value="No malignancy reported">No cancer</button>
                       </div>
                     </div>
@@ -3671,8 +3714,8 @@ enoxaparin 40 mg held by provider"></textarea>
                 </div>
                 <div class="admission-grid">
                   <div>
-                    <label for="relevantHistoryInput">Relevant PMH / baseline</label>
-                    <textarea id="relevantHistoryInput" class="admission-input" spellcheck="false" placeholder="PMH, baseline function, devices, and clinically relevant negatives."></textarea>
+                    <label for="relevantHistoryInput">Relevant past medical history / baseline</label>
+                    <textarea id="relevantHistoryInput" class="admission-input" spellcheck="false" placeholder="Past medical history, baseline function, devices, and clinically relevant negatives."></textarea>
                   </div>
                   <div>
                     <label for="surgicalHistoryInput">Surgical history</label>
@@ -3742,7 +3785,7 @@ enoxaparin 40 mg held by provider"></textarea>
               <section id="intakeSocialRos" class="intake-section" data-intake-phase="social-ros" aria-labelledby="intakeSocialRosTitle">
                 <div class="intake-section-head">
                   <div class="intake-section-title-row">
-                    <h4 id="intakeSocialRosTitle">Social, family, and ROS</h4>
+                    <h4 id="intakeSocialRosTitle">Social, family, and review of systems</h4>
                     <span class="intake-section-cue">Function + safety</span>
                   </div>
                   <p class="intake-question">Who supports them, what is home like, what runs in the family, and what positives or key negatives complete the story?</p>
@@ -3789,14 +3832,14 @@ enoxaparin 40 mg held by provider"></textarea>
                   </div>
                   <div class="quick-cluster">
                     <div class="quick-row">
-                      <span class="quick-row-label">ROS positives</span>
+                      <span class="quick-row-label">Review of systems positives</span>
                       <div class="quick-chip-row">
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Weight loss">Weight loss</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Chest pain">Chest pain</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Shortness of breath">Dyspnea</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Cough">Cough</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Abdominal pain">Abd pain</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Nausea or vomiting">N/V</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Nausea or vomiting">Nausea or vomiting</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Polyuria">Polyuria</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Leg swelling or pain">Leg swelling/pain</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="Vision changes">Vision changes</button>
@@ -3806,16 +3849,16 @@ enoxaparin 40 mg held by provider"></textarea>
                   </div>
                   <div class="quick-cluster quick-cluster-wide">
                     <div class="quick-row">
-                      <span class="quick-row-label">ROS negatives</span>
+                      <span class="quick-row-label">Review of systems negatives</span>
                       <div class="quick-chip-row">
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No fever">No fever</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No chills">No chills</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No dyspnea">No dyspnea</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No cough">No cough</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No abdominal pain">No abd pain</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No nausea or vomiting">No N/V</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No abdominal pain">No abdominal pain</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No nausea or vomiting">No nausea or vomiting</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No dysuria">No dysuria</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No focal weakness or numbness">No focal neuro</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="reviewSystemsInput" data-quick-value="No focal weakness or numbness">No focal neurologic symptoms</button>
                       </div>
                     </div>
                   </div>
@@ -3850,10 +3893,10 @@ enoxaparin 40 mg held by provider"></textarea>
                       <span class="quick-row-label">Course so far</span>
                       <div class="quick-chip-row">
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Presented from home">From home</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Presented from skilled nursing facility">From SNF</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Admitted through the emergency department">Through ED</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Presented from skilled nursing facility">From skilled nursing facility</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Admitted through the emergency department">Through emergency department</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Transferred from outside hospital">Transfer</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Symptoms improved after treatment">Improved after tx</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="courseSoFarInput" data-quick-value="Symptoms improved after treatment">Improved after treatment</button>
                       </div>
                     </div>
                   </div>
@@ -3861,11 +3904,11 @@ enoxaparin 40 mg held by provider"></textarea>
                     <div class="quick-row">
                       <span class="quick-row-label">Treatments</span>
                       <div class="quick-chip-row">
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Received IV fluids">IV fluids</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Received intravenous fluids">Intravenous fluids</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Received antibiotics">Antibiotics</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="On supplemental oxygen">Oxygen</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Pain control started">Pain control</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Anticoagulation held">Anticoag held</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="treatmentsInput" data-quick-value="Anticoagulation held">Anticoagulation held</button>
                       </div>
                     </div>
                   </div>
@@ -3873,10 +3916,10 @@ enoxaparin 40 mg held by provider"></textarea>
                     <div class="quick-row">
                       <span class="quick-row-label">Open loops</span>
                       <div class="quick-chip-row">
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="pendingTasksInput" data-quick-value="Blood cultures pending">Blood cx pending</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="pendingTasksInput" data-quick-value="Blood cultures pending">Blood cultures pending</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="pendingTasksInput" data-quick-value="Imaging pending">Imaging pending</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="pendingTasksInput" data-quick-value="Consult recommendations pending">Consult recs</button>
-                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="monitoringConcernsInput" data-quick-value="Monitor respiratory status">Resp status</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="pendingTasksInput" data-quick-value="Consult recommendations pending">Consult recommendations pending</button>
+                        <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="monitoringConcernsInput" data-quick-value="Monitor respiratory status">Respiratory status</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="monitoringConcernsInput" data-quick-value="Monitor mental status">Mental status</button>
                         <button class="quick-chip" type="button" aria-pressed="false" data-quick-target="monitoringConcernsInput" data-quick-value="Monitor urine output">Urine output</button>
                       </div>
@@ -3886,11 +3929,11 @@ enoxaparin 40 mg held by provider"></textarea>
                 <div class="admission-grid">
                   <div>
                     <label for="courseSoFarInput">Course so far</label>
-                    <textarea id="courseSoFarInput" class="admission-input" spellcheck="false" placeholder="ED events, transfers, major changes, or response to first treatments."></textarea>
+                    <textarea id="courseSoFarInput" class="admission-input" spellcheck="false" placeholder="Emergency department events, transfers, major changes, or response to first treatments."></textarea>
                   </div>
                   <div>
                     <label for="objectiveDataInput">Key objective data</label>
-                    <textarea id="objectiveDataInput" class="admission-input" spellcheck="false" placeholder="Vitals, labs, imaging, EKG, cultures, device/support status."></textarea>
+                    <textarea id="objectiveDataInput" class="admission-input" spellcheck="false" placeholder="Vitals, labs, imaging, electrocardiogram, cultures, device/support status."></textarea>
                   </div>
                   <div>
                     <label for="treatmentsInput">Treatments or support</label>
@@ -3921,15 +3964,15 @@ enoxaparin 40 mg held by provider"></textarea>
               <div id="admissionCompletenessPanel" class="source-completeness-panel admission-completeness-panel" aria-label="Write-up coverage">
                 <p class="guided-step-copy">Write-up coverage</p>
                 <div class="status-chip-grid admission-status-grid">
-                  <div id="admissionHpiChip" class="status-chip"><strong>HPI</strong><span>Start here</span></div>
+                  <div id="admissionHpiChip" class="status-chip"><strong>Illness story</strong><span>Start here</span></div>
                   <div id="admissionBackgroundChip" class="status-chip"><strong>History</strong><span>Missing</span></div>
                   <div id="admissionMedsChip" class="status-chip"><strong>Meds</strong><span>Missing</span></div>
                   <div id="admissionSocialChip" class="status-chip"><strong>Social</strong><span>Missing</span></div>
-                  <div id="admissionRosChip" class="status-chip"><strong>ROS</strong><span>Missing</span></div>
+                  <div id="admissionRosChip" class="status-chip"><strong>Review</strong><span>Missing</span></div>
                   <div id="admissionCourseChip" class="status-chip"><strong>Course</strong><span>Optional</span></div>
                 </div>
               </div>
-              <p id="admissionNextGap" class="intake-next-gap">Next: start with the chief concern or HPI.</p>
+              <p id="admissionNextGap" class="intake-next-gap">Next: start with the chief concern or history of present illness.</p>
               <p class="next-action-copy">Copy prompts</p>
               <div class="prompt-actions guided-primary-actions">
                 <button id="copyAdmissionRoundsPromptButton" class="btn btn-primary" type="button">Copy initial report prompt</button>
@@ -3969,7 +4012,10 @@ enoxaparin 40 mg held by provider"></textarea>
         </div>
         <div id="checklistFirstSummary" class="checklist-first-summary" hidden>
           <p class="compact-summary-title">Paste checklist from OpenEvidence</p>
-          <p class="compact-summary-copy">Copy the checklist from the OpenEvidence app, paste it here, then go see the patient.</p>
+          <p class="compact-summary-copy">Copy the checklist from the OpenEvidence app, paste it here, then go see the patient. If this is a new admission, start the phone intake instead.</p>
+          <div class="compact-summary-actions">
+            <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">New patient intake</button>
+          </div>
           <details class="more-options">
             <summary>More options</summary>
             <div class="more-options-body">
@@ -3985,7 +4031,6 @@ enoxaparin 40 mg held by provider"></textarea>
                 <input id="contextImportFile" type="file" accept=".json,application/json" hidden>
                 <p id="importContextStatus" class="transfer-status" role="status" aria-live="polite">No context file imported.</p>
               </div>
-              <button id="showSourceFromPasteButton" class="btn btn-secondary" type="button">Start from Epic info</button>
             </div>
           </details>
         </div>
@@ -4283,6 +4328,9 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       showSourceWorkflowButton: document.getElementById("showSourceWorkflowButton"),
       guidedLayout: document.getElementById("guidedLayout"),
       sourceWorkflowCard: document.getElementById("sourceWorkflowCard"),
+      sourceWorkflowEyebrow: document.getElementById("sourceWorkflowEyebrow"),
+      sourceWorkflowTitle: document.getElementById("promptOneTitle"),
+      sourceWorkflowCopy: document.getElementById("sourceWorkflowCopy"),
       checklistPasteCard: document.getElementById("checklistPasteCard"),
       checklistFirstSummary: document.getElementById("checklistFirstSummary"),
       showSourceFromPasteButton: document.getElementById("showSourceFromPasteButton"),
@@ -4483,15 +4531,15 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       { key: "admittingService", label: "Admitting service", element: document.getElementById("admittingServiceInput") },
       { key: "patientOneLiner", label: "Patient one-liner", element: document.getElementById("patientOneLinerInput") },
       { key: "demographics", label: "Age / sex / header details", element: document.getElementById("demographicsInput") },
-      { key: "briefHpi", label: "Brief HPI / key symptoms", element: document.getElementById("briefHpiInput") },
-      { key: "relevantHistory", label: "Relevant PMH / baseline function", element: document.getElementById("relevantHistoryInput") },
+      { key: "briefHpi", label: "Brief history of present illness / key symptoms", element: document.getElementById("briefHpiInput") },
+      { key: "relevantHistory", label: "Relevant past medical history / baseline function", element: document.getElementById("relevantHistoryInput") },
       { key: "surgicalHistory", label: "Surgical history", element: document.getElementById("surgicalHistoryInput") },
       { key: "healthMaintenance", label: "Health maintenance", element: document.getElementById("healthMaintenanceInput") },
       { key: "medicationsAllergies", label: "Medications / allergies", element: document.getElementById("medicationsAllergiesInput") },
       { key: "socialHistory", label: "Social history", element: document.getElementById("socialHistoryInput") },
       { key: "familyHistory", label: "Family history", element: document.getElementById("familyHistoryInput") },
       { key: "reviewSystems", label: "Review of systems positives / negatives", element: document.getElementById("reviewSystemsInput") },
-      { key: "courseSoFar", label: "ED or hospital course so far", element: document.getElementById("courseSoFarInput") },
+      { key: "courseSoFar", label: "Emergency department or hospital course so far", element: document.getElementById("courseSoFarInput") },
       { key: "objectiveData", label: "Key objective data", element: document.getElementById("objectiveDataInput") },
       { key: "treatments", label: "Current treatments or support", element: document.getElementById("treatmentsInput") },
       { key: "pendingTasks", label: "Pending studies, consults, or tasks", element: document.getElementById("pendingTasksInput") },
@@ -4541,14 +4589,22 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     let studentExamReferenceRows = null;
     let studentExamReferenceLoadPromise = null;
 
+    const abbreviationRules = `<abbreviation_rules>
+Do not use unexplained abbreviations in generated notes, rounds presentations, teaching templates, or medication safety summaries.
+Prefer full terms in labels and prose, such as "history of present illness", "past medical history", "review of systems", "as needed", "medication administration record", "emergency department", "electrocardiogram", "complete blood count", and "basic metabolic panel".
+If a standard abbreviation is clinically useful or appears in source data, spell it out on first use as "full term (abbreviation)" before using the abbreviation again.
+Do not use shorthand note labels such as HPI, PMH, ROS, MAR, PRN, ED, EKG, ECG, CBC, BMP, or VTE without spelling them out.
+Medication dose units such as mg, mcg, mL, units, and percent may be used when attached to exact doses or lab values, but clinical concepts should be written out.
+</abbreviation_rules>`;
+
     const presentationPromptInstructions = `<role>
-You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval SOAP note.
+You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval note.
 </role>
 
 <task>
 Use the provided source context and new checklist findings to create two outputs:
 1. A polished 2-minute spoken rounds presentation.
-2. A detailed interval SOAP note that is organized, clinically precise, and note-ready.
+2. A detailed interval note that is organized, clinically precise, and note-ready.
 </task>
 
 <clinical_goal>
@@ -4559,14 +4615,16 @@ Synthesize the information into clinically meaningful language. Emphasize today'
 Use only information present in the source context or the new checklist findings.
 Do not invent diagnoses, test results, treatments, vitals, exam findings, or plans.
 Do not invent trends. Only call a finding improved, worse, new, stable, high, or low if that is supported by the source context, the new checklist findings, or clinically unambiguous reference context.
-If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in MAR" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in the medication administration record" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
 Do not over-localize neurologic findings. Preserve uncertainty around differential diagnosis and localization unless the source clearly supports a conclusion.
 Ignore items marked not assessed, [not assessed], left blank, containing only underscores, or otherwise not answered.
 If a checklist finding conflicts with the source context, state the discordance clearly and clinically.
-If no prior SOAP note is available, frame the presentation as an admission baseline and early trajectory rather than an overnight update.
+If no prior subjective/objective/assessment/plan note is available, frame the presentation as an admission baseline and early trajectory rather than an overnight update.
 Do not include identifiers or PHI.
 Do not include citations, teaching commentary, or disclaimers.
 </source_rules>
+
+${abbreviationRules}
 
 <internal_process>
 Before writing the final answer, silently:
@@ -4577,8 +4635,8 @@ Before writing the final answer, silently:
 5. Identify what the student's selected service has done for this patient when service or role context is provided, using only supported source context or checklist findings.
 6. Identify the primary working diagnosis or leading clinical problem, the evidence supporting it, and the most important alternative diagnoses or explanations with reasons they are less likely.
 7. Determine how the findings affect today's assessment, monitoring needs, treatment plan, disposition, escalation, and follow-up.
-8. Decide what belongs in the concise spoken presentation versus the detailed SOAP note.
-9. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the SOAP note.
+8. Decide what belongs in the concise spoken presentation versus the detailed note.
+9. Remove unsupported, redundant, or low-yield details from the presentation, while preserving useful detail in the interval note.
 
 Do not show this reasoning. Show only the final presentation.
 </internal_process>
@@ -4587,7 +4645,7 @@ Do not show this reasoning. Show only the final presentation.
 If user_context includes a selected Service or Role, include a concise service-specific contribution summary in SUBJECTIVE under "Management to date" in the TWO MINUTE ROUNDS PRESENTATION.
 This should summarize what our service has done for the patient so far, such as the consult question addressed, recommendations made, medication changes advised, diagnostic workup followed, procedures coordinated, patient counseling performed, or pending follow-up.
 If no completed service-specific actions are supported by the source, state what our service is following, clarifying, or trying to determine rather than inventing actions.
-Also include the same service-specific contribution summary in SUBJECTIVE under "Management to date" in the DETAILED INTERVAL SOAP NOTE when service or role context is provided.
+Also include the same service-specific contribution summary in SUBJECTIVE under "Management to date" in the DETAILED INTERVAL NOTE when service or role context is provided.
 Do not include service-specific actions unless they are supported by the source context, admission context, or new checklist findings.
 </service_specific_rounds_rule>
 
@@ -4601,7 +4659,7 @@ Keep the one-liner natural and concise, but make the consult reason explicit eno
 </consult_rounds_rule>
 
 <assessment_and_plan_rules>
-ASSESSMENT AND PLAN in both the TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE must begin with a summary statement of the patient.
+ASSESSMENT AND PLAN in both the TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL NOTE must begin with a summary statement of the patient.
 Then use numbered problem-based assessments. Each problem should include the most likely diagnosis or active problem, supporting justification, relevant differentials with reasoning for or against each when appropriate, and a concise management plan.
 Preserve uncertainty when the diagnosis, localization, or mechanism is not settled.
 End with Pending studies, Contingency guidance for primary team, and Follow-up and disposition when supported by the source.
@@ -4618,12 +4676,12 @@ The clinical content must be tailored to the selected service and consult questi
 
 <service_specific_style_rules>
 Use the selected service in user_context to decide which objective data, exam findings, labs, imaging, medication categories, differential diagnoses, contingencies, and follow-up details matter most.
-If the selected service is Endocrinology consult, use endocrine-focused style: endocrine HPI, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, DI/SIADH/adrenal/thyroid/diabetes contingencies, and endocrine follow-up.
-If the selected service is Cardiology consult, use cardiology-focused style: chest pain, heart failure, arrhythmia, volume, telemetry, ECG, troponin, BNP, echo, stress/cath data, cardiac medications, anticoagulation when relevant, and cardiac contingencies.
-If the selected service is Neurology consult, use neurology-focused style: neurologic symptom timeline, localization, mental status, cranial nerves, motor, sensory, reflexes, coordination, imaging, EEG, LP, antithrombotics/anti-seizure meds when relevant, and neurologic contingencies.
+If the selected service is Endocrinology consult, use endocrine-focused style: endocrine-focused history of present illness, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, thyroid, calcium, and diabetes contingencies, and endocrine follow-up.
+If the selected service is Cardiology consult, use cardiology-focused style: chest pain, heart failure, arrhythmia, volume, telemetry, electrocardiogram, troponin, B-type natriuretic peptide, echocardiogram, stress/catheterization data, cardiac medications, anticoagulation when relevant, and cardiac contingencies.
+If the selected service is Neurology consult, use neurology-focused style: neurologic symptom timeline, localization, mental status, cranial nerves, motor, sensory, reflexes, coordination, imaging, electroencephalogram, lumbar puncture, antithrombotic/anti-seizure medications when relevant, and neurologic contingencies.
 If the selected service is Nephrology consult, use nephrology-focused style: kidney trajectory, urine output, volume status, electrolytes, acid-base, urine studies, dialysis/access needs, nephrotoxic medications, renal dosing, and renal contingencies.
 For any other service, keep the same canonical note structure and adapt the content to that service's clinical question, exam, data, medications, and follow-up.
-Do not include endocrine-only labels such as Glycemic data, pituitary axis, DI/SIADH, adrenal, or thyroid unless they are relevant to the selected service or source context.
+Do not include endocrine-only labels such as Glycemic data, pituitary axis, diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, or thyroid unless they are relevant to the selected service or source context.
 </service_specific_style_rules>
 
 <concision_and_no_repetition_rules>
@@ -4632,23 +4690,23 @@ Put each fact in the section where it belongs:
 - Subjective: patient story, relevant history, medications, and management to date.
 - Objective: vitals, service-relevant data, exam, labs, imaging, and other measured results.
 - Assessment and plan: interpretation, diagnosis, reasoning, differential, actions, rationale, pending studies, contingencies, and follow-up.
-Do not restate the full HPI in the assessment.
+Do not restate the full history of present illness in the assessment.
 Do not restate objective values in the plan unless the value directly drives an action.
 Do not copy the same medication, lab trend, imaging result, or management step into multiple subsections.
-For medication lists, include clinically relevant current medications and service-relevant therapies; organize medications by indication or PMH problem so it is clear why the patient is taking each medication; omit noncontributory PRNs or routine medications unless they affect the active problem.
+For medication lists, include clinically relevant current medications and service-relevant therapies; organize medications by indication or past medical history problem so it is clear why the patient is taking each medication; omit noncontributory as-needed medications or routine medications unless they affect the active problem.
 For labs and imaging, include only values and results that affect assessment, plan, or safety.
 TWO MINUTE ROUNDS PRESENTATION must be especially compact: usually 1 short sentence per label, with no repeated content.
-DETAILED INTERVAL SOAP NOTE may be fuller, but should still avoid duplicate sentences, duplicate lists, and boilerplate.
+DETAILED INTERVAL NOTE may be fuller, but should still avoid duplicate sentences, duplicate lists, and boilerplate.
 </concision_and_no_repetition_rules>
 
 <medication_organization_rules>
 Medication information must be organized by why the patient is taking the medication, not alphabetically and not as an unstructured list.
-In PMH, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
-In Medications, group clinically relevant meds by indication or problem, matching the PMH/problem language when possible.
+In Past medical history, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
+In Medications, group clinically relevant medications by indication or problem, matching the past medical history/problem language when possible.
 When supported, separate "Managed by our service:" from "Managed by primary/surgical team:".
 For each medication group, include medication names and clinically important regimen details when supported, especially medications that affect the selected service's interpretation or safety recommendations.
 If the indication for a medication is not supported by the source, place it under "Indication not specified" rather than guessing.
-Do not repeat the full medication list in both PMH and Medications. PMH should orient the problems; Medications should organize the current therapies by indication.
+Do not repeat the full medication list in both Past medical history and Medications. Past medical history should orient the problems; Medications should organize the current therapies by indication.
 </medication_organization_rules>
 
 <output_format>
@@ -4656,18 +4714,18 @@ Use plain text only.
 Use exactly these top-level section headers:
 
 TWO MINUTE ROUNDS PRESENTATION
-DETAILED INTERVAL SOAP NOTE
+DETAILED INTERVAL NOTE
 
-Under both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE, use exactly these section headers:
+Under both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL NOTE, use exactly these section headers:
 SUBJECTIVE
 OBJECTIVE
 ASSESSMENT AND PLAN
 
 Within SUBJECTIVE, use exactly these labels in this order:
-One-liner. Include age/sex if available, chief complaint, reason for admission, relevant PMH, and reason for consult or service involvement.
-HPI. Summarize the history of present illness with focus on the selected service's problem.
-PMH. Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
-Medications. Organize clinically relevant current medications by indication or PMH problem. Separate medications managed by our service from those managed by the primary or surgical team when supported. Include short medication safety notes when clinically relevant. Omit noncontributory PRNs or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
+One-liner. Include age and sex if available, chief complaint, reason for admission, relevant past medical history, and reason for consult or service involvement.
+History of present illness. Summarize the history of present illness with focus on the selected service's problem.
+Past medical history. Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
+Medications. Organize clinically relevant current medications by indication or past medical history problem. Separate medications managed by our service from those managed by the primary or surgical team when supported. Include short medication safety notes when clinically relevant. Omit noncontributory as-needed medications or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
 Allergies. Include documented allergies or state "Not documented. Needs verification." if absent.
 Pertinent Family/Social History. Include when relevant to the selected service or differential.
 Management to date. Summarize what the primary team and/or consult service has done so far.
@@ -4686,7 +4744,7 @@ Pending studies. Include labs, imaging, pathology, cultures, or other tests that
 Contingency guidance for primary team. Include "if X, then Y" instructions when supported and useful.
 Follow-up and disposition. State whether the service will continue to follow, when to re-consult, and outpatient follow-up recommendations when supported.
 
-Keep TWO MINUTE ROUNDS PRESENTATION short enough to say in about 2 minutes while preserving the note structure. The DETAILED INTERVAL SOAP NOTE should be more detailed and ready to paste into a note, but still concise. Do not simply copy checklist labels; synthesize them into clinical language.
+Keep TWO MINUTE ROUNDS PRESENTATION short enough to say in about 2 minutes while preserving the note structure. The DETAILED INTERVAL NOTE should be more detailed and ready to paste into a note, but still concise. Do not simply copy checklist labels; synthesize them into clinical language.
 Do not use markdown tables, bold, italics, emojis, or extra formatting beyond the specified section headers and labels.
 </output_format>
 
@@ -4694,22 +4752,23 @@ Do not use markdown tables, bold, italics, emojis, or extra formatting beyond th
 Before finalizing, silently verify:
 1. Every included claim is supported by the source context or checklist findings.
 2. Unassessed and blank items were ignored.
-3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL SOAP NOTE.
+3. The output includes both TWO MINUTE ROUNDS PRESENTATION and DETAILED INTERVAL NOTE.
 4. Objective facts are separated from assessment.
 5. The assessment and plan reflect the new findings without inventing unsupported plans.
 6. Both outputs use only SUBJECTIVE, OBJECTIVE, and ASSESSMENT AND PLAN section headers under their top-level title.
-7. SUBJECTIVE contains one-liner, HPI, PMH, medications, allergies, pertinent family/social history, and management to date.
+7. SUBJECTIVE contains one-liner, history of present illness, past medical history, medications, allergies, pertinent family/social history, and management to date.
 8. OBJECTIVE contains vitals, service-relevant data, physical exam, labs with trends, and imaging/other results.
 9. ASSESSMENT AND PLAN contains summary, numbered problem-based assessment and plan, pending studies, contingency guidance, and follow-up/disposition.
 10. If service or role context was provided, SUBJECTIVE under Management to date includes a supported summary of what our service has done or is following.
 11. If this is a consult workflow, SUBJECTIVE under One-liner includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-12. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
+12. Medications are grouped by indication or past medical history problem, and unclear indications are labeled rather than guessed.
 13. Any separately generated medication safety findings are mentioned only when clinically relevant, worded as items to verify, and integrated into Medications, Management to date, or the relevant problem plan without clutter.
 14. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
 15. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
 16. The output is concise, with no boilerplate and no copied checklist labels.
-17. No PHI or identifiers appear.
-18. No extra commentary appears outside the required sections.
+17. No unexplained abbreviations appear; any necessary abbreviation is spelled out on first use.
+18. No PHI or identifiers appear.
+19. No extra commentary appears outside the required sections.
 </final_self_check>`;
 
     const sameConversationPresentationPromptInstructions = `<role>
@@ -4720,7 +4779,7 @@ You are an experienced attending physician and clerkship coach helping a third-y
 Use the patient context and initial rounds presentation already provided earlier in this same OpenEvidence conversation plus the new checklist findings below to update the report.
 Create two outputs:
 1. TWO MINUTE ROUNDS PRESENTATION
-2. DETAILED INTERVAL SOAP NOTE
+2. DETAILED INTERVAL NOTE
 </task>
 
 <source_rules>
@@ -4733,12 +4792,14 @@ Preserve uncertainty around diagnosis, localization, mechanism, and plan.
 Do not include PHI, citations, disclaimers, or teaching commentary.
 </source_rules>
 
+${abbreviationRules}
+
 <style_rules>
 Be concise and clinically dense. Do not repeat the same fact in multiple sections unless essential.
 Synthesize checklist labels into natural medical language.
-For medications, organize clinically relevant medications by indication or PMH problem, not alphabetically. Separate medications managed by our service versus the primary/surgical team when supported. Use "Indication not specified" when the source does not support why a medication is being used.
-Tailor the note to the selected service. Endocrinology consult notes should include endocrine-focused HPI, glycemic data when applicable, endocrine-relevant labs and medications, and endocrine contingencies. Other services should use the same structure with service-appropriate data, exam, reasoning, medications, contingencies, and follow-up.
-For consult services, the One-liner must include admission/presentation context, chief complaint or reason for presentation, relevant PMH, and exact reason our service is consulted when supported. If a detail is missing, say it is not specified rather than inventing it.
+For medications, organize clinically relevant medications by indication or past medical history problem, not alphabetically. Separate medications managed by our service versus the primary/surgical team when supported. Use "Indication not specified" when the source does not support why a medication is being used.
+Tailor the note to the selected service. Endocrinology consult notes should include endocrine-focused history of present illness, glycemic data when applicable, endocrine-relevant labs and medications, and endocrine contingencies. Other services should use the same structure with service-appropriate data, exam, reasoning, medications, contingencies, and follow-up.
+For consult services, the One-liner must include admission/presentation context, chief complaint or reason for presentation, relevant past medical history, and exact reason our service is consulted when supported. If a detail is missing, say it is not specified rather than inventing it.
 </style_rules>
 
 <output_format>
@@ -4746,7 +4807,7 @@ Use plain text only.
 Use exactly these top-level headers:
 
 TWO MINUTE ROUNDS PRESENTATION
-DETAILED INTERVAL SOAP NOTE
+DETAILED INTERVAL NOTE
 
 Under both outputs, use exactly these section headers:
 SUBJECTIVE
@@ -4754,10 +4815,10 @@ OBJECTIVE
 ASSESSMENT AND PLAN
 
 Within SUBJECTIVE, use these labels in this order:
-One-liner. Chief complaint, reason for admission, relevant PMH, and reason for consult or service involvement.
-HPI. Focus on the selected service's active problem and today's trajectory.
-PMH. Relevant history organized by active problem; connect chronic problems to medication categories when supported.
-Medications. Clinically relevant current medications grouped by indication or PMH problem.
+One-liner. Chief complaint, reason for admission, relevant past medical history, and reason for consult or service involvement.
+History of present illness. Focus on the selected service's active problem and today's trajectory.
+Past medical history. Relevant history organized by active problem; connect chronic problems to medication categories when supported.
+Medications. Clinically relevant current medications grouped by indication or past medical history problem.
 Allergies. Documented allergies or "Not documented. Needs verification."
 Pertinent Family/Social History. Include only when relevant.
 Management to date. What the primary team and/or consult service has done so far.
@@ -4776,11 +4837,11 @@ Pending studies.
 Contingency guidance for primary team.
 Follow-up and disposition.
 
-Keep TWO MINUTE ROUNDS PRESENTATION short enough to speak in about 2 minutes. Make the DETAILED INTERVAL SOAP NOTE note-ready but still concise.
+Keep TWO MINUTE ROUNDS PRESENTATION short enough to speak in about 2 minutes. Make the DETAILED INTERVAL NOTE note-ready but still concise.
 </output_format>
 
 <final_self_check>
-Before finalizing, silently verify that every claim is supported by prior conversation context or new findings, unassessed items are ignored, both outputs are present, medications are grouped by indication, consult/service framing is correct, repetition is minimal, and no PHI appears.
+Before finalizing, silently verify that every claim is supported by prior conversation context or new findings, unassessed items are ignored, both outputs are present, medications are grouped by indication, consult/service framing is correct, repetition is minimal, no unexplained abbreviations appear, and no PHI appears.
 </final_self_check>`;
 
     const sourceRoundsReportPromptInstructions = `<role>
@@ -4799,12 +4860,14 @@ Help the student understand what is going on, what matters today, what to verify
 Use only information present in the source context plus standard medical knowledge needed to explain clinical significance.
 Do not invent overnight events, new symptoms, vitals, labs, exam findings, diagnoses, treatments, consult recommendations, or plans.
 Do not claim something improved, worsened, resolved, or newly occurred unless the source clearly supports that timeline.
-If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in MAR" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, mention only clinically relevant verified concerns. Use cautious language such as "verify in the medication administration record" or "needs confirmation"; do not call something a medication error unless directly supported by the chart.
 If current-day bedside findings are missing, clearly mark them as items to verify rather than facts.
 Preserve uncertainty around the differential diagnosis, localization, severity, and plan.
 Do not include identifiers or PHI.
 Do not include citations, disclaimers, or teaching commentary outside the requested sections.
 </source_rules>
+
+${abbreviationRules}
 
 <internal_process>
 Before writing the final answer, silently:
@@ -4851,32 +4914,32 @@ The clinical content must be tailored to the selected service and consult questi
 
 <service_specific_style_rules>
 Use the selected service in user_context to decide which objective data, exam findings, labs, imaging, medication categories, differential diagnoses, contingencies, and follow-up details matter most.
-If the selected service is Endocrinology consult, use endocrine-focused style: endocrine HPI, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, DI/SIADH/adrenal/thyroid/diabetes contingencies, and endocrine follow-up.
-If the selected service is Cardiology consult, use cardiology-focused style: chest pain, heart failure, arrhythmia, volume, telemetry, ECG, troponin, BNP, echo, stress/cath data, cardiac medications, anticoagulation when relevant, and cardiac contingencies.
-If the selected service is Neurology consult, use neurology-focused style: neurologic symptom timeline, localization, mental status, cranial nerves, motor, sensory, reflexes, coordination, imaging, EEG, LP, antithrombotics/anti-seizure meds when relevant, and neurologic contingencies.
+If the selected service is Endocrinology consult, use endocrine-focused style: endocrine-focused history of present illness, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, thyroid, calcium, and diabetes contingencies, and endocrine follow-up.
+If the selected service is Cardiology consult, use cardiology-focused style: chest pain, heart failure, arrhythmia, volume, telemetry, electrocardiogram, troponin, B-type natriuretic peptide, echocardiogram, stress/catheterization data, cardiac medications, anticoagulation when relevant, and cardiac contingencies.
+If the selected service is Neurology consult, use neurology-focused style: neurologic symptom timeline, localization, mental status, cranial nerves, motor, sensory, reflexes, coordination, imaging, electroencephalogram, lumbar puncture, antithrombotic/anti-seizure medications when relevant, and neurologic contingencies.
 If the selected service is Nephrology consult, use nephrology-focused style: kidney trajectory, urine output, volume status, electrolytes, acid-base, urine studies, dialysis/access needs, nephrotoxic medications, renal dosing, and renal contingencies.
 For any other service, keep the same canonical note structure and adapt the content to that service's clinical question, exam, data, medications, and follow-up.
-Do not include endocrine-only labels such as Glycemic data, pituitary axis, DI/SIADH, adrenal, or thyroid unless they are relevant to the selected service or source context.
+Do not include endocrine-only labels such as Glycemic data, pituitary axis, diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, or thyroid unless they are relevant to the selected service or source context.
 </service_specific_style_rules>
 
 <concision_and_no_repetition_rules>
 Be concise and clinically dense. Do not repeat the same fact in multiple sections unless it is essential for interpretation.
 Put each fact in the section where it belongs: subjective story in SUBJECTIVE, measured data in OBJECTIVE, interpretation and actions in ASSESSMENT AND PLAN.
-Do not restate the full HPI in the assessment.
+Do not restate the full history of present illness in the assessment.
 Do not restate objective values in the plan unless the value directly drives an action.
 Do not copy the same medication, lab trend, imaging result, or management step into multiple subsections.
-For medication lists, include clinically relevant current medications and service-relevant therapies; organize medications by indication or PMH problem so it is clear why the patient is taking each medication; omit noncontributory PRNs or routine medications unless they affect the active problem.
+For medication lists, include clinically relevant current medications and service-relevant therapies; organize medications by indication or past medical history problem so it is clear why the patient is taking each medication; omit noncontributory as-needed medications or routine medications unless they affect the active problem.
 For labs and imaging, include only values and results that affect assessment, plan, or safety.
 DRAFT TWO MINUTE PRESENTATION must be compact enough to speak on rounds without dragging; usually 1 short sentence per label is enough.
 </concision_and_no_repetition_rules>
 
 <medication_organization_rules>
 Medication information must be organized by why the patient is taking the medication, not alphabetically and not as an unstructured list.
-In PMH, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
-In Medications, group clinically relevant meds by indication or problem, matching the PMH/problem language when possible.
+In Past medical history, connect relevant chronic conditions to the medication categories that manage them when supported by the source.
+In Medications, group clinically relevant medications by indication or problem, matching the past medical history/problem language when possible.
 When supported, separate "Managed by our service:" from "Managed by primary/surgical team:".
 If the indication for a medication is not supported by the source, place it under "Indication not specified" rather than guessing.
-Do not repeat the full medication list in both PMH and Medications.
+Do not repeat the full medication list in both Past medical history and Medications.
 </medication_organization_rules>
 
 <output_format>
@@ -4900,10 +4963,10 @@ OBJECTIVE
 ASSESSMENT AND PLAN
 
 Within SUBJECTIVE, use exactly these labels in this order:
-One-liner. Include age/sex if available, chief complaint, reason for admission, relevant PMH, and reason for consult or service involvement.
-HPI. Summarize the history of present illness with focus on the selected service's problem.
-PMH. Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
-Medications. Organize clinically relevant current medications by indication or PMH problem. Separate medications managed by our service from those managed by the primary or surgical team when supported. Include short medication safety notes when clinically relevant. Omit noncontributory PRNs or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
+One-liner. Include age and sex if available, chief complaint, reason for admission, relevant past medical history, and reason for consult or service involvement.
+History of present illness. Summarize the history of present illness with focus on the selected service's problem.
+Past medical history. Include relevant past medical history, organized by active or clinically important problem. When supported, connect chronic problems to the medication categories used to manage them without duplicating the full medication list.
+Medications. Organize clinically relevant current medications by indication or past medical history problem. Separate medications managed by our service from those managed by the primary or surgical team when supported. Include short medication safety notes when clinically relevant. Omit noncontributory as-needed medications or routine medications unless they affect the active problem. Use "Indication not specified" for medications whose reason is unclear from the source.
 Allergies. Include documented allergies or state "Not documented. Needs verification." if absent.
 Pertinent Family/Social History. Include when relevant to the selected service or differential.
 Management to date. Summarize what the primary team and/or consult service has done so far.
@@ -4934,13 +4997,14 @@ Before finalizing, silently verify:
 6. The assessment and plan content includes a summary statement, numbered problem-based assessment with diagnosis support and differential reasoning, plan actions, pending studies, contingency guidance, and follow-up/disposition.
 7. If service or role context was provided, the DRAFT TWO MINUTE PRESENTATION includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, ONE-LINER and DRAFT TWO MINUTE PRESENTATION include supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly say what is not specified.
-9. Medications are grouped by indication or PMH problem, and unclear indications are labeled rather than guessed.
+9. Medications are grouped by indication or past medical history problem, and unclear indications are labeled rather than guessed.
 10. Any separately generated medication safety findings are mentioned only when clinically relevant, worded as items to verify, and integrated into medication reconciliation, rounds priorities, or the relevant problem plan without clutter.
 11. Service-specific content matches the selected service, and endocrine-only labels appear only when endocrine issues are relevant.
 12. The same fact, lab value, medication, imaging result, or management action is not repeated across sections unless essential.
 13. The output is concise, with no boilerplate and no copied source-note blocks.
-14. No PHI or identifiers appear.
-15. The output includes all required section headers and no extra commentary.
+14. No unexplained abbreviations appear; any necessary abbreviation is spelled out on first use.
+15. No PHI or identifiers appear.
+16. The output includes all required section headers and no extra commentary.
 </final_self_check>`;
 
     const patientTeachingPromptInstructions = `<role>
@@ -4948,7 +5012,7 @@ You are an experienced attending physician and clerkship coach teaching a brand-
 </role>
 
 <task>
-Use the de-identified SOAP note and/or pasted lab results below to create a patient-specific teaching guide. Teach the student what they need to know to be useful, safe, organized, and thoughtful on rounds for this patient.
+Use the de-identified source note and/or pasted lab results below to create a patient-specific teaching guide. Teach the student what they need to know to be useful, safe, organized, and thoughtful on rounds for this patient.
 </task>
 
 <learner_level>
@@ -4962,10 +5026,12 @@ Make the teaching practical for bedside care, prerounding, presenting, and follo
 Use only information present in the note plus standard medical knowledge needed to explain it.
 Do not invent missing history, diagnoses, test results, exam findings, treatments, or plans.
 If something is uncertain or missing, say what cannot be concluded and what the student should clarify.
-If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, explain them as items to verify with the chart, live MAR, pharmacist, or team. Avoid calling something a medication error unless confirmed by the team or chart.
+If medication safety findings from a separate OpenEvidence medication safety prompt are present earlier in the same conversation, explain them as items to verify with the chart, live medication administration record, pharmacist, or team. Avoid calling something a medication error unless confirmed by the team or chart.
 Do not include identifiers or PHI.
 Do not give patient-specific orders as if you are the treating team. Frame management as what the team appears to be doing, what the student should understand, and what questions to ask.
 </source_rules>
+
+${abbreviationRules}
 
 <teaching_method>
 Structure the teaching using clinical reasoning principles:
@@ -4988,7 +5054,7 @@ Use exactly these sections:
 PATIENT SNAPSHOT
 Write a plain-English one-paragraph summary of who this patient is, why they are here, how sick they are, and what the team is trying to decide today.
 
-TRANSLATED SOAP NOTE
+TRANSLATED SOURCE NOTE
 Walk through the source note and lab section if provided. Explain abbreviations, important findings, and why each detail matters.
 
 PROBLEM REPRESENTATION
@@ -5016,17 +5082,17 @@ WHAT TO DO BEFORE ROUNDS
 Give a practical prerounding checklist for this patient: what to ask, what to examine, what labs or studies to check, what tasks to follow up, and what changes would be urgent.
 
 HOW TO PRESENT THIS PATIENT
-Give a short SOAP presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
+Give a short presentation template tailored to this patient, with phrases the student can adapt. Also list the 3 to 5 highest-yield updates to know before presenting.
 The presentation template must use exactly these sections: SUBJECTIVE, OBJECTIVE, ASSESSMENT AND PLAN.
-SUBJECTIVE must include, in order: One-liner with chief complaint, reason for admission, relevant PMH, and reason for consult or service involvement; HPI focused on the selected service's problem; PMH organized by active or clinically important problem; Medications organized by indication or PMH problem; Allergies; Pertinent Family/Social History when relevant; Management to date.
+SUBJECTIVE must include, in order: One-liner with chief complaint, reason for admission, relevant past medical history, and reason for consult or service involvement; History of present illness focused on the selected service's problem; Past medical history organized by active or clinically important problem; Medications organized by indication or past medical history problem; Allergies; Pertinent Family/Social History when relevant; Management to date.
 Medication information must make clear why the patient is taking each clinically relevant medication when supported by the source. Do not list medications alphabetically or as an unstructured dump. If the medication indication is not supported by the source, place it under "Indication not specified" rather than guessing.
 OBJECTIVE must include, in order: Vitals; service-relevant data with a service-specific label when appropriate; Physical exam focused on pertinent service-specific findings; Labs with trends; Imaging/Other results.
 ASSESSMENT AND PLAN must include, in order: Summary; numbered problem-based assessment and plan; Pending studies; Contingency guidance for primary team; Follow-up and disposition.
-Tailor the presentation template to the selected service. Endocrinology consult presentations should include endocrine HPI, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, DI/SIADH/adrenal/thyroid/diabetes contingencies, and endocrine follow-up. Cardiology, neurology, nephrology, and other services should use the same structure with service-appropriate data, exam, reasoning, medications, contingencies, and follow-up.
+Tailor the presentation template to the selected service. Endocrinology consult presentations should include endocrine-focused history of present illness, Glycemic data when applicable, pituitary/adrenal/thyroid/calcium/diabetes-relevant labs, endocrine medication grouping, diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, thyroid, calcium, and diabetes contingencies, and endocrine follow-up. Cardiology, neurology, nephrology, and other services should use the same structure with service-appropriate data, exam, reasoning, medications, contingencies, and follow-up.
 If user_context includes a selected Service or Role, SUBJECTIVE under Management to date must include a concise service-specific contribution summary using only supported source information. If completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine.
 If user_context indicates a consult service, consult role, or consult-focused workflow, SUBJECTIVE under One-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, and exactly what our service is consulted for when supported by the source. If any of those details are missing, say they are not specified rather than inventing them.
 Do not include endocrine-only labels or framing unless endocrine issues are relevant to the selected service or source context.
-Keep the presentation template concise and non-repetitive. Do not repeat the same fact across SUBJECTIVE, OBJECTIVE, and ASSESSMENT AND PLAN unless essential. Do not copy long medication lists, lab tables, imaging reports, or HPI paragraphs into the template; compress them into high-yield phrases.
+Keep the presentation template concise and non-repetitive. Do not repeat the same fact across SUBJECTIVE, OBJECTIVE, and ASSESSMENT AND PLAN unless essential. Do not copy long medication lists, lab tables, imaging reports, or history of present illness paragraphs into the template; compress them into high-yield phrases.
 Do not invent plans or recommendations that are not supported by the source.
 
 QUESTIONS TO ASK THE TEAM
@@ -5053,12 +5119,13 @@ Before finalizing, silently verify:
 6. HOW TO PRESENT THIS PATIENT includes a supported assessment summary, problem-based assessment, diagnosis justification, differential reasoning, and plan with contingency and follow-up guidance.
 7. If service or role context was provided, HOW TO PRESENT THIS PATIENT includes a supported summary of what our service has done or is following.
 8. If this is a consult workflow, HOW TO PRESENT THIS PATIENT includes supported admission context, chief complaint or reason for presentation, and exact consult question, or explicitly says what is not specified.
-9. HOW TO PRESENT THIS PATIENT organizes medications by indication or PMH problem and does not guess unclear indications.
+9. HOW TO PRESENT THIS PATIENT organizes medications by indication or past medical history problem and does not guess unclear indications.
 10. Separately generated medication safety findings are explained as items to verify, not definitive errors, and only clinically relevant items are elevated.
 11. HOW TO PRESENT THIS PATIENT tailors content to the selected service and avoids endocrine-only labels unless endocrine issues are relevant.
-12. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across SOAP sections.
-13. No PHI or identifiers appear.
-14. The output helps the student understand, preround, present, and care thoughtfully.
+12. HOW TO PRESENT THIS PATIENT is concise and avoids repeated facts across presentation sections.
+13. No unexplained abbreviations appear; any necessary abbreviation is spelled out on first use.
+14. No PHI or identifiers appear.
+15. The output helps the student understand, preround, present, and care thoughtfully.
 </final_self_check>`;
 
     const medicationSafetyPromptInstructions = `<role>
@@ -5070,8 +5137,8 @@ Review the patient context already provided earlier in this same OpenEvidence co
 </task>
 
 <same_conversation_context>
-Use the patient context, medication orders, MAR/administration record, active diagnoses, vitals, labs, renal function, hepatic function, weight, allergies, procedures, service context, and clinical trajectory already provided earlier in this same OpenEvidence conversation.
-Do not ask the user to paste the entire source note again unless this conversation truly does not contain medication orders or MAR context.
+Use the patient context, medication orders, medication administration record, active diagnoses, vitals, labs, renal function, hepatic function, weight, allergies, procedures, service context, and clinical trajectory already provided earlier in this same OpenEvidence conversation.
+Do not ask the user to paste the entire source note again unless this conversation truly does not contain medication orders or medication administration record context.
 </same_conversation_context>
 
 <safety_focus>
@@ -5091,10 +5158,12 @@ Look specifically for possible medical errors or items that seem off, including:
 <caution_rules>
 Use cautious verification language.
 Do not declare a medication error unless the provided chart context directly proves it.
-Use phrases such as "verify in MAR", "possible concern", "not found in provided MAR", "may be appropriate if...", "ask pharmacy/team", and "needs confirmation".
+Use phrases such as "verify in the medication administration record", "possible concern", "not found in the provided medication administration record", "may be appropriate if...", "ask pharmacy/team", and "needs confirmation".
 Distinguish true high-priority safety concerns from routine medication reconciliation noise.
 Ignore issues that are speculative, unsupported, or clinically low-yield for rounds.
 </caution_rules>
+
+${abbreviationRules}
 
 <output_format>
 Use plain text only.
@@ -5119,16 +5188,17 @@ If no important issue is found in a section, write "None found from the provided
 Before finalizing, silently verify:
 1. Every concern is grounded in the prior conversation context.
 2. No full source note is repeated.
-3. No PHI or identifiers appear.
-4. The output helps the student catch possible medication safety problems before rounds.
-5. The output is cautious and does not overstate unconfirmed errors.
+3. No unexplained abbreviations appear; any necessary abbreviation is spelled out on first use.
+4. No PHI or identifiers appear.
+5. The output helps the student catch possible medication safety problems before rounds.
+6. The output is cautious and does not overstate unconfirmed errors.
 </final_self_check>`;
 
     function presentationPromptIntro() {
       return presentationPromptInstructions;
     }
 
-    const demoEndocrinologySoapNote = `SYNTHETIC DEMO SOAP NOTE
+    const demoEndocrinologySoapNote = `SYNTHETIC DEMO NOTE
 All names, dates, locations, and contact details below are fake demo data.
 Patient Name: John Smith
 DOB: 03/14/1998
@@ -5160,7 +5230,7 @@ Temp 36.9 C
 Heart rate 88
 Blood pressure 118/72
 Respiratory rate 16
-SpO2 97 percent on room air
+Oxygen saturation 97 percent on room air
 
 Intake and output:
 Oral intake improving, ate full breakfast
@@ -5173,7 +5243,7 @@ Cardiac: Regular rhythm, no murmurs noted
 Pulmonary: Clear to auscultation bilaterally
 Abdomen: Soft, nontender, nondistended
 Extremities: No edema, feet warm, no visible ulcers
-Neuro: Alert and oriented, no focal deficits
+Neurologic: Alert and oriented, no focal deficits
 
 Labs:
 Admission labs from April 16, 2026: Glucose 486, bicarbonate 9, anion gap 28, venous pH 7.16, beta-hydroxybutyrate 6.4, potassium 5.2, creatinine 1.1
@@ -5187,8 +5257,8 @@ Anion gap 10, closed on two consecutive checks
 Creatinine 0.8, back to baseline
 Beta-hydroxybutyrate 0.4
 Hemoglobin A1c 9.8 percent
-TSH 5.4
-Free T4 1.0
+Thyroid-stimulating hormone 5.4
+Free thyroxine 1.0
 Urinalysis: Glucose and ketones present, no nitrites or leukocyte esterase
 Respiratory viral testing negative
 Chest radiograph without acute infiltrate
@@ -5201,14 +5271,14 @@ Ondansetron as needed
 Potassium chloride repletion as needed
 
 Assessment:
-26-year-old adult with type 1 diabetes admitted with moderate diabetic ketoacidosis triggered by missed basal insulin during a likely viral gastroenteritis. DKA has resolved with closed anion gap, normalized bicarbonate, resolved ketonemia, and return of oral intake. The patient has safely transitioned from insulin infusion to basal-bolus insulin with appropriate basal overlap. Ongoing endocrine priorities are preventing recurrent ketosis, matching prandial insulin to intake, maintaining potassium during insulin therapy, and ensuring discharge supplies and sick-day education.
+26-year-old adult with type 1 diabetes admitted with moderate diabetic ketoacidosis triggered by missed basal insulin during a likely viral gastroenteritis. Diabetic ketoacidosis has resolved with closed anion gap, normalized bicarbonate, resolved ketonemia, and return of oral intake. The patient has safely transitioned from insulin infusion to basal-bolus insulin with appropriate basal overlap. Ongoing endocrine priorities are preventing recurrent ketosis, matching prandial insulin to intake, maintaining potassium during insulin therapy, and ensuring discharge supplies and sick-day education.
 
 Plan:
 1. Diabetic ketoacidosis, resolved
 - Continue subcutaneous basal-bolus insulin; never hold basal insulin in type 1 diabetes
 - Monitor premeal, bedtime, and 2 AM glucose for the first night after transition
 - Recheck basic metabolic panel this afternoon to ensure anion gap remains closed
-- If nausea, vomiting, or rising glucose recurs, check beta-hydroxybutyrate and repeat BMP
+- If nausea, vomiting, or rising glucose recurs, check beta-hydroxybutyrate and repeat basic metabolic panel
 
 2. Type 1 diabetes mellitus, above goal control
 - Continue glargine 20 units every morning
@@ -5223,7 +5293,7 @@ Plan:
 
 4. Potassium management
 - Replete potassium to maintain safe level while receiving insulin
-- Check magnesium with next BMP and replete if low
+- Check magnesium with next basic metabolic panel and replete if low
 
 5. Hypothyroidism
 - Continue levothyroxine 88 mcg daily
@@ -5426,17 +5496,17 @@ Sensory level present: No / Yes, at ___`;
       setStatusChip(elements.admissionRosChip, rosReady, rosReady ? "Included" : hasAny ? "Missing" : "Missing", hasAny && !rosReady);
       setStatusChip(elements.admissionCourseChip, courseReady, courseReady ? "Included" : hasAny ? "Missing" : "Optional", hasAny && !courseReady);
       updateAdmissionIntakeStatus([
-        { key: "hpi", ready: hpiReady, startText: "Start", next: "chief concern, one-liner, or HPI" },
-        { key: "background", ready: backgroundReady, startText: "Missing", next: "PMH, baseline function, surgery, or health maintenance" },
+        { key: "hpi", ready: hpiReady, startText: "Start", next: "chief concern, one-liner, or history of present illness" },
+        { key: "background", ready: backgroundReady, startText: "Missing", next: "past medical history, baseline function, surgery, or health maintenance" },
         { key: "meds", ready: medsReady, startText: "Missing", next: "medications and allergy details" },
         { key: "social", ready: socialReady, startText: "Missing", next: "social, family, and support history" },
-        { key: "ros", ready: rosReady, startText: "Missing", next: "ROS positives and key negatives" },
+        { key: "ros", ready: rosReady, startText: "Missing", next: "review of systems positives and key negatives" },
         { key: "course", ready: courseReady, required: false, startText: "Optional", next: "course, objective data, treatments, or pending tasks" }
       ], hasAny, [
-        { key: "hpi", ready: hpiReady, startText: "Start", next: "chief concern, one-liner, or HPI" },
-        { key: "background", ready: backgroundReady, startText: "Missing", next: "PMH, baseline function, surgery, or health maintenance" },
+        { key: "hpi", ready: hpiReady, startText: "Start", next: "chief concern, one-liner, or history of present illness" },
+        { key: "background", ready: backgroundReady, startText: "Missing", next: "past medical history, baseline function, surgery, or health maintenance" },
         { key: "meds", ready: medsReady, startText: "Missing", next: "medications and allergy details" },
-        { key: "socialRos", ready: socialRosReady, startText: "Missing", next: socialReady ? "ROS positives and key negatives" : "social, family, and support history" },
+        { key: "socialRos", ready: socialRosReady, startText: "Missing", next: socialReady ? "review of systems positives and key negatives" : "social, family, and support history" },
         { key: "course", ready: courseReady, required: false, startText: "Optional", next: "course, objective data, treatments, or pending tasks" }
       ]);
     }
@@ -5585,18 +5655,32 @@ Sensory level present: No / Yes, at ___`;
 
     function updateDeviceModeChrome() {
       const bedsideMode = isBedsideWorkflow();
+      const phoneAdmissionMode = bedsideMode && state.sourceMode === "admission" && !state.sections.length;
       document.body.dataset.deviceMode = state.deviceWorkflowMode;
       elements.prepareModeButton.setAttribute("aria-pressed", bedsideMode ? "false" : "true");
       elements.bedsideModeButton.setAttribute("aria-pressed", bedsideMode ? "true" : "false");
 
-      if (bedsideMode) {
+      if (phoneAdmissionMode) {
+        elements.pasteEyebrow.textContent = "Phone intake";
+        elements.pasteTitle.textContent = "New Patient Intake";
+        elements.pasteHelper.textContent = "Capture the first history on your phone, then copy the initial report and checklist prompts.";
+        elements.sourceWorkflowEyebrow.textContent = "Phone";
+        elements.sourceWorkflowTitle.textContent = "New patient intake";
+        elements.sourceWorkflowCopy.textContent = "Fill the bedside admission history on your phone. No prior chart note is required.";
+      } else if (bedsideMode) {
         elements.pasteEyebrow.textContent = "At bedside";
         elements.pasteTitle.textContent = "Paste Checklist";
         elements.pasteHelper.textContent = "Paste the checklist from OpenEvidence, document bedside answers, then copy the update prompt.";
+        elements.sourceWorkflowEyebrow.textContent = "Phone";
+        elements.sourceWorkflowTitle.textContent = "Bedside tools";
+        elements.sourceWorkflowCopy.textContent = "Paste a checklist or start a new patient intake from this phone.";
       } else {
         elements.pasteEyebrow.textContent = "Prepare on laptop";
         elements.pasteTitle.textContent = "Prepare Patient for Rounds";
         elements.pasteHelper.textContent = "Paste Epic context, de-identify it, and copy the prompts you need before leaving your laptop.";
+        elements.sourceWorkflowEyebrow.textContent = "Laptop";
+        elements.sourceWorkflowTitle.textContent = "Paste Epic info";
+        elements.sourceWorkflowCopy.textContent = "Paste chart notes, labs, handoff, or medication administration record text. De-identify locally before copying any prompt.";
       }
     }
 
@@ -5631,14 +5715,18 @@ Sensory level present: No / Yes, at ___`;
     function updateChecklistFirstControls() {
       const bedsideMode = isBedsideWorkflow();
       const laptopHandoffReady = isLaptopHandoffReady();
+      const phoneAdmissionMode = bedsideMode && state.sourceMode === "admission" && !state.sections.length && !hasChecklistPasteText();
       document.body.dataset.checklistFirst = bedsideMode ? "true" : "false";
       updateDeviceModeChrome();
       elements.laptopHandoffCard.hidden = !laptopHandoffReady;
       elements.guidedLayout.hidden = false;
       elements.phoneQuickStartCard.hidden = bedsideMode || state.promptCollapsed || !isPhoneLikeViewport();
-      elements.sourceWorkflowCard.hidden = bedsideMode;
+      elements.sourceWorkflowCard.hidden = bedsideMode && !phoneAdmissionMode;
       elements.checklistPasteCard.hidden = !(bedsideMode || state.useChecklistOnLaptop || hasChecklistPasteText());
-      elements.checklistFirstSummary.hidden = !(bedsideMode || state.useChecklistOnLaptop);
+      if (phoneAdmissionMode) {
+        elements.checklistPasteCard.hidden = true;
+      }
+      elements.checklistFirstSummary.hidden = phoneAdmissionMode || !(bedsideMode || state.useChecklistOnLaptop);
       elements.sessionRecoveryBanner.hidden = !state.recoveredChecklistAvailable;
     }
 
@@ -5726,6 +5814,28 @@ Sensory level present: No / Yes, at ___`;
       updateStepRail(state.promptCollapsed ? "paste" : "source");
       if (options.focus) {
         (isLaptopHandoffReady() ? elements.laptopHandoffCard : elements.sourceWorkflowCard).scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function startAdmissionIntake(options = {}) {
+      state.deviceWorkflowMode = "bedside";
+      state.checklistFirstMode = false;
+      state.useChecklistOnLaptop = false;
+      state.promptCollapsed = false;
+      safeLocalStorageSet(deviceModeKey, "bedside");
+      setSourceMode("admission");
+      updateChecklistFirstControls();
+      updateSourcePrimaryActions();
+      updateStepRail("source");
+      if (options.focus !== false) {
+        const firstEmpty = admissionFields.find((field) => !field.element.value.trim()) || admissionFields[0];
+        requestAnimationFrame(() => {
+          elements.admissionSourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.setTimeout(() => firstEmpty.element.focus({ preventScroll: true }), 120);
+        });
+      }
+      if (!options.silent) {
+        showToast("New patient intake ready.");
       }
     }
 
@@ -5888,7 +5998,7 @@ Sensory level present: No / Yes, at ___`;
         if (!facts.rawPriorReady) {
           return {
             title: "Paste Epic info",
-            copy: "Paste a note, labs, handoff, or MAR. The app will de-identify locally before any prompt is copied.",
+            copy: "Paste a note, labs, handoff, or medication administration record. The app will de-identify locally before any prompt is copied.",
             label: "Go to Epic info",
             action: "focus-source"
           };
@@ -6377,23 +6487,23 @@ Sensory level present: No / Yes, at ___`;
       const service = profileFieldValue(profile, userProfileFields.find((field) => field.key === "service"));
       const teamRole = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
       if (userProfileSuggestsConsult(profile)) {
-        tailoring.push("This is a consult-oriented workflow. In rounds presentations and reports, SUBJECTIVE under One-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, relevant PMH, and exactly what our service is consulted for when those details are supported by the source. If a detail is not documented, say it is not specified rather than inventing it. Prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
+        tailoring.push("This is a consult-oriented workflow. In rounds presentations and reports, SUBJECTIVE under One-liner must include how the patient was admitted or presented, the chief complaint or reason for presentation, relevant past medical history, and exactly what our service is consulted for when those details are supported by the source. If a detail is not documented, say it is not specified rather than inventing it. Prioritize the consult question, specialty-relevant assessment, recommendations, and what the primary team needs next.");
       }
       if (userProfileSuggestsPrimaryTeam(profile)) {
         tailoring.push("If this is a primary-team role, use the canonical note style while prioritizing global clinical trajectory, active problems, overnight events, discharge readiness, and task follow-up.");
       }
       if (service || teamRole) {
         const serviceContext = [service, teamRole].filter(Boolean).join(" / ");
-        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. Use the canonical note style requested by the user: SUBJECTIVE with One-liner, HPI, PMH, Medications, Allergies, Pertinent Family/Social History, and Management to date; OBJECTIVE with Vitals, service-relevant data, Physical exam, Labs with trends, and Imaging/Other results; ASSESSMENT AND PLAN with Summary, numbered problem-based assessment and plan, Pending studies, Contingency guidance for primary team, and Follow-up and disposition. Adapt HPI, objective data, exam, labs, imaging, medication groups, assessment reasoning, contingencies, and follow-up to our selected service. In SUBJECTIVE under Management to date, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. Keep final notes concise and avoid repeating the same fact, medication, lab, imaging result, or management action across sections. If a medication indication is not supported, label it as indication not specified rather than guessing.`);
+        tailoring.push(`For rounds presentations and rounds reports, treat this as our service context: ${serviceContext}. Use the canonical note style requested by the user: SUBJECTIVE with One-liner, History of present illness, Past medical history, Medications, Allergies, Pertinent Family/Social History, and Management to date; OBJECTIVE with Vitals, service-relevant data, Physical exam, Labs with trends, and Imaging/Other results; ASSESSMENT AND PLAN with Summary, numbered problem-based assessment and plan, Pending studies, Contingency guidance for primary team, and Follow-up and disposition. Adapt history of present illness, objective data, exam, labs, imaging, medication groups, assessment reasoning, contingencies, and follow-up to our selected service. In SUBJECTIVE under Management to date, include a concise summary of what our service has done for this patient so far. Use only supported source context or checklist findings; if completed service-specific actions are not documented, state what our service is following, clarifying, or trying to determine. Keep final notes concise and avoid repeating the same fact, medication, lab, imaging result, or management action across sections. If a medication indication is not supported, label it as indication not specified rather than guessing.`);
       }
       if (userProfileSuggestsEndocrinology(profile)) {
-        tailoring.push("For Endocrinology consult notes, use endocrine-specific content in the canonical structure: endocrine-focused HPI; Glycemic data when applicable; pituitary, adrenal, thyroid, calcium, diabetes, osmolality, urine study, and metabolic lab trends when relevant; endocrine medication groups such as insulin, steroids, thyroid replacement, osteoporosis therapy, adrenal medications, and diabetes medications; endocrine-specific reasoning; DI/SIADH, adrenal, thyroid, calcium, and diabetes contingencies when supported; and endocrine follow-up.");
+        tailoring.push("For Endocrinology consult notes, use endocrine-specific content in the canonical structure: endocrine-focused history of present illness; Glycemic data when applicable; pituitary, adrenal, thyroid, calcium, diabetes, osmolality, urine study, and metabolic lab trends when relevant; endocrine medication groups such as insulin, steroids, thyroid replacement, osteoporosis therapy, adrenal medications, and diabetes medications; endocrine-specific reasoning; diabetes insipidus, syndrome of inappropriate antidiuretic hormone secretion, adrenal, thyroid, calcium, and diabetes contingencies when supported; and endocrine follow-up.");
       }
       if (userProfileSuggestsCardiology(profile)) {
-        tailoring.push("For Cardiology consult notes, use cardiology-specific content in the canonical structure: chest pain, heart failure, arrhythmia, ischemia, volume, and exertional symptom trajectory; telemetry, ECG, troponin, BNP, echo, stress test, cath, device, and cardiac imaging data; cardiac medication groups; anticoagulation when relevant; cardiac contingencies; and cardiology follow-up.");
+        tailoring.push("For Cardiology consult notes, use cardiology-specific content in the canonical structure: chest pain, heart failure, arrhythmia, ischemia, volume, and exertional symptom trajectory; telemetry, electrocardiogram, troponin, B-type natriuretic peptide, echocardiogram, stress test, catheterization, device, and cardiac imaging data; cardiac medication groups; anticoagulation when relevant; cardiac contingencies; and cardiology follow-up.");
       }
       if (userProfileSuggestsNeurology(profile)) {
-        tailoring.push("For Neurology consult notes, use neurology-specific content in the canonical structure: neurologic symptom timeline and localization; mental status, cranial nerve, motor, sensory, reflex, coordination, gait, and functional exam findings; neuroimaging, EEG, LP/CSF, and vascular studies; antithrombotic, anti-seizure, and neurologically relevant medications; neurologic contingencies; and neurology follow-up.");
+        tailoring.push("For Neurology consult notes, use neurology-specific content in the canonical structure: neurologic symptom timeline and localization; mental status, cranial nerve, motor, sensory, reflex, coordination, gait, and functional exam findings; neuroimaging, electroencephalogram, lumbar puncture and cerebrospinal fluid, and vascular studies; antithrombotic, anti-seizure, and neurologically relevant medications; neurologic contingencies; and neurology follow-up.");
       }
       if (userProfileSuggestsNephrology(profile)) {
         tailoring.push("For Nephrology consult notes, use nephrology-specific content in the canonical structure: kidney trajectory, urine output, volume status, electrolyte and acid-base issues; urinalysis, urine electrolytes, sediment, renal imaging, dialysis/access data; nephrotoxic medications, renal dosing, diuretics, binders, antihypertensives, and immunosuppression when relevant; renal contingencies; and nephrology follow-up.");
@@ -7223,7 +7333,7 @@ ${chunk}
 
 <same_conversation_context>
 The de-identified patient source context was provided in the previous CASE CONTEXT MESSAGE prompts in this same OpenEvidence conversation.
-Use all previous messages for this case, including notes, labs/results, handoff, medication orders/MAR source text, service profile, consult question, hospital course, and chronology.
+Use all previous messages for this case, including notes, labs/results, handoff, medication orders/medication administration record source text, service profile, consult question, hospital course, and chronology.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier messages.
 </same_conversation_context>
 
@@ -7567,7 +7677,7 @@ Now create the initial rounds report for this case.`;
       const blocks = [];
 
       if (state.rawSoapNote.trim()) {
-        blocks.push(`SOAP NOTE:\n${state.rawSoapNote.trim()}`);
+        blocks.push(`SUBJECTIVE OBJECTIVE ASSESSMENT AND PLAN NOTE:\n${state.rawSoapNote.trim()}`);
       }
 
       if (state.rawLabs.trim()) {
@@ -8159,7 +8269,7 @@ Now create the initial rounds report for this case.`;
       const rawPriorSource = buildRawPriorSourceText();
 
       if (!rawPriorSource) {
-        elements.promptStatus.textContent = "Paste a SOAP note, labs, handoff, or other context first.";
+        elements.promptStatus.textContent = "Paste a source note, labs, handoff, or other context first.";
         elements.rawSoapInput.focus();
         return null;
       }
@@ -8444,11 +8554,11 @@ Now create the initial rounds report for this case.`;
       const prompt = `${checklistPrompt}
 
 <context_type>
-Prior SOAP note, lab results, handoff summaries, medication orders/MAR source text, and/or other context were already provided earlier in this same OpenEvidence conversation.
+Prior source note, lab results, handoff summaries, medication orders/medication administration record source text, and/or other context were already provided earlier in this same OpenEvidence conversation.
 </context_type>${userContext ? `\n\n${userContext}` : ""}
 
 <same_conversation_context>
-Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication orders/MAR source text, selected service profile, consult question, hospital course, and chronology.
+Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication orders/medication administration record source text, selected service profile, consult question, hospital course, and chronology.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
 
@@ -8463,7 +8573,7 @@ Now produce the final bedside pre-rounding checklist only.`;
         if (!admissionContext) {
           if (state.importedContext?.sourceMode === "admission") {
             return {
-              contextType: state.importedContext.contextType || "No prior SOAP note is available. The patient is newly admitted or being admitted now.",
+              contextType: state.importedContext.contextType || "No prior source note is available. The patient is newly admitted or being admitted now.",
               label: state.importedContext.label || "Admission intake information",
               text: state.importedContext.text,
               reviewTarget: "imported"
@@ -8474,7 +8584,7 @@ Now produce the final bedside pre-rounding checklist only.`;
           return null;
         }
         return {
-          contextType: "No prior SOAP note is available. The patient is newly admitted or being admitted now.",
+          contextType: "No prior source note is available. The patient is newly admitted or being admitted now.",
           label: "Admission intake information",
           text: admissionContext,
           reviewTarget: "admission"
@@ -8483,7 +8593,7 @@ Now produce the final bedside pre-rounding checklist only.`;
 
       if (!state.scrubResult && !state.scrubbedNote && state.importedContext) {
         return {
-          contextType: state.importedContext.contextType || "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
+          contextType: state.importedContext.contextType || "Prior source note, lab results, handoff summaries, and/or other context available.",
           label: state.importedContext.label || "De-identified source note",
           text: state.importedContext.text,
           reviewTarget: "imported"
@@ -8495,8 +8605,8 @@ Now produce the final bedside pre-rounding checklist only.`;
         return null;
       }
       return {
-        contextType: "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
-        label: "De-identified SOAP note, labs, handoff summaries, and other context",
+        contextType: "Prior source note, lab results, handoff summaries, and/or other context available.",
+        label: "De-identified source note, labs, handoff summaries, and other context",
         text: scrubbedNote,
         reviewTarget: "source"
       };
@@ -8528,7 +8638,7 @@ Now teach me this patient.`;
       return `${medicationSafetyPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
 <workflow_note>
-The initial rounds prompt has already been copied into this OpenEvidence conversation. Use that existing context for medication safety review, including any de-identified medication orders and MAR text included earlier.
+The initial rounds prompt has already been copied into this OpenEvidence conversation. Use that existing context for medication safety review, including any de-identified medication orders and medication administration record text included earlier.
 </workflow_note>
 
 Now perform the medication safety review only.`;
@@ -8595,12 +8705,12 @@ Now create the initial rounds report.`;
       const prompt = `${newAdmissionChecklistPrompt}
 
 ${userContext ? `${userContext}\n\n` : ""}<same_conversation_context>
-Use the admission intake context already provided earlier in this same OpenEvidence conversation, including chief concern, demographics, HPI, PMH, surgical history, health maintenance, medications, allergies, social history, family history, ROS, course so far, objective data, treatments, pending tasks, and monitoring concerns.
+Use the admission intake context already provided earlier in this same OpenEvidence conversation, including chief concern, demographics, history of present illness, past medical history, surgical history, health maintenance, medications, allergies, social history, family history, review of systems, course so far, objective data, treatments, pending tasks, and monitoring concerns.
 Do not ask the user to paste the admission context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
 
 <new_admission_focus>
-Because no prior SOAP note is available, design the checklist to fill remaining first-history gaps for a full admission write-up while still establishing baseline severity, clarifying trajectory since presentation, identifying red flags, assessing response to initial treatments, and guiding today's admission plan.
+Because no prior source note is available, design the checklist to fill remaining first-history gaps for a full admission write-up while still establishing baseline severity, clarifying trajectory since presentation, identifying red flags, assessing response to initial treatments, and guiding today's admission plan.
 </new_admission_focus>
 
 Now produce the final checklist only.`;
@@ -9657,13 +9767,11 @@ If source context is missing from this conversation, say that the prior context 
     });
 
     elements.showSourceWorkflowButton.addEventListener("click", () => {
-      setChecklistFirstMode(false, { focus: true });
-      showToast("Chart info entry restored.");
+      startAdmissionIntake({ focus: true });
     });
 
     elements.showSourceFromPasteButton.addEventListener("click", () => {
-      setChecklistFirstMode(false, { focus: true });
-      showToast("Chart info entry restored.");
+      startAdmissionIntake({ focus: true });
     });
 
     elements.loadDemoSoapButton.addEventListener("click", () => {
@@ -9674,25 +9782,25 @@ If source context is missing from this conversation, say that the prior context 
       invalidateConversationContext();
       elements.rawSoapInput.value = demoEndocrinologySoapNote;
       elements.rawLabsInput.value = "";
-      elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and IV access issues.";
+      elements.rawHandoffInput.value = "Handoff: monitor anion gap closure and glucose trend. Follow potassium repletion. Confirm insulin drip transition plan with endocrinology. Ask nursing about overnight confusion, intake, urine output, and intravenous access issues.";
       elements.rawMedicationInput.value = `Medication Orders:
 insulin glargine 18 units subcutaneous nightly
 insulin lispro correction scale subcutaneous with meals and bedtime
-ceftriaxone 1 g IV daily
+ceftriaxone 1 g intravenous daily
 heparin 5000 units subcutaneous q8h
 
-MAR:
+Medication administration record:
 insulin glargine 12 units given Day 0 evening
 insulin lispro correction scale given Day 0 with breakfast
 ceftriaxone 1 g given Day 0 morning
 heparin 5000 units held by provider`;
       syncRawSoapNote();
       clearScrubPreview();
-      elements.promptStatus.textContent = "Textbook synthetic DKA consult note, sample handoff, and sample MAR loaded. Next: de-identify and review.";
+      elements.promptStatus.textContent = "Textbook synthetic diabetic ketoacidosis consult note, sample handoff, and sample medication administration record loaded. Next: de-identify and review.";
       elements.sourceWorkflowCard.scrollIntoView({ behavior: "smooth", block: "start" });
       elements.rawSoapInput.focus({ preventScroll: true });
       prepareDeidentifierModel();
-      showToast("Textbook DKA consult note loaded.");
+      showToast("Textbook diabetic ketoacidosis consult note loaded.");
     });
 
     admissionFields.forEach((field) => {
