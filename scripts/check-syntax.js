@@ -99,8 +99,7 @@ for (const requiredSnippet of [
   "questionOptionMatch",
   "student_exam_reference",
   "Use it as a floor, not a ceiling",
-  "Renal graft tenderness",
-  "Patellar reflexes",
+  "I am a third-year medical student preparing for inpatient rounds.",
   "BEDSIDE QUESTION CHECKLIST",
   "TARGETED PHYSICAL EXAM CHECKLIST"
 ]) {

@@ -162,6 +162,7 @@ assert.ok(checklistPrompt.includes("Parent checklist titles must be the exact al
 assert.ok(!checklistPrompt.includes("BEDSIDE QUESTION CHECKLIST:"), "main prompt should not show colon after parent title");
 assert.ok(checklistPrompt.includes("Student exam reference (student_exam_reference"), "main prompt should include the plain student exam reference block");
 assert.ok(!checklistPrompt.includes("<student_exam_reference>"), "main prompt should avoid XML-style student exam reference tags");
+assert.ok(!checklistPrompt.includes("Core exam domains:"), "main prompt should avoid bloating the accepted checklist prompt with long exam reference rows");
 assert.ok(checklistPrompt.includes("Use it as a floor, not a ceiling"), "exam reference should guide, not restrict, OpenEvidence");
 assert.ok(newAdmissionChecklistPrompt.includes("No prior subjective/objective/assessment/plan note is available"), "new admission prompt should retain admission context without unexplained abbreviation");
 assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission write-up"), "new admission prompt should prioritize first-history write-up gaps");

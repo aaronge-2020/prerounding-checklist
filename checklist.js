@@ -19,45 +19,11 @@ Do not use blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
 Do not use markdown, bullets, numbering, tables, explanations, citations, or text before or after the two checklists.`;
 
 const studentExamReferenceFallback = `Student exam reference (student_exam_reference; optional reminder, not exhaustive):
-Use this as a compact fallback reference for exam maneuvers the student has learned and can reliably perform. This is not the full universe of useful physical exam findings.
+These are patient-relevant examples from the student's learned physical exam toolkit. This reference is not exhaustive and is not a restriction.
 Do not limit yourself to this reference. Use it as a floor, not a ceiling. If an additional bedside exam finding is clinically important, evidence-based, safe, and feasible for a third-year medical student, include it even if it is not listed here.
-Do not output the whole reference. Select only the exam domains that match the patient's active problems, risks, abnormal data, treatments, or consult question.
+Use the reference to avoid missing student-performable maneuvers, then choose the final concise exam checklist from patient-specific reasoning plus this reference.`;
 
-Core exam domains:
-VITAL SIGNS AND SUPPORT: temperature, heart rate, respiratory rate, blood pressure, oxygen saturation, oxygen or ventilatory support, pain score, intake/output when relevant.
-GENERAL AND VOLUME: distress, mental status, appearance, mucous membranes, JVP, edema, capillary refill, skin turgor, weight trend when relevant.
-CARDIOPULMONARY: work of breathing, anterior/posterior/lateral lung sounds, wheezes/crackles/rhonchi/diminished bases, heart rhythm, murmurs/rubs/gallops, peripheral pulses, lower-extremity edema.
-ABDOMINAL AND RENAL: distension, tenderness, rebound/guarding, bowel sounds, hepatosplenomegaly when relevant, Murphy sign, CVA tenderness, bladder distension, graft tenderness for renal transplant.
-NEUROLOGIC CRANIAL NERVES: visual acuity, visual fields, pupils, extraocular movements, facial sensation, facial symmetry, hearing screen, palate elevation, tongue protrusion, shoulder shrug.
-NEUROLOGIC MOTOR: pronator drift, deltoid, biceps, triceps, wrist extension/flexion, grip, finger abduction, hip flexion, knee extension/flexion, ankle dorsiflexion/plantarflexion.
-NEUROLOGIC SENSORY: light touch, pinprick, vibration, proprioception, sensory level, symmetric distal sensation.
-NEUROLOGIC REFLEXES AND COORDINATION: biceps, brachioradialis, triceps, patellar, Achilles, Babinski, clonus, finger-to-nose, rapid alternating movements, heel-to-shin, gait, Romberg.
-HEENT AND ENDOCRINE-RELEVANT: sclera/conjunctiva, oral mucosa, oropharynx, thyroid inspection/palpation, cervical/supraclavicular lymph nodes, visual fields for pituitary/optic concerns.
-MUSCULOSKELETAL: focused joint inspection, palpation, range of motion, swelling, deformity, tenderness, warmth, shoulder impingement tests, wrist carpal tunnel tests, straight-leg raise, knee effusion/laxity tests, spine range of motion when relevant.
-SKIN WOUNDS LINES AND SAFETY: rashes, petechiae/bruising, ulcers, diabetic foot wounds, sacrum/heels, IV/central line site, surgical wounds, drains, bleeding, infection signs, fall-risk mobility screen.
-
-Selection rules:
-For neurologic weakness, numbness, spine disease, altered mental status, pituitary/visual symptoms, stroke, seizure, or neuromuscular disease, choose focused neurologic sections from cranial nerves, motor, sensory, reflexes, coordination, and gait rather than a generic neuro exam.
-For dyspnea, hypoxia, pneumonia, asthma/COPD, heart failure, hypercapnia, or respiratory support, include respiratory effort, oxygen support, lung fields, single-breath count only if neuromuscular or ventilatory weakness is relevant, and volume/cardiac signs when relevant.
-For chest pain, arrhythmia, heart failure, hypertension, syncope, or edema, include cardiopulmonary and vascular/volume findings such as rhythm, murmurs, JVP, pulses, edema, and lung crackles.
-For abdominal pain, infection, GI bleeding, diarrhea, renal colic, urinary symptoms, transplant, or AKI, include abdominal tenderness/distension, peritoneal signs only when relevant, CVA tenderness, volume status, and graft tenderness for kidney transplant.
-For diabetes, DKA, endocrine, steroid, thyroid, adrenal, pituitary, or electrolyte cases, include volume status, mental status, thyroid/neck findings when relevant, foot/skin findings when relevant, visual fields for sellar disease, and injection/IV site checks when treatments make them safety-critical.
-For anticoagulation, thrombocytopenia, anemia, heparin, GI bleed risk, or falling hemoglobin, include bleeding-focused skin and mucosal findings such as petechiae, bruising, melena report belongs in bedside questions, and IV/surgical-site bleeding when relevant.
-For musculoskeletal or pain complaints, include the affected joint or spine inspection, palpation, range of motion, neurovascular status distal to injury, and only the special maneuvers that directly test the suspected problem.
-
-Documentation option style:
-Prefer finding labels that document the result, not how to perform the maneuver.
-Good: Pupils: Equal and reactive / Unequal / Nonreactive
-Good: Extraocular movements: Intact / Limited / Diplopia
-Good: Shoulder range of motion: Full / Limited by pain / Unable
-Good: Patellar reflexes: Absent / Diminished / Normal / Brisk / Clonus
-Good: Renal graft tenderness: Absent / Present / Not applicable
-Avoid: Ask patient to follow your finger, tap reflex hammer, palpate abdomen, perform straight leg raise.
-Use 0 / 1 / 2 / 3 / 4 / 5 only for strength ratings. Do not write ___ / 5.
-End student_exam_reference.`;
-
-export const checklistPrompt = `Clinical question:
-I am a third-year medical student preparing for inpatient rounds. Based on the patient context already available in this OpenEvidence conversation, please create a focused bedside pre-rounding checklist I can use today.
+export const checklistPrompt = `I am a third-year medical student preparing for inpatient rounds. Based on the patient context already available in this OpenEvidence conversation, please create a focused bedside pre-rounding checklist I can use today.
 
 The checklist should help me identify today's clinical trajectory, severity, red flags, response to treatment, functional status, discharge readiness, and management-relevant changes.
 
