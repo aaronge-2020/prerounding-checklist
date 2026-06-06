@@ -1150,6 +1150,234 @@
       font-weight: 900;
     }
 
+    .vault-entry-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.35fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .vault-status-banner {
+      display: grid;
+      gap: 3px;
+      border: 1px solid rgba(106, 179, 189, 0.26);
+      border-radius: var(--radius-sm);
+      padding: 11px 12px;
+      background: rgba(79, 152, 163, 0.08);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .vault-status-banner.is-ready {
+      border-color: rgba(151, 217, 200, 0.42);
+      color: #d8fff2;
+      background: rgba(79, 152, 163, 0.16);
+    }
+
+    .vault-status-banner.is-warning {
+      border-color: rgba(216, 139, 125, 0.42);
+      color: #f7d3c9;
+      background: rgba(216, 139, 125, 0.12);
+    }
+
+    .vault-status-title {
+      color: var(--text);
+      font-size: 0.76rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .vault-decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .vault-decision-card {
+      display: grid;
+      gap: 11px;
+      align-content: start;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .vault-decision-card.is-primary {
+      border-color: rgba(151, 217, 200, 0.58);
+      box-shadow: 0 0 0 1px rgba(151, 217, 200, 0.16);
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .vault-decision-card.is-disabled {
+      opacity: 0.7;
+    }
+
+    .vault-decision-card.is-danger {
+      border-color: rgba(216, 139, 125, 0.28);
+      background: rgba(216, 139, 125, 0.08);
+    }
+
+    .vault-card-head {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .vault-icon {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: var(--accent-strong);
+      background: rgba(0, 0, 0, 0.16);
+      font-size: 1rem;
+      font-weight: 950;
+    }
+
+    .vault-card-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.98rem;
+      font-weight: 950;
+      line-height: 1.2;
+    }
+
+    .vault-card-copy {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 730;
+      line-height: 1.4;
+    }
+
+    .vault-field-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .vault-password-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .vault-password-toggle {
+      min-height: 44px;
+      border-radius: 12px;
+      padding: 0 11px;
+      white-space: nowrap;
+    }
+
+    .vault-inline-error,
+    .vault-caps-warning {
+      min-height: 18px;
+      margin: 0;
+      color: #f7d3c9;
+      font-size: 0.76rem;
+      font-weight: 820;
+      line-height: 1.35;
+    }
+
+    .vault-caps-warning[hidden],
+    .vault-inline-error:empty {
+      display: none;
+    }
+
+    .vault-mode-note {
+      min-height: 18px;
+      margin: 0;
+      color: var(--quiet);
+      font-size: 0.76rem;
+      font-weight: 780;
+      line-height: 1.35;
+    }
+
+    .vault-mode-note.is-warning {
+      color: #f8dfb4;
+    }
+
+    .vault-action-stack {
+      display: grid;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .vault-reset-panel {
+      border: 1px solid rgba(216, 139, 125, 0.28);
+      border-radius: var(--radius-sm);
+      background: rgba(216, 139, 125, 0.07);
+    }
+
+    .vault-reset-panel[hidden] {
+      display: none !important;
+    }
+
+    .vault-reset-panel summary {
+      min-height: 44px;
+      padding: 12px 13px;
+      color: #f7d3c9;
+      cursor: pointer;
+      font-weight: 950;
+    }
+
+    .vault-reset-body {
+      display: grid;
+      gap: 12px;
+      padding: 0 13px 13px;
+    }
+
+    .vault-reset-warning {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 780;
+      line-height: 1.44;
+    }
+
+    .vault-reset-check {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 780;
+      line-height: 1.35;
+    }
+
+    .vault-transfer-code {
+      min-height: 20px;
+      margin: 0;
+      color: var(--accent-strong);
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .vault-unlocked-summary {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid rgba(151, 217, 200, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .vault-unlocked-summary[hidden] {
+      display: none !important;
+    }
+
     .vault-assurance-list {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2980,6 +3208,111 @@
       min-width: 0;
     }
 
+    .clinical-search-control,
+    .clinical-modifier-control {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .clinical-search-box {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      min-height: 48px;
+      border: 1px solid rgba(106, 179, 189, 0.38);
+      border-radius: 8px;
+      padding: 5px 11px;
+      background: rgba(0, 0, 0, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(106, 179, 189, 0.07);
+    }
+
+    .clinical-search-box:focus-within {
+      border-color: rgba(106, 179, 189, 0.74);
+      box-shadow: 0 0 0 3px rgba(106, 179, 189, 0.12);
+    }
+
+    .clinical-search-prefix {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding-right: 10px;
+      color: var(--accent-strong);
+      font-size: 0.74rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .clinical-search-input {
+      min-width: 0;
+      border: 0;
+      padding: 9px 0;
+      color: var(--text);
+      background: transparent;
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      outline: 0;
+    }
+
+    .clinical-search-input::placeholder,
+    .clinical-modifier-input::placeholder {
+      color: rgba(214, 210, 201, 0.46);
+    }
+
+    .clinical-modifier-control {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .clinical-modifier-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 950;
+    }
+
+    .clinical-modifier-note {
+      margin: -3px 0 0;
+      color: var(--quiet);
+      font-size: 0.78rem;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .clinical-modifier-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .clinical-modifier-chip {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 999px;
+      padding: 0 11px;
+      color: #d7d2c8;
+      background: rgba(255, 255, 255, 0.045);
+      font-size: 0.76rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .clinical-modifier-chip[aria-pressed="true"] {
+      border-color: rgba(106, 179, 189, 0.74);
+      color: #effdff;
+      background: rgba(79, 152, 163, 0.2);
+    }
+
+    .clinical-modifier-input {
+      min-height: 66px;
+      resize: vertical;
+    }
+
     .complaint-cds-input,
     .exam-tester-input {
       min-height: 120px;
@@ -4107,10 +4440,17 @@
       }
 
       .census-header,
+      .vault-entry-head,
       .vault-grid,
+      .vault-decision-grid,
       .patient-editor-grid,
       .batch-snippet-controls {
         grid-template-columns: 1fr;
+      }
+
+      .vault-unlocked-summary {
+        align-items: stretch;
+        flex-direction: column;
       }
 
       .patient-row {
@@ -4320,12 +4660,30 @@
           <div class="complaint-cds-body">
             <div class="complaint-cds-grid">
               <div class="complaint-cds-context">
-                <label for="complaintCdsInput">Search concern or diagnosis</label>
-                <textarea id="complaintCdsInput" class="complaint-cds-input" spellcheck="false" placeholder="DKA, suspected PE, stomach cramps, burning pee, face droop"></textarea>
+                <div class="clinical-search-control">
+                  <label for="complaintCdsInput">Search concern or diagnosis</label>
+                  <div class="clinical-search-box">
+                    <span class="clinical-search-prefix" aria-hidden="true">Search</span>
+                    <input id="complaintCdsInput" class="clinical-search-input" type="search" spellcheck="false" autocomplete="off" placeholder="DKA, suspected PE, stomach cramps, burning pee, face droop">
+                  </div>
+                </div>
                 <div id="clinicalIntentResults" class="complaint-cds-results" hidden></div>
                 <div id="clinicalIntentSelection" class="complaint-cds-summary" hidden></div>
-                <label for="clinicalIntentModifierInput">Patient modifiers</label>
-                <textarea id="clinicalIntentModifierInput" class="complaint-cds-input" spellcheck="false" placeholder="Add only non-identifying clinical modifiers: vomiting, tachypnea, unilateral leg swelling, fever, pregnancy possible, focal weakness"></textarea>
+                <div class="clinical-modifier-control">
+                  <p class="clinical-modifier-title">Clinical modifiers</p>
+                  <p class="clinical-modifier-note">These activate conditional exams and questions inside the selected validated intent.</p>
+                  <div id="clinicalModifierQuickChips" class="clinical-modifier-chips" aria-label="Clinical modifier shortcuts">
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="vomiting">Vomiting</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="poor intake or dehydration">Poor intake/dehydration</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="fever">Fever</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="unilateral leg swelling">Unilateral leg swelling</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="chest pain">Chest pain</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="focal weakness">Focal weakness</button>
+                    <button class="clinical-modifier-chip" type="button" aria-pressed="false" data-clinical-modifier="pregnancy possible">Pregnancy possible</button>
+                  </div>
+                  <label for="clinicalIntentModifierInput">Additional modifier details</label>
+                  <textarea id="clinicalIntentModifierInput" class="clinical-modifier-input" spellcheck="false" placeholder="Optional non-identifying details: RUQ pain, guarding, dark urine, orthopnea, cough, hemoptysis, syncope"></textarea>
+                </div>
               </div>
               <div class="complaint-cds-controls">
                 <div>
@@ -4469,38 +4827,139 @@
     <section id="censusScreen" class="screen census-screen" aria-labelledby="censusTitle">
       <header class="census-header">
         <div>
-          <h1 id="censusTitle">Patient Census</h1>
-          <p class="census-subtitle">A local-only encrypted workspace for patient aliases, de-identified context, bedside status, and prompt order. No account or cloud login is used by this app.</p>
+          <h1 id="censusTitle">Start Rounds Workspace</h1>
+          <p class="census-subtitle">Choose whether to unlock your encrypted local census, start a new one, or work on one patient without saving a vault.</p>
         </div>
         <button id="lockCensusButton" class="btn btn-secondary" type="button" hidden>Lock Census</button>
       </header>
 
       <section id="censusVaultCard" class="surface vault-card" aria-labelledby="censusVaultTitle">
-        <p class="eyebrow">Local privacy vault</p>
-        <h2 id="censusVaultTitle" class="workflow-title">Create or unlock your local vault</h2>
-        <p class="vault-claim">Patient data stays on this computer.</p>
-        <p class="vault-copy"><strong>First time here?</strong> Choose a new local passcode and click Create local vault. <strong>Returning?</strong> Enter the same passcode to unlock the encrypted vault stored in this browser.</p>
-        <div class="vault-grid">
+        <div class="vault-entry-head">
           <div>
-            <label for="censusPassphraseInput">Local vault passcode</label>
-            <input id="censusPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Create or enter local passcode" aria-describedby="censusPasscodeHelp censusVaultStatus">
-            <p id="censusPasscodeHelp" class="passcode-help">There is no account login. The passcode is only for this browser's encrypted vault; the app cannot recover it if it is forgotten.</p>
+            <p class="eyebrow">Local privacy vault</p>
+            <h2 id="censusVaultTitle" class="workflow-title">Choose how to start</h2>
+            <p class="vault-claim">Patient data stays on this computer.</p>
+            <p class="vault-copy">This app supports one encrypted local vault per browser. Unlock the vault already saved here, create a new one when no vault exists, or use one-patient mode without creating saved census storage.</p>
           </div>
-          <div class="compact-summary-actions">
-            <button id="unlockCensusButton" class="btn btn-secondary" type="button">Unlock existing vault</button>
-            <button id="createCensusButton" class="btn btn-primary" type="button">Create local vault</button>
-            <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Use without vault</button>
+          <div id="vaultStatusBanner" class="vault-status-banner" role="status" aria-live="polite">
+            <span id="vaultStatusTitle" class="vault-status-title">Checking vault</span>
+            <span id="vaultStatusDetail">Looking for encrypted local storage in this browser.</span>
           </div>
         </div>
+
+        <div class="vault-decision-grid" role="group" aria-label="Vault start options">
+          <article id="unlockVaultCard" class="vault-decision-card" aria-labelledby="unlockVaultTitle">
+            <div class="vault-card-head">
+              <span class="vault-icon" aria-hidden="true">U</span>
+              <div>
+                <h3 id="unlockVaultTitle" class="vault-card-title">Unlock existing vault</h3>
+                <p id="unlockVaultCopy" class="vault-card-copy">This unlocks data already saved in this browser. It is not an account login.</p>
+              </div>
+            </div>
+            <div class="vault-field-group">
+              <label for="censusPassphraseInput">Existing vault passcode</label>
+              <div class="vault-password-row">
+                <input id="censusPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Enter existing vault passcode" aria-describedby="unlockVaultError censusPasscodeHelp censusVaultStatus">
+                <button id="toggleUnlockPassphraseButton" class="mini-btn vault-password-toggle" type="button" aria-pressed="false">Show</button>
+              </div>
+              <p id="unlockCapsWarning" class="vault-caps-warning" hidden>Caps Lock is on.</p>
+              <p id="unlockVaultError" class="vault-inline-error" role="status" aria-live="polite"></p>
+            </div>
+            <button id="unlockCensusButton" class="btn btn-secondary" type="button">Unlock existing vault</button>
+          </article>
+
+          <article id="createVaultCard" class="vault-decision-card" aria-labelledby="createVaultTitle">
+            <div class="vault-card-head">
+              <span class="vault-icon" aria-hidden="true">N</span>
+              <div>
+                <h3 id="createVaultTitle" class="vault-card-title">Create new vault</h3>
+                <p id="createVaultCopy" class="vault-card-copy">This starts a brand-new encrypted vault in this browser.</p>
+              </div>
+            </div>
+            <div class="vault-field-group">
+              <label for="createCensusPassphraseInput">New vault passcode</label>
+              <div class="vault-password-row">
+                <input id="createCensusPassphraseInput" class="census-input" type="password" autocomplete="new-password" placeholder="Choose at least 8 characters" aria-describedby="createVaultError censusPasscodeHelp censusVaultStatus">
+                <button id="toggleCreatePassphraseButton" class="mini-btn vault-password-toggle" type="button" aria-pressed="false">Show</button>
+              </div>
+              <label for="createCensusPassphraseConfirmInput">Confirm new passcode</label>
+              <input id="createCensusPassphraseConfirmInput" class="census-input" type="password" autocomplete="new-password" placeholder="Re-enter new passcode" aria-describedby="createVaultError">
+              <p id="createCapsWarning" class="vault-caps-warning" hidden>Caps Lock is on.</p>
+              <p id="createVaultContextCopy" class="vault-mode-note">A blank vault starts with Patient A.</p>
+              <p id="createVaultError" class="vault-inline-error" role="status" aria-live="polite"></p>
+            </div>
+            <button id="createCensusButton" class="btn btn-primary" type="button">Create local vault</button>
+          </article>
+
+          <article id="singlePatientVaultCard" class="vault-decision-card" aria-labelledby="singlePatientVaultTitle">
+            <div class="vault-card-head">
+              <span class="vault-icon" aria-hidden="true">1</span>
+              <div>
+                <h3 id="singlePatientVaultTitle" class="vault-card-title">Use without vault</h3>
+                <p class="vault-card-copy">Not saved after this browser session. This does not unlock or create encrypted census storage.</p>
+              </div>
+            </div>
+            <p class="vault-mode-note">Best for a quick one-patient prep when you do not need a saved roster.</p>
+            <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Use without vault</button>
+          </article>
+        </div>
+
+        <details id="forgotPasscodeDetails" class="vault-reset-panel">
+          <summary>Forgot passcode?</summary>
+          <div class="vault-reset-body">
+            <p class="vault-reset-warning">The app cannot recover your passcode. If you cannot unlock this browser's vault, the only local recovery path is to wipe the encrypted vault stored in this browser and start over.</p>
+            <button id="forgotPasscodeResetButton" class="btn btn-secondary" type="button">Wipe and start over</button>
+          </div>
+        </details>
+
+        <details id="vaultResetDetails" class="vault-reset-panel" aria-labelledby="vaultResetTitle">
+          <summary id="vaultResetTitle">Reset / replace vault</summary>
+          <div class="vault-reset-body">
+            <p class="vault-reset-warning"><strong>This deletes the encrypted vault stored in this browser.</strong> This does not affect OpenEvidence or Epic. It only removes this app's local IndexedDB vault record.</p>
+            <label class="vault-reset-check" for="vaultResetExportAcknowledge">
+              <input id="vaultResetExportAcknowledge" type="checkbox">
+              <span>I exported a backup or accept permanently deleting this browser's local encrypted vault.</span>
+            </label>
+            <div class="compact-summary-actions">
+              <button id="vaultResetExportButton" class="btn btn-secondary" type="button">Export encrypted backup</button>
+            </div>
+            <p id="vaultResetTransferCode" class="vault-transfer-code" role="status" aria-live="polite"></p>
+            <div class="vault-field-group">
+              <label for="vaultResetPassphraseInput">Existing vault passcode</label>
+              <div class="vault-password-row">
+                <input id="vaultResetPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Enter existing passcode before wiping" aria-describedby="vaultResetStatus">
+                <button id="toggleResetPassphraseButton" class="mini-btn vault-password-toggle" type="button" aria-pressed="false">Show</button>
+              </div>
+              <p id="resetCapsWarning" class="vault-caps-warning" hidden>Caps Lock is on.</p>
+              <button id="verifyVaultResetPasscodeButton" class="btn btn-secondary" type="button">Verify passcode</button>
+            </div>
+            <div class="vault-field-group">
+              <label for="vaultResetDeleteInput">Type DELETE to confirm</label>
+              <input id="vaultResetDeleteInput" class="census-input" type="text" autocomplete="off" spellcheck="false" placeholder="DELETE" aria-describedby="vaultResetStatus">
+            </div>
+            <button id="completeVaultResetButton" class="btn btn-primary" type="button" disabled>Delete vault and start over</button>
+            <p id="vaultResetStatus" class="vault-status" role="status" aria-live="polite"></p>
+          </div>
+        </details>
+
         <ul class="vault-assurance-list" aria-label="Local privacy protections">
           <li><strong>No app server upload</strong>This app does not send your census, pasted chart text, or saved patient workspace to a backend service.</li>
           <li><strong>Encrypted saved census</strong>Saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
           <li><strong>You control sharing</strong>Information leaves this computer only when you intentionally copy and paste reviewed text into another site.</li>
         </ul>
         <p id="censusVaultStatus" class="vault-status" role="status" aria-live="polite"></p>
+        <p id="censusPasscodeHelp" class="passcode-help">There is no account login. The passcode is only for this browser's encrypted vault; the app cannot recover it if it is forgotten.</p>
       </section>
 
       <div id="censusUnlockedShell" class="census-main-grid" hidden>
+        <section id="censusUnlockedSummary" class="vault-unlocked-summary" aria-labelledby="censusUnlockedSummaryTitle" hidden>
+          <div>
+            <p id="censusUnlockedSummaryTitle" class="compact-summary-title">Vault unlocked</p>
+            <p id="censusUnlockedSummaryCopy" class="compact-summary-copy">Local census workspace ready.</p>
+          </div>
+          <button id="continueUnlockedWorkspaceButton" class="btn btn-primary" type="button">Continue to workspace</button>
+        </section>
+
         <section class="surface census-dashboard" aria-labelledby="patientRosterTitle">
           <div class="census-toolbar">
             <div>
@@ -5759,6 +6218,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       clinicalIntentRegistry,
       filterEvidenceCatalogForClinicalIntents,
       getClinicalIntentById,
+      normalizeClinicalIntentText,
       resolveClinicalIntents,
       selectedValidatedClinicalIntents,
       validateClinicalIntentRegistry
@@ -5927,6 +6387,14 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         unlocked: false,
         passphrase: "",
         vaultExists: false,
+        storageAvailable: true,
+        vaultEnvelopeCreatedAt: "",
+        entryMode: "checking",
+        resetFlowState: "idle",
+        resetPassphraseVerified: false,
+        resetVerifiedPayload: null,
+        resetExported: false,
+        vaultBusy: false,
         patients: [],
         activePatientId: "",
         editingPatientId: "",
@@ -5963,7 +6431,40 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       censusScreen: document.getElementById("censusScreen"),
       censusVaultCard: document.getElementById("censusVaultCard"),
       censusUnlockedShell: document.getElementById("censusUnlockedShell"),
+      censusUnlockedSummary: document.getElementById("censusUnlockedSummary"),
+      censusUnlockedSummaryCopy: document.getElementById("censusUnlockedSummaryCopy"),
+      continueUnlockedWorkspaceButton: document.getElementById("continueUnlockedWorkspaceButton"),
+      vaultStatusBanner: document.getElementById("vaultStatusBanner"),
+      vaultStatusTitle: document.getElementById("vaultStatusTitle"),
+      vaultStatusDetail: document.getElementById("vaultStatusDetail"),
+      unlockVaultCard: document.getElementById("unlockVaultCard"),
+      unlockVaultCopy: document.getElementById("unlockVaultCopy"),
       censusPassphraseInput: document.getElementById("censusPassphraseInput"),
+      toggleUnlockPassphraseButton: document.getElementById("toggleUnlockPassphraseButton"),
+      unlockCapsWarning: document.getElementById("unlockCapsWarning"),
+      unlockVaultError: document.getElementById("unlockVaultError"),
+      createVaultCard: document.getElementById("createVaultCard"),
+      createVaultCopy: document.getElementById("createVaultCopy"),
+      createCensusPassphraseInput: document.getElementById("createCensusPassphraseInput"),
+      createCensusPassphraseConfirmInput: document.getElementById("createCensusPassphraseConfirmInput"),
+      toggleCreatePassphraseButton: document.getElementById("toggleCreatePassphraseButton"),
+      createCapsWarning: document.getElementById("createCapsWarning"),
+      createVaultContextCopy: document.getElementById("createVaultContextCopy"),
+      createVaultError: document.getElementById("createVaultError"),
+      singlePatientVaultCard: document.getElementById("singlePatientVaultCard"),
+      forgotPasscodeDetails: document.getElementById("forgotPasscodeDetails"),
+      forgotPasscodeResetButton: document.getElementById("forgotPasscodeResetButton"),
+      vaultResetDetails: document.getElementById("vaultResetDetails"),
+      vaultResetExportAcknowledge: document.getElementById("vaultResetExportAcknowledge"),
+      vaultResetExportButton: document.getElementById("vaultResetExportButton"),
+      vaultResetTransferCode: document.getElementById("vaultResetTransferCode"),
+      vaultResetPassphraseInput: document.getElementById("vaultResetPassphraseInput"),
+      toggleResetPassphraseButton: document.getElementById("toggleResetPassphraseButton"),
+      resetCapsWarning: document.getElementById("resetCapsWarning"),
+      verifyVaultResetPasscodeButton: document.getElementById("verifyVaultResetPasscodeButton"),
+      vaultResetDeleteInput: document.getElementById("vaultResetDeleteInput"),
+      completeVaultResetButton: document.getElementById("completeVaultResetButton"),
+      vaultResetStatus: document.getElementById("vaultResetStatus"),
       unlockCensusButton: document.getElementById("unlockCensusButton"),
       createCensusButton: document.getElementById("createCensusButton"),
       continueSinglePatientButton: document.getElementById("continueSinglePatientButton"),
@@ -6083,6 +6584,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       complaintCdsInput: document.getElementById("complaintCdsInput"),
       clinicalIntentResults: document.getElementById("clinicalIntentResults"),
       clinicalIntentSelection: document.getElementById("clinicalIntentSelection"),
+      clinicalModifierQuickChips: document.getElementById("clinicalModifierQuickChips"),
       clinicalIntentModifierInput: document.getElementById("clinicalIntentModifierInput"),
       complaintCdsSettingSelect: document.getElementById("complaintCdsSettingSelect"),
       complaintCdsPopulationSelect: document.getElementById("complaintCdsPopulationSelect"),
@@ -9020,6 +9522,97 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       elements.continuityStatus.textContent = "Continuity case deleted from this browser.";
     }
 
+    function renderVaultEntryState() {
+      if (!elements.censusVaultCard) {
+        return;
+      }
+      const storageUnavailable = !state.census.storageAvailable;
+      const vaultExists = Boolean(state.census.vaultExists);
+      const isUnlocked = Boolean(state.census.unlocked);
+      const busy = Boolean(state.census.vaultBusy);
+      const mode = state.census.entryMode || (vaultExists ? "unlock" : "create");
+      const active = activeCensusPatient();
+      const envelopeDate = state.census.vaultEnvelopeCreatedAt
+        ? `Last encrypted save: ${formatCensusTime(state.census.vaultEnvelopeCreatedAt)}.`
+        : "";
+
+      elements.vaultStatusBanner.classList.toggle("is-ready", isUnlocked || vaultExists);
+      elements.vaultStatusBanner.classList.toggle("is-warning", storageUnavailable);
+      if (storageUnavailable) {
+        elements.vaultStatusTitle.textContent = "Encrypted storage unavailable";
+        elements.vaultStatusDetail.textContent = "Single-patient mode still works, but this browser cannot protect a saved local census right now.";
+      } else if (isUnlocked) {
+        elements.vaultStatusTitle.textContent = "Vault unlocked";
+        elements.vaultStatusDetail.textContent = `${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`;
+      } else if (vaultExists) {
+        elements.vaultStatusTitle.textContent = "Vault found on this browser";
+        elements.vaultStatusDetail.textContent = ["Unlock with the passcode created here.", envelopeDate].filter(Boolean).join(" ");
+      } else {
+        elements.vaultStatusTitle.textContent = "No vault found";
+        elements.vaultStatusDetail.textContent = "Create a new encrypted local vault or use one-patient mode without saved census storage.";
+      }
+
+      elements.unlockVaultCard.classList.toggle("is-primary", vaultExists && !storageUnavailable);
+      elements.unlockVaultCard.classList.toggle("is-disabled", storageUnavailable || !vaultExists);
+      elements.createVaultCard.classList.toggle("is-primary", !vaultExists && !storageUnavailable);
+      elements.createVaultCard.classList.toggle("is-disabled", storageUnavailable || vaultExists);
+      elements.singlePatientVaultCard.classList.toggle("is-primary", storageUnavailable);
+
+      elements.unlockVaultCopy.textContent = vaultExists
+        ? "This unlocks data already saved in this browser. It is not an account login."
+        : "No encrypted local vault was found in this browser yet.";
+      elements.createVaultCopy.textContent = vaultExists
+        ? "A local vault already exists. To start a new one, use Reset / replace vault below."
+        : "This starts a brand-new encrypted vault in this browser.";
+      const hasWorkspaceContent = workspaceHasContent();
+      const hasUnreviewedSource = workspaceHasUnreviewedPatientSource();
+      elements.createVaultContextCopy.textContent = hasUnreviewedSource
+        ? "Raw chart text is not saved into the vault. Run local de-ID first if you want current source context preserved."
+        : hasWorkspaceContent
+          ? "Create local vault from current workspace. Review de-identified content before saving."
+          : "A blank vault starts with Patient A.";
+      elements.createVaultContextCopy.classList.toggle("is-warning", hasUnreviewedSource);
+
+      elements.unlockCensusButton.classList.toggle("btn-primary", vaultExists && !storageUnavailable);
+      elements.unlockCensusButton.classList.toggle("btn-secondary", !vaultExists || storageUnavailable);
+      elements.createCensusButton.classList.toggle("btn-primary", !vaultExists && !storageUnavailable);
+      elements.createCensusButton.classList.toggle("btn-secondary", vaultExists || storageUnavailable);
+      elements.continueSinglePatientButton.classList.toggle("btn-primary", storageUnavailable);
+      elements.continueSinglePatientButton.classList.toggle("btn-quiet", !storageUnavailable);
+
+      elements.censusPassphraseInput.placeholder = vaultExists ? "Enter existing vault passcode" : "No existing vault found";
+      elements.createCensusPassphraseInput.placeholder = vaultExists ? "Reset required before creating another vault" : "Choose at least 8 characters";
+      elements.unlockCensusButton.disabled = busy || storageUnavailable || !vaultExists;
+      elements.createCensusButton.disabled = busy || storageUnavailable || vaultExists;
+      elements.censusPassphraseInput.disabled = busy || storageUnavailable || !vaultExists;
+      elements.createCensusPassphraseInput.disabled = busy || storageUnavailable || vaultExists;
+      elements.createCensusPassphraseConfirmInput.disabled = busy || storageUnavailable || vaultExists;
+
+      elements.unlockCensusButton.textContent = busy && mode === "unlock" ? "Unlocking..." : "Unlock existing vault";
+      elements.createCensusButton.textContent = busy && mode === "create" ? "Creating..." : (hasWorkspaceContent && !vaultExists ? "Create local vault from current workspace" : "Create local vault");
+      elements.continueSinglePatientButton.textContent = "Use without vault";
+
+      elements.forgotPasscodeDetails.hidden = storageUnavailable || !vaultExists || isUnlocked;
+      elements.vaultResetDetails.hidden = storageUnavailable || !vaultExists || isUnlocked;
+      elements.vaultResetPassphraseInput.disabled = busy || !vaultExists;
+      elements.verifyVaultResetPasscodeButton.disabled = busy || !vaultExists;
+      elements.vaultResetExportButton.disabled = busy || !vaultExists || !state.census.resetPassphraseVerified;
+      elements.vaultResetDeleteInput.disabled = busy || !vaultExists || !state.census.resetPassphraseVerified;
+      elements.completeVaultResetButton.disabled = busy
+        || !vaultExists
+        || !state.census.resetPassphraseVerified
+        || !elements.vaultResetExportAcknowledge.checked
+        || elements.vaultResetDeleteInput.value.trim() !== "DELETE";
+
+      elements.censusUnlockedSummary.hidden = !isUnlocked;
+      if (isUnlocked) {
+        elements.censusUnlockedSummaryCopy.textContent = active
+          ? `Resume ${active.alias}. ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`
+          : "Vault is unlocked with no patient workspaces yet.";
+        elements.continueUnlockedWorkspaceButton.textContent = active ? `Resume ${active.alias}` : "Add first patient";
+      }
+    }
+
     function storeContinuityTodayDay(patch = {}) {
       const base = readContinuityCaseForm(ensureContinuityCase());
       const inputs = normalizeDailyInputs(patch.deidentifiedInputs || currentContinuityTodayInputs());
@@ -9449,6 +10042,220 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       });
     }
 
+    async function deleteCensusEnvelope() {
+      const db = await openCensusDb();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(censusStoreName, "readwrite");
+        transaction.objectStore(censusStoreName).delete(censusRecordKey);
+        transaction.oncomplete = () => {
+          db.close();
+          resolve(true);
+        };
+        transaction.onerror = () => {
+          db.close();
+          reject(transaction.error || new Error("Could not delete census storage."));
+        };
+      });
+    }
+
+    function setVaultEntryMode(mode) {
+      state.census.entryMode = mode || (state.census.vaultExists ? "unlock" : "create");
+      clearVaultInlineErrors();
+      renderVaultEntryState();
+    }
+
+    function clearVaultInlineErrors() {
+      if (elements.unlockVaultError) {
+        elements.unlockVaultError.textContent = "";
+      }
+      if (elements.createVaultError) {
+        elements.createVaultError.textContent = "";
+      }
+    }
+
+    function setVaultActionBusy(isBusy, message = "") {
+      state.census.vaultBusy = Boolean(isBusy);
+      if (message) {
+        elements.censusVaultStatus.textContent = message;
+      }
+      renderVaultEntryState();
+    }
+
+    function togglePasswordVisibility(input, button) {
+      if (!input || !button) {
+        return;
+      }
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      button.textContent = show ? "Hide" : "Show";
+      button.setAttribute("aria-pressed", show ? "true" : "false");
+      input.focus({ preventScroll: true });
+    }
+
+    function updateCapsWarning(event, warningElement) {
+      if (!warningElement || typeof event.getModifierState !== "function") {
+        return;
+      }
+      warningElement.hidden = !event.getModifierState("CapsLock");
+    }
+
+    function validateCreateVaultInputs() {
+      const passphrase = elements.createCensusPassphraseInput.value;
+      const confirm = elements.createCensusPassphraseConfirmInput.value;
+      if (passphrase.trim().length < 8) {
+        elements.createVaultError.textContent = "Choose a local passcode with at least 8 characters.";
+        elements.createCensusPassphraseInput.focus();
+        return null;
+      }
+      if (passphrase !== confirm) {
+        elements.createVaultError.textContent = "The confirmation passcode does not match.";
+        elements.createCensusPassphraseConfirmInput.focus();
+        return null;
+      }
+      elements.createVaultError.textContent = "";
+      return passphrase;
+    }
+
+    function resetVaultResetControls(options = {}) {
+      state.census.resetFlowState = options.flowState || "idle";
+      state.census.resetPassphraseVerified = false;
+      state.census.resetVerifiedPayload = null;
+      state.census.resetExported = false;
+      if (elements.vaultResetExportAcknowledge) {
+        elements.vaultResetExportAcknowledge.checked = false;
+      }
+      if (elements.vaultResetPassphraseInput) {
+        elements.vaultResetPassphraseInput.value = "";
+      }
+      if (elements.vaultResetDeleteInput) {
+        elements.vaultResetDeleteInput.value = "";
+      }
+      if (elements.vaultResetTransferCode) {
+        elements.vaultResetTransferCode.textContent = "";
+      }
+      if (elements.vaultResetStatus) {
+        elements.vaultResetStatus.textContent = "";
+      }
+      renderVaultEntryState();
+    }
+
+    function startVaultResetFlow() {
+      if (!state.census.vaultExists) {
+        elements.vaultResetStatus.textContent = "No local encrypted vault exists in this browser.";
+        return false;
+      }
+      state.census.resetFlowState = "export-reminder";
+      if (elements.vaultResetDetails) {
+        elements.vaultResetDetails.open = true;
+      }
+      elements.vaultResetStatus.textContent = "Export a backup if needed, then verify the existing passcode before deleting this browser's vault.";
+      renderVaultEntryState();
+      return true;
+    }
+
+    async function verifyVaultResetPasscode() {
+      const passphrase = elements.vaultResetPassphraseInput.value;
+      if (!passphrase) {
+        elements.vaultResetStatus.textContent = "Enter the existing vault passcode before wiping.";
+        elements.vaultResetPassphraseInput.focus();
+        return false;
+      }
+      setVaultActionBusy(true, "Verifying vault passcode before reset...");
+      try {
+        const envelope = await readCensusEnvelope();
+        if (!envelope) {
+          state.census.vaultExists = false;
+          resetVaultResetControls({ flowState: "reset-complete" });
+          elements.censusVaultStatus.textContent = "No local vault exists now. Create a new vault when you are ready.";
+          return false;
+        }
+        const payload = await decryptJsonPayload(envelope, passphrase, { type: CENSUS_STORAGE_TYPE });
+        state.census.resetPassphraseVerified = true;
+        state.census.resetVerifiedPayload = normalizeCensusVault(payload);
+        state.census.resetFlowState = "type-delete";
+        elements.vaultResetStatus.textContent = "Passcode verified. Type DELETE to confirm replacement.";
+        elements.vaultResetDeleteInput.focus();
+        return true;
+      } catch (error) {
+        console.warn("Vault reset passcode verification failed.", error);
+        state.census.resetPassphraseVerified = false;
+        state.census.resetVerifiedPayload = null;
+        state.census.resetFlowState = "verify-passcode";
+        elements.vaultResetStatus.textContent = "Could not verify that passcode. The vault was not changed.";
+        return false;
+      } finally {
+        setVaultActionBusy(false);
+      }
+    }
+
+    async function exportResetVaultBackup() {
+      if (!state.census.resetPassphraseVerified || !state.census.resetVerifiedPayload) {
+        const verified = await verifyVaultResetPasscode();
+        if (!verified) {
+          return false;
+        }
+      }
+      const transferCode = generateTransferCode();
+      const envelope = await encryptJsonPayload(state.census.resetVerifiedPayload, transferCode, {
+        type: CENSUS_EXPORT_TYPE
+      });
+      downloadTextFile("pre-rounds-census-reset-backup.prerounds-census.json", JSON.stringify(envelope, null, 2));
+      elements.vaultResetTransferCode.textContent = `Encrypted backup exported. Transfer code: ${transferCode}`;
+      elements.censusTransferCodeInput.value = transferCode;
+      state.census.resetExported = true;
+      renderVaultEntryState();
+      return true;
+    }
+
+    async function completeVaultResetAndCreate() {
+      if (!state.census.vaultExists) {
+        elements.vaultResetStatus.textContent = "No local encrypted vault exists in this browser.";
+        return false;
+      }
+      if (!elements.vaultResetExportAcknowledge.checked) {
+        elements.vaultResetStatus.textContent = "Confirm that you exported a backup or accept deleting the local vault.";
+        elements.vaultResetExportAcknowledge.focus();
+        return false;
+      }
+      if (!state.census.resetPassphraseVerified) {
+        elements.vaultResetStatus.textContent = "Verify the existing passcode before deleting the vault.";
+        elements.vaultResetPassphraseInput.focus();
+        return false;
+      }
+      if (elements.vaultResetDeleteInput.value.trim() !== "DELETE") {
+        elements.vaultResetStatus.textContent = "Type DELETE exactly to confirm deletion.";
+        elements.vaultResetDeleteInput.focus();
+        return false;
+      }
+      setVaultActionBusy(true, "Deleting local encrypted vault...");
+      try {
+        await deleteCensusEnvelope();
+        window.clearTimeout(state.census.saveTimer);
+        state.census.unlocked = false;
+        state.census.passphrase = "";
+        state.census.vaultExists = false;
+        state.census.vaultEnvelopeCreatedAt = "";
+        state.census.patients = [];
+        state.census.activePatientId = "";
+        state.census.editingPatientId = "";
+        state.census.batchSnippets = [];
+        state.continuity.cases = [];
+        state.continuity.activeCaseId = "";
+        safeLocalStorageRemove(CONTINUITY_STORAGE_KEY);
+        resetVaultResetControls({ flowState: "reset-complete" });
+        setVaultEntryMode("create");
+        elements.censusVaultStatus.textContent = "Previous local vault deleted. Create a new vault when you are ready.";
+        showToast("Local vault deleted. Create a new vault to start over.");
+        return true;
+      } catch (error) {
+        console.error(error);
+        elements.vaultResetStatus.textContent = "Could not delete the local encrypted vault.";
+        return false;
+      } finally {
+        setVaultActionBusy(false);
+      }
+    }
+
     function activeCensusPatient() {
       if (!state.census.unlocked || !state.census.activePatientId) {
         return null;
@@ -9496,6 +10303,25 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         hasDailyInputs(readContinuityRawInputs()) ||
         hasDailyInputs(currentContinuityTodayInputs())
       );
+    }
+
+    function workspaceHasUnreviewedPatientSource() {
+      const hasRawSource = Boolean(
+        elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
+        elements.rawMedicationInput.value.trim() ||
+        hasDailyInputs(readContinuityRawInputs())
+      );
+      const hasReviewedSource = Boolean(
+        elements.scrubbedNoteInput.value.trim() ||
+        state.scrubbedNote ||
+        state.scrubResult ||
+        state.sections.length ||
+        state.compiledText ||
+        hasDailyInputs(currentContinuityTodayInputs())
+      );
+      return hasRawSource && !hasReviewedSource;
     }
 
     function snapshotWorkspaceToPatient(basePatient = activeCensusPatient()) {
@@ -9715,6 +10541,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         await writeCensusEnvelope(envelope);
         safeLocalStorageRemove(CONTINUITY_STORAGE_KEY);
         state.census.vaultExists = true;
+        state.census.vaultEnvelopeCreatedAt = envelope.createdAt || new Date().toISOString();
         elements.censusStatus.textContent = `Saved ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"}.`;
         return true;
       } catch (error) {
@@ -9956,13 +10783,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       elements.censusVaultCard.hidden = state.census.unlocked;
       elements.censusUnlockedShell.hidden = !state.census.unlocked;
       elements.lockCensusButton.hidden = !state.census.unlocked;
-      elements.unlockCensusButton.textContent = "Unlock existing vault";
-      elements.createCensusButton.textContent = "Create local vault";
-      elements.unlockCensusButton.classList.toggle("btn-primary", state.census.vaultExists);
-      elements.unlockCensusButton.classList.toggle("btn-secondary", !state.census.vaultExists);
-      elements.createCensusButton.classList.toggle("btn-primary", !state.census.vaultExists);
-      elements.createCensusButton.classList.toggle("btn-secondary", state.census.vaultExists);
-      elements.createCensusButton.disabled = state.census.vaultExists && !state.census.unlocked;
+      renderVaultEntryState();
       document.querySelectorAll("[data-census-filter]").forEach((button) => {
         const key = button.dataset.censusFilter;
         button.setAttribute("aria-pressed", state.census.filters[key] ? "true" : "false");
@@ -9977,52 +10798,76 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
     }
 
     async function createCensusVaultFromWorkspace() {
-      const passphrase = elements.censusPassphraseInput.value;
+      setVaultEntryMode("create");
       if (state.census.vaultExists && !state.census.unlocked) {
-        elements.censusVaultStatus.textContent = "A local encrypted vault already exists in this browser. Enter its passcode and click Unlock existing vault.";
+        elements.createVaultError.textContent = "A local encrypted vault already exists in this browser. Use Reset / replace vault before creating a new one.";
         return false;
       }
-      if (passphrase.trim().length < 8) {
-        elements.censusVaultStatus.textContent = "Choose a local passcode with at least 8 characters. It stays on this computer and cannot be recovered by the app.";
-        elements.censusPassphraseInput.focus();
+      const passphrase = validateCreateVaultInputs();
+      if (!passphrase) {
         return false;
       }
-      const patient = workspaceHasContent()
-        ? normalizePatientCase({ ...snapshotWorkspaceToPatient(createPatientCase({ alias: "Patient A" })), alias: "Patient A" })
-        : createPatientCase({ alias: "Patient A" });
-      state.census.unlocked = true;
-      state.census.passphrase = passphrase;
-      state.census.patients = [patient];
-      state.census.activePatientId = patient.id;
-      state.census.loadedAt = new Date().toISOString();
-      ensureContinuityCasesForCensusPatients();
-      hydrateWorkspaceFromPatient(patient);
-      renderCensusDashboard();
-      await saveCensusNow();
-      elements.censusVaultStatus.textContent = "Local encrypted vault created. Keep the passcode somewhere approved; the app cannot recover it.";
-      showToast("Local vault created.");
-      return true;
+      setVaultActionBusy(true, "Creating encrypted local vault...");
+      try {
+        const patient = workspaceHasContent()
+          ? normalizePatientCase({ ...snapshotWorkspaceToPatient(createPatientCase({ alias: "Patient A" })), alias: "Patient A" })
+          : createPatientCase({ alias: "Patient A" });
+        state.census.unlocked = true;
+        state.census.passphrase = passphrase;
+        state.census.patients = [patient];
+        state.census.activePatientId = patient.id;
+        state.census.loadedAt = new Date().toISOString();
+        ensureContinuityCasesForCensusPatients();
+        const saved = await saveCensusNow();
+        if (!saved) {
+          throw new Error("Encrypted census write failed.");
+        }
+        hydrateWorkspaceFromPatient(activeCensusPatient() || patient);
+        renderCensusDashboard();
+        elements.censusVaultStatus.textContent = "Local encrypted vault created. Keep the passcode somewhere approved; the app cannot recover it.";
+        showToast("Local vault created.");
+        return true;
+      } catch (error) {
+        console.error(error);
+        state.census.unlocked = false;
+        state.census.passphrase = "";
+        state.census.patients = [];
+        state.census.activePatientId = "";
+        state.census.loadedAt = "";
+        elements.createVaultError.textContent = "Could not create the encrypted vault. Use without vault, or try again after checking browser storage permissions.";
+        elements.censusVaultStatus.textContent = "Encrypted vault creation failed. No new vault was saved.";
+        renderCensusDashboard();
+        return false;
+      } finally {
+        setVaultActionBusy(false);
+      }
     }
 
     async function unlockCensusVault() {
+      setVaultEntryMode("unlock");
       const passphrase = elements.censusPassphraseInput.value;
       if (!passphrase) {
-        elements.censusVaultStatus.textContent = state.census.vaultExists
+        elements.unlockVaultError.textContent = state.census.vaultExists
           ? "Enter the local passcode you created for this browser's encrypted vault."
           : "No local vault exists yet. Choose a new passcode and click Create local vault.";
         elements.censusPassphraseInput.focus();
         return false;
       }
+      setVaultActionBusy(true, "Unlocking encrypted local vault...");
       let envelope = null;
       try {
         envelope = await readCensusEnvelope();
       } catch (error) {
+        state.census.storageAvailable = false;
         elements.censusVaultStatus.textContent = "Encrypted storage is not available in this browser.";
+        setVaultActionBusy(false);
         return false;
       }
       if (!envelope) {
+        state.census.vaultExists = false;
         elements.censusVaultStatus.textContent = "No local vault exists yet. Choose a new passcode and click Create local vault.";
         elements.createCensusButton.focus();
+        setVaultActionBusy(false);
         return false;
       }
       try {
@@ -10049,12 +10894,15 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         renderCensusDashboard();
         scheduleCensusSave(50);
         elements.censusVaultStatus.textContent = "Local encrypted vault unlocked. Raw legacy source fields are not retained.";
+        elements.unlockVaultError.textContent = "";
         showToast("Local vault unlocked.");
         return true;
       } catch (error) {
-        console.error(error);
-        elements.censusVaultStatus.textContent = "Could not unlock census. Check the passphrase.";
+        console.warn("Vault unlock failed.", error);
+        elements.unlockVaultError.textContent = "Could not unlock census. Check the passphrase.";
         return false;
+      } finally {
+        setVaultActionBusy(false);
       }
     }
 
@@ -10066,6 +10914,9 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       state.census.editingPatientId = "";
       state.census.batchSnippets = [];
       elements.censusPassphraseInput.value = "";
+      elements.createCensusPassphraseInput.value = "";
+      elements.createCensusPassphraseConfirmInput.value = "";
+      resetVaultResetControls();
       elements.censusVaultStatus.textContent = "Local encrypted vault locked. Enter your passcode here to unlock it again.";
       renderCensusDashboard();
       showScreen("censusScreen");
@@ -10392,7 +11243,11 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
 
     async function initializeCensus() {
       try {
-        state.census.vaultExists = Boolean(await readCensusEnvelope());
+        const envelope = await readCensusEnvelope();
+        state.census.storageAvailable = true;
+        state.census.vaultExists = Boolean(envelope);
+        state.census.vaultEnvelopeCreatedAt = envelope?.createdAt || "";
+        state.census.entryMode = state.census.vaultExists ? "unlock" : "create";
         renderCensusDashboard();
         showScreen("censusScreen");
         elements.censusVaultStatus.textContent = state.census.vaultExists
@@ -10400,6 +11255,9 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
           : "No local vault exists yet. Choose a new passcode and click Create local vault.";
       } catch (error) {
         console.warn(error);
+        state.census.storageAvailable = false;
+        state.census.vaultExists = false;
+        state.census.entryMode = "single";
         elements.censusVaultStatus.textContent = "Encrypted local storage is unavailable in this browser; single-patient mode still works, but the census vault cannot be protected here.";
         renderCensusDashboard();
       }
@@ -13049,6 +13907,42 @@ Now create the initial rounds report for this case. Output the report only and n
       return elements.clinicalIntentModifierInput.value.trim();
     }
 
+    function clinicalModifierParts() {
+      return clinicalIntentModifierText()
+        .split(/\s*(?:,|;|\|)\s*/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+    }
+
+    function syncClinicalModifierQuickChips() {
+      const normalizedParts = clinicalModifierParts().map((part) => normalizeClinicalIntentText(part));
+      elements.clinicalModifierQuickChips.querySelectorAll("[data-clinical-modifier]").forEach((button) => {
+        const value = normalizeClinicalIntentText(button.dataset.clinicalModifier || "");
+        button.setAttribute("aria-pressed", normalizedParts.includes(value) ? "true" : "false");
+      });
+    }
+
+    function setClinicalModifier(value, enabled) {
+      const modifier = String(value || "").trim();
+      if (!modifier) {
+        return;
+      }
+      const parts = clinicalModifierParts();
+      const normalized = normalizeClinicalIntentText(modifier);
+      const filtered = parts.filter((part) => normalizeClinicalIntentText(part) !== normalized);
+      if (enabled) {
+        filtered.push(modifier);
+      }
+      elements.clinicalIntentModifierInput.value = filtered.join(", ");
+      syncClinicalModifierQuickChips();
+      elements.examTesterInput.value = [
+        selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+        clinicalIntentModifierText()
+      ].filter(Boolean).join(" | ");
+      autoResize(elements.clinicalIntentModifierInput);
+      autoResize(elements.examTesterInput);
+    }
+
     function clinicalIntentSearchText() {
       return elements.complaintCdsInput.value.trim();
     }
@@ -13480,13 +14374,23 @@ Now create the initial rounds report for this case. Output the report only and n
       }
 
       if (!result.matched) {
-        elements.complaintCdsSummary.appendChild(createComplaintCdsChip("No matching MVP module", true));
-        (result.modules || complaintModules).forEach((module) => {
-          elements.complaintCdsSummary.appendChild(createComplaintCdsChip(module.label));
-        });
+        if (hasSelectedIntent) {
+          elements.complaintCdsSummary.appendChild(createComplaintCdsChip("Validated intent workup", true));
+          selectedClinicalIntents().forEach((intentRow) => {
+            elements.complaintCdsSummary.appendChild(createComplaintCdsChip(intentRow.label));
+          });
+          elements.complaintCdsSummary.appendChild(createComplaintCdsChip("Evidence exam catalog"));
+        } else {
+          elements.complaintCdsSummary.appendChild(createComplaintCdsChip("Needs validated intent", true));
+          (result.modules || complaintModules).forEach((module) => {
+            elements.complaintCdsSummary.appendChild(createComplaintCdsChip(module.label));
+          });
+        }
         const message = document.createElement("p");
         message.className = "exam-result-text";
-        message.textContent = result.message;
+        message.textContent = hasSelectedIntent
+          ? "This validated intent does not have a separate history/testing module yet. The bedside recommendations below come from the validated intent, clinical bundle rules, evidence overlay, and active modifiers."
+          : result.message;
         elements.complaintCdsResults.appendChild(message);
         renderUnifiedEvidenceSummary(elements.complaintCdsResults);
         return;
@@ -13540,6 +14444,7 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.copyComplaintCdsButton.disabled = true;
       elements.runComplaintCdsButton.disabled = true;
       elements.stageKnowledgeGapButton.hidden = false;
+      syncClinicalModifierQuickChips();
       setComplaintCdsStatus("");
     }
 
@@ -13996,7 +14901,7 @@ Now create the initial rounds report for this case. Output the report only and n
       const examStatus = examWorkup ? examTesterStatusText(examWorkup) : "Evidence exam retrieval did not complete.";
       const complaintStatus = complaintResult.matched
         ? `Matched ${complaintResult.module.label}; evidence-backed exam recommendation built from the same clinical context.`
-        : `${complaintResult.message} Evidence-backed exam recommendation built from the same clinical context.`;
+        : `Built validated-intent evidence workup for ${selectedIntents.map((intentRow) => intentRow.label).join("; ")}. Bedside recommendations are traceable to the local evidence catalog, bundle rules, and active modifiers.`;
       setComplaintCdsStatus(complaintStatus);
       if (examWorkup) {
         setExamTesterStatus(examStatus);
@@ -14650,6 +15555,9 @@ If source context is missing from this conversation, say that the prior context 
     }
 
     function autoResize(textarea) {
+      if (!textarea || textarea.tagName !== "TEXTAREA") {
+        return;
+      }
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
@@ -15441,6 +16349,16 @@ If source context is missing from this conversation, say that the prior context 
       showScreen("pasteScreen");
     });
 
+    elements.continueUnlockedWorkspaceButton.addEventListener("click", () => {
+      const active = activeCensusPatient();
+      if (active) {
+        openPatientWorkspace(active.id);
+        return;
+      }
+      startNewPatientEditor();
+      elements.patientAliasInput.focus({ preventScroll: true });
+    });
+
     elements.unlockCensusButton.addEventListener("click", () => {
       unlockCensusVault().catch((error) => {
         console.error(error);
@@ -15456,6 +16374,7 @@ If source context is missing from this conversation, say that the prior context 
     });
 
     elements.censusPassphraseInput.addEventListener("keydown", (event) => {
+      updateCapsWarning(event, elements.unlockCapsWarning);
       if (event.key === "Enter") {
         event.preventDefault();
         unlockCensusVault().catch((error) => {
@@ -15463,6 +16382,139 @@ If source context is missing from this conversation, say that the prior context 
           elements.censusVaultStatus.textContent = "Could not unlock census.";
         });
       }
+    });
+
+    elements.censusPassphraseInput.addEventListener("keyup", (event) => {
+      updateCapsWarning(event, elements.unlockCapsWarning);
+    });
+
+    elements.censusPassphraseInput.addEventListener("input", () => {
+      elements.unlockVaultError.textContent = "";
+    });
+
+    elements.createCensusPassphraseInput.addEventListener("keydown", (event) => {
+      updateCapsWarning(event, elements.createCapsWarning);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        elements.createCensusPassphraseConfirmInput.focus();
+      }
+    });
+
+    elements.createCensusPassphraseInput.addEventListener("keyup", (event) => {
+      updateCapsWarning(event, elements.createCapsWarning);
+    });
+
+    elements.createCensusPassphraseInput.addEventListener("input", () => {
+      elements.createVaultError.textContent = "";
+    });
+
+    elements.createCensusPassphraseConfirmInput.addEventListener("keydown", (event) => {
+      updateCapsWarning(event, elements.createCapsWarning);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        createCensusVaultFromWorkspace().catch((error) => {
+          console.error(error);
+          elements.censusVaultStatus.textContent = "Could not create census vault.";
+        });
+      }
+    });
+
+    elements.createCensusPassphraseConfirmInput.addEventListener("keyup", (event) => {
+      updateCapsWarning(event, elements.createCapsWarning);
+    });
+
+    elements.createCensusPassphraseConfirmInput.addEventListener("input", () => {
+      elements.createVaultError.textContent = "";
+    });
+
+    elements.toggleUnlockPassphraseButton.addEventListener("click", () => {
+      togglePasswordVisibility(elements.censusPassphraseInput, elements.toggleUnlockPassphraseButton);
+    });
+
+    elements.toggleCreatePassphraseButton.addEventListener("click", () => {
+      togglePasswordVisibility(elements.createCensusPassphraseInput, elements.toggleCreatePassphraseButton);
+      const show = elements.createCensusPassphraseInput.type === "text";
+      elements.createCensusPassphraseConfirmInput.type = show ? "text" : "password";
+    });
+
+    elements.toggleResetPassphraseButton.addEventListener("click", () => {
+      togglePasswordVisibility(elements.vaultResetPassphraseInput, elements.toggleResetPassphraseButton);
+    });
+
+    elements.forgotPasscodeResetButton.addEventListener("click", () => {
+      startVaultResetFlow();
+    });
+
+    elements.vaultResetDetails.addEventListener("toggle", () => {
+      if (elements.vaultResetDetails.open && state.census.vaultExists && state.census.resetFlowState === "idle") {
+        startVaultResetFlow();
+      }
+    });
+
+    elements.vaultResetPassphraseInput.addEventListener("keydown", (event) => {
+      updateCapsWarning(event, elements.resetCapsWarning);
+      if (event.key === "Enter") {
+        event.preventDefault();
+        verifyVaultResetPasscode().catch((error) => {
+          console.error(error);
+          elements.vaultResetStatus.textContent = "Could not verify vault passcode.";
+        });
+      }
+    });
+
+    elements.vaultResetPassphraseInput.addEventListener("keyup", (event) => {
+      updateCapsWarning(event, elements.resetCapsWarning);
+    });
+
+    elements.vaultResetPassphraseInput.addEventListener("input", () => {
+      if (state.census.resetPassphraseVerified) {
+        state.census.resetPassphraseVerified = false;
+        state.census.resetVerifiedPayload = null;
+        state.census.resetFlowState = "verify-passcode";
+        elements.vaultResetDeleteInput.value = "";
+        elements.vaultResetStatus.textContent = "Passcode changed. Verify again before deleting the vault.";
+        renderVaultEntryState();
+      }
+    });
+
+    elements.verifyVaultResetPasscodeButton.addEventListener("click", () => {
+      verifyVaultResetPasscode().catch((error) => {
+        console.error(error);
+        elements.vaultResetStatus.textContent = "Could not verify vault passcode.";
+      });
+    });
+
+    elements.vaultResetExportButton.addEventListener("click", () => {
+      exportResetVaultBackup().catch((error) => {
+        console.error(error);
+        elements.vaultResetStatus.textContent = "Could not export encrypted backup.";
+      });
+    });
+
+    elements.vaultResetExportAcknowledge.addEventListener("change", () => {
+      renderVaultEntryState();
+    });
+
+    elements.vaultResetDeleteInput.addEventListener("input", () => {
+      state.census.resetFlowState = elements.vaultResetDeleteInput.value.trim() === "DELETE" ? "ready-to-reset" : "type-delete";
+      renderVaultEntryState();
+    });
+
+    elements.vaultResetDeleteInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        completeVaultResetAndCreate().catch((error) => {
+          console.error(error);
+          elements.vaultResetStatus.textContent = "Could not delete vault.";
+        });
+      }
+    });
+
+    elements.completeVaultResetButton.addEventListener("click", () => {
+      completeVaultResetAndCreate().catch((error) => {
+        console.error(error);
+        elements.vaultResetStatus.textContent = "Could not delete vault.";
+      });
     });
 
     elements.lockCensusButton.addEventListener("click", lockCensusVault);
@@ -15556,6 +16608,15 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.stageKnowledgeGapButton.addEventListener("click", stageClinicalIntentGap);
 
+    elements.clinicalModifierQuickChips.addEventListener("click", (event) => {
+      const button = event.target?.closest?.("[data-clinical-modifier]");
+      if (!button) {
+        return;
+      }
+      const pressed = button.getAttribute("aria-pressed") === "true";
+      setClinicalModifier(button.dataset.clinicalModifier, !pressed);
+    });
+
     elements.complaintCdsInput.addEventListener("input", () => {
       autoResize(elements.complaintCdsInput);
       if (!elements.complaintCdsInput.value.trim()) {
@@ -15574,6 +16635,7 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.clinicalIntentModifierInput.addEventListener("input", () => {
       autoResize(elements.clinicalIntentModifierInput);
+      syncClinicalModifierQuickChips();
       elements.examTesterInput.value = [
         selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
         clinicalIntentModifierText()
