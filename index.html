@@ -16347,8 +16347,16 @@ Now create the initial rounds report for this case. Output the report only and n
         return;
       }
 
-      renderKnowledgeModuleResultRow(matchedKnowledgeModuleForCurrentSearch());
+      const knowledgeModule = matchedKnowledgeModuleForCurrentSearch();
+      const knowledgeModuleRepresentedByIntent = Boolean(knowledgeModule)
+        && result.matches.some((intentRow) => intentRow.complaint_module_id === knowledgeModule.id);
+      if (!knowledgeModuleRepresentedByIntent) {
+        renderKnowledgeModuleResultRow(knowledgeModule);
+      }
       result.matches.forEach((intentRow) => {
+        const mappedKnowledgeModule = intentRow.complaint_module_id
+          ? effectiveComplaintModules().find((module) => module.id === intentRow.complaint_module_id)
+          : null;
         const row = document.createElement("article");
         row.className = "exam-result-row complaint-cds-item";
         const head = document.createElement("div");
@@ -16367,6 +16375,7 @@ Now create the initial rounds report for this case. Output the report only and n
         [
           `score ${intentRow.score}`,
           intentRow.intent_type,
+          mappedKnowledgeModule ? "installed workup" : "",
           ...(intentRow.source_ids || []).slice(0, 3),
           ...(intentRow.clinical_bundle_ids || []).slice(0, 3)
         ].filter(Boolean).forEach((text) => {
@@ -17478,10 +17487,23 @@ Now create the initial rounds report for this case. Output the report only and n
       const candidates = state.examTesterCandidates || [];
       const gapRows = state.examTesterGapRows || [];
       const selectedIntents = selectedClinicalIntents();
+      const complaintResult = state.complaintCdsResult || state.unifiedClinicalWorkup?.complaintResult || null;
+      const guidelineModule = complaintResult?.module || null;
+      const guidelineMeta = guidelineModule?.endocrine_metadata || {};
+      const guidelineReferenceValues = guidelineMeta.reference_values || [];
+      const guidelineSourceIds = guidelineMeta.source_ids || [];
       const activeChips = activeClinicalModifierChips();
       const matchedTags = (state.examTesterMatchedTags || [])
         .map((match) => `${match.tag}${match.matchedTerms?.length ? ` (${match.matchedTerms.slice(0, 3).join(", ")})` : ""}`)
         .join("; ");
+      const guidelineModuleLines = guidelineModule ? [
+        `Module: ${guidelineModule.label} (${guidelineModule.id}, v${guidelineModule.version || "n/a"})`,
+        `Status: ${guidelineModule.status || "n/a"}`,
+        `Activation: ${guidelineMeta.activation_status || "n/a"}`,
+        `Sources: ${guidelineSourceIds.join("; ") || "n/a"}`,
+        `Section counts: red_flags ${(complaintResult.triggeredRedFlags || complaintResult.redFlags || []).length}; history ${(complaintResult.requiredQuestions || []).length + (complaintResult.conditionalQuestions || []).length}; exam ${(complaintResult.focusedExam || []).length}; tests ${(complaintResult.initialTests || []).length}; disposition ${(complaintResult.dispositionRules || []).length}; differential ${(complaintResult.differentialBuckets || []).length}`,
+        `Reference values: ${guidelineReferenceValues.join(" | ") || "n/a"}`
+      ] : ["No installed guideline module was matched."];
       const lines = [
         "# Clinical Workup Improvement Audit",
         "",
@@ -17505,6 +17527,9 @@ Now create the initial rounds report for this case. Output the report only and n
           `  required_domains: ${(intentRow.required_domains || []).join("; ") || "n/a"}`,
           `  avoid_labels: ${(intentRow.avoid_labels || []).join("; ") || "n/a"}`
         ].join("\n")) : ["- none"]),
+        "",
+        "## Guideline Knowledge Module",
+        ...guidelineModuleLines,
         "",
         "## Output Summary",
         `Core exam items: ${coreItems.length}`,
