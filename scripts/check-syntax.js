@@ -134,8 +134,7 @@ for (const requiredSnippet of [
   "retrieved_evidence_candidates",
   "prioritized evidence-seeded starting point",
   "add any missing evidence-based, safe, bedside-feasible questions or exam maneuvers",
-  "Renal graft tenderness",
-  "Patellar reflexes",
+  "I am a third-year medical student preparing for inpatient rounds.",
   "BEDSIDE QUESTION CHECKLIST",
   "TARGETED PHYSICAL EXAM CHECKLIST"
 ]) {

@@ -767,10 +767,21 @@ export function replaceStudentReferenceWithEvidenceBlock(prompt, evidenceBlock) 
   if (!evidenceBlock) {
     return prompt;
   }
-  if (/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/.test(prompt)) {
-    return prompt.replace(/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/, evidenceBlock);
+  const promptText = String(prompt || "");
+  if (/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/.test(promptText)) {
+    return promptText.replace(/<student_exam_reference>[\s\S]*?<\/student_exam_reference>/, evidenceBlock);
   }
-  return String(prompt || "").replace("<format_contract>", `${evidenceBlock}\n\n<format_contract>`);
+  const plainStudentReferencePattern = /Student exam reference \(student_exam_reference[\s\S]*?(?:End student_exam_reference\.|Use the reference to avoid missing student-performable maneuvers, then choose the final concise exam checklist from patient-specific reasoning plus this reference\.)/;
+  if (plainStudentReferencePattern.test(promptText)) {
+    return promptText.replace(plainStudentReferencePattern, evidenceBlock);
+  }
+  if (promptText.includes("<format_contract>")) {
+    return promptText.replace("<format_contract>", `${evidenceBlock}\n\n<format_contract>`);
+  }
+  if (promptText.includes("Output format rules:")) {
+    return promptText.replace("Output format rules:", `${evidenceBlock}\n\nOutput format rules:`);
+  }
+  return `${promptText}\n\n${evidenceBlock}`;
 }
 
 export async function loadEvidenceCatalog(fetchText, urls = evidenceFileUrls) {
