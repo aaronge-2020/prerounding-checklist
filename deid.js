@@ -251,7 +251,7 @@ const clinicalAnchorWords = new Set([
   "clearance", "ir", "cv", "tunneled", "cath", "insertion", "yrs", "wo", "con",
   "right", "left", "shoulder", "plasma", "collection", "pelvis", "by", "w", "b-",
   "results", "teg", "aggregation", "ma", "hcg", "tumor", "marker", "hip", "bilateral",
-  "femur", "foot", "min", "fish", "banding", "type", "prelim", "source", "axis",
+  "xr", "xray", "view", "views", "femur", "foot", "min", "fish", "banding", "type", "prelim", "source", "axis",
   "appearance", "ketones", "mucus", "plain", "cup", "trace", "small", "clear", "slightly",
   "analyzed", "counted", "karyotyped", "karyotype", "indication", "cytogenetics"
 ].forEach((word) => nonNameClinicalWords.add(word));
@@ -263,7 +263,7 @@ const clinicalAnchorWords = new Set([
   "ekg", "ecg", "quant", "antibody", "antigen", "pcr", "titer", "site", "ventilator",
   "fio2", "peep", "resp", "flow", "mode", "vitamin", "image", "screening", "clearance",
   "cath", "insertion", "shoulder", "plasma", "teg", "aggregation", "hcg", "tumor",
-  "marker", "hip", "femur", "foot", "fish", "banding", "prelim", "source", "axis",
+  "marker", "xr", "xray", "hip", "femur", "foot", "fish", "banding", "prelim", "source", "axis",
   "appearance", "ketones", "mucus", "cup", "karyotype", "cells"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
