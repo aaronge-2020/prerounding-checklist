@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
+  buildRecommendedExamChecklist,
   buildEvidencePromptReplacement,
   evidenceReviewContainsPhiLikeContent,
   exportEvidenceReviewState,
+  expandEvidenceContextText,
   extractEvidenceTags,
   importEvidenceReviewState,
   joinEvidenceCatalog,
@@ -67,6 +69,8 @@ sourceRows.forEach((row) => {
 const adrenalTags = extractEvidenceTags("Adrenal insufficiency with hypotension and hydrocortisone need.", tagRows).map((match) => match.tag);
 assert.ok(adrenalTags.includes("adrenal_insufficiency"), "adrenal context should match adrenal insufficiency");
 assert.ok(!adrenalTags.includes("AKI"), "single-word renal trigger should not match inside adrenal");
+const stomachCrampTags = extractEvidenceTags(expandEvidenceContextText("Stomach cramps after dinner."), tagRows).map((match) => match.tag);
+assert.ok(stomachCrampTags.includes("abdominal_pain"), "lay term stomach cramps should expand to abdominal pain evidence tags");
 
 queueRows.forEach((row) => {
   assert.ok(overlayIds.has(row.exam_id), `${row.exam_id} in priority queue should exist in overlay`);
@@ -99,6 +103,43 @@ function assertAnyLabel(context, expectedPatterns, message) {
     `${message}: expected one of ${expectedPatterns.map((pattern) => pattern.source).join(", ")} in ${labels.slice(0, 8).join(" | ")}`
   );
   return result;
+}
+
+function recommendationForContext(context, options = {}) {
+  const result = rankEvidenceCandidates(catalog, context, tagRows, {
+    maxCandidates: 60,
+    specialty: "Endocrinology consult",
+    ...options
+  });
+  return buildRecommendedExamChecklist(context, result, {
+    specialty: "Endocrinology consult"
+  });
+}
+
+function recommendationLabels(recommendation, includeConditional = true) {
+  const entries = includeConditional
+    ? [...recommendation.coreItems, ...recommendation.conditionalItems]
+    : recommendation.coreItems;
+  return entries.map((entry) => `${entry.label} ${entry.candidate?.maneuver || ""} ${entry.domain || ""}`.toLowerCase());
+}
+
+function assertRecommendedIncludes(context, patterns, message) {
+  const recommendation = recommendationForContext(context);
+  const labels = recommendationLabels(recommendation);
+  assert.ok(recommendation.coreItems.length > 0, `${message}: should have core recommendations`);
+  assert.ok(
+    patterns.some((pattern) => labels.some((label) => pattern.test(label))),
+    `${message}: expected one of ${patterns.map((pattern) => pattern.source).join(", ")} in ${labels.join(" | ")}`
+  );
+  return recommendation;
+}
+
+function assertRecommendedExcludes(context, patterns, message) {
+  const recommendation = recommendationForContext(context);
+  const labels = recommendationLabels(recommendation);
+  const hits = patterns.filter((pattern) => labels.some((label) => pattern.test(label)));
+  assert.equal(hits.length, 0, `${message}: should exclude ${hits.map((pattern) => pattern.source).join(", ")} from ${labels.join(" | ")}`);
+  return recommendation;
 }
 
 assertAnyLabel(
@@ -155,6 +196,152 @@ assertAnyLabel(
   "AKI with rising creatinine, oliguria, hypotension, flank pain, poor intake, and possible hypovolemia.",
   [/cva tenderness|blood pressure|jvp|radial pulses|mouth exam/],
   "AKI/hypovolemia case"
+);
+
+const dkaRecommendation = assertRecommendedIncludes(
+  "Endocrinology consult for T1DM admitted with DKA, anion gap acidosis, vomiting, dehydration, insulin drip, poor PO intake, and AKI.",
+  [/blood pressure/, /respiratory rate/, /mouth exam/, /jvp/, /abdominal palpation/],
+  "DKA/HHS recommendation"
+);
+assert.ok(
+  [/blood pressure/, /respiratory rate/, /mouth exam/, /jvp/, /abdominal palpation/]
+    .filter((pattern) => recommendationLabels(dkaRecommendation).some((label) => pattern.test(label))).length >= 4,
+  "DKA/HHS recommendation should cover vitals, respiratory/volume, mucosa, and abdomen"
+);
+assert.ok(
+  dkaRecommendation.coreItems.some((entry) => /respiratory rate/i.test(entry.label) && /Kussmaul|hyperglycemic-crisis/i.test(entry.displayDiagnosticTarget || "")),
+  "DKA/HHS respiratory rate should display a DKA-specific diagnostic target"
+);
+assert.ok(
+  dkaRecommendation.coreItems.some((entry) => /abdominal palpation|bowel sounds/i.test(entry.label) && /DKA|precipitating abdominal/i.test(entry.displayDiagnosticTarget || "")),
+  "DKA/HHS abdominal items should display DKA-specific abdominal rationale"
+);
+assertRecommendedExcludes(
+  "Endocrinology consult for T1DM admitted with DKA, anion gap acidosis, vomiting, dehydration, insulin drip, poor PO intake, and AKI.",
+  [/pmi/, /vibration sense/, /ophthalmoscopic/, /visual acuity/],
+  "DKA/HHS recommendation"
+);
+
+const peRecommendation = assertRecommendedIncludes(
+  "Suspected pulmonary embolism with pleuritic chest pain, dyspnea, tachycardia, hypoxia, and unilateral leg swelling.",
+  [/respiratory rate/, /posterior lung sounds/, /heart sounds/, /jvp/, /lower extremity edema/, /blood pressure/],
+  "suspected PE recommendation"
+);
+assert.ok(
+  [/respiratory rate/, /posterior lung sounds/, /heart sounds/, /jvp/, /lower extremity edema/, /blood pressure/]
+    .filter((pattern) => recommendationLabels(peRecommendation).some((label) => pattern.test(label))).length >= 5,
+  "suspected PE recommendation should cover vitals, pulmonary, cardiac strain, and DVT-relevant exam"
+);
+assertRecommendedExcludes(
+  "Suspected pulmonary embolism with pleuritic chest pain, dyspnea, tachycardia, hypoxia, and unilateral leg swelling.",
+  [/murphy/, /rebound/, /visual acuity/, /pronator drift/, /vibration sense/, /pmi/],
+  "suspected PE recommendation"
+);
+
+const stomachCrampRecommendation = assertRecommendedIncludes(
+  "Stomach cramps with nausea after eating.",
+  [/abdominal inspection/, /abdominal palpation/, /bowel sounds/, /blood pressure/, /heart rate/],
+  "stomach cramps recommendation"
+);
+assert.ok(
+  [/abdominal inspection/, /abdominal palpation/, /bowel sounds/]
+    .filter((pattern) => recommendationLabels(stomachCrampRecommendation).some((label) => pattern.test(label))).length >= 2,
+  "stomach cramps recommendation should cover focused abdominal exam"
+);
+assertRecommendedExcludes(
+  "Stomach cramps with nausea after eating.",
+  [/pmi/, /lower extremity edema/, /vibration sense/, /visual acuity/, /pronator drift/],
+  "stomach cramps recommendation"
+);
+
+function generalMedicineRecommendation(context) {
+  const result = rankEvidenceCandidates(catalog, context, tagRows, {
+    maxCandidates: 80,
+    specialty: "General medicine"
+  });
+  return buildRecommendedExamChecklist(context, result, {
+    specialty: "General medicine",
+    maxCoreItems: 28,
+    maxConditionalItems: 42
+  });
+}
+
+const periodCrampRecommendation = generalMedicineRecommendation("General clinic Period cramps management-relevant bedside physical exam.");
+const periodCrampLabels = recommendationLabels(periodCrampRecommendation);
+assert.ok(
+  [/abdominal inspection/, /abdominal palpation/, /bowel sounds/]
+    .filter((pattern) => periodCrampLabels.some((label) => pattern.test(label))).length >= 2,
+  `period cramps should produce lower-abdominal exam recommendations, got ${periodCrampLabels.join(" | ")}`
+);
+assert.equal(
+  [/jvp/, /pmi/, /carotids/, /pronator drift/]
+    .filter((pattern) => periodCrampLabels.some((label) => pattern.test(label))).length,
+  0,
+  `period cramps should avoid unrelated cardiopulmonary/neuro maneuvers, got ${periodCrampLabels.join(" | ")}`
+);
+assert.ok(
+  periodCrampRecommendation.warnings.some((warning) => /pelvic\/speculum\/bimanual exam/i.test(warning)),
+  "period cramps should warn about pelvic/pregnancy catalog gaps"
+);
+assert.ok(
+  periodCrampRecommendation.coreItems.some((entry) => /lower-abdominal tenderness pattern/i.test(entry.displayDiagnosticTarget || "")),
+  "period cramps should use pelvic/lower-abdominal display targets instead of generic abdominal metadata"
+);
+
+const jitteryRecommendation = generalMedicineRecommendation("General clinic Feeling jittery management-relevant bedside physical exam.");
+const jitteryCoreLabels = recommendationLabels(jitteryRecommendation, false);
+assert.ok(
+  [/heart rate/, /blood pressure/, /respiratory rate/]
+    .filter((pattern) => jitteryCoreLabels.some((label) => pattern.test(label))).length >= 2,
+  `feeling jittery should prioritize adrenergic vital signs, got ${jitteryCoreLabels.join(" | ")}`
+);
+assert.equal(
+  [/jvp/, /pmi/, /radial pulses/, /pronator drift/, /facial symmetry/, /abdominal palpation/, /bowel sounds/]
+    .filter((pattern) => recommendationLabels(jitteryRecommendation).some((label) => pattern.test(label))).length,
+  0,
+  `isolated feeling jittery should not recommend unrelated volume, neuro, or abdominal maneuvers, got ${recommendationLabels(jitteryRecommendation).join(" | ")}`
+);
+assert.ok(
+  jitteryRecommendation.warnings.some((warning) => /bedside glucose check/i.test(warning)),
+  "feeling jittery should warn about bedside glucose/mental-status catalog gaps"
+);
+
+const faceWeaknessRecommendation = assertRecommendedIncludes(
+  "Face weakness with crooked smile and mouth droop.",
+  [/facial symmetry/, /eye closure/, /pronator drift/],
+  "face weakness recommendation"
+);
+assert.ok(
+  [/facial symmetry/, /eye closure/].some((pattern) => recommendationLabels(faceWeaknessRecommendation, false).some((label) => pattern.test(label))),
+  "face weakness recommendation should prioritize cranial nerve VII maneuvers in core items"
+);
+assert.equal(
+  [/vibration sense/, /great toe proprioception/, /extremity light touch/, /extremity pinprick/, /hip flexion/, /deltoid/, /babinski/]
+    .filter((pattern) => recommendationLabels(faceWeaknessRecommendation, false).some((label) => pattern.test(label))).length,
+  0,
+  "face weakness recommendation should not make broad sensory, reflex, or limb-strength maneuvers core without limb/sensory context"
+);
+
+const heartFailureRecommendation = assertRecommendedIncludes(
+  "Dyspnea with hypoxia, edema, rising creatinine, orthopnea, and possible heart failure requiring diuresis decisions.",
+  [/jvp/, /lower extremity edema/, /posterior lung sounds/, /heart sounds/, /blood pressure/, /respiratory rate/],
+  "dyspnea/HF recommendation"
+);
+assert.ok(
+  [/jvp/, /lower extremity edema/, /posterior lung sounds/, /heart sounds/, /blood pressure/, /respiratory rate/]
+    .filter((pattern) => recommendationLabels(heartFailureRecommendation).some((label) => pattern.test(label))).length >= 5,
+  "dyspnea/HF recommendation should prioritize volume, lung, cardiac, BP, and respiratory items"
+);
+
+assertRecommendedIncludes(
+  "Eye redness with discharge, photophobia, eye pain, and blurry vision.",
+  [/visual acuity/, /pupils/, /extraocular/, /sclerae and conjunctivae/],
+  "eye redness recommendation"
+);
+assertRecommendedExcludes(
+  "Eye redness with discharge, photophobia, eye pain, and blurry vision.",
+  [/murphy/, /cva tenderness/, /posterior lung sounds/, /bowel sounds/],
+  "eye redness recommendation"
 );
 
 const prompt = "<student_exam_reference>\nlegacy\n</student_exam_reference>\n<format_contract>\nReturn exactly two parent checklists.";

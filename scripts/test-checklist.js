@@ -165,6 +165,8 @@ assert.ok(checklistPrompt.includes("Student exam reference (student_exam_referen
 assert.ok(!checklistPrompt.includes("<student_exam_reference>"), "main prompt should avoid XML-style student exam reference tags");
 assert.ok(!checklistPrompt.includes("Core exam domains:"), "main prompt should avoid bloating the accepted checklist prompt with long exam reference rows");
 assert.ok(checklistPrompt.includes("Use it as a floor, not a ceiling"), "exam reference should guide, not restrict, OpenEvidence");
+assert.ok(checklistPrompt.includes("<validated_clinical_intents>"), "main prompt should support the validated clinical intent gate");
+assert.ok(checklistPrompt.includes("Do not add unvalidated checklist items as final checklist rows"), "validated intent prompts should block unvalidated final checklist items");
 assert.ok(checklistPrompt.includes("<retrieved_evidence_candidates>"), "main prompt should support retrieved evidence candidates");
 assert.ok(checklistPrompt.includes("prioritized evidence-seeded starting point"), "retrieved evidence should guide candidate use without becoming exclusive");
 assert.ok(newAdmissionChecklistPrompt.includes("No prior subjective/objective/assessment/plan note is available"), "new admission prompt should retain admission context without unexplained abbreviation");

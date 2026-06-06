@@ -130,6 +130,7 @@ export function createPatientCase(values = {}, now = new Date()) {
     conversationChecklistReady: Boolean(values.conversationChecklistReady),
     conversationFinalReady: Boolean(values.conversationFinalReady),
     activePacketFlow: values.activePacketFlow || null,
+    openEvidenceResults: values.openEvidenceResults || [],
     assignedSnippets: values.assignedSnippets || []
   });
 }
@@ -150,6 +151,7 @@ export function normalizePatientCase(patient = {}) {
     collapsedSections: patient.collapsedSections && typeof patient.collapsedSections === "object" ? { ...patient.collapsedSections } : {},
     auditResult: patient.auditResult || null,
     activePacketFlow: patient.activePacketFlow || null,
+    openEvidenceResults: Array.isArray(patient.openEvidenceResults) ? patient.openEvidenceResults : [],
     assignedSnippets: Array.isArray(patient.assignedSnippets) ? patient.assignedSnippets : []
   };
 

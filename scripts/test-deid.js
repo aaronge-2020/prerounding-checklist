@@ -688,6 +688,42 @@ assert.ok(!labCertificationResult.text.includes("University of Example"), "named
 assert.ok(!labCertificationResult.text.includes("Harbor City"), "city/state facility detail should not remain");
 assert.deepEqual(labCertificationResult.residualWarnings, [], "generic lab certification text should not create residual warnings after institution redaction");
 
+const medicalTermFalsePositiveText = `Review details
+Corrected Arterial
+Manual Diff
+No Day
+DNA Assay
+TACROLIMUS BLOOD
+B Negative
+K Neg
+C Neg
+E Neg
+O Anti-K
+US Guided Needle Placement: Rpt 1/10/26 12:00
+SUBJECTIVE OBJECTIVE ASSESSMENT AND PLAN
+Active Antimicrobial Orders
+Cefepime IVPB MINI-BAG Plus`;
+const medicalTermFalsePositiveResult = deidentifyTextStructuredOnly(medicalTermFalsePositiveText);
+for (const term of [
+  "Corrected Arterial",
+  "Manual Diff",
+  "No Day",
+  "DNA Assay",
+  "TACROLIMUS BLOOD",
+  "B Negative",
+  "K Neg",
+  "C Neg",
+  "E Neg",
+  "O Anti-K",
+  "US Guided Needle Placement",
+  "SUBJECTIVE OBJECTIVE ASSESSMENT AND PLAN",
+  "Active Antimicrobial Orders",
+  "IVPB MINI-BAG Plus"
+]) {
+  assert.ok(medicalTermFalsePositiveResult.text.includes(term), `medical term should not be redacted: ${term}`);
+}
+assert.deepEqual(medicalTermFalsePositiveResult.residualWarnings, [], "listed medical terms should not create residual PHI warnings");
+
 const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);
 for (const term of clinicalGuardTerms) {

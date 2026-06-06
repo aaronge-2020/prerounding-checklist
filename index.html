@@ -841,6 +841,160 @@
       width: 100%;
     }
 
+    .open-evidence-hub {
+      display: grid;
+      gap: 14px;
+      border: 1px solid rgba(79, 152, 163, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      background: rgba(79, 152, 163, 0.065);
+    }
+
+    .open-evidence-hub[hidden] {
+      display: none !important;
+    }
+
+    .open-evidence-hub-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .open-evidence-hub-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 950;
+    }
+
+    .open-evidence-hub-copy {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .open-evidence-task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .open-evidence-task-card {
+      display: grid;
+      gap: 10px;
+      min-height: 176px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.14);
+    }
+
+    .open-evidence-task-card.is-active {
+      border-color: rgba(151, 217, 200, 0.68);
+      box-shadow: 0 0 0 1px rgba(151, 217, 200, 0.22);
+    }
+
+    .open-evidence-task-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .open-evidence-task-title {
+      margin: 0;
+      color: #f6f2e8;
+      font-size: 0.92rem;
+      font-weight: 950;
+    }
+
+    .open-evidence-task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .open-evidence-chip {
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.7rem;
+      font-weight: 850;
+    }
+
+    .open-evidence-chip.is-ready {
+      color: #d8fff2;
+      border-color: rgba(151, 217, 200, 0.38);
+      background: rgba(79, 152, 163, 0.18);
+    }
+
+    .open-evidence-chip.is-warning {
+      color: #f7d3c9;
+      border-color: rgba(216, 139, 125, 0.38);
+      background: rgba(216, 139, 125, 0.12);
+    }
+
+    .open-evidence-card-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: auto;
+    }
+
+    .open-evidence-card-actions .mini-btn {
+      min-height: 34px;
+    }
+
+    .open-evidence-detail {
+      display: grid;
+      gap: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 12px;
+    }
+
+    .open-evidence-detail[hidden] {
+      display: none !important;
+    }
+
+    .open-evidence-detail-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 950;
+    }
+
+    .open-evidence-prompt-preview,
+    .open-evidence-pasteback {
+      min-height: 150px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.16);
+      font: 0.82rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      resize: vertical;
+    }
+
+    .open-evidence-result-summary {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--muted);
+      font-size: 0.86rem;
+      white-space: pre-wrap;
+    }
+
+    .open-evidence-result-summary[hidden] {
+      display: none !important;
+    }
+
     .session-recovery-banner {
       display: grid;
       gap: 10px;
@@ -2785,12 +2939,14 @@
       line-height: 1.35;
     }
 
+    .complaint-cds-panel,
     .exam-tester-panel {
       border: 1px solid rgba(106, 179, 189, 0.22);
       border-radius: var(--radius-sm);
       background: rgba(79, 152, 163, 0.07);
     }
 
+    .complaint-cds-panel summary,
     .exam-tester-panel summary {
       min-height: 44px;
       padding: 12px 13px;
@@ -2799,6 +2955,7 @@
       font-weight: 900;
     }
 
+    .complaint-cds-body,
     .exam-tester-body {
       display: grid;
       gap: 12px;
@@ -2806,6 +2963,7 @@
       padding: 13px;
     }
 
+    .complaint-cds-grid,
     .exam-tester-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(220px, 0.36fr);
@@ -2813,6 +2971,8 @@
       align-items: start;
     }
 
+    .complaint-cds-context,
+    .complaint-cds-controls,
     .exam-tester-context,
     .exam-tester-controls {
       display: grid;
@@ -2820,11 +2980,30 @@
       min-width: 0;
     }
 
+    .complaint-cds-input,
     .exam-tester-input {
       min-height: 120px;
       resize: vertical;
     }
 
+    .exam-tester-toggle {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      font-size: 0.82rem;
+      line-height: 1.2;
+    }
+
+    .exam-tester-toggle input {
+      width: 17px;
+      height: 17px;
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .complaint-cds-actions,
     .exam-tester-actions {
       display: flex;
       flex-wrap: wrap;
@@ -2832,6 +3011,7 @@
       align-items: center;
     }
 
+    .complaint-cds-status,
     .exam-tester-status {
       min-height: 20px;
       margin: 0;
@@ -2840,6 +3020,8 @@
       line-height: 1.4;
     }
 
+    .complaint-cds-summary,
+    .complaint-cds-tags,
     .exam-tester-summary,
     .exam-tester-tags {
       display: flex;
@@ -2848,6 +3030,7 @@
       align-items: center;
     }
 
+    .complaint-cds-chip,
     .exam-tester-summary-chip,
     .exam-tester-tag {
       display: inline-flex;
@@ -2862,16 +3045,64 @@
       font-weight: 850;
     }
 
+    .complaint-cds-chip.is-strong,
     .exam-tester-summary-chip.is-strong {
       border-color: rgba(216, 176, 106, 0.3);
       color: var(--text);
       background: rgba(216, 176, 106, 0.09);
     }
 
+    .complaint-cds-results,
     .exam-tester-results,
-    .exam-tester-gaps {
+    .exam-tester-gaps,
+    .exam-tester-recommendation-group,
+    .exam-tester-audit-body {
       display: grid;
       gap: 8px;
+    }
+
+    .complaint-cds-section {
+      display: grid;
+      gap: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+    }
+
+    .complaint-cds-answer {
+      min-height: 34px;
+      max-width: 180px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      padding: 6px 8px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      font: inherit;
+      font-size: 0.78rem;
+    }
+
+    .complaint-cds-item.is-triggered {
+      border-color: rgba(242, 118, 118, 0.34);
+      background: rgba(242, 118, 118, 0.08);
+    }
+
+    .exam-tester-audit {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .exam-tester-audit summary {
+      min-height: 40px;
+      padding: 9px 10px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .exam-tester-audit-body {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px;
     }
 
     .exam-tester-section-title {
@@ -2894,6 +3125,21 @@
     .exam-result-row.is-gap {
       border-color: rgba(216, 176, 106, 0.2);
       background: rgba(216, 176, 106, 0.055);
+    }
+
+    .exam-result-row.is-core {
+      border-color: rgba(106, 179, 189, 0.28);
+      background: rgba(79, 152, 163, 0.1);
+    }
+
+    .exam-result-row.is-conditional {
+      border-color: rgba(216, 176, 106, 0.22);
+      background: rgba(216, 176, 106, 0.06);
+    }
+
+    .exam-result-row.is-suppressed {
+      opacity: 0.84;
+      background: rgba(0, 0, 0, 0.1);
     }
 
     .exam-result-head {
@@ -3662,6 +3908,7 @@
       .admission-grid,
       .quick-cluster-grid,
       .status-chip-grid,
+      .complaint-cds-grid,
       .exam-tester-grid {
         grid-template-columns: 1fr;
       }
@@ -4068,13 +4315,58 @@
           </div>
         </details>
 
+        <details id="complaintCdsPanel" class="complaint-cds-panel">
+          <summary>Clinical workup</summary>
+          <div class="complaint-cds-body">
+            <div class="complaint-cds-grid">
+              <div class="complaint-cds-context">
+                <label for="complaintCdsInput">Search concern or diagnosis</label>
+                <textarea id="complaintCdsInput" class="complaint-cds-input" spellcheck="false" placeholder="DKA, suspected PE, stomach cramps, burning pee, face droop"></textarea>
+                <div id="clinicalIntentResults" class="complaint-cds-results" hidden></div>
+                <div id="clinicalIntentSelection" class="complaint-cds-summary" hidden></div>
+                <label for="clinicalIntentModifierInput">Patient modifiers</label>
+                <textarea id="clinicalIntentModifierInput" class="complaint-cds-input" spellcheck="false" placeholder="Add only non-identifying clinical modifiers: vomiting, tachypnea, unilateral leg swelling, fever, pregnancy possible, focal weakness"></textarea>
+              </div>
+              <div class="complaint-cds-controls">
+                <div>
+                  <label for="complaintCdsSettingSelect">Clinical setting</label>
+                  <select id="complaintCdsSettingSelect">
+                    <option>Clinician support</option>
+                    <option>Emergency medicine/admission</option>
+                    <option>General medicine</option>
+                    <option>Endocrinology consult</option>
+                    <option>Cardiology consult</option>
+                    <option>Outpatient clinic</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="complaintCdsPopulationSelect">Population</label>
+                  <select id="complaintCdsPopulationSelect">
+                    <option>Adult</option>
+                    <option>Pregnancy possible</option>
+                    <option>Pediatric logic not enabled</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="complaint-cds-actions">
+              <button id="runComplaintCdsButton" class="btn btn-primary" type="button" disabled>Build clinical workup</button>
+              <button id="copyComplaintCdsButton" class="btn btn-secondary" type="button" disabled>Copy workup</button>
+              <button id="stageKnowledgeGapButton" class="btn btn-secondary" type="button">Stage as knowledge gap</button>
+              <button id="clearComplaintCdsButton" class="btn btn-quiet" type="button">Clear</button>
+            </div>
+            <p id="complaintCdsStatus" class="complaint-cds-status" role="status" aria-live="polite"></p>
+            <div id="complaintCdsSummary" class="complaint-cds-summary" hidden></div>
+            <div id="complaintCdsSources" class="complaint-cds-tags" hidden></div>
+            <div id="complaintCdsResults" class="complaint-cds-results" hidden></div>
+
         <details id="examTesterPanel" class="exam-tester-panel">
-          <summary>Evidence exam tester</summary>
+          <summary>Reviewer audit / evidence retrieval</summary>
           <div class="exam-tester-body">
             <div class="exam-tester-grid">
               <div class="exam-tester-context">
-                <label for="examTesterInput">Chief concern or diagnosis</label>
-                <textarea id="examTesterInput" class="exam-tester-input" spellcheck="false" placeholder="Suspected pulmonary embolism with pleuritic chest pain, dyspnea, tachycardia, hypoxia, unilateral leg swelling"></textarea>
+                <label for="examTesterInput">Compatibility mirror</label>
+                <textarea id="examTesterInput" class="exam-tester-input" spellcheck="false" placeholder="Mirrors selected intent plus patient modifiers for legacy tests/session state."></textarea>
               </div>
               <div class="exam-tester-controls">
                 <div>
@@ -4095,14 +4387,20 @@
                   </select>
                 </div>
                 <div>
-                  <label for="examTesterLimitInput">Candidate limit</label>
+                  <label for="examTesterLimitInput">Audit candidate limit</label>
                   <input id="examTesterLimitInput" type="number" min="12" max="96" step="4" value="60">
                 </div>
+                <label class="exam-tester-toggle" for="examTesterEmbeddingToggle">
+                  <input id="examTesterEmbeddingToggle" type="checkbox" checked>
+                  Semantic recall: EmbeddingGemma q4
+                </label>
               </div>
             </div>
             <div class="exam-tester-actions">
-              <button id="runExamTesterButton" class="btn btn-primary" type="button">Run exam retrieval</button>
-              <button id="copyExamTesterButton" class="btn btn-secondary" type="button" disabled>Copy results</button>
+              <button id="runExamTesterButton" class="btn btn-primary" type="button">Build clinical workup</button>
+              <button id="copyExamTesterButton" class="btn btn-secondary" type="button" disabled>Copy workup</button>
+              <label class="btn btn-secondary" for="knowledgePackImportInput">Import knowledge pack</label>
+              <input id="knowledgePackImportInput" type="file" accept="application/json,.json" hidden>
               <button id="clearExamTesterButton" class="btn btn-quiet" type="button">Clear</button>
             </div>
             <p id="examTesterStatus" class="exam-tester-status" role="status" aria-live="polite"></p>
@@ -4110,6 +4408,8 @@
             <div id="examTesterTags" class="exam-tester-tags" hidden></div>
             <div id="examTesterResults" class="exam-tester-results" hidden></div>
             <div id="examTesterGaps" class="exam-tester-gaps" hidden></div>
+          </div>
+        </details>
           </div>
         </details>
 
@@ -4365,7 +4665,45 @@
         <div id="promptCopiedSummary" class="compact-summary prompt-hub" hidden>
           <p class="compact-summary-title">OpenEvidence prompts</p>
           <p id="promptCopiedCopy" class="compact-summary-copy">Keep this open after each copy. Use the next prompt you need, then paste the checklist when OpenEvidence returns it.</p>
-          <div class="compact-summary-actions prompt-hub-actions">
+          <div id="openEvidenceTaskBoardCard" class="open-evidence-hub" hidden>
+            <div class="open-evidence-hub-head">
+              <div>
+                <p class="open-evidence-hub-title">OpenEvidence Rounds Hub</p>
+                <p class="open-evidence-hub-copy">Choose a task, copy the PHI-reviewed prompt, then paste OpenEvidence's answer back for structured paste-back review.</p>
+              </div>
+              <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
+            </div>
+            <div id="openEvidenceTaskBoard" class="open-evidence-task-grid" aria-label="OpenEvidence task board"></div>
+            <div id="openEvidenceTaskDetail" class="open-evidence-detail" hidden>
+              <p id="openEvidenceTaskDetailTitle" class="open-evidence-detail-title">OpenEvidence task</p>
+              <fieldset id="openEvidenceRefinementPanel" class="open-evidence-result-summary" hidden>
+                <legend>Checklist refinement reasons</legend>
+                <label><input type="checkbox" data-refinement-reason value="too long"> Too long</label>
+                <label><input type="checkbox" data-refinement-reason value="too generic"> Too generic</label>
+                <label><input type="checkbox" data-refinement-reason value="missing guideline item"> Missing guideline item</label>
+                <label><input type="checkbox" data-refinement-reason value="missing exam item"> Missing exam item</label>
+                <label><input type="checkbox" data-refinement-reason value="poor wording"> Poor wording</label>
+                <label><input type="checkbox" data-refinement-reason value="wrong service focus"> Wrong service focus</label>
+                <label for="openEvidenceRefinementNotes">Specific refinement notes</label>
+                <textarea id="openEvidenceRefinementNotes" class="open-evidence-pasteback" spellcheck="false" placeholder="Example: shorten the exam, add DKA discharge readiness, make questions patient-friendly."></textarea>
+              </fieldset>
+              <label for="openEvidencePromptPreview">Prompt preview</label>
+              <textarea id="openEvidencePromptPreview" class="open-evidence-prompt-preview" readonly spellcheck="false"></textarea>
+              <div class="compact-summary-actions">
+                <button id="copyOpenEvidenceTaskPromptButton" class="btn btn-primary" type="button">Copy selected prompt</button>
+                <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
+              </div>
+              <label for="openEvidencePastebackInput">Paste OpenEvidence answer</label>
+              <textarea id="openEvidencePastebackInput" class="open-evidence-pasteback" spellcheck="false" placeholder="Paste OpenEvidence's answer here. The app stores only structured reviewed summaries, not the raw answer."></textarea>
+              <div class="compact-summary-actions">
+                <button id="parseOpenEvidencePastebackButton" class="btn btn-secondary" type="button">Review pasted answer</button>
+                <button id="acceptOpenEvidenceResultButton" class="btn btn-primary" type="button" disabled>Mark reviewed</button>
+                <button id="applyOpenEvidenceChecklistButton" class="btn btn-secondary" type="button" hidden>Use checklist</button>
+              </div>
+              <div id="openEvidencePastebackSummary" class="open-evidence-result-summary" hidden></div>
+            </div>
+          </div>
+          <div class="compact-summary-actions prompt-hub-actions" hidden aria-hidden="true">
             <button id="copySummaryRoundsPromptButton" class="btn btn-secondary" type="button">Copy initial report prompt</button>
             <button id="copySummaryChecklistPromptButton" class="btn btn-primary" type="button">Copy checklist prompt</button>
             <button id="copySummaryTeachingPromptButton" class="btn btn-secondary" type="button">Teach me this patient</button>
@@ -5308,6 +5646,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         </div>
         <div class="tool-row" role="group" aria-label="Checklist filters">
           <button id="nextUnansweredButton" class="mini-btn" type="button">Next unanswered</button>
+          <button id="refineChecklistOpenEvidenceButton" class="mini-btn" type="button">Refine with OpenEvidence</button>
         </div>
         <details id="sectionDrawer" class="section-drawer">
           <summary>Jump to section</summary>
@@ -5415,16 +5754,41 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       validateChecklist
     } from "./checklist.js";
     import {
+      buildClinicalIntentRetrievalContext,
+      buildValidatedClinicalIntentPromptBlock,
+      clinicalIntentRegistry,
+      filterEvidenceCatalogForClinicalIntents,
+      getClinicalIntentById,
+      resolveClinicalIntents,
+      selectedValidatedClinicalIntents,
+      validateClinicalIntentRegistry
+    } from "./clinical-intents.js";
+    import {
+      complaintModules,
+      evaluateComplaintCds,
+      formatComplaintCdsReport
+    } from "./complaint-cds.js";
+    import {
       buildEvidencePromptReplacement,
+      buildRecommendedExamChecklist,
       evidenceFileUrls,
       exportEvidenceReviewState,
       importEvidenceReviewState,
       loadEvidenceCatalog,
       matchEvidenceForChecklistItem,
       normalizeEvidenceReviewState,
-      rankEvidenceCandidates,
       updateEvidenceReviewState
     } from "./evidence.js";
+    import {
+      buildEvidencePromptReplacementFromRanked,
+      createBrowserEmbeddingService,
+      embeddingIndexStorageKey,
+      normalizeEmbeddingSettings,
+      normalizeKnowledgePackReviewState,
+      rankEvidenceCandidatesHybrid,
+      stageClinicalKnowledgePack,
+      validateClinicalKnowledgePack
+    } from "./embedding-recall.js";
     import {
       formatLabChronologyPromptBlock,
       formatLabTimelinePreview,
@@ -5467,6 +5831,16 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       smartUpdateTypes,
       stripRawDailyInputsForStorage
     } from "./continuity.js";
+    import {
+      buildOpenEvidencePrompt,
+      getOpenEvidenceTask,
+      openEvidenceTasks
+    } from "./open-evidence-workflows.js";
+    import {
+      formatOpenEvidenceResultSummary,
+      normalizeOpenEvidenceTaskResult,
+      parseOpenEvidenceResult
+    } from "./open-evidence-results.js";
 
     const state = {
       sections: [],
@@ -5506,6 +5880,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       conversationChecklistReady: false,
       conversationFinalReady: false,
       activePacketFlow: null,
+      activeOpenEvidenceTaskId: "initial_rounds_report",
+      openEvidencePromptBuild: null,
+      pendingOpenEvidenceResult: null,
+      openEvidenceResults: [],
       transferCode: "",
       utilityScrubbedText: "",
       utilityScrubResult: null,
@@ -5518,10 +5896,22 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       evidenceCatalogLoadPromise: null,
       retrievedEvidenceCandidates: [],
       evidenceMatchedTags: [],
+      clinicalIntentMatches: [],
+      selectedClinicalIntentIds: [],
+      stagedClinicalIntentGaps: [],
+      complaintCdsResult: null,
+      complaintCdsAnswers: {},
+      complaintCdsModuleId: "",
+      unifiedClinicalWorkup: null,
       examTesterCandidates: [],
+      examTesterRecommendation: null,
       examTesterGapRows: [],
       examTesterMatchedTags: [],
       examTesterLastContext: "",
+      examEmbeddingService: null,
+      examEmbeddingIndex: null,
+      examEmbeddingStatus: null,
+      knowledgePackReviewState: normalizeKnowledgePackReviewState(),
       evidenceReviewState: normalizeEvidenceReviewState(),
       continuity: {
         cases: [],
@@ -5641,6 +6031,19 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       copySummaryChecklistPromptButton: document.getElementById("copySummaryChecklistPromptButton"),
       copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
       copySummaryMedicationSafetyPromptButton: document.getElementById("copySummaryMedicationSafetyPromptButton"),
+      openEvidenceTaskBoardCard: document.getElementById("openEvidenceTaskBoardCard"),
+      openEvidenceTaskBoard: document.getElementById("openEvidenceTaskBoard"),
+      openEvidenceTaskDetail: document.getElementById("openEvidenceTaskDetail"),
+      openEvidenceTaskDetailTitle: document.getElementById("openEvidenceTaskDetailTitle"),
+      openEvidenceRefinementPanel: document.getElementById("openEvidenceRefinementPanel"),
+      openEvidenceRefinementNotes: document.getElementById("openEvidenceRefinementNotes"),
+      openEvidencePromptPreview: document.getElementById("openEvidencePromptPreview"),
+      copyOpenEvidenceTaskPromptButton: document.getElementById("copyOpenEvidenceTaskPromptButton"),
+      openEvidencePastebackInput: document.getElementById("openEvidencePastebackInput"),
+      parseOpenEvidencePastebackButton: document.getElementById("parseOpenEvidencePastebackButton"),
+      acceptOpenEvidenceResultButton: document.getElementById("acceptOpenEvidenceResultButton"),
+      applyOpenEvidenceChecklistButton: document.getElementById("applyOpenEvidenceChecklistButton"),
+      openEvidencePastebackSummary: document.getElementById("openEvidencePastebackSummary"),
       conversationStatusCard: document.getElementById("conversationStatusCard"),
       conversationCaseKey: document.getElementById("conversationCaseKey"),
       conversationStatusText: document.getElementById("conversationStatusText"),
@@ -5677,12 +6080,28 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
       continuitySourcePanel: document.getElementById("continuitySourcePanel"),
       loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
+      complaintCdsInput: document.getElementById("complaintCdsInput"),
+      clinicalIntentResults: document.getElementById("clinicalIntentResults"),
+      clinicalIntentSelection: document.getElementById("clinicalIntentSelection"),
+      clinicalIntentModifierInput: document.getElementById("clinicalIntentModifierInput"),
+      complaintCdsSettingSelect: document.getElementById("complaintCdsSettingSelect"),
+      complaintCdsPopulationSelect: document.getElementById("complaintCdsPopulationSelect"),
+      runComplaintCdsButton: document.getElementById("runComplaintCdsButton"),
+      copyComplaintCdsButton: document.getElementById("copyComplaintCdsButton"),
+      stageKnowledgeGapButton: document.getElementById("stageKnowledgeGapButton"),
+      clearComplaintCdsButton: document.getElementById("clearComplaintCdsButton"),
+      complaintCdsStatus: document.getElementById("complaintCdsStatus"),
+      complaintCdsSummary: document.getElementById("complaintCdsSummary"),
+      complaintCdsSources: document.getElementById("complaintCdsSources"),
+      complaintCdsResults: document.getElementById("complaintCdsResults"),
       examTesterInput: document.getElementById("examTesterInput"),
       examTesterServiceSelect: document.getElementById("examTesterServiceSelect"),
       examTesterLimitInput: document.getElementById("examTesterLimitInput"),
+      examTesterEmbeddingToggle: document.getElementById("examTesterEmbeddingToggle"),
       runExamTesterButton: document.getElementById("runExamTesterButton"),
       copyExamTesterButton: document.getElementById("copyExamTesterButton"),
       clearExamTesterButton: document.getElementById("clearExamTesterButton"),
+      knowledgePackImportInput: document.getElementById("knowledgePackImportInput"),
       examTesterStatus: document.getElementById("examTesterStatus"),
       examTesterSummary: document.getElementById("examTesterSummary"),
       examTesterTags: document.getElementById("examTesterTags"),
@@ -5823,6 +6242,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       unansweredViewButton: document.getElementById("unansweredViewButton"),
       allViewButton: document.getElementById("allViewButton"),
       nextUnansweredButton: document.getElementById("nextUnansweredButton"),
+      refineChecklistOpenEvidenceButton: document.getElementById("refineChecklistOpenEvidenceButton"),
       expandAllButton: document.getElementById("expandAllButton"),
       collapseExamButton: document.getElementById("collapseExamButton"),
       auditPanel: document.getElementById("auditPanel"),
@@ -5935,6 +6355,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const userProfileKey = "preRoundUserProfileV1";
     const deviceModeKey = "preRoundDeviceModeV1";
     const evidenceReviewStorageKey = "preRoundEvidenceReviewV1";
+    const knowledgePackReviewStorageKey = "preRoundClinicalKnowledgePackReviewV1";
+    const openEvidenceResultsStorageKey = "preRoundOpenEvidenceTaskResultsV1";
     const studentExamReferenceUrl = "physical_exam_reference.csv";
     const studentExamEvidenceOverlayUrl = "physical_exam_evidence_overlay.csv";
     const studentExamReferenceMaxRows = 30;
@@ -6219,6 +6641,7 @@ You are an experienced attending physician and clerkship coach helping a third-y
 
 <task>
 Create a patient-specific rounds preparation report from the source context below.
+Return only the report itself and nothing else.
 </task>
 
 <clinical_goal>
@@ -6250,6 +6673,12 @@ Before writing the final answer, silently:
 
 Do not show this reasoning. Show only the final report.
 </internal_process>
+
+<report_only_contract>
+Your final answer must contain only the rounds preparation report.
+Start directly with the first report heading.
+Do not include an acknowledgment, preface, explanation, caveat, citation list, teaching commentary, checklist, offer to revise, follow-up question, or any text before or after the report.
+</report_only_contract>
 
 <service_specific_rounds_rule>
 If user_context includes a selected Service or Role, the DRAFT TWO MINUTE PRESENTATION must include a concise service-specific contribution summary in SUBJECTIVE under "Management to date."
@@ -6326,6 +6755,7 @@ DRAFT TWO MINUTE PRESENTATION
 
 Keep the report concise but complete enough for a new third-year student to use.
 Use bullets where they improve scanability.
+The first characters of the final answer must be "SPECIFIC ROUNDS REPORT". Stop after the report; do not add any closing note or extra text.
 In DRAFT TWO MINUTE PRESENTATION, write natural spoken prose the student can adapt using exactly these section headers:
 SUBJECTIVE
 OBJECTIVE
@@ -6733,7 +7163,8 @@ Sensory level present: No / Yes, at ___`;
         elements.rawMedicationInput.value.trim() ||
         admissionFields.some((field) => field.element.value.trim()) ||
         hasDailyInputs(readContinuityRawInputs()) ||
-        hasDailyInputs(currentContinuityTodayInputs())
+        hasDailyInputs(currentContinuityTodayInputs()) ||
+        state.openEvidenceResults.length
       );
     }
 
@@ -7628,14 +8059,18 @@ Sensory level present: No / Yes, at ___`;
         elements.phoneInstructionsPanel.hidden = true;
         elements.showPhoneInstructionsButton.textContent = "Show phone instructions";
       }
-      elements.promptCopiedSummary.hidden = !isCollapsed;
-      elements.promptCopiedCopy.textContent = message;
+      const showOpenEvidenceHub = isCollapsed || hasAnyOpenEvidenceSourceContext() || Boolean(state.sections.length) || Boolean(state.compiledText);
+      elements.promptCopiedSummary.hidden = !showOpenEvidenceHub;
+      elements.promptCopiedCopy.textContent = isCollapsed
+        ? message
+        : "Choose an OpenEvidence task after reviewing de-identified context. The app uses clipboard copy, manual OpenEvidence paste, and structured paste-back review.";
       elements.priorModeButton.parentElement.hidden = isCollapsed;
       elements.priorSourcePanel.hidden = isCollapsed;
       elements.admissionSourcePanel.hidden = isCollapsed;
       elements.continuitySourcePanel.hidden = isCollapsed;
       updateChecklistFirstControls();
       updateSourcePrimaryActions();
+      renderOpenEvidenceTaskBoard();
       updateStepRail(isCollapsed ? "paste" : "source");
       syncActivePatientFromWorkspace({ save: true });
     }
@@ -7649,6 +8084,7 @@ Sensory level present: No / Yes, at ___`;
       elements.outputText.value = state.compiledText;
       saveChecklistSession();
       updateGuidedStatus();
+      renderOpenEvidenceTaskBoard();
       updateStepRail(elements.outputScreen.classList.contains("is-active") ? "output" : elements.checklistScreen.classList.contains("is-active") ? "bedside" : "paste");
     }
 
@@ -7675,6 +8111,459 @@ Sensory level present: No / Yes, at ___`;
       } catch (error) {
         return false;
       }
+      return true;
+    }
+
+    function normalizeOpenEvidenceResultsList(value = []) {
+      return Array.isArray(value)
+        ? value.map((result) => normalizeOpenEvidenceTaskResult(result)).filter((result) => result.taskId)
+        : [];
+    }
+
+    function saveOpenEvidenceResultsToStorage() {
+      const results = normalizeOpenEvidenceResultsList(state.openEvidenceResults);
+      state.openEvidenceResults = results;
+      if (results.length) {
+        safeStorageSet(openEvidenceResultsStorageKey, JSON.stringify(results));
+      } else {
+        safeStorageRemove(openEvidenceResultsStorageKey);
+      }
+      syncActivePatientFromWorkspace({ save: true, render: false });
+    }
+
+    function restoreOpenEvidenceResultsFromStorage() {
+      const saved = safeStorageGet(openEvidenceResultsStorageKey);
+      if (!saved) {
+        return false;
+      }
+      try {
+        state.openEvidenceResults = normalizeOpenEvidenceResultsList(JSON.parse(saved));
+        return true;
+      } catch (error) {
+        state.openEvidenceResults = [];
+        safeStorageRemove(openEvidenceResultsStorageKey);
+        return false;
+      }
+    }
+
+    function acceptedOpenEvidenceResult(taskId) {
+      return state.openEvidenceResults.find((result) => result.taskId === taskId && result.reviewStatus === "accepted") || null;
+    }
+
+    function hasReviewedPriorSourceContext() {
+      return Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim() || state.scrubbedNote || state.importedContext);
+    }
+
+    function hasAdmissionPromptContext() {
+      return admissionFields.some((field) => field.element.value.trim()) || state.importedContext?.sourceMode === "admission";
+    }
+
+    function hasContinuityPromptContext() {
+      return Boolean(activeContinuityCase() && hasDailyInputs(currentContinuityTodayInputs())) || state.importedContext?.sourceMode === "continuity";
+    }
+
+    function hasAnyOpenEvidenceSourceContext() {
+      if (state.sourceMode === "admission") {
+        return hasAdmissionPromptContext();
+      }
+      if (state.sourceMode === "continuity") {
+        return hasContinuityPromptContext();
+      }
+      return hasReviewedPriorSourceContext();
+    }
+
+    function openEvidenceTaskReadiness(task) {
+      const sourceReady = hasAnyOpenEvidenceSourceContext();
+      const sameConversationReady = state.initialRoundsPromptCopied || state.conversationContextReady;
+      const currentChecklistReady = Boolean((state.checklistRawText || elements.checklistInput.value).trim());
+      const findingsReady = Boolean((state.compiledText || elements.outputText.value).trim());
+      const guidelineReady = Boolean(state.complaintCdsResult?.matched || state.unifiedClinicalWorkup);
+
+      let ready = false;
+      let reason = "";
+      if (task.requiredContext === "source") {
+        ready = sourceReady;
+        reason = ready ? "Context ready" : "De-identify or enter context first";
+      } else if (task.requiredContext === "findings") {
+        ready = findingsReady && sameConversationReady;
+        reason = !findingsReady ? "Prepare bedside update first" : sameConversationReady ? "Same chat ready" : "Initial report needed first";
+      } else if (task.requiredContext === "current_checklist") {
+        ready = currentChecklistReady;
+        reason = ready ? "Checklist ready" : "Paste or generate checklist first";
+      } else if (task.requiredContext === "medication_context") {
+        ready = sourceReady || sameConversationReady;
+        reason = ready ? (sameConversationReady ? "Same chat or context ready" : "Context fallback ready") : "Need source or prior chat";
+      } else if (task.requiredContext === "guideline_or_source") {
+        ready = guidelineReady || sourceReady;
+        reason = ready ? "Guideline/source ready" : "Build workup or add source first";
+      } else {
+        ready = sourceReady;
+        reason = ready ? "Ready" : "Context needed";
+      }
+
+      return {
+        ready,
+        reason,
+        sourceReady,
+        sameConversationReady,
+        accepted: Boolean(acceptedOpenEvidenceResult(task.id))
+      };
+    }
+
+    function openEvidenceTaskDescription(task, readiness) {
+      const expected = {
+        rounds_report: "Concise report",
+        rounds_update: "Final update",
+        checklist: "Pasteable checklist",
+        medication_safety: "Verify-before-rounds cards",
+        guideline_confirmation: "Guideline claims and citations",
+        guideline_exceptions: "Exceptions and caveats",
+        attending_plan: "Problem-based plan",
+        teaching: "Teaching guide",
+        discharge_checklist: "Discharge readiness",
+        missing_items: "Blind spots"
+      }[task.outputKind] || "Structured summary";
+      const conversation = task.requiresSameConversation ? "Same conversation required" : "Context can be included";
+      return { expected, conversation, status: readiness.reason };
+    }
+
+    function renderOpenEvidenceTaskBoard() {
+      if (!elements.openEvidenceTaskBoardCard || !elements.openEvidenceTaskBoard) {
+        return;
+      }
+      const visible = state.promptCollapsed || hasAnyOpenEvidenceSourceContext() || Boolean(state.sections.length) || Boolean(state.compiledText);
+      if (elements.promptCopiedSummary) {
+        elements.promptCopiedSummary.hidden = !visible;
+      }
+      if (visible && !state.promptCollapsed && elements.promptCopiedCopy) {
+        elements.promptCopiedCopy.textContent = "Choose an OpenEvidence task after reviewing de-identified context. The app uses clipboard copy, manual OpenEvidence paste, and structured paste-back review.";
+      }
+      elements.openEvidenceTaskBoardCard.hidden = !visible;
+      elements.openEvidenceTaskBoard.innerHTML = "";
+      openEvidenceTasks.forEach((task) => {
+        const readiness = openEvidenceTaskReadiness(task);
+        const description = openEvidenceTaskDescription(task, readiness);
+        const card = document.createElement("article");
+        card.className = `open-evidence-task-card${state.activeOpenEvidenceTaskId === task.id ? " is-active" : ""}`;
+        card.dataset.openEvidenceTaskId = task.id;
+
+        const top = document.createElement("div");
+        top.className = "open-evidence-task-top";
+        const title = document.createElement("p");
+        title.className = "open-evidence-task-title";
+        title.textContent = task.label;
+        const category = document.createElement("span");
+        category.className = "open-evidence-chip";
+        category.textContent = task.category;
+        top.append(title, category);
+        card.appendChild(top);
+
+        const meta = document.createElement("div");
+        meta.className = "open-evidence-task-meta";
+        [
+          { text: readiness.ready ? "Ready" : "Needs context", className: readiness.ready ? "is-ready" : "is-warning" },
+          { text: description.expected, className: "" },
+          { text: description.conversation, className: task.requiresSameConversation ? "is-warning" : "" },
+          readiness.accepted ? { text: "Reviewed", className: "is-ready" } : null
+        ].filter(Boolean).forEach((chip) => {
+          const item = document.createElement("span");
+          item.className = `open-evidence-chip${chip.className ? ` ${chip.className}` : ""}`;
+          item.textContent = chip.text;
+          meta.appendChild(item);
+        });
+        card.appendChild(meta);
+
+        const status = document.createElement("p");
+        status.className = "compact-summary-copy";
+        status.textContent = description.status;
+        card.appendChild(status);
+
+        const actions = document.createElement("div");
+        actions.className = "open-evidence-card-actions";
+        [["preview", "Preview"], ["copy", "Copy"], ["paste", "Paste"], ["review", readiness.accepted ? "Reviewed" : "Mark reviewed"]].forEach(([action, label]) => {
+          const button = document.createElement("button");
+          button.className = "mini-btn";
+          button.type = "button";
+          button.dataset.openEvidenceTaskAction = action;
+          button.dataset.openEvidenceTaskId = task.id;
+          button.textContent = label;
+          button.disabled = action !== "paste" && action !== "review" && !readiness.ready;
+          if (action === "review") {
+            button.disabled = !state.pendingOpenEvidenceResult || state.pendingOpenEvidenceResult.taskId !== task.id;
+          }
+          actions.appendChild(button);
+        });
+        card.appendChild(actions);
+        elements.openEvidenceTaskBoard.appendChild(card);
+      });
+    }
+
+    function selectedRefinementReasons() {
+      const reasons = Array.from(document.querySelectorAll("[data-refinement-reason]:checked"))
+        .map((input) => input.value);
+      const notes = elements.openEvidenceRefinementNotes?.value.trim();
+      return [
+        reasons.length ? `Selected reasons: ${reasons.join(", ")}.` : "",
+        notes ? `Specific notes: ${notes}` : ""
+      ].filter(Boolean).join("\n");
+    }
+
+    function formatEvidenceCandidatesForOpenEvidence() {
+      const candidates = state.retrievedEvidenceCandidates?.length
+        ? state.retrievedEvidenceCandidates
+        : (state.examTesterRecommendation?.coreItems || []).map((entry) => entry.candidate || entry);
+      return (candidates || []).slice(0, 12).map((candidate, index) => {
+        const label = candidate.examLabel || candidate.base?.suggested_checklist_label || candidate.maneuver || candidate.exam_id || "Evidence candidate";
+        const target = candidate.diagnostic_target || candidate.base?.diagnostic_target || "";
+        const management = candidate.result_changes_management || candidate.management_link || candidate.base?.result_changes_management || "";
+        return `${index + 1}. ${label}${target ? ` | target: ${target}` : ""}${management ? ` | management: ${management}` : ""}`;
+      }).join("\n");
+    }
+
+    function checklistAuditSummaryForOpenEvidence() {
+      const audit = state.auditResult || validateChecklist(parseChecklist(state.checklistRawText || elements.checklistInput.value));
+      if (!audit || audit.ok) {
+        return "Current checklist passed the local parser/quality audit.";
+      }
+      return audit.issues.slice(0, 12).map((issue) => `- ${issue.message}`).join("\n");
+    }
+
+    async function buildOpenEvidenceTaskContext(taskId) {
+      const task = getOpenEvidenceTask(taskId);
+      const needsSource = task && !["current_checklist", "findings"].includes(task.requiredContext);
+      let sourcePromptContext = null;
+      if (needsSource || taskId === "refine_checklist") {
+        sourcePromptContext = hasAnyOpenEvidenceSourceContext() ? await getCurrentSourcePromptContext() : null;
+      }
+      const sourceText = sourcePromptContext?.text || state.importedContext?.text || "";
+      const sourceContext = sourcePromptContext
+        ? prependLabChronology(`${sourcePromptContext.label}:\n${sourcePromptContext.text}`, sourcePromptContext)
+        : sourceText;
+      const complaintCdsReport = state.complaintCdsResult?.matched
+        ? formatComplaintCdsReport(state.complaintCdsResult)
+        : state.unifiedClinicalWorkup?.complaintResult?.matched
+          ? formatComplaintCdsReport(state.unifiedClinicalWorkup.complaintResult)
+          : "";
+
+      return {
+        sourceMode: state.sourceMode,
+        contextType: sourcePromptContext?.contextType || state.importedContext?.contextType || "De-identified patient context.",
+        sourceContext,
+        labChronologyBlock: currentLabChronologyBlock(sourcePromptContext || state.importedContext),
+        userContext: buildUserContextBlock(),
+        complaintCdsResult: state.complaintCdsResult,
+        complaintCdsReport,
+        evidenceCandidates: state.retrievedEvidenceCandidates || [],
+        evidenceSummary: formatEvidenceCandidatesForOpenEvidence(),
+        currentChecklist: state.checklistRawText || elements.checklistInput.value,
+        checklistAuditSummary: checklistAuditSummaryForOpenEvidence(),
+        refinementNotes: selectedRefinementReasons(),
+        compiledFindings: state.compiledText || elements.outputText.value,
+        medicationContext: sourceContext,
+        sameConversationReady: Boolean(state.initialRoundsPromptCopied || state.conversationContextReady),
+        forceIncludeSourceForMedicationSafety: !Boolean(state.initialRoundsPromptCopied || state.conversationContextReady)
+      };
+    }
+
+    function clearOpenEvidenceTaskDetail() {
+      state.openEvidencePromptBuild = null;
+      state.pendingOpenEvidenceResult = null;
+      if (elements.openEvidenceTaskDetail) {
+        elements.openEvidenceTaskDetail.hidden = true;
+      }
+      if (elements.openEvidencePromptPreview) {
+        elements.openEvidencePromptPreview.value = "";
+      }
+      if (elements.openEvidencePastebackInput) {
+        elements.openEvidencePastebackInput.value = "";
+      }
+      if (elements.openEvidencePastebackSummary) {
+        elements.openEvidencePastebackSummary.hidden = true;
+        elements.openEvidencePastebackSummary.textContent = "";
+      }
+      if (elements.acceptOpenEvidenceResultButton) {
+        elements.acceptOpenEvidenceResultButton.disabled = true;
+      }
+      if (elements.applyOpenEvidenceChecklistButton) {
+        elements.applyOpenEvidenceChecklistButton.hidden = true;
+      }
+    }
+
+    async function selectOpenEvidenceTask(taskId, options = {}) {
+      const task = getOpenEvidenceTask(taskId);
+      if (!task) {
+        return null;
+      }
+      state.activeOpenEvidenceTaskId = task.id;
+      elements.openEvidenceTaskDetail.hidden = false;
+      elements.openEvidenceTaskDetailTitle.textContent = task.label;
+      elements.openEvidenceRefinementPanel.hidden = task.id !== "refine_checklist";
+      elements.openEvidencePastebackSummary.hidden = true;
+      elements.openEvidencePastebackSummary.textContent = "";
+      elements.acceptOpenEvidenceResultButton.disabled = true;
+      elements.applyOpenEvidenceChecklistButton.hidden = true;
+      state.pendingOpenEvidenceResult = null;
+      renderOpenEvidenceTaskBoard();
+      try {
+        const context = await buildOpenEvidenceTaskContext(task.id);
+        const built = buildOpenEvidencePrompt(task.id, context);
+        state.openEvidencePromptBuild = built;
+        elements.openEvidencePromptPreview.value = built.prompt;
+        if (options.scroll !== false) {
+          elements.openEvidenceTaskDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        return built;
+      } catch (error) {
+        console.error(error);
+        elements.openEvidencePromptPreview.value = "";
+        elements.promptStatus.textContent = error?.message || "Could not build this OpenEvidence prompt.";
+        return null;
+      }
+    }
+
+    function sourceFreeTaskPromptForPacket(built) {
+      const stripped = String(built?.prompt || "")
+        .replace(/<source_context>[\s\S]*?<\/source_context>/gi, "<same_conversation_context>\nUse the de-identified source context provided in the previous CASE CONTEXT MESSAGE prompts in this same OpenEvidence conversation.\n</same_conversation_context>")
+        .replace(/<lab_chronology>[\s\S]*?<\/lab_chronology>/gi, "<lab_chronology_rule>\nIf a lab chronology was provided earlier, treat it as the authoritative lab recency ordering.\n</lab_chronology_rule>");
+      return `${stripped}
+
+The de-identified source context was provided in the previous CASE CONTEXT MESSAGE prompts. Now perform the selected task: ${built?.label || "OpenEvidence task"}.`;
+    }
+
+    async function copySelectedOpenEvidenceTaskPrompt(options = {}) {
+      const taskId = options.taskId || state.activeOpenEvidenceTaskId;
+      const statusElement = options.statusElement || elements.promptStatus;
+      if (taskId !== state.activeOpenEvidenceTaskId) {
+        state.activeOpenEvidenceTaskId = taskId;
+      }
+      const built = state.openEvidencePromptBuild?.taskId === taskId
+        ? state.openEvidencePromptBuild
+        : await selectOpenEvidenceTask(taskId, { scroll: options.scroll ?? false });
+      if (!built) {
+        return false;
+      }
+
+      const task = getOpenEvidenceTask(built.taskId);
+      if (built.taskId === "initial_rounds_report" && built.contextText) {
+        const packageDefinition = createPromptPackage({
+          kind: built.taskId,
+          caseKey: "",
+          singlePrompt: built.prompt,
+          contextType: "OpenEvidence Rounds Hub source context.",
+          contextText: built.contextText,
+          finalTaskPrompt: sourceFreeTaskPromptForPacket(built),
+          onComplete: () => {
+            markConversationStep("context");
+            updateSourcePrimaryActions();
+            renderOpenEvidenceTaskBoard();
+          }
+        });
+        return copyPromptPackage(packageDefinition, statusElement, built.copySuccessMessage, {
+          title: "PHI safety check for OpenEvidence task prompt",
+          reviewTarget: "source",
+          reviewScope: built.reviewScope,
+          reviewText: built.reviewText,
+          actionLabel: "Open OpenEvidence",
+          actionUrl: openEvidenceUrl,
+          duration: 7000
+        });
+      }
+
+      const copied = await copyPromptWithPhiWarning(built.prompt, statusElement, built.copySuccessMessage, {
+        title: "PHI safety check for OpenEvidence task prompt",
+        subject: task?.label || "OpenEvidence task",
+        reviewTarget: built.reviewScope === "source-free" ? "paste" : "source",
+        reviewScope: built.reviewScope,
+        reviewText: built.reviewText,
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000,
+        fitToOpenEvidence: false,
+        onCopied: () => {
+          if (built.taskId === "generate_checklist") {
+            handleChecklistPromptCopied();
+          } else if (built.taskId === "final_rounds_update") {
+            markConversationStep("final");
+          } else if (built.taskId === "initial_rounds_report") {
+            markConversationStep("context");
+          }
+          renderOpenEvidenceTaskBoard();
+        }
+      });
+      if (copied) {
+        if (built.taskId === "generate_checklist") {
+          handleChecklistPromptCopied();
+        } else if (built.taskId === "final_rounds_update") {
+          markConversationStep("final");
+        } else if (built.taskId === "initial_rounds_report") {
+          markConversationStep("context");
+        }
+      }
+      return copied;
+    }
+
+    function parseSelectedOpenEvidencePasteback() {
+      const task = getOpenEvidenceTask(state.activeOpenEvidenceTaskId);
+      const text = elements.openEvidencePastebackInput.value.trim();
+      if (!task || !text) {
+        elements.openEvidencePastebackSummary.hidden = false;
+        elements.openEvidencePastebackSummary.textContent = "Paste an OpenEvidence answer first.";
+        elements.acceptOpenEvidenceResultButton.disabled = true;
+        return null;
+      }
+      const parser = state.openEvidencePromptBuild?.pasteBackParser;
+      const result = parser
+        ? parser(text)
+        : parseOpenEvidenceResult({ taskId: task.id, outputKind: task.outputKind, sourceMode: state.sourceMode, text });
+      state.pendingOpenEvidenceResult = normalizeOpenEvidenceTaskResult(result);
+      elements.openEvidencePastebackSummary.hidden = false;
+      elements.openEvidencePastebackSummary.textContent = formatOpenEvidenceResultSummary(state.pendingOpenEvidenceResult);
+      elements.acceptOpenEvidenceResultButton.disabled = false;
+      elements.applyOpenEvidenceChecklistButton.hidden = !state.pendingOpenEvidenceResult.checklistText;
+      renderOpenEvidenceTaskBoard();
+      return state.pendingOpenEvidenceResult;
+    }
+
+    function acceptOpenEvidenceResult() {
+      if (!state.pendingOpenEvidenceResult) {
+        parseSelectedOpenEvidencePasteback();
+      }
+      if (!state.pendingOpenEvidenceResult) {
+        return false;
+      }
+      const accepted = normalizeOpenEvidenceTaskResult({
+        ...state.pendingOpenEvidenceResult,
+        reviewStatus: "accepted",
+        createdAt: state.pendingOpenEvidenceResult.createdAt || new Date().toISOString()
+      });
+      state.openEvidenceResults = [
+        accepted,
+        ...state.openEvidenceResults.filter((result) => !(result.taskId === accepted.taskId && result.createdAt === accepted.createdAt))
+      ].slice(0, 50);
+      state.pendingOpenEvidenceResult = null;
+      elements.acceptOpenEvidenceResultButton.disabled = true;
+      elements.openEvidencePastebackInput.value = "";
+      saveOpenEvidenceResultsToStorage();
+      renderOpenEvidenceTaskBoard();
+      showToast("OpenEvidence summary marked reviewed.");
+      return true;
+    }
+
+    function applyOpenEvidenceChecklistResult() {
+      const checklistText = state.pendingOpenEvidenceResult?.checklistText;
+      if (!checklistText) {
+        elements.openEvidencePastebackSummary.hidden = false;
+        elements.openEvidencePastebackSummary.textContent = "No checklist text was detected in this pasted answer.";
+        return false;
+      }
+      elements.checklistInput.value = checklistText;
+      const ok = tryBuildChecklist();
+      if (!ok) {
+        elements.openEvidencePastebackSummary.hidden = false;
+        elements.openEvidencePastebackSummary.textContent = "Checklist text was detected, but the local parser found quality or formatting issues. Use the format-fix prompt or refine again.";
+        return false;
+      }
+      acceptOpenEvidenceResult();
       return true;
     }
 
@@ -8472,6 +9361,39 @@ Sensory level present: No / Yes, at ___`;
       return serialized;
     }
 
+    function loadKnowledgePackReviewStateFromStorage() {
+      state.knowledgePackReviewState = normalizeKnowledgePackReviewState(safeLocalStorageGet(knowledgePackReviewStorageKey) || {});
+      return state.knowledgePackReviewState;
+    }
+
+    function saveKnowledgePackReviewState() {
+      const serialized = JSON.stringify(state.knowledgePackReviewState);
+      safeLocalStorageSet(knowledgePackReviewStorageKey, serialized);
+      return serialized;
+    }
+
+    async function importKnowledgePackFile(file) {
+      if (!file) {
+        return;
+      }
+      try {
+        const validation = validateClinicalKnowledgePack(await file.text());
+        if (!validation.ok) {
+          const preview = validation.issues.slice(0, 3).map((issue) => issue.message).join(" ");
+          setExamTesterStatus(`Knowledge pack was not imported. ${preview}`);
+          return;
+        }
+        const currentState = loadKnowledgePackReviewStateFromStorage();
+        state.knowledgePackReviewState = stageClinicalKnowledgePack(currentState, validation);
+        saveKnowledgePackReviewState();
+        setExamTesterStatus(`Staged ${validation.intentCount || 0} intents and ${validation.itemCount} knowledge-pack items for review. Accepted content remains inactive until reviewer activation.`);
+      } catch (error) {
+        setExamTesterStatus(`Knowledge pack import failed: ${error?.message || "unknown error"}.`);
+      } finally {
+        elements.knowledgePackImportInput.value = "";
+      }
+    }
+
     function updateEvidenceReviewStatus(message) {
       if (elements.evidenceReviewStatus) {
         elements.evidenceReviewStatus.textContent = message || "";
@@ -8621,6 +9543,7 @@ Sensory level present: No / Yes, at ___`;
         conversationChecklistReady: state.conversationChecklistReady,
         conversationFinalReady: state.conversationFinalReady,
         activePacketFlow: state.activePacketFlow,
+        openEvidenceResults: state.openEvidenceResults,
         lifecycleStatus: "active",
         updatedAt: now
       });
@@ -8700,6 +9623,10 @@ Sensory level present: No / Yes, at ___`;
         state.conversationChecklistReady = normalized.conversationChecklistReady;
         state.conversationFinalReady = normalized.conversationFinalReady;
         state.activePacketFlow = normalized.activePacketFlow || null;
+        state.openEvidenceResults = Array.isArray(normalized.openEvidenceResults) ? normalized.openEvidenceResults.map((result) => normalizeOpenEvidenceTaskResult(result)) : [];
+        state.pendingOpenEvidenceResult = null;
+        state.openEvidencePromptBuild = null;
+        state.activeOpenEvidenceTaskId = "initial_rounds_report";
         state.deviceWorkflowMode = normalized.checklistFirstMode ? "bedside" : "prepare";
         state.laptopPrepareStep = normalized.promptCollapsed || normalized.checklistPromptCopied ? "checklistCopied" : normalized.scrubbedNote ? "review" : "source";
         state.phoneBedsideStep = normalized.compiledText ? "output" : normalized.sections.length ? "checklist" : "paste";
@@ -8751,6 +9678,7 @@ Sensory level present: No / Yes, at ___`;
         }
         setOutputMode(state.outputMode);
         updateConversationStatus();
+        renderOpenEvidenceTaskBoard();
         updateGuidedStatus();
       } finally {
         state.census.hydrating = false;
@@ -9395,16 +10323,11 @@ Sensory level present: No / Yes, at ___`;
           }
         }
       } else if (next.kind === "update") {
-        const prompt = buildPresentationPrompt();
-        copied = await copyPromptWithPhiWarning(prompt, elements.censusStatus, "Update prompt copied.", {
-          title: "PHI safety check for presentation prompt",
-          reviewTarget: "output",
-          reviewScope: "custom",
-          reviewText: buildPresentationPhiReviewText()
+        copied = await copySelectedOpenEvidenceTaskPrompt({
+          taskId: "final_rounds_update",
+          statusElement: elements.censusStatus,
+          scroll: false
         });
-        if (copied) {
-          markConversationStep("final");
-        }
       }
       syncActivePatientFromWorkspace({ save: true });
       renderCensusDashboard();
@@ -10594,7 +11517,7 @@ ${contextType}
 No new bedside checklist answers or focused exam findings from this app are included yet. Use the source context already provided in this conversation to prepare the rounds report, and clearly mark what still needs bedside verification.
 </new_findings_status>
 
-Now create the initial rounds report for this case.`;
+Now create the initial rounds report for this case. Output the report only and nothing else.`;
     }
 
     function createPromptPackage({ kind, caseKey, singlePrompt, contextType, contextText, finalTaskPrompt, onComplete }) {
@@ -10937,6 +11860,7 @@ Now create the initial rounds report for this case.`;
         elements.copyContinuityPromptButton.disabled = isContinuity && !hasContinuityContext;
         elements.copyContinuityChecklistButton.disabled = isContinuity && (!hasContinuityContext || !initialCopied);
       }
+      renderOpenEvidenceTaskBoard();
     }
 
     function syncRawSoapNote() {
@@ -10947,6 +11871,7 @@ Now create the initial rounds report for this case.`;
       updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
+      renderOpenEvidenceTaskBoard();
     }
 
     function buildRawPriorSourceText() {
@@ -12064,10 +12989,566 @@ Now create the initial rounds report for this case.`;
       return Math.max(12, Math.min(96, parsed));
     }
 
+    function examTesterEmbeddingSettings() {
+      return normalizeEmbeddingSettings({
+        modelKey: "embeddinggemma",
+        dtype: "q4",
+        dimensions: 768
+      });
+    }
+
+    function examTesterEmbeddingEnabled() {
+      return Boolean(elements.examTesterEmbeddingToggle?.checked);
+    }
+
+    function getExamEmbeddingService() {
+      if (!state.examEmbeddingService) {
+        state.examEmbeddingService = createBrowserEmbeddingService(examTesterEmbeddingSettings());
+      }
+      return state.examEmbeddingService;
+    }
+
+    function examEmbeddingStorage() {
+      try {
+        return window.localStorage;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function examTesterEmbeddingStatusLabel(status) {
+      if (!status?.enabled) {
+        return "semantic recall off";
+      }
+      if (!status.ok) {
+        return `semantic fallback: ${status.errorMessage || "lexical only"}`;
+      }
+      return `${status.modelLabel || "EmbeddingGemma"} ${status.dtype || ""} ${status.indexState || "current"}`.trim();
+    }
+
+    function setComplaintCdsStatus(message) {
+      elements.complaintCdsStatus.textContent = message || "";
+    }
+
+    function createComplaintCdsChip(text, strong = false) {
+      const chip = document.createElement("span");
+      chip.className = `complaint-cds-chip${strong ? " is-strong" : ""}`;
+      chip.textContent = text;
+      return chip;
+    }
+
+    function selectedClinicalIntents() {
+      return selectedValidatedClinicalIntents(state.selectedClinicalIntentIds, clinicalIntentRegistry);
+    }
+
+    function primaryClinicalIntent() {
+      return selectedClinicalIntents()[0] || null;
+    }
+
+    function clinicalIntentModifierText() {
+      return elements.clinicalIntentModifierInput.value.trim();
+    }
+
+    function clinicalIntentSearchText() {
+      return elements.complaintCdsInput.value.trim();
+    }
+
+    function combinedClinicalIntentText() {
+      return [
+        clinicalIntentSearchText(),
+        clinicalIntentModifierText()
+      ].filter(Boolean).join(" ");
+    }
+
+    function renderClinicalIntentSelection() {
+      const selected = selectedClinicalIntents();
+      elements.clinicalIntentSelection.innerHTML = "";
+      elements.clinicalIntentSelection.hidden = !selected.length;
+      selected.forEach((intentRow, index) => {
+        const chip = createComplaintCdsChip(`${index === 0 ? "Primary: " : "Also: "}${intentRow.label}`, true);
+        chip.title = intentRow.intent_id;
+        elements.clinicalIntentSelection.appendChild(chip);
+        const remove = document.createElement("button");
+        remove.className = "evidence-review-button";
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.dataset.intentRemoveId = intentRow.intent_id;
+        elements.clinicalIntentSelection.appendChild(remove);
+      });
+      elements.runComplaintCdsButton.disabled = !selected.length;
+      elements.copyComplaintCdsButton.disabled = !selected.length || !(state.examTesterRecommendation || state.examTesterCandidates?.length || state.complaintCdsResult);
+      elements.stageKnowledgeGapButton.hidden = Boolean(selected.length);
+    }
+
+    function renderClinicalIntentResults() {
+      const result = resolveClinicalIntents(clinicalIntentSearchText(), clinicalIntentRegistry, { limit: 8 });
+      state.clinicalIntentMatches = result.matches;
+      elements.clinicalIntentResults.innerHTML = "";
+      elements.clinicalIntentResults.hidden = !clinicalIntentSearchText();
+
+      if (!clinicalIntentSearchText()) {
+        renderClinicalIntentSelection();
+        setComplaintCdsStatus("");
+        return;
+      }
+
+      if (!result.matches.length) {
+        const empty = document.createElement("p");
+        empty.className = "exam-result-text";
+        empty.textContent = "No validated clinical intent matched. This needs expert review before recommendations.";
+        elements.clinicalIntentResults.appendChild(empty);
+        renderClinicalIntentSelection();
+        setComplaintCdsStatus("No validated clinical intent matched. This needs expert review before recommendations.");
+        return;
+      }
+
+      result.matches.forEach((intentRow) => {
+        const row = document.createElement("article");
+        row.className = "exam-result-row complaint-cds-item";
+        const head = document.createElement("div");
+        head.className = "exam-result-head";
+        const title = document.createElement("p");
+        title.className = "exam-result-title";
+        title.textContent = intentRow.label;
+        const badge = document.createElement("span");
+        badge.className = "exam-result-rank";
+        badge.textContent = intentRow.status;
+        head.append(title, badge);
+        row.appendChild(head);
+
+        const meta = document.createElement("div");
+        meta.className = "exam-result-meta";
+        [
+          `score ${intentRow.score}`,
+          intentRow.intent_type,
+          ...(intentRow.source_ids || []).slice(0, 3),
+          ...(intentRow.clinical_bundle_ids || []).slice(0, 3)
+        ].filter(Boolean).forEach((text) => {
+          meta.appendChild(createExamTesterChip(text, intentRow.status === "validated" ? "is-main" : ""));
+        });
+        row.appendChild(meta);
+
+        appendExamTesterText(row, "Required domains", (intentRow.required_domains || []).join("; "));
+        appendExamTesterText(row, "Avoid unless triggered", (intentRow.avoid_labels || []).join("; "));
+        const action = document.createElement("button");
+        action.className = "btn btn-secondary";
+        action.type = "button";
+        action.textContent = state.selectedClinicalIntentIds.includes(intentRow.intent_id) ? "Selected" : "Select intent";
+        action.disabled = intentRow.status !== "validated";
+        action.dataset.intentSelectId = intentRow.intent_id;
+        row.appendChild(action);
+        elements.clinicalIntentResults.appendChild(row);
+      });
+
+      renderClinicalIntentSelection();
+      if (!selectedClinicalIntents().length) {
+        setComplaintCdsStatus(result.validatedMatches.length
+          ? "Select a validated clinical intent before building recommendations."
+          : "No validated clinical intent matched. This needs expert review before recommendations.");
+      }
+    }
+
+    function selectClinicalIntent(intentId) {
+      const intentRow = getClinicalIntentById(intentId, clinicalIntentRegistry);
+      if (!intentRow || intentRow.status !== "validated") {
+        return;
+      }
+      if (!state.selectedClinicalIntentIds.includes(intentId)) {
+        state.selectedClinicalIntentIds.push(intentId);
+      }
+      renderClinicalIntentResults();
+      setComplaintCdsStatus("Validated clinical intent selected. Add patient modifiers, then build the workup.");
+    }
+
+    function removeClinicalIntent(intentId) {
+      state.selectedClinicalIntentIds = state.selectedClinicalIntentIds.filter((id) => id !== intentId);
+      renderClinicalIntentResults();
+    }
+
+    function stageClinicalIntentGap() {
+      const query = clinicalIntentSearchText();
+      if (!query) {
+        setComplaintCdsStatus("Enter the unsupported concern before staging a gap.");
+        elements.complaintCdsInput.focus();
+        return;
+      }
+      state.stagedClinicalIntentGaps.push({
+        query,
+        stagedAt: new Date().toISOString()
+      });
+      setComplaintCdsStatus("Knowledge gap staged for this session. Import a reviewed knowledge pack before activating recommendations.");
+    }
+
+    function complaintCdsContextTextFrom(concern, setting, population) {
+      return [
+        setting,
+        population,
+        concern
+      ].filter(Boolean).join(" ");
+    }
+
+    function complaintCdsContextText() {
+      const selected = selectedClinicalIntents();
+      const selectedText = selected.map((intentRow) => intentRow.label).join(" ");
+      return complaintCdsContextTextFrom(
+        [selectedText, clinicalIntentModifierText()].filter(Boolean).join(" "),
+        elements.complaintCdsSettingSelect.value.trim(),
+        elements.complaintCdsPopulationSelect.value.trim()
+      );
+    }
+
+    function settingForUnifiedExam(setting) {
+      const normalized = String(setting || "").toLowerCase();
+      if (normalized.includes("emergency") || normalized.includes("admission")) {
+        return "Emergency medicine/admission";
+      }
+      if (normalized.includes("endocr")) {
+        return "Endocrinology consult";
+      }
+      if (normalized.includes("card")) {
+        return "Cardiology consult";
+      }
+      if (normalized.includes("outpatient") || normalized.includes("clinic")) {
+        return "General clinic";
+      }
+      return "General medicine";
+    }
+
+    const guidelineExamRetrievalCueById = {
+      cp_vitals: "vitals blood pressure heart rate respiratory rate oxygen saturation chest pain instability",
+      cp_cardio_pulm: "cardiopulmonary exam heart sounds lung sounds JVP perfusion pulses chest pain",
+      cp_pulses: "bilateral pulses perfusion pulse deficit vascular chest pain",
+      cp_jvp_edema: "JVP lower extremity edema volume status dyspnea heart failure orthopnea",
+      dka_vitals: "vitals blood pressure heart rate respiratory rate SpO2 pulse oximetry temperature DKA HHS severity",
+      dka_hydration: "mucous membranes JVP if fluid tolerance concern skin turgor urine output dehydration fluid deficit DKA HHS",
+      dka_resp_pattern: "respiratory pattern Kussmaul tachypnea work of breathing DKA HHS acidosis",
+      dka_mental_status_exam: "mental status confusion level of consciousness DKA HHS severity",
+      dka_perfusion: "capillary refill radial pulses peripheral pulses extremity temperature shock perfusion DKA HHS",
+      dka_abdomen: "abdominal exam tenderness distension ileus DKA HHS abdominal pain vomiting",
+      dka_infection_exam: "focused infection source exam lungs CVA tenderness skin wounds lines oropharynx when fever dysuria cough wound infection",
+      dka_diabetes_foot: "diabetes foot skin wound neuropathy ulcer infection discharge planning only when foot wound neuropathy infection",
+      dka_neuro_screen: "mental status reassessment persistent altered mental status DKA HHS hyperosmolarity"
+    };
+
+    const guidelineRedFlagRetrievalCueById = {
+      cp_hemodynamic_instability: "chest pain hemodynamic instability hypotension shock",
+      cp_acs_features: "chest pain ACS diaphoresis exertional pressure radiation",
+      cp_dissection_features: "chest pain pulse deficit neurologic deficit dissection concern",
+      cp_pe_features: "pleuritic chest pain dyspnea hypoxia unilateral leg swelling suspected PE",
+      dka_mental_status: "DKA HHS altered mental status confusion severity",
+      dka_shock_dehydration: "DKA HHS dehydration volume depletion fluid deficit perfusion assessment",
+      dka_kussmaul_resp: "DKA HHS Kussmaul respirations tachypnea respiratory distress acidosis",
+      dka_euglycemic_risk: "DKA HHS euglycemic risk SGLT2 pregnancy fasting ketotic symptoms",
+      dka_potassium_danger: "DKA HHS potassium danger ECG changes renal failure electrolyte monitoring",
+      dka_special_population: "DKA HHS special population heart failure kidney disease pregnancy frailty fluid safety"
+    };
+
+    function guidelineRetrievalCue(item, cueMap) {
+      if (!item) {
+        return "";
+      }
+      return cueMap[item.id] || item.label || "";
+    }
+
+    function buildGuidelineExamContext(result) {
+      if (!result?.matched) {
+        return [];
+      }
+      const redFlags = (result.triggeredRedFlags || [])
+        .map((item) => guidelineRetrievalCue(item, guidelineRedFlagRetrievalCueById))
+        .filter(Boolean)
+        .slice(0, 8);
+      const focusedExam = (result.focusedExam || [])
+        .map((item) => guidelineRetrievalCue(item, guidelineExamRetrievalCueById))
+        .filter(Boolean)
+        .slice(0, 12);
+      return [
+        `matched guideline module: ${result.module.label}`,
+        redFlags.length ? `triggered red flags: ${redFlags.join("; ")}` : "",
+        focusedExam.length ? `guideline focused exam needs: ${focusedExam.join("; ")}` : ""
+      ].filter(Boolean);
+    }
+
+    function examTesterContextFrom(concern, service, complaintResult = null) {
+      return [
+        service,
+        concern,
+        "management-relevant bedside physical exam",
+        ...buildGuidelineExamContext(complaintResult)
+      ].filter(Boolean).join(" ");
+    }
+
+    function unifiedEvidenceRetrievalContext(contextText, complaintResult = null) {
+      const selected = selectedClinicalIntents();
+      const baseContext = String(contextText || "").trim();
+      let guidelineResult = complaintResult;
+      if (!guidelineResult?.matched && baseContext) {
+        try {
+          guidelineResult = evaluateComplaintCds(baseContext, state.complaintCdsAnswers || {});
+        } catch (error) {
+          guidelineResult = null;
+        }
+      }
+      return [
+        buildClinicalIntentRetrievalContext(
+          selected,
+          clinicalIntentModifierText(),
+          elements.examTesterServiceSelect.value.trim(),
+          elements.complaintCdsPopulationSelect.value.trim()
+        ),
+        baseContext,
+        ...buildGuidelineExamContext(guidelineResult)
+      ].filter(Boolean).join("\n");
+    }
+
+    function syncUnifiedClinicalInputs(source, concern) {
+      const text = String(concern || "").trim();
+      if (!text) {
+        return;
+      }
+      if (source === "exam") {
+        elements.clinicalIntentModifierInput.value = text;
+        const examSetting = elements.examTesterServiceSelect.value.trim();
+        const complaintOption = Array.from(elements.complaintCdsSettingSelect.options)
+          .find((option) => option.value === examSetting || option.textContent === examSetting);
+        if (complaintOption) {
+          elements.complaintCdsSettingSelect.value = complaintOption.value;
+        }
+      } else {
+        elements.examTesterInput.value = [
+          selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+          clinicalIntentModifierText()
+        ].filter(Boolean).join(" | ");
+        const examSetting = settingForUnifiedExam(elements.complaintCdsSettingSelect.value.trim());
+        const examOption = Array.from(elements.examTesterServiceSelect.options)
+          .find((option) => option.value === examSetting || option.textContent === examSetting);
+        if (examOption) {
+          elements.examTesterServiceSelect.value = examOption.value;
+        }
+      }
+      autoResize(elements.complaintCdsInput);
+      autoResize(elements.clinicalIntentModifierInput);
+      autoResize(elements.examTesterInput);
+    }
+
+    function renderComplaintCdsSection(parent, title, items, options = {}) {
+      if (!items?.length && options.hideEmpty) {
+        return;
+      }
+      const section = document.createElement("section");
+      section.className = "complaint-cds-section";
+      const sectionTitle = document.createElement("p");
+      sectionTitle.className = "exam-tester-section-title";
+      sectionTitle.textContent = title;
+      section.appendChild(sectionTitle);
+
+      if (!items?.length) {
+        const empty = document.createElement("p");
+        empty.className = "exam-result-text";
+        empty.textContent = options.emptyText || "None from current inputs.";
+        section.appendChild(empty);
+        parent.appendChild(section);
+        return;
+      }
+
+      items.forEach((item) => {
+        section.appendChild(renderComplaintCdsItem(item, options));
+      });
+      parent.appendChild(section);
+    }
+
+    function renderComplaintAnswerSelect(item) {
+      const select = document.createElement("select");
+      select.className = "complaint-cds-answer";
+      select.dataset.complaintAnswerId = item.id;
+      const choices = item.options?.length ? item.options : [
+        { value: "unknown", label: "Unknown" },
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" }
+      ];
+      choices.forEach((choice) => {
+        const option = document.createElement("option");
+        option.value = choice.value;
+        option.textContent = choice.label;
+        select.appendChild(option);
+      });
+      select.value = state.complaintCdsAnswers[item.id] || "unknown";
+      return select;
+    }
+
+    function renderComplaintCdsItem(item, options = {}) {
+      const row = document.createElement("article");
+      row.className = `exam-result-row complaint-cds-item${item.triggered ? " is-triggered" : ""}`;
+
+      const head = document.createElement("div");
+      head.className = "exam-result-head";
+      const title = document.createElement("p");
+      title.className = "exam-result-title";
+      title.textContent = item.label;
+      head.appendChild(title);
+      if (options.kind === "question") {
+        head.appendChild(renderComplaintAnswerSelect(item));
+      } else if (item.triggered) {
+        const badge = document.createElement("span");
+        badge.className = "exam-result-rank";
+        badge.textContent = "RED";
+        head.appendChild(badge);
+      }
+      row.appendChild(head);
+
+      const meta = document.createElement("div");
+      meta.className = "exam-result-meta";
+      [
+        item.source?.source_id,
+        item.source?.source_section,
+        item.source?.evidence_strength,
+        item.source?.version_date ? `version ${item.source.version_date}` : "",
+        item.source?.last_reviewed ? `reviewed ${item.source.last_reviewed}` : ""
+      ].filter(Boolean).forEach((text) => {
+        meta.appendChild(createExamTesterChip(text, text === item.source?.source_id ? "is-main" : ""));
+      });
+      row.appendChild(meta);
+
+      appendExamTesterText(row, "Action", item.action);
+      appendExamTesterText(row, "Notes", item.source?.implementation_notes);
+      return row;
+    }
+
+    function renderUnifiedEvidenceSummary(parent) {
+      const recommendation = state.examTesterRecommendation;
+      const coreItems = recommendation?.coreItems || [];
+      const conditionalItems = recommendation?.conditionalItems || [];
+      const hasEvidence = coreItems.length || conditionalItems.length || state.examTesterCandidates?.length;
+      if (!hasEvidence) {
+        return;
+      }
+
+      const section = document.createElement("section");
+      section.className = "complaint-cds-section";
+      const title = document.createElement("p");
+      title.className = "exam-tester-section-title";
+      title.textContent = "Evidence-backed bedside exam";
+      section.appendChild(title);
+
+      const summary = document.createElement("div");
+      summary.className = "complaint-cds-summary";
+      summary.appendChild(createComplaintCdsChip(`${coreItems.length} recommended exam items`, true));
+      summary.appendChild(createComplaintCdsChip(`${conditionalItems.length} conditional add-ons`));
+      summary.appendChild(createComplaintCdsChip(`${state.examTesterCandidates?.length || 0} retrieved candidates`));
+      summary.appendChild(createComplaintCdsChip(`semantic ${examTesterEmbeddingStatusLabel(state.examEmbeddingStatus)}`));
+      section.appendChild(summary);
+
+      if (coreItems.length) {
+        coreItems.forEach((entry, index) => {
+          section.appendChild(renderExamTesterCandidate(entry, index, { rankPrefix: "E" }));
+        });
+      } else {
+        const empty = document.createElement("p");
+        empty.className = "exam-result-text";
+        empty.textContent = "Evidence retrieval ran, but no item met the core recommendation threshold.";
+        section.appendChild(empty);
+      }
+
+      if (conditionalItems.length) {
+        const details = document.createElement("details");
+        details.className = "review-details";
+        const summaryEl = document.createElement("summary");
+        summaryEl.textContent = `Conditional add-ons (${conditionalItems.length})`;
+        details.appendChild(summaryEl);
+        conditionalItems.forEach((entry, index) => {
+          details.appendChild(renderExamTesterCandidate(entry, index, { rankPrefix: "C" }));
+        });
+        section.appendChild(details);
+      }
+
+      parent.appendChild(section);
+    }
+
+    function renderComplaintCdsResult() {
+      const result = state.complaintCdsResult;
+      elements.complaintCdsSummary.innerHTML = "";
+      elements.complaintCdsSources.innerHTML = "";
+      elements.complaintCdsResults.innerHTML = "";
+      elements.complaintCdsSummary.hidden = !result;
+      elements.complaintCdsSources.hidden = !result?.matched;
+      elements.complaintCdsResults.hidden = !result;
+      const hasSelectedIntent = Boolean(selectedClinicalIntents().length);
+      elements.copyComplaintCdsButton.disabled = !hasSelectedIntent || (!result?.matched && !(state.examTesterRecommendation || state.examTesterCandidates?.length));
+
+      if (!result) {
+        return;
+      }
+
+      if (!result.matched) {
+        elements.complaintCdsSummary.appendChild(createComplaintCdsChip("No matching MVP module", true));
+        (result.modules || complaintModules).forEach((module) => {
+          elements.complaintCdsSummary.appendChild(createComplaintCdsChip(module.label));
+        });
+        const message = document.createElement("p");
+        message.className = "exam-result-text";
+        message.textContent = result.message;
+        elements.complaintCdsResults.appendChild(message);
+        renderUnifiedEvidenceSummary(elements.complaintCdsResults);
+        return;
+      }
+
+      elements.complaintCdsSummary.appendChild(createComplaintCdsChip(`${result.module.label} v${result.module.version}`, true));
+      elements.complaintCdsSummary.appendChild(createComplaintCdsChip(`${result.triggeredRedFlags.length} triggered red flags`));
+      elements.complaintCdsSummary.appendChild(createComplaintCdsChip(`${result.requiredQuestions.length + result.conditionalQuestions.length} history questions`));
+      elements.complaintCdsSummary.appendChild(createComplaintCdsChip(`${result.focusedExam.length} exam steps`));
+      elements.complaintCdsSummary.appendChild(createComplaintCdsChip(`${result.initialTests.length} immediate tests/next steps`));
+
+      result.sources.forEach((sourceRow) => {
+        const chip = createComplaintCdsChip(`${sourceRow.id}: ${sourceRow.version}`);
+        chip.title = sourceRow.url;
+        elements.complaintCdsSources.appendChild(chip);
+      });
+
+      renderComplaintCdsSection(elements.complaintCdsResults, "Red flags and escalation cues", result.redFlags);
+      renderComplaintCdsSection(elements.complaintCdsResults, "Required history", result.requiredQuestions, { kind: "question" });
+      renderComplaintCdsSection(elements.complaintCdsResults, "Conditional history", result.conditionalQuestions, { kind: "question", emptyText: "No conditional questions are active yet." });
+      renderComplaintCdsSection(elements.complaintCdsResults, "Focused physical exam", result.focusedExam);
+      renderComplaintCdsSection(elements.complaintCdsResults, "Immediate tests and next steps", result.initialTests);
+      renderComplaintCdsSection(elements.complaintCdsResults, "Disposition cues", result.dispositionRules);
+      renderComplaintCdsSection(elements.complaintCdsResults, "Differential buckets", result.differentialBuckets);
+      renderUnifiedEvidenceSummary(elements.complaintCdsResults);
+    }
+
+    function runComplaintCds() {
+      return buildUnifiedClinicalWorkup("complaint");
+    }
+
+    function clearComplaintCds() {
+      elements.complaintCdsInput.value = "";
+      elements.clinicalIntentModifierInput.value = "";
+      state.clinicalIntentMatches = [];
+      state.selectedClinicalIntentIds = [];
+      state.complaintCdsResult = null;
+      state.complaintCdsAnswers = {};
+      state.complaintCdsModuleId = "";
+      state.unifiedClinicalWorkup = null;
+      elements.clinicalIntentResults.hidden = true;
+      elements.clinicalIntentSelection.hidden = true;
+      elements.clinicalIntentResults.innerHTML = "";
+      elements.clinicalIntentSelection.innerHTML = "";
+      elements.complaintCdsSummary.hidden = true;
+      elements.complaintCdsSources.hidden = true;
+      elements.complaintCdsResults.hidden = true;
+      elements.complaintCdsSummary.innerHTML = "";
+      elements.complaintCdsSources.innerHTML = "";
+      elements.complaintCdsResults.innerHTML = "";
+      elements.copyComplaintCdsButton.disabled = true;
+      elements.runComplaintCdsButton.disabled = true;
+      elements.stageKnowledgeGapButton.hidden = false;
+      setComplaintCdsStatus("");
+    }
+
     function examTesterContext() {
-      const concern = elements.examTesterInput.value.trim();
-      const service = elements.examTesterServiceSelect.value.trim();
-      return [service, concern, "diagnostic uncertainty management-relevant bedside physical exam"].filter(Boolean).join(" ");
+      return examTesterContextFrom(
+        elements.examTesterInput.value.trim(),
+        elements.examTesterServiceSelect.value.trim(),
+        state.complaintCdsResult
+      );
     }
 
     function examTesterLabelKey(value) {
@@ -12119,9 +13600,18 @@ Now create the initial rounds report for this case.`;
       parent.appendChild(paragraph);
     }
 
-    function renderExamTesterCandidate(candidate, index) {
+    function examTesterCandidateFromEntry(entry) {
+      return entry?.candidate || entry || {};
+    }
+
+    function renderExamTesterCandidate(entry, index, options = {}) {
+      const candidate = examTesterCandidateFromEntry(entry);
+      const recommendation = entry?.candidate ? entry : null;
       const row = document.createElement("article");
-      row.className = "exam-result-row";
+      const roleClass = recommendation?.role === "core"
+        ? " is-core"
+        : (recommendation?.role === "conditional" ? " is-conditional" : (recommendation?.role === "suppressed" ? " is-suppressed" : ""));
+      row.className = `exam-result-row${roleClass}`;
 
       const head = document.createElement("div");
       head.className = "exam-result-head";
@@ -12130,7 +13620,7 @@ Now create the initial rounds report for this case.`;
       title.textContent = candidate.examLabel || candidate.maneuver || candidate.exam_id;
       const rank = document.createElement("span");
       rank.className = "exam-result-rank";
-      rank.textContent = `#${index + 1}`;
+      rank.textContent = options.rankPrefix ? `${options.rankPrefix}${index + 1}` : `#${index + 1}`;
       head.appendChild(title);
       head.appendChild(rank);
       row.appendChild(head);
@@ -12145,8 +13635,14 @@ Now create the initial rounds report for this case.`;
       const meta = document.createElement("div");
       meta.className = "exam-result-meta";
       [
+        recommendation?.role ? `role ${recommendation.role}` : "",
+        recommendation?.contextFitScore !== undefined ? `fit ${recommendation.contextFitScore}` : "",
+        recommendation?.domain ? `domain ${recommendation.domain}` : "",
         candidate.system || "Exam",
         candidate.section,
+        candidate.retrievalRoutes?.length ? `route ${candidate.retrievalRoutes.join("+")}` : "",
+        candidate.embeddingOnly ? "semantic suggestion" : "",
+        candidate.embedding_score !== undefined ? `semantic ${Math.round(candidate.embedding_score * 100)}` : "",
         `score ${Math.round(candidate.score || 0)}`,
         formatEvidenceLikelihood(candidate),
         `source ${formatEvidenceSource(candidate)}`,
@@ -12160,10 +13656,13 @@ Now create the initial rounds report for this case.`;
       });
       row.appendChild(meta);
 
-      appendExamTesterText(row, "Diagnostic target", candidate.diagnostic_target);
+      appendExamTesterText(row, recommendation?.role === "suppressed" ? "Why not recommended" : "Why this belongs", recommendation?.reason || recommendation?.rationale);
+      appendExamTesterText(row, "Diagnostic target", recommendation?.displayDiagnosticTarget || candidate.diagnostic_target);
       appendExamTesterText(row, "Use when", candidate.when_to_use_structured);
-      appendExamTesterText(row, "Management change", candidate.result_changes_management || candidate.management_link);
-      appendExamTesterText(row, "Bedside question", candidate.bedside_question_label ? `${candidate.bedside_question_label}: ${candidate.bedside_question_options || ""}` : "");
+      appendExamTesterText(row, "Management change", recommendation?.displayManagement || candidate.result_changes_management || candidate.management_link);
+      const bedsideQuestionLabel = recommendation?.displayBedsideQuestion || candidate.bedside_question_label;
+      const bedsideQuestionOptions = recommendation?.displayBedsideQuestionOptions || candidate.bedside_question_options;
+      appendExamTesterText(row, "Bedside question", bedsideQuestionLabel ? `${bedsideQuestionLabel}: ${bedsideQuestionOptions || ""}` : "");
       appendExamTesterText(row, "Limitations", candidate.limitations);
       appendExamTesterText(row, "Matched tags", candidate.matchedTags?.join("; "));
       appendExamTesterText(row, "Citation", candidate.source_citation);
@@ -12216,112 +13715,356 @@ Now create the initial rounds report for this case.`;
       return wrapper;
     }
 
+    function appendExamTesterSectionTitle(parent, text) {
+      const title = document.createElement("p");
+      title.className = "exam-tester-section-title";
+      title.textContent = text;
+      parent.appendChild(title);
+      return title;
+    }
+
+    function appendExamTesterAudit(parent, summaryText, entries, renderEntry, emptyText = "") {
+      const details = document.createElement("details");
+      details.className = "exam-tester-audit";
+      const summary = document.createElement("summary");
+      summary.textContent = summaryText;
+      details.appendChild(summary);
+      const body = document.createElement("div");
+      body.className = "exam-tester-audit-body";
+      if (entries.length) {
+        entries.forEach((entry, index) => {
+          body.appendChild(renderEntry(entry, index));
+        });
+      } else if (emptyText) {
+        const empty = document.createElement("p");
+        empty.className = "exam-result-text";
+        empty.textContent = emptyText;
+        body.appendChild(empty);
+      }
+      details.appendChild(body);
+      parent.appendChild(details);
+      return details;
+    }
+
     function renderExamTesterResults() {
+      const recommendation = state.examTesterRecommendation || null;
       const candidates = state.examTesterCandidates || [];
+      const coreItems = recommendation?.coreItems || [];
+      const conditionalItems = recommendation?.conditionalItems || [];
+      const suppressedItems = recommendation?.suppressedItems || [];
       const gapRows = state.examTesterGapRows || [];
       const matchedTags = state.examTesterMatchedTags || [];
-      const totalMinutes = candidates.reduce((sum, candidate) => sum + (Number.parseFloat(candidate.time_burden_minutes) || 0), 0);
+      const embeddingStatus = state.examEmbeddingStatus || recommendation?.embeddingStatus || null;
+      const totalCoreMinutes = recommendation?.totalCoreMinutes ?? coreItems.reduce((sum, entry) => sum + (Number.parseFloat(entry.feasibility?.time_burden_minutes) || 0), 0);
 
       elements.examTesterSummary.innerHTML = "";
-      elements.examTesterSummary.hidden = !candidates.length && !gapRows.length;
+      elements.examTesterSummary.hidden = !candidates.length && !gapRows.length && !coreItems.length;
       if (!elements.examTesterSummary.hidden) {
-        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${candidates.length} evidence-backed maneuvers`, true));
-        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${gapRows.length} base-catalog gaps`));
-        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${Math.round(totalMinutes)} min if all evidence items performed`));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${coreItems.length} core exam items`, true));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${conditionalItems.length} conditional add-ons`));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${candidates.length} retrieved for audit`));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${Math.round(totalCoreMinutes)} min core checklist`));
+        if (recommendation?.activeProfiles?.length) {
+          elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${recommendation.activeProfiles.length} clinical bundle${recommendation.activeProfiles.length === 1 ? "" : "s"}`));
+        }
+        if (embeddingStatus) {
+          elements.examTesterSummary.appendChild(createExamTesterSummaryChip(examTesterEmbeddingStatusLabel(embeddingStatus), Boolean(embeddingStatus.enabled && embeddingStatus.ok)));
+          if (embeddingStatus.enabled && embeddingStatus.ok) {
+            elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${embeddingStatus.runtime || "runtime unknown"}`));
+            elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${embeddingStatus.candidateCount || 0} semantic hits`));
+          }
+        }
       }
 
       elements.examTesterTags.innerHTML = "";
-      elements.examTesterTags.hidden = !matchedTags.length;
+      elements.examTesterTags.hidden = !matchedTags.length && !(recommendation?.warnings || []).length;
       matchedTags.forEach((match) => {
         const tag = document.createElement("span");
         tag.className = "exam-tester-tag";
         tag.textContent = `${match.tag}${match.matchedTerms?.length ? `: ${match.matchedTerms.slice(0, 3).join(", ")}` : ""}`;
         elements.examTesterTags.appendChild(tag);
       });
+      (recommendation?.warnings || []).forEach((warning) => {
+        const tag = document.createElement("span");
+        tag.className = "exam-tester-tag";
+        tag.textContent = warning;
+        elements.examTesterTags.appendChild(tag);
+      });
+      if (embeddingStatus?.enabled && !embeddingStatus.ok) {
+        const tag = document.createElement("span");
+        tag.className = "exam-tester-tag";
+        tag.textContent = `Embedding recall unavailable; using lexical fallback. ${embeddingStatus.errorMessage || ""}`.trim();
+        elements.examTesterTags.appendChild(tag);
+        elements.examTesterTags.hidden = false;
+      }
 
       elements.examTesterResults.innerHTML = "";
-      elements.examTesterResults.hidden = !candidates.length;
-      if (candidates.length) {
-        const title = document.createElement("p");
-        title.className = "exam-tester-section-title";
-        title.textContent = "Evidence-backed exam maneuvers";
-        elements.examTesterResults.appendChild(title);
-        candidates.forEach((candidate, index) => {
-          elements.examTesterResults.appendChild(renderExamTesterCandidate(candidate, index));
+      elements.examTesterResults.hidden = !coreItems.length && !conditionalItems.length && !candidates.length;
+      if (coreItems.length) {
+        appendExamTesterSectionTitle(elements.examTesterResults, "Recommended physical exam checklist");
+        coreItems.forEach((entry, index) => {
+          elements.examTesterResults.appendChild(renderExamTesterCandidate(entry, index, { rankPrefix: "C" }));
         });
+      }
+      if (conditionalItems.length) {
+        appendExamTesterSectionTitle(elements.examTesterResults, "Conditional add-ons");
+        conditionalItems.forEach((entry, index) => {
+          elements.examTesterResults.appendChild(renderExamTesterCandidate(entry, index, { rankPrefix: "A" }));
+        });
+      }
+      if (!coreItems.length && candidates.length) {
+        appendExamTesterSectionTitle(elements.examTesterResults, "No core recommendation met the clinical-fit threshold");
+      }
+      if (candidates.length) {
+        appendExamTesterAudit(
+          elements.examTesterResults,
+          `Evidence audit / retrieved candidates (${candidates.length})`,
+          candidates,
+          (candidate, index) => renderExamTesterCandidate(candidate, index),
+          "No evidence-backed candidates matched."
+        );
+      }
+      if (suppressedItems.length) {
+        appendExamTesterAudit(
+          elements.examTesterResults,
+          `Suppressed or lower-fit candidates (${suppressedItems.length})`,
+          suppressedItems,
+          (entry, index) => renderExamTesterCandidate({ ...entry, role: "suppressed" }, index, { rankPrefix: "S" })
+        );
       }
 
       elements.examTesterGaps.innerHTML = "";
       elements.examTesterGaps.hidden = !gapRows.length;
       if (gapRows.length) {
-        const title = document.createElement("p");
-        title.className = "exam-tester-section-title";
-        title.textContent = "Base catalog candidates not represented above";
-        elements.examTesterGaps.appendChild(title);
-        gapRows.forEach((row, index) => {
-          elements.examTesterGaps.appendChild(renderExamTesterGapRow(row, index));
-        });
+        appendExamTesterAudit(
+          elements.examTesterGaps,
+          `Base catalog gaps not represented above (${gapRows.length})`,
+          gapRows,
+          (row, index) => renderExamTesterGapRow(row, index)
+        );
       }
 
-      elements.copyExamTesterButton.disabled = !candidates.length && !gapRows.length;
+      elements.copyExamTesterButton.disabled = !coreItems.length && !conditionalItems.length && !candidates.length && !gapRows.length;
     }
 
-    async function runExamTester() {
-      const concern = elements.examTesterInput.value.trim();
-      if (!concern) {
-        setExamTesterStatus("Enter a chief concern or diagnosis.");
-        elements.examTesterInput.focus();
-        return;
-      }
-
+    async function buildExamTesterWorkup(context, options = {}) {
       setExamTesterStatus("Loading evidence catalog...");
       const catalog = await loadClinicalEvidenceCatalog();
       if (!catalog?.catalog?.length) {
-        setExamTesterStatus("Evidence catalog could not be loaded.");
-        return;
+        throw new Error("Evidence catalog could not be loaded.");
+      }
+      const selectedIntents = options.selectedIntents || selectedClinicalIntents();
+      const filteredCatalog = filterEvidenceCatalogForClinicalIntents(catalog.catalog, selectedIntents);
+      if (!filteredCatalog.length) {
+        throw new Error("Selected intent has no validated evidence rows yet.");
       }
 
-      const context = examTesterContext();
-      const maxCandidates = examTesterLimit();
+      const maxCandidates = options.maxCandidates ?? examTesterLimit();
       const reviewState = loadEvidenceReviewStateFromStorage();
-      const ranked = rankEvidenceCandidates(catalog.catalog, context, catalog.tagRows, {
+      const embeddingSettings = examTesterEmbeddingSettings();
+      const embeddingEnabled = options.embeddingEnabled ?? examTesterEmbeddingEnabled();
+      const specialty = options.specialty || elements.examTesterServiceSelect.value.trim();
+      if (embeddingEnabled) {
+        setExamTesterStatus("Loading evidence catalog and EmbeddingGemma semantic recall...");
+      }
+      const ranked = await rankEvidenceCandidatesHybrid(filteredCatalog, context, catalog.tagRows, {
         maxCandidates,
         reviewState,
-        specialty: elements.examTesterServiceSelect.value.trim()
+        specialty,
+        embedding: {
+          ...embeddingSettings,
+          enabled: embeddingEnabled
+        },
+        embeddingService: embeddingEnabled ? getExamEmbeddingService() : null,
+        embeddingIndex: state.examEmbeddingIndex,
+        storage: examEmbeddingStorage(),
+        storageKey: embeddingIndexStorageKey(embeddingSettings)
       });
+      state.examEmbeddingIndex = ranked.embeddingIndex || state.examEmbeddingIndex;
+      state.examEmbeddingStatus = ranked.embeddingStatus || null;
       const baseRows = await loadStudentExamReferenceRows();
       const baseCandidates = selectStudentExamReferenceRows(baseRows, context);
       const gapRows = baseCandidates
         .filter((row) => !ranked.candidates.some((candidate) => candidateMatchesBaseRow(candidate, row)))
         .slice(0, 30);
+      const recommendation = buildRecommendedExamChecklist(context, ranked, {
+        matchedTags: ranked.matchedTags || [],
+        catalogGaps: gapRows,
+        specialty
+      });
 
+      return { ranked, recommendation, gapRows };
+    }
+
+    function applyExamTesterWorkup(workup, context) {
+      const ranked = workup?.ranked || { candidates: [], matchedTags: [] };
+      const recommendation = workup?.recommendation || null;
       state.examTesterCandidates = ranked.candidates;
-      state.examTesterGapRows = gapRows;
+      state.examTesterRecommendation = recommendation;
+      state.examTesterGapRows = workup?.gapRows || [];
       state.examTesterMatchedTags = ranked.matchedTags || [];
       state.examTesterLastContext = context;
       renderExamTesterResults();
-      setExamTesterStatus(ranked.candidates.length
-        ? `Retrieved ${ranked.candidates.length} evidence-backed exam maneuvers.`
-        : "No evidence-backed maneuvers matched. Review base-catalog gaps and enrich the overlay.");
+    }
+
+    function examTesterStatusText(workup) {
+      const ranked = workup?.ranked || { candidates: [] };
+      const recommendation = workup?.recommendation || { coreItems: [] };
+      const embeddingNote = ranked.embeddingStatus?.enabled
+        ? (ranked.embeddingStatus.ok
+          ? ` Semantic recall used ${ranked.embeddingStatus.modelLabel || "EmbeddingGemma"} (${ranked.embeddingStatus.indexState || "current"}).`
+          : " Semantic recall fell back to lexical matching.")
+        : "";
+      return recommendation.coreItems.length
+        ? `Recommended ${recommendation.coreItems.length} core exam items from ${ranked.candidates.length} retrieved evidence candidates.${embeddingNote}`
+        : ranked.candidates.length
+          ? `Evidence matched, but no item met the core recommendation threshold. Review conditional and audit sections.${embeddingNote}`
+          : `No evidence-backed maneuvers matched. Review base-catalog gaps and enrich the overlay.${embeddingNote}`;
+    }
+
+    async function buildUnifiedClinicalWorkup(source = "complaint") {
+      const selectedIntents = selectedClinicalIntents();
+      if (!selectedIntents.length) {
+        renderClinicalIntentResults();
+        const message = "No validated clinical intent selected. Select a validated intent before building recommendations.";
+        setComplaintCdsStatus(message);
+        setExamTesterStatus(message);
+        elements.complaintCdsInput.focus();
+        return null;
+      }
+
+      const concern = [
+        selectedIntents.map((intentRow) => intentRow.label).join("; "),
+        clinicalIntentModifierText()
+      ].filter(Boolean).join(" | ");
+      syncUnifiedClinicalInputs(source, concern);
+      setComplaintCdsStatus("Building unified clinical workup...");
+      setExamTesterStatus("Building unified clinical workup...");
+
+      const complaintContext = complaintCdsContextText();
+      let complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers);
+      if (complaintResult.matched && state.complaintCdsModuleId && state.complaintCdsModuleId !== complaintResult.module.id) {
+        state.complaintCdsAnswers = {};
+        complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers);
+      }
+      state.complaintCdsResult = complaintResult;
+      state.complaintCdsModuleId = complaintResult.matched ? complaintResult.module.id : "";
+      renderComplaintCdsResult();
+
+      const evidenceContext = examTesterContextFrom(
+        buildClinicalIntentRetrievalContext(
+          selectedIntents,
+          clinicalIntentModifierText(),
+          elements.examTesterServiceSelect.value.trim(),
+          elements.complaintCdsPopulationSelect.value.trim()
+        ),
+        elements.examTesterServiceSelect.value.trim(),
+        complaintResult
+      );
+      let examWorkup = null;
+      try {
+        examWorkup = await buildExamTesterWorkup(evidenceContext, {
+          maxCandidates: examTesterLimit(),
+          specialty: elements.examTesterServiceSelect.value.trim(),
+          embeddingEnabled: examTesterEmbeddingEnabled(),
+          selectedIntents
+        });
+        applyExamTesterWorkup(examWorkup, evidenceContext);
+      } catch (error) {
+        console.error(error);
+        state.examTesterCandidates = [];
+        state.examTesterRecommendation = null;
+        state.examTesterGapRows = [];
+        state.examTesterMatchedTags = [];
+        state.examTesterLastContext = evidenceContext;
+        renderExamTesterResults();
+        setExamTesterStatus(error?.message || "Could not run evidence retrieval.");
+      }
+
+      state.unifiedClinicalWorkup = {
+        source,
+        concern,
+        selectedIntentIds: selectedIntents.map((intentRow) => intentRow.intent_id),
+        complaintContext,
+        evidenceContext,
+        complaintResult,
+        examWorkup,
+        builtAt: new Date().toISOString()
+      };
+      renderComplaintCdsResult();
+
+      const examStatus = examWorkup ? examTesterStatusText(examWorkup) : "Evidence exam retrieval did not complete.";
+      const complaintStatus = complaintResult.matched
+        ? `Matched ${complaintResult.module.label}; evidence-backed exam recommendation built from the same clinical context.`
+        : `${complaintResult.message} Evidence-backed exam recommendation built from the same clinical context.`;
+      setComplaintCdsStatus(complaintStatus);
+      if (examWorkup) {
+        setExamTesterStatus(examStatus);
+      }
+      return state.unifiedClinicalWorkup;
+    }
+
+    async function runExamTester() {
+      return buildUnifiedClinicalWorkup("exam");
     }
 
     function formatExamTesterReport() {
+      const recommendation = state.examTesterRecommendation || {};
+      const coreItems = recommendation.coreItems || [];
+      const conditionalItems = recommendation.conditionalItems || [];
       const lines = [
         "Physical Exam Evidence Tester",
         `Input: ${elements.examTesterInput.value.trim() || "Not specified"}`,
         `Clinical setting: ${elements.examTesterServiceSelect.value.trim() || "General clinic"}`,
         `Matched tags: ${(state.examTesterMatchedTags || []).map((match) => match.tag).join("; ") || "none"}`,
+        `Clinical bundles: ${(recommendation.activeProfiles || []).map((profile) => profile.name).join("; ") || "none"}`,
+        `Semantic recall: ${examTesterEmbeddingStatusLabel(state.examEmbeddingStatus)}`,
         ""
       ];
 
-      lines.push("Evidence-backed exam maneuvers");
+      lines.push("Recommended physical exam checklist");
+      coreItems.forEach((entry, index) => {
+        const candidate = entry.candidate || {};
+        lines.push(`${index + 1}. ${candidate.examLabel || candidate.maneuver || candidate.exam_id}`);
+        lines.push(`   Options: ${candidate.examOptions || "n/a"}`);
+        lines.push(`   Why: ${entry.reason || "n/a"}`);
+        lines.push(`   Diagnostic target: ${entry.displayDiagnosticTarget || candidate.diagnostic_target || "n/a"}`);
+        lines.push(`   Management change: ${entry.displayManagement || candidate.result_changes_management || candidate.management_link || "n/a"}`);
+        lines.push(`   Evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}; fit ${entry.contextFitScore ?? "n/a"}; score ${Math.round(candidate.score || 0)}; route ${(candidate.retrievalRoutes || []).join("+") || "n/a"}${candidate.embedding_score !== undefined ? `; semantic ${Math.round(candidate.embedding_score * 100)}` : ""}`);
+        lines.push(`   Feasibility: ${candidate.difficulty || "moderate"}; ${candidate.time_burden_minutes || "?"} min; equipment ${candidate.equipment_needed || "none"}; cooperation ${candidate.patient_cooperation_required || "not specified"}`);
+        const bedsideQuestionLabel = entry.displayBedsideQuestion || candidate.bedside_question_label;
+        const bedsideQuestionOptions = entry.displayBedsideQuestionOptions || candidate.bedside_question_options;
+        if (bedsideQuestionLabel) {
+          lines.push(`   Bedside question: ${bedsideQuestionLabel}: ${bedsideQuestionOptions || ""}`);
+        }
+      });
+
+      if (conditionalItems.length) {
+        lines.push("", "Conditional add-ons");
+        conditionalItems.forEach((entry, index) => {
+          const candidate = entry.candidate || {};
+          lines.push(`${index + 1}. ${candidate.examLabel || candidate.maneuver || candidate.exam_id}`);
+          lines.push(`   Options: ${candidate.examOptions || "n/a"}`);
+          lines.push(`   Why: ${entry.reason || "n/a"}`);
+          lines.push(`   Diagnostic target: ${entry.displayDiagnosticTarget || candidate.diagnostic_target || "n/a"}`);
+          lines.push(`   Management change: ${entry.displayManagement || candidate.result_changes_management || candidate.management_link || "n/a"}`);
+          lines.push(`   Evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}; fit ${entry.contextFitScore ?? "n/a"}; route ${(candidate.retrievalRoutes || []).join("+") || "n/a"}${candidate.embedding_score !== undefined ? `; semantic ${Math.round(candidate.embedding_score * 100)}` : ""}`);
+          const bedsideQuestionLabel = entry.displayBedsideQuestion || candidate.bedside_question_label;
+          const bedsideQuestionOptions = entry.displayBedsideQuestionOptions || candidate.bedside_question_options;
+          if (bedsideQuestionLabel) {
+            lines.push(`   Bedside question: ${bedsideQuestionLabel}: ${bedsideQuestionOptions || ""}`);
+          }
+        });
+      }
+
+      lines.push("", "Evidence audit / retrieved candidates");
       (state.examTesterCandidates || []).forEach((candidate, index) => {
         lines.push(`${index + 1}. ${candidate.examLabel || candidate.maneuver || candidate.exam_id}`);
         lines.push(`   Options: ${candidate.examOptions || "n/a"}`);
         lines.push(`   Diagnostic target: ${candidate.diagnostic_target || "n/a"}`);
         lines.push(`   When to use: ${candidate.when_to_use_structured || "n/a"}`);
         lines.push(`   Management change: ${candidate.result_changes_management || candidate.management_link || "n/a"}`);
-        lines.push(`   Evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}; score ${Math.round(candidate.score || 0)}`);
+        lines.push(`   Evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}; score ${Math.round(candidate.score || 0)}; route ${(candidate.retrievalRoutes || []).join("+") || "n/a"}${candidate.embedding_score !== undefined ? `; semantic ${Math.round(candidate.embedding_score * 100)}` : ""}`);
         lines.push(`   Feasibility: ${candidate.difficulty || "moderate"}; ${candidate.time_burden_minutes || "?"} min; equipment ${candidate.equipment_needed || "none"}; cooperation ${candidate.patient_cooperation_required || "not specified"}`);
         if (candidate.bedside_question_label) {
           lines.push(`   Bedside question: ${candidate.bedside_question_label}: ${candidate.bedside_question_options || ""}`);
@@ -12330,6 +14073,15 @@ Now create the initial rounds report for this case.`;
           lines.push(`   Limitations: ${candidate.limitations}`);
         }
       });
+
+      if (recommendation.suppressedItems?.length) {
+        lines.push("", "Suppressed or lower-fit candidates");
+        recommendation.suppressedItems.forEach((entry, index) => {
+          const candidate = entry.candidate || {};
+          lines.push(`${index + 1}. ${candidate.examLabel || candidate.maneuver || candidate.exam_id}`);
+          lines.push(`   Why not recommended: ${entry.reason || entry.suppressionReason || "lower context fit"}`);
+        });
+      }
 
       if (state.examTesterGapRows?.length) {
         lines.push("", "Base catalog candidates not represented above");
@@ -12345,12 +14097,34 @@ Now create the initial rounds report for this case.`;
       return `${lines.join("\n")}\n`;
     }
 
+    function formatUnifiedClinicalWorkupReport() {
+      const parts = [];
+      const concern = elements.complaintCdsInput.value.trim() || elements.examTesterInput.value.trim() || "Not specified";
+      parts.push([
+        "Unified Clinical Workup",
+        `Input: ${concern}`,
+        `Guideline setting: ${elements.complaintCdsSettingSelect.value.trim() || "n/a"}`,
+        `Exam setting: ${elements.examTesterServiceSelect.value.trim() || "n/a"}`,
+        state.unifiedClinicalWorkup?.builtAt ? `Built: ${state.unifiedClinicalWorkup.builtAt}` : ""
+      ].filter(Boolean).join("\n"));
+      if (state.complaintCdsResult) {
+        parts.push(formatComplaintCdsReport(state.complaintCdsResult).trim());
+      }
+      if (state.examTesterRecommendation || state.examTesterCandidates?.length || state.examTesterGapRows?.length) {
+        parts.push(formatExamTesterReport().trim());
+      }
+      return `${parts.filter(Boolean).join("\n\n---\n\n")}\n`;
+    }
+
     function clearExamTester() {
       elements.examTesterInput.value = "";
+      state.unifiedClinicalWorkup = null;
       state.examTesterCandidates = [];
+      state.examTesterRecommendation = null;
       state.examTesterGapRows = [];
       state.examTesterMatchedTags = [];
       state.examTesterLastContext = "";
+      state.examEmbeddingStatus = null;
       elements.examTesterSummary.hidden = true;
       elements.examTesterTags.hidden = true;
       elements.examTesterResults.hidden = true;
@@ -12364,14 +14138,59 @@ Now create the initial rounds report for this case.`;
     }
 
     async function addEvidenceOrStudentReferenceToPrompt(prompt, contextText) {
+      const selectedIntents = selectedClinicalIntents();
+      const warnings = [];
+      if (!selectedIntents.length) {
+        warnings.push("No validated clinical intent was selected in the local app, so no evidence-backed bedside checklist candidates are authorized.");
+        state.retrievedEvidenceCandidates = [];
+        state.evidenceMatchedTags = [];
+        return `${prompt}\n\n${buildValidatedClinicalIntentPromptBlock([], "", warnings)}`;
+      }
+      const intentPromptBlock = buildValidatedClinicalIntentPromptBlock(selectedIntents, clinicalIntentModifierText(), warnings);
+      const promptWithIntentBlock = `${prompt}\n\n${intentPromptBlock}`;
+      const retrievalContext = unifiedEvidenceRetrievalContext(contextText, state.complaintCdsResult);
       const catalog = await loadClinicalEvidenceCatalog();
       if (catalog?.catalog?.length) {
+        const filteredCatalog = {
+          ...catalog,
+          catalog: filterEvidenceCatalogForClinicalIntents(catalog.catalog, selectedIntents)
+        };
+        if (!filteredCatalog.catalog.length) {
+          state.retrievedEvidenceCandidates = [];
+          state.evidenceMatchedTags = [];
+          return `${promptWithIntentBlock}\n\n<unsupported_or_gap_warnings>\n- Selected intent has no validated evidence rows yet.\n</unsupported_or_gap_warnings>`;
+        }
         const reviewState = loadEvidenceReviewStateFromStorage();
-        const replacement = buildEvidencePromptReplacement(prompt, catalog, contextText, {
-          maxCandidates: evidenceCandidateMaxRows,
-          reviewState,
-          specialty: currentEvidenceSpecialty()
-        });
+        let replacement = null;
+        if (examTesterEmbeddingEnabled() && state.examEmbeddingService) {
+          const embeddingSettings = examTesterEmbeddingSettings();
+          const ranked = await rankEvidenceCandidatesHybrid(filteredCatalog.catalog, retrievalContext, filteredCatalog.tagRows, {
+            maxCandidates: evidenceCandidateMaxRows,
+            reviewState,
+            specialty: currentEvidenceSpecialty(),
+            embedding: {
+              ...embeddingSettings,
+              enabled: true
+            },
+            embeddingService: state.examEmbeddingService,
+            embeddingIndex: state.examEmbeddingIndex,
+            storage: examEmbeddingStorage(),
+            storageKey: embeddingIndexStorageKey(embeddingSettings)
+          });
+          state.examEmbeddingIndex = ranked.embeddingIndex || state.examEmbeddingIndex;
+          state.examEmbeddingStatus = ranked.embeddingStatus || state.examEmbeddingStatus;
+          replacement = buildEvidencePromptReplacementFromRanked(promptWithIntentBlock, filteredCatalog, retrievalContext, ranked, {
+            maxCandidates: evidenceCandidateMaxRows,
+            specialty: currentEvidenceSpecialty()
+          });
+        }
+        if (!replacement?.evidenceBlock) {
+          replacement = buildEvidencePromptReplacement(promptWithIntentBlock, filteredCatalog, retrievalContext, {
+            maxCandidates: evidenceCandidateMaxRows,
+            reviewState,
+            specialty: currentEvidenceSpecialty()
+          });
+        }
         if (replacement.evidenceBlock && replacement.candidates.length) {
           state.retrievedEvidenceCandidates = replacement.candidates;
           state.evidenceMatchedTags = replacement.matchedTags || [];
@@ -12382,7 +14201,7 @@ Now create the initial rounds report for this case.`;
 
       state.retrievedEvidenceCandidates = [];
       state.evidenceMatchedTags = [];
-      return addStudentExamReferenceToPrompt(prompt, contextText);
+      return `${promptWithIntentBlock}\n\n<unsupported_or_gap_warnings>\n- Evidence catalog could not be loaded; no validated exam candidate block was attached.\n</unsupported_or_gap_warnings>`;
     }
 
     async function buildPriorChecklistPrompt() {
@@ -12535,7 +14354,7 @@ No new bedside checklist answers or focused exam findings from this app are incl
 </new_findings_status>
 
 Keep this patient context available in this same OpenEvidence conversation for the later checklist prompt and bedside update prompt.
-Now create the initial rounds report.`;
+Now create the initial rounds report. Output the report only and nothing else.`;
 
       const finalTaskPrompt = buildPacketFinalTask({
         caseKey,
@@ -13411,6 +15230,10 @@ If source context is missing from this conversation, say that the prior context 
       state.conversationChecklistReady = false;
       state.conversationFinalReady = false;
       state.activePacketFlow = null;
+      state.activeOpenEvidenceTaskId = "initial_rounds_report";
+      state.openEvidencePromptBuild = null;
+      state.pendingOpenEvidenceResult = null;
+      state.openEvidenceResults = [];
       state.transferCode = "";
       state.deviceWorkflowMode = isPhoneLikeViewport() ? "bedside" : "prepare";
       state.laptopPrepareStep = "source";
@@ -13426,6 +15249,8 @@ If source context is missing from this conversation, say that the prior context 
       elements.transferCodeDisplay.textContent = "";
       elements.transferExportStatus.textContent = "";
       elements.packetPanel.hidden = true;
+      clearOpenEvidenceTaskDetail();
+      saveOpenEvidenceResultsToStorage();
       elements.transferCodeInput.value = "";
       elements.contextImportFile.value = "";
       elements.evidenceReviewFile.value = "";
@@ -13701,6 +15526,85 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.clearProfileButton.addEventListener("click", clearUserProfile);
 
+    elements.runComplaintCdsButton.addEventListener("click", () => {
+      runComplaintCds().catch((error) => {
+        console.error(error);
+        setComplaintCdsStatus("Could not build clinical workup.");
+        setExamTesterStatus("Could not build clinical workup.");
+      });
+    });
+
+    elements.copyComplaintCdsButton.addEventListener("click", async () => {
+      await copyText(formatUnifiedClinicalWorkupReport(), elements.complaintCdsStatus, "Unified clinical workup copied.");
+    });
+
+    elements.clearComplaintCdsButton.addEventListener("click", clearComplaintCds);
+
+    elements.clinicalIntentResults.addEventListener("click", (event) => {
+      const intentId = event.target?.dataset?.intentSelectId;
+      if (intentId) {
+        selectClinicalIntent(intentId);
+      }
+    });
+
+    elements.clinicalIntentSelection.addEventListener("click", (event) => {
+      const intentId = event.target?.dataset?.intentRemoveId;
+      if (intentId) {
+        removeClinicalIntent(intentId);
+      }
+    });
+
+    elements.stageKnowledgeGapButton.addEventListener("click", stageClinicalIntentGap);
+
+    elements.complaintCdsInput.addEventListener("input", () => {
+      autoResize(elements.complaintCdsInput);
+      if (!elements.complaintCdsInput.value.trim()) {
+        clearComplaintCds();
+      } else {
+        state.selectedClinicalIntentIds = [];
+        state.complaintCdsResult = null;
+        state.examTesterRecommendation = null;
+        state.examTesterCandidates = [];
+        state.examTesterGapRows = [];
+        renderClinicalIntentResults();
+        renderComplaintCdsResult();
+        renderExamTesterResults();
+      }
+    });
+
+    elements.clinicalIntentModifierInput.addEventListener("input", () => {
+      autoResize(elements.clinicalIntentModifierInput);
+      elements.examTesterInput.value = [
+        selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+        clinicalIntentModifierText()
+      ].filter(Boolean).join(" | ");
+      autoResize(elements.examTesterInput);
+    });
+
+    elements.complaintCdsInput.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        runComplaintCds().catch((error) => {
+          console.error(error);
+          setComplaintCdsStatus("Could not build clinical workup.");
+          setExamTesterStatus("Could not build clinical workup.");
+        });
+      }
+    });
+
+    elements.complaintCdsResults.addEventListener("change", (event) => {
+      const answerId = event.target?.dataset?.complaintAnswerId;
+      if (!answerId) {
+        return;
+      }
+      state.complaintCdsAnswers[answerId] = event.target.value || "unknown";
+      runComplaintCds().catch((error) => {
+        console.error(error);
+        setComplaintCdsStatus("Could not rebuild clinical workup.");
+        setExamTesterStatus("Could not rebuild clinical workup.");
+      });
+    });
+
     elements.runExamTesterButton.addEventListener("click", () => {
       runExamTester().catch((error) => {
         console.error(error);
@@ -13709,7 +15613,7 @@ If source context is missing from this conversation, say that the prior context 
     });
 
     elements.copyExamTesterButton.addEventListener("click", async () => {
-      await copyText(formatExamTesterReport(), elements.examTesterStatus, "Exam evidence results copied.");
+      await copyText(formatUnifiedClinicalWorkupReport(), elements.examTesterStatus, "Unified clinical workup copied.");
     });
 
     elements.clearExamTesterButton.addEventListener("click", clearExamTester);
@@ -14176,6 +16080,76 @@ heparin 5000 units held by provider`;
       });
     }
 
+    elements.openEvidenceTaskBoard.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-open-evidence-task-action]");
+      if (!button) {
+        return;
+      }
+      const taskId = button.dataset.openEvidenceTaskId;
+      const action = button.dataset.openEvidenceTaskAction;
+      if (!taskId) {
+        return;
+      }
+      if (action === "preview") {
+        await selectOpenEvidenceTask(taskId);
+        return;
+      }
+      if (action === "copy") {
+        await selectOpenEvidenceTask(taskId, { scroll: false });
+        await copySelectedOpenEvidenceTaskPrompt();
+        return;
+      }
+      if (action === "paste") {
+        await selectOpenEvidenceTask(taskId);
+        elements.openEvidencePastebackInput.focus({ preventScroll: true });
+        return;
+      }
+      if (action === "review") {
+        if (state.pendingOpenEvidenceResult?.taskId === taskId) {
+          acceptOpenEvidenceResult();
+        }
+      }
+    });
+
+    elements.copyOpenEvidenceTaskPromptButton.addEventListener("click", async () => {
+      await copySelectedOpenEvidenceTaskPrompt();
+    });
+
+    elements.parseOpenEvidencePastebackButton.addEventListener("click", () => {
+      parseSelectedOpenEvidencePasteback();
+    });
+
+    elements.acceptOpenEvidenceResultButton.addEventListener("click", () => {
+      acceptOpenEvidenceResult();
+    });
+
+    elements.applyOpenEvidenceChecklistButton.addEventListener("click", () => {
+      applyOpenEvidenceChecklistResult();
+    });
+
+    elements.refineChecklistOpenEvidenceButton.addEventListener("click", async () => {
+      showScreen("pasteScreen");
+      setPromptCollapsed(false);
+      await selectOpenEvidenceTask("refine_checklist");
+    });
+
+    document.querySelectorAll("[data-refinement-reason]").forEach((input) => {
+      input.addEventListener("change", async () => {
+        if (state.activeOpenEvidenceTaskId === "refine_checklist" && !elements.openEvidenceTaskDetail.hidden) {
+          await selectOpenEvidenceTask("refine_checklist", { scroll: false });
+        }
+      });
+    });
+
+    elements.openEvidenceRefinementNotes.addEventListener("input", () => {
+      if (state.activeOpenEvidenceTaskId === "refine_checklist" && !elements.openEvidenceTaskDetail.hidden) {
+        window.clearTimeout(elements.openEvidenceRefinementNotes._promptRefreshTimer);
+        elements.openEvidenceRefinementNotes._promptRefreshTimer = window.setTimeout(() => {
+          selectOpenEvidenceTask("refine_checklist", { scroll: false });
+        }, 250);
+      }
+    });
+
     elements.scrubAndCopyButton.addEventListener("click", async () => {
       try {
         const prompt = await buildPriorChecklistPrompt();
@@ -14417,6 +16391,18 @@ heparin 5000 units held by provider`;
       importEvidenceReviewFile(elements.evidenceReviewFile.files?.[0]);
     });
 
+    elements.knowledgePackImportInput.addEventListener("change", () => {
+      importKnowledgePackFile(elements.knowledgePackImportInput.files?.[0]);
+    });
+
+    elements.examTesterEmbeddingToggle.addEventListener("change", () => {
+      state.examEmbeddingStatus = null;
+      setExamTesterStatus(elements.examTesterEmbeddingToggle.checked
+        ? "Semantic recall enabled. EmbeddingGemma loads only when you build a checklist."
+        : "Semantic recall disabled. The tester will use structured tags and lexical retrieval only.");
+      renderExamTesterResults();
+    });
+
     elements.expandAllButton.addEventListener("click", () => {
       state.collapsedSections = {};
       renderChecklist();
@@ -14474,21 +16460,11 @@ heparin 5000 units held by provider`;
     });
 
     elements.copyPresentationPromptButton.addEventListener("click", async () => {
-      const prompt = buildPresentationPrompt();
-      const copied = await copyPromptWithPhiWarning(prompt, elements.copyStatus, "Update prompt copied. Paste it into OpenEvidence.", {
-        title: "PHI safety check for presentation prompt",
-        reviewTarget: state.importedContext && !state.conversationCaseKey && !state.conversationContextReady ? "imported" : "output",
-        reviewScope: "custom",
-        reviewText: buildPresentationPhiReviewText(),
-        actionLabel: "Open OpenEvidence",
-        actionUrl: openEvidenceUrl,
-        duration: 7000,
-        fitToOpenEvidence: false,
-        onCopied: () => markConversationStep("final")
+      await copySelectedOpenEvidenceTaskPrompt({
+        taskId: "final_rounds_update",
+        statusElement: elements.copyStatus,
+        scroll: false
       });
-      if (copied) {
-        markConversationStep("final");
-      }
     });
 
     elements.assessedOnlyButton.addEventListener("click", () => {
@@ -14557,8 +16533,10 @@ heparin 5000 units held by provider`;
 
     restoreUserProfile();
     restoreImportedContext();
+    restoreOpenEvidenceResultsFromStorage();
     loadContinuityCases();
     loadEvidenceReviewStateFromStorage();
+    loadKnowledgePackReviewStateFromStorage();
     const restoredSession = restoreChecklistSession();
     setupAdmissionIntakeNavigation();
     maybeStartPhoneChecklistFirst(restoredSession);

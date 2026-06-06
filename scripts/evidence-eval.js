@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import {
+  buildRecommendedExamChecklist,
   buildEvidencePromptReplacement,
   joinEvidenceCatalog,
   matchEvidenceForChecklistItem,
@@ -171,17 +172,27 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
     specialty: options.specialty || "General clinic",
     maxCandidates
   });
+  const recommendation = buildRecommendedExamChecklist(testCase.chart_context, ranked, {
+    specialty: options.specialty || "General clinic",
+    maxCoreItems: options.maxCoreItems || 24,
+    maxConditionalItems: options.maxConditionalItems || 36
+  });
   const promptReplacement = buildEvidencePromptReplacement(checklistPrompt, fixtures, testCase.chart_context, {
     specialty: options.specialty || "General clinic",
     maxCandidates: promptCandidateCount
   });
   const priorityCandidates = ranked.candidates.slice(0, priorityWindow);
+  const recommendedEntries = [...recommendation.coreItems, ...recommendation.conditionalItems];
+  const recommendedCandidates = recommendedEntries.map((entry) => entry.candidate);
   const coreInPriority = labelsInCandidates(gold.expectedCore, priorityCandidates);
   const coreOrAcceptableInPriority = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], priorityCandidates);
   const coreInRetrieved = labelsInCandidates(gold.expectedCore, ranked.candidates);
   const coreOrAcceptableInRetrieved = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], ranked.candidates);
+  const coreInRecommended = labelsInCandidates(gold.expectedCore, recommendedCandidates);
+  const coreOrAcceptableInRecommended = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], recommendedCandidates);
   const avoidHitsPriority = labelsInCandidates(gold.avoid, priorityCandidates);
   const avoidHitsRetrieved = labelsInCandidates(gold.avoid, ranked.candidates);
+  const avoidHitsRecommended = labelsInCandidates(gold.avoid, recommendedCandidates);
   const rationaleText = normalizeEvidenceLabel(evidenceTextForCandidates(ranked.candidates));
   const missingRationaleTerms = gold.requiredRationaleTerms.filter((term) => !rationaleText.includes(normalizeEvidenceLabel(term)));
   const expectedInBase = labelsInBase(gold.expectedCore, fixtures.baseRows);
@@ -212,22 +223,47 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
       score: Math.round(candidate.score),
       source: candidate.evidence_source_primary || ""
     })),
+    recommendedCore: recommendation.coreItems.map((entry) => ({
+      exam_id: entry.exam_id,
+      label: entry.label,
+      fit: entry.contextFitScore,
+      role: entry.role,
+      reason: entry.reason
+    })),
+    recommendedConditional: recommendation.conditionalItems.map((entry) => ({
+      exam_id: entry.exam_id,
+      label: entry.label,
+      fit: entry.contextFitScore,
+      role: entry.role,
+      reason: entry.reason
+    })),
+    suppressedCandidates: recommendation.suppressedItems.map((entry) => ({
+      exam_id: entry.exam_id,
+      label: entry.label,
+      reason: entry.reason
+    })),
     retrievedCandidateCount: ranked.candidates.length,
+    recommendedCandidateCount: recommendedCandidates.length,
     coreInPriority,
     coreOrAcceptableInPriority,
     coreInRetrieved,
     coreOrAcceptableInRetrieved,
+    coreInRecommended,
+    coreOrAcceptableInRecommended,
     coreCoverageRate: labelCoverageRate(coreInRetrieved, gold.expectedCore),
+    recommendedCoreCoverageRate: labelCoverageRate(coreInRecommended, gold.expectedCore),
     avoidHitsPriority,
     avoidHitsRetrieved,
+    avoidHitsRecommended,
     missingRationaleTerms,
     promptGuided,
     promptEvidenceSeeded: promptGuided,
     promptRestricted: promptGuided,
     retrievalPass: coverageGap || Boolean(coreOrAcceptableInRetrieved.length),
     priorityPass: coverageGap || Boolean(coreOrAcceptableInPriority.length),
+    recommendationPass: coverageGap || Boolean(coreOrAcceptableInRecommended.length),
     acceptablePass: coverageGap || Boolean(coreOrAcceptableInRetrieved.length),
-    avoidPass: avoidHitsPriority.length === 0,
+    avoidPass: avoidHitsRecommended.length === 0,
     rationalePass: missingRationaleTerms.length === 0,
     promptPass: promptGuided
   };
@@ -260,12 +296,21 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
   const priorityPassRate = enforceable.length
     ? enforceable.filter((result) => result.priorityPass).length / enforceable.length
     : 1;
+  const recommendationPassRate = enforceable.length
+    ? enforceable.filter((result) => result.recommendationPass).length / enforceable.length
+    : 1;
   const expectedCoreCount = enforceable.reduce((sum, result) => sum + (fixtures.goldByCase.get(result.caseId)?.expectedCore.length || 0), 0);
   const retrievedCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRetrieved.length, 0);
+  const recommendedCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRecommended.length, 0);
   const coreLabelCoverageRate = expectedCoreCount ? retrievedCoreCount / expectedCoreCount : 1;
+  const recommendedCoreLabelCoverageRate = expectedCoreCount ? recommendedCoreCount / expectedCoreCount : 1;
   const completeCoreCaseRate = enforceable.length
     ? enforceable.filter((result) => result.coreCoverageRate >= 1).length / enforceable.length
     : 1;
+  const completeRecommendedCoreCaseRate = enforceable.length
+    ? enforceable.filter((result) => result.recommendedCoreCoverageRate >= 1).length / enforceable.length
+    : 1;
+  const recommendationAvoidHitCases = enforceable.filter((result) => result.avoidHitsRecommended.length > 0).length;
   const failures = results.filter((result) => {
     if (result.coverageGap) {
       return !result.promptPass;
@@ -273,7 +318,7 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
     if (!result.promptPass || !result.avoidPass || !result.rationalePass) {
       return true;
     }
-    return !result.acceptablePass || !result.priorityPass;
+    return !result.recommendationPass;
   });
 
   return {
@@ -282,14 +327,19 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
     coverageGapCases: results.filter((result) => result.coverageGap).length,
     retrievalPassRate,
     priorityPassRate,
+    recommendationPassRate,
     coreLabelCoverageRate,
+    recommendedCoreLabelCoverageRate,
     completeCoreCaseRate,
+    completeRecommendedCoreCaseRate,
+    recommendationAvoidHitCases,
     top5PassRate: priorityPassRate,
     top10PassRate: retrievalPassRate,
     pass: failures.length === 0
-      && priorityPassRate >= (options.priorityThreshold ?? 0.95)
+      && recommendationPassRate >= (options.recommendationThreshold ?? 0.95)
       && retrievalPassRate >= (options.retrievalThreshold ?? 0.98)
-      && coreLabelCoverageRate >= (options.coreCoverageThreshold ?? 0.8),
+      && recommendedCoreLabelCoverageRate >= (options.recommendedCoreCoverageThreshold ?? 0.75)
+      && recommendationAvoidHitCases === 0,
     failures,
     results
   };
@@ -350,6 +400,9 @@ export function formatEvaluationReport(suiteResult) {
     `Total cases: ${suiteResult.totalCases}`,
     `Enforceable cases: ${suiteResult.enforceableCases}`,
     `Coverage gap cases: ${suiteResult.coverageGapCases}`,
+    `Recommended checklist core/acceptable recall: ${(suiteResult.recommendationPassRate * 100).toFixed(1)}%`,
+    `Recommended core label coverage: ${(suiteResult.recommendedCoreLabelCoverageRate * 100).toFixed(1)}%`,
+    `Recommended avoid-hit cases: ${suiteResult.recommendationAvoidHitCases}`,
     `Priority-window core/acceptable recall: ${(suiteResult.priorityPassRate * 100).toFixed(1)}%`,
     `Full retrieved-set core/acceptable recall: ${(suiteResult.retrievalPassRate * 100).toFixed(1)}%`,
     `Core label coverage across enforceable cases: ${(suiteResult.coreLabelCoverageRate * 100).toFixed(1)}%`,
@@ -362,10 +415,12 @@ export function formatEvaluationReport(suiteResult) {
     lines.push("## Failures", "");
     failures.forEach((failure) => {
       lines.push(`- ${failure.caseId} (${failure.presentation})`);
+      lines.push(`  - recommended core: ${failure.recommendedCore.map((candidate) => candidate.label).join("; ") || "none"}`);
+      lines.push(`  - recommended matches: ${failure.coreOrAcceptableInRecommended.join("; ") || "none"}`);
       lines.push(`  - top candidates: ${failure.topCandidates.map((candidate) => candidate.label).join("; ")}`);
       lines.push(`  - priority matches: ${failure.coreOrAcceptableInPriority.join("; ") || "none"}`);
       lines.push(`  - retrieved matches: ${failure.coreOrAcceptableInRetrieved.join("; ") || "none"}`);
-      lines.push(`  - avoid hits: ${failure.avoidHitsPriority.join("; ") || "none"}`);
+      lines.push(`  - avoid hits: ${failure.avoidHitsRecommended.join("; ") || "none"}`);
       lines.push(`  - missing rationale terms: ${failure.missingRationaleTerms.join("; ") || "none"}`);
     });
   }

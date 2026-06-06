@@ -5,14 +5,25 @@ import { spawnSync } from "node:child_process";
 
 const files = [
   "checklist.js",
+  "clinical-intents.js",
+  "complaint-cds.js",
   "deid.js",
   "deid-worker.js",
+  "embedding-recall.js",
   "evidence.js",
   "labs.js",
+  "open-evidence-results.js",
+  "open-evidence-workflows.js",
   "scripts/deid-fixtures.js",
   "scripts/build-physical-exam-evidence.js",
   "scripts/audit-evidence-checklist.js",
   "scripts/evidence-eval.js",
+  "scripts/benchmark-embedding-models.js",
+  "scripts/test-complaint-cds.js",
+  "scripts/test-clinical-intents.js",
+  "scripts/test-open-evidence-workflows.js",
+  "scripts/test-embedding-recall.js",
+  "scripts/test-evidence-adversarial.js",
   "scripts/test-evidence-eval.js",
   "scripts/test-evidence.js",
   "scripts/test-labs.js",
@@ -51,11 +62,26 @@ if (!/from\s+["']\.\/deid\.js["']/.test(moduleScript)) {
 if (!/from\s+["']\.\/checklist\.js["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared checklist.js module.");
 }
+if (!/from\s+["']\.\/clinical-intents\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the clinical intents module.");
+}
+if (!/from\s+["']\.\/complaint-cds\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the complaint CDS module.");
+}
 if (!/from\s+["']\.\/labs\.js["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared labs.js module.");
 }
 if (!/from\s+["']\.\/evidence\.js["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared evidence.js module.");
+}
+if (!/from\s+["']\.\/embedding-recall\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the embedding recall module.");
+}
+if (!/from\s+["']\.\/open-evidence-workflows\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the OpenEvidence workflow module.");
+}
+if (!/from\s+["']\.\/open-evidence-results\.js["']/.test(moduleScript)) {
+  throw new Error("index.html must import the OpenEvidence results module.");
 }
 for (const importedName of ["cleanupDeidArtifacts", "deidentifyTextStructuredOnly", "normalizeResidualTemporalPhi"]) {
   if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
@@ -65,6 +91,16 @@ for (const importedName of ["cleanupDeidArtifacts", "deidentifyTextStructuredOnl
 for (const importedName of ["parseChecklist", "validateChecklist", "normalizeChecklistText", "buildCleanupPrompt"]) {
   if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
     throw new Error(`index.html must use shared ${importedName} from checklist.js.`);
+  }
+}
+for (const importedName of ["resolveClinicalIntents", "selectedValidatedClinicalIntents", "buildValidatedClinicalIntentPromptBlock"]) {
+  if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
+    throw new Error(`index.html must use shared ${importedName} from clinical-intents.js.`);
+  }
+}
+for (const importedName of ["evaluateComplaintCds", "formatComplaintCdsReport"]) {
+  if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
+    throw new Error(`index.html must use shared ${importedName} from complaint-cds.js.`);
   }
 }
 for (const importedName of ["parseLabTimeline", "formatLabTimelinePreview", "formatLabChronologyPromptBlock"]) {
@@ -105,10 +141,21 @@ for (const requiredSnippet of [
   "loadStudentExamReferenceRows",
   "selectStudentExamReferenceRows",
   "student_exam_reference",
+  "Clinical workup",
+  "Search concern or diagnosis",
+  "clinicalIntentResults",
+  "stageKnowledgeGapButton",
+  "complaintCdsInput",
+  "runComplaintCds",
+  "buildUnifiedClinicalWorkup",
+  "unifiedEvidenceRetrievalContext",
   "Evidence review",
-  "Evidence exam tester",
+  "Reviewer audit / evidence retrieval",
   "examTesterInput",
   "runExamTester",
+  "examTesterEmbeddingToggle",
+  "Semantic recall: EmbeddingGemma q4",
+  "knowledgePackImportInput",
   "Do not limit yourself to this reference"
 ]) {
   if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
@@ -117,6 +164,12 @@ for (const requiredSnippet of [
 }
 if (/>\s*Build checklist\s*</i.test(html) || /Copy teaching prompt/i.test(html)) {
   throw new Error("Old workflow labels should not be visible in the app.");
+}
+if (/Evidence exam tester \/ audit/.test(html)) {
+  throw new Error("Evidence exam tester should be nested as reviewer audit, not presented as a separate normal workflow.");
+}
+if (!/id="runComplaintCdsButton"[\s\S]{0,160}disabled/.test(html)) {
+  throw new Error("Clinical workup build must start disabled until a validated intent is selected.");
 }
 if (!/elements\.checklistPasteCard\.hidden\s*=\s*!\(bedsideMode\s*\|\|\s*state\.useChecklistOnLaptop\s*\|\|\s*hasChecklistPasteText\(\)\)/.test(moduleScript)) {
   throw new Error("Laptop mode must not show the checklist paste card by default after prompt copy.");
@@ -136,13 +189,58 @@ for (const requiredSnippet of [
   "Use it as a floor, not a ceiling",
   "retrieved_evidence_candidates",
   "prioritized evidence-seeded starting point",
-  "add any missing evidence-based, safe, bedside-feasible questions or exam maneuvers",
+  "validated_clinical_intents",
+  "Do not add unvalidated checklist items as final checklist rows",
   "I am a third-year medical student preparing for inpatient rounds.",
   "BEDSIDE QUESTION CHECKLIST",
   "TARGETED PHYSICAL EXAM CHECKLIST"
 ]) {
   if (!checklistModule.includes(requiredSnippet)) {
     throw new Error(`Expected shared checklist guardrail not found: ${requiredSnippet}`);
+  }
+}
+for (const requiredSnippet of [
+  "OpenEvidence Rounds Hub",
+  "openEvidenceTaskBoard",
+  "openEvidencePastebackInput",
+  "Refine with OpenEvidence",
+  "structured paste-back review"
+]) {
+  if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
+    throw new Error(`Expected OpenEvidence rounds hub guardrail not found: ${requiredSnippet}`);
+  }
+}
+
+const complaintCdsModule = readFileSync("complaint-cds.js", "utf8");
+for (const requiredSnippet of [
+  "complaint-cds-artifact-v1",
+  "chest_pain_v1",
+  "hyperglycemia_possible_dka_v1",
+  "AHA_ACC_CHEST_PAIN_2021",
+  "ADA_HYPERGLYCEMIC_CRISES_2024",
+  "evaluateComplaintCds",
+  "validateComplaintModules",
+  "formatComplaintCdsReport"
+]) {
+  if (!complaintCdsModule.includes(requiredSnippet)) {
+    throw new Error(`Expected complaint CDS implementation not found: ${requiredSnippet}`);
+  }
+}
+
+const clinicalIntentsModule = readFileSync("clinical-intents.js", "utf8");
+for (const requiredSnippet of [
+  "clinical-intent-registry-v1",
+  "clinicalIntentRegistry",
+  "dka_hhs_v1",
+  "suspected_pe_v1",
+  "abdominal_pain_cramping_v1",
+  "resolveClinicalIntents",
+  "filterEvidenceCatalogForClinicalIntents",
+  "buildValidatedClinicalIntentPromptBlock",
+  "validateClinicalIntentRegistry"
+]) {
+  if (!clinicalIntentsModule.includes(requiredSnippet)) {
+    throw new Error(`Expected clinical intent implementation not found: ${requiredSnippet}`);
   }
 }
 
@@ -174,6 +272,57 @@ for (const requiredSnippet of [
 ]) {
   if (!evidenceModule.includes(requiredSnippet)) {
     throw new Error(`Expected evidence retrieval implementation not found: ${requiredSnippet}`);
+  }
+}
+
+const embeddingRecallModule = readFileSync("embedding-recall.js", "utf8");
+for (const requiredSnippet of [
+  "defaultEmbeddingModelKey = \"embeddinggemma\"",
+  "onnx-community/embeddinggemma-300m-ONNX",
+  "task: search result | query:",
+  "rankEvidenceCandidatesHybrid",
+  "Embedding service is required to build an index.",
+  "clinical_knowledge_pack_v1",
+  "validateClinicalKnowledgePack",
+  "embeddingOnly"
+]) {
+  if (!embeddingRecallModule.includes(requiredSnippet)) {
+    throw new Error(`Expected embedding recall implementation not found: ${requiredSnippet}`);
+  }
+}
+
+const openEvidenceWorkflowsModule = readFileSync("open-evidence-workflows.js", "utf8");
+for (const requiredSnippet of [
+  "openEvidenceTasks",
+  "buildOpenEvidencePrompt",
+  "initial_rounds_report",
+  "final_rounds_update",
+  "generate_checklist",
+  "refine_checklist",
+  "medication_safety",
+  "confirm_guideline",
+  "find_exception",
+  "attending_plan",
+  "teaching_explanation",
+  "discharge_checklist",
+  "what_am_i_missing"
+]) {
+  if (!openEvidenceWorkflowsModule.includes(requiredSnippet)) {
+    throw new Error(`Expected OpenEvidence workflow registry guardrail not found: ${requiredSnippet}`);
+  }
+}
+
+const openEvidenceResultsModule = readFileSync("open-evidence-results.js", "utf8");
+for (const requiredSnippet of [
+  "open-evidence-task-result-v1",
+  "parseOpenEvidenceResult",
+  "normalizeOpenEvidenceTaskResult",
+  "extractCitations",
+  "checklistText",
+  "acceptedSummary"
+]) {
+  if (!openEvidenceResultsModule.includes(requiredSnippet)) {
+    throw new Error(`Expected OpenEvidence paste-back parser guardrail not found: ${requiredSnippet}`);
   }
 }
 

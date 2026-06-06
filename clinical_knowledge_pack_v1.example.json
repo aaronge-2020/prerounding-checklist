@@ -1,0 +1,109 @@
+{
+  "schema_version": "clinical_knowledge_pack_v1",
+  "pack_id": "example_dysuria_pack_v1",
+  "title": "Example Dysuria Knowledge Pack",
+  "version": "2026-06-06",
+  "review_notes": "Example only. Replace with curator notes; do not include raw chart text or patient identifiers.",
+  "complaint_aliases": [
+    "burning pee",
+    "painful urination",
+    "urinary burning"
+  ],
+  "source_registry": [
+    {
+      "source_id": "EXAMPLE_GUIDELINE",
+      "source_type": "guideline",
+      "url_or_doi": "https://example.org/replace-with-real-source",
+      "date_accessed": "2026-06-06",
+      "license_or_access_notes": "Replace with access notes.",
+      "preferred_citation": "Replace with preferred citation."
+    }
+  ],
+  "intents": [
+    {
+      "intent_id": "example_dysuria_validated_v1",
+      "label": "Example dysuria / possible pyelonephritis",
+      "status": "draft",
+      "aliases": [
+        "burning pee",
+        "painful urination",
+        "urinary burning"
+      ],
+      "intent_type": "complaint",
+      "source_ids": [
+        "EXAMPLE_GUIDELINE"
+      ],
+      "evidence_tags": [
+        "dysuria",
+        "UTI",
+        "pyelonephritis",
+        "flank_pain"
+      ],
+      "clinical_bundle_ids": [
+        "gu_renal"
+      ],
+      "required_domains": [
+        "vitals",
+        "CVA tenderness",
+        "volume status"
+      ],
+      "avoid_labels": [
+        "PMI",
+        "Vibration sense"
+      ],
+      "gold_case_ids": [
+        "example_burning_pee"
+      ],
+      "last_reviewed": "2026-06-06",
+      "review_owner": "replace_with_reviewer"
+    }
+  ],
+  "items": [
+    {
+      "item_id": "example_dysuria_flank_question",
+      "kind": "question",
+      "label": "Ask about flank pain and fever",
+      "options": "No / Flank pain / Fever or chills / Both / Other ___",
+      "condition_or_syndrome": "Dysuria; possible pyelonephritis",
+      "diagnostic_target": "Upper urinary tract involvement or systemic infection",
+      "when_to_use_structured": "dysuria; urinary_frequency; fever; flank_pain",
+      "result_changes_management": "Fever, rigors, CVA pain, or systemic symptoms should prompt escalation beyond uncomplicated cystitis framing.",
+      "evidence_source_primary": "EXAMPLE_GUIDELINE",
+      "retrieval_tags": "dysuria; UTI; pyelonephritis; flank_pain",
+      "reviewer_notes": "Example item for staging workflow."
+    },
+    {
+      "item_id": "example_cva_tenderness_exam",
+      "kind": "exam",
+      "label": "CVA tenderness",
+      "options": "Absent / Present right / Present left / Present bilateral / Unable",
+      "condition_or_syndrome": "Dysuria; flank pain; possible pyelonephritis or nephrolithiasis",
+      "diagnostic_target": "Renal/upper urinary tract pain localization",
+      "when_to_use_structured": "flank_pain; dysuria; pyelonephritis; nephrolithiasis",
+      "result_changes_management": "CVA tenderness with fever or systemic illness can support pyelonephritis/stone complication framing and urgency of workup.",
+      "evidence_source_primary": "EXAMPLE_GUIDELINE",
+      "difficulty": "easy",
+      "time_burden_minutes": "1",
+      "equipment_needed": "none",
+      "retrieval_tags": "dysuria; flank_pain; pyelonephritis; nephrolithiasis",
+      "reviewer_notes": "Example item for staging workflow."
+    }
+  ],
+  "gold_cases": [
+    {
+      "case_id": "example_burning_pee",
+      "presentation": "Burning pee with fever and flank pain",
+      "must_include_tags": "dysuria; flank_pain; fever",
+      "expected_core_labels": "Blood pressure; Heart rate; CVA tenderness",
+      "avoid_labels": "PMI; Vibration sense"
+    }
+  ],
+  "suppress_rules": [
+    {
+      "rule_id": "example_no_broad_neuro_for_isolated_dysuria",
+      "when_context_lacks": "weakness; numbness; seizure; syncope; altered mental status",
+      "suppress_labels": "Pronator drift; Vibration sense; Gait",
+      "reason": "Avoid unrelated broad neurologic maneuvers for isolated urinary symptoms."
+    }
+  ]
+}

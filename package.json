@@ -9,12 +9,18 @@
     "test:checklist": "node scripts/test-checklist.js",
     "test:census": "node scripts/test-census.js",
     "test:continuity": "node scripts/test-continuity.js",
+    "test:clinical-intents": "node scripts/test-clinical-intents.js",
+    "test:complaint-cds": "node scripts/test-complaint-cds.js",
+    "test:open-evidence": "node scripts/test-open-evidence-workflows.js",
     "test:evidence": "node scripts/test-evidence.js",
     "test:evidence:eval": "node scripts/test-evidence-eval.js",
+    "test:evidence:adversarial": "node scripts/test-evidence-adversarial.js",
+    "test:embedding": "node scripts/test-embedding-recall.js",
     "test:deid:adversarial": "node scripts/test-deid-adversarial.js",
     "generate:deid:adversarial": "node scripts/generate-deid-adversarial-cases.js",
     "benchmark:deid": "node scripts/benchmark-deid.js",
     "benchmark:deid:large": "node scripts/benchmark-deid.js --include-large",
+    "benchmark:embedding": "node scripts/benchmark-embedding-models.js",
     "test:syntax": "node scripts/check-syntax.js"
   },
   "dependencies": {

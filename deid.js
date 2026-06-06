@@ -263,7 +263,9 @@ const clinicalAnchorWords = new Set([
   "vas venous duplex ue bilat", "w o con", "head brain", "soft tissue head neck",
   "corrected arterial", "manual diff", "dna assay", "tacrolimus blood", "b negative",
   "k neg", "c neg", "e neg", "o anti-k", "us renal transplant w", "scanned external ekg",
-  "cast type", "ref com comments", "hyaline casts", "anti-k"
+  "cast type", "ref com comments", "hyaline casts", "anti-k", "no day",
+  "us guided needle", "subjective objective assessment and plan", "active antimicrobial orders",
+  "ivpb mini-bag plus", "mini-bag plus"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
@@ -308,7 +310,8 @@ const clinicalAnchorWords = new Set([
   "hands", "agitated", "saline", "comp", "gravity", "leukocyte", "esterase", "elbow",
   "head", "brain", "extremity", "tissue", "bilat", "ue", "le", "o", "corrected",
   "manual", "diff", "assay", "tacrolimus", "negative", "neg", "anti-k", "anti",
-  "ref", "com", "comments"
+  "ref", "com", "comments", "guided", "needle", "plan", "antimicrobial", "orders",
+  "ivpb", "mini-bag", "plus"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
@@ -331,7 +334,7 @@ const clinicalAnchorWords = new Set([
   "microcytes", "streptococcus", "reflex", "agitated", "saline", "gravity",
   "leukocyte", "esterase", "elbow", "head", "brain", "extremity", "tissue",
   "bilat", "corrected", "manual", "diff", "assay", "tacrolimus", "anti-k",
-  "comments"
+  "comments", "guided", "needle", "plan", "antimicrobial", "ivpb"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([

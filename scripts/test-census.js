@@ -33,9 +33,15 @@ const {
 const patientA = createPatientCase({
   alias: "Patient A",
   roomBed: "Room 812",
-  serviceProblem: "DKA consult"
+  serviceProblem: "DKA consult",
+  openEvidenceResults: [{
+    taskId: "medication_safety",
+    acceptedSummary: "- Verify basal insulin was not held.",
+    reviewStatus: "accepted"
+  }]
 }, new Date("2026-06-06T10:00:00Z"));
 assert.equal(patientA.alias, "Patient A");
+assert.equal(patientA.openEvidenceResults.length, 1, "structured OpenEvidence summaries should persist on patient cases");
 assert.equal(derivePatientStatus(patientA), patientStatusLabels.needsChartInfo);
 
 const contextReady = createPatientCase({
