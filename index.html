@@ -2722,6 +2722,186 @@
       line-height: 1.35;
     }
 
+    .exam-tester-panel {
+      border: 1px solid rgba(106, 179, 189, 0.22);
+      border-radius: var(--radius-sm);
+      background: rgba(79, 152, 163, 0.07);
+    }
+
+    .exam-tester-panel summary {
+      min-height: 44px;
+      padding: 12px 13px;
+      color: var(--accent-strong);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .exam-tester-body {
+      display: grid;
+      gap: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 13px;
+    }
+
+    .exam-tester-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.36fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .exam-tester-context,
+    .exam-tester-controls {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .exam-tester-input {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .exam-tester-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .exam-tester-status {
+      min-height: 20px;
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .exam-tester-summary,
+    .exam-tester-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .exam-tester-summary-chip,
+    .exam-tester-tag {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+
+    .exam-tester-summary-chip.is-strong {
+      border-color: rgba(216, 176, 106, 0.3);
+      color: var(--text);
+      background: rgba(216, 176, 106, 0.09);
+    }
+
+    .exam-tester-results,
+    .exam-tester-gaps {
+      display: grid;
+      gap: 8px;
+    }
+
+    .exam-tester-section-title {
+      margin: 8px 0 0;
+      color: var(--accent-strong);
+      font-size: 0.78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .exam-result-row {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .exam-result-row.is-gap {
+      border-color: rgba(216, 176, 106, 0.2);
+      background: rgba(216, 176, 106, 0.055);
+    }
+
+    .exam-result-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .exam-result-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 950;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .exam-result-rank {
+      min-width: 42px;
+      border: 1px solid rgba(106, 179, 189, 0.22);
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.11);
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .exam-result-options,
+    .exam-result-text {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .exam-result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .exam-result-chip {
+      display: inline-flex;
+      max-width: 100%;
+      min-height: 26px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.72rem;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .exam-result-chip.is-main {
+      border-color: rgba(106, 179, 189, 0.26);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.1);
+    }
+
+    .exam-result-chip.is-lr {
+      border-color: rgba(216, 176, 106, 0.26);
+      color: var(--text);
+      background: rgba(216, 176, 106, 0.08);
+    }
+
     .finding-state {
       display: inline-flex;
       flex: 0 0 10px;
@@ -3418,7 +3598,8 @@
       .source-toggle,
       .admission-grid,
       .quick-cluster-grid,
-      .status-chip-grid {
+      .status-chip-grid,
+      .exam-tester-grid {
         grid-template-columns: 1fr;
       }
 
@@ -3500,6 +3681,7 @@
       .quick-cluster-grid,
       .profile-grid,
       .status-chip-grid,
+      .exam-tester-grid,
       .checklist-preview-grid,
       .review-group-grid,
       .install-actions,
@@ -5415,6 +5597,17 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
       continuitySourcePanel: document.getElementById("continuitySourcePanel"),
       loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
+      examTesterInput: document.getElementById("examTesterInput"),
+      examTesterServiceSelect: document.getElementById("examTesterServiceSelect"),
+      examTesterLimitInput: document.getElementById("examTesterLimitInput"),
+      runExamTesterButton: document.getElementById("runExamTesterButton"),
+      copyExamTesterButton: document.getElementById("copyExamTesterButton"),
+      clearExamTesterButton: document.getElementById("clearExamTesterButton"),
+      examTesterStatus: document.getElementById("examTesterStatus"),
+      examTesterSummary: document.getElementById("examTesterSummary"),
+      examTesterTags: document.getElementById("examTesterTags"),
+      examTesterResults: document.getElementById("examTesterResults"),
+      examTesterGaps: document.getElementById("examTesterGaps"),
       rawSoapInput: document.getElementById("rawSoapInput"),
       rawLabsInput: document.getElementById("rawLabsInput"),
       rawHandoffInput: document.getElementById("rawHandoffInput"),
