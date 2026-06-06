@@ -545,6 +545,10 @@ function highYieldContextBoost(candidate, context) {
     && /\b(?:respiratory rate|work of breathing|posterior lung sounds)\b/.test(candidateText)) {
     boost += 26;
   }
+  if (/\b(?:dka|hhs|anion gap|insulin drip|hyperglycemic crisis)\b/.test(context)
+    && /\b(?:blood pressure|heart rate|respiratory rate|mouth|mucous)\b/.test(candidateText)) {
+    boost += 34;
+  }
   if (/\b(?:thyroid storm|thyrotoxicosis|graves|myxedema|severe hypothyroidism)\b/.test(context)
     && /\b(?:heart rate|blood pressure|respiratory rate|heart sounds|thyroid|jvp|edema|vital signs|vitals)\b/.test(candidateText)) {
     boost += 30;

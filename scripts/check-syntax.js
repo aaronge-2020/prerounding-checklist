@@ -106,6 +106,9 @@ for (const requiredSnippet of [
   "selectStudentExamReferenceRows",
   "student_exam_reference",
   "Evidence review",
+  "Evidence exam tester",
+  "examTesterInput",
+  "runExamTester",
   "Do not limit yourself to this reference"
 ]) {
   if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
