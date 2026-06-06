@@ -3814,6 +3814,51 @@
           </div>
         </details>
 
+        <details id="examTesterPanel" class="exam-tester-panel">
+          <summary>Evidence exam tester</summary>
+          <div class="exam-tester-body">
+            <div class="exam-tester-grid">
+              <div class="exam-tester-context">
+                <label for="examTesterInput">Chief concern or diagnosis</label>
+                <textarea id="examTesterInput" class="exam-tester-input" spellcheck="false" placeholder="Suspected pulmonary embolism with pleuritic chest pain, dyspnea, tachycardia, hypoxia, unilateral leg swelling"></textarea>
+              </div>
+              <div class="exam-tester-controls">
+                <div>
+                  <label for="examTesterServiceSelect">Clinical setting</label>
+                  <select id="examTesterServiceSelect">
+                    <option>General clinic</option>
+                    <option>General medicine</option>
+                    <option>Emergency medicine/admission</option>
+                    <option>Endocrinology consult</option>
+                    <option>Cardiology consult</option>
+                    <option>Neurology</option>
+                    <option>Nephrology</option>
+                    <option>Pulmonology</option>
+                    <option>Infectious disease</option>
+                    <option>Gastroenterology</option>
+                    <option>OB/GYN</option>
+                    <option>Psychiatry</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="examTesterLimitInput">Candidate limit</label>
+                  <input id="examTesterLimitInput" type="number" min="12" max="96" step="4" value="60">
+                </div>
+              </div>
+            </div>
+            <div class="exam-tester-actions">
+              <button id="runExamTesterButton" class="btn btn-primary" type="button">Run exam retrieval</button>
+              <button id="copyExamTesterButton" class="btn btn-secondary" type="button" disabled>Copy results</button>
+              <button id="clearExamTesterButton" class="btn btn-quiet" type="button">Clear</button>
+            </div>
+            <p id="examTesterStatus" class="exam-tester-status" role="status" aria-live="polite"></p>
+            <div id="examTesterSummary" class="exam-tester-summary" hidden></div>
+            <div id="examTesterTags" class="exam-tester-tags" hidden></div>
+            <div id="examTesterResults" class="exam-tester-results" hidden></div>
+            <div id="examTesterGaps" class="exam-tester-gaps" hidden></div>
+          </div>
+        </details>
+
         <div class="tool-section">
           <p class="tool-title">Demo</p>
           <p class="tool-copy">Load a textbook synthetic diabetic ketoacidosis consult note to try the full workflow.</p>
@@ -5115,6 +5160,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       loadEvidenceCatalog,
       matchEvidenceForChecklistItem,
       normalizeEvidenceReviewState,
+      rankEvidenceCandidates,
       updateEvidenceReviewState
     } from "./evidence.js";
     import {
@@ -5210,6 +5256,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       evidenceCatalogLoadPromise: null,
       retrievedEvidenceCandidates: [],
       evidenceMatchedTags: [],
+      examTesterCandidates: [],
+      examTesterGapRows: [],
+      examTesterMatchedTags: [],
+      examTesterLastContext: "",
       evidenceReviewState: normalizeEvidenceReviewState(),
       continuity: {
         cases: [],
