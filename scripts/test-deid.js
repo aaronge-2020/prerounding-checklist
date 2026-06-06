@@ -477,6 +477,88 @@ Special Send Out Test: Rpt 1/19/26 13:10
 HCV Spec Site: Blood 2/3/26 08:51
 Iron: Not Performed 2/2/26 06:19
 Vitamin B-12: 322 1/15/26 04:20
+BG Site: Peripheral Venous 2/5/26 03:40
+Base Exc Art: -4.1 2/6/26 16:02
+Base Excess, Ven: -1.8 2/6/26 03:40
+Hypochromasia: Moderate ! 1/1/26 21:16
+Microcytes: Moderate ! 1/1/26 21:16
+Retic CT %: 1.23 2/1/26 21:49
+Body Fluid Culture (Aerobic): Rpt !! 2/5/26 13:38
+QuantiFERON TB1 Ag Value: 0.04 1/6/26 09:40
+Group A Streptococcus Screen w/o Reflex: Rpt 1/7/26 09:48
+XR Ankle Min 3 Views Each Bilateral: Rpt (E) 1/8/26 14:56
+XR Foot 1 or 2 Views Each Bilateral: Rpt (E) 1/8/26 14:57
+XR Hands 1 or 2 Views Each Bilateral: Rpt (E) 1/9/26 14:45
+CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) 2/1/26 10:45
+POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt 2/6/26 10:26
+Spec Gravity, Ur: 1.030 2/4/26 20:08
+Leukocyte Esterase, Ur: Trace ! 2/4/26 20:08
+XR Elbow 2 Views LEFT: Rpt (C) (E) 1/22/26 20:25
+CT Cervical Spine W/O Con: Rpt (C) (E) 1/22/26 19:29
+CT Head/Brain W/O Con: Rpt 2/4/26 19:06
+CT Upper Extremity WITH Con LEFT: Rpt 2/4/26 19:06
+US Soft Tissue Head/Neck: Rpt (E) 1/23/26 14:23
+VAS Venous Duplex LE Bilat Complete: Rpt 2/2/26 11:58
+VAS Venous Duplex UE Bilat Complete: Rpt 2/2/26 12:38
+POC SAT O2 ART: 98 2/6/26 12:08
+HCG Beta Subunit - QuaL: Negative 2/5/26 06:19
+Quantiferon TB Gold: Indeterminate ! 1/5/26 15:54
+RPR Titer: Non Reactive 1/6/26 13:30
+TREPONEMA PALLIDUM IGG AB: Minimal React 2/1/26 03:14
+Bacterial Vaginosis, RNA: Positive ! 2/5/26 12:00
+Dolutegravir Resistance: NOT PREDICTED 1/7/26 15:02
+Casts: None seen 1/8/26 15:04
+Microscopic Examination of Urine: See Comment 1/9/26 00:00
+Antibody Identification: Cold Autoantibody 2/5/26 06:19
+DIRECT COOMBS-C3D: Negative 2/4/26 14:26
+Tissue Examination: Rpt (P) 2/5/26 10:43
+XR Chest 1 View Post Intervention: Rpt (C) (E) 1/10/26 12:15
+POC SARS COV-2 (COVID-19) Ag: Negative 1/11/26 04:02
+SARS-CoV-2 (COVID-19) RNA: Not Detected 1/12/26 06:10
+BUN/CREAT Ratio: 8 (L) 1/13/26 00:00
+A/G Ratio: 1.2 1/13/26 00:00
+LDL Chol Calc (NIH): 164 (H) 1/14/26 15:04
+CD 4 Abs Helper: 935 1/15/26 15:02
+Cd 4 Pos. Lymphs Pct: 26 (L) 1/15/26 15:02
+Cd 8 Abs. Suppressor: 1,175 (H) 1/16/26 12:10
+XR Chest AP (Portable): Rpt 1/17/26 18:19
+XR Hand >= 3 Views LEFT: Rpt 1/18/26 11:11
+XR Toe(s) >= 2 Views LEFT: Rpt 1/19/26 02:04
+CT Abdomen/Pelvis IV Contrast Only: Rpt (C) (E) 1/20/26 08:15
+CT Sinus/Facial/Mandible WITH Con: Rpt 1/21/26 18:35
+CT Soft Tissue Neck WITH Con: Rpt (E) 1/22/26 19:09
+CTA Chest (PE Protocol): Rpt (C) 1/23/26 21:48
+IR Rvsc Tib/Peroneal Art, Init Vsl W/Tla: Rpt 1/24/26 13:54
+NM MYOCARDIAL PERFUSION PHARM STRESS SPECT: Rpt (C) (E) 1/25/26 10:53
+PET CT Tumor Imaging Skull Base To Mid T: Rpt 1/26/26 12:55
+CAR Exercise Stress Portion of Nuc Med: Rpt (C) (E) 1/27/26 10:05
+HBV S Ab - Quant: <3.1 (L) 1/28/26 00:00
+Multi Drug Resistant Gram Negative Surveillance Culture: Rpt 1/29/26 11:11
+N Gonorrhoeae, NAA: Negative 1/30/26 12:49
+Quantiferon TB Ag Minus NIL Value: <0.01 1/31/26 15:54
+Urine Culture, Routine Reflex Result: Rpt 2/1/26 15:02
+C Glabrata, RNA: Positive ! 2/5/26 12:00
+HIV Ag/Ab: Reactive ! 1/16/26 05:59
+HIV Genosure Prime(SM): See Comment  |  See Comment 1/17/26 16:03
+HIV Genosure(TM) MG PDF: . 1/18/26 15:54
+Amphetamine Qual, Ur: Negative 1/19/26 14:54
+Barbiturate Screen, Ur: Negative 1/19/26 14:54
+Benzodiazapine Screen, Ur: Negative 1/19/26 14:54
+Cannabinoid Qual Ur: Positive !  |  See Final Results 1/19/26 14:54
+Opiate Scrn, Ur: Negative 1/19/26 14:54
+Oxycodone/Oxymorphone UR Screen: Negative 1/19/26 14:54
+Phencyclidine UR - Screen: Negative 1/19/26 14:54
+Amorphous Crystals, UR: Present 1/20/26 14:50
+Color, UA: Dark Yellow ! 1/20/26 10:40
+Squam Epithel, UA: 3-5 ! 1/20/26 20:05
+Epithelial Cells, UA: 0-2 1/20/26 10:40
+Renal Epithel, UA: See Comment 1/20/26 15:04
+Hyaline Casts, UA: 6-10 ! 1/20/26 15:02
+Crystal Cmt 1: See Comment 1/20/26 15:04
+Uric Acid, Ur: 103.4 1/20/26 16:05
+Carisoprodol/Meprobamate Screen Urine: Negative 1/19/26 14:54
+ABO Rh: O Positive 2/5/26 06:19
+XR Ankle >= 3 Views LEFT: Rpt (C) (E) 1/21/26 18:02
 Test Cup: Plain Cup 2/2/26 15:00
 Appearance, Ur: Slightly Cloudy 2/3/26 18:57
 Ketones, Ur: Trace ! 2/3/26 18:57
@@ -518,6 +600,44 @@ assert.ok(epicRespImagingResult.text.includes("Special Send Out Test: Rpt 13:10 
 assert.ok(epicRespImagingResult.text.includes("HCV Spec Site: Blood 08:51 on Day -7 (2026)"), "HCV spec site value Blood should remain clinical text");
 assert.ok(epicRespImagingResult.text.includes("Iron: Not Performed 06:19 on Day -8 (2026)"), "Not Performed should remain a result value");
 assert.ok(epicRespImagingResult.text.includes("Vitamin B-12: 322 04:20 on Day -26 (2026)"), "Vitamin B-12 should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("BG Site: Peripheral Venous 03:40 on Day -5 (2026)"), "Peripheral Venous should remain a blood gas site value");
+assert.ok(epicRespImagingResult.text.includes("Base Exc Art: -4.1 16:02 on Day -4 (2026)"), "arterial base excess should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Base Excess, Ven: -1.8 03:40 on Day -4 (2026)"), "venous base excess should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Hypochromasia: Moderate ! 21:16 on Day -40 (2026)"), "morphology value should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Microcytes: Moderate ! 21:16 on Day -40 (2026)"), "microcyte morphology row should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("Retic CT %: 1.23 21:49 on Day -9 (2026)"), "Retic CT should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Body Fluid Culture (Aerobic): Rpt !! 13:38 on Day -5 (2026)"), "body fluid culture should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("QuantiFERON TB1 Ag Value: 0.04 09:40 on Day -35 (2026)"), "QuantiFERON Ag Value should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Group A Streptococcus Screen w/o Reflex: Rpt 09:48 on Day -34 (2026)"), "strep screen w/o reflex should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Ankle Min 3 Views Each Bilateral: Rpt (E) 14:56 on Day -33 (2026)"), "bilateral ankle imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Foot 1 or 2 Views Each Bilateral: Rpt (E) 14:57 on Day -33 (2026)"), "bilateral foot imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Hands 1 or 2 Views Each Bilateral: Rpt (E) 14:45 on Day -32 (2026)"), "bilateral hand imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) 10:45 on Day -9 (2026)"), "agitated saline echo title should not be redacted as a patient name");
+assert.ok(epicRespImagingResult.text.includes("POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt 10:26 on Day -4 (2026)"), "POCUS anesthesia fascial-plane block title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Spec Gravity, Ur: 1.030 20:08 on Day -6 (2026)"), "urine specific gravity should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Leukocyte Esterase, Ur: Trace ! 20:08 on Day -6 (2026)"), "leukocyte esterase should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("XR Elbow 2 Views LEFT: Rpt (C) (E) 20:25 on Day -19 (2026)"), "elbow imaging title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("CT Cervical Spine W/O Con: Rpt (C) (E) 19:29 on Day -19 (2026)"), "CT cervical spine W/O contrast title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("CT Head/Brain W/O Con: Rpt 19:06 on Day -6 (2026)"), "CT head/brain W/O contrast title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("CT Upper Extremity WITH Con LEFT: Rpt 19:06 on Day -6 (2026)"), "CT upper extremity title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("US Soft Tissue Head/Neck: Rpt (E) 14:23 on Day -18 (2026)"), "US soft-tissue head/neck title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("VAS Venous Duplex LE Bilat Complete: Rpt 11:58 on Day -8 (2026)"), "LE bilateral venous duplex title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("VAS Venous Duplex UE Bilat Complete: Rpt 12:38 on Day -8 (2026)"), "UE bilateral venous duplex title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("POC SAT O2 ART: 98 12:08 on Day -4 (2026)"), "POC saturation label should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("HCG Beta Subunit - QuaL: Negative 06:19 on Day -5 (2026)"), "HCG beta subunit label should remain clinical text");
+assert.ok(epicRespImagingResult.text.includes("Quantiferon TB Gold: Indeterminate ! 15:54 on Day -36 (2026)"), "Quantiferon result should keep exact time instead of an afternoon bucket");
+assert.ok(epicRespImagingResult.text.includes("RPR Titer: Non Reactive 13:30 on Day -35 (2026)"), "RPR titer should keep exact time instead of an afternoon bucket");
+assert.ok(epicRespImagingResult.text.includes("TREPONEMA PALLIDUM IGG AB: Minimal React 03:14 on Day -9 (2026)"), "Treponema serology should keep exact time instead of an early-morning bucket");
+assert.ok(epicRespImagingResult.text.includes("Bacterial Vaginosis, RNA: Positive ! 12:00 on Day -5 (2026)"), "Bacterial Vaginosis RNA should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Dolutegravir Resistance: NOT PREDICTED 15:02 on Day -34 (2026)"), "HIV resistance rows should keep exact time instead of an afternoon bucket");
+assert.ok(epicRespImagingResult.text.includes("Casts: None seen 15:04 on Day -33 (2026)"), "urine casts result should keep exact time instead of an afternoon bucket");
+assert.ok(epicRespImagingResult.text.includes("Microscopic Examination of Urine: See Comment 00:00 on Day -32 (2026)"), "urine microscopy label should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Antibody Identification: Cold Autoantibody 06:19 on Day -5 (2026)"), "cold autoantibody result value should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("DIRECT COOMBS-C3D: Negative 14:26 on Day -6 (2026)"), "COOMBS-C3D should remain a clinical label, not an ID placeholder");
+assert.ok(epicRespImagingResult.text.includes("Tissue Examination: Rpt (P) 10:43 on Day -5 (2026)"), "tissue examination label should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("XR Chest 1 View Post Intervention: Rpt (C) (E) 12:15 on Day -31 (2026)"), "post-intervention imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("POC SARS COV-2 (COVID-19) Ag: Negative 04:02 on Day -30 (2026)"), "COVID-19 should remain a clinical label token, not an ID placeholder");
+assert.ok(epicRespImagingResult.text.includes("SARS-CoV-2 (COVID-19) RNA: Not Detected 06:10 on Day -29 (2026)"), "SARS-CoV-2 COVID-19 RNA label should be preserved");
 assert.ok(epicRespImagingResult.text.includes("Test Cup: Plain Cup 15:00 on Day -8 (2026)"), "TEG cup descriptor should keep exact result time");
 assert.ok(epicRespImagingResult.text.includes("Appearance, Ur: Slightly Cloudy 18:57 on Day -7 (2026)"), "urine appearance descriptor should keep exact result time");
 assert.ok(epicRespImagingResult.text.includes("Ketones, Ur: Trace ! 18:57 on Day -7 (2026)"), "urine trace values should not be treated as narrative time");
@@ -537,9 +657,18 @@ assert.ok(epicRespImagingResult.text.includes("XR FOOT MIN 3 VIEWS: Rpt 22:25 on
 assert.ok(epicRespImagingResult.text.includes("07:51 on Day -1 (2026)\nPOC Glucose: 101"), "timestamped POC glucose block should keep exact clock time");
 assert.ok(!epicRespImagingResult.text.includes("[FACILITY]"), "Results Review clinical values should not become facilities");
 assert.ok(!epicRespImagingResult.text.includes("[NAME]"), "Results Review clinical labels should not become names");
+assert.ok(!epicRespImagingResult.text.includes("[ID]"), "known clinical label tokens should not become ID placeholders");
 assert.ok(!epicRespImagingResult.text.includes("Day +30"), "Card 1 Collection Date should not create future lab days");
 assert.ok(!/\b(?:early morning|morning|afternoon|evening|night|overnight)\b/.test(epicRespImagingResult.text), "result chronology should keep exact clocks instead of buckets");
 assert.deepEqual(epicRespImagingResult.residualWarnings, [], "respiratory/imaging Results Review specimen should not create residual PHI warnings");
+
+const labCertificationText = "This test was developed and its performance characteristics determined by the Cytogenetics Laboratory, University of Example, Harbor City, MD. This laboratory is certified under the Clinical Laboratory Improvement Amendments of 1988 (CLIA) as qualified to perform high complexity clinical laboratory testing.";
+const labCertificationResult = deidentifyTextStructuredOnly(labCertificationText);
+assert.ok(labCertificationResult.text.includes("determined by the [ORGANIZATION]."), "named lab institution and city/state should be redacted");
+assert.ok(labCertificationResult.text.includes("Clinical Laboratory Improvement Amendments of 1988 (CLIA)"), "generic CLIA regulatory phrase should not be redacted as a name");
+assert.ok(!labCertificationResult.text.includes("University of Example"), "named university should not remain");
+assert.ok(!labCertificationResult.text.includes("Harbor City"), "city/state facility detail should not remain");
+assert.deepEqual(labCertificationResult.residualWarnings, [], "generic lab certification text should not create residual warnings after institution redaction");
 
 const guardText = clinicalGuardTerms.join("\n");
 const guardResult = deidentifyTextStructuredOnly(guardText);

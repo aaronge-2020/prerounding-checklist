@@ -232,7 +232,35 @@ const clinicalAnchorWords = new Set([
   "teg fibrinogen activity", "teg coag index", "teg lyse30", "test cup", "plain cup",
   "beta hcg tumor marker", "hcg tumor marker", "tumor marker", "xr hip bilateral pelvis",
   "hip bilateral pelvis", "hip pelvis", "xr femur views", "xr foot min views", "normal fish",
-  "banding type", "prelim result", "prelim result normal fish", "source blood"
+  "banding type", "prelim result", "prelim result normal fish", "source blood",
+  "clinical laboratory", "clinical laboratory improvement", "clinical laboratory improvement amendments",
+  "xr forearm", "xr hip unilat", "xr knee", "xr lower leg", "xr wrist", "xr wrist min",
+  "corr ven", "quantiferon tb gold", "rpr titer", "treponema pallidum", "minimal react",
+  "not predicted", "bacterial vaginosis", "microscopic examination", "microscopic examination of urine",
+  "cold autoantibody", "tissue examination", "view post intervention", "post intervention",
+  "non reactive", "direct coombs", "direct coombs-", "pos lymphs pct", "abs suppressor",
+  "poc sat", "poc sars cov", "poc sars cov-", "hcg beta subunit", "creat ratio",
+  "a g ratio", "ldl chol calc", "abs helper", "pos lymphs pct", "abs suppressor",
+  "xr chest ap", "xr hand", "xr toe", "ct abdomen", "pelvis iv contrast only",
+  "ct sinus", "mandible with con", "ct soft tissue neck with", "cta chest", "pe protocol",
+  "ir rvsc tib", "peroneal art", "init vsl w", "nm myocardial perfusion pharm stress",
+  "pet ct tumor imaging skull", "base to mid t", "car exercise stress portion", "nuc med",
+  "hbv s ab", "multi drug resistant gram negative", "surveillance culture", "n gonorrhoeae",
+  "quantiferon tb ag minus nil", "routine reflex result", "c glabrata", "hiv ag",
+  "hiv genosure prime", "hiv genosure", "mg pdf", "amphetamine qual", "barbiturate screen",
+  "benzodiazapine screen", "see final results", "opiate scrn", "oxymorphone ur screen",
+  "phencyclidine ur", "amorphous crystals", "dark yellow", "squam epithel", "epithelial cells",
+  "renal epithel", "hyaline casts", "crystal cmt", "uric acid", "meprobamate screen urine",
+  "o positive", "xr ankle", "peripheral venous", "retic ct", "body fluid culture",
+  "ag value", "pocus anes procedure nerve", "fascial plane block",
+  "pocus anes procedure nerve or fascial plane block", "base exc art", "base excess ven",
+  "hypochromasia slight", "microcytes slight", "group a streptococcus screen",
+  "group a streptococcus screen w o reflex", "w o reflex", "xr ankle min views each bilateral",
+  "xr foot views each bilateral", "xr hands views each bilateral",
+  "car echo agitated saline adult comp", "agitated saline adult comp", "spec gravity",
+  "leukocyte esterase", "xr elbow", "ct cervical spine w", "o con", "ct head",
+  "ct upper extremity with con", "us soft tissue head", "vas venous duplex le bilat",
+  "vas venous duplex ue bilat", "w o con", "head brain", "soft tissue head neck"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
@@ -253,7 +281,29 @@ const clinicalAnchorWords = new Set([
   "results", "teg", "aggregation", "ma", "hcg", "tumor", "marker", "hip", "bilateral",
   "xr", "xray", "view", "views", "femur", "foot", "min", "fish", "banding", "type", "prelim", "source", "axis",
   "appearance", "ketones", "mucus", "plain", "cup", "trace", "small", "clear", "slightly",
-  "analyzed", "counted", "karyotyped", "karyotype", "indication", "cytogenetics"
+  "analyzed", "counted", "karyotyped", "karyotype", "indication", "corr", "ven", "forearm",
+  "unilat", "knee", "lower", "leg", "wrist", "clinical", "improvement", "amendments",
+  "clia", "fda", "premarket", "investigational", "certified", "quantiferon", "tb", "gold",
+  "rpr", "titer", "treponema", "pallidum", "igg", "indeterminate", "minimal", "react",
+  "non", "pos", "abs",
+  "dolutegravir", "elvitegravir", "raltegravir", "bictegravir", "cabotegravir", "resistance",
+  "predicted", "casts", "none", "seen", "bacterial", "vaginosis", "microscopic", "examination",
+  "autoantibody", "cold", "direct", "coombs", "coombs-", "c3d", "covid", "covid-19", "cov-", "sat", "o2",
+  "subunit", "qual", "creat", "ratio", "g", "chol", "calc", "nih", "helper", "suppressor",
+  "lymphs", "pct", "cd", "iv", "contrast", "only", "sinus", "facial", "mandible", "soft",
+  "neck", "cta", "pe", "protocol", "rvsc", "tib", "peroneal", "art", "init", "vsl",
+  "tla", "nm", "myocardial", "perfusion", "pharm", "stress", "spect", "pet", "skull",
+  "base", "mid", "exercise", "portion", "nuc", "med", "intervention", "multi", "drug",
+  "resistant", "negative", "gram", "surveillance", "gonorrhoeae", "naa", "minus", "nil",
+  "routine", "glabrata", "genosure", "prime", "sm", "tm", "mg", "pdf", "amphetamine",
+  "qual", "barbiturate", "benzodiazapine", "final", "opiate", "scrn", "oxycodone",
+  "oxymorphone", "phencyclidine", "amorphous", "crystals", "dark", "squam", "epithel",
+  "epithelial", "hyaline", "crystal", "cmt", "uric", "acid", "carisoprodol",
+  "meprobamate", "screen", "ankle", "ab", "peripheral", "retic", "body", "fluid",
+  "pocus", "anes", "procedure", "nerve", "fascial", "plane", "block", "exc",
+  "hypochromasia", "microcytes", "slight", "streptococcus", "reflex", "each",
+  "hands", "agitated", "saline", "comp", "gravity", "leukocyte", "esterase", "elbow",
+  "head", "brain", "extremity", "tissue", "bilat", "ue", "le", "o"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
@@ -264,7 +314,18 @@ const clinicalAnchorWords = new Set([
   "fio2", "peep", "resp", "flow", "mode", "vitamin", "image", "screening", "clearance",
   "cath", "insertion", "shoulder", "plasma", "teg", "aggregation", "hcg", "tumor",
   "marker", "xr", "xray", "hip", "femur", "foot", "fish", "banding", "prelim", "source", "axis",
-  "appearance", "ketones", "mucus", "cup", "karyotype", "cells"
+  "appearance", "ketones", "mucus", "cup", "karyotype", "cells", "corr", "ven", "forearm",
+  "knee", "leg", "wrist", "quantiferon", "rpr", "treponema", "resistance", "casts",
+  "vaginosis", "examination", "autoantibody", "coombs", "covid", "sat", "hcg", "creat",
+  "ratio", "chol", "helper", "suppressor", "lymphs", "cd", "sinus", "mandible", "cta",
+  "protocol", "rvsc", "peroneal", "myocardial", "perfusion", "pet", "skull", "nuc",
+  "hbv", "surveillance", "gonorrhoeae", "glabrata", "genosure", "amphetamine",
+  "barbiturate", "benzodiazapine", "opiate", "oxymorphone", "phencyclidine", "crystals",
+  "epithel", "hyaline", "uric", "meprobamate", "ankle", "peripheral", "retic",
+  "fluid", "pocus", "anes", "nerve", "fascial", "block", "exc", "hypochromasia",
+  "microcytes", "streptococcus", "reflex", "agitated", "saline", "gravity",
+  "leukocyte", "esterase", "elbow", "head", "brain", "extremity", "tissue",
+  "bilat"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([
@@ -427,8 +488,8 @@ function isLikelyClinicalResultLine(line) {
   }
 
   const label = parsed.label.toLowerCase();
-  const labelLooksClinical = /\b(?:bg site|spec site|source|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|test cup|appearance|ketones|mucus|axis|banding|cells analyzed|cells counted|cells karyotyped|clinical indication|karyotype|prelim result|final result|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|sodium|potassium|chloride|co2|anion|bun|creatinine|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|lactate|troponin|protime|inr|ptt|teg|clotting time|fibrinogen activity|coag index|lyse30|platelet aggregation|ferritin|iron|transferrin|a1c|hcg|tumor marker|pcr|culture|viral|virus|dna|rna|fish|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
-  const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|reactive|rpt\b|see note|see comment|normal|abnormal|yellow|cloudy|slightly cloudy|clear|trace\b|small\b|present|absent|cannot be determined|not performed|plain cup|fish\b|normal fish|blood\b|serum\b|plasma\b|urine\b|pleural fluid\b|a-line\b|ventilator\b|high flow|o positive|neg\b)/i.test(parsed.value);
+  const labelLooksClinical = /\b(?:bg site|spec site|source|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|test cup|appearance|ketones|mucus|casts|axis|banding|cells analyzed|cells counted|cells karyotyped|clinical indication|karyotype|prelim result|final result|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|retic|sodium|potassium|chloride|co2|anion|bun|creatinine|creat|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|base exc|base excess|hypochromasia|microcytes|lactate|troponin|protime|inr|ptt|teg|clotting time|fibrinogen activity|coag index|lyse30|platelet aggregation|ferritin|iron|transferrin|a1c|hcg|quantiferon|rpr|treponema|pallidum|resistance|tumor marker|pcr|culture|body fluid|viral|virus|dna|rna|fish|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|covid|vaginosis|streptococcus|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|pocus|fascial|nerve|block|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
+  const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|non reactive|reactive|minimal react|indeterminate|not predicted|none seen|rpt\b|see note|see comment|normal|abnormal|yellow|cloudy|slightly cloudy|clear|trace\b|small\b|slight\b|present|absent|cannot be determined|not performed|plain cup|fish\b|normal fish|blood\b|serum\b|plasma\b|urine\b|pleural fluid\b|peripheral venous\b|a-line\b|ventilator\b|high flow|o positive|neg\b)/i.test(parsed.value);
   return labelLooksClinical || valueLooksResult;
 }
 
@@ -758,6 +819,12 @@ function isLikelyAddressFalsePositive(rawText, start, end) {
     /\bDr\.\s+[A-Z]/.test(span);
 }
 
+function isLikelyIdentifierFalsePositive(rawText, start, end) {
+  const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
+  const line = lineAroundSpan(rawText, start, end);
+  return /^(?:COVID-19|COVID19|COOMBS-C3D)$/i.test(span) && isLikelyClinicalResultLine(line);
+}
+
 function sentenceBreakIndexForName(span) {
   const matches = [...String(span || "").matchAll(/\.\s+[A-Z]/g)];
   for (const match of matches) {
@@ -1078,10 +1145,12 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "ADDRESS", regex: /\b\d{1,6}[ \t]+[A-Z0-9][A-Za-z0-9.'-]*(?:[ \t]+[A-Za-z0-9.'-]+){0,5}[ \t]+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Circle|Cir|Terrace|Ter|Parkway|Pkwy)\b(?:,?[ \t]+[A-Za-z .-]+)?(?:,?[ \t]+[A-Z]{2})?(?:[ \t]+\d{5}(?:-\d{4})?)?/gi, skip: isLikelyAddressFalsePositive },
     { label: "ROOM", regex: /\b(?:Room|Rm|Bed|ICU room|ED room)\b(?!\s*[:#])\s+[A-Z0-9-]*\d[A-Z0-9-]*\b/gi },
     { label: "LOCATION", regex: /\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/g },
+    { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+[A-Z][A-Za-z&.'-]+){0,4}[ \t]+Laboratory,\s+(?:University|College|Institute) of [A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,4},\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+)*,\s+[A-Z]{2}\b/g },
+    { label: "ORGANIZATION", regex: /\b(?:University|College|Institute) of [A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,4}\b/g },
     { label: "ORGANIZATION", regex: /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, skip: isLikelyOrganizationFalsePositive },
     { label: "PROVIDER NAME", regex: /\b(?:Dr|Doctor)\.?\s+[A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){0,2}\b/g },
     { label: "NAME", regex: /\b[A-Z][a-z]{2,}[ \t]+[A-Z]\.[ \t]+[A-Z][A-Za-z'-]{5,}\b/g, skip: isLikelyNonNamePhrase },
-    { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g },
+    { label: "ID", regex: /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)+\b/g, skip: isLikelyIdentifierFalsePositive },
     { label: "ID", regex: /\b[A-F0-9]{12,}\b/g },
     { label: "ID", regex: /\b[A-HJ-NPR-Z0-9]{17}\b/g }
   ];
@@ -2402,7 +2471,7 @@ export function scanResidualPhi(text) {
   addResidualMatches(warnings, sourceText, "medium", "unit or room", /\b(?:Unit|Floor|Ward|Pod|Bay|Location)\b\s*[:#]\s*[A-Z0-9-]+\b/gi, "care location detail");
   addResidualMatches(warnings, sourceText, "medium", "facility", /\b[A-Z][A-Za-z&.'-]+(?:[ \t]+(?:of|and|the|[A-Z][A-Za-z&.'-]+)){0,5}[ \t]+(?:Hospital|Clinic|Pharmacy|Medical Center|Health System|Healthcare|Medical Group|University Hospital|Children's Hospital|Cancer Center|Laboratory|Lab|Rehabilitation|Rehab|Nursing Home|Skilled Nursing Facility)\b/g, "facility or organization name", isLikelyOrganizationFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "possible full name", new RegExp(String.raw`\b(?:${titledNamePatternSource}|${fullNamePatternSource})\b`, "g"), "capitalized name-like phrase", isLikelyNonNamePhrase);
-  addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code");
+  addResidualMatches(warnings, sourceText, "medium", "ID-like string", /\b(?=[A-Z0-9-]{8,}\b)(?=[A-Z0-9-]*[A-Z])(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/g, "long alphanumeric code", isLikelyIdentifierFalsePositive);
   addResidualMatches(warnings, sourceText, "medium", "age over 89", /\b(?:Age\s*[:#]?\s*(?:9[0-9]|1[0-9]{2})|(?:9[0-9]|1[0-9]{2})\s*(?:yo|y\/o|years? old|M|F|male|female))\b/gi, "age must be generalized");
   addResidualMatches(warnings, sourceText, "review", "rare identifying context", /\b(?:celebrity|publicized|news article|newspaper|police report|lawsuit|incarcerated|inmate|professional athlete|mayor|judge|teacher at|works at|employer|specific school|rare occupation|well-known)\b/gi, "context can identify a patient even without direct IDs");
 
