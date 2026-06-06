@@ -217,18 +217,43 @@ const clinicalAnchorWords = new Set([
   "on prednisone", "car echo", "add nephrovite", "elevated lipids", "heart attack",
   "dna amplification", "rna amplification", "pcr amplification", "viral dna", "viral rna",
   "please hold on day", "for renal biopsy", "do not", "or hr", "prn route",
-  "low blood sugar", "sterile water"
+  "low blood sugar", "sterile water", "most recent", "high sensitivity", "cannot be determined",
+  "virus rna", "parainflu virus", "rhinovirus enterovirus", "renal transplant", "adult complete",
+  "qtc calculation", "external hemoglobin", "hemoglobin a1c", "poc hgb", "poc hbg",
+  "nucleated rbc", "non-african american", "african american", "vit d", "troponin t",
+  "external poc hbg", "see lab tab", "rpt day", "red blood cells", "guided biopsy kidney",
+  "car echo adult complete", "a-line", "arterial line", "bg site", "spec site", "high flow",
+  "high flow nasal cannula", "nasal cannula", "not performed", "vitamin b", "vitamin b-12",
+  "vitamin b-", "collection date", "xr pelvis", "maxillo panorex image by clinic",
+  "oral maxillo panorex image by clinic xr", "maxillo panorex", "metal screening",
+  "mr clearance", "xr metal screening mr clearance", "ir cv tunneled cath insertion",
+  "mr shoulder w", "mr shoulder w wo con", "w wo con", "request for plasma", "request for platelets"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
   "add", "amplification", "attack", "car", "dna", "echo", "lipid", "lipids",
   "biopsy", "day", "do", "for", "hold", "hr", "nephrovite", "not", "on",
-  "or", "please", "prednisone", "rna", "route", "sterile", "sugar", "water"
+  "or", "please", "prednisone", "rna", "route", "sterile", "sugar", "water",
+  "sensitivity", "gen", "cannot", "determined", "virus", "parainflu", "rhinovirus",
+  "enterovirus", "transplant", "adult", "complete", "qtc", "calculation", "external",
+  "hbg", "quant", "log", "interp", "antibody", "antigen", "surface", "core", "rh",
+  "abo", "ekg", "ecg", "guided", "duplex", "titer", "tco2", "venous", "cmv", "ebv",
+  "bk", "bkv", "hbv", "hcv", "hiv", "sars", "cov", "pcr", "rpt", "detected",
+  "reactive", "nonreactive", "non-reactive", "a-line", "arterial", "line", "bg", "site",
+  "spec", "ventilator", "fio2", "peep", "resp", "respirations", "tidal", "volume",
+  "liter", "flow", "mode", "nasal", "cannula", "performed", "vitamin", "b-12",
+  "oral", "maxillo", "panorex", "image", "clinic", "metal", "screening", "mr",
+  "clearance", "ir", "cv", "tunneled", "cath", "insertion", "yrs", "wo", "con",
+  "right", "left", "shoulder", "plasma", "collection", "pelvis", "by", "w", "b-"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
   "amplification", "attack", "dna", "echo", "lipid", "lipids", "nephrovite",
-  "biopsy", "blood", "hr", "prednisone", "renal", "rna", "route", "sugar"
+  "biopsy", "blood", "hr", "prednisone", "renal", "rna", "route", "sugar",
+  "sensitivity", "virus", "transplant", "calculation", "hemoglobin", "glucose",
+  "ekg", "ecg", "quant", "antibody", "antigen", "pcr", "titer", "site", "ventilator",
+  "fio2", "peep", "resp", "flow", "mode", "vitamin", "image", "screening", "clearance",
+  "cath", "insertion", "shoulder", "plasma"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([
@@ -330,6 +355,55 @@ function sameLineContext(rawText, start, end) {
   return lineAroundSpan(rawText, start, end).toLowerCase();
 }
 
+function nextNonEmptyLineAfter(rawText, end) {
+  const text = String(rawText || "");
+  let cursor = text.indexOf("\n", Math.max(0, end));
+  while (cursor !== -1 && cursor < text.length) {
+    const nextStart = cursor + 1;
+    const nextEnd = text.indexOf("\n", nextStart);
+    const lineEnd = nextEnd === -1 ? text.length : nextEnd;
+    const line = text.slice(nextStart, lineEnd).trim();
+    if (line) {
+      return line;
+    }
+    cursor = nextEnd;
+  }
+  return "";
+}
+
+function clinicalResultLabelFromLine(line) {
+  const clean = String(line || "").trim();
+  const delimiter = clean.match(/:\s+/);
+  const colonIndex = delimiter ? delimiter.index : -1;
+  if (colonIndex <= 0 || colonIndex > 110) {
+    return null;
+  }
+  const label = clean.slice(0, colonIndex).trim();
+  const value = clean.slice(colonIndex + 1).trim();
+  if (!label || !value) {
+    return null;
+  }
+  if (/\b(?:patient(?: name)?|pt(?: name)?|name|dob|date of birth|mrn|medical record|csn|fin|har|account|phone|fax|email|address|room|bed|unit|provider|attending|resident|fellow|consultant|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver)\b/i.test(label)) {
+    return null;
+  }
+  if (/^(?:\(?[HLPE!]\)?|Rpt)$/i.test(label)) {
+    return null;
+  }
+  return { label, value };
+}
+
+function isLikelyClinicalResultLine(line) {
+  const parsed = clinicalResultLabelFromLine(line);
+  if (!parsed) {
+    return false;
+  }
+
+  const label = parsed.label.toLowerCase();
+  const labelLooksClinical = /\b(?:bg site|spec site|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|sodium|potassium|chloride|co2|anion|bun|creatinine|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|lactate|troponin|protime|inr|ptt|ferritin|iron|transferrin|a1c|pcr|culture|viral|virus|dna|rna|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
+  const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|reactive|rpt\b|see note|normal|yellow|cloudy|present|absent|cannot be determined|not performed|o positive|neg\b)/i.test(parsed.value);
+  return labelLooksClinical || valueLooksResult;
+}
+
 function isLikelyClinicalSlashValue(rawText, start, end) {
   const span = rawText.slice(start, end);
   const before = rawText.slice(Math.max(0, start - 36), start).toLowerCase();
@@ -338,6 +412,17 @@ function isLikelyClinicalSlashValue(rawText, start, end) {
   return /(strength|motor|reflex|pain|score|rated|grade|gcs|glasgow|apgar|mrc|nihss)\s*(?:is|was|:)?\s*$/.test(before) ||
     /^\s*(?:strength|motor|reflex|pain|score|out of|\/)/.test(after) ||
     denominator <= 10 && /(strength|motor|pain|score|grade|rated|exam|neuro|mrc|nihss)/.test(`${before} ${after}`);
+}
+
+function isLikelyNonDateSlashMeasurement(rawText, start, end) {
+  const span = rawText.slice(start, end).trim();
+  if (!/^\d{1,2}[/-]\d{1,2}$/.test(span)) {
+    return false;
+  }
+  const before = rawText.slice(Math.max(0, start - 48), start).toLowerCase();
+  const after = rawText.slice(end, Math.min(rawText.length, end + 48)).toLowerCase();
+  return isLikelyClinicalSlashValue(rawText, start, end) ||
+    /\b(?:xr|x-ray|xray|knee|chest|abdomen|foot|hand|shoulder|hip|views?)\s*$/.test(before) && /^\s*(?:views?|view|right|left|ap|pa|lat|lateral|portable)\b/.test(after);
 }
 
 function isLikelyMedicationWord(word) {
@@ -606,6 +691,10 @@ function isLikelyDateFalsePositive(rawText, start, end) {
     return true;
   }
 
+  if (isLikelyNonDateSlashMeasurement(rawText, start, end)) {
+    return true;
+  }
+
   if (/^\d{1,2}\/\d{1,2}$/.test(span) && isLikelyClinicalSlashValue(rawText, start, end)) {
     return true;
   }
@@ -627,8 +716,10 @@ function isLikelyOrganizationFalsePositive(rawText, start, end) {
   const span = rawText.slice(start, end).replace(/\s+/g, " ").trim();
   const after = rawText.slice(end, Math.min(rawText.length, end + 32));
   const normalized = normalizePhrase(span);
+  const line = lineAroundSpan(rawText, start, end);
   return broadNonPhiLocationWords.has(normalized) ||
     nonNameClinicalPhrases.has(normalized) ||
+    /\b(?:xr|xray|ct|cta|mr|mri|fl|ir|us|vas|echo|ekg|eeg|pocus)\b/i.test(line) && /\b(?:rpt|report|views?|con|w\/o|with|without|image|screening|clearance)\b/i.test(line) ||
     /^running hospital$/i.test(span) && /^\s+(?:course|stay|problems?)\b/i.test(after) ||
     /\bhospital$/i.test(span) && /^\s+(?:course|stay|problems?|day|progress note)\b/i.test(after);
 }
@@ -939,7 +1030,7 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "MRN", regex: /\b(?:MRN|Medical Record(?: Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "FACILITY", regex: /\b(?:Facility|Campus|Hospital|Clinic|Site|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gi },
+    { label: "FACILITY", regex: /\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gi },
     { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)/gi }
   ];
 
@@ -1137,16 +1228,18 @@ function monthDiff(left, right) {
   return (left.getUTCFullYear() - right.getUTCFullYear()) * 12 + (left.getUTCMonth() - right.getUTCMonth());
 }
 
-function timeBucketFromValue(value) {
+function clockTimeFromValue(value) {
   const clean = String(value || "").trim().toUpperCase();
   if (!clean) {
-    return "";
+    return null;
   }
 
   let hour = null;
+  let minute = null;
   let match = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/);
   if (match) {
     hour = Number(match[1]);
+    minute = Number(match[2]);
     if (match[3] === "PM" && hour < 12) hour += 12;
     if (match[3] === "AM" && hour === 12) hour = 0;
   } else {
@@ -1154,18 +1247,41 @@ function timeBucketFromValue(value) {
     if (match) {
       const digits = match[1].padStart(4, "0");
       hour = Number(digits.slice(0, 2));
+      minute = Number(digits.slice(2));
     }
   }
 
-  if (!Number.isFinite(hour) || hour < 0 || hour > 23) {
+  if (!Number.isFinite(hour) || !Number.isFinite(minute) || hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+    return null;
+  }
+
+  return {
+    hour,
+    minute,
+    label: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
+  };
+}
+
+function timeBucketFromValue(value) {
+  const clock = clockTimeFromValue(value);
+  if (!clock) {
     return "";
   }
+  const { hour } = clock;
   if (hour < 3) return "overnight";
   if (hour < 9) return "early morning";
   if (hour < 12) return "morning";
   if (hour < 17) return "afternoon";
   if (hour < 21) return "evening";
   return "night";
+}
+
+function temporalTimeFields(value) {
+  const clock = clockTimeFromValue(value);
+  return {
+    timeBucket: timeBucketFromValue(value),
+    clockTime: clock?.label || ""
+  };
 }
 
 function contextAroundSpan(rawText, start, end) {
@@ -1225,7 +1341,7 @@ function parseTemporalSpan(value, context = {}) {
       month: Number(match[2]),
       day: Number(match[3]),
       hasExplicitYear: true,
-      timeBucket: timeBucketFromValue(match[4])
+      ...temporalTimeFields(match[4])
     };
   }
 
@@ -1248,7 +1364,7 @@ function parseTemporalSpan(value, context = {}) {
       month: Number(match[1]),
       day: Number(match[3]),
       hasExplicitYear: Boolean(match[4]),
-      timeBucket: timeBucketFromValue(match[5])
+      ...temporalTimeFields(match[5])
     };
   }
 
@@ -1280,7 +1396,7 @@ function parseTemporalSpan(value, context = {}) {
       month: monthNameToNumber.get(match[1].replace(/\.$/, "").toLowerCase()),
       day: Number(match[2]),
       hasExplicitYear: Boolean(match[3]),
-      timeBucket: timeBucketFromValue(match[4])
+      ...temporalTimeFields(match[4])
     };
   }
 
@@ -1331,7 +1447,15 @@ function dateKeyFromDate(date) {
 }
 
 function isCurrentSourceDateContext(entity) {
-  return /\b(?:encounter date|date of service|dos|collected|collection|result|resulted|received|drawn|specimen|vital|vitals|lab|labs|current|today|this am|note date|as of)\b/i.test(entity.context || "");
+  const context = String(entity.context || "").toLowerCase();
+  const temporal = entity.temporal || null;
+  if (/^\s*(?:collected|collection(?: date| time| date\/time)?|resulted|received|drawn|issued|specimen(?: collected)?|ordered)\s*[:#]/.test(context)) {
+    return true;
+  }
+  if (/\b(?:encounter date|date of service|dos|collected|resulted|received|drawn|specimen collected|vital|vitals|note date|as of|current|today|this am)\b/.test(context)) {
+    return true;
+  }
+  return Boolean(temporal && !temporal.hasExplicitYear && /\blabs?\b/.test(context));
 }
 
 function temporalContextDirection(entity) {
@@ -1449,6 +1573,9 @@ export function collectTemporalEntities(rawText) {
     for (const match of text.matchAll(regex)) {
       const start = match.index;
       const end = start + match[0].length;
+      if (isLikelyNonDateSlashMeasurement(text, start, end)) {
+        continue;
+      }
       if (isLikelyDateFalsePositive(text, start, end) && !isCourseDateLabel(text, start, end) && !hasClinicalTemporalContext(text, start, end)) {
         continue;
       }
@@ -1537,12 +1664,43 @@ function formatMonthRelation(date, currentSourceDate, year) {
   return `about ${absDiff} month${absDiff === 1 ? "" : "s"} ${direction} Day 0${year ? ` (${year})` : ""}`;
 }
 
-function formatDayRelation(date, currentSourceDate, year, timeBucket = "") {
+function isInsideLabChronologyBlock(text, start) {
+  const sourceText = String(text || "");
+  const openIndex = sourceText.lastIndexOf("<lab_chronology>", start);
+  if (openIndex === -1) {
+    return false;
+  }
+  const closeIndex = sourceText.lastIndexOf("</lab_chronology>", start);
+  return closeIndex < openIndex;
+}
+
+function shouldPreserveExactClinicalTime(entity, rawText = "") {
+  const start = Number.isFinite(entity?.start) ? entity.start : 0;
+  const end = Number.isFinite(entity?.end) ? entity.end : start;
+  if (isInsideLabChronologyBlock(rawText, start)) {
+    return true;
+  }
+  const line = rawText ? lineAroundSpan(rawText, start, end) : "";
+  if (isLikelyClinicalResultLine(line)) {
+    return true;
+  }
+  if (/^\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+(?:19|20)\d{2})?)(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\s*$/i.test(line) &&
+      isLikelyClinicalResultLine(nextNonEmptyLineAfter(rawText, end))) {
+    return true;
+  }
+  const context = `${entity?.context || ""} ${line}`.toLowerCase();
+  return /\b(?:lab|labs|result|results|resulted|issued|reported|verified|received|collected|collection|specimen|drawn|obtained|sample|poc|glucose|bmp|cmp|cbc|chem(?:istry)?|vital|vitals|temp|heart rate|hr\b|resp|spo2|oxygen|bp\b|map\b|wbc|hemoglobin|hematocrit|platelets|sodium|potassium|chloride|creatinine|bun|calcium|magnesium|phosphorus|inr|protime|troponin|lactate|vancomycin|tacrolimus)\b/.test(context);
+}
+
+function formatDayRelation(date, currentSourceDate, year, timeBucket = "", clockTime = "", useExactClockTime = false) {
   if (!date || !currentSourceDate) {
     return year ? `relative day (${year})` : "relative day";
   }
   const dayDiff = Math.round((date.getTime() - currentSourceDate.getTime()) / 86400000);
   const dayLabel = `Day ${dayDiff === 0 ? "0" : dayDiff > 0 ? `+${dayDiff}` : String(dayDiff)}`;
+  if (useExactClockTime && clockTime) {
+    return `${clockTime} on ${dayLabel}${year ? ` (${year})` : ""}`;
+  }
   return `${dayLabel}${timeBucket ? ` ${timeBucket}` : ""}${year ? ` (${year})` : ""}`;
 }
 
@@ -1558,7 +1716,14 @@ function formatRelativeTemporalPlaceholder(entity, currentSourceDate, fallbackYe
   if (temporal.kind === "month") {
     return formatMonthRelation(date, currentSourceDate, timelineYear);
   }
-  return formatDayRelation(date, currentSourceDate, timelineYear, temporal.timeBucket || "");
+  return formatDayRelation(
+    date,
+    currentSourceDate,
+    timelineYear,
+    temporal.timeBucket || "",
+    temporal.clockTime || "",
+    shouldPreserveExactClinicalTime(entity, entity.rawText || "")
+  );
 }
 
 function buildDateTimeline(rawText, entities) {
@@ -1644,10 +1809,15 @@ function normalizeLegacyDatePlaceholders(text) {
 }
 
 function normalizeDayLabelTimes(text) {
-  return String(text || "").replace(/\b(Day\s+[+-]?\d+)(?:\s+\(((?:19|20)\d{2})\))?\s+(?:at\s+)?(\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4})(?!\d)/gi, (match, dayLabel, year, timeValue) => {
+  const sourceText = String(text || "");
+  return sourceText.replace(/\b(Day[ \t]+[+-]?\d+)(?:[ \t]+\(((?:19|20)\d{2})\))?[ \t]+(?:at[ \t]+)?(\d{1,2}:\d{2}(?:[ \t]*[AP]M)?|\d{3,4})(?!\d|[ \t]+on[ \t]+Day\b)/gi, (match, dayLabel, year, timeValue, offset) => {
     const bucket = timeBucketFromValue(timeValue);
     if (!bucket) {
       return match;
+    }
+    const clockTime = clockTimeFromValue(timeValue)?.label || "";
+    if (clockTime && shouldPreserveExactClinicalTime({ start: offset, end: offset + match.length }, sourceText)) {
+      return `${clockTime} on ${dayLabel}${year ? ` (${year})` : ""}`;
     }
     return `${dayLabel} ${bucket}${year ? ` (${year})` : ""}`;
   });
