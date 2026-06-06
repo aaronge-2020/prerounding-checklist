@@ -134,9 +134,13 @@ assert.equal(buildPromptQueue(removeResult.patients).some((item) => item.patient
 
 const vault = normalizeCensusVault({
   activePatientId: patientA.id,
+  activeContinuityCaseId: "case-a",
+  continuityCases: [{ id: "case-a", label: "Patient A", days: [{ date: "2026-06-06" }] }],
   patients: [patientA, patientB, { ...patientC, lifecycleStatus: "discharged" }]
 });
 assert.equal(vault.activePatientId, patientA.id);
+assert.equal(vault.activeContinuityCaseId, "case-a");
+assert.equal(vault.continuityCases.length, 1);
 assert.equal(vault.patients.length, 2, "discharged patients must not remain in normalized vault payloads");
 assert.equal(vault.patients.some((patient) => patient.id === patientC.id), false);
 

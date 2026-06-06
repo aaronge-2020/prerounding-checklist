@@ -3906,6 +3906,15 @@
       body[data-checklist-first="true"] .guide-sidebar {
         display: none;
       }
+
+      .vault-assurance-list {
+        grid-template-columns: 1fr;
+      }
+
+      .vault-assurance-list li + li {
+        border-top: 1px solid rgba(255, 255, 255, 0.09);
+        border-left: 0;
+      }
     }
   </style>
 </head>
@@ -9019,7 +9028,13 @@ Sensory level present: No / Yes, at ___`;
       elements.censusVaultCard.hidden = state.census.unlocked;
       elements.censusUnlockedShell.hidden = !state.census.unlocked;
       elements.lockCensusButton.hidden = !state.census.unlocked;
-      elements.createCensusButton.textContent = "Create vault";
+      elements.unlockCensusButton.textContent = "Unlock existing vault";
+      elements.createCensusButton.textContent = "Create local vault";
+      elements.unlockCensusButton.classList.toggle("btn-primary", state.census.vaultExists);
+      elements.unlockCensusButton.classList.toggle("btn-secondary", !state.census.vaultExists);
+      elements.createCensusButton.classList.toggle("btn-primary", !state.census.vaultExists);
+      elements.createCensusButton.classList.toggle("btn-secondary", state.census.vaultExists);
+      elements.createCensusButton.disabled = state.census.vaultExists && !state.census.unlocked;
       document.querySelectorAll("[data-census-filter]").forEach((button) => {
         const key = button.dataset.censusFilter;
         button.setAttribute("aria-pressed", state.census.filters[key] ? "true" : "false");
@@ -9036,11 +9051,11 @@ Sensory level present: No / Yes, at ___`;
     async function createCensusVaultFromWorkspace() {
       const passphrase = elements.censusPassphraseInput.value;
       if (state.census.vaultExists && !state.census.unlocked) {
-        elements.censusVaultStatus.textContent = "An encrypted census already exists. Unlock it with the passphrase.";
+        elements.censusVaultStatus.textContent = "A local encrypted vault already exists in this browser. Enter its passcode and click Unlock existing vault.";
         return false;
       }
       if (passphrase.trim().length < 8) {
-        elements.censusVaultStatus.textContent = "Use at least 8 characters for the census passphrase.";
+        elements.censusVaultStatus.textContent = "Choose a local passcode with at least 8 characters. It stays on this computer and cannot be recovered by the app.";
         elements.censusPassphraseInput.focus();
         return false;
       }
@@ -9056,15 +9071,17 @@ Sensory level present: No / Yes, at ___`;
       hydrateWorkspaceFromPatient(patient);
       renderCensusDashboard();
       await saveCensusNow();
-      elements.censusVaultStatus.textContent = "Encrypted census vault created.";
-      showToast("Census vault created.");
+      elements.censusVaultStatus.textContent = "Local encrypted vault created. Keep the passcode somewhere approved; the app cannot recover it.";
+      showToast("Local vault created.");
       return true;
     }
 
     async function unlockCensusVault() {
       const passphrase = elements.censusPassphraseInput.value;
       if (!passphrase) {
-        elements.censusVaultStatus.textContent = "Enter the census passphrase.";
+        elements.censusVaultStatus.textContent = state.census.vaultExists
+          ? "Enter the local passcode you created for this browser's encrypted vault."
+          : "No local vault exists yet. Choose a new passcode and click Create local vault.";
         elements.censusPassphraseInput.focus();
         return false;
       }
@@ -9076,7 +9093,9 @@ Sensory level present: No / Yes, at ___`;
         return false;
       }
       if (!envelope) {
-        return createCensusVaultFromWorkspace();
+        elements.censusVaultStatus.textContent = "No local vault exists yet. Choose a new passcode and click Create local vault.";
+        elements.createCensusButton.focus();
+        return false;
       }
       try {
         const payload = await decryptJsonPayload(envelope, passphrase, { type: CENSUS_STORAGE_TYPE });
@@ -9101,8 +9120,8 @@ Sensory level present: No / Yes, at ___`;
         }
         renderCensusDashboard();
         scheduleCensusSave(50);
-        elements.censusVaultStatus.textContent = "Census vault unlocked. Legacy raw source fields are not retained.";
-        showToast("Census vault unlocked.");
+        elements.censusVaultStatus.textContent = "Local encrypted vault unlocked. Raw legacy source fields are not retained.";
+        showToast("Local vault unlocked.");
         return true;
       } catch (error) {
         console.error(error);
@@ -9119,7 +9138,7 @@ Sensory level present: No / Yes, at ___`;
       state.census.editingPatientId = "";
       state.census.batchSnippets = [];
       elements.censusPassphraseInput.value = "";
-      elements.censusVaultStatus.textContent = "Census locked.";
+      elements.censusVaultStatus.textContent = "Local encrypted vault locked. Enter your passcode here to unlock it again.";
       renderCensusDashboard();
       showScreen("censusScreen");
     }
