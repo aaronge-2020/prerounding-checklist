@@ -227,7 +227,12 @@ const clinicalAnchorWords = new Set([
   "vitamin b-", "collection date", "xr pelvis", "maxillo panorex image by clinic",
   "oral maxillo panorex image by clinic xr", "maxillo panorex", "metal screening",
   "mr clearance", "xr metal screening mr clearance", "ir cv tunneled cath insertion",
-  "mr shoulder w", "mr shoulder w wo con", "w wo con", "request for plasma", "request for platelets"
+  "mr shoulder w", "mr shoulder w wo con", "w wo con", "request for plasma", "request for platelets",
+  "results review", "teg platelet aggregation", "platelet aggregation", "teg clotting time",
+  "teg fibrinogen activity", "teg coag index", "teg lyse30", "test cup", "plain cup",
+  "beta hcg tumor marker", "hcg tumor marker", "tumor marker", "xr hip bilateral pelvis",
+  "hip bilateral pelvis", "hip pelvis", "xr femur views", "xr foot min views", "normal fish",
+  "banding type", "prelim result", "prelim result normal fish", "source blood"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
@@ -244,7 +249,11 @@ const clinicalAnchorWords = new Set([
   "liter", "flow", "mode", "nasal", "cannula", "performed", "vitamin", "b-12",
   "oral", "maxillo", "panorex", "image", "clinic", "metal", "screening", "mr",
   "clearance", "ir", "cv", "tunneled", "cath", "insertion", "yrs", "wo", "con",
-  "right", "left", "shoulder", "plasma", "collection", "pelvis", "by", "w", "b-"
+  "right", "left", "shoulder", "plasma", "collection", "pelvis", "by", "w", "b-",
+  "results", "teg", "aggregation", "ma", "hcg", "tumor", "marker", "hip", "bilateral",
+  "femur", "foot", "min", "fish", "banding", "type", "prelim", "source", "axis",
+  "appearance", "ketones", "mucus", "plain", "cup", "trace", "small", "clear", "slightly",
+  "analyzed", "counted", "karyotyped", "karyotype", "indication", "cytogenetics"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
@@ -253,7 +262,9 @@ const clinicalAnchorWords = new Set([
   "sensitivity", "virus", "transplant", "calculation", "hemoglobin", "glucose",
   "ekg", "ecg", "quant", "antibody", "antigen", "pcr", "titer", "site", "ventilator",
   "fio2", "peep", "resp", "flow", "mode", "vitamin", "image", "screening", "clearance",
-  "cath", "insertion", "shoulder", "plasma"
+  "cath", "insertion", "shoulder", "plasma", "teg", "aggregation", "hcg", "tumor",
+  "marker", "hip", "femur", "foot", "fish", "banding", "prelim", "source", "axis",
+  "appearance", "ketones", "mucus", "cup", "karyotype", "cells"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([
@@ -371,6 +382,23 @@ function nextNonEmptyLineAfter(rawText, end) {
   return "";
 }
 
+function previousNonEmptyLineBefore(rawText, start) {
+  const text = String(rawText || "");
+  let lineEnd = text.lastIndexOf("\n", Math.max(0, start - 1));
+  while (lineEnd !== -1) {
+    const lineStart = text.lastIndexOf("\n", Math.max(0, lineEnd - 1)) + 1;
+    const line = text.slice(lineStart, lineEnd).trim();
+    if (line) {
+      return line;
+    }
+    if (lineStart === 0) {
+      break;
+    }
+    lineEnd = text.lastIndexOf("\n", lineStart - 1);
+  }
+  return "";
+}
+
 function clinicalResultLabelFromLine(line) {
   const clean = String(line || "").trim();
   const delimiter = clean.match(/:\s+/);
@@ -399,8 +427,8 @@ function isLikelyClinicalResultLine(line) {
   }
 
   const label = parsed.label.toLowerCase();
-  const labelLooksClinical = /\b(?:bg site|spec site|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|sodium|potassium|chloride|co2|anion|bun|creatinine|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|lactate|troponin|protime|inr|ptt|ferritin|iron|transferrin|a1c|pcr|culture|viral|virus|dna|rna|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
-  const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|reactive|rpt\b|see note|normal|yellow|cloudy|present|absent|cannot be determined|not performed|o positive|neg\b)/i.test(parsed.value);
+  const labelLooksClinical = /\b(?:bg site|spec site|source|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|test cup|appearance|ketones|mucus|axis|banding|cells analyzed|cells counted|cells karyotyped|clinical indication|karyotype|prelim result|final result|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|sodium|potassium|chloride|co2|anion|bun|creatinine|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|lactate|troponin|protime|inr|ptt|teg|clotting time|fibrinogen activity|coag index|lyse30|platelet aggregation|ferritin|iron|transferrin|a1c|hcg|tumor marker|pcr|culture|viral|virus|dna|rna|fish|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
+  const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|reactive|rpt\b|see note|see comment|normal|abnormal|yellow|cloudy|slightly cloudy|clear|trace\b|small\b|present|absent|cannot be determined|not performed|plain cup|fish\b|normal fish|blood\b|serum\b|plasma\b|urine\b|pleural fluid\b|a-line\b|ventilator\b|high flow|o positive|neg\b)/i.test(parsed.value);
   return labelLooksClinical || valueLooksResult;
 }
 
@@ -1684,9 +1712,13 @@ function shouldPreserveExactClinicalTime(entity, rawText = "") {
   if (isLikelyClinicalResultLine(line)) {
     return true;
   }
-  if (/^\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+(?:19|20)\d{2})?)(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\s*$/i.test(line) &&
-      isLikelyClinicalResultLine(nextNonEmptyLineAfter(rawText, end))) {
-    return true;
+  if (/^\s*(?:\d{4}-\d{1,2}-\d{1,2}|(?:0?[1-9]|1[0-2])[/-](?:0?[1-9]|[12]\d|3[01])(?:[/-](?:\d{2}|\d{4}))?|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2}(?:,?\s+(?:19|20)\d{2})?)(?:\s+(?:at\s+)?(?:\d{1,2}:\d{2}(?:\s*[AP]M)?|\d{3,4}))?\s*$/i.test(line)) {
+    if (
+      isLikelyClinicalResultLine(nextNonEmptyLineAfter(rawText, end)) ||
+      isLikelyClinicalResultLine(previousNonEmptyLineBefore(rawText, start))
+    ) {
+      return true;
+    }
   }
   const context = `${entity?.context || ""} ${line}`.toLowerCase();
   return /\b(?:lab|labs|result|results|resulted|issued|reported|verified|received|collected|collection|specimen|drawn|obtained|sample|poc|glucose|bmp|cmp|cbc|chem(?:istry)?|vital|vitals|temp|heart rate|hr\b|resp|spo2|oxygen|bp\b|map\b|wbc|hemoglobin|hematocrit|platelets|sodium|potassium|chloride|creatinine|bun|calcium|magnesium|phosphorus|inr|protime|troponin|lactate|vancomycin|tacrolimus)\b/.test(context);

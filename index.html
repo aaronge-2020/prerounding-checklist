@@ -4180,11 +4180,6 @@
         <h2 id="censusVaultTitle" class="workflow-title">Create or unlock your local vault</h2>
         <p class="vault-claim">Patient data stays on this computer.</p>
         <p class="vault-copy"><strong>First time here?</strong> Choose a new local passcode and click Create local vault. <strong>Returning?</strong> Enter the same passcode to unlock the encrypted vault stored in this browser.</p>
-        <ul class="vault-assurance-list" aria-label="Local privacy protections">
-          <li><strong>No app server upload</strong>This app does not send your census, pasted chart text, or saved patient workspace to a backend service.</li>
-          <li><strong>Encrypted saved census</strong>Saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
-          <li><strong>You control sharing</strong>Information leaves this computer only when you intentionally copy and paste reviewed text into another site.</li>
-        </ul>
         <div class="vault-grid">
           <div>
             <label for="censusPassphraseInput">Local vault passcode</label>
@@ -4197,6 +4192,11 @@
             <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Use without vault</button>
           </div>
         </div>
+        <ul class="vault-assurance-list" aria-label="Local privacy protections">
+          <li><strong>No app server upload</strong>This app does not send your census, pasted chart text, or saved patient workspace to a backend service.</li>
+          <li><strong>Encrypted saved census</strong>Saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
+          <li><strong>You control sharing</strong>Information leaves this computer only when you intentionally copy and paste reviewed text into another site.</li>
+        </ul>
         <p id="censusVaultStatus" class="vault-status" role="status" aria-live="polite"></p>
       </section>
 
