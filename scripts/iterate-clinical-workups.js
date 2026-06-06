@@ -19,11 +19,11 @@ import {
 } from "../clinical-intents.js";
 
 const defaultPaths = {
-  base: "exam_technique_base.csv",
-  overlay: "exam_evidence_overlay.csv",
-  legacyOverlay: "physical_exam_evidence_overlay.csv",
-  tags: "retrieval_tag_dictionary.csv",
-  sources: "source_registry.csv"
+  base: "data/evidence/exam_technique_base.csv",
+  overlay: "data/evidence/exam_evidence_overlay.csv",
+  legacyOverlay: "data/physical-exam/physical_exam_evidence_overlay.csv",
+  tags: "data/evidence/retrieval_tag_dictionary.csv",
+  sources: "data/evidence/source_registry.csv"
 };
 
 const stopWords = new Set([

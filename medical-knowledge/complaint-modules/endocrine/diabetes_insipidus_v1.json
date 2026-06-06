@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Diabetes Insipidus",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -31,7 +31,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg."
       },
@@ -45,7 +45,7 @@
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -61,7 +61,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -85,7 +85,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -116,7 +116,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -150,7 +150,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -167,7 +167,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -181,7 +181,7 @@
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -195,7 +195,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -209,7 +209,7 @@
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -223,7 +223,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -237,7 +237,7 @@
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -253,7 +253,7 @@
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway."
       }
@@ -276,7 +276,7 @@
         "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

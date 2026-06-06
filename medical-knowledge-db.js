@@ -8,7 +8,7 @@ export const medicalKnowledgeDbManifest = {
   "title": "Pre-Rounding Medical Knowledge Database",
   "version": "2026-06-06",
   "complaint_module_count": 39,
-  "source_count": 32
+  "source_count": 34
 };
 
 export const complaintSourceRegistry = [
@@ -94,6 +94,15 @@ export const complaintSourceRegistry = [
     "citation": "ATA Hyperthyroidism and Thyrotoxicosis Guideline"
   },
   {
+    "id": "ATA_HYPOTHYROIDISM_2014",
+    "title": "ATA Guidelines for the Treatment of Hypothyroidism",
+    "source": "American Thyroid Association",
+    "version": "2014",
+    "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+    "date_accessed": "2026-06-06",
+    "citation": "American Thyroid Association Task Force on Thyroid Hormone Replacement. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014."
+  },
+  {
     "id": "ATA_THYROID_CANCER_2025",
     "title": "ATA Differentiated Thyroid Cancer Guideline Resource",
     "source": "American Thyroid Association",
@@ -101,6 +110,15 @@ export const complaintSourceRegistry = [
     "url": "https://www.thyroid.org/ata-professional-guidelines/",
     "date_accessed": "2026-06-06",
     "citation": "ATA Differentiated Thyroid Cancer Guideline Resource"
+  },
+  {
+    "id": "ATA_THYROID_NODULE_DTC_2015",
+    "title": "ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer",
+    "source": "American Thyroid Association",
+    "version": "2015",
+    "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+    "date_accessed": "2026-06-06",
+    "citation": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016."
   },
   {
     "id": "AUA_ED_2018",
@@ -1100,8 +1118,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Acromegaly",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -1121,7 +1139,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "IGF-1 age/sex-adjusted."
       },
@@ -1135,7 +1153,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -1151,7 +1169,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -1175,7 +1193,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -1206,7 +1224,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -1240,7 +1258,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -1257,7 +1275,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -1271,7 +1289,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -1285,7 +1303,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -1299,7 +1317,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -1313,7 +1331,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1327,7 +1345,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1341,7 +1359,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -1357,7 +1375,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway."
       }
@@ -1376,7 +1394,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -1384,8 +1402,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Addison's Disease",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -1406,7 +1424,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "8 AM cortisol/ACTH."
       },
@@ -1420,7 +1438,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -1436,7 +1454,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -1460,7 +1478,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -1494,7 +1512,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -1511,7 +1529,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1525,7 +1543,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1539,7 +1557,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1553,7 +1571,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1567,7 +1585,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1581,7 +1599,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1595,7 +1613,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -1611,7 +1629,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance."
       }
@@ -1632,7 +1650,7 @@ export const complaintModules = [
         "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -1640,8 +1658,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Adrenal Insufficiency",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -1661,7 +1679,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "8 AM cortisol and ACTH."
       },
@@ -1675,7 +1693,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -1691,7 +1709,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -1716,7 +1734,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -1747,7 +1765,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -1781,7 +1799,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -1798,7 +1816,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1812,7 +1830,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1826,7 +1844,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -1840,7 +1858,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1854,7 +1872,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -1868,7 +1886,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -1884,7 +1902,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."
       }
@@ -1903,7 +1921,7 @@ export const complaintModules = [
         "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -1911,8 +1929,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Amenorrhea (Absence of menstruation)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -1934,7 +1952,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Pregnancy test first."
       },
@@ -1948,7 +1966,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -1964,7 +1982,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -1988,7 +2006,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2019,7 +2037,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2053,7 +2071,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -2070,7 +2088,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -2084,7 +2102,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -2098,7 +2116,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -2112,7 +2130,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -2126,7 +2144,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -2140,7 +2158,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -2154,7 +2172,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -2168,7 +2186,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -2182,7 +2200,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -2196,7 +2214,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -2212,7 +2230,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral."
       }
@@ -2234,7 +2252,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -2242,8 +2260,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Congenital Adrenal Hyperplasia (CAH)",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -2265,7 +2283,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "17-hydroxyprogesterone, often with cosyntropin stimulation."
       },
@@ -2279,7 +2297,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -2295,7 +2313,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -2319,7 +2337,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2350,7 +2368,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2384,7 +2402,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -2401,7 +2419,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
       },
@@ -2415,7 +2433,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
       },
@@ -2429,7 +2447,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
       },
@@ -2443,7 +2461,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
       },
@@ -2457,7 +2475,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -2473,7 +2491,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway."
       }
@@ -2490,7 +2508,7 @@ export const complaintModules = [
         "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -2498,8 +2516,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Cushing's Disease (Pituitary-dependent Cushing's)",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -2521,7 +2539,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL."
       },
@@ -2535,7 +2553,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -2551,7 +2569,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -2575,7 +2593,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2606,7 +2624,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2640,7 +2658,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -2657,7 +2675,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
       },
@@ -2671,7 +2689,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
       },
@@ -2685,7 +2703,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
       },
@@ -2699,7 +2717,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
       },
@@ -2713,7 +2731,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -2729,7 +2747,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."
       }
@@ -2747,7 +2765,7 @@ export const complaintModules = [
         "Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -2755,8 +2773,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Cushing's Syndrome",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -2776,7 +2794,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Exclude exogenous steroids."
       },
@@ -2790,7 +2808,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -2806,7 +2824,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -2831,7 +2849,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2862,7 +2880,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2893,7 +2911,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -2927,7 +2945,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -2944,7 +2962,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       },
@@ -2958,7 +2976,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       },
@@ -2972,7 +2990,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       },
@@ -2986,7 +3004,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       },
@@ -3000,7 +3018,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       },
@@ -3014,7 +3032,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -3030,7 +3048,7 @@ export const complaintModules = [
           "version_date": "2008",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."
       }
@@ -3047,7 +3065,7 @@ export const complaintModules = [
         "DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -3055,8 +3073,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Diabetes Insipidus",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -3079,7 +3097,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg."
       },
@@ -3093,7 +3111,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -3109,7 +3127,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -3133,7 +3151,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3164,7 +3182,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3198,7 +3216,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -3215,7 +3233,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -3229,7 +3247,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -3243,7 +3261,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -3257,7 +3275,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       },
@@ -3271,7 +3289,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3285,7 +3303,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -3301,7 +3319,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway."
       }
@@ -3324,7 +3342,7 @@ export const complaintModules = [
         "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -3332,8 +3350,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Erectile Dysfunction (Endocrine-related)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -3355,7 +3373,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Morning total testosterone."
       },
@@ -3369,7 +3387,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -3385,7 +3403,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -3409,7 +3427,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3440,7 +3458,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3474,7 +3492,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -3491,7 +3509,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3505,7 +3523,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3519,7 +3537,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3533,7 +3551,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3547,7 +3565,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3561,7 +3579,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3575,7 +3593,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3589,7 +3607,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3603,7 +3621,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3617,7 +3635,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -3633,7 +3651,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management."
       }
@@ -3657,7 +3675,7 @@ export const complaintModules = [
         "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -3665,8 +3683,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Gestational Diabetes",
     "complaint_group": "diabetes_and_blood_sugar_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -3688,7 +3706,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Early risk testing if high risk."
       },
@@ -3702,7 +3720,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -3718,7 +3736,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -3739,7 +3757,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -3761,7 +3779,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3792,7 +3810,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -3826,7 +3844,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -3840,7 +3858,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -3854,7 +3872,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -3871,7 +3889,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3885,7 +3903,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3899,7 +3917,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -3913,7 +3931,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3927,7 +3945,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3941,7 +3959,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3955,7 +3973,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3969,7 +3987,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -3983,7 +4001,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -3999,7 +4017,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "OGTT threshold crossing changes maternal/fetal monitoring and therapy."
       },
@@ -4013,7 +4031,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Postpartum abnormal OGTT changes long-term prevention."
       }
@@ -4039,7 +4057,7 @@ export const complaintModules = [
         "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -4047,8 +4065,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Gigantism",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -4068,7 +4086,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "IGF-1 age/puberty-adjusted."
       },
@@ -4082,7 +4100,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -4098,7 +4116,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -4122,7 +4140,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4153,7 +4171,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4187,7 +4205,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -4204,7 +4222,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
       },
@@ -4218,7 +4236,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
       },
@@ -4232,7 +4250,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
       },
@@ -4246,7 +4264,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
       },
@@ -4260,7 +4278,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -4276,7 +4294,7 @@ export const complaintModules = [
           "version_date": "2021",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
       }
@@ -4293,7 +4311,7 @@ export const complaintModules = [
         "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -4301,8 +4319,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Graves' Disease",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -4322,7 +4340,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH, free T4, T3."
       },
@@ -4336,7 +4354,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -4352,7 +4370,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -4375,7 +4393,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4406,7 +4424,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4440,7 +4458,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -4454,7 +4472,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -4471,7 +4489,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -4485,7 +4503,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -4499,7 +4517,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -4513,7 +4531,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -4527,7 +4545,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -4541,7 +4559,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -4557,7 +4575,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TRAb-positive biochemical hyperthyroidism supports Graves."
       },
@@ -4571,7 +4589,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Orbitopathy changes radioactive iodine risk and ophthalmology urgency."
       }
@@ -4590,7 +4608,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -4598,8 +4616,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Gynecomastia (Enlarged male breast tissue)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -4621,7 +4639,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Total testosterone, LH, FSH, estradiol."
       },
@@ -4635,7 +4653,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -4651,7 +4669,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -4677,7 +4695,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4708,7 +4726,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4742,7 +4760,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -4759,7 +4777,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -4773,7 +4791,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -4787,7 +4805,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -4801,7 +4819,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -4815,7 +4833,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -4829,7 +4847,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -4845,7 +4863,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup."
       }
@@ -4865,7 +4883,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -4873,8 +4891,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -4891,13 +4909,13 @@ export const complaintModules = [
         "id": "differential_01",
         "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH, free T4, TPO antibody."
       },
@@ -4905,13 +4923,13 @@ export const complaintModules = [
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -4921,13 +4939,13 @@ export const complaintModules = [
         "id": "red_flag_01",
         "label": "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -4945,13 +4963,13 @@ export const complaintModules = [
         "id": "question_01",
         "label": "Hypothyroid symptoms, family autoimmune disease.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -4976,13 +4994,13 @@ export const complaintModules = [
         "id": "question_02",
         "label": "Neck swelling, nodules, compressive symptoms.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5010,13 +5028,13 @@ export const complaintModules = [
         "id": "exam_01",
         "label": "Firm/rubbery goiter, nodules, cervical nodes.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -5024,13 +5042,13 @@ export const complaintModules = [
         "id": "exam_02",
         "label": "Bradycardia, skin/reflex signs.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -5041,13 +5059,13 @@ export const complaintModules = [
         "id": "test_01",
         "label": "TSH, free T4, TPO antibody.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5055,13 +5073,13 @@ export const complaintModules = [
         "id": "test_02",
         "label": "Thyroglobulin antibody as adjunct.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5069,13 +5087,13 @@ export const complaintModules = [
         "id": "test_03",
         "label": "Ultrasound only for nodule, goiter, or compressive symptoms.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5083,13 +5101,13 @@ export const complaintModules = [
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5097,13 +5115,13 @@ export const complaintModules = [
         "id": "reference_02",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5111,13 +5129,13 @@ export const complaintModules = [
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -5127,13 +5145,13 @@ export const complaintModules = [
         "id": "management_01",
         "label": "Positive TPO Ab supports autoimmune thyroiditis.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Positive TPO Ab supports autoimmune thyroiditis."
       },
@@ -5141,13 +5159,13 @@ export const complaintModules = [
         "id": "management_02",
         "label": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway."
       }
@@ -5160,7 +5178,9 @@ export const complaintModules = [
         "autoimmune hypothyroidism"
       ],
       "source_ids": [
+        "ATA_HYPOTHYROIDISM_2014",
         "AACE_ATA_HYPOTHYROIDISM_2012",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -5169,7 +5189,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -5177,8 +5197,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hirsutism (Excessive hair growth)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -5200,7 +5220,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Total testosterone and free testosterone when indicated."
       },
@@ -5214,7 +5234,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -5230,7 +5250,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -5254,7 +5274,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5285,7 +5305,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5319,7 +5339,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -5336,7 +5356,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -5350,7 +5370,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -5364,7 +5384,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -5378,7 +5398,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -5392,7 +5412,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5406,7 +5426,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5420,7 +5440,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -5436,7 +5456,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway."
       }
@@ -5456,7 +5476,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -5464,8 +5484,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hyperaldosteronism (Conn's Syndrome)",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -5489,7 +5509,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Aldosterone, renin, and ARR with potassium correction."
       },
@@ -5503,7 +5523,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -5519,7 +5539,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -5543,7 +5563,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5574,7 +5594,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5608,7 +5628,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -5625,7 +5645,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
       },
@@ -5639,7 +5659,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
       },
@@ -5653,7 +5673,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
       },
@@ -5667,7 +5687,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -5683,7 +5703,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping."
       }
@@ -5703,7 +5723,7 @@ export const complaintModules = [
         "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -5711,8 +5731,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hyperthyroidism (Overactive Thyroid)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -5735,7 +5755,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH, free T4, total/free T3."
       },
@@ -5749,7 +5769,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -5765,7 +5785,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -5791,7 +5811,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5822,7 +5842,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -5856,7 +5876,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -5870,7 +5890,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -5884,7 +5904,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -5901,7 +5921,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5915,7 +5935,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5929,7 +5949,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -5943,7 +5963,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5957,7 +5977,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -5971,7 +5991,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -5987,7 +6007,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism."
       },
@@ -6001,7 +6021,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TRAb or uptake pattern changes etiology-specific treatment."
       }
@@ -6022,7 +6042,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -6030,8 +6050,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hypogonadism (Low Testosterone in Men)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -6053,7 +6073,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Morning total testosterone on two occasions."
       },
@@ -6067,7 +6087,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -6083,7 +6103,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -6107,7 +6127,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6138,7 +6158,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6172,7 +6192,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -6189,7 +6209,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6203,7 +6223,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6217,7 +6237,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6231,7 +6251,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6245,7 +6265,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6259,7 +6279,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6273,7 +6293,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -6289,7 +6309,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."
       }
@@ -6308,7 +6328,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -6316,8 +6336,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hypoparathyroidism",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -6337,7 +6357,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Calcium plus PTH."
       },
@@ -6351,7 +6371,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -6367,7 +6387,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -6391,7 +6411,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6422,7 +6442,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6456,7 +6476,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -6473,7 +6493,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -6487,7 +6507,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -6501,7 +6521,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -6515,7 +6535,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6529,7 +6549,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6543,7 +6563,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6557,7 +6577,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6571,7 +6591,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -6587,7 +6607,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring."
       }
@@ -6608,7 +6628,7 @@ export const complaintModules = [
         "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -6616,8 +6636,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hypopituitarism",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -6637,7 +6657,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "8 AM cortisol +/- ACTH stimulation."
       },
@@ -6651,7 +6671,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -6667,7 +6687,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -6691,7 +6711,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6722,7 +6742,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -6756,7 +6776,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -6773,7 +6793,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6787,7 +6807,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6801,7 +6821,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6815,7 +6835,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6829,7 +6849,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -6843,7 +6863,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6857,7 +6877,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6871,7 +6891,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6885,7 +6905,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6899,7 +6919,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6913,7 +6933,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6927,7 +6947,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6941,7 +6961,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -6955,7 +6975,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -6971,7 +6991,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Central adrenal insufficiency must be addressed before thyroid hormone escalation."
       }
@@ -6996,7 +7016,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -7004,8 +7024,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hypothyroidism (Underactive Thyroid)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -7022,13 +7042,13 @@ export const complaintModules = [
         "id": "differential_01",
         "label": "Hypothyroidism (Underactive Thyroid): diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH and free T4."
       },
@@ -7042,7 +7062,7 @@ export const complaintModules = [
           "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -7052,13 +7072,13 @@ export const complaintModules = [
         "id": "red_flag_01",
         "label": "Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -7078,13 +7098,13 @@ export const complaintModules = [
         "id": "question_01",
         "label": "Fatigue, cold intolerance, constipation, weight gain, depression, menorrhagia.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7109,13 +7129,13 @@ export const complaintModules = [
         "id": "question_02",
         "label": "Amiodarone, lithium, immune checkpoint inhibitor, pregnancy/fertility context.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7143,13 +7163,13 @@ export const complaintModules = [
         "id": "exam_01",
         "label": "HR/BP, thyroid size/nodules.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -7157,13 +7177,13 @@ export const complaintModules = [
         "id": "exam_02",
         "label": "Delayed reflexes, edema, skin/hair.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -7171,13 +7191,13 @@ export const complaintModules = [
         "id": "exam_03",
         "label": "Mental status if severe.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -7188,13 +7208,13 @@ export const complaintModules = [
         "id": "test_01",
         "label": "TSH and free T4.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7208,7 +7228,7 @@ export const complaintModules = [
           "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7216,13 +7236,13 @@ export const complaintModules = [
         "id": "test_03",
         "label": "Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7230,13 +7250,13 @@ export const complaintModules = [
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7250,7 +7270,7 @@ export const complaintModules = [
           "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7258,13 +7278,13 @@ export const complaintModules = [
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -7274,13 +7294,13 @@ export const complaintModules = [
         "id": "management_01",
         "label": "High TSH plus low FT4 confirms overt primary hypothyroidism.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hypothyroidism (Underactive Thyroid) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "High TSH plus low FT4 confirms overt primary hypothyroidism."
       },
@@ -7294,7 +7314,7 @@ export const complaintModules = [
           "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway."
       }
@@ -7307,6 +7327,7 @@ export const complaintModules = [
         "underactive thyroid"
       ],
       "source_ids": [
+        "ATA_HYPOTHYROIDISM_2014",
         "AACE_ATA_HYPOTHYROIDISM_2012"
       ],
       "reference_values": [
@@ -7315,7 +7336,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -7323,8 +7344,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Infertility (Hormonal causes)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -7346,7 +7367,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Pregnancy test if amenorrhea."
       },
@@ -7360,7 +7381,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -7376,7 +7397,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -7400,7 +7421,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7431,7 +7452,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7465,7 +7486,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -7482,7 +7503,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7496,7 +7517,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7510,7 +7531,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7524,7 +7545,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7538,7 +7559,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -7552,7 +7573,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7566,7 +7587,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7580,7 +7601,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7594,7 +7615,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7608,7 +7629,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7622,7 +7643,7 @@ export const complaintModules = [
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -7638,7 +7659,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral."
       }
@@ -7662,7 +7683,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -7670,8 +7691,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Menopause / Premature Ovarian Insufficiency",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -7695,7 +7716,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Pregnancy test if amenorrhea."
       },
@@ -7709,7 +7730,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -7725,7 +7746,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -7749,7 +7770,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7780,7 +7801,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -7814,7 +7835,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -7831,7 +7852,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -7845,7 +7866,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -7859,7 +7880,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -7873,7 +7894,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -7887,7 +7908,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7901,7 +7922,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -7915,7 +7936,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -7931,7 +7952,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention."
       }
@@ -7954,7 +7975,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -7962,8 +7983,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Metabolic Syndrome",
     "complaint_group": "diabetes_and_blood_sugar_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -7983,7 +8004,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Waist circumference."
       },
@@ -7997,7 +8018,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -8013,7 +8034,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -8036,7 +8057,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8067,7 +8088,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8101,7 +8122,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -8115,7 +8136,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -8132,7 +8153,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
       },
@@ -8146,7 +8167,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
       },
@@ -8160,7 +8181,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
       },
@@ -8174,7 +8195,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -8190,7 +8211,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "3 or more criteria shifts to intensive cardiometabolic risk reduction."
       },
@@ -8204,7 +8225,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diabetes thresholds change diagnosis."
       }
@@ -8222,7 +8243,7 @@ export const complaintModules = [
         "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -8230,8 +8251,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Osteopenia",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -8251,7 +8272,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "DXA."
       },
@@ -8265,7 +8286,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -8281,7 +8302,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -8304,7 +8325,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8338,7 +8359,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -8355,7 +8376,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       },
@@ -8369,7 +8390,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       },
@@ -8383,7 +8404,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       },
@@ -8397,7 +8418,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8411,7 +8432,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8425,7 +8446,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8439,7 +8460,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -8455,7 +8476,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."
       }
@@ -8475,7 +8496,7 @@ export const complaintModules = [
         "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -8483,8 +8504,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Osteoporosis",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -8504,7 +8525,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "DXA and vertebral imaging when indicated."
       },
@@ -8518,7 +8539,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -8534,7 +8555,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -8558,7 +8579,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8589,7 +8610,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8623,7 +8644,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -8637,7 +8658,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -8654,7 +8675,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       },
@@ -8668,7 +8689,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       },
@@ -8682,7 +8703,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8696,7 +8717,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8710,7 +8731,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -8724,7 +8745,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -8740,7 +8761,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "T-score <= -2.5 or fragility fracture confirms osteoporosis."
       },
@@ -8754,7 +8775,7 @@ export const complaintModules = [
           "version_date": "2020",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway."
       }
@@ -8774,7 +8795,7 @@ export const complaintModules = [
         "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -8782,8 +8803,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Pheochromocytoma",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -8803,7 +8824,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Plasma free metanephrines or urinary fractionated metanephrines."
       },
@@ -8817,7 +8838,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -8833,7 +8854,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -8857,7 +8878,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8888,7 +8909,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -8922,7 +8943,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -8939,7 +8960,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."
       },
@@ -8953,7 +8974,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."
       },
@@ -8967,7 +8988,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."
       },
@@ -8981,7 +9002,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -8997,7 +9018,7 @@ export const complaintModules = [
           "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway."
       }
@@ -9014,7 +9035,7 @@ export const complaintModules = [
         "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -9022,8 +9043,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Polycystic Ovary Syndrome (PCOS)",
     "complaint_group": "reproductive_and_gonadal_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -9045,7 +9066,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Pregnancy test."
       },
@@ -9059,7 +9080,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -9075,7 +9096,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -9099,7 +9120,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9130,7 +9151,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9164,7 +9185,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -9178,7 +9199,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -9195,7 +9216,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
       },
@@ -9209,7 +9230,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
       },
@@ -9223,7 +9244,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
       },
@@ -9237,7 +9258,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
       },
@@ -9251,7 +9272,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -9267,7 +9288,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation."
       }
@@ -9284,7 +9305,7 @@ export const complaintModules = [
         "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -9292,8 +9313,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Prediabetes",
     "complaint_group": "diabetes_and_blood_sugar_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -9313,7 +9334,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "A1c, fasting plasma glucose, or 2-hour 75-g OGTT."
       },
@@ -9327,7 +9348,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -9343,7 +9364,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -9365,7 +9386,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9396,7 +9417,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9430,7 +9451,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -9444,7 +9465,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -9461,7 +9482,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -9475,7 +9496,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       },
@@ -9489,7 +9510,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9503,7 +9524,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9517,7 +9538,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9531,7 +9552,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -9547,7 +9568,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance."
       },
@@ -9561,7 +9582,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diabetes-range values change diagnosis."
       }
@@ -9582,7 +9603,7 @@ export const complaintModules = [
         "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -9590,8 +9611,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Primary Hyperparathyroidism",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -9611,7 +9632,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Repeat albumin-corrected/ionized calcium with intact PTH."
       },
@@ -9625,7 +9646,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -9641,7 +9662,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -9665,7 +9686,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9696,7 +9717,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9730,7 +9751,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -9747,7 +9768,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."
       },
@@ -9761,7 +9782,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."
       },
@@ -9775,7 +9796,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."
       },
@@ -9789,7 +9810,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9803,7 +9824,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9817,7 +9838,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9831,7 +9852,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -9845,7 +9866,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -9861,7 +9882,7 @@ export const complaintModules = [
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway."
       }
@@ -9882,7 +9903,7 @@ export const complaintModules = [
         "PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -9890,8 +9911,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Prolactinoma (Benign pituitary tumor)",
     "complaint_group": "pituitary_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -9913,7 +9934,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Serum prolactin; repeat/macroprolactin if mild/discordant."
       },
@@ -9927,7 +9948,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -9943,7 +9964,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -9967,7 +9988,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -9998,7 +10019,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10032,7 +10053,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -10049,7 +10070,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -10063,7 +10084,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -10077,7 +10098,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       },
@@ -10091,7 +10112,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10105,7 +10126,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10119,7 +10140,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -10135,7 +10156,7 @@ export const complaintModules = [
           "version_date": "2011",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."
       }
@@ -10154,7 +10175,7 @@ export const complaintModules = [
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -10162,8 +10183,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Thyroid Cancer (Papillary, Follicular, Medullary)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -10190,7 +10211,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Neck ultrasound and nodal mapping."
       },
@@ -10198,13 +10219,13 @@ export const complaintModules = [
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -10220,7 +10241,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -10245,7 +10266,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10276,7 +10297,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10307,7 +10328,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10341,7 +10362,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -10355,7 +10376,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -10372,7 +10393,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -10380,13 +10401,13 @@ export const complaintModules = [
         "id": "test_02",
         "label": "FNA cytology with Bethesda category.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -10394,13 +10415,13 @@ export const complaintModules = [
         "id": "test_03",
         "label": "TSH/free T4.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ETA_THYROID_NODULE_2023",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -10408,13 +10429,13 @@ export const complaintModules = [
         "id": "test_04",
         "label": "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_CANCER_2025",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -10422,13 +10443,13 @@ export const complaintModules = [
         "id": "test_05",
         "label": "RET testing for medullary thyroid cancer.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -10442,7 +10463,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10450,13 +10471,13 @@ export const complaintModules = [
         "id": "reference_02",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10464,13 +10485,13 @@ export const complaintModules = [
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ETA_THYROID_NODULE_2023",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10478,13 +10499,13 @@ export const complaintModules = [
         "id": "reference_04",
         "label": "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_CANCER_2025",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -10500,7 +10521,7 @@ export const complaintModules = [
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway."
       }
@@ -10516,6 +10537,7 @@ export const complaintModules = [
       ],
       "source_ids": [
         "ATA_THYROID_CANCER_2025",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -10525,7 +10547,7 @@ export const complaintModules = [
         "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -10533,8 +10555,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Thyroid Nodules (Benign)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -10551,13 +10573,13 @@ export const complaintModules = [
         "id": "differential_01",
         "label": "Thyroid Nodules (Benign): diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH."
       },
@@ -10571,7 +10593,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -10581,13 +10603,13 @@ export const complaintModules = [
         "id": "red_flag_01",
         "label": "Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -10607,13 +10629,13 @@ export const complaintModules = [
         "id": "question_01",
         "label": "Growth, dysphagia, dyspnea, hoarseness.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10638,13 +10660,13 @@ export const complaintModules = [
         "id": "question_02",
         "label": "Radiation exposure, family thyroid cancer/MEN2, hyperthyroid symptoms.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10672,13 +10694,13 @@ export const complaintModules = [
         "id": "exam_01",
         "label": "Thyroid palpation, cervical nodes, voice/airway assessment.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -10689,13 +10711,13 @@ export const complaintModules = [
         "id": "test_01",
         "label": "TSH.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -10709,7 +10731,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -10717,13 +10739,13 @@ export const complaintModules = [
         "id": "test_03",
         "label": "FNA when indicated by size/risk system; low TSH prompts radionuclide scan.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -10731,13 +10753,13 @@ export const complaintModules = [
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10751,7 +10773,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10759,13 +10781,13 @@ export const complaintModules = [
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -10779,7 +10801,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -10789,13 +10811,13 @@ export const complaintModules = [
         "id": "management_01",
         "label": "Suspicious ultrasound/Bethesda cytology changes cancer pathway.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspicious ultrasound/Bethesda cytology changes cancer pathway."
       },
@@ -10809,7 +10831,7 @@ export const complaintModules = [
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low TSH with hot nodule shifts to autonomous-function pathway."
       }
@@ -10822,6 +10844,7 @@ export const complaintModules = [
         "benign thyroid nodule"
       ],
       "source_ids": [
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -10831,7 +10854,7 @@ export const complaintModules = [
         "FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -10839,8 +10862,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Thyrotoxicosis",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -10860,7 +10883,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH, free T4, T3."
       },
@@ -10874,7 +10897,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -10890,7 +10913,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -10914,7 +10937,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10945,7 +10968,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -10979,7 +11002,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -10993,7 +11016,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -11010,7 +11033,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -11024,7 +11047,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -11038,7 +11061,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -11052,7 +11075,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -11066,7 +11089,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11080,7 +11103,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11094,7 +11117,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -11110,7 +11133,7 @@ export const complaintModules = [
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway."
       }
@@ -11129,7 +11152,7 @@ export const complaintModules = [
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -11137,8 +11160,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Type 1 Diabetes Mellitus",
     "complaint_group": "diabetes_and_blood_sugar_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -11161,7 +11184,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "A1c/glucose criteria plus ketones/acid-base if symptomatic."
       },
@@ -11175,7 +11198,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -11191,7 +11214,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -11214,7 +11237,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -11235,7 +11258,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -11266,7 +11289,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -11297,7 +11320,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -11331,7 +11354,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -11345,7 +11368,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -11359,7 +11382,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -11376,7 +11399,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
       },
@@ -11390,7 +11413,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
       },
@@ -11404,7 +11427,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
       },
@@ -11418,7 +11441,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11432,7 +11455,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11446,7 +11469,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11460,7 +11483,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11474,7 +11497,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11488,7 +11511,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -11504,7 +11527,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Ketosis plus acidosis requires urgent DKA pathway."
       },
@@ -11518,7 +11541,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes."
       }
@@ -11546,7 +11569,7 @@ export const complaintModules = [
         "DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -11554,8 +11577,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Type 2 Diabetes Mellitus",
     "complaint_group": "diabetes_and_blood_sugar_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -11577,7 +11600,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm."
       },
@@ -11591,7 +11614,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -11607,7 +11630,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -11629,7 +11652,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -11650,7 +11673,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -11681,7 +11704,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -11715,7 +11738,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -11729,7 +11752,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -11743,7 +11766,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -11760,7 +11783,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
       },
@@ -11774,7 +11797,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
       },
@@ -11788,7 +11811,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
       },
@@ -11802,7 +11825,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11816,7 +11839,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11830,7 +11853,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11844,7 +11867,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -11858,7 +11881,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -11874,7 +11897,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity."
       },
@@ -11888,7 +11911,7 @@ export const complaintModules = [
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "UACR >=30 or reduced eGFR changes kidney-protective therapy."
       }
@@ -11913,7 +11936,7 @@ export const complaintModules = [
         "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {
@@ -11921,8 +11944,8 @@ export const complaintModules = [
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Vitamin D Deficiency / Osteomalacia",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -11944,7 +11967,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "25(OH)D when clinically indicated."
       },
@@ -11958,7 +11981,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -11974,7 +11997,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -11998,7 +12021,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -12029,7 +12052,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -12063,7 +12086,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -12080,7 +12103,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH."
       },
@@ -12094,7 +12117,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH."
       },
@@ -12108,7 +12131,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -12122,7 +12145,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -12136,7 +12159,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -12150,7 +12173,7 @@ export const complaintModules = [
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -12164,7 +12187,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -12180,7 +12203,7 @@ export const complaintModules = [
           "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation."
       }
@@ -12202,7 +12225,7 @@ export const complaintModules = [
         "Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   },
   {

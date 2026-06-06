@@ -1,10 +1,10 @@
 # Endocrine Workup Completion Report
 
-Generated: 2026-06-06T21:31:53.014Z
+Generated: 2026-06-06T21:53:17.816Z
 Completed modules: 37
-Source registry entries: 32
+Source registry entries: 34
 
-Status: review_ready. These modules are complete structured workups, but validated clinical-intent activation remains a separate clinician review step.
+Status: mvp. These modules are active guideline-backed endocrine workups with local source/schema/PHI/regression checks.
 
 ## Completed One By One
 
@@ -45,14 +45,14 @@ Status: review_ready. These modules are complete structured workups, but validat
 
 6. Hypothyroidism (Underactive Thyroid) (hypothyroidism_v1)
    - Category: Thyroid Disorders
-   - Sources: AACE_ATA_HYPOTHYROIDISM_2012
+   - Sources: ATA_HYPOTHYROIDISM_2014; AACE_ATA_HYPOTHYROIDISM_2012
    - Questions: 2; exams: 3; tests/reference anchors: 6; red flags: 1; management rules: 2
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/hypothyroidism_v1.json
 
 7. Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) (hashimotos_thyroiditis_v1)
    - Category: Thyroid Disorders
-   - Sources: AACE_ATA_HYPOTHYROIDISM_2012; ETA_THYROID_NODULE_2023
+   - Sources: ATA_HYPOTHYROIDISM_2014; AACE_ATA_HYPOTHYROIDISM_2012; ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
    - Questions: 2; exams: 2; tests/reference anchors: 6; red flags: 1; management rules: 2
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/hashimotos_thyroiditis_v1.json
@@ -80,14 +80,14 @@ Status: review_ready. These modules are complete structured workups, but validat
 
 11. Thyroid Nodules (Benign) (thyroid_nodules_v1)
    - Category: Thyroid Disorders
-   - Sources: ETA_THYROID_NODULE_2023
+   - Sources: ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
    - Questions: 2; exams: 1; tests/reference anchors: 7; red flags: 1; management rules: 2
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/thyroid_nodules_v1.json
 
 12. Thyroid Cancer (Papillary, Follicular, Medullary) (thyroid_cancer_v1)
    - Category: Thyroid Disorders
-   - Sources: ATA_THYROID_CANCER_2025; ETA_THYROID_NODULE_2023
+   - Sources: ATA_THYROID_CANCER_2025; ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
    - Questions: 3; exams: 2; tests/reference anchors: 9; red flags: 1; management rules: 1
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/thyroid_cancer_v1.json

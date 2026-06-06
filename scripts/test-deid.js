@@ -275,6 +275,14 @@ assert.ok(
   "room/unit identifiers should still be flagged"
 );
 
+const noDelimiterIdentifierResult = deidentifyTextStructuredOnly("Patient has MRN 1234567, CSN AB-1234, and Account Number HMO-70013.");
+for (const leak of ["1234567", "AB-1234", "HMO-70013"]) {
+  assert.ok(!noDelimiterIdentifierResult.text.includes(leak), `identifier without colon should be redacted: ${leak}`);
+  assert.ok(!noDelimiterIdentifierResult.flags.some((flag) => flag.includes(leak)), `review flags should not repeat raw identifier: ${leak}`);
+}
+assert.ok(noDelimiterIdentifierResult.text.includes("MRN [MRN]"), "MRN without colon should keep readable label and redact value");
+assert.ok(noDelimiterIdentifierResult.text.includes("CSN [ENCOUNTER ID]"), "CSN without colon should keep readable label and redact value");
+
 const ageText = "Overall Assessment: Ms Merrill-Stevenson is a 57-year-old woman.";
 const ageStart = ageText.indexOf("-year-old");
 const ageModelDeidentifier = createDeidentifier({

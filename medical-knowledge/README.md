@@ -14,7 +14,8 @@ npm run test:medical-knowledge
 - `manifest.json`: database manifest and list of included knowledge files.
 - `source-registry.json`: bibliographic/provenance records for guideline sources.
 - `complaint-modules/*.json`: complaint or diagnosis modules used by `evaluateComplaintCds`.
-- `complaint-modules/endocrine/*.json`: generated endocrine workup modules with `review_ready` status.
+- `complaint-modules/endocrine/*.json`: generated endocrine workup modules with active `mvp` status.
+- `examples/clinical_knowledge_pack_v1.example.json`: importable example for staged knowledge-pack review.
 - `templates/complaint-module.template.json`: starter file for a new reviewed module.
 - `templates/guideline-extraction-prompt.md`: prompt contract for transforming pasted guideline text into a draft module.
 
@@ -58,4 +59,4 @@ Raw source documents, especially copyrighted clinical references, should not be 
 - Every recommendation item needs a source reference.
 - Prefer institution-specific pathways when the user explicitly chooses one.
 - Keep medical content as data; keep ranking/evaluation logic in app code.
-- Keep generated `review_ready` modules separate from validated clinical intents until clinician sign-off.
+- Keep generated modules source-backed, schema-tested, PHI-free, and traceable to validated clinical intents before normal workflow activation.

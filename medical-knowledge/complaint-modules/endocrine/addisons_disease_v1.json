@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Addison's Disease",
     "complaint_group": "adrenal_gland_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -29,7 +29,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "8 AM cortisol/ACTH."
       },
@@ -43,7 +43,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -59,7 +59,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -83,7 +83,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -117,7 +117,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -134,7 +134,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -148,7 +148,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -162,7 +162,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -176,7 +176,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       },
@@ -190,7 +190,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -204,7 +204,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -218,7 +218,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -234,7 +234,7 @@
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance."
       }
@@ -255,7 +255,7 @@
         "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

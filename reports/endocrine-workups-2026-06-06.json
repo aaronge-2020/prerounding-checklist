@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T21:31:16.079Z",
+  "generated_at": "2026-06-06T21:53:11.771Z",
   "accessed_date": "2026-06-06",
   "sources": {
     "ADA_SOC_2026": [
@@ -14,6 +14,10 @@
       "Hyperglycemic Crises in Adults With Diabetes Consensus Report 2024",
       "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A"
     ],
+    "ATA_HYPOTHYROIDISM_2014": [
+      "ATA Guidelines for the Treatment of Hypothyroidism",
+      "https://www.thyroid.org/professionals/ata-professional-guidelines/"
+    ],
     "AACE_ATA_HYPOTHYROIDISM_2012": [
       "AACE/ATA Hypothyroidism in Adults Guideline",
       "https://www.guidelinecentral.com/guideline/6855/"
@@ -22,13 +26,17 @@
       "ATA Hyperthyroidism and Thyrotoxicosis Guideline",
       "https://journals.sagepub.com/doi/10.1089/thy.2016.0229"
     ],
+    "ATA_THYROID_NODULE_DTC_2015": [
+      "ATA Thyroid Nodules and Differentiated Thyroid Cancer Guideline",
+      "https://www.thyroid.org/professionals/ata-professional-guidelines/"
+    ],
     "ETA_THYROID_NODULE_2023": [
       "2023 European Thyroid Association Thyroid Nodule Guideline",
       "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/"
     ],
     "ATA_THYROID_CANCER_2025": [
       "ATA Differentiated Thyroid Cancer Guideline Resource",
-      "https://www.thyroid.org/ata-professional-guidelines/"
+      "https://www.thyroid.org/professionals/ata-professional-guidelines/"
     ],
     "ENDO_OSTEOPOROSIS_2020": [
       "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update",
@@ -331,6 +339,7 @@
         "underactive thyroid"
       ],
       "source_ids": [
+        "ATA_HYPOTHYROIDISM_2014",
         "AACE_ATA_HYPOTHYROIDISM_2012"
       ],
       "questions": [
@@ -359,7 +368,13 @@
         "High TSH plus low FT4 confirms overt primary hypothyroidism.",
         "Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 53
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -369,7 +384,9 @@
         "autoimmune hypothyroidism"
       ],
       "source_ids": [
+        "ATA_HYPOTHYROIDISM_2014",
         "AACE_ATA_HYPOTHYROIDISM_2012",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "questions": [
@@ -397,7 +414,13 @@
         "Positive TPO Ab supports autoimmune thyroiditis.",
         "Suspicious nodule/compressive findings move to ultrasound/FNA pathway."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 96
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -435,7 +458,13 @@
         "Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
         "TRAb or uptake pattern changes etiology-specific treatment."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 54
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -470,7 +499,13 @@
         "TRAb-positive biochemical hyperthyroidism supports Graves.",
         "Orbitopathy changes radioactive iodine risk and ophthalmology urgency."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 164
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -505,7 +540,13 @@
       "management_changes": [
         "Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 123
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -515,6 +556,7 @@
         "benign thyroid nodule"
       ],
       "source_ids": [
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "questions": [
@@ -542,7 +584,13 @@
         "Suspicious ultrasound/Bethesda cytology changes cancer pathway.",
         "Low TSH with hot nodule shifts to autonomous-function pathway."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 53
+        }
+      ],
       "quality_issues": []
     },
     {
@@ -555,6 +603,7 @@
       ],
       "source_ids": [
         "ATA_THYROID_CANCER_2025",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "questions": [
@@ -585,7 +634,13 @@
       "management_changes": [
         "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway."
       ],
-      "app_intent_matches": [],
+      "app_intent_matches": [
+        {
+          "intent_id": "routine_thyroid_disease_v1",
+          "label": "Routine thyroid disease evaluation",
+          "score": 53
+        }
+      ],
       "quality_issues": []
     },
     {

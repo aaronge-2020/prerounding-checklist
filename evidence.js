@@ -33,12 +33,12 @@ const evidenceOverlayHeaders = [
 ];
 
 export const evidenceFileUrls = {
-  base: "exam_technique_base.csv",
-  overlay: "exam_evidence_overlay.csv",
-  legacyOverlay: "physical_exam_evidence_overlay.csv",
-  tags: "retrieval_tag_dictionary.csv",
-  sources: "source_registry.csv",
-  queue: "priority_enrichment_queue.csv"
+  base: "data/evidence/exam_technique_base.csv",
+  overlay: "data/evidence/exam_evidence_overlay.csv",
+  legacyOverlay: "data/physical-exam/physical_exam_evidence_overlay.csv",
+  tags: "data/evidence/retrieval_tag_dictionary.csv",
+  sources: "data/evidence/source_registry.csv",
+  queue: "data/evidence/priority_enrichment_queue.csv"
 };
 
 export function parseCsv(text) {
@@ -1274,8 +1274,100 @@ const clinicalRecommendationProfiles = [
     ]
   },
   {
+    id: "routine_thyroid",
+    name: "Routine thyroid disease evaluation",
+    context: /\b(?:routine thyroid|thyroid disease|hypothyroidism|hyperthyroidism|thyrotoxicosis|graves|hashimoto|goiter|thyroid nodule|thyroid cancer|thyroid mass|abnormal tsh|heat intolerance|cold intolerance|palpitations with thyroid)\b/,
+    core: [
+      {
+        pattern: /\b(?:blood pressure|heart rate)\b/,
+        strength: 78,
+        domain: "Vitals",
+        reason: "Checks bradycardia, tachycardia, rhythm regularity, and BP patterns that change thyroid-disease severity framing.",
+        diagnosticTarget: "Thyroid physiology at bedside: bradycardia, tachycardia, irregular pulse, systolic hypertension, hypotension, or unstable vital signs.",
+        management: "Abnormal HR/BP can change ECG/telemetry urgency, beta-blocker consideration, crisis screening, or need for urgent endocrine/cardiac escalation.",
+        bedsideQuestion: "Any palpitations, heat or cold intolerance, weight change, tremor, constipation/diarrhea, neck swelling, eye symptoms, or trouble swallowing?",
+        bedsideQuestionOptions: "No / Palpitations / Heat intolerance / Cold intolerance / Weight change / Tremor / Neck swelling / Eye symptoms / Dysphagia or hoarseness / Other ___"
+      },
+      {
+        pattern: /\b(?:thyroid exam)\b/,
+        strength: 92,
+        domain: "Thyroid/Neck",
+        reason: "Directly evaluates goiter, nodules, tenderness, asymmetry, and compressive neck findings in thyroid disease.",
+        diagnosticTarget: "Thyroid/neck finding: diffuse goiter, nodularity, tenderness, asymmetry, fixation, or compressive clue.",
+        management: "Nodule, tenderness, asymmetry, goiter, or compressive findings can change ultrasound, antibody/uptake workup, FNA pathway, or airway/ENT urgency.",
+        bedsideQuestion: "Any neck swelling, pain, hoarseness, dysphagia, dyspnea when supine, radiation exposure, or family thyroid cancer/MEN2 history?",
+        bedsideQuestionOptions: "No / Neck swelling / Neck pain / Hoarseness / Dysphagia / Supine dyspnea / Radiation history / Family thyroid cancer or MEN2 / Other ___"
+      },
+      {
+        pattern: /\b(?:heart sounds|radial pulses)\b/,
+        strength: 66,
+        domain: "Cardiac Rhythm/Perfusion",
+        reason: "Adds rhythm and cardiac complication assessment when hyperthyroid symptoms, Graves disease, palpitations, tachycardia, or dyspnea are present.",
+        when: /\b(?:graves disease|graves|thyrotoxicosis|hyperthyroidism|palpitations|tachycardia|atrial fibrillation|afib|heat intolerance|tremor|dyspnea|chest pain)\b/,
+        diagnosticTarget: "Hyperthyroid cardiac clue: irregular rhythm, marked tachycardia, murmur/gallop, or poor perfusion.",
+        management: "Irregular rhythm, marked tachycardia, or decompensation changes ECG/telemetry urgency, beta-blocker risk/benefit, and escalation."
+      }
+    ],
+    conditional: [
+      {
+        pattern: /\b(?:pupils|extraocular|visual acuity|visual fields)\b/,
+        strength: 60,
+        domain: "Graves Orbitopathy/Vision",
+        reason: "Adds eye movement, pupil, and visual-function checks when Graves disease, orbitopathy, diplopia, eye pain, or vision change is present.",
+        when: /\b(?:graves disease|graves|orbitopathy|thyroid eye|diplopia|vision|visual|eye pain|proptosis|lid lag)\b/,
+        diagnosticTarget: "Orbitopathy or neuro-ophthalmic concern: diplopia, EOM restriction, visual loss, afferent defect, or field deficit.",
+        management: "Vision-threatening features change ophthalmology urgency, steroid/teprotumumab/radioiodine risk discussion, and imaging/escalation."
+      },
+      {
+        pattern: /\b(?:anterior cervical nodes|posterior cervical nodes|supraclavicular nodes)\b/,
+        strength: 58,
+        domain: "Cervical Nodes",
+        reason: "Adds focused nodal assessment when thyroid nodule, thyroid cancer, neck mass, hoarseness, dysphagia, radiation, or MEN2 risk is present.",
+        when: /\b(?:thyroid nodule|thyroid cancer|thyroid mass|neck mass|malignancy|cancer|lymph|node|adenopathy|hoarseness|dysphagia|radiation|men2|medullary)\b/,
+        diagnosticTarget: "Thyroid cancer risk clue: suspicious cervical or supraclavicular adenopathy.",
+        management: "Suspicious nodes change ultrasound/nodal mapping, FNA planning, ENT/endocrine referral urgency, and surgical pathway."
+      },
+      {
+        pattern: /\b(?:lower extremity edema)\b/,
+        strength: 44,
+        domain: "Hypothyroid/Cardiac Add-on",
+        reason: "Adds edema assessment when hypothyroidism includes myxedema, dyspnea, heart failure, renal disease, or visible swelling.",
+        when: /\b(?:hypothyroidism|myxedema|edema|swelling|heart failure|dyspnea|renal|kidney)\b/,
+        diagnosticTarget: "Hypothyroid/cardiac volume clue: edema or myxedematous swelling.",
+        management: "Edema with bradycardia, dyspnea, or severe hypothyroidism can change myxedema/cardiac evaluation and urgency."
+      }
+    ],
+    requiredGaps: [
+      {
+        exam_id: "GAP-routine-thyroid-skin-reflex",
+        label: "Skin, hair, tremor, and reflex screen",
+        options: "Normal / Tremor or warm moist skin / Dry skin or hair thinning / Delayed relaxation / Unable",
+        domain: "Thyroid Phenotype",
+        reason: "Adds high-yield phenotype checks not yet represented in the base catalog for hypo- or hyperthyroid presentations.",
+        diagnosticTarget: "Phenotype clue: tremor/warm moist skin for thyrotoxicosis or dry skin/hair and delayed reflex relaxation for hypothyroidism.",
+        management: "Marked phenotype findings strengthen severity assessment and can change urgency of thyroid labs, ECG, crisis screen, or treatment discussion.",
+        bedsideQuestion: "Any tremor, heat intolerance, sweating, cold intolerance, constipation, dry skin, hair thinning, or slowed thinking?",
+        bedsideQuestionOptions: "No / Tremor / Heat or sweating / Cold intolerance / Constipation / Dry skin or hair thinning / Slowed thinking / Other ___",
+        source: "ATA_HYPERTHYROIDISM_2016; ATA_HYPOTHYROIDISM_2014",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        matchedTags: ["thyroid_disease", "routine_thyroid"],
+        when: /\b(?:hypothyroidism|hyperthyroidism|thyrotoxicosis|graves|hashimoto|heat intolerance|cold intolerance|tremor|constipation|dry skin|hair)\b/,
+        satisfiedBy: /\b(?:tremor|skin|hair|reflex|delayed relaxation)\b/
+      }
+    ],
+    suppress: [
+      { pattern: /\b(?:jvp|pmi|apical impulse|lower extremity edema)\b/, unless: /\b(?:heart failure|volume overload|orthopnea|pnd|edema|swelling|myxedema|dyspnea|cardiomyopathy|shock|hypotension)\b/, reason: "Routine thyroid disease does not need JVP, PMI, or edema checks unless there is volume overload, heart failure, dyspnea, myxedema, or shock context." },
+      { pattern: /\b(?:preauricular nodes|posterior auricular nodes|occipital nodes|tonsillar nodes|submandibular nodes|submental nodes)\b/, unless: /\b(?:infection|sore throat|lymph|adenopathy|neck mass|malignancy|cancer)\b/, reason: "Routine thyroid evaluation uses thyroid/neck exam; broad lymph-node survey needs infection, malignancy, or neck-mass context." },
+      { pattern: /\b(?:abdominal palpation|bowel sounds|murphy|rebound|psoas|obturator|cva tenderness)\b/, unless: /\b(?:abdominal|vomit|diarrhea|constipation|flank|urinary|adrenal|hypercalcemia)\b/, reason: "Routine thyroid disease does not need abdominal/GU maneuvers without GI, GU, adrenal, or calcium-related symptoms." },
+      { pattern: /\b(?:pronator drift|gait|vibration sense|proprioception|babinski|finger to nose|heel to shin)\b/, unless: /\b(?:weakness|numbness|tingling|ataxia|gait|confusion|myxedema|stroke|neuropathy)\b/, reason: "Routine thyroid evaluation should not promote broad neuro testing unless neurologic symptoms, myxedema concern, stroke, or neuropathy context exists." }
+    ]
+  },
+  {
     id: "thyroid_endocrine",
-    name: "Thyroid disease, storm, or myxedema",
+    name: "Thyroid storm or myxedema coma concern",
     context: /\b(?:thyroid storm|thyrotoxicosis|graves|myxedema|hypothyroid|hyperthyroid|thyroid|goiter|bradycardia|hyperthermia|hypothermia|palpitations)\b/,
     core: [
       { pattern: /\b(?:blood pressure|heart rate|respiratory rate)\b/, strength: 84, domain: "Vitals", reason: "Assesses cardiovascular and respiratory severity in thyroid emergencies." },
@@ -1482,7 +1574,7 @@ function suppressionForCandidate(candidateText, context, activeProfiles) {
     return "PMI/apical impulse is reserved for cardiac, heart-failure, or volume-overload contexts.";
   }
   if (/\b(?:lower extremity edema|edema)\b/.test(candidateText)
-    && !/\b(?:edema|swelling|heart failure|chf|volume overload|orthopnea|pnd|diuresis|aki|renal|kidney|oliguria|hypovolemia|dehydration|shock|dka|hhs|adrenal|hypercalcemia|ascites|cirrhosis|liver|jaundice|leg|dvt|venous)\b/.test(context)) {
+    && !/\b(?:edema|swelling|heart failure|chf|volume overload|orthopnea|pnd|diuresis|aki|renal|kidney|oliguria|hypovolemia|dehydration|shock|dka|hhs|adrenal|hypercalcemia|hypothyroidism|myxedema|ascites|cirrhosis|liver|jaundice|leg|dvt|venous)\b/.test(context)) {
     return "Edema exam needs volume, heart-failure, renal, liver/ascites, leg swelling, DVT, or endocrine-crisis context.";
   }
   if (/\b(?:vibration sense|proprioception)\b/.test(candidateText)

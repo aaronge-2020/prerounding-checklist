@@ -1118,9 +1118,9 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
   const capturedPatterns = [
     { label: "PATIENT NAME", regex: /^\s*(?:Patient(?: Name)?|Pt(?: Name)?|Name)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})\s*$/gmi },
     { label: "DOB", regex: new RegExp(String.raw`^\s*(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})\s*$`, "gmi") },
-    { label: "MRN", regex: /^\s*(?:MRN|Medical Record(?: Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
-    { label: "ENCOUNTER ID", regex: /^\s*(?:CSN|FIN|HAR|Encounter(?: ID| Number))\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
-    { label: "ID", regex: /^\s*(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+    { label: "MRN", regex: /^\s*(?:MRN|Medical Record(?: Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+    { label: "ENCOUNTER ID", regex: /^\s*(?:CSN|FIN|HAR|Encounter(?: ID| Number))(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
+    { label: "ID", regex: /^\s*(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?|License(?: Number)?|Certificate(?: Number)?|DEA|NPI|Device ID|Device Identifier|Serial Number|IMEI|VIN|Plate)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})\s*$/gmi },
     { label: "DATE", regex: new RegExp(String.raw`^\s*(?:Encounter date|Admit(?:ted| date)?|Admission date|Discharge(?:d| date)?|Date of service|DOS|Collected|Collection(?: date| time| date\/time)?|Result(?:ed| date| time| date\/time)?|Received|Drawn|Specimen(?: collected)?|Ordered)\s*[:#]\s*(${dateValue}(?:\s+(?:at\s+)?\d{1,2}:\d{2}(?:\s*[AP]M)?)?)\s*$`, "gmi") },
     { label: "PHONE", regex: /^\s*(?:Phone|Fax|Pager|Callback|Cell|Mobile|Tel)\s*[:#]\s*((?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4})\s*$/gmi },
     { label: "EMAIL", regex: /^\s*Email\s*[:#]\s*([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\s*$/gmi },
@@ -1131,9 +1131,9 @@ export function addStructuredSafeHarborEntities(rawText, entities = []) {
     { label: "CONTACT NAME", regex: /^\s*(?:Emergency contact|Mother|Father|Spouse|Daughter|Son|Guardian|Caregiver)\s*[:#]\s*([A-Z][A-Za-z.'-]+(?:[ \t]+[A-Z][A-Za-z.'-]+){1,3})/gmi },
     { label: "ORGANIZATION", regex: /^\s*Preferred pharmacy\s*[:#]\s*([^,\n\r]{2,80})/gmi },
     { label: "DOB", regex: new RegExp(String.raw`\b(?:DOB|D\.O\.B\.|Date of birth|Birth date)\s*[:#]\s*(${dateValue})`, "gi") },
-    { label: "MRN", regex: /\b(?:MRN|Medical Record(?: Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
-    { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)\s*[:#]\s*([A-Z0-9][A-Z0-9./_-]{2,})/gi },
+    { label: "MRN", regex: /\b(?:MRN|Medical Record(?: Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
+    { label: "ENCOUNTER ID", regex: /\b(?:CSN|FIN|HAR|Encounter(?: ID| Number))(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
+    { label: "ID", regex: /\b(?:Account(?: Number)?|Acct|Guarantor|Policy(?: Number)?|Member(?: ID| Number)?|Insurance(?: ID| Number)?|Subscriber(?: ID| Number)?|Accession(?: Number)?|Order(?: ID| Number)?|Specimen(?: ID| Number)?|Chart(?: ID| Number)?|Case(?: ID| Number)?|Visit(?: ID| Number)?)(?:\s*[:#]\s*|\s+)((?=[A-Z0-9./_-]*\d)[A-Z0-9][A-Z0-9./_-]{2,})/gi },
     { label: "FACILITY", regex: /\b(?:Facility|Campus|Hospital|Clinic|Service location|Lab location|Ordering location)\s*[:#]\s*([^\n\r,]{2,80}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed)\s*[:#]|[,;\n\r]|$)/gi },
     { label: "ROOM", regex: /\b(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|ICU room|ED room|Location)\s*[:#]\s*([A-Z0-9][A-Z0-9 \t-]{0,30}?)(?=\s+(?:Unit|Floor|Ward|Pod|Bay|Room|Rm|Bed|Phone|Email|Address|Primary|Preferred)\s*[:#]|[.,;\n\r]|$)/gi }
   ];
@@ -1989,12 +1989,13 @@ function entityFlags(rawText, entities) {
   }
 
   return entities.slice(0, 12).map((entity) => {
+    const placeholder = (entity.placeholder || placeholderForLabel(entity.label)).replace(/^\[|\]$/g, "");
     const span = entity.label === "DATE"
       ? "exact date converted to relative timeline"
-      : rawText.slice(entity.start, entity.end).replace(/\s+/g, " ").trim();
+      : `${placeholder} redacted`;
     const score = /model/.test(entity.source) && entity.score ? ` ${(entity.score * 100).toFixed(0)}%` : "";
     const source = entity.source ? ` (${entity.source}${score})` : score;
-    return `${(entity.placeholder || placeholderForLabel(entity.label)).replace(/^\[|\]$/g, "")}${source}: ${span}`;
+    return `${placeholder}${source}: ${span}`;
   });
 }
 

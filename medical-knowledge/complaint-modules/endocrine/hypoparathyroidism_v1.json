@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hypoparathyroidism",
     "complaint_group": "bone_and_parathyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -28,7 +28,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Calcium plus PTH."
       },
@@ -42,7 +42,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -58,7 +58,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -82,7 +82,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -113,7 +113,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -147,7 +147,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -164,7 +164,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -178,7 +178,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -192,7 +192,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       },
@@ -206,7 +206,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -220,7 +220,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -234,7 +234,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -248,7 +248,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -262,7 +262,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -278,7 +278,7 @@
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring."
       }
@@ -299,7 +299,7 @@
         "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

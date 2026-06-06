@@ -19,6 +19,7 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 - `clinical-intents.js`: validated and partial clinical intent registry.
 - `complaint-cds.js`: complaint/workup selection and formatting logic.
 - `evidence.js`: evidence catalog ranking and recommended bedside checklist logic.
+- `data/`: CSV reference data for physical exam maneuvers, evidence retrieval, source rows, and evidence evaluation.
 - `medical-knowledge/`: reviewed source-of-truth clinical knowledge JSON.
 - `medical-knowledge-db.js`: generated app bundle built from `medical-knowledge/`.
 - `scripts/`: tests, generators, validators, and build helpers.
@@ -49,6 +50,7 @@ The generated endocrine modules are marked `review_ready`, not automatically val
 Run the focused checks after changing app wiring or clinical content:
 
 ```bash
+npm test
 npm run test:syntax
 npm run test:clinical-intents
 npm run test:complaint-cds
@@ -56,7 +58,13 @@ npm run test:medical-knowledge
 npm run test:endocrine-knowledge
 ```
 
-Use broader tests when touching de-identification, labs, evidence ranking, or census storage.
+Use `npm run test:evidence-suite` when touching `data/evidence/` or evidence ranking, and `npm run test:core` when touching de-identification, labs, checklist parsing, census storage, or continuity.
+
+## Security And Privacy
+
+The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, and saved census workspaces are encrypted in the browser vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
+
+This app can reduce PHI exposure, but it does not by itself certify HIPAA de-identification or make an external AI workflow HIPAA compliant. Institutional policy, approved tool use, required Business Associate Agreements, and documented risk analysis still govern.
 
 ## Safety Notes
 

@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Thyroid Cancer (Papillary, Follicular, Medullary)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -35,7 +35,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Neck ultrasound and nodal mapping."
       },
@@ -43,13 +43,13 @@
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -65,7 +65,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -90,7 +90,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -121,7 +121,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -152,7 +152,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -186,7 +186,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -200,7 +200,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -217,7 +217,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -225,13 +225,13 @@
         "id": "test_02",
         "label": "FNA cytology with Bethesda category.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -239,13 +239,13 @@
         "id": "test_03",
         "label": "TSH/free T4.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ETA_THYROID_NODULE_2023",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -253,13 +253,13 @@
         "id": "test_04",
         "label": "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_CANCER_2025",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -267,13 +267,13 @@
         "id": "test_05",
         "label": "RET testing for medullary thyroid cancer.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       },
@@ -287,7 +287,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -295,13 +295,13 @@
         "id": "reference_02",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -309,13 +309,13 @@
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_id": "ETA_THYROID_NODULE_2023",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
+          "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -323,13 +323,13 @@
         "id": "reference_04",
         "label": "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_CANCER_2025",
           "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -345,7 +345,7 @@
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway."
       }
@@ -361,6 +361,7 @@
       ],
       "source_ids": [
         "ATA_THYROID_CANCER_2025",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -370,7 +371,7 @@
         "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

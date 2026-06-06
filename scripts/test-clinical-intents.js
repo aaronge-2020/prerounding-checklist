@@ -31,13 +31,15 @@ assert.equal(topIntent("can't breathe lying flat"), "dyspnea_hf_v1");
 assert.equal(topIntent("face droop and aphasia"), "stroke_focal_neuro_v1");
 assert.equal(topIntent("black stool and dizziness"), "bleeding_anemia_v1");
 assert.equal(topIntent("thyroid storm with fever and agitation"), "thyroid_crisis_v1");
+assert.equal(topIntent("routine thyroid disease evaluation"), "routine_thyroid_disease_v1");
+assert.equal(topIntent("Graves disease palpitations heat intolerance"), "routine_thyroid_disease_v1");
 
 const routineGraves = resolveClinicalIntents("Graves disease palpitations heat intolerance");
-assert.equal(routineGraves.validatedMatches.length, 0, "routine Graves disease should not auto-authorize the thyroid crisis intent");
-assert.equal(routineGraves.unsupported, true, "routine thyroid disease remains a searchable gap until the routine thyroid module is validated");
+assert.equal(routineGraves.validatedMatches[0]?.intent_id, "routine_thyroid_disease_v1", "routine Graves disease should authorize the routine thyroid intent");
+assert.equal(routineGraves.unsupported, false, "routine thyroid disease should be an active validated intent");
 assert.ok(
-  routineGraves.matches.some((intentRow) => intentRow.intent_id === "routine_thyroid_disease_gap_v1" && intentRow.status === "partial"),
-  "routine thyroid disease should surface a partial intent for review"
+  !routineGraves.validatedMatches.some((intentRow) => intentRow.intent_id === "thyroid_crisis_v1"),
+  "routine Graves disease should not auto-authorize the thyroid crisis intent"
 );
 
 const unsupported = resolveClinicalIntents("purple fingernails after eating mango while juggling");
@@ -67,11 +69,11 @@ assert.match(promptBlock, /dka_hhs_v1/);
 assert.match(promptBlock, /<patient_modifiers>/);
 assert.doesNotMatch(promptBlock, /John Smith|DOB|MRN/i);
 
-const baseRows = parseCsv(readFileSync("exam_technique_base.csv", "utf8"));
-const overlayRows = parseCsv(readFileSync("exam_evidence_overlay.csv", "utf8"));
-const legacyRows = parseCsv(readFileSync("physical_exam_evidence_overlay.csv", "utf8"));
-const sourceRows = parseCsv(readFileSync("source_registry.csv", "utf8"));
-const tagRows = parseCsv(readFileSync("retrieval_tag_dictionary.csv", "utf8"));
+const baseRows = parseCsv(readFileSync("data/evidence/exam_technique_base.csv", "utf8"));
+const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.csv", "utf8"));
+const legacyRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
+const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
+const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
 const catalog = joinEvidenceCatalog(baseRows, mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyRows), sourceRows);
 const dkaCatalog = filterEvidenceCatalogForClinicalIntents(catalog, selected);
 assert.ok(dkaCatalog.some((candidate) => /blood pressure/i.test(candidate.examLabel || "")), "DKA intent should allow vital signs");
@@ -170,5 +172,35 @@ assert.doesNotMatch(
   /Aortic area|Pulmonic area|Tricuspid area|Mitral area/i,
   "HF/dyspnea should not show individual valve-area cards unless murmur/valve modifier is present"
 );
+
+const routineThyroidIntent = selectedValidatedClinicalIntents(["routine_thyroid_disease_v1"]);
+const routineThyroidContext = buildClinicalIntentRetrievalContext(
+  routineThyroidIntent,
+  "Graves disease palpitations heat intolerance eye irritation",
+  "Endocrinology consult",
+  "Adult"
+);
+const routineThyroidCatalog = filterEvidenceCatalogForClinicalIntents(catalog, routineThyroidIntent);
+const routineThyroidRanked = rankEvidenceCandidates(routineThyroidCatalog, routineThyroidContext, tagRows, {
+  maxCandidates: 80,
+  specialty: "Endocrinology consult"
+});
+const routineThyroidRecommendation = buildRecommendedExamChecklist(routineThyroidContext, routineThyroidRanked, {
+  specialty: "Endocrinology consult",
+  maxCoreItems: 24,
+  maxConditionalItems: 36
+});
+assert.deepEqual(
+  routineThyroidRecommendation.activeProfiles.map((profile) => profile.id),
+  ["routine_thyroid"],
+  "routine thyroid intent should activate the routine thyroid bundle, not the thyroid-crisis bundle"
+);
+const routineThyroidCoreText = routineThyroidRecommendation.coreItems.map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`).join(" | ");
+assert.match(routineThyroidCoreText, /Blood pressure|Heart rate/i, "routine thyroid should include HR/BP vitals");
+assert.match(routineThyroidCoreText, /Thyroid exam/i, "routine thyroid should include thyroid inspection/palpation");
+assert.match(routineThyroidCoreText, /Heart sounds|Radial pulses/i, "Graves with palpitations should include rhythm/perfusion exam");
+assert.doesNotMatch(routineThyroidCoreText, /JVP|PMI|Vibration sense|CVA tenderness/i, "routine Graves should not promote unrelated volume, neuro, or GU maneuvers");
+const routineThyroidConditionalText = routineThyroidRecommendation.conditionalItems.map((entry) => entry.label).join(" | ");
+assert.match(routineThyroidConditionalText, /Pupils|Extraocular movements|Visual acuity|Visual fields/i, "Graves with eye symptoms should include orbitopathy/vision add-ons");
 
 console.log("Clinical intent tests passed.");

@@ -4,7 +4,7 @@ import {
   DEFAULT_DTYPE,
   DEFAULT_FALLBACK_MODEL_ID,
   DEFAULT_PRIMARY_MODEL_ID
-} from "./deid.js";
+} from "./deid.js?v=20260606-security2";
 
 env.allowLocalModels = false;
 env.allowRemoteModels = true;

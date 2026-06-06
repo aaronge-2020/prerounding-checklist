@@ -25,11 +25,11 @@ import {
   validateClinicalKnowledgePack
 } from "../embedding-recall.js";
 
-const baseRows = parseCsv(readFileSync("exam_technique_base.csv", "utf8"));
-const overlayRows = parseCsv(readFileSync("exam_evidence_overlay.csv", "utf8"));
-const legacyOverlayRows = parseCsv(readFileSync("physical_exam_evidence_overlay.csv", "utf8"));
-const tagRows = parseCsv(readFileSync("retrieval_tag_dictionary.csv", "utf8"));
-const sourceRows = parseCsv(readFileSync("source_registry.csv", "utf8"));
+const baseRows = parseCsv(readFileSync("data/evidence/exam_technique_base.csv", "utf8"));
+const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.csv", "utf8"));
+const legacyOverlayRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
+const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
+const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const catalog = joinEvidenceCatalog(
   baseRows,
   mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyOverlayRows),
@@ -209,7 +209,7 @@ assert.equal(staged.packs.length, 1, "valid packs should stage for expert review
 assert.equal(staged.packs[0].status, "staged");
 assert.equal(staged.packs[0].intentCount, 1, "staged pack should retain intent count");
 
-const examplePackResult = validateClinicalKnowledgePack(readFileSync("clinical_knowledge_pack_v1.example.json", "utf8"));
+const examplePackResult = validateClinicalKnowledgePack(readFileSync("medical-knowledge/examples/clinical_knowledge_pack_v1.example.json", "utf8"));
 assert.ok(examplePackResult.ok, examplePackResult.issues.map((issue) => issue.message).join("\n"));
 assert.ok(examplePackResult.itemCount >= 2, "example pack should contain plug-in-ready item examples");
 assert.ok(examplePackResult.intentCount >= 1, "example pack should contain a staged intent example");

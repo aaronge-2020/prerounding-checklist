@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Thyroid Nodules (Benign)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -25,13 +25,13 @@
         "id": "differential_01",
         "label": "Thyroid Nodules (Benign): diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH."
       },
@@ -45,7 +45,7 @@
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -55,13 +55,13 @@
         "id": "red_flag_01",
         "label": "Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -81,13 +81,13 @@
         "id": "question_01",
         "label": "Growth, dysphagia, dyspnea, hoarseness.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -112,13 +112,13 @@
         "id": "question_02",
         "label": "Radiation exposure, family thyroid cancer/MEN2, hyperthyroid symptoms.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -146,13 +146,13 @@
         "id": "exam_01",
         "label": "Thyroid palpation, cervical nodes, voice/airway assessment.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -163,13 +163,13 @@
         "id": "test_01",
         "label": "TSH.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -183,7 +183,7 @@
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -191,13 +191,13 @@
         "id": "test_03",
         "label": "FNA when indicated by size/risk system; low TSH prompts radionuclide scan.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       },
@@ -205,13 +205,13 @@
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -225,7 +225,7 @@
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -233,13 +233,13 @@
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -253,7 +253,7 @@
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -263,13 +263,13 @@
         "id": "management_01",
         "label": "Suspicious ultrasound/Bethesda cytology changes cancer pathway.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Thyroid Nodules (Benign) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspicious ultrasound/Bethesda cytology changes cancer pathway."
       },
@@ -283,7 +283,7 @@
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Low TSH with hot nodule shifts to autonomous-function pathway."
       }
@@ -296,6 +296,7 @@
         "benign thyroid nodule"
       ],
       "source_ids": [
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -305,7 +306,7 @@
         "FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

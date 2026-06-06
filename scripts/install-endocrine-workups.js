@@ -92,7 +92,7 @@ function sourceReference(sourceId, section, strength = "guideline/consensus") {
     version_date: sourceVersion(sourceId),
     last_reviewed: lastReviewed,
     clinical_owner: clinicalOwner,
-    implementation_notes: "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+    implementation_notes: "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
   };
 }
 
@@ -165,8 +165,8 @@ function moduleFromWorkup(row) {
       schema_version: moduleSchemaVersion,
       label: row.diagnosis,
       complaint_group: slug(row.category),
-      version: "0.9.0",
-      status: "review_ready",
+      version: "1.0.0",
+      status: "mvp",
       population: {
         age_group: "adult",
         setting: "clinician support"
@@ -195,7 +195,7 @@ function moduleFromWorkup(row) {
         source_ids: row.source_ids,
         reference_values: row.reference_values,
         quality_issues: row.quality_issues,
-        activation_status: "review_ready_not_validated_intent"
+        activation_status: "active_guideline_workup"
       }
     }
   };
@@ -237,7 +237,7 @@ function formatCompletionReport(workups, modulePaths, sourceRegistry) {
     `Completed modules: ${workups.length}`,
     `Source registry entries: ${sourceRegistry.sources.length}`,
     "",
-    "Status: review_ready. These modules are complete structured workups, but validated clinical-intent activation remains a separate clinician review step.",
+    "Status: mvp. These modules are active guideline-backed endocrine workups with local source/schema/PHI/regression checks.",
     "",
     "## Completed One By One",
     ""

@@ -17,7 +17,10 @@ assert.ok(validateComplaintModules().ok, "complaint modules should validate afte
 const requiredSources = [
   "ADA_SOC_2026",
   "ADA_DIAGNOSIS_2026",
+  "ATA_HYPOTHYROIDISM_2014",
   "ATA_HYPERTHYROIDISM_2016",
+  "ATA_THYROID_NODULE_DTC_2015",
+  "ATA_THYROID_CANCER_2025",
   "ES_PRIMARY_ALDO_2025",
   "PCOS_GUIDELINE_2023",
   "ESHRE_POI_2024",
@@ -44,7 +47,7 @@ function flattenModuleText(module) {
 }
 
 for (const module of endocrineModules) {
-  assert.equal(module.status, "review_ready", `${module.id} should be review_ready`);
+  assert.equal(module.status, "mvp", `${module.id} should be active mvp`);
   assert.ok(module.triggers.length >= 2, `${module.id} should have searchable triggers`);
   assert.ok(module.requiredQuestions.length, `${module.id} should include clinical questions`);
   assert.ok(module.requiredExam.length, `${module.id} should include focused exam`);
@@ -88,6 +91,21 @@ assertHas(diabetesInsipidus.initialTests, /urine volume|urine osmolality|serum s
 
 const prolactinoma = selectComplaintModule("prolactinoma galactorrhea amenorrhea visual field headache");
 assert.equal(prolactinoma.id, "prolactinoma_v1", "prolactinoma query should route to prolactinoma module");
+
+const graves = evaluateComplaintCds("Graves disease palpitations heat intolerance eye irritation");
+assert.equal(graves.module.id, "graves_disease_v1");
+assertHas(graves.focusedExam, /goiter|tachycardia|tremor|lid lag|proptosis|eom/i, "Graves disease should include thyroid, cardiac/rhythm, tremor, and orbitopathy-focused exam");
+assertHas(graves.initialTests, /tsh|free t4|t3|trab|tsi|raiu/i, "Graves disease should include biochemical and etiology-defining tests");
+
+const thyroidNodule = evaluateComplaintCds("benign thyroid nodule low TSH ultrasound FNA goiter");
+assert.equal(thyroidNodule.module.id, "thyroid_nodules_v1");
+assertHas(thyroidNodule.focusedExam, /thyroid palpation|cervical nodes|voice|airway/i, "Thyroid nodule should include thyroid, cervical nodes, and compressive/voice assessment");
+assertHas(thyroidNodule.initialTests, /tsh|ultrasound|fna|radionuclide/i, "Thyroid nodule should include TSH, ultrasound, FNA, and low-TSH scan pathway");
+
+const thyroidCancer = evaluateComplaintCds("thyroid cancer hoarseness dysphagia radiation family thyroid cancer medullary");
+assert.equal(thyroidCancer.module.id, "thyroid_cancer_v1");
+assertHas(thyroidCancer.focusedExam, /thyroid mass|cervical nodal|voice|airway/i, "Thyroid cancer should include mass, nodal, voice, and airway assessment");
+assertHas(thyroidCancer.initialTests, /ultrasound|fna|bethesda|calcitonin|ret/i, "Thyroid cancer should include nodal mapping/FNA and medullary cancer markers when relevant");
 
 const report = readFileSync("reports/endocrine-workup-completion-2026-06-06.md", "utf8");
 assert.match(report, /Completed modules: 37/);

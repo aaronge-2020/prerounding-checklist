@@ -7,8 +7,8 @@
     "schema_version": "complaint-cds-artifact-v1",
     "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)",
     "complaint_group": "thyroid_disorders",
-    "version": "0.9.0",
-    "status": "review_ready",
+    "version": "1.0.0",
+    "status": "mvp",
     "population": {
       "age_group": "adult",
       "setting": "clinician support"
@@ -25,13 +25,13 @@
         "id": "differential_01",
         "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "TSH, free T4, TPO antibody."
       },
@@ -39,13 +39,13 @@
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
       }
@@ -55,13 +55,13 @@
         "id": "red_flag_01",
         "label": "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "when": {
@@ -79,13 +79,13 @@
         "id": "question_01",
         "label": "Hypothyroid symptoms, family autoimmune disease.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -110,13 +110,13 @@
         "id": "question_02",
         "label": "Neck swelling, nodules, compressive symptoms.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "options": [
           {
@@ -144,13 +144,13 @@
         "id": "exam_01",
         "label": "Firm/rubbery goiter, nodules, cervical nodes.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       },
@@ -158,13 +158,13 @@
         "id": "exam_02",
         "label": "Bradycardia, skin/reflex signs.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
@@ -175,13 +175,13 @@
         "id": "test_01",
         "label": "TSH, free T4, TPO antibody.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -189,13 +189,13 @@
         "id": "test_02",
         "label": "Thyroglobulin antibody as adjunct.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -203,13 +203,13 @@
         "id": "test_03",
         "label": "Ultrasound only for nodule, goiter, or compressive symptoms.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       },
@@ -217,13 +217,13 @@
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -231,13 +231,13 @@
         "id": "reference_02",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       },
@@ -245,13 +245,13 @@
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
       }
@@ -261,13 +261,13 @@
         "id": "management_01",
         "label": "Positive TPO Ab supports autoimmune thyroiditis.",
         "source": {
-          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2012",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Positive TPO Ab supports autoimmune thyroiditis."
       },
@@ -275,13 +275,13 @@
         "id": "management_02",
         "label": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
         "source": {
-          "source_id": "ETA_THYROID_NODULE_2023",
+          "source_id": "AACE_ATA_HYPOTHYROIDISM_2012",
           "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2023",
+          "version_date": "2012",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway."
       }
@@ -294,7 +294,9 @@
         "autoimmune hypothyroidism"
       ],
       "source_ids": [
+        "ATA_HYPOTHYROIDISM_2014",
         "AACE_ATA_HYPOTHYROIDISM_2012",
+        "ATA_THYROID_NODULE_DTC_2015",
         "ETA_THYROID_NODULE_2023"
       ],
       "reference_values": [
@@ -303,7 +305,7 @@
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
       ],
       "quality_issues": [],
-      "activation_status": "review_ready_not_validated_intent"
+      "activation_status": "active_guideline_workup"
     }
   }
 }

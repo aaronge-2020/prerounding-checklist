@@ -187,10 +187,11 @@ export const clinicalIntentRegistry = [
     gold_case_ids: ["thyroid_storm_myxedema"]
   }),
   intent({
-    intent_id: "routine_thyroid_disease_gap_v1",
+    intent_id: "routine_thyroid_disease_v1",
     label: "Routine thyroid disease evaluation",
-    status: "partial",
     aliases: [
+      "routine thyroid disease evaluation",
+      "routine thyroid evaluation",
       "hyperthyroidism",
       "hyperthyroid",
       "graves",
@@ -203,17 +204,20 @@ export const clinicalIntentRegistry = [
       "goiter",
       "thyroid nodule",
       "thyroid cancer",
+      "thyroid mass",
       "heat intolerance",
       "cold intolerance",
-      "palpitations with thyroid"
+      "palpitations with thyroid",
+      "thyroid labs abnormal",
+      "abnormal tsh"
     ],
     intent_type: "diagnosis",
-    source_ids: ["AACE_ATA_HYPOTHYROIDISM_2012", "ATA_HYPERTHYROIDISM_2016", "ETA_THYROID_NODULE_2023"],
-    evidence_tags: ["thyroid_disease", "vitals", "vital_signs", "cardiopulmonary", "heent_exam"],
-    clinical_bundle_ids: ["thyroid_endocrine"],
-    required_domains: ["vitals", "thyroid/neck exam", "cardiac exam when hyperthyroid symptoms"],
-    avoid_labels: ["CVA tenderness", "Vibration sense"],
-    gold_case_ids: [],
+    source_ids: ["ATA_HYPOTHYROIDISM_2014", "AACE_ATA_HYPOTHYROIDISM_2012", "ATA_HYPERTHYROIDISM_2016", "ATA_THYROID_NODULE_DTC_2015", "ATA_THYROID_CANCER_2025", "ETA_THYROID_NODULE_2023"],
+    evidence_tags: ["thyroid_disease", "thyroid_exam", "vitals", "vital_signs", "cardiopulmonary", "heent_exam", "eye_vision", "lymphadenopathy"],
+    clinical_bundle_ids: ["routine_thyroid"],
+    required_domains: ["vitals/HR/BP", "thyroid/neck exam", "cardiac rhythm/perfusion when thyrotoxic symptoms are present", "eye/orbitopathy screen when eye symptoms are present", "cervical nodes/compressive symptoms when structural thyroid concern is present"],
+    avoid_labels: ["CVA tenderness", "Vibration sense", "PMI", "Broad abdominal exam"],
+    gold_case_ids: ["routine_thyroid_disease", "graves_disease", "hypothyroidism", "thyroid_nodule"],
     review_owner: "endocrine_content_review"
   }),
   intent({

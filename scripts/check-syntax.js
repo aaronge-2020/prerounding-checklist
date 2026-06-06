@@ -54,6 +54,62 @@ for (const file of files) {
 }
 
 const html = readFileSync("index.html", "utf8");
+if (/fonts\.googleapis\.com|fonts\.gstatic\.com/.test(html)) {
+  throw new Error("Do not load third-party Google Fonts in the clinical app shell.");
+}
+const cspMatch = html.match(/<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]+)"/i);
+if (!cspMatch) {
+  throw new Error("index.html must define a Content Security Policy.");
+}
+const csp = cspMatch[1];
+for (const requiredDirective of [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "form-action 'none'",
+  "frame-src 'none'",
+  "script-src 'self' 'unsafe-inline'",
+  "worker-src 'self'",
+  "connect-src 'self'",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'"
+]) {
+  if (!csp.includes(requiredDirective)) {
+    throw new Error(`Content Security Policy missing required directive: ${requiredDirective}`);
+  }
+}
+for (const requiredSnippet of [
+  "No analytics, telemetry, tracking pixels, or ad scripts",
+  "structuredOnlyDeidToggle",
+  "clipboardAutoClearToggle",
+  "does not legally certify HIPAA de-identification",
+  "Business Associate Agreement"
+]) {
+  if (!html.includes(requiredSnippet)) {
+    throw new Error(`Expected privacy/security guardrail copy not found: ${requiredSnippet}`);
+  }
+}
+const securityDoc = readFileSync("SECURITY.md", "utf8");
+const privacyDoc = readFileSync("PRIVACY.md", "utf8");
+for (const requiredSnippet of [
+  "HIPAA compliance depends on the full operating environment",
+  "Security risk analysis guidance",
+  "Business associate guidance",
+  "frame-ancestors 'none'"
+]) {
+  if (!securityDoc.includes(requiredSnippet)) {
+    throw new Error(`Expected SECURITY.md guidance not found: ${requiredSnippet}`);
+  }
+}
+for (const requiredSnippet of [
+  "not a legal de-identification certification service",
+  "Data That Can Leave The Browser",
+  "External clinical AI tools"
+]) {
+  if (!privacyDoc.includes(requiredSnippet)) {
+    throw new Error(`Expected PRIVACY.md guidance not found: ${requiredSnippet}`);
+  }
+}
 if (/Use one OpenEvidence conversation for the patient/i.test(html)) {
   throw new Error("Remove implementation-style OpenEvidence workflow copy from the visible UI.");
 }
@@ -63,7 +119,7 @@ if (!scriptMatch) {
 }
 
 const moduleScript = scriptMatch[1];
-if (!/from\s+["']\.\/deid\.js["']/.test(moduleScript)) {
+if (!/from\s+["']\.\/deid\.js(?:\?[^"']+)?["']/.test(moduleScript)) {
   throw new Error("index.html must import the shared deid.js module.");
 }
 if (!/from\s+["']\.\/checklist\.js["']/.test(moduleScript)) {
@@ -117,7 +173,23 @@ for (const requiredSnippet of [
   "knowledgeModuleEditor",
   "knowledgeProposalList",
   "medicalKnowledgeProposalV1",
+  "preRoundMedicalKnowledgeLocalOverridesV1",
+  "Local knowledge editor",
+  "Edit active local copy",
+  "saveKnowledgeLocalOverrideButton",
+  "suggestKnowledgeLocalOverrideButton",
+  "resetKnowledgeLocalOverrideButton",
+  "knowledgeSectionSelect",
+  "knowledgeItemSearchInput",
+  "loadKnowledgeJsonToFormButton",
+  "applyKnowledgeFormToJsonButton",
+  "knowledgeSectionTabs",
+  "saveCurrentKnowledgeOverride",
+  "localKnowledgeOverrideForModule",
   "buildGuidelineExtractionPrompt",
+  "loadKnowledgeEnvelopeIntoReadableEditor",
+  "syncKnowledgeReadableEditorToJson",
+  "renderKnowledgeSectionEditor",
   "effectiveComplaintModules",
   "updateKnowledgeProposalStatus",
   "renderKnowledgeBaseWorkbench"
@@ -151,6 +223,26 @@ if (/\bfunction\s+(?:modelPredictionsToEntities|addStructuredSafeHarborEntities|
 }
 if (!/PHI safety check for medication safety prompt[\s\S]{0,400}reviewScope:\s*"source-free"/.test(moduleScript)) {
   throw new Error("Medication safety prompt must be marked source-free for PHI review.");
+}
+for (const requiredSnippet of [
+  "securitySettingsStorageKey",
+  "normalizeSecuritySettings",
+  "currentDeidMode",
+  "isStructuredOnlyDeid",
+  "scheduleClipboardClearAfterCopy"
+]) {
+  if (!moduleScript.includes(requiredSnippet)) {
+    throw new Error(`Expected security settings implementation not found: ${requiredSnippet}`);
+  }
+}
+if (!/currentDeidMode\(\)[\s\S]{0,260}structured-only[\s\S]{0,900}deidentifyTextStructuredOnly/.test(moduleScript)) {
+  throw new Error("Structured-only mode must bypass the de-ID worker and run shared structured redaction directly.");
+}
+if (!/function\s+prepareDeidentifierModel\(\)[\s\S]{0,350}isStructuredOnlyDeid\(\)/.test(moduleScript)) {
+  throw new Error("Model preparation must respect structured-only mode.");
+}
+if (/function\s+renderReviewGroups[\s\S]{0,900}raw\.slice/.test(moduleScript)) {
+  throw new Error("Rendered review groups must not replay raw redacted PHI spans.");
 }
 for (const requiredSnippet of [
   "cleanOutputLabel",
@@ -204,11 +296,15 @@ if (!/elements\.checklistPasteCard\.hidden\s*=\s*!\(bedsideMode\s*\|\|\s*state\.
   throw new Error("Laptop mode must not show the checklist paste card by default after prompt copy.");
 }
 const worker = readFileSync("deid-worker.js", "utf8");
-if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js["']/.test(worker)) {
+if (!/\bcreateDeidentifier\b/.test(worker) || !/from\s+["']\.\/deid\.js(?:\?[^"']+)?["']/.test(worker)) {
   throw new Error("deid-worker.js must run the shared deidentifier from deid.js.");
 }
 
 const checklistModule = readFileSync("checklist.js", "utf8");
+const deidModule = readFileSync("deid.js", "utf8");
+if (/function\s+entityFlags[\s\S]{0,700}rawText\.slice/.test(deidModule)) {
+  throw new Error("De-ID entity flags must not replay raw redacted PHI spans.");
+}
 for (const requiredSnippet of [
   "Parent checklist titles must be the exact all-caps lines above, with no colon.",
   "categoryForChecklistTitle",
@@ -295,7 +391,17 @@ for (const requiredSnippet of [
   }
 }
 
-const examReferenceCsv = readFileSync("physical_exam_reference.csv", "utf8");
+const physicalExamReferencePath = "data/physical-exam/physical_exam_reference.csv";
+const physicalExamOverlayPath = "data/physical-exam/physical_exam_evidence_overlay.csv";
+const examTechniqueBasePath = "data/evidence/exam_technique_base.csv";
+const examEvidenceOverlayPath = "data/evidence/exam_evidence_overlay.csv";
+const retrievalTagDictionaryPath = "data/evidence/retrieval_tag_dictionary.csv";
+const priorityEnrichmentQueuePath = "data/evidence/priority_enrichment_queue.csv";
+const sourceRegistryCsvPath = "data/evidence/source_registry.csv";
+const evidenceEvalCasesPath = "data/evidence/evidence_eval_cases.csv";
+const evidenceEvalGoldPath = "data/evidence/evidence_eval_gold.csv";
+
+const examReferenceCsv = readFileSync(physicalExamReferencePath, "utf8");
 for (const requiredSnippet of [
   "exam_system,section,region_or_subsection,maneuver_or_finding",
   "Visual acuity",
@@ -371,7 +477,7 @@ const endocrineInstallModule = readFileSync("scripts/install-endocrine-workups.j
 for (const requiredSnippet of [
   "Endocrine Workup Completion Report",
   "complaint-modules\", \"endocrine",
-  "review_ready_not_validated_intent",
+  "active_guideline_workup",
   "Expected 37 endocrine workups"
 ]) {
   if (!endocrineInstallModule.includes(requiredSnippet)) {
@@ -425,24 +531,24 @@ for (const requiredSnippet of [
   }
 }
 
-const requestedBaseCsv = readFileSync("exam_technique_base.csv", "utf8");
+const requestedBaseCsv = readFileSync(examTechniqueBasePath, "utf8");
 if (requestedBaseCsv !== examReferenceCsv) {
-  throw new Error("exam_technique_base.csv must be an unchanged copy of physical_exam_reference.csv.");
+  throw new Error(`${examTechniqueBasePath} must be an unchanged copy of ${physicalExamReferencePath}.`);
 }
 
-const requestedOverlayCsv = readFileSync("exam_evidence_overlay.csv", "utf8");
-const requestedTagDictionaryCsv = readFileSync("retrieval_tag_dictionary.csv", "utf8");
-const requestedQueueCsv = readFileSync("priority_enrichment_queue.csv", "utf8");
-const sourceRegistryCsv = readFileSync("source_registry.csv", "utf8");
-const evidenceEvalCasesCsv = readFileSync("evidence_eval_cases.csv", "utf8");
-const evidenceEvalGoldCsv = readFileSync("evidence_eval_gold.csv", "utf8");
+const requestedOverlayCsv = readFileSync(examEvidenceOverlayPath, "utf8");
+const requestedTagDictionaryCsv = readFileSync(retrievalTagDictionaryPath, "utf8");
+const requestedQueueCsv = readFileSync(priorityEnrichmentQueuePath, "utf8");
+const sourceRegistryCsv = readFileSync(sourceRegistryCsvPath, "utf8");
+const evidenceEvalCasesCsv = readFileSync(evidenceEvalCasesPath, "utf8");
+const evidenceEvalGoldCsv = readFileSync(evidenceEvalGoldPath, "utf8");
 for (const [fileName, csvText, snippets] of [
-  ["exam_evidence_overlay.csv", requestedOverlayCsv, ["base_row_fingerprint", "bedside_question_label", "result_changes_management", "retrieval_tags"]],
-  ["retrieval_tag_dictionary.csv", requestedTagDictionaryCsv, ["thyroid_disease", "hypovolemia", "inpatient_diabetes", "pituitary_sellar"]],
-  ["priority_enrichment_queue.csv", requestedQueueCsv, ["exam_id", "base_row_number", "priority_reason", "planned_sources"]],
-  ["source_registry.csv", sourceRegistryCsv, ["SM25", "JAMA_RCE", "MCGEE_EBPD", "AHRQ_CALIBRATE_DX"]],
-  ["evidence_eval_cases.csv", evidenceEvalCasesCsv, ["dx_dka_hhs", "dx_suspected_pe", "cv_chest_pain", "psych_malaise"]],
-  ["evidence_eval_gold.csv", evidenceEvalGoldCsv, ["expected_core_labels", "dx_dka_hhs", "dx_suspected_pe", "avoid_labels"]]
+  [examEvidenceOverlayPath, requestedOverlayCsv, ["base_row_fingerprint", "bedside_question_label", "result_changes_management", "retrieval_tags"]],
+  [retrievalTagDictionaryPath, requestedTagDictionaryCsv, ["thyroid_disease", "hypovolemia", "inpatient_diabetes", "pituitary_sellar"]],
+  [priorityEnrichmentQueuePath, requestedQueueCsv, ["exam_id", "base_row_number", "priority_reason", "planned_sources"]],
+  [sourceRegistryCsvPath, sourceRegistryCsv, ["SM25", "JAMA_RCE", "MCGEE_EBPD", "AHRQ_CALIBRATE_DX"]],
+  [evidenceEvalCasesPath, evidenceEvalCasesCsv, ["dx_dka_hhs", "dx_suspected_pe", "cv_chest_pain", "psych_malaise"]],
+  [evidenceEvalGoldPath, evidenceEvalGoldCsv, ["expected_core_labels", "dx_dka_hhs", "dx_suspected_pe", "avoid_labels"]]
 ]) {
   for (const snippet of snippets) {
     if (!csvText.includes(snippet)) {
@@ -510,9 +616,9 @@ function assertNumeric(value, label, { required = true, min = -Infinity, max = I
   }
 }
 
-const examReference = parseCsvForValidation(examReferenceCsv, "physical_exam_reference.csv");
+const examReference = parseCsvForValidation(examReferenceCsv, physicalExamReferencePath);
 if (!examReference.headers.includes("exam_id")) {
-  throw new Error("physical_exam_reference.csv must include exam_id.");
+  throw new Error(`${physicalExamReferencePath} must include exam_id.`);
 }
 if (examReference.rows.length !== 187) {
   throw new Error(`Expected 187 physical exam reference rows, got ${examReference.rows.length}.`);
@@ -521,16 +627,16 @@ if (examReference.rows.length !== 187) {
 const examIds = new Set();
 for (const [index, row] of examReference.rows.entries()) {
   if (!row.exam_id) {
-    throw new Error(`physical_exam_reference.csv row ${index + 2} is missing exam_id.`);
+    throw new Error(`${physicalExamReferencePath} row ${index + 2} is missing exam_id.`);
   }
   if (examIds.has(row.exam_id)) {
-    throw new Error(`Duplicate exam_id in physical_exam_reference.csv: ${row.exam_id}`);
+    throw new Error(`Duplicate exam_id in ${physicalExamReferencePath}: ${row.exam_id}`);
   }
   examIds.add(row.exam_id);
 }
 
-const overlayCsv = readFileSync("physical_exam_evidence_overlay.csv", "utf8");
-const overlay = parseCsvForValidation(overlayCsv, "physical_exam_evidence_overlay.csv");
+const overlayCsv = readFileSync(physicalExamOverlayPath, "utf8");
+const overlay = parseCsvForValidation(overlayCsv, physicalExamOverlayPath);
 const expectedOverlayHeaders = [
   "exam_id",
   "condition_or_syndrome",
@@ -555,10 +661,10 @@ const expectedOverlayHeaders = [
   "last_reviewed"
 ];
 if (overlay.headers.join(",") !== expectedOverlayHeaders.join(",")) {
-  throw new Error("physical_exam_evidence_overlay.csv has an unexpected header order.");
+  throw new Error(`${physicalExamOverlayPath} has an unexpected header order.`);
 }
 if (overlay.rows.length !== examReference.rows.length) {
-  throw new Error("physical_exam_evidence_overlay.csv must have one row per base exam row.");
+  throw new Error(`${physicalExamOverlayPath} must have one row per base exam row.`);
 }
 
 const overlayIds = new Set();
@@ -567,12 +673,12 @@ const allowedTiers = new Set(["rce_or_meta_analysis", "systematic_review", "guid
 const allowedDifficulties = new Set(["low", "medium", "high"]);
 
 for (const [index, row] of overlay.rows.entries()) {
-  const rowLabel = `physical_exam_evidence_overlay.csv row ${index + 2} (${row.exam_id || "missing exam_id"})`;
+  const rowLabel = `${physicalExamOverlayPath} row ${index + 2} (${row.exam_id || "missing exam_id"})`;
   if (!examIds.has(row.exam_id)) {
     throw new Error(`${rowLabel} does not match any base exam_id.`);
   }
   if (overlayIds.has(row.exam_id)) {
-    throw new Error(`Duplicate exam_id in physical_exam_evidence_overlay.csv: ${row.exam_id}`);
+    throw new Error(`Duplicate exam_id in ${physicalExamOverlayPath}: ${row.exam_id}`);
   }
   overlayIds.add(row.exam_id);
   if (!row.retrieval_tags) {

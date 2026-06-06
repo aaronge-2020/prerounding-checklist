@@ -19,13 +19,13 @@ import {
   validateEvidenceOverlayRows
 } from "../evidence.js";
 
-const baseRows = parseCsv(readFileSync("exam_technique_base.csv", "utf8"));
-const currentRows = parseCsv(readFileSync("physical_exam_reference.csv", "utf8"));
-const overlayRows = parseCsv(readFileSync("exam_evidence_overlay.csv", "utf8"));
-const legacyOverlayRows = parseCsv(readFileSync("physical_exam_evidence_overlay.csv", "utf8"));
-const tagRows = parseCsv(readFileSync("retrieval_tag_dictionary.csv", "utf8"));
-const queueRows = parseCsv(readFileSync("priority_enrichment_queue.csv", "utf8"));
-const sourceRows = parseCsv(readFileSync("source_registry.csv", "utf8"));
+const baseRows = parseCsv(readFileSync("data/evidence/exam_technique_base.csv", "utf8"));
+const currentRows = parseCsv(readFileSync("data/physical-exam/physical_exam_reference.csv", "utf8"));
+const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.csv", "utf8"));
+const legacyOverlayRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
+const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
+const queueRows = parseCsv(readFileSync("data/evidence/priority_enrichment_queue.csv", "utf8"));
+const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const sourceIds = new Set(sourceRows.map((row) => row.source_id));
 const mergedOverlayRows = mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyOverlayRows);
 const catalog = joinEvidenceCatalog(baseRows, mergedOverlayRows, sourceRows);

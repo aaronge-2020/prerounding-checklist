@@ -12,13 +12,13 @@ import {
 import { checklistPrompt, parseChecklist } from "../checklist.js";
 
 const defaultEvalPaths = {
-  base: "exam_technique_base.csv",
-  overlay: "exam_evidence_overlay.csv",
-  legacyOverlay: "physical_exam_evidence_overlay.csv",
-  tags: "retrieval_tag_dictionary.csv",
-  sources: "source_registry.csv",
-  cases: "evidence_eval_cases.csv",
-  gold: "evidence_eval_gold.csv"
+  base: "data/evidence/exam_technique_base.csv",
+  overlay: "data/evidence/exam_evidence_overlay.csv",
+  legacyOverlay: "data/physical-exam/physical_exam_evidence_overlay.csv",
+  tags: "data/evidence/retrieval_tag_dictionary.csv",
+  sources: "data/evidence/source_registry.csv",
+  cases: "data/evidence/evidence_eval_cases.csv",
+  gold: "data/evidence/evidence_eval_gold.csv"
 };
 
 const requiredCaseHeaders = [

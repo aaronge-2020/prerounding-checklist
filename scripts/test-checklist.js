@@ -174,8 +174,8 @@ assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission wri
 
 const appHtml = readFileSync("index.html", "utf8");
 const evidenceModule = readFileSync("evidence.js", "utf8");
-const examReferenceCsv = readFileSync("physical_exam_reference.csv", "utf8");
-const examEvidenceOverlayCsv = readFileSync("physical_exam_evidence_overlay.csv", "utf8");
+const examReferenceCsv = readFileSync("data/physical-exam/physical_exam_reference.csv", "utf8");
+const examEvidenceOverlayCsv = readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8");
 
 function parseCsvRow(line) {
   const fields = [];

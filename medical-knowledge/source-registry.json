@@ -85,6 +85,15 @@
       "citation": "ATA Hyperthyroidism and Thyrotoxicosis Guideline"
     },
     {
+      "id": "ATA_HYPOTHYROIDISM_2014",
+      "title": "ATA Guidelines for the Treatment of Hypothyroidism",
+      "source": "American Thyroid Association",
+      "version": "2014",
+      "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "date_accessed": "2026-06-06",
+      "citation": "American Thyroid Association Task Force on Thyroid Hormone Replacement. Guidelines for the Treatment of Hypothyroidism. Thyroid. 2014."
+    },
+    {
       "id": "ATA_THYROID_CANCER_2025",
       "title": "ATA Differentiated Thyroid Cancer Guideline Resource",
       "source": "American Thyroid Association",
@@ -92,6 +101,15 @@
       "url": "https://www.thyroid.org/ata-professional-guidelines/",
       "date_accessed": "2026-06-06",
       "citation": "ATA Differentiated Thyroid Cancer Guideline Resource"
+    },
+    {
+      "id": "ATA_THYROID_NODULE_DTC_2015",
+      "title": "ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer",
+      "source": "American Thyroid Association",
+      "version": "2015",
+      "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
+      "date_accessed": "2026-06-06",
+      "citation": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016."
     },
     {
       "id": "AUA_ED_2018",

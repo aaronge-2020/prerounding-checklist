@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'none'; frame-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; worker-src 'self' blob:; child-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.huggingface.co https://cas-bridge.xethub.hf.co https://*.xethub.hf.co; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; manifest-src 'self' blob:; media-src 'none';">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="theme-color" content="#141413">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,9 +14,6 @@
   <link rel="canonical" href="https://aaronge-2020.github.io/prerounding-checklist/">
   <link id="appManifest" rel="manifest">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23141413'/%3E%3Cpath d='M18 33.5 27 42l19-22' fill='none' stroke='%236ab3bd' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
@@ -54,7 +53,7 @@
     body {
       min-height: 100%;
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       font-size: 16px;
       line-height: 1.5;
       color: var(--text);
@@ -1126,6 +1125,68 @@
       gap: 10px;
       border-color: rgba(106, 179, 189, 0.28);
       background: rgba(79, 152, 163, 0.08);
+    }
+
+    .security-settings-panel {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(106, 179, 189, 0.22);
+      border-radius: 8px;
+      padding: 10px 11px;
+      background: rgba(0, 0, 0, 0.14);
+    }
+
+    .security-settings-panel summary {
+      min-height: 44px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.94rem;
+      font-weight: 900;
+    }
+
+    .security-settings-panel[open] summary {
+      margin-bottom: 2px;
+    }
+
+    .privacy-toggle-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .privacy-toggle {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.035);
+      font-size: 0.84rem;
+      font-weight: 740;
+      line-height: 1.38;
+    }
+
+    .privacy-toggle input {
+      width: 18px;
+      height: 18px;
+      margin: 2px 0 0;
+      accent-color: var(--accent-strong);
+    }
+
+    .privacy-toggle strong {
+      display: block;
+      color: var(--text);
+      font-weight: 920;
+    }
+
+    .security-status {
+      min-height: 22px;
+      margin: 0;
+      color: var(--accent-strong);
+      font-size: 0.86rem;
+      font-weight: 800;
     }
 
     .vault-claim {
@@ -3471,6 +3532,11 @@
       align-items: center;
     }
 
+    .knowledge-base-actions.is-primary {
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
     .knowledge-base-form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3480,7 +3546,170 @@
 
     .knowledge-base-form-grid input,
     .knowledge-base-form-grid select,
+    .knowledge-module-meta-grid input,
+    .knowledge-module-meta-grid select,
     .knowledge-base-section > select {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .knowledge-readable-editor {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(106, 179, 189, 0.16);
+      border-radius: 8px;
+      padding: 11px;
+      background: rgba(79, 152, 163, 0.055);
+    }
+
+    .knowledge-module-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .knowledge-trigger-input {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    .knowledge-section-toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .knowledge-section-controls {
+      display: grid;
+      grid-template-columns: minmax(170px, 0.28fr) minmax(220px, 1fr) auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    .knowledge-section-select,
+    .knowledge-section-search {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      padding: 8px 9px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.2);
+      font: inherit;
+      font-size: 0.8rem;
+    }
+
+    .knowledge-section-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .knowledge-section-tab {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.74rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .knowledge-section-tab[aria-selected="true"] {
+      border-color: rgba(106, 179, 189, 0.62);
+      color: #effdff;
+      background: rgba(79, 152, 163, 0.18);
+    }
+
+    .knowledge-section-editor {
+      display: grid;
+      gap: 9px;
+    }
+
+    .knowledge-item-card {
+      display: grid;
+      gap: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .knowledge-local-summary {
+      display: grid;
+      gap: 5px;
+      border: 1px solid rgba(216, 176, 106, 0.18);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--quiet);
+      background: rgba(216, 176, 106, 0.065);
+      font-size: 0.78rem;
+      font-weight: 760;
+      line-height: 1.35;
+    }
+
+    .knowledge-local-summary strong {
+      color: var(--text);
+      font-weight: 950;
+    }
+
+    .knowledge-item-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .knowledge-item-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 950;
+      line-height: 1.25;
+    }
+
+    .knowledge-item-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.34fr) minmax(0, 1fr);
+      gap: 9px;
+      align-items: start;
+    }
+
+    .knowledge-item-grid input,
+    .knowledge-item-grid textarea,
+    .knowledge-item-grid select,
+    .knowledge-trigger-input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      padding: 8px 9px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.2);
+      font: inherit;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .knowledge-item-grid textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .knowledge-item-source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+      align-items: start;
+    }
+
+    .knowledge-item-source-grid input,
+    .knowledge-item-source-grid select {
       width: 100%;
       min-width: 0;
     }
@@ -3522,6 +3751,28 @@
     .knowledge-base-notes-input {
       min-height: 76px;
       resize: vertical;
+    }
+
+    .knowledge-json-details,
+    .knowledge-source-details {
+      display: grid;
+      gap: 10px;
+    }
+
+    .knowledge-json-details > summary,
+    .knowledge-source-details > summary {
+      cursor: pointer;
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 950;
+    }
+
+    .knowledge-json-details[open],
+    .knowledge-source-details[open] {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.12);
     }
 
     .knowledge-proposal-list {
@@ -4423,7 +4674,12 @@
       .complaint-cds-grid,
       .exam-tester-grid,
       .knowledge-base-grid,
-      .knowledge-base-form-grid {
+      .knowledge-base-form-grid,
+      .knowledge-module-meta-grid,
+      .knowledge-section-toolbar,
+      .knowledge-section-controls,
+      .knowledge-item-grid,
+      .knowledge-item-source-grid {
         grid-template-columns: 1fr;
       }
 
@@ -4975,60 +5231,131 @@
               <section class="knowledge-base-section" aria-labelledby="knowledgeBaseDraftTitle">
                 <div class="knowledge-base-section-head">
                   <div>
-                    <p id="knowledgeBaseDraftTitle" class="knowledge-base-title">Draft a suggestion</p>
-                    <p class="knowledge-base-copy">Use reviewed source material only. Keep patient identifiers out.</p>
+                    <p id="knowledgeBaseDraftTitle" class="knowledge-base-title">Local knowledge editor</p>
+                    <p class="knowledge-base-copy">Edit the active module on this device first. Save locally to make the app use your version, then send the same change as a maintainer suggestion when you are ready.</p>
                   </div>
                   <label class="btn btn-secondary" for="knowledgeProposalImportInput">Import proposal</label>
                   <input id="knowledgeProposalImportInput" type="file" accept="application/json,.json" hidden>
                 </div>
-                <div class="knowledge-base-form-grid">
-                  <div>
-                    <label for="knowledgeProposalKind">Suggestion type</label>
-                    <select id="knowledgeProposalKind">
-                      <option value="module_edit">Modify selected module</option>
-                      <option value="new_guideline">Submit guideline/source</option>
-                      <option value="clinical_script">Submit clinical script</option>
-                    </select>
+                <section class="knowledge-readable-editor" aria-labelledby="knowledgeReadableEditorTitle">
+                  <div class="knowledge-base-section-head">
+                    <div>
+                      <p id="knowledgeReadableEditorTitle" class="knowledge-base-title">Edit active local copy</p>
+                      <p class="knowledge-base-copy">Use the section tabs to remove, add, or change recommendation cards without touching JSON.</p>
+                    </div>
+                    <div class="knowledge-base-actions is-primary">
+                      <button id="loadSelectedKnowledgeModuleButton" class="btn btn-secondary" type="button">Load selected module</button>
+                      <button id="saveKnowledgeLocalOverrideButton" class="btn btn-primary" type="button">Save locally</button>
+                      <button id="suggestKnowledgeLocalOverrideButton" class="btn btn-secondary" type="button">Suggest to maintainer</button>
+                      <button id="resetKnowledgeLocalOverrideButton" class="btn btn-quiet" type="button">Reset local changes</button>
+                    </div>
                   </div>
-                  <div>
-                    <label for="knowledgeSubmitterInput">Submitter</label>
-                    <input id="knowledgeSubmitterInput" type="text" spellcheck="false" placeholder="Name, role, or team">
+                  <p id="knowledgeLocalModeSummary" class="knowledge-local-summary" role="status" aria-live="polite"></p>
+                  <div class="knowledge-section-toolbar">
+                    <div class="knowledge-section-controls">
+                      <select id="knowledgeSectionSelect" class="knowledge-section-select" aria-label="Knowledge module section"></select>
+                      <input id="knowledgeItemSearchInput" class="knowledge-section-search" type="search" spellcheck="false" placeholder="Find item text">
+                      <button id="addKnowledgeSectionItemButton" class="btn btn-secondary" type="button">Add item</button>
+                    </div>
+                    <div id="knowledgeSectionTabs" class="knowledge-section-tabs" role="tablist" aria-label="Knowledge module sections"></div>
                   </div>
-                  <div>
-                    <label for="knowledgeConditionInput">Condition or topic</label>
-                    <input id="knowledgeConditionInput" type="text" spellcheck="false" placeholder="DKA, asthma exacerbation, cirrhosis ascites">
+                  <div id="knowledgeSectionEditor" class="knowledge-section-editor"></div>
+                  <details class="knowledge-source-details">
+                    <summary>Module settings</summary>
+                    <div class="knowledge-module-meta-grid">
+                      <div>
+                        <label for="knowledgeModuleIdInput">Module ID</label>
+                        <input id="knowledgeModuleIdInput" type="text" spellcheck="false" placeholder="short_snake_case_v1">
+                      </div>
+                      <div>
+                        <label for="knowledgeModuleLabelInput">Module label</label>
+                        <input id="knowledgeModuleLabelInput" type="text" spellcheck="false" placeholder="Human-readable label">
+                      </div>
+                      <div>
+                        <label for="knowledgeModuleGroupInput">Clinical group</label>
+                        <input id="knowledgeModuleGroupInput" type="text" spellcheck="false" placeholder="endocrine_metabolic">
+                      </div>
+                      <div>
+                        <label for="knowledgeModuleVersionInput">Version</label>
+                        <input id="knowledgeModuleVersionInput" type="text" spellcheck="false" placeholder="0.1.0">
+                      </div>
+                      <div>
+                        <label for="knowledgeModuleStatusInput">Status</label>
+                        <select id="knowledgeModuleStatusInput">
+                          <option value="draft">draft</option>
+                          <option value="mvp">mvp</option>
+                          <option value="reviewed">reviewed</option>
+                          <option value="retired">retired</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label for="knowledgeModulePopulationInput">Population / setting</label>
+                        <input id="knowledgeModulePopulationInput" type="text" spellcheck="false" placeholder="adult | clinician support">
+                      </div>
+                    </div>
+                    <label for="knowledgeModuleTriggersInput">Trigger terms</label>
+                    <textarea id="knowledgeModuleTriggersInput" class="knowledge-trigger-input" spellcheck="false" placeholder="One trigger per line, or comma-separated."></textarea>
+                  </details>
+                </section>
+
+                <details class="knowledge-json-details">
+                  <summary>Advanced JSON</summary>
+                  <div class="knowledge-base-actions">
+                    <button id="loadKnowledgeJsonToFormButton" class="btn btn-secondary" type="button">Load JSON into fields</button>
+                    <button id="applyKnowledgeFormToJsonButton" class="btn btn-secondary" type="button">Apply fields to JSON</button>
                   </div>
-                  <div>
-                    <label for="knowledgeSourceTypeSelect">Source type</label>
-                    <select id="knowledgeSourceTypeSelect">
-                      <option>Guideline</option>
-                      <option>Institutional pathway</option>
-                      <option>Clinical script</option>
-                      <option>Review article</option>
-                      <option>Other</option>
-                    </select>
+                  <label for="knowledgeModuleEditor">Structured module JSON</label>
+                  <textarea id="knowledgeModuleEditor" class="knowledge-base-editor" spellcheck="false" placeholder="Paste or edit complaint_cds_module JSON here."></textarea>
+                </details>
+
+                <details class="knowledge-source-details">
+                  <summary>Submit source text or clinical script</summary>
+                  <div class="knowledge-base-form-grid">
+                    <div>
+                      <label for="knowledgeProposalKind">Suggestion type</label>
+                      <select id="knowledgeProposalKind">
+                        <option value="module_edit">Modify selected module</option>
+                        <option value="new_guideline">Submit guideline/source</option>
+                        <option value="clinical_script">Submit clinical script</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="knowledgeSubmitterInput">Submitter</label>
+                      <input id="knowledgeSubmitterInput" type="text" spellcheck="false" placeholder="Name, role, or team">
+                    </div>
+                    <div>
+                      <label for="knowledgeConditionInput">Condition or topic</label>
+                      <input id="knowledgeConditionInput" type="text" spellcheck="false" placeholder="DKA, asthma exacerbation, cirrhosis ascites">
+                    </div>
+                    <div>
+                      <label for="knowledgeSourceTypeSelect">Source type</label>
+                      <select id="knowledgeSourceTypeSelect">
+                        <option>Guideline</option>
+                        <option>Institutional pathway</option>
+                        <option>Clinical script</option>
+                        <option>Review article</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="knowledgeSourceTitleInput">Source title</label>
+                      <input id="knowledgeSourceTitleInput" type="text" spellcheck="false" placeholder="Title of guideline or script">
+                    </div>
+                    <div>
+                      <label for="knowledgeSourceUrlInput">URL / DOI / local reference</label>
+                      <input id="knowledgeSourceUrlInput" type="text" spellcheck="false" placeholder="https://, doi:, local policy name">
+                    </div>
                   </div>
-                  <div>
-                    <label for="knowledgeSourceTitleInput">Source title</label>
-                    <input id="knowledgeSourceTitleInput" type="text" spellcheck="false" placeholder="Title of guideline or script">
+                  <label for="knowledgeSourceTextInput">Clinical source text or script</label>
+                  <textarea id="knowledgeSourceTextInput" class="knowledge-base-source-input" spellcheck="false" placeholder="Paste non-patient source material here."></textarea>
+                  <label for="knowledgeReviewerNotesInput">Notes for reviewer</label>
+                  <textarea id="knowledgeReviewerNotesInput" class="knowledge-base-notes-input" spellcheck="false" placeholder="What should change, why, and any local practice caveats."></textarea>
+                  <div class="knowledge-base-actions">
+                    <button id="copyKnowledgeExtractionPromptButton" class="btn btn-secondary" type="button">Copy extraction prompt</button>
+                    <button id="stageKnowledgeProposalButton" class="btn btn-primary" type="button">Stage source suggestion</button>
+                    <button id="exportKnowledgeProposalButton" class="btn btn-secondary" type="button">Export suggestion</button>
                   </div>
-                  <div>
-                    <label for="knowledgeSourceUrlInput">URL / DOI / local reference</label>
-                    <input id="knowledgeSourceUrlInput" type="text" spellcheck="false" placeholder="https://, doi:, local policy name">
-                  </div>
-                </div>
-                <label for="knowledgeSourceTextInput">Clinical source text or script</label>
-                <textarea id="knowledgeSourceTextInput" class="knowledge-base-source-input" spellcheck="false" placeholder="Paste non-patient source material here."></textarea>
-                <label for="knowledgeReviewerNotesInput">Notes for reviewer</label>
-                <textarea id="knowledgeReviewerNotesInput" class="knowledge-base-notes-input" spellcheck="false" placeholder="What should change, why, and any local practice caveats."></textarea>
-                <div class="knowledge-base-actions">
-                  <button id="loadSelectedKnowledgeModuleButton" class="btn btn-secondary" type="button">Load selected JSON</button>
-                  <button id="copyKnowledgeExtractionPromptButton" class="btn btn-secondary" type="button">Copy extraction prompt</button>
-                  <button id="stageKnowledgeProposalButton" class="btn btn-primary" type="button">Stage suggestion</button>
-                  <button id="exportKnowledgeProposalButton" class="btn btn-secondary" type="button">Export suggestion</button>
-                </div>
-                <label for="knowledgeModuleEditor">Structured module JSON</label>
-                <textarea id="knowledgeModuleEditor" class="knowledge-base-editor" spellcheck="false" placeholder="Paste or edit complaint_cds_module JSON here."></textarea>
+                </details>
                 <p id="knowledgeBaseStatus" class="knowledge-base-status" role="status" aria-live="polite"></p>
               </section>
             </div>
@@ -5091,12 +5418,12 @@
               </ol>
             </div>
           </div>
-          <ul class="offline-checklist" aria-label="Offline readiness checklist">
-            <li><input id="offlineHomeScreen" type="checkbox" disabled><label for="offlineHomeScreen">Open from the Home Screen for the fastest bedside launch.</label></li>
-            <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Prepare the de-ID model once while online before relying on it offline.</label></li>
-            <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
-          </ul>
-          <p class="install-copy">First-use offline de-ID is not guaranteed because the model must be fetched once. After the first online load, browser caching usually helps; the downloaded HTML remains the safest offline checklist backup.</p>
+        <ul class="offline-checklist" aria-label="Offline readiness checklist">
+          <li><input id="offlineHomeScreen" type="checkbox" disabled><label for="offlineHomeScreen">Open from the Home Screen for the fastest bedside launch.</label></li>
+          <li><input id="offlineModelReady" type="checkbox" disabled><label for="offlineModelReady">Optional enhanced de-ID model is cached for this browser.</label></li>
+          <li><input id="offlineHtmlReady" type="checkbox" disabled><label for="offlineHtmlReady">Download the HTML backup for checklist use if network access is poor.</label></li>
+        </ul>
+          <p class="install-copy">Structured-only de-ID works without model downloads. Enhanced model de-ID is optional and may need online access the first time it is enabled.</p>
           <p id="installStatus" class="install-status" role="status" aria-live="polite"></p>
         </details>
       </div>
@@ -5350,10 +5677,33 @@
         </div>
         <ul class="privacy-list">
           <li>This app does not upload pasted chart text, census data, or patient workspaces to an app server.</li>
+          <li>No analytics, telemetry, tracking pixels, or ad scripts are included in this app.</li>
           <li>Raw pasted chart text is used only for local de-identification in this browser tab, then cleared after review.</li>
           <li>In census mode, saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
-          <li>Review every prompt before copying to OpenEvidence. This app reduces PHI risk but does not legally certify HIPAA de-identification; institutional policy and approved tool use still govern.</li>
+          <li>Review every prompt before copying to OpenEvidence or another external tool. This app reduces PHI risk but does not legally certify HIPAA de-identification; institutional policy, approved tool use, and any required Business Associate Agreement still govern.</li>
         </ul>
+        <details id="securitySettingsPanel" class="security-settings-panel" open>
+          <summary>Security posture</summary>
+          <ul class="privacy-list">
+            <li>Default de-identification is structured-only, so starting the app and pasting chart text does not download model assets from third-party CDNs.</li>
+            <li>Enhanced model de-ID is an opt-in aid. It may download code/model assets, and the scrubbed preview still requires manual PHI review.</li>
+            <li>External clinical AI sites are separate systems. Do not paste PHI unless your institution has approved the workflow and required agreements are in place.</li>
+          </ul>
+          <div class="privacy-toggle-list">
+            <label class="privacy-toggle" for="structuredOnlyDeidToggle">
+              <input id="structuredOnlyDeidToggle" type="checkbox" checked>
+              <span><strong>Structured-only de-ID</strong> Keep model/CDN downloads disabled for chart text de-identification.</span>
+            </label>
+            <label class="privacy-toggle" for="clipboardAutoClearToggle">
+              <input id="clipboardAutoClearToggle" type="checkbox">
+              <span><strong>Clipboard auto-clear</strong> After prompt copies, try to clear this browser's clipboard after two minutes.</span>
+            </label>
+          </div>
+          <div class="compact-summary-actions">
+            <button id="clearClipboardButton" class="btn btn-secondary" type="button">Clear clipboard</button>
+          </div>
+          <p id="securitySettingsStatus" class="security-status" role="status" aria-live="polite"></p>
+        </details>
       </section>
 
       <section id="phoneQuickStartCard" class="surface phone-quick-card" aria-labelledby="phoneQuickStartTitle">
@@ -6480,7 +6830,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       deidentifyTextStructuredOnly,
       normalizeResidualTemporalPhi,
       scanResidualPhi as scanResidualPhiShared
-    } from "./deid.js";
+    } from "./deid.js?v=20260606-security2";
     import {
       annotateChecklistSections,
       buildCleanupPrompt,
@@ -6598,6 +6948,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       labChronologyBlock: "",
       scrubbedNote: "",
       scrubResult: null,
+      securitySettings: {
+        structuredOnlyDeid: true,
+        clipboardAutoClear: false
+      },
       admission: {},
       promptCollapsed: false,
       checklistFirstMode: false,
@@ -6660,7 +7014,16 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
         proposals: [],
         updatedAt: ""
       },
+      knowledgeLocalState: {
+        schema: "medicalKnowledgeLocalOverridesV1",
+        overrides: [],
+        updatedAt: ""
+      },
       activeKnowledgeProposalId: "",
+      editableKnowledgeEnvelope: null,
+      activeKnowledgeSectionGroup: "redFlags",
+      activeKnowledgeEditSourceModuleId: "",
+      activeKnowledgeDirty: false,
       evidenceReviewState: normalizeEvidenceReviewState(),
       continuity: {
         cases: [],
@@ -6799,6 +7162,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       sourceWorkflowEyebrow: document.getElementById("sourceWorkflowEyebrow"),
       sourceWorkflowTitle: document.getElementById("promptOneTitle"),
       sourceWorkflowCopy: document.getElementById("sourceWorkflowCopy"),
+      structuredOnlyDeidToggle: document.getElementById("structuredOnlyDeidToggle"),
+      clipboardAutoClearToggle: document.getElementById("clipboardAutoClearToggle"),
+      clearClipboardButton: document.getElementById("clearClipboardButton"),
+      securitySettingsStatus: document.getElementById("securitySettingsStatus"),
       checklistPasteCard: document.getElementById("checklistPasteCard"),
       checklistFirstSummary: document.getElementById("checklistFirstSummary"),
       showSourceFromPasteButton: document.getElementById("showSourceFromPasteButton"),
@@ -6914,6 +7281,24 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       copyKnowledgeExtractionPromptButton: document.getElementById("copyKnowledgeExtractionPromptButton"),
       stageKnowledgeProposalButton: document.getElementById("stageKnowledgeProposalButton"),
       exportKnowledgeProposalButton: document.getElementById("exportKnowledgeProposalButton"),
+      saveKnowledgeLocalOverrideButton: document.getElementById("saveKnowledgeLocalOverrideButton"),
+      resetKnowledgeLocalOverrideButton: document.getElementById("resetKnowledgeLocalOverrideButton"),
+      suggestKnowledgeLocalOverrideButton: document.getElementById("suggestKnowledgeLocalOverrideButton"),
+      knowledgeLocalModeSummary: document.getElementById("knowledgeLocalModeSummary"),
+      loadKnowledgeJsonToFormButton: document.getElementById("loadKnowledgeJsonToFormButton"),
+      applyKnowledgeFormToJsonButton: document.getElementById("applyKnowledgeFormToJsonButton"),
+      knowledgeModuleIdInput: document.getElementById("knowledgeModuleIdInput"),
+      knowledgeModuleLabelInput: document.getElementById("knowledgeModuleLabelInput"),
+      knowledgeModuleGroupInput: document.getElementById("knowledgeModuleGroupInput"),
+      knowledgeModuleVersionInput: document.getElementById("knowledgeModuleVersionInput"),
+      knowledgeModuleStatusInput: document.getElementById("knowledgeModuleStatusInput"),
+      knowledgeModulePopulationInput: document.getElementById("knowledgeModulePopulationInput"),
+      knowledgeModuleTriggersInput: document.getElementById("knowledgeModuleTriggersInput"),
+      knowledgeSectionTabs: document.getElementById("knowledgeSectionTabs"),
+      knowledgeSectionSelect: document.getElementById("knowledgeSectionSelect"),
+      knowledgeItemSearchInput: document.getElementById("knowledgeItemSearchInput"),
+      addKnowledgeSectionItemButton: document.getElementById("addKnowledgeSectionItemButton"),
+      knowledgeSectionEditor: document.getElementById("knowledgeSectionEditor"),
       knowledgeModuleEditor: document.getElementById("knowledgeModuleEditor"),
       knowledgeBaseStatus: document.getElementById("knowledgeBaseStatus"),
       knowledgeProposalQueueSummary: document.getElementById("knowledgeProposalQueueSummary"),
@@ -7172,13 +7557,15 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
     const deviceModeKey = "preRoundDeviceModeV1";
+    const securitySettingsStorageKey = "preRoundSecuritySettingsV1";
     const evidenceReviewStorageKey = "preRoundEvidenceReviewV1";
     const knowledgePackReviewStorageKey = "preRoundClinicalKnowledgePackReviewV1";
     const knowledgeBaseReviewStorageKey = "preRoundMedicalKnowledgeProposalsV1";
+    const knowledgeLocalOverrideStorageKey = "preRoundMedicalKnowledgeLocalOverridesV1";
     const knowledgeBaseProposalSchemaVersion = "medicalKnowledgeProposalV1";
     const openEvidenceResultsStorageKey = "preRoundOpenEvidenceTaskResultsV1";
-    const studentExamReferenceUrl = "physical_exam_reference.csv";
-    const studentExamEvidenceOverlayUrl = "physical_exam_evidence_overlay.csv";
+    const studentExamReferenceUrl = "data/physical-exam/physical_exam_reference.csv";
+    const studentExamEvidenceOverlayUrl = "data/physical-exam/physical_exam_evidence_overlay.csv";
     const studentExamReferenceMaxRows = 30;
     const evidenceCandidateMaxRows = 48;
     const contextExportType = "prerounds-context-export";
@@ -9413,6 +9800,86 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       return true;
     }
 
+    function normalizeSecuritySettings(value = {}) {
+      let parsed = value;
+      if (typeof value === "string") {
+        try {
+          parsed = JSON.parse(value);
+        } catch (error) {
+          parsed = {};
+        }
+      }
+      return {
+        structuredOnlyDeid: parsed?.structuredOnlyDeid !== false,
+        clipboardAutoClear: parsed?.clipboardAutoClear === true
+      };
+    }
+
+    function loadSecuritySettingsFromStorage() {
+      state.securitySettings = normalizeSecuritySettings(safeLocalStorageGet(securitySettingsStorageKey) || {});
+      return state.securitySettings;
+    }
+
+    function saveSecuritySettings() {
+      safeLocalStorageSet(securitySettingsStorageKey, JSON.stringify(state.securitySettings));
+    }
+
+    function isStructuredOnlyDeid() {
+      return state.securitySettings.structuredOnlyDeid !== false;
+    }
+
+    function currentDeidMode() {
+      return isStructuredOnlyDeid() ? "structured-only" : "hybrid";
+    }
+
+    function renderSecuritySettings() {
+      elements.structuredOnlyDeidToggle.checked = isStructuredOnlyDeid();
+      elements.clipboardAutoClearToggle.checked = Boolean(state.securitySettings.clipboardAutoClear);
+      elements.offlineModelReady.checked = Boolean(deidWorkerReady && !isStructuredOnlyDeid());
+      if (isStructuredOnlyDeid()) {
+        elements.modelStatus.textContent = "Structured-only de-ID active; model downloads disabled.";
+        elements.securitySettingsStatus.textContent = "Structured-only de-ID is active. Enhanced model downloads are disabled.";
+      } else {
+        elements.securitySettingsStatus.textContent = deidWorkerReady
+          ? "Enhanced model de-ID is enabled and ready in this browser."
+          : "Enhanced model de-ID is enabled. It may download model assets before running.";
+      }
+    }
+
+    function setSecuritySetting(key, value) {
+      state.securitySettings = normalizeSecuritySettings({
+        ...state.securitySettings,
+        [key]: value
+      });
+      saveSecuritySettings();
+      renderSecuritySettings();
+    }
+
+    async function clearClipboardNow(statusElement = elements.securitySettingsStatus) {
+      try {
+        await navigator.clipboard.writeText("");
+        statusElement.textContent = "Clipboard cleared.";
+        showToast("Clipboard cleared.");
+        return true;
+      } catch (error) {
+        statusElement.textContent = "Could not clear the clipboard from this browser.";
+        return false;
+      }
+    }
+
+    function scheduleClipboardClearAfterCopy(statusElement) {
+      if (!state.securitySettings.clipboardAutoClear || !navigator.clipboard?.writeText) {
+        return;
+      }
+      window.setTimeout(() => {
+        navigator.clipboard.writeText("").then(() => {
+          if (statusElement) {
+            statusElement.textContent = `${statusElement.textContent || "Copied."} Clipboard cleared.`;
+          }
+        }).catch(() => {});
+      }, 120000);
+    }
+
     function currentIsoDate() {
       return new Date().toISOString().slice(0, 10);
     }
@@ -10305,6 +10772,510 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       }
     }
 
+    const knowledgeSectionDefinitions = [
+      { key: "differentialBuckets", label: "Differential" },
+      { key: "redFlags", label: "Red flags" },
+      { key: "requiredQuestions", label: "Required history" },
+      { key: "conditionalQuestions", label: "Conditional history" },
+      { key: "requiredExam", label: "Required exam" },
+      { key: "conditionalExam", label: "Conditional exam" },
+      { key: "initialTests", label: "Initial tests" },
+      { key: "dispositionRules", label: "Disposition" }
+    ];
+
+    function cloneKnowledgeValue(value) {
+      return JSON.parse(JSON.stringify(value || {}));
+    }
+
+    function normalizeKnowledgeEnvelopeForEditor(envelope = {}) {
+      const normalized = cloneKnowledgeValue(envelope);
+      normalized.schema_version = normalized.schema_version || "medical_knowledge_database_v1";
+      normalized.artifact_type = normalized.artifact_type || "complaint_cds_module";
+      normalized.complaint_cds_schema_version = normalized.complaint_cds_schema_version || "complaint-cds-artifact-v1";
+      normalized.module = normalized.module || {};
+      const module = normalized.module;
+      module.id = module.id || "new_module_v1";
+      module.schema_version = module.schema_version || "complaint-cds-artifact-v1";
+      module.label = module.label || "New module";
+      module.complaint_group = module.complaint_group || "general";
+      module.version = module.version || "0.1.0";
+      module.status = module.status || "draft";
+      module.population = module.population || { age_group: "adult", setting: "clinician support" };
+      module.triggers = Array.isArray(module.triggers) ? module.triggers : [];
+      knowledgeSectionDefinitions.forEach((section) => {
+        module[section.key] = Array.isArray(module[section.key]) ? module[section.key] : [];
+      });
+      return normalized;
+    }
+
+    function ensureSelectOption(select, value) {
+      if (!value || Array.from(select.options).some((option) => option.value === value)) {
+        return;
+      }
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    }
+
+    function setKnowledgeFieldValue(element, value) {
+      if (element) {
+        element.value = value || "";
+      }
+    }
+
+    function formatKnowledgeOptions(options = []) {
+      if (!Array.isArray(options)) {
+        return "";
+      }
+      return options.map((option) => option?.label || option?.value || String(option || "")).filter(Boolean).join(" / ");
+    }
+
+    function parseKnowledgeOptions(value) {
+      return String(value || "")
+        .split(/\s*(?:\/|\n|;)\s*/)
+        .map((label) => label.trim())
+        .filter(Boolean)
+        .map((label) => ({
+          value: label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "option",
+          label
+        }));
+    }
+
+    function parseKnowledgeTerms(value) {
+      return String(value || "")
+        .split(/\s*(?:,|\n|;)\s*/)
+        .map((term) => term.trim())
+        .filter(Boolean);
+    }
+
+    function formatKnowledgeTerms(terms = []) {
+      return Array.isArray(terms) ? terms.join(", ") : "";
+    }
+
+    function firstKnowledgeSourceReference(module = {}) {
+      for (const { item } of collectKnowledgeModuleItems(module)) {
+        if (item?.source?.source_id) {
+          return cloneKnowledgeValue(item.source);
+        }
+      }
+      const sourceRow = effectiveComplaintSourceRegistry()[0] || { id: "USER_SUBMITTED_SOURCE", version: "draft" };
+      const today = new Date().toISOString().slice(0, 10);
+      return {
+        source_id: sourceRow.id,
+        source_section: "review needed",
+        evidence_strength: "pending reviewer extraction",
+        version_date: sourceRow.version || today.slice(0, 4),
+        last_reviewed: today,
+        clinical_owner: "pending_reviewer",
+        implementation_notes: ""
+      };
+    }
+
+    function defaultKnowledgeItem(groupKey) {
+      const module = state.editableKnowledgeEnvelope?.module || {};
+      const index = (module[groupKey] || []).length + 1;
+      const prefix = {
+        differentialBuckets: "diff",
+        redFlags: "red_flag",
+        requiredQuestions: "question",
+        conditionalQuestions: "conditional_question",
+        requiredExam: "exam",
+        conditionalExam: "conditional_exam",
+        initialTests: "test",
+        dispositionRules: "disposition"
+      }[groupKey] || "item";
+      const item = {
+        id: `${prefix}_${Date.now().toString(36)}_${index}`,
+        label: "",
+        source: firstKnowledgeSourceReference(module)
+      };
+      if (groupKey === "redFlags") {
+        item.action = "";
+        item.when = { termsAny: [] };
+      }
+      if (groupKey === "conditionalQuestions" || groupKey === "conditionalExam" || groupKey === "dispositionRules") {
+        item.when = { termsAny: [] };
+      }
+      if (groupKey === "requiredQuestions" || groupKey === "conditionalQuestions") {
+        item.options = [
+          { value: "unknown", label: "Unknown" },
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" }
+        ];
+      }
+      return item;
+    }
+
+    function readKnowledgeModuleMetaIntoEnvelope() {
+      const envelope = state.editableKnowledgeEnvelope || normalizeKnowledgeEnvelopeForEditor();
+      const module = envelope.module;
+      module.id = elements.knowledgeModuleIdInput.value.trim() || module.id || "new_module_v1";
+      module.label = elements.knowledgeModuleLabelInput.value.trim() || module.label || "New module";
+      module.complaint_group = elements.knowledgeModuleGroupInput.value.trim() || "general";
+      module.version = elements.knowledgeModuleVersionInput.value.trim() || "0.1.0";
+      module.status = elements.knowledgeModuleStatusInput.value.trim() || "draft";
+      const populationParts = elements.knowledgeModulePopulationInput.value.split("|").map((part) => part.trim()).filter(Boolean);
+      module.population = {
+        age_group: populationParts[0] || module.population?.age_group || "adult",
+        setting: populationParts[1] || module.population?.setting || "clinician support"
+      };
+      module.triggers = parseKnowledgeTerms(elements.knowledgeModuleTriggersInput.value);
+      state.editableKnowledgeEnvelope = envelope;
+      return envelope;
+    }
+
+    function loadKnowledgeEnvelopeIntoReadableEditor(envelope, options = {}) {
+      state.editableKnowledgeEnvelope = normalizeKnowledgeEnvelopeForEditor(envelope);
+      const module = state.editableKnowledgeEnvelope.module;
+      state.activeKnowledgeEditSourceModuleId = options.sourceModuleId || module.id || "";
+      state.activeKnowledgeDirty = false;
+      if (!options.keepSearch && elements.knowledgeItemSearchInput) {
+        elements.knowledgeItemSearchInput.value = "";
+      }
+      ensureSelectOption(elements.knowledgeModuleStatusInput, module.status);
+      setKnowledgeFieldValue(elements.knowledgeModuleIdInput, module.id);
+      setKnowledgeFieldValue(elements.knowledgeModuleLabelInput, module.label);
+      setKnowledgeFieldValue(elements.knowledgeModuleGroupInput, module.complaint_group);
+      setKnowledgeFieldValue(elements.knowledgeModuleVersionInput, module.version);
+      setKnowledgeFieldValue(elements.knowledgeModuleStatusInput, module.status);
+      setKnowledgeFieldValue(elements.knowledgeModulePopulationInput, [
+        module.population?.age_group,
+        module.population?.setting
+      ].filter(Boolean).join(" | "));
+      setKnowledgeFieldValue(elements.knowledgeModuleTriggersInput, (module.triggers || []).join("\n"));
+      if (!knowledgeSectionDefinitions.some((section) => section.key === state.activeKnowledgeSectionGroup)) {
+        state.activeKnowledgeSectionGroup = "redFlags";
+      }
+      renderKnowledgeSectionTabs();
+      renderKnowledgeSectionEditor();
+      renderKnowledgeLocalSummary();
+      if (!options.keepJson) {
+        syncKnowledgeReadableEditorToJson({ silent: true });
+      }
+    }
+
+    function loadKnowledgeJsonIntoReadableEditor() {
+      const text = elements.knowledgeModuleEditor.value.trim();
+      if (text) {
+        const validation = validateKnowledgeModuleEnvelope(text, [buildKnowledgeSourceRow()]);
+        if (!validation.envelope) {
+          setKnowledgeBaseStatus(validation.issues.slice(0, 2).join(" "));
+          return;
+        }
+        loadKnowledgeEnvelopeIntoReadableEditor(validation.envelope, { keepJson: true });
+        markKnowledgeLocalDirty(validation.ok
+          ? "JSON loaded into a local draft. Save locally to make it active."
+          : `Loaded with review issues: ${validation.issues.slice(0, 2).join(" ")}`);
+        return;
+      }
+      const module = selectedKnowledgeModule();
+      if (!module) {
+        setKnowledgeBaseStatus("Select a module or paste JSON first.");
+        return;
+      }
+      loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(module));
+      setKnowledgeBaseStatus(`${module.label} loaded into readable fields.`);
+    }
+
+    function syncKnowledgeReadableEditorToJson(options = {}) {
+      if (!state.editableKnowledgeEnvelope) {
+        if (!options.silent) {
+          setKnowledgeBaseStatus("Load a module into the readable editor first.");
+        }
+        return null;
+      }
+      const envelope = readKnowledgeModuleMetaIntoEnvelope();
+      elements.knowledgeModuleEditor.value = JSON.stringify(envelope, null, 2);
+      autoResize(elements.knowledgeModuleEditor);
+      if (!options.silent) {
+        const validation = validateKnowledgeModuleEnvelope(envelope, [buildKnowledgeSourceRow()]);
+        setKnowledgeBaseStatus(validation.ok
+          ? "Readable fields applied to structured JSON."
+          : `Applied with review issues: ${validation.issues.slice(0, 2).join(" ")}`);
+      }
+      return envelope;
+    }
+
+    function renderKnowledgeLocalSummary() {
+      const module = state.editableKnowledgeEnvelope?.module || selectedKnowledgeModule();
+      const override = localKnowledgeOverrideForModule(module?.id || state.activeKnowledgeEditSourceModuleId);
+      if (elements.knowledgeLocalModeSummary) {
+        const mode = state.activeKnowledgeDirty
+          ? "Unsaved local changes"
+          : override
+            ? "Local edit active on this device"
+            : "Using bundled/reviewer-approved knowledge";
+        const details = override
+          ? [
+              override.updatedAt ? `saved ${override.updatedAt.slice(0, 10)}` : "",
+              override.changeSummary?.length ? override.changeSummary.slice(0, 2).join(" | ") : ""
+            ].filter(Boolean).join(" | ")
+          : "Save locally before this version changes the app.";
+        elements.knowledgeLocalModeSummary.innerHTML = "";
+        const modeEl = document.createElement("strong");
+        modeEl.textContent = mode;
+        elements.knowledgeLocalModeSummary.appendChild(modeEl);
+        if (details) {
+          const detailEl = document.createElement("span");
+          detailEl.textContent = details;
+          elements.knowledgeLocalModeSummary.appendChild(detailEl);
+        }
+      }
+      if (elements.saveKnowledgeLocalOverrideButton) {
+        elements.saveKnowledgeLocalOverrideButton.disabled = !module;
+      }
+      if (elements.resetKnowledgeLocalOverrideButton) {
+        elements.resetKnowledgeLocalOverrideButton.disabled = !module || (!override && !state.activeKnowledgeDirty);
+      }
+      if (elements.suggestKnowledgeLocalOverrideButton) {
+        elements.suggestKnowledgeLocalOverrideButton.disabled = !module;
+      }
+    }
+
+    function markKnowledgeLocalDirty(message = "") {
+      state.activeKnowledgeDirty = true;
+      renderKnowledgeLocalSummary();
+      if (message) {
+        setKnowledgeBaseStatus(message);
+      }
+    }
+
+    function knowledgeItemSearchText(item = {}) {
+      return [
+        item.id,
+        item.label,
+        item.action,
+        formatKnowledgeOptions(item.options),
+        formatKnowledgeTerms(item.when?.termsAny),
+        item.source?.source_id,
+        item.source?.source_section,
+        item.source?.evidence_strength,
+        item.source?.clinical_owner
+      ].filter(Boolean).join(" ").toLowerCase();
+    }
+
+    function renderKnowledgeSectionTabs() {
+      elements.knowledgeSectionTabs.innerHTML = "";
+      if (elements.knowledgeSectionSelect) {
+        elements.knowledgeSectionSelect.innerHTML = "";
+      }
+      const module = state.editableKnowledgeEnvelope?.module;
+      knowledgeSectionDefinitions.forEach((section) => {
+        const button = document.createElement("button");
+        button.className = "knowledge-section-tab";
+        button.type = "button";
+        button.role = "tab";
+        button.dataset.knowledgeSectionGroup = section.key;
+        button.setAttribute("aria-selected", state.activeKnowledgeSectionGroup === section.key ? "true" : "false");
+        button.textContent = `${section.label} (${module?.[section.key]?.length || 0})`;
+        elements.knowledgeSectionTabs.appendChild(button);
+        if (elements.knowledgeSectionSelect) {
+          const option = document.createElement("option");
+          option.value = section.key;
+          option.textContent = `${section.label} (${module?.[section.key]?.length || 0})`;
+          elements.knowledgeSectionSelect.appendChild(option);
+        }
+      });
+      if (elements.knowledgeSectionSelect) {
+        elements.knowledgeSectionSelect.value = state.activeKnowledgeSectionGroup;
+      }
+    }
+
+    function knowledgeControl(labelText, control) {
+      const wrap = document.createElement("div");
+      const label = document.createElement("label");
+      label.textContent = labelText;
+      wrap.append(label, control);
+      return wrap;
+    }
+
+    function knowledgeTextInput(value, dataset, placeholder = "") {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.spellcheck = false;
+      input.value = value || "";
+      input.placeholder = placeholder;
+      Object.assign(input.dataset, dataset);
+      return input;
+    }
+
+    function knowledgeTextarea(value, dataset, placeholder = "") {
+      const textarea = document.createElement("textarea");
+      textarea.spellcheck = false;
+      textarea.value = value || "";
+      textarea.placeholder = placeholder;
+      Object.assign(textarea.dataset, dataset);
+      return textarea;
+    }
+
+    function knowledgeSourceSelect(value, dataset) {
+      const select = document.createElement("select");
+      Object.assign(select.dataset, dataset);
+      const sourceIds = new Set([
+        ...effectiveComplaintSourceRegistry().map((sourceRow) => sourceRow.id),
+        value
+      ].filter(Boolean));
+      sourceIds.forEach((sourceId) => {
+        const option = document.createElement("option");
+        option.value = sourceId;
+        option.textContent = sourceId;
+        select.appendChild(option);
+      });
+      select.value = value || select.options[0]?.value || "";
+      return select;
+    }
+
+    function renderKnowledgeSectionEditor() {
+      const module = state.editableKnowledgeEnvelope?.module;
+      elements.knowledgeSectionEditor.innerHTML = "";
+      if (!module) {
+        const empty = document.createElement("p");
+        empty.className = "knowledge-base-copy";
+        empty.textContent = "Load selected JSON or paste module JSON to start editing.";
+        elements.knowledgeSectionEditor.appendChild(empty);
+        return;
+      }
+      const groupKey = state.activeKnowledgeSectionGroup;
+      const items = module[groupKey] || [];
+      const search = elements.knowledgeItemSearchInput?.value.trim().toLowerCase() || "";
+      const visibleItems = items
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => !search || knowledgeItemSearchText(item).includes(search));
+      if (!items.length) {
+        const empty = document.createElement("p");
+        empty.className = "knowledge-base-copy";
+        empty.textContent = "No items in this section yet.";
+        elements.knowledgeSectionEditor.appendChild(empty);
+      } else if (!visibleItems.length) {
+        const empty = document.createElement("p");
+        empty.className = "knowledge-base-copy";
+        empty.textContent = "No items match this filter.";
+        elements.knowledgeSectionEditor.appendChild(empty);
+      }
+      visibleItems.forEach(({ item, index }) => {
+        elements.knowledgeSectionEditor.appendChild(renderKnowledgeItemCard(groupKey, item, index));
+      });
+    }
+
+    function renderKnowledgeItemCard(groupKey, item, index) {
+      const card = document.createElement("article");
+      card.className = "knowledge-item-card";
+      const head = document.createElement("div");
+      head.className = "knowledge-item-head";
+      const title = document.createElement("p");
+      title.className = "knowledge-item-title";
+      title.textContent = item.label || item.id || `Item ${index + 1}`;
+      const actions = document.createElement("div");
+      actions.className = "knowledge-proposal-actions";
+      [
+        ["Duplicate", "duplicate"],
+        ["Remove locally", "remove"]
+      ].forEach(([label, action]) => {
+        const button = document.createElement("button");
+        button.className = action === "remove" ? "btn btn-quiet" : "btn btn-secondary";
+        button.type = "button";
+        button.textContent = label;
+        button.dataset.knowledgeItemAction = action;
+        button.dataset.knowledgeGroup = groupKey;
+        button.dataset.knowledgeIndex = String(index);
+        actions.appendChild(button);
+      });
+      head.append(title, actions);
+      card.appendChild(head);
+
+      const grid = document.createElement("div");
+      grid.className = "knowledge-item-grid";
+      grid.append(
+        knowledgeControl("Stable ID", knowledgeTextInput(item.id, { knowledgeField: "id", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "unique_item_id")),
+        knowledgeControl("Recommendation text", knowledgeTextarea(item.label, { knowledgeField: "label", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "What should the user ask, examine, test, or do?"))
+      );
+      grid.append(
+        knowledgeControl("Action / why it matters", knowledgeTextarea(item.action || "", { knowledgeField: "action", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "Escalation, management implication, or reviewer note")),
+        knowledgeControl("Answer options", knowledgeTextInput(formatKnowledgeOptions(item.options), { knowledgeField: "options", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "Unknown / Yes / No"))
+      );
+      grid.append(
+        knowledgeControl("Active when terms", knowledgeTextarea(formatKnowledgeTerms(item.when?.termsAny), { knowledgeField: "termsAny", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "fever, shock, pregnancy")),
+        knowledgeControl("Source section", knowledgeTextInput(item.source?.source_section || "", { knowledgeField: "source_section", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "Guideline section or heading"))
+      );
+      card.appendChild(grid);
+
+      const sourceGrid = document.createElement("div");
+      sourceGrid.className = "knowledge-item-source-grid";
+      sourceGrid.append(
+        knowledgeControl("Source ID", knowledgeSourceSelect(item.source?.source_id || "", { knowledgeField: "source_id", knowledgeGroup: groupKey, knowledgeIndex: String(index) })),
+        knowledgeControl("Evidence strength", knowledgeTextInput(item.source?.evidence_strength || "", { knowledgeField: "evidence_strength", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "guideline/consensus")),
+        knowledgeControl("Clinical owner", knowledgeTextInput(item.source?.clinical_owner || "", { knowledgeField: "clinical_owner", knowledgeGroup: groupKey, knowledgeIndex: String(index) }, "pending_reviewer"))
+      );
+      card.appendChild(sourceGrid);
+      return card;
+    }
+
+    function updateKnowledgeItemField(groupKey, index, field, value) {
+      const module = state.editableKnowledgeEnvelope?.module;
+      const item = module?.[groupKey]?.[index];
+      if (!item) {
+        return;
+      }
+      if (field === "id" || field === "label" || field === "action") {
+        item[field] = value;
+      } else if (field === "options") {
+        const options = parseKnowledgeOptions(value);
+        if (options.length) {
+          item.options = options;
+        } else {
+          delete item.options;
+        }
+      } else if (field === "termsAny") {
+        const terms = parseKnowledgeTerms(value);
+        if (terms.length) {
+          item.when = { ...(item.when || {}), termsAny: terms };
+        } else if (item.when) {
+          delete item.when.termsAny;
+          if (!Object.keys(item.when).length) {
+            delete item.when;
+          }
+        }
+      } else if (["source_id", "source_section", "evidence_strength", "clinical_owner"].includes(field)) {
+        item.source = item.source || firstKnowledgeSourceReference(module);
+        item.source[field] = value;
+        const today = new Date().toISOString().slice(0, 10);
+        item.source.version_date = item.source.version_date || today.slice(0, 4);
+        item.source.last_reviewed = item.source.last_reviewed || today;
+      }
+      markKnowledgeLocalDirty();
+    }
+
+    function addKnowledgeSectionItem() {
+      const envelope = state.editableKnowledgeEnvelope || normalizeKnowledgeEnvelopeForEditor();
+      state.editableKnowledgeEnvelope = envelope;
+      const groupKey = state.activeKnowledgeSectionGroup;
+      envelope.module[groupKey] = Array.isArray(envelope.module[groupKey]) ? envelope.module[groupKey] : [];
+      envelope.module[groupKey].push(defaultKnowledgeItem(groupKey));
+      renderKnowledgeSectionTabs();
+      renderKnowledgeSectionEditor();
+      markKnowledgeLocalDirty("New local item added. Save locally to make it active in this app.");
+    }
+
+    function handleKnowledgeItemAction(action, groupKey, index) {
+      const items = state.editableKnowledgeEnvelope?.module?.[groupKey];
+      if (!items?.[index]) {
+        return;
+      }
+      if (action === "remove") {
+        items.splice(index, 1);
+      } else if (action === "duplicate") {
+        const duplicate = cloneKnowledgeValue(items[index]);
+        duplicate.id = `${duplicate.id || "item"}_copy_${Date.now().toString(36)}`;
+        items.splice(index + 1, 0, duplicate);
+      }
+      renderKnowledgeSectionTabs();
+      renderKnowledgeSectionEditor();
+      markKnowledgeLocalDirty(action === "remove"
+        ? "Item removed from the local copy. Save locally to make it active in this app."
+        : "Item duplicated in the local copy. Save locally to make it active in this app.");
+    }
+
     function normalizeKnowledgeBaseReviewState(value = {}) {
       let parsed = {};
       try {
@@ -10359,10 +11330,122 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         .filter((proposal) => proposal.status === "approved" && proposal.moduleEnvelope?.module?.id);
     }
 
+    function normalizeKnowledgeLocalOverride(override = {}) {
+      const createdAt = override.createdAt || new Date().toISOString();
+      const envelope = override.moduleEnvelope
+        ? normalizeKnowledgeEnvelopeForEditor(override.moduleEnvelope)
+        : null;
+      const module = envelope?.module || {};
+      return {
+        schema_version: "medicalKnowledgeLocalOverrideV1",
+        id: override.id || `local_${module.id || Date.now().toString(36)}`,
+        moduleId: override.moduleId || module.id || "",
+        moduleLabel: override.moduleLabel || module.label || "Untitled module",
+        baseVersion: override.baseVersion || "",
+        status: "local",
+        changeSummary: Array.isArray(override.changeSummary) ? override.changeSummary : [],
+        sourceRow: override.sourceRow || null,
+        sourceText: override.sourceText || "",
+        notes: override.notes || "",
+        moduleEnvelope: envelope,
+        suggestedAt: override.suggestedAt || "",
+        createdAt,
+        updatedAt: override.updatedAt || createdAt
+      };
+    }
+
+    function normalizeKnowledgeLocalState(value = {}) {
+      let parsed = {};
+      try {
+        parsed = typeof value === "string" && value.trim() ? JSON.parse(value) : (value || {});
+      } catch (error) {
+        parsed = {};
+      }
+      const overrides = Array.isArray(parsed.overrides) ? parsed.overrides : [];
+      return {
+        schema: "medicalKnowledgeLocalOverridesV1",
+        overrides: overrides
+          .map((override) => normalizeKnowledgeLocalOverride(override))
+          .filter((override) => override.moduleId && override.moduleEnvelope?.module?.id),
+        updatedAt: parsed.updatedAt || ""
+      };
+    }
+
+    function loadKnowledgeLocalStateFromStorage() {
+      state.knowledgeLocalState = normalizeKnowledgeLocalState(safeLocalStorageGet(knowledgeLocalOverrideStorageKey) || {});
+      return state.knowledgeLocalState;
+    }
+
+    function saveKnowledgeLocalState() {
+      state.knowledgeLocalState.updatedAt = new Date().toISOString();
+      const serialized = JSON.stringify(state.knowledgeLocalState);
+      safeLocalStorageSet(knowledgeLocalOverrideStorageKey, serialized);
+      return serialized;
+    }
+
+    function localKnowledgeOverrides() {
+      return (state.knowledgeLocalState.overrides || [])
+        .filter((override) => override.moduleEnvelope?.module?.id);
+    }
+
+    function localKnowledgeOverrideForModule(moduleId) {
+      if (!moduleId) {
+        return null;
+      }
+      return localKnowledgeOverrides()
+        .find((override) => override.moduleId === moduleId || override.moduleEnvelope?.module?.id === moduleId) || null;
+    }
+
+    function baseKnowledgeModuleFor(moduleId) {
+      if (!moduleId) {
+        return null;
+      }
+      return complaintModules.find((module) => module.id === moduleId)
+        || approvedKnowledgeProposals()
+          .map((proposal) => proposal.moduleEnvelope?.module)
+          .find((module) => module?.id === moduleId)
+        || null;
+    }
+
+    function upsertKnowledgeLocalOverride(override, options = {}) {
+      const normalized = normalizeKnowledgeLocalOverride(override);
+      if (!normalized.moduleId || !normalized.moduleEnvelope?.module?.id) {
+        return null;
+      }
+      const replacedIds = new Set([
+        normalized.moduleId,
+        normalized.moduleEnvelope.module.id,
+        options.previousModuleId
+      ].filter(Boolean));
+      state.knowledgeLocalState.overrides = [
+        normalized,
+        ...localKnowledgeOverrides().filter((row) => !replacedIds.has(row.moduleId) && !replacedIds.has(row.moduleEnvelope?.module?.id))
+      ];
+      saveKnowledgeLocalState();
+      return normalized;
+    }
+
+    function removeKnowledgeLocalOverride(moduleId) {
+      if (!moduleId) {
+        return false;
+      }
+      const before = localKnowledgeOverrides().length;
+      state.knowledgeLocalState.overrides = localKnowledgeOverrides()
+        .filter((override) => override.moduleId !== moduleId && override.moduleEnvelope?.module?.id !== moduleId);
+      if (state.knowledgeLocalState.overrides.length !== before) {
+        saveKnowledgeLocalState();
+        return true;
+      }
+      return false;
+    }
+
     function effectiveComplaintModules() {
       const byId = new Map(complaintModules.map((module) => [module.id, module]));
       approvedKnowledgeProposals().forEach((proposal) => {
         byId.set(proposal.moduleEnvelope.module.id, proposal.moduleEnvelope.module);
+      });
+      localKnowledgeOverrides().forEach((override) => {
+        byId.set(override.moduleEnvelope.module.id, override.moduleEnvelope.module);
       });
       return Array.from(byId.values());
     }
@@ -10374,6 +11457,16 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
           byId.set(proposal.sourceRow.id, proposal.sourceRow);
         }
         (proposal.moduleEnvelope?.source_registry || []).forEach((sourceRow) => {
+          if (sourceRow?.id) {
+            byId.set(sourceRow.id, sourceRow);
+          }
+        });
+      });
+      localKnowledgeOverrides().forEach((override) => {
+        if (override.sourceRow?.id) {
+          byId.set(override.sourceRow.id, override.sourceRow);
+        }
+        (override.moduleEnvelope?.source_registry || []).forEach((sourceRow) => {
           if (sourceRow?.id) {
             byId.set(sourceRow.id, sourceRow);
           }
@@ -10549,6 +11642,9 @@ ${sourceText || "[Paste source text here]"}`;
     }
 
     function createKnowledgeProposal() {
+      if (state.editableKnowledgeEnvelope) {
+        syncKnowledgeReadableEditorToJson({ silent: true });
+      }
       const now = new Date().toISOString();
       const sourceRow = buildKnowledgeSourceRow();
       const moduleValidation = validateKnowledgeModuleEnvelope(elements.knowledgeModuleEditor.value, [sourceRow]);
@@ -10583,6 +11679,208 @@ ${sourceText || "[Paste source text here]"}`;
 
     function setKnowledgeBaseStatus(message) {
       elements.knowledgeBaseStatus.textContent = message || "";
+    }
+
+    function compactKnowledgeItemForCompare(item = {}) {
+      return {
+        id: item.id || "",
+        label: item.label || "",
+        action: item.action || "",
+        options: Array.isArray(item.options) ? item.options : [],
+        when: item.when || {},
+        source: item.source || {}
+      };
+    }
+
+    function describeKnowledgeItem(item = {}) {
+      return item.label || item.id || "untitled item";
+    }
+
+    function knowledgeItemMap(items = []) {
+      const map = new Map();
+      items.forEach((item, index) => {
+        map.set(item.id || `item_${index}`, item);
+      });
+      return map;
+    }
+
+    function buildKnowledgeChangeSummary(baseModule, editedModule) {
+      const summary = [];
+      if (!editedModule?.id) {
+        return ["No edited module was available."];
+      }
+      if (!baseModule) {
+        summary.push(`Added local module: ${editedModule.label || editedModule.id}.`);
+      } else {
+        if (baseModule.label !== editedModule.label) {
+          summary.push(`Renamed module: ${baseModule.label || baseModule.id} -> ${editedModule.label || editedModule.id}.`);
+        }
+        if (baseModule.version !== editedModule.version) {
+          summary.push(`Version changed: ${baseModule.version || "none"} -> ${editedModule.version || "none"}.`);
+        }
+        const baseTriggers = (baseModule.triggers || []).join("|");
+        const editedTriggers = (editedModule.triggers || []).join("|");
+        if (baseTriggers !== editedTriggers) {
+          summary.push(`Trigger terms changed (${(baseModule.triggers || []).length} -> ${(editedModule.triggers || []).length}).`);
+        }
+      }
+      knowledgeSectionDefinitions.forEach((section) => {
+        const baseItems = baseModule?.[section.key] || [];
+        const editedItems = editedModule?.[section.key] || [];
+        const baseMap = knowledgeItemMap(baseItems);
+        const editedMap = knowledgeItemMap(editedItems);
+        if (baseItems.length !== editedItems.length) {
+          summary.push(`${section.label}: ${baseItems.length} -> ${editedItems.length} item${editedItems.length === 1 ? "" : "s"}.`);
+        }
+        baseMap.forEach((item, key) => {
+          if (!editedMap.has(key)) {
+            summary.push(`Removed from ${section.label}: ${describeKnowledgeItem(item)}.`);
+          }
+        });
+        editedMap.forEach((item, key) => {
+          const baseItem = baseMap.get(key);
+          if (!baseItem) {
+            summary.push(`Added to ${section.label}: ${describeKnowledgeItem(item)}.`);
+          } else if (JSON.stringify(compactKnowledgeItemForCompare(baseItem)) !== JSON.stringify(compactKnowledgeItemForCompare(item))) {
+            summary.push(`Edited in ${section.label}: ${describeKnowledgeItem(item)}.`);
+          }
+        });
+      });
+      return summary.length ? summary.slice(0, 30) : ["No item-level changes detected."];
+    }
+
+    function refreshKnowledgeDependentViews() {
+      renderClinicalIntentSelection();
+      if (state.complaintCdsResult) {
+        try {
+          state.complaintCdsResult = evaluateComplaintCds(complaintCdsContextText(), state.complaintCdsAnswers, {
+            modules: effectiveComplaintModules(),
+            sources: effectiveComplaintSourceRegistry()
+          });
+          renderComplaintCdsResult();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      if (state.examTesterRecommendation || state.examTesterCandidates?.length) {
+        renderExamTesterResults();
+      }
+    }
+
+    function saveCurrentKnowledgeOverride(options = {}) {
+      const envelope = syncKnowledgeReadableEditorToJson({ silent: true }) || state.editableKnowledgeEnvelope;
+      const validation = validateKnowledgeModuleEnvelope(envelope, []);
+      if (!validation.envelope?.module?.id) {
+        setKnowledgeBaseStatus("Save failed: this local copy needs a module ID.");
+        return null;
+      }
+      if (!validation.ok) {
+        setKnowledgeBaseStatus(`Save failed: ${validation.issues.slice(0, 2).join(" ")}`);
+        return null;
+      }
+      const now = new Date().toISOString();
+      const module = validation.envelope.module;
+      const previousModuleId = state.activeKnowledgeEditSourceModuleId || module.id;
+      const baseModule = baseKnowledgeModuleFor(previousModuleId) || baseKnowledgeModuleFor(module.id);
+      const sourceRow = elements.knowledgeSourceTitleInput.value.trim() || elements.knowledgeSourceUrlInput.value.trim()
+        ? buildKnowledgeSourceRow()
+        : null;
+      const override = upsertKnowledgeLocalOverride({
+        id: localKnowledgeOverrideForModule(previousModuleId)?.id || localKnowledgeOverrideForModule(module.id)?.id || `local_${module.id}_${Date.now().toString(36)}`,
+        moduleId: module.id,
+        moduleLabel: module.label,
+        baseVersion: baseModule?.version || "",
+        changeSummary: buildKnowledgeChangeSummary(baseModule, module),
+        sourceRow,
+        sourceText: elements.knowledgeSourceTextInput.value.trim(),
+        notes: elements.knowledgeReviewerNotesInput.value.trim(),
+        moduleEnvelope: validation.envelope,
+        createdAt: localKnowledgeOverrideForModule(previousModuleId)?.createdAt || now,
+        updatedAt: now
+      }, { previousModuleId });
+      if (!override) {
+        setKnowledgeBaseStatus("Save failed: could not store the local override.");
+        return null;
+      }
+      state.editableKnowledgeEnvelope = normalizeKnowledgeEnvelopeForEditor(validation.envelope);
+      state.activeKnowledgeEditSourceModuleId = module.id;
+      state.activeKnowledgeDirty = false;
+      renderKnowledgeBaseWorkbench();
+      elements.knowledgeModuleSelect.value = module.id;
+      renderKnowledgeModuleBrowser();
+      renderKnowledgeLocalSummary();
+      refreshKnowledgeDependentViews();
+      if (!options.silent) {
+        setKnowledgeBaseStatus(`${module.label} saved locally. This device now uses your edited version.`);
+        showToast("Local knowledge saved.");
+      }
+      return override;
+    }
+
+    function resetCurrentKnowledgeOverride() {
+      const currentId = state.activeKnowledgeEditSourceModuleId || state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeModule()?.id;
+      if (!currentId) {
+        setKnowledgeBaseStatus("No module selected.");
+        return;
+      }
+      const removed = removeKnowledgeLocalOverride(currentId);
+      state.activeKnowledgeDirty = false;
+      renderKnowledgeBaseWorkbench();
+      const baseModule = selectedKnowledgeModule();
+      if (baseModule) {
+        elements.knowledgeModuleSelect.value = baseModule.id;
+        loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(baseModule), { keepJson: true });
+      }
+      refreshKnowledgeDependentViews();
+      setKnowledgeBaseStatus(removed
+        ? "Local changes reset. This device is back to the bundled/reviewer-approved version."
+        : "No saved local changes existed for this module.");
+    }
+
+    function createKnowledgeProposalFromLocalOverride(override) {
+      const module = override?.moduleEnvelope?.module;
+      const sourceRow = override.sourceRow || buildKnowledgeSourceRow();
+      const validation = validateKnowledgeModuleEnvelope(override.moduleEnvelope, [sourceRow].filter(Boolean));
+      const notes = [
+        elements.knowledgeReviewerNotesInput.value.trim(),
+        "Local change summary:",
+        ...(override.changeSummary || [])
+      ].filter(Boolean).join("\n");
+      return normalizeKnowledgeProposal({
+        id: `kbp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+        kind: "module_edit",
+        status: "pending",
+        title: `Local edit: ${module?.label || override.moduleLabel || "Knowledge module"}`,
+        conditionLabel: module?.label || override.moduleLabel || "",
+        submitter: elements.knowledgeSubmitterInput.value.trim(),
+        sourceRow,
+        sourceText: override.sourceText || elements.knowledgeSourceTextInput.value.trim(),
+        notes,
+        extractionPrompt: buildGuidelineExtractionPrompt(),
+        moduleEnvelope: validation.envelope,
+        validationIssues: validation.issues,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+    }
+
+    function suggestCurrentKnowledgeOverride() {
+      let override = null;
+      if (state.activeKnowledgeDirty) {
+        override = saveCurrentKnowledgeOverride({ silent: true });
+      } else {
+        const moduleId = state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeModule()?.id;
+        override = localKnowledgeOverrideForModule(moduleId) || saveCurrentKnowledgeOverride({ silent: true });
+      }
+      if (!override) {
+        return;
+      }
+      override.suggestedAt = new Date().toISOString();
+      upsertKnowledgeLocalOverride(override);
+      const proposal = createKnowledgeProposalFromLocalOverride(override);
+      upsertKnowledgeProposal(proposal);
+      exportKnowledgeProposal(proposal);
+      setKnowledgeBaseStatus("Suggestion exported and staged locally. Send the downloaded JSON to the maintainer for approval.");
     }
 
     function upsertKnowledgeProposal(proposal) {
@@ -10646,6 +11944,9 @@ ${sourceText || "[Paste source text here]"}`;
       elements.knowledgeSourceTextInput.value = proposal.sourceText || "";
       elements.knowledgeReviewerNotesInput.value = proposal.notes || "";
       elements.knowledgeModuleEditor.value = proposal.moduleEnvelope ? JSON.stringify(proposal.moduleEnvelope, null, 2) : "";
+      if (proposal.moduleEnvelope) {
+        loadKnowledgeEnvelopeIntoReadableEditor(proposal.moduleEnvelope, { keepJson: true });
+      }
       autoResize(elements.knowledgeSourceTextInput);
       autoResize(elements.knowledgeReviewerNotesInput);
       autoResize(elements.knowledgeModuleEditor);
@@ -10694,7 +11995,7 @@ ${sourceText || "[Paste source text here]"}`;
       }
     }
 
-    function loadSelectedKnowledgeModuleIntoEditor() {
+    function loadSelectedKnowledgeModuleIntoEditor(options = {}) {
       const module = selectedKnowledgeModule();
       if (!module) {
         setKnowledgeBaseStatus("No module is selected.");
@@ -10703,8 +12004,11 @@ ${sourceText || "[Paste source text here]"}`;
       elements.knowledgeProposalKind.value = "module_edit";
       elements.knowledgeConditionInput.value = module.label || "";
       elements.knowledgeModuleEditor.value = JSON.stringify(knowledgeModuleEnvelope(module), null, 2);
+      loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(module), { keepJson: true, sourceModuleId: module.id });
       autoResize(elements.knowledgeModuleEditor);
-      setKnowledgeBaseStatus(`${module.label} JSON loaded for editing.`);
+      if (!options.silent) {
+        setKnowledgeBaseStatus(`${module.label} loaded for local editing.`);
+      }
     }
 
     function renderKnowledgeModuleBrowser() {
@@ -10714,18 +12018,22 @@ ${sourceText || "[Paste source text here]"}`;
       modules.forEach((module) => {
         const option = document.createElement("option");
         option.value = module.id;
-        option.textContent = `${module.label} v${module.version}${complaintModules.some((base) => base.id === module.id) ? "" : " (local)"}`;
+        const hasBase = complaintModules.some((base) => base.id === module.id);
+        const hasLocalOverride = Boolean(localKnowledgeOverrideForModule(module.id));
+        option.textContent = `${module.label} v${module.version}${hasLocalOverride ? " (local edit)" : hasBase ? "" : " (local)"}`;
         elements.knowledgeModuleSelect.appendChild(option);
       });
       if (previous && modules.some((module) => module.id === previous)) {
         elements.knowledgeModuleSelect.value = previous;
       }
       const module = selectedKnowledgeModule();
-      elements.knowledgeBaseManifestSummary.textContent = `${medicalKnowledgeDbManifest.title} ${medicalKnowledgeDbManifest.version}: ${complaintModules.length} bundled modules, ${approvedKnowledgeProposals().length} local approved override${approvedKnowledgeProposals().length === 1 ? "" : "s"}.`;
+      const localCount = localKnowledgeOverrides().length;
+      elements.knowledgeBaseManifestSummary.textContent = `${medicalKnowledgeDbManifest.title} ${medicalKnowledgeDbManifest.version}: ${complaintModules.length} bundled modules, ${localCount} local edit${localCount === 1 ? "" : "s"} on this device, ${approvedKnowledgeProposals().length} reviewer-approved override${approvedKnowledgeProposals().length === 1 ? "" : "s"}.`;
       elements.knowledgeModuleSummary.innerHTML = "";
       elements.knowledgeModuleSummary.hidden = !module;
       if (module) {
         [
+          localKnowledgeOverrideForModule(module.id) ? "local edit active" : "",
           module.status,
           `${module.triggers?.length || 0} triggers`,
           `${collectKnowledgeModuleItems(module).length} sourced items`,
@@ -10738,6 +12046,7 @@ ${sourceText || "[Paste source text here]"}`;
       } else {
         elements.knowledgeModulePreview.textContent = "No modules installed.";
       }
+      renderKnowledgeLocalSummary();
     }
 
     function renderKnowledgeProposalList() {
@@ -12761,6 +14070,7 @@ ${sourceText || "[Paste source text here]"}`;
       }
       statusElement.textContent = successMessage;
       showToast(successMessage, toastOptions);
+      scheduleClipboardClearAfterCopy(statusElement);
     }
 
     function hidePhiSafetyPanel() {
@@ -13828,7 +15138,7 @@ Now create the initial rounds report for this case. Output the report only and n
 
       if (type === "status") {
         state.modelReady = Boolean(update?.ready);
-        elements.offlineModelReady.checked = Boolean(update?.ready);
+        elements.offlineModelReady.checked = Boolean(update?.ready && !isStructuredOnlyDeid());
         if (update?.message) {
           elements.modelStatus.textContent = update.message;
         }
@@ -13890,6 +15200,12 @@ Now create the initial rounds report for this case. Output the report only and n
     }
 
     async function loadDeidentifierPipeline() {
+      if (isStructuredOnlyDeid()) {
+        state.modelReady = false;
+        elements.offlineModelReady.checked = false;
+        elements.modelStatus.textContent = "Structured-only de-ID active; model downloads disabled.";
+        return false;
+      }
       if (deidWorkerReady || deidWorkerLoading) {
         return true;
       }
@@ -13898,7 +15214,7 @@ Now create the initial rounds report for this case. Output the report only and n
         await sendDeidWorkerRequest("prepare");
         deidWorkerReady = true;
         state.modelReady = true;
-        elements.offlineModelReady.checked = true;
+        elements.offlineModelReady.checked = !isStructuredOnlyDeid();
         return true;
       } finally {
         deidWorkerLoading = false;
@@ -13906,6 +15222,14 @@ Now create the initial rounds report for this case. Output the report only and n
     }
 
     function prepareDeidentifierModel() {
+      if (isStructuredOnlyDeid()) {
+        state.modelReady = false;
+        elements.offlineModelReady.checked = false;
+        if (!elements.modelStatus.textContent) {
+          elements.modelStatus.textContent = "Structured-only de-ID active; model downloads disabled.";
+        }
+        return;
+      }
       if (deidWorkerLoading || deidWorkerReady) {
         return;
       }
@@ -13961,8 +15285,20 @@ Now create the initial rounds report for this case. Output the report only and n
     }
 
     async function deidentifyText(rawText) {
+      const mode = currentDeidMode();
+      if (mode === "structured-only") {
+        showDeidProgress("Running structured-only de-identification...", 0.08, "Model/CDN downloads are disabled. Review the preview carefully before copying.");
+        await waitForPaint();
+        const result = deidentifyTextStructuredOnly(rawText);
+        updateDeidProgress({
+          message: "Structured redaction complete.",
+          percent: 1,
+          detail: "Structured-only de-ID reduces PHI exposure but does not legally certify HIPAA de-identification."
+        });
+        return result;
+      }
       try {
-        const result = await sendDeidWorkerRequest("deidentify", { text: rawText }, updateDeidProgress);
+        const result = await sendDeidWorkerRequest("deidentify", { text: rawText, mode }, updateDeidProgress);
         updateDeidProgress({
           message: "De-identified preview ready.",
           percent: 1,
@@ -14031,26 +15367,20 @@ Now create the initial rounds report for this case. Output the report only and n
         return;
       }
       const groups = new Map();
-      const raw = String(rawText || "");
 
       (result.entities || []).forEach((entity) => {
-        const start = Number(entity.start);
-        const end = Number(entity.end);
-        const span = Number.isFinite(start) && Number.isFinite(end) && end > start
-          ? raw.slice(start, end).replace(/\s+/g, " ").trim()
-          : "";
         const placeholder = entity.placeholder || entity.label || "Identifier";
         const source = entity.source || "detected";
         appendReviewGroup(groups, reviewGroupForEntity(entity), {
           title: placeholder.replace(/^\[|\]$/g, ""),
-          detail: span ? `${span} (${source})` : source
+          detail: `${placeholder} redacted (${source})`
         });
       });
 
       (result.residualWarnings || []).forEach((warning) => {
         appendReviewGroup(groups, reviewGroupForWarning(warning), {
           title: String(warning.type || "Review").toUpperCase(),
-          detail: warning.snippet || warning.reason || "Review this phrase"
+          detail: warning.reason || "Review possible remaining identifier in the preview"
         });
       });
 
@@ -14655,6 +15985,7 @@ Now create the initial rounds report for this case. Output the report only and n
           })
           .catch(() => {
             state.evidenceCatalog = null;
+            state.evidenceCatalogLoadPromise = null;
             return null;
           });
       }
@@ -14933,7 +16264,7 @@ Now create the initial rounds report for this case. Output the report only and n
       const selected = selectedClinicalIntents();
       const selectedText = selected.map((intentRow) => intentRow.label).join(" ");
       return complaintCdsContextTextFrom(
-        [selectedText, clinicalIntentModifierText()].filter(Boolean).join(" "),
+        [selectedText, clinicalIntentSearchText(), clinicalIntentModifierText()].filter(Boolean).join(" "),
         elements.complaintCdsSettingSelect.value.trim(),
         elements.complaintCdsPopulationSelect.value.trim()
       );
@@ -15612,6 +16943,8 @@ Now create the initial rounds report for this case. Output the report only and n
       setExamTesterStatus("Loading evidence catalog...");
       const catalog = await loadClinicalEvidenceCatalog();
       if (!catalog?.catalog?.length) {
+        state.evidenceCatalog = null;
+        state.evidenceCatalogLoadPromise = null;
         throw new Error("Evidence catalog could not be loaded.");
       }
       const selectedIntents = options.selectedIntents || selectedClinicalIntents();
@@ -15705,12 +17038,14 @@ Now create the initial rounds report for this case. Output the report only and n
 
       const complaintContext = complaintCdsContextText();
       let complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers, {
+        module: knowledgeModule || undefined,
         modules: effectiveComplaintModules(),
         sources: effectiveComplaintSourceRegistry()
       });
       if (complaintResult.matched && state.complaintCdsModuleId && state.complaintCdsModuleId !== complaintResult.module.id) {
         state.complaintCdsAnswers = {};
         complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers, {
+          module: knowledgeModule || undefined,
           modules: effectiveComplaintModules(),
           sources: effectiveComplaintSourceRegistry()
         });
@@ -15723,7 +17058,7 @@ Now create the initial rounds report for this case. Output the report only and n
         selectedIntents.length
           ? buildClinicalIntentRetrievalContext(
             selectedIntents,
-            clinicalIntentModifierText(),
+            [clinicalIntentSearchText(), clinicalIntentModifierText()].filter(Boolean).join("; "),
             elements.examTesterServiceSelect.value.trim(),
             elements.complaintCdsPopulationSelect.value.trim()
           )
@@ -18389,6 +19724,24 @@ heparin 5000 units held by provider`;
       }
     });
 
+    elements.structuredOnlyDeidToggle.addEventListener("change", () => {
+      setSecuritySetting("structuredOnlyDeid", elements.structuredOnlyDeidToggle.checked);
+      if (!isStructuredOnlyDeid()) {
+        prepareDeidentifierModel();
+      }
+    });
+
+    elements.clipboardAutoClearToggle.addEventListener("change", () => {
+      setSecuritySetting("clipboardAutoClear", elements.clipboardAutoClearToggle.checked);
+      elements.securitySettingsStatus.textContent = elements.clipboardAutoClearToggle.checked
+        ? "Clipboard auto-clear is enabled for future prompt copies."
+        : "Clipboard auto-clear is off.";
+    });
+
+    elements.clearClipboardButton.addEventListener("click", () => {
+      clearClipboardNow(elements.securitySettingsStatus);
+    });
+
     elements.downloadButton.addEventListener("click", () => {
       const blob = new Blob([initialHtml], { type: "text/html;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -18452,9 +19805,108 @@ heparin 5000 units held by provider`;
 
     elements.knowledgeModuleSelect.addEventListener("change", () => {
       renderKnowledgeModuleBrowser();
+      loadSelectedKnowledgeModuleIntoEditor({ silent: true });
     });
 
     elements.loadSelectedKnowledgeModuleButton.addEventListener("click", loadSelectedKnowledgeModuleIntoEditor);
+
+    elements.saveKnowledgeLocalOverrideButton.addEventListener("click", () => {
+      saveCurrentKnowledgeOverride();
+    });
+
+    elements.resetKnowledgeLocalOverrideButton.addEventListener("click", () => {
+      resetCurrentKnowledgeOverride();
+    });
+
+    elements.suggestKnowledgeLocalOverrideButton.addEventListener("click", () => {
+      suggestCurrentKnowledgeOverride();
+    });
+
+    elements.loadKnowledgeJsonToFormButton.addEventListener("click", loadKnowledgeJsonIntoReadableEditor);
+
+    elements.applyKnowledgeFormToJsonButton.addEventListener("click", () => {
+      syncKnowledgeReadableEditorToJson();
+      markKnowledgeLocalDirty("Structured JSON applied to the local copy. Save locally to make it active.");
+    });
+
+    [
+      elements.knowledgeModuleIdInput,
+      elements.knowledgeModuleLabelInput,
+      elements.knowledgeModuleGroupInput,
+      elements.knowledgeModuleVersionInput,
+      elements.knowledgeModuleStatusInput,
+      elements.knowledgeModulePopulationInput,
+      elements.knowledgeModuleTriggersInput
+    ].forEach((input) => {
+      input.addEventListener("input", () => {
+        readKnowledgeModuleMetaIntoEnvelope();
+        markKnowledgeLocalDirty();
+      });
+      input.addEventListener("change", () => {
+        readKnowledgeModuleMetaIntoEnvelope();
+        markKnowledgeLocalDirty();
+      });
+    });
+
+    elements.knowledgeSectionTabs.addEventListener("click", (event) => {
+      const button = event.target?.closest?.("[data-knowledge-section-group]");
+      if (!button) {
+        return;
+      }
+      state.activeKnowledgeSectionGroup = button.dataset.knowledgeSectionGroup;
+      renderKnowledgeSectionTabs();
+      renderKnowledgeSectionEditor();
+    });
+
+    elements.knowledgeSectionSelect.addEventListener("change", () => {
+      state.activeKnowledgeSectionGroup = elements.knowledgeSectionSelect.value || "redFlags";
+      renderKnowledgeSectionTabs();
+      renderKnowledgeSectionEditor();
+    });
+
+    elements.addKnowledgeSectionItemButton.addEventListener("click", addKnowledgeSectionItem);
+
+    elements.knowledgeItemSearchInput.addEventListener("input", () => {
+      renderKnowledgeSectionEditor();
+    });
+
+    elements.knowledgeSectionEditor.addEventListener("input", (event) => {
+      const field = event.target?.dataset?.knowledgeField;
+      if (!field) {
+        return;
+      }
+      updateKnowledgeItemField(
+        event.target.dataset.knowledgeGroup,
+        Number.parseInt(event.target.dataset.knowledgeIndex, 10),
+        field,
+        event.target.value
+      );
+    });
+
+    elements.knowledgeSectionEditor.addEventListener("change", (event) => {
+      const field = event.target?.dataset?.knowledgeField;
+      if (!field) {
+        return;
+      }
+      updateKnowledgeItemField(
+        event.target.dataset.knowledgeGroup,
+        Number.parseInt(event.target.dataset.knowledgeIndex, 10),
+        field,
+        event.target.value
+      );
+    });
+
+    elements.knowledgeSectionEditor.addEventListener("click", (event) => {
+      const button = event.target?.closest?.("[data-knowledge-item-action]");
+      if (!button) {
+        return;
+      }
+      handleKnowledgeItemAction(
+        button.dataset.knowledgeItemAction,
+        button.dataset.knowledgeGroup,
+        Number.parseInt(button.dataset.knowledgeIndex, 10)
+      );
+    });
 
     elements.copyKnowledgeExtractionPromptButton.addEventListener("click", async () => {
       const prompt = buildGuidelineExtractionPrompt();
@@ -18521,6 +19973,7 @@ heparin 5000 units held by provider`;
     [
       elements.knowledgeSourceTextInput,
       elements.knowledgeReviewerNotesInput,
+      elements.knowledgeModuleTriggersInput,
       elements.knowledgeModuleEditor
     ].forEach((input) => {
       input.addEventListener("input", () => autoResize(input));
@@ -18665,11 +20118,17 @@ heparin 5000 units held by provider`;
     restoreUserProfile();
     restoreImportedContext();
     restoreOpenEvidenceResultsFromStorage();
+    loadSecuritySettingsFromStorage();
+    renderSecuritySettings();
     loadContinuityCases();
     loadEvidenceReviewStateFromStorage();
     loadKnowledgePackReviewStateFromStorage();
     loadKnowledgeBaseReviewStateFromStorage();
+    loadKnowledgeLocalStateFromStorage();
     renderKnowledgeBaseWorkbench();
+    if (!state.editableKnowledgeEnvelope && selectedKnowledgeModule()) {
+      loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(selectedKnowledgeModule()));
+    }
     const restoredSession = restoreChecklistSession();
     setupAdmissionIntakeNavigation();
     maybeStartPhoneChecklistFirst(restoredSession);

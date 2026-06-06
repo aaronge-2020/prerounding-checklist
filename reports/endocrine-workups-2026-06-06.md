@@ -1,6 +1,6 @@
 # Endocrine Diagnosis Workup Automation Report
 
-Generated: 2026-06-06T21:31:16.079Z
+Generated: 2026-06-06T21:53:11.771Z
 Sources accessed/checked: 2026-06-06
 Diagnoses requested: 37
 Quality validation: pass
@@ -15,18 +15,20 @@ Important caveat: reference ranges vary by laboratory, assay, pregnancy status, 
 - Adrenal Gland Disorders: 6
 - Reproductive and Gonadal Disorders: 8
 - Pituitary Gland Disorders: 6
-- Current app validated-intent matches: 0/37
-- Current app registry gaps: 37/37
+- Current app validated-intent matches: 7/37
+- Current app registry gaps: 30/37
 
 ## Guideline Source Registry
 
 - ADA_SOC_2026: ADA Standards of Care in Diabetes 2026. https://professional.diabetes.org/standards-of-care/practice-guidelines-resources
 - ADA_DIAGNOSIS_2026: ADA Diagnosis and Classification of Diabetes 2026. https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes
 - ADA_HYPERGLYCEMIC_CRISES_2024: Hyperglycemic Crises in Adults With Diabetes Consensus Report 2024. https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A
+- ATA_HYPOTHYROIDISM_2014: ATA Guidelines for the Treatment of Hypothyroidism. https://www.thyroid.org/professionals/ata-professional-guidelines/
 - AACE_ATA_HYPOTHYROIDISM_2012: AACE/ATA Hypothyroidism in Adults Guideline. https://www.guidelinecentral.com/guideline/6855/
 - ATA_HYPERTHYROIDISM_2016: ATA Hyperthyroidism and Thyrotoxicosis Guideline. https://journals.sagepub.com/doi/10.1089/thy.2016.0229
+- ATA_THYROID_NODULE_DTC_2015: ATA Thyroid Nodules and Differentiated Thyroid Cancer Guideline. https://www.thyroid.org/professionals/ata-professional-guidelines/
 - ETA_THYROID_NODULE_2023: 2023 European Thyroid Association Thyroid Nodule Guideline. https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/
-- ATA_THYROID_CANCER_2025: ATA Differentiated Thyroid Cancer Guideline Resource. https://www.thyroid.org/ata-professional-guidelines/
+- ATA_THYROID_CANCER_2025: ATA Differentiated Thyroid Cancer Guideline Resource. https://www.thyroid.org/professionals/ata-professional-guidelines/
 - ENDO_OSTEOPOROSIS_2020: Endocrine Society Osteoporosis Pharmacologic Management Guideline Update. https://academic.oup.com/jcem/article/105/3/587/5739968
 - PHPT_WORKSHOP_2022: Fifth International Workshop Primary Hyperparathyroidism Guidelines. https://onlinelibrary.wiley.com/doi/10.1002/jbmr.4677
 - HYPOPARA_TASK_FORCE_2022: 2022 International Task Force Hypoparathyroidism Guidelines. https://pmc.ncbi.nlm.nih.gov/articles/PMC10118814/
@@ -227,8 +229,8 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
-Guidelines: AACE_ATA_HYPOTHYROIDISM_2012
+Current app support: routine_thyroid_disease_v1 (53)
+Guidelines: ATA_HYPOTHYROIDISM_2014; AACE_ATA_HYPOTHYROIDISM_2012
 
 Clinical questions:
 - Fatigue, cold intolerance, constipation, weight gain, depression, menorrhagia.
@@ -260,8 +262,8 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
-Guidelines: AACE_ATA_HYPOTHYROIDISM_2012; ETA_THYROID_NODULE_2023
+Current app support: routine_thyroid_disease_v1 (96)
+Guidelines: ATA_HYPOTHYROIDISM_2014; AACE_ATA_HYPOTHYROIDISM_2012; ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
 
 Clinical questions:
 - Hypothyroid symptoms, family autoimmune disease.
@@ -292,7 +294,7 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
+Current app support: routine_thyroid_disease_v1 (54)
 Guidelines: ATA_HYPERTHYROIDISM_2016
 
 Clinical questions:
@@ -325,7 +327,7 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
+Current app support: routine_thyroid_disease_v1 (164)
 Guidelines: ATA_HYPERTHYROIDISM_2016
 
 Clinical questions:
@@ -357,7 +359,7 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
+Current app support: routine_thyroid_disease_v1 (123)
 Guidelines: ATA_HYPERTHYROIDISM_2016
 
 Clinical questions:
@@ -389,8 +391,8 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
-Guidelines: ETA_THYROID_NODULE_2023
+Current app support: routine_thyroid_disease_v1 (53)
+Guidelines: ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
 
 Clinical questions:
 - Growth, dysphagia, dyspnea, hoarseness.
@@ -421,8 +423,8 @@ Results that change management:
 
 Category: Thyroid Disorders
 Quality status: pass
-Current app support: registry gap - needs validated clinical intent/knowledge pack before app recommendations
-Guidelines: ATA_THYROID_CANCER_2025; ETA_THYROID_NODULE_2023
+Current app support: routine_thyroid_disease_v1 (53)
+Guidelines: ATA_THYROID_CANCER_2025; ATA_THYROID_NODULE_DTC_2015; ETA_THYROID_NODULE_2023
 
 Clinical questions:
 - Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2.

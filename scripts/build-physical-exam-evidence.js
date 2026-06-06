@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-const basePath = "physical_exam_reference.csv";
-const overlayPath = "physical_exam_evidence_overlay.csv";
+const basePath = "data/physical-exam/physical_exam_reference.csv";
+const overlayPath = "data/physical-exam/physical_exam_evidence_overlay.csv";
 const lastReviewed = "2026-06-06";
 
 const baseColumns = [
@@ -463,7 +463,7 @@ function shouldCurate(row) {
 const parsed = parseCsv(readFileSync(basePath, "utf8"));
 const missingBaseColumns = baseColumns.filter((column) => !parsed.headers.includes(column));
 if (missingBaseColumns.length) {
-  throw new Error(`physical_exam_reference.csv missing expected columns: ${missingBaseColumns.join(", ")}`);
+  throw new Error(`${basePath} missing expected columns: ${missingBaseColumns.join(", ")}`);
 }
 
 const examIds = buildExamIds(parsed.rows);
