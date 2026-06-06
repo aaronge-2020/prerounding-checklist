@@ -491,6 +491,15 @@ XR Foot 1 or 2 Views Each Bilateral: Rpt (E) 1/8/26 14:57
 XR Hands 1 or 2 Views Each Bilateral: Rpt (E) 1/9/26 14:45
 CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) 2/1/26 10:45
 POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt 2/6/26 10:26
+Manual Diff?: Yes 1/2/26 11:19
+Cast Type: Hyaline casts 1/3/26 12:15
+Ref Com Comments: H/O Anti-K; No other antibody detected. 2/3/26 07:59
+Clostridioides difficile DNA Assay: Rpt 1/4/26 08:18
+TACROLIMUS BLOOD (FK506), LC/MS/MS (T): 3.4 2/10/26 05:12
+ABO Rh: B Negative 2/10/26 07:00
+Antigen Typing: K Neg  |  C Neg  |  E Neg 1/5/26 14:06
+US Renal Transplant W/Duplex: Rpt 1/6/26 14:23
+Scanned External EKG/ECG: Rpt 1/7/26 00:00
 Spec Gravity, Ur: 1.030 2/4/26 20:08
 Leukocyte Esterase, Ur: Trace ! 2/4/26 20:08
 XR Elbow 2 Views LEFT: Rpt (C) (E) 1/22/26 20:25
@@ -614,6 +623,15 @@ assert.ok(epicRespImagingResult.text.includes("XR Foot 1 or 2 Views Each Bilater
 assert.ok(epicRespImagingResult.text.includes("XR Hands 1 or 2 Views Each Bilateral: Rpt (E) 14:45 on Day -32 (2026)"), "bilateral hand imaging title should not be redacted as a name");
 assert.ok(epicRespImagingResult.text.includes("CAR Echo 2D w Agitated Saline Adult Comp: Rpt (C) 10:45 on Day -9 (2026)"), "agitated saline echo title should not be redacted as a patient name");
 assert.ok(epicRespImagingResult.text.includes("POCUS ANES Procedure Nerve or Fascial Plane Block: Rpt 10:26 on Day -4 (2026)"), "POCUS anesthesia fascial-plane block title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Manual Diff?: Yes 11:19 on Day -39 (2026)"), "manual differential result should keep exact time instead of a morning bucket");
+assert.ok(epicRespImagingResult.text.includes("Cast Type: Hyaline casts 12:15 on Day -38 (2026)"), "cast type should keep exact time instead of an afternoon bucket");
+assert.ok(epicRespImagingResult.text.includes("Ref Com Comments: H/O Anti-K; No other antibody detected. 07:59 on Day -7 (2026)"), "blood-bank reference comments should keep exact time and not create name warnings");
+assert.ok(epicRespImagingResult.text.includes("Clostridioides difficile DNA Assay: Rpt 08:18 on Day -37 (2026)"), "DNA Assay should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("TACROLIMUS BLOOD (FK506), LC/MS/MS (T): 3.4 05:12 on Day 0 (2026)"), "Tacrolimus blood label should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("ABO Rh: B Negative 07:00 on Day 0 (2026)"), "blood type value B Negative should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Antigen Typing: K Neg  |  C Neg  |  E Neg 14:06 on Day -36 (2026)"), "blood-bank antigen shorthand should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("US Renal Transplant W/Duplex: Rpt 14:23 on Day -35 (2026)"), "renal transplant ultrasound title should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Scanned External EKG/ECG: Rpt 00:00 on Day -34 (2026)"), "scanned external EKG title should not create residual name warnings");
 assert.ok(epicRespImagingResult.text.includes("Spec Gravity, Ur: 1.030 20:08 on Day -6 (2026)"), "urine specific gravity should not create residual name warnings");
 assert.ok(epicRespImagingResult.text.includes("Leukocyte Esterase, Ur: Trace ! 20:08 on Day -6 (2026)"), "leukocyte esterase should not create residual name warnings");
 assert.ok(epicRespImagingResult.text.includes("XR Elbow 2 Views LEFT: Rpt (C) (E) 20:25 on Day -19 (2026)"), "elbow imaging title should not create residual name warnings");

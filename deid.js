@@ -260,7 +260,10 @@ const clinicalAnchorWords = new Set([
   "car echo agitated saline adult comp", "agitated saline adult comp", "spec gravity",
   "leukocyte esterase", "xr elbow", "ct cervical spine w", "o con", "ct head",
   "ct upper extremity with con", "us soft tissue head", "vas venous duplex le bilat",
-  "vas venous duplex ue bilat", "w o con", "head brain", "soft tissue head neck"
+  "vas venous duplex ue bilat", "w o con", "head brain", "soft tissue head neck",
+  "corrected arterial", "manual diff", "dna assay", "tacrolimus blood", "b negative",
+  "k neg", "c neg", "e neg", "o anti-k", "us renal transplant w", "scanned external ekg",
+  "cast type", "ref com comments", "hyaline casts", "anti-k"
 ].forEach((phrase) => nonNameClinicalPhrases.add(phrase));
 
 [
@@ -303,7 +306,9 @@ const clinicalAnchorWords = new Set([
   "pocus", "anes", "procedure", "nerve", "fascial", "plane", "block", "exc",
   "hypochromasia", "microcytes", "slight", "streptococcus", "reflex", "each",
   "hands", "agitated", "saline", "comp", "gravity", "leukocyte", "esterase", "elbow",
-  "head", "brain", "extremity", "tissue", "bilat", "ue", "le", "o"
+  "head", "brain", "extremity", "tissue", "bilat", "ue", "le", "o", "corrected",
+  "manual", "diff", "assay", "tacrolimus", "negative", "neg", "anti-k", "anti",
+  "ref", "com", "comments"
 ].forEach((word) => nonNameClinicalWords.add(word));
 
 [
@@ -325,7 +330,8 @@ const clinicalAnchorWords = new Set([
   "fluid", "pocus", "anes", "nerve", "fascial", "block", "exc", "hypochromasia",
   "microcytes", "streptococcus", "reflex", "agitated", "saline", "gravity",
   "leukocyte", "esterase", "elbow", "head", "brain", "extremity", "tissue",
-  "bilat"
+  "bilat", "corrected", "manual", "diff", "assay", "tacrolimus", "anti-k",
+  "comments"
 ].forEach((word) => clinicalAnchorWords.add(word));
 
 const protectedClinicalAcronyms = new Set([
@@ -488,7 +494,7 @@ function isLikelyClinicalResultLine(line) {
   }
 
   const label = parsed.label.toLowerCase();
-  const labelLooksClinical = /\b(?:bg site|spec site|source|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|test cup|appearance|ketones|mucus|casts|axis|banding|cells analyzed|cells counted|cells karyotyped|clinical indication|karyotype|prelim result|final result|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|retic|sodium|potassium|chloride|co2|anion|bun|creatinine|creat|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|base exc|base excess|hypochromasia|microcytes|lactate|troponin|protime|inr|ptt|teg|clotting time|fibrinogen activity|coag index|lyse30|platelet aggregation|ferritin|iron|transferrin|a1c|hcg|quantiferon|rpr|treponema|pallidum|resistance|tumor marker|pcr|culture|body fluid|viral|virus|dna|rna|fish|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|covid|vaginosis|streptococcus|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|pocus|fascial|nerve|block|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
+  const labelLooksClinical = /\b(?:bg site|spec site|source|oxygen device|fio2|mode|vent|peep|resp|respirations|pressure support|tidal volume|liter flow|test cup|appearance|ketones|mucus|casts|cast type|manual diff|ref com comments|axis|banding|cells analyzed|cells counted|cells karyotyped|clinical indication|karyotype|prelim result|final result|poc|wbc|hgb|hbg|hemoglobin|hematocrit|hct|platelet|plt|neutro|lymph|mono|basophil|eosinophil|rbc|mch|mchc|mcv|mpv|rdw|retic|sodium|potassium|chloride|co2|anion|bun|creatinine|creat|egfr|glucose|calcium|magnesium|phosphorus|protein|albumin|globulin|ast|alt|bilirubin|alk|base exc|base excess|hypochromasia|microcytes|lactate|troponin|protime|inr|ptt|teg|clotting time|fibrinogen activity|coag index|lyse30|platelet aggregation|ferritin|iron|transferrin|a1c|hcg|quantiferon|rpr|treponema|pallidum|resistance|tumor marker|pcr|culture|body fluid|viral|virus|dna|rna|fish|cmv|ebv|bk|bkv|hbv|hcv|hiv|sars|cov|covid|vaginosis|streptococcus|urine|ua|vancomycin|tacrolimus|abo|antibody|antigen|path|pocus|fascial|nerve|block|xr|xray|ct|mri|us|vas|echo|ekg|ecg|crossmatch|transfuse|request for|lab|result)\b/.test(label);
   const valueLooksResult = /^(?:[<>]?\d|not detected|detected|positive|negative|nonreactive|non-reactive|non reactive|reactive|minimal react|indeterminate|not predicted|none seen|rpt\b|see note|see comment|normal|abnormal|yellow|cloudy|slightly cloudy|clear|trace\b|small\b|slight\b|present|absent|cannot be determined|not performed|plain cup|fish\b|normal fish|blood\b|serum\b|plasma\b|urine\b|pleural fluid\b|peripheral venous\b|a-line\b|ventilator\b|high flow|o positive|neg\b)/i.test(parsed.value);
   return labelLooksClinical || valueLooksResult;
 }
