@@ -25,6 +25,7 @@
       --border: rgba(255, 255, 255, 0.1);
       --border-strong: rgba(255, 255, 255, 0.17);
       --text: #f1eee7;
+      --text-muted: #c7c0b5;
       --muted: #aaa59a;
       --quiet: #7f7a70;
       --accent: #4f98a3;
@@ -11945,6 +11946,313 @@ Now create the initial rounds report for this case.`;
       return [service, role, focus].filter(Boolean).join(" / ");
     }
 
+    function examTesterLimit() {
+      const parsed = Number.parseInt(elements.examTesterLimitInput.value, 10);
+      if (!Number.isFinite(parsed)) {
+        return 60;
+      }
+      return Math.max(12, Math.min(96, parsed));
+    }
+
+    function examTesterContext() {
+      const concern = elements.examTesterInput.value.trim();
+      const service = elements.examTesterServiceSelect.value.trim();
+      return [service, concern, "diagnostic uncertainty management-relevant bedside physical exam"].filter(Boolean).join(" ");
+    }
+
+    function examTesterLabelKey(value) {
+      return normalizedExamText(value).replace(/\b(?:exam|check|screen|finding|findings|assessment)\b/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function candidateMatchesBaseRow(candidate, row) {
+      const candidateLabels = [
+        candidate.examLabel,
+        candidate.maneuver,
+        candidate.base?.suggested_checklist_label,
+        candidate.base?.maneuver_or_finding
+      ].map(examTesterLabelKey).filter(Boolean);
+      const rowLabels = [
+        row.suggested_checklist_label,
+        row.maneuver_or_finding
+      ].map(examTesterLabelKey).filter(Boolean);
+      return rowLabels.some((rowLabel) => candidateLabels.some((candidateLabel) => (
+        rowLabel === candidateLabel || rowLabel.includes(candidateLabel) || candidateLabel.includes(rowLabel)
+      )));
+    }
+
+    function createExamTesterChip(text, className = "") {
+      const chip = document.createElement("span");
+      chip.className = `exam-result-chip${className ? ` ${className}` : ""}`;
+      chip.textContent = text;
+      return chip;
+    }
+
+    function createExamTesterSummaryChip(text, strong = false) {
+      const chip = document.createElement("span");
+      chip.className = `exam-tester-summary-chip${strong ? " is-strong" : ""}`;
+      chip.textContent = text;
+      return chip;
+    }
+
+    function setExamTesterStatus(message) {
+      elements.examTesterStatus.textContent = message || "";
+    }
+
+    function appendExamTesterText(parent, label, value) {
+      const text = String(value || "").trim();
+      if (!text) {
+        return;
+      }
+      const paragraph = document.createElement("p");
+      paragraph.className = "exam-result-text";
+      paragraph.textContent = `${label}: ${text}`;
+      parent.appendChild(paragraph);
+    }
+
+    function renderExamTesterCandidate(candidate, index) {
+      const row = document.createElement("article");
+      row.className = "exam-result-row";
+
+      const head = document.createElement("div");
+      head.className = "exam-result-head";
+      const title = document.createElement("p");
+      title.className = "exam-result-title";
+      title.textContent = candidate.examLabel || candidate.maneuver || candidate.exam_id;
+      const rank = document.createElement("span");
+      rank.className = "exam-result-rank";
+      rank.textContent = `#${index + 1}`;
+      head.appendChild(title);
+      head.appendChild(rank);
+      row.appendChild(head);
+
+      if (candidate.examOptions) {
+        const options = document.createElement("p");
+        options.className = "exam-result-options";
+        options.textContent = candidate.examOptions;
+        row.appendChild(options);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "exam-result-meta";
+      [
+        candidate.system || "Exam",
+        candidate.section,
+        `score ${Math.round(candidate.score || 0)}`,
+        formatEvidenceLikelihood(candidate),
+        `source ${formatEvidenceSource(candidate)}`,
+        `tier ${candidate.evidence_tier || "n/a"}`,
+        `${candidate.difficulty || "moderate"}, ${candidate.time_burden_minutes || "?"} min`,
+        candidate.equipment_needed ? `equipment ${candidate.equipment_needed}` : "",
+        candidate.patient_cooperation_required ? `cooperation ${candidate.patient_cooperation_required}` : ""
+      ].filter(Boolean).forEach((text) => {
+        const chipClass = /^LR/.test(text) ? "is-lr" : (/^score|^source/.test(text) ? "is-main" : "");
+        meta.appendChild(createExamTesterChip(text, chipClass));
+      });
+      row.appendChild(meta);
+
+      appendExamTesterText(row, "Diagnostic target", candidate.diagnostic_target);
+      appendExamTesterText(row, "Use when", candidate.when_to_use_structured);
+      appendExamTesterText(row, "Management change", candidate.result_changes_management || candidate.management_link);
+      appendExamTesterText(row, "Bedside question", candidate.bedside_question_label ? `${candidate.bedside_question_label}: ${candidate.bedside_question_options || ""}` : "");
+      appendExamTesterText(row, "Limitations", candidate.limitations);
+      appendExamTesterText(row, "Matched tags", candidate.matchedTags?.join("; "));
+      appendExamTesterText(row, "Citation", candidate.source_citation);
+      return row;
+    }
+
+    function renderExamTesterGapRow(row, index) {
+      const wrapper = document.createElement("article");
+      wrapper.className = "exam-result-row is-gap";
+
+      const head = document.createElement("div");
+      head.className = "exam-result-head";
+      const title = document.createElement("p");
+      title.className = "exam-result-title";
+      title.textContent = row.suggested_checklist_label || row.maneuver_or_finding || row.exam_id;
+      const rank = document.createElement("span");
+      rank.className = "exam-result-rank";
+      rank.textContent = `G${index + 1}`;
+      head.appendChild(title);
+      head.appendChild(rank);
+      wrapper.appendChild(head);
+
+      if (row.suggested_options) {
+        const options = document.createElement("p");
+        options.className = "exam-result-options";
+        options.textContent = row.suggested_options;
+        wrapper.appendChild(options);
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "exam-result-meta";
+      [
+        row.exam_system || "Base catalog",
+        row.section,
+        row.region_or_subsection,
+        hasStudentExamEvidence(row) ? "legacy evidence metadata" : "evidence overlay gap",
+        row.LR_plus ? `LR+ ${row.LR_plus}` : "",
+        row.LR_minus ? `LR- ${row.LR_minus}` : "",
+        row.equipment_needed ? `equipment ${row.equipment_needed}` : ""
+      ].filter(Boolean).forEach((text) => {
+        meta.appendChild(createExamTesterChip(text, /LR/.test(text) ? "is-lr" : ""));
+      });
+      wrapper.appendChild(meta);
+
+      appendExamTesterText(wrapper, "Technique", row.technique);
+      appendExamTesterText(wrapper, "Finding", row.abnormal_finding);
+      appendExamTesterText(wrapper, "Use when", row.include_when || row.when_to_use_structured);
+      appendExamTesterText(wrapper, "Management change", row.result_changes_management);
+      appendExamTesterText(wrapper, "Source", row.evidence_source_primary || row.source_item);
+      return wrapper;
+    }
+
+    function renderExamTesterResults() {
+      const candidates = state.examTesterCandidates || [];
+      const gapRows = state.examTesterGapRows || [];
+      const matchedTags = state.examTesterMatchedTags || [];
+      const totalMinutes = candidates.reduce((sum, candidate) => sum + (Number.parseFloat(candidate.time_burden_minutes) || 0), 0);
+
+      elements.examTesterSummary.innerHTML = "";
+      elements.examTesterSummary.hidden = !candidates.length && !gapRows.length;
+      if (!elements.examTesterSummary.hidden) {
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${candidates.length} evidence-backed maneuvers`, true));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${gapRows.length} base-catalog gaps`));
+        elements.examTesterSummary.appendChild(createExamTesterSummaryChip(`${Math.round(totalMinutes)} min if all evidence items performed`));
+      }
+
+      elements.examTesterTags.innerHTML = "";
+      elements.examTesterTags.hidden = !matchedTags.length;
+      matchedTags.forEach((match) => {
+        const tag = document.createElement("span");
+        tag.className = "exam-tester-tag";
+        tag.textContent = `${match.tag}${match.matchedTerms?.length ? `: ${match.matchedTerms.slice(0, 3).join(", ")}` : ""}`;
+        elements.examTesterTags.appendChild(tag);
+      });
+
+      elements.examTesterResults.innerHTML = "";
+      elements.examTesterResults.hidden = !candidates.length;
+      if (candidates.length) {
+        const title = document.createElement("p");
+        title.className = "exam-tester-section-title";
+        title.textContent = "Evidence-backed exam maneuvers";
+        elements.examTesterResults.appendChild(title);
+        candidates.forEach((candidate, index) => {
+          elements.examTesterResults.appendChild(renderExamTesterCandidate(candidate, index));
+        });
+      }
+
+      elements.examTesterGaps.innerHTML = "";
+      elements.examTesterGaps.hidden = !gapRows.length;
+      if (gapRows.length) {
+        const title = document.createElement("p");
+        title.className = "exam-tester-section-title";
+        title.textContent = "Base catalog candidates not represented above";
+        elements.examTesterGaps.appendChild(title);
+        gapRows.forEach((row, index) => {
+          elements.examTesterGaps.appendChild(renderExamTesterGapRow(row, index));
+        });
+      }
+
+      elements.copyExamTesterButton.disabled = !candidates.length && !gapRows.length;
+    }
+
+    async function runExamTester() {
+      const concern = elements.examTesterInput.value.trim();
+      if (!concern) {
+        setExamTesterStatus("Enter a chief concern or diagnosis.");
+        elements.examTesterInput.focus();
+        return;
+      }
+
+      setExamTesterStatus("Loading evidence catalog...");
+      const catalog = await loadClinicalEvidenceCatalog();
+      if (!catalog?.catalog?.length) {
+        setExamTesterStatus("Evidence catalog could not be loaded.");
+        return;
+      }
+
+      const context = examTesterContext();
+      const maxCandidates = examTesterLimit();
+      const reviewState = loadEvidenceReviewStateFromStorage();
+      const ranked = rankEvidenceCandidates(catalog.catalog, context, catalog.tagRows, {
+        maxCandidates,
+        reviewState,
+        specialty: elements.examTesterServiceSelect.value.trim()
+      });
+      const baseRows = await loadStudentExamReferenceRows();
+      const baseCandidates = selectStudentExamReferenceRows(baseRows, context);
+      const gapRows = baseCandidates
+        .filter((row) => !ranked.candidates.some((candidate) => candidateMatchesBaseRow(candidate, row)))
+        .slice(0, 30);
+
+      state.examTesterCandidates = ranked.candidates;
+      state.examTesterGapRows = gapRows;
+      state.examTesterMatchedTags = ranked.matchedTags || [];
+      state.examTesterLastContext = context;
+      renderExamTesterResults();
+      setExamTesterStatus(ranked.candidates.length
+        ? `Retrieved ${ranked.candidates.length} evidence-backed exam maneuvers.`
+        : "No evidence-backed maneuvers matched. Review base-catalog gaps and enrich the overlay.");
+    }
+
+    function formatExamTesterReport() {
+      const lines = [
+        "Physical Exam Evidence Tester",
+        `Input: ${elements.examTesterInput.value.trim() || "Not specified"}`,
+        `Clinical setting: ${elements.examTesterServiceSelect.value.trim() || "General clinic"}`,
+        `Matched tags: ${(state.examTesterMatchedTags || []).map((match) => match.tag).join("; ") || "none"}`,
+        ""
+      ];
+
+      lines.push("Evidence-backed exam maneuvers");
+      (state.examTesterCandidates || []).forEach((candidate, index) => {
+        lines.push(`${index + 1}. ${candidate.examLabel || candidate.maneuver || candidate.exam_id}`);
+        lines.push(`   Options: ${candidate.examOptions || "n/a"}`);
+        lines.push(`   Diagnostic target: ${candidate.diagnostic_target || "n/a"}`);
+        lines.push(`   When to use: ${candidate.when_to_use_structured || "n/a"}`);
+        lines.push(`   Management change: ${candidate.result_changes_management || candidate.management_link || "n/a"}`);
+        lines.push(`   Evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}; score ${Math.round(candidate.score || 0)}`);
+        lines.push(`   Feasibility: ${candidate.difficulty || "moderate"}; ${candidate.time_burden_minutes || "?"} min; equipment ${candidate.equipment_needed || "none"}; cooperation ${candidate.patient_cooperation_required || "not specified"}`);
+        if (candidate.bedside_question_label) {
+          lines.push(`   Bedside question: ${candidate.bedside_question_label}: ${candidate.bedside_question_options || ""}`);
+        }
+        if (candidate.limitations) {
+          lines.push(`   Limitations: ${candidate.limitations}`);
+        }
+      });
+
+      if (state.examTesterGapRows?.length) {
+        lines.push("", "Base catalog candidates not represented above");
+        state.examTesterGapRows.forEach((row, index) => {
+          lines.push(`${index + 1}. ${row.suggested_checklist_label || row.maneuver_or_finding || row.exam_id}`);
+          lines.push(`   Options: ${row.suggested_options || "n/a"}`);
+          lines.push(`   System: ${[row.exam_system, row.section, row.region_or_subsection].filter(Boolean).join(" > ") || "n/a"}`);
+          lines.push(`   Use when: ${row.include_when || row.when_to_use_structured || "n/a"}`);
+          lines.push(`   Technique: ${row.technique || "n/a"}`);
+          lines.push(`   Evidence status: ${hasStudentExamEvidence(row) ? "legacy metadata available" : "overlay gap"}`);
+        });
+      }
+      return `${lines.join("\n")}\n`;
+    }
+
+    function clearExamTester() {
+      elements.examTesterInput.value = "";
+      state.examTesterCandidates = [];
+      state.examTesterGapRows = [];
+      state.examTesterMatchedTags = [];
+      state.examTesterLastContext = "";
+      elements.examTesterSummary.hidden = true;
+      elements.examTesterTags.hidden = true;
+      elements.examTesterResults.hidden = true;
+      elements.examTesterGaps.hidden = true;
+      elements.examTesterSummary.innerHTML = "";
+      elements.examTesterTags.innerHTML = "";
+      elements.examTesterResults.innerHTML = "";
+      elements.examTesterGaps.innerHTML = "";
+      elements.copyExamTesterButton.disabled = true;
+      setExamTesterStatus("");
+    }
+
     async function addEvidenceOrStudentReferenceToPrompt(prompt, contextText) {
       const catalog = await loadClinicalEvidenceCatalog();
       if (catalog?.catalog?.length) {
@@ -13282,6 +13590,36 @@ If source context is missing from this conversation, say that the prior context 
     });
 
     elements.clearProfileButton.addEventListener("click", clearUserProfile);
+
+    elements.runExamTesterButton.addEventListener("click", () => {
+      runExamTester().catch((error) => {
+        console.error(error);
+        setExamTesterStatus("Could not run evidence retrieval.");
+      });
+    });
+
+    elements.copyExamTesterButton.addEventListener("click", async () => {
+      await copyText(formatExamTesterReport(), elements.examTesterStatus, "Exam evidence results copied.");
+    });
+
+    elements.clearExamTesterButton.addEventListener("click", clearExamTester);
+
+    elements.examTesterInput.addEventListener("input", () => {
+      autoResize(elements.examTesterInput);
+      if (!elements.examTesterInput.value.trim()) {
+        clearExamTester();
+      }
+    });
+
+    elements.examTesterInput.addEventListener("keydown", (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        runExamTester().catch((error) => {
+          console.error(error);
+          setExamTesterStatus("Could not run evidence retrieval.");
+        });
+      }
+    });
 
     elements.nextActionPrimaryButton.addEventListener("click", runNextAction);
     elements.nextActionSecondaryButton.addEventListener("click", runSecondaryAction);
