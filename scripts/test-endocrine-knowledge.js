@@ -56,19 +56,51 @@ function flattenModuleText(module) {
   ].map((value) => JSON.stringify(value)).join("\n");
 }
 
+const auditedItemGroups = [
+  "redFlags",
+  "requiredQuestions",
+  "conditionalQuestions",
+  "requiredExam",
+  "conditionalExam",
+  "initialTests",
+  "dispositionRules",
+  "differentialBuckets"
+];
+
+function assertMeaningfulItem(module, group, item) {
+  assert.ok(item.source?.source_id && sourceIds.has(item.source.source_id), `${module.id}.${group}.${item.id} should have a valid source ID`);
+  assert.ok(item.source?.source_section, `${module.id}.${group}.${item.id} should have source section`);
+  assert.ok(item.action && item.action.length >= 20, `${module.id}.${group}.${item.id} should explain what action or management decision changes`);
+  assert.ok(item.rationale && item.rationale.length >= 30, `${module.id}.${group}.${item.id} should explain why it belongs`);
+  assert.doesNotMatch(item.label, /^(assess|check|evaluate|screen|review)\.?$/i, `${module.id}.${group}.${item.id} should not be a vague standalone checklist item`);
+  assert.doesNotMatch(item.rationale, /\b(?:generic|template|todo|tbd)\b/i, `${module.id}.${group}.${item.id} should not have placeholder rationale`);
+}
+
 for (const module of endocrineModules) {
   assert.equal(module.status, "mvp", `${module.id} should be active mvp`);
   assert.ok(module.triggers.length >= 2, `${module.id} should have searchable triggers`);
   assert.ok(module.requiredQuestions.length >= 4, `${module.id} should include a deployment-grade question set`);
   assert.ok(module.requiredExam.length >= 3, `${module.id} should include focused exam plus severity/complication checks`);
+  assert.ok(module.conditionalExam.length >= 2, `${module.id} should include modifier-triggered conditional exam add-ons`);
   assert.ok(module.initialTests.length >= 6, `${module.id} should include tests and reference anchors`);
   assert.ok(module.redFlags.length >= 2, `${module.id} should include red flags and escalation cues`);
   assert.ok(module.dispositionRules.length >= 3, `${module.id} should include management-changing results`);
-  assert.ok(module.differentialBuckets.length >= 2, `${module.id} should include diagnostic buckets`);
+  assert.ok(module.differentialBuckets.length >= 3, `${module.id} should include diagnostic buckets and mimics/exclusions`);
+  assert.match(labels(module.differentialBuckets), /mimic|exclusion|alternative|confounder|premature closure/, `${module.id} should include differential mimics/exclusions`);
   assert.ok(module.endocrine_metadata.reference_values.length >= 2, `${module.id} should preserve reference values`);
   assert.ok(module.endocrine_metadata.source_ids.every((sourceId) => sourceIds.has(sourceId)), `${module.id} should reference valid sources`);
   assert.doesNotMatch(flattenModuleText(module), /\b(?:MRN|DOB|John Smith|Room 412B|Riverside General)\b/i, `${module.id} should not include PHI fixture text`);
   assert.equal(selectComplaintModule(module.label)?.id, module.id, `${module.id} should be searchable/selectable by exact diagnosis label`);
+  assert.ok(module.conditionalExam.every((item) => item.when?.termsAny?.length), `${module.id} conditional exam add-ons should have structured modifier triggers`);
+  const modifierResult = evaluateComplaintCds(`${module.label} unstable vomiting fever pregnancy headache visual symptoms medication discordant`, {}, { module });
+  assert.ok(modifierResult.conditionalExam.length >= 1, `${module.id} should activate conditional exam add-ons when key modifiers are present`);
+  auditedItemGroups.forEach((group) => {
+    (module[group] || []).forEach((item) => assertMeaningfulItem(module, group, item));
+  });
+  module.requiredQuestions.forEach((item) => {
+    assert.ok(item.options?.some((option) => option.value === "yes"), `${module.id}.${item.id} should be answerable`);
+    assert.ok(item.options?.some((option) => option.value === "no"), `${module.id}.${item.id} should be answerable`);
+  });
   module.endocrine_metadata.source_ids.forEach((sourceId) => {
     const source = complaintSourceRegistry.find((row) => row.id === sourceId);
     assert.equal(source?.date_accessed, "2026-06-06", `${module.id} source ${sourceId} should have current access date`);

@@ -30,7 +30,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c, fasting plasma glucose, or 2-hour 75-g OGTT."
+        "action": "A1c, fasting plasma glucose, or 2-hour 75-g OGTT.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "differential_02",
@@ -44,7 +45,23 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
+      },
+      {
+        "id": "differential_03",
+        "label": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Prediabetes generated endocrine workup: mimics and exclusions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "rationale": "Prevents generic endocrine labeling by forcing the Prediabetes workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
       }
     ],
     "redFlags": [
@@ -61,6 +78,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Prediabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Diabetes-range glycemia",
@@ -81,6 +99,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Prediabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -105,6 +124,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Prediabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "DKA/HHS physiology",
@@ -147,7 +167,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Prediabetes needs urgent evaluation today."
       },
       {
         "id": "question_02",
@@ -178,7 +200,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Prediabetes."
       },
       {
         "id": "question_03",
@@ -209,7 +233,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Prediabetes workup."
       },
       {
         "id": "question_04",
@@ -240,7 +266,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Prediabetes."
       },
       {
         "id": "question_05",
@@ -271,7 +299,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Prediabetes."
       },
       {
         "id": "question_06",
@@ -302,7 +332,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Prediabetes.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Prediabetes."
       }
     ],
     "conditionalQuestions": [],
@@ -319,7 +351,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes."
       },
       {
         "id": "exam_02",
@@ -333,7 +366,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Prediabetes."
       },
       {
         "id": "exam_03",
@@ -347,7 +381,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes."
       },
       {
         "id": "exam_04",
@@ -361,7 +396,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes."
       },
       {
         "id": "exam_05",
@@ -375,7 +411,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes."
       },
       {
         "id": "exam_06",
@@ -389,10 +426,132 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Prediabetes."
       }
     ],
-    "conditionalExam": [],
+    "conditionalExam": [
+      {
+        "id": "conditional_exam_01",
+        "label": "If hyperglycemic crisis, vomiting, infection, foot wound, or insulin-access concern is present: add Kussmaul/work-of-breathing assessment, mucous membranes, capillary refill/pulses, abdomen, skin/line/wound exam, and diabetes foot check.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Prediabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Prediabetes.",
+        "when": {
+          "termsAny": [
+            "dka",
+            "hhs",
+            "hyperglycemic crisis",
+            "vomiting",
+            "infection",
+            "fever",
+            "foot wound",
+            "ulcer",
+            "missed insulin",
+            "dehydration"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_02",
+        "label": "If recurrent hypoglycemia, neuropathy, falls, kidney disease, or vascular symptoms are present: add mental status, focused neuro/monofilament or vibration screen, foot pulses/skin, and orthostatic vitals.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Prediabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes.",
+        "when": {
+          "termsAny": [
+            "hypoglycemia",
+            "neuropathy",
+            "fall",
+            "falls",
+            "kidney disease",
+            "ckd",
+            "claudication",
+            "vascular",
+            "dizziness",
+            "orthostasis"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_03",
+        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Prediabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Prediabetes.",
+        "when": {
+          "termsAny": [
+            "unstable",
+            "shock",
+            "hypotension",
+            "vomiting",
+            "dehydration",
+            "febrile",
+            "fever",
+            "perioperative",
+            "pregnant",
+            "pregnancy",
+            "inpatient",
+            "altered mental status",
+            "confusion"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_04",
+        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Prediabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Prediabetes.",
+        "when": {
+          "termsAny": [
+            "discordant",
+            "mimic",
+            "medication",
+            "biotin",
+            "supplement",
+            "steroid",
+            "amiodarone",
+            "lithium",
+            "immune checkpoint",
+            "unexpected",
+            "assay"
+          ]
+        }
+      }
+    ],
     "initialTests": [
       {
         "id": "test_01",
@@ -406,7 +565,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "test_02",
@@ -420,7 +580,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Prediabetes."
       },
       {
         "id": "test_03",
@@ -434,7 +595,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Prediabetes."
       },
       {
         "id": "test_04",
@@ -448,7 +610,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Prediabetes."
       },
       {
         "id": "test_05",
@@ -462,7 +625,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "test_06",
@@ -476,7 +640,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Prediabetes."
       },
       {
         "id": "reference_01",
@@ -490,7 +655,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "reference_02",
@@ -504,7 +670,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "reference_03",
@@ -518,7 +685,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "reference_04",
@@ -532,7 +700,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
         "id": "reference_05",
@@ -546,7 +715,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       }
     ],
     "dispositionRules": [
@@ -562,7 +732,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance."
+        "action": "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       },
       {
         "id": "management_02",
@@ -576,7 +747,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Diabetes-range values change diagnosis."
+        "action": "Diabetes-range values change diagnosis.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       },
       {
         "id": "management_03",
@@ -590,7 +762,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       },
       {
         "id": "management_04",
@@ -604,7 +777,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       },
       {
         "id": "management_05",
@@ -618,7 +792,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment."
+        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       },
       {
         "id": "management_06",
@@ -632,7 +807,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
+        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Prediabetes."
       }
     ],
     "endocrine_metadata": {

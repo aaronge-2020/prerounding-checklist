@@ -33,7 +33,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH, free T4, TPO antibody."
+        "action": "TSH, free T4, TPO antibody.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "differential_02",
@@ -47,7 +48,23 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
+      },
+      {
+        "id": "differential_03",
+        "label": "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
+        "source": {
+          "source_id": "ATA_THYROID_NODULE_DTC_2015",
+          "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: mimics and exclusions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2015",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "rationale": "Prevents generic endocrine labeling by forcing the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
       }
     ],
     "redFlags": [
@@ -64,6 +81,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Rapidly enlarging thyroid",
@@ -86,6 +104,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -110,6 +129,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Thyroid storm",
@@ -154,7 +174,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) needs urgent evaluation today."
       },
       {
         "id": "question_02",
@@ -185,7 +207,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) needs urgent evaluation today."
       },
       {
         "id": "question_03",
@@ -216,7 +240,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) workup."
       },
       {
         "id": "question_04",
@@ -247,7 +273,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "question_05",
@@ -278,7 +306,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "question_06",
@@ -309,7 +339,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       }
     ],
     "conditionalQuestions": [],
@@ -326,7 +358,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "exam_02",
@@ -340,7 +373,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "exam_03",
@@ -354,7 +388,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "exam_04",
@@ -368,7 +403,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "exam_05",
@@ -382,7 +418,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "exam_06",
@@ -396,10 +433,132 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       }
     ],
-    "conditionalExam": [],
+    "conditionalExam": [
+      {
+        "id": "conditional_exam_01",
+        "label": "If palpitations, tachycardia, dyspnea, chest discomfort, tremor, or severe hyperthyroid symptoms are present: add rhythm regularity, heart failure/perfusion signs, tremor/hyperreflexia, and temperature.",
+        "source": {
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
+          "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "when": {
+          "termsAny": [
+            "palpitations",
+            "tachycardia",
+            "atrial fibrillation",
+            "dyspnea",
+            "chest pain",
+            "tremor",
+            "thyroid storm",
+            "heat intolerance",
+            "fever"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_02",
+        "label": "If eye, neck mass, hoarseness, dysphagia, dyspnea, radiation exposure, or nodule concern is present: add orbitopathy/EOM screen, thyroid palpation, cervical nodes, voice, airway, and compressive-symptom assessment.",
+        "source": {
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
+          "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "when": {
+          "termsAny": [
+            "eye",
+            "orbitopathy",
+            "diplopia",
+            "proptosis",
+            "neck mass",
+            "nodule",
+            "hoarseness",
+            "dysphagia",
+            "dyspnea",
+            "radiation",
+            "cervical nodes"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_03",
+        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "source": {
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
+          "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "when": {
+          "termsAny": [
+            "unstable",
+            "shock",
+            "hypotension",
+            "vomiting",
+            "dehydration",
+            "febrile",
+            "fever",
+            "perioperative",
+            "pregnant",
+            "pregnancy",
+            "inpatient",
+            "altered mental status",
+            "confusion"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_04",
+        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "source": {
+          "source_id": "ATA_HYPOTHYROIDISM_2014",
+          "source_section": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism).",
+        "when": {
+          "termsAny": [
+            "discordant",
+            "mimic",
+            "medication",
+            "biotin",
+            "supplement",
+            "steroid",
+            "amiodarone",
+            "lithium",
+            "immune checkpoint",
+            "unexpected",
+            "assay"
+          ]
+        }
+      }
+    ],
     "initialTests": [
       {
         "id": "test_01",
@@ -413,7 +572,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_02",
@@ -427,7 +587,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_03",
@@ -441,7 +602,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_04",
@@ -455,7 +617,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_05",
@@ -469,7 +632,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_06",
@@ -483,7 +647,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "test_07",
@@ -497,7 +662,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "reference_01",
@@ -511,7 +677,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "reference_02",
@@ -525,7 +692,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "reference_03",
@@ -539,7 +707,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "reference_04",
@@ -553,7 +722,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       }
     ],
     "dispositionRules": [
@@ -569,7 +739,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Positive TPO Ab supports autoimmune thyroiditis."
+        "action": "Positive TPO Ab supports autoimmune thyroiditis.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "management_02",
@@ -583,7 +754,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway."
+        "action": "Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "management_03",
@@ -597,7 +769,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "management_04",
@@ -611,7 +784,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "management_05",
@@ -625,7 +799,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation."
+        "action": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
         "id": "management_06",
@@ -639,7 +814,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
+        "action": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       }
     ],
     "endocrine_metadata": {

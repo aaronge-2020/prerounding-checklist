@@ -30,7 +30,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Waist circumference."
+        "action": "Waist circumference.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "differential_02",
@@ -44,7 +45,23 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+      },
+      {
+        "id": "differential_03",
+        "label": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Metabolic Syndrome generated endocrine workup: mimics and exclusions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "rationale": "Prevents generic endocrine labeling by forcing the Metabolic Syndrome workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
       }
     ],
     "redFlags": [
@@ -61,6 +78,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Diabetes-range glycemia",
@@ -82,6 +100,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -106,6 +125,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "DKA/HHS physiology",
@@ -148,7 +168,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today."
       },
       {
         "id": "question_02",
@@ -179,7 +201,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Metabolic Syndrome workup."
       },
       {
         "id": "question_03",
@@ -210,7 +234,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Metabolic Syndrome workup."
       },
       {
         "id": "question_04",
@@ -241,7 +267,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
       },
       {
         "id": "question_05",
@@ -272,7 +300,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
       },
       {
         "id": "question_06",
@@ -303,7 +333,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
       }
     ],
     "conditionalQuestions": [],
@@ -320,7 +352,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
       },
       {
         "id": "exam_02",
@@ -334,7 +367,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome."
       },
       {
         "id": "exam_03",
@@ -348,7 +382,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
       },
       {
         "id": "exam_04",
@@ -362,7 +397,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
       },
       {
         "id": "exam_05",
@@ -376,7 +412,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
       },
       {
         "id": "exam_06",
@@ -390,10 +427,132 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome."
       }
     ],
-    "conditionalExam": [],
+    "conditionalExam": [
+      {
+        "id": "conditional_exam_01",
+        "label": "If hyperglycemic crisis, vomiting, infection, foot wound, or insulin-access concern is present: add Kussmaul/work-of-breathing assessment, mucous membranes, capillary refill/pulses, abdomen, skin/line/wound exam, and diabetes foot check.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome.",
+        "when": {
+          "termsAny": [
+            "dka",
+            "hhs",
+            "hyperglycemic crisis",
+            "vomiting",
+            "infection",
+            "fever",
+            "foot wound",
+            "ulcer",
+            "missed insulin",
+            "dehydration"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_02",
+        "label": "If recurrent hypoglycemia, neuropathy, falls, kidney disease, or vascular symptoms are present: add mental status, focused neuro/monofilament or vibration screen, foot pulses/skin, and orthostatic vitals.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
+        "when": {
+          "termsAny": [
+            "hypoglycemia",
+            "neuropathy",
+            "fall",
+            "falls",
+            "kidney disease",
+            "ckd",
+            "claudication",
+            "vascular",
+            "dizziness",
+            "orthostasis"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_03",
+        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
+        "when": {
+          "termsAny": [
+            "unstable",
+            "shock",
+            "hypotension",
+            "vomiting",
+            "dehydration",
+            "febrile",
+            "fever",
+            "perioperative",
+            "pregnant",
+            "pregnancy",
+            "inpatient",
+            "altered mental status",
+            "confusion"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_04",
+        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Metabolic Syndrome.",
+        "when": {
+          "termsAny": [
+            "discordant",
+            "mimic",
+            "medication",
+            "biotin",
+            "supplement",
+            "steroid",
+            "amiodarone",
+            "lithium",
+            "immune checkpoint",
+            "unexpected",
+            "assay"
+          ]
+        }
+      }
+    ],
     "initialTests": [
       {
         "id": "test_01",
@@ -407,7 +566,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "test_02",
@@ -421,7 +581,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
       },
       {
         "id": "test_03",
@@ -435,7 +596,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "test_04",
@@ -449,7 +611,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "test_05",
@@ -463,7 +626,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "test_06",
@@ -477,7 +641,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
       },
       {
         "id": "test_07",
@@ -491,7 +656,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
         "id": "reference_01",
@@ -505,7 +671,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
       },
       {
         "id": "reference_02",
@@ -519,7 +686,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
       }
     ],
     "dispositionRules": [
@@ -535,7 +703,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "3 or more criteria shifts to intensive cardiometabolic risk reduction."
+        "action": "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       },
       {
         "id": "management_02",
@@ -549,7 +718,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Diabetes thresholds change diagnosis."
+        "action": "Diabetes thresholds change diagnosis.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       },
       {
         "id": "management_03",
@@ -563,7 +733,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       },
       {
         "id": "management_04",
@@ -577,7 +748,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       },
       {
         "id": "management_05",
@@ -591,7 +763,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment."
+        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       },
       {
         "id": "management_06",
@@ -605,7 +778,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
+        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
       }
     ],
     "endocrine_metadata": {

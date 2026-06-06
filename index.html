@@ -16695,6 +16695,7 @@ Now create the initial rounds report for this case. Output the report only and n
       });
       row.appendChild(meta);
 
+      appendExamTesterText(row, "Rationale", item.rationale);
       appendExamTesterText(row, "Action", item.action);
       appendExamTesterText(row, "Notes", item.source?.implementation_notes);
       return row;

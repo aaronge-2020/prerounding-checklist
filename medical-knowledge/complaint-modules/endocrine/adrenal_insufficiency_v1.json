@@ -30,7 +30,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "8 AM cortisol and ACTH."
+        "action": "8 AM cortisol and ACTH.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "differential_02",
@@ -44,7 +45,23 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
+      },
+      {
+        "id": "differential_03",
+        "label": "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: mimics and exclusions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "rationale": "Prevents generic endocrine labeling by forcing the Adrenal Insufficiency workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
       }
     ],
     "redFlags": [
@@ -61,6 +78,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Adrenal Insufficiency presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Shock",
@@ -84,6 +102,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Adrenal Insufficiency presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -108,6 +127,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "rationale": "Identifies dangerous Adrenal Insufficiency presentations that should override routine outpatient workup and prompt urgent escalation.",
         "when": {
           "termsAny": [
             "Adrenal crisis",
@@ -152,7 +172,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Adrenal Insufficiency needs urgent evaluation today."
       },
       {
         "id": "question_02",
@@ -183,7 +205,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Adrenal Insufficiency."
       },
       {
         "id": "question_03",
@@ -214,7 +238,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Adrenal Insufficiency workup."
       },
       {
         "id": "question_04",
@@ -245,7 +271,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Adrenal Insufficiency."
       },
       {
         "id": "question_05",
@@ -276,7 +304,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Adrenal Insufficiency."
       },
       {
         "id": "question_06",
@@ -307,7 +337,9 @@
             "value": "other",
             "label": "Other"
           }
-        ]
+        ],
+        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Adrenal Insufficiency.",
+        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Adrenal Insufficiency."
       }
     ],
     "conditionalQuestions": [],
@@ -324,7 +356,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency."
       },
       {
         "id": "exam_02",
@@ -338,7 +371,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency."
       },
       {
         "id": "exam_03",
@@ -352,7 +386,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency."
       },
       {
         "id": "exam_04",
@@ -366,7 +401,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency."
       },
       {
         "id": "exam_05",
@@ -380,10 +416,131 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings."
+        "action": "Perform and document positive, negative, and unable-to-assess findings.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Adrenal Insufficiency."
       }
     ],
-    "conditionalExam": [],
+    "conditionalExam": [
+      {
+        "id": "conditional_exam_01",
+        "label": "If adrenal crisis, steroid withdrawal, vomiting, infection, hypotension, or electrolyte emergency is possible: add orthostatic vitals, volume/perfusion, mental status, abdominal exam, and hyperpigmentation/skin assessment.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency.",
+        "when": {
+          "termsAny": [
+            "adrenal crisis",
+            "steroid withdrawal",
+            "vomiting",
+            "infection",
+            "fever",
+            "hypotension",
+            "hyponatremia",
+            "hyperkalemia",
+            "shock"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_02",
+        "label": "If catecholamine spells, severe hypertension, hypokalemia, or Cushing phenotype is present: add seated/standing BP, pulse rhythm, edema/weakness, proximal strength, bruising/striae, and cardiopulmonary stress signs.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency.",
+        "when": {
+          "termsAny": [
+            "pheochromocytoma",
+            "palpitations",
+            "sweating",
+            "severe hypertension",
+            "hypokalemia",
+            "cushing",
+            "bruising",
+            "striae",
+            "proximal weakness",
+            "edema"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_03",
+        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Adrenal Insufficiency.",
+        "when": {
+          "termsAny": [
+            "unstable",
+            "shock",
+            "hypotension",
+            "vomiting",
+            "dehydration",
+            "febrile",
+            "fever",
+            "perioperative",
+            "pregnant",
+            "pregnancy",
+            "inpatient",
+            "altered mental status",
+            "confusion"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_04",
+        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: conditional focused physical exam add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
+        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Adrenal Insufficiency.",
+        "when": {
+          "termsAny": [
+            "discordant",
+            "mimic",
+            "medication",
+            "biotin",
+            "supplement",
+            "steroid",
+            "amiodarone",
+            "lithium",
+            "immune checkpoint",
+            "unexpected",
+            "assay"
+          ]
+        }
+      }
+    ],
     "initialTests": [
       {
         "id": "test_01",
@@ -397,7 +554,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "test_02",
@@ -411,7 +569,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Adrenal Insufficiency."
       },
       {
         "id": "test_03",
@@ -425,7 +584,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "test_04",
@@ -439,7 +599,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Adrenal Insufficiency."
       },
       {
         "id": "test_05",
@@ -453,7 +614,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Adrenal Insufficiency."
       },
       {
         "id": "test_06",
@@ -467,7 +629,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Adrenal Insufficiency."
       },
       {
         "id": "test_07",
@@ -481,7 +644,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "reference_01",
@@ -495,7 +659,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "reference_02",
@@ -509,7 +674,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "reference_03",
@@ -523,7 +689,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
         "id": "reference_04",
@@ -537,7 +704,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       }
     ],
     "dispositionRules": [
@@ -553,7 +721,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."
+        "action": "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Adrenal Insufficiency."
       },
       {
         "id": "management_02",
@@ -567,7 +736,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Adrenal Insufficiency."
       },
       {
         "id": "management_03",
@@ -581,7 +751,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Adrenal Insufficiency."
       },
       {
         "id": "management_04",
@@ -595,7 +766,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable."
+        "action": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Adrenal Insufficiency."
       },
       {
         "id": "management_05",
@@ -609,7 +781,8 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
+        "action": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Adrenal Insufficiency."
       }
     ],
     "endocrine_metadata": {

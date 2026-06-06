@@ -223,7 +223,16 @@ export function validateComplaintModules(modules = complaintModules, sources = c
   return { ok: issues.length === 0, issues };
 }
 
-function reportItems(title, items, lines, formatter = (item) => item.label) {
+function reportItems(title, items, lines, formatter = (item) => {
+  const parts = [item.label];
+  if (item.action) {
+    parts.push(`Action: ${item.action}`);
+  }
+  if (item.rationale) {
+    parts.push(`Rationale: ${item.rationale}`);
+  }
+  return parts.join(" - ");
+}) {
   lines.push("", title);
   if (!items.length) {
     lines.push("- None");
