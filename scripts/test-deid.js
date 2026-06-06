@@ -56,6 +56,21 @@ assert.ok(!demoResult.text.includes("Emily Johnson"), "demo should redact provid
 assert.ok(demoResult.text.includes("Patient Name: [PATIENT NAME]"), "demo should keep the patient header readable");
 assert.ok(demoResult.text.includes("Primary endocrinologist: [PROVIDER NAME]"), "demo should keep the provider header readable");
 
+const firstNameAliasText = `Patient: John Smith
+MRN: 1234567
+DOB: 04/12/1960
+Room: 412B
+S: John reports polyuria and thirst. Daughter Mary Smith at bedside.
+O: glucose 412, sodium 132.
+A/P: Type 2 diabetes with hyperglycemia.`;
+const firstNameAliasResult = deidentifyTextStructuredOnly(firstNameAliasText);
+for (const leak of ["John Smith", "John reports", "Mary Smith", "1234567", "04/12/1960", "412B"]) {
+  assert.ok(!firstNameAliasResult.text.includes(leak), `patient/context identifier should not leak: ${leak}`);
+}
+for (const clinicalTerm of ["polyuria", "glucose 412", "Type 2 diabetes"]) {
+  assert.ok(firstNameAliasResult.text.includes(clinicalTerm), `clinical term should be preserved: ${clinicalTerm}`);
+}
+
 const cases = makeSyntheticCases(250);
 for (const caseItem of cases) {
   assertCaseClean(caseItem);

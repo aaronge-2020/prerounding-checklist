@@ -1,15 +1,17 @@
 # Security And HIPAA Posture
 
-This project is a local-first clinical workflow aid. It is designed to reduce PHI exposure, but the codebase and GitHub Pages deployment do not by themselves make a covered entity or business associate HIPAA compliant.
+This project is a local-first clinical workflow aid. It is designed to reduce PHI exposure, but the codebase and GitHub Pages deployment do not by themselves satisfy HIPAA obligations for a covered entity, business associate, deployment, or user workflow.
 
 ## Current App Safeguards
 
-- No app backend receives pasted chart text, saved census data, patient workspaces, or generated prompts.
+- No app backend or cloud service receives pasted chart text, saved census data, de-identified case workspaces, or generated prompts by default.
 - No analytics, telemetry, tracking pixels, ad scripts, or third-party font loads are included.
 - The default de-identification mode is structured-only and does not download model assets.
 - The optional enhanced de-identification model is explicit opt-in and may download third-party code/model assets before running locally in the browser.
-- Saved census workspaces use browser-local IndexedDB encryption with a local passcode.
+- Raw chart text, admission intake text, patient names, MRNs, room numbers, and obvious roster identifiers are dropped before vault storage.
+- Saved de-identified case workspaces use browser-local IndexedDB encryption with a local passcode.
 - Prompt copy actions run a PHI safety check before copying text intended for an external clinical AI tool.
+- Encrypted context export is user-initiated and gated by the PHI safety check before a file is created.
 - A Content Security Policy meta tag blocks object/embed content, forms, frames, and unexpected default resource loads.
 
 ## HIPAA Boundaries

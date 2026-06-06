@@ -1,3 +1,5 @@
+import { scanResidualPhi } from "./deid.js";
+
 export const CENSUS_SCHEMA_VERSION = 1;
 export const CENSUS_EXPORT_TYPE = "prerounds-census-export";
 export const CENSUS_STORAGE_TYPE = "prerounds-census-vault";
@@ -52,6 +54,73 @@ function cleanText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
+function warningType(warning = {}) {
+  return String(warning.type || "").toLowerCase();
+}
+
+function isLikelyClinicalProblemPhrase(value = "") {
+  return /\b(?:diabetes|dka|hhs|cushing|graves|hashimoto|addison|hodgkin|parkinson|alzheimer|crohn|disease|syndrome|failure|cancer|carcinoma|asthma|copd|pneumonia|sepsis|stroke|thyroid|adrenal|pituitary|osteoporosis|osteopenia|hyper|hypo|consult|rounds?|care)\b/i.test(value);
+}
+
+function isBlockingPersistedMetadataWarning(warning, field, value) {
+  const type = warningType(warning);
+  if (field === "serviceProblem" && type === "possible full name" && isLikelyClinicalProblemPhrase(value)) {
+    return false;
+  }
+  if (field === "serviceProblem" && type === "exact date") {
+    return true;
+  }
+  if (field === "serviceProblem" && warning.severity === "review") {
+    return false;
+  }
+  return warning.severity === "high" ||
+    warning.severity === "medium" ||
+    ["facility", "unit or room", "street address", "zip or postal code", "possible full name"].includes(type);
+}
+
+export function persistedMetadataWarnings(value = "", field = "general") {
+  const text = cleanText(value);
+  if (!text) {
+    return [];
+  }
+  return scanResidualPhi(text).filter((warning) => isBlockingPersistedMetadataWarning(warning, field, text));
+}
+
+export function sanitizePersistedMetadata(value = "", field = "general", fallback = "") {
+  const text = cleanText(value);
+  if (!text) {
+    return fallback;
+  }
+  return persistedMetadataWarnings(text, field).length ? fallback : text;
+}
+
+function normalizeStoredImportedContext(context = null) {
+  if (!context || typeof context !== "object") {
+    return null;
+  }
+  const sourceMode = context.sourceMode === "admission" || context.sourceMode === "continuity" ? context.sourceMode : "prior";
+  if (sourceMode === "admission" && !context.redactionSummary) {
+    return null;
+  }
+  const text = String(context.text || "").trim();
+  if (!text) {
+    return null;
+  }
+  return {
+    schemaVersion: context.schemaVersion || 1,
+    importedAt: String(context.importedAt || ""),
+    createdAt: String(context.createdAt || ""),
+    sourceMode,
+    contextType: cleanText(context.contextType || "De-identified patient context"),
+    label: cleanText(context.label || "De-identified source note"),
+    text,
+    labChronologyBlock: String(context.labChronologyBlock || "").trim(),
+    userProfile: context.userProfile && typeof context.userProfile === "object" ? { ...context.userProfile } : {},
+    conversationCaseKey: cleanText(context.conversationCaseKey || ""),
+    redactionSummary: context.redactionSummary || null
+  };
+}
+
 function isoNow(now = new Date()) {
   return now instanceof Date ? now.toISOString() : new Date(now).toISOString();
 }
@@ -93,7 +162,7 @@ export function createPatientCase(values = {}, now = new Date()) {
   const createdAt = values.createdAt || isoNow(now);
   return normalizePatientCase({
     id: values.id || fallbackId(),
-    alias: values.alias || "Patient A",
+    alias: values.alias || "Case A",
     roomBed: values.roomBed || "",
     serviceProblem: values.serviceProblem || "",
     highPriority: Boolean(values.highPriority),
@@ -140,7 +209,7 @@ export function normalizePatientCase(patient = {}) {
   const normalized = {
     id: cleanText(patient.id) || fallbackId(),
     admission: {},
-    importedContext: patient.importedContext || null,
+    importedContext: normalizeStoredImportedContext(patient.importedContext),
     scrubResult: patient.scrubResult || null,
     deidentifiedSourceSections: sourceSections,
     sections: Array.isArray(patient.sections) ? patient.sections : [],
@@ -162,7 +231,9 @@ export function normalizePatientCase(patient = {}) {
     normalized[field] = Boolean(patient[field]);
   });
 
-  normalized.alias = cleanText(normalized.alias) || "Patient";
+  normalized.alias = sanitizePersistedMetadata(normalized.alias, "alias", "Patient") || "Patient";
+  normalized.roomBed = sanitizePersistedMetadata(normalized.roomBed, "roomBed", "");
+  normalized.serviceProblem = sanitizePersistedMetadata(normalized.serviceProblem, "serviceProblem", "");
   normalized.lifecycleStatus = normalized.lifecycleStatus === "discharged" ? "discharged" : "active";
   normalized.sourceMode = ["admission", "continuity"].includes(normalized.sourceMode) ? normalized.sourceMode : "prior";
   normalized.outputMode = normalized.outputMode === "full" ? "full" : "assessed";

@@ -7,6 +7,8 @@ const files = [
   "checklist.js",
   "clinical-intents.js",
   "complaint-cds.js",
+  "census.js",
+  "continuity.js",
   "deid.js",
   "deid-worker.js",
   "embedding-recall.js",
@@ -80,21 +82,42 @@ for (const requiredDirective of [
 }
 for (const requiredSnippet of [
   "No analytics, telemetry, tracking pixels, or ad scripts",
+  "No cloud upload by default",
   "structuredOnlyDeidToggle",
   "clipboardAutoClearToggle",
   "does not legally certify HIPAA de-identification",
-  "Business Associate Agreement"
+  "Business Associate Agreement",
+  "raw chart text, admission intake text, patient names, MRNs, and room numbers are not persisted",
+  "PHI safety check for encrypted export",
+  "PHI safety check for stored OpenEvidence summary"
 ]) {
   if (!html.includes(requiredSnippet)) {
     throw new Error(`Expected privacy/security guardrail copy not found: ${requiredSnippet}`);
   }
 }
+for (const forbiddenSnippet of [
+  "Patient data stays on this computer",
+  "saved patient workspaces",
+  "patient workspace to a backend service"
+]) {
+  if (html.includes(forbiddenSnippet)) {
+    throw new Error(`Unsafe privacy copy remains in index.html: ${forbiddenSnippet}`);
+  }
+}
 const securityDoc = readFileSync("SECURITY.md", "utf8");
 const privacyDoc = readFileSync("PRIVACY.md", "utf8");
+const readmeDoc = readFileSync("README.md", "utf8");
+for (const [label, doc] of [["README.md", readmeDoc], ["SECURITY.md", securityDoc], ["PRIVACY.md", privacyDoc], ["index.html", html]]) {
+  if (/\bHIPAA compliant\b/i.test(doc)) {
+    throw new Error(`${label} should avoid HIPAA compliant phrasing; describe obligations and safeguards instead.`);
+  }
+}
 for (const requiredSnippet of [
   "HIPAA compliance depends on the full operating environment",
   "Security risk analysis guidance",
   "Business associate guidance",
+  "do not by themselves satisfy HIPAA obligations",
+  "Encrypted context export is user-initiated and gated by the PHI safety check",
   "frame-ancestors 'none'"
 ]) {
   if (!securityDoc.includes(requiredSnippet)) {
@@ -103,8 +126,10 @@ for (const requiredSnippet of [
 }
 for (const requiredSnippet of [
   "not a legal de-identification certification service",
+  "Local-First Defaults",
   "Data That Can Leave The Browser",
-  "External clinical AI tools"
+  "External clinical AI tools",
+  "Raw chart text, admission intake text, patient names, MRNs, room numbers, and obvious roster identifiers are dropped before vault storage"
 ]) {
   if (!privacyDoc.includes(requiredSnippet)) {
     throw new Error(`Expected PRIVACY.md guidance not found: ${requiredSnippet}`);
@@ -184,8 +209,11 @@ for (const requiredSnippet of [
   "loadKnowledgeJsonToFormButton",
   "applyKnowledgeFormToJsonButton",
   "knowledgeSectionTabs",
+  "selectedKnowledgeEditorModule",
   "saveCurrentKnowledgeOverride",
   "localKnowledgeOverrideForModule",
+  "knowledgeChangeSummaryHasMeaningfulChanges",
+  "Make a local edit and save it before suggesting",
   "buildGuidelineExtractionPrompt",
   "loadKnowledgeEnvelopeIntoReadableEditor",
   "syncKnowledgeReadableEditorToJson",
@@ -197,6 +225,10 @@ for (const requiredSnippet of [
   if (!html.includes(requiredSnippet) && !moduleScript.includes(requiredSnippet)) {
     throw new Error(`Expected medical knowledge workbench implementation not found: ${requiredSnippet}`);
   }
+}
+const selectedKnowledgeModuleDefinitions = moduleScript.match(/\bfunction\s+selectedKnowledgeModule\s*\(/g) || [];
+if (selectedKnowledgeModuleDefinitions.length !== 1) {
+  throw new Error("index.html must define exactly one clinical selectedKnowledgeModule() helper.");
 }
 for (const importedName of ["parseLabTimeline", "formatLabTimelinePreview", "formatLabChronologyPromptBlock"]) {
   if (!new RegExp(`\\b${importedName}\\b`).test(moduleScript)) {
@@ -229,11 +261,23 @@ for (const requiredSnippet of [
   "normalizeSecuritySettings",
   "currentDeidMode",
   "isStructuredOnlyDeid",
-  "scheduleClipboardClearAfterCopy"
+  "scheduleClipboardClearAfterCopy",
+  "blockingPhiWarnings",
+  "storageSafeOpenEvidenceResult",
+  "openEvidenceResultStorageText"
 ]) {
   if (!moduleScript.includes(requiredSnippet)) {
     throw new Error(`Expected security settings implementation not found: ${requiredSnippet}`);
   }
+}
+if (!/function\s+exportContextToPhone[\s\S]{0,900}runPhiSafetyCheck[\s\S]{0,700}blockingPhiWarnings[\s\S]{0,1200}encryptContextPayload/.test(moduleScript)) {
+  throw new Error("Encrypted context export must run a PHI safety check before creating the file.");
+}
+if (!/function\s+acceptOpenEvidenceResult[\s\S]{0,900}openEvidenceResultStorageText[\s\S]{0,900}blockingPhiWarnings[\s\S]{0,900}storageSafeOpenEvidenceResult/.test(moduleScript)) {
+  throw new Error("Accepted OpenEvidence paste-back summaries must be PHI-checked and storage-sanitized.");
+}
+if (!/function\s+applyOpenEvidenceChecklistResult[\s\S]{0,700}runPhiSafetyCheck[\s\S]{0,700}blockingPhiWarnings[\s\S]{0,900}tryBuildChecklist/.test(moduleScript)) {
+  throw new Error("OpenEvidence checklist paste-back must pass PHI review before applying to app state.");
 }
 if (!/currentDeidMode\(\)[\s\S]{0,260}structured-only[\s\S]{0,900}deidentifyTextStructuredOnly/.test(moduleScript)) {
   throw new Error("Structured-only mode must bypass the de-ID worker and run shared structured redaction directly.");

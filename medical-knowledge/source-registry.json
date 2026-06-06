@@ -13,6 +13,33 @@
       "citation": "AACE/ATA Hypothyroidism in Adults Guideline"
     },
     {
+      "id": "AACE_OSTEOPOROSIS_2020",
+      "title": "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis",
+      "source": "American Association of Clinical Endocrinology",
+      "version": "2020",
+      "url": "https://pro.aace.com/clinical-guidance/2020-clinical-practice-guidelines-diagnosis-and-treatment-postmenopausal",
+      "date_accessed": "2026-06-06",
+      "citation": "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis"
+    },
+    {
+      "id": "ACROMEGALY_COMPLICATIONS_2026",
+      "title": "Acromegaly Consensus Group Complications Update",
+      "source": "Acromegaly Consensus Group",
+      "version": "2026",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13124806/",
+      "date_accessed": "2026-06-06",
+      "citation": "Acromegaly Consensus Group Complications Update"
+    },
+    {
+      "id": "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+      "title": "Acromegaly Consensus Group Criteria for Diagnosis and Remission",
+      "source": "Acromegaly Consensus Group",
+      "version": "2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37923946/",
+      "date_accessed": "2026-06-06",
+      "citation": "Acromegaly Consensus Group Criteria for Diagnosis and Remission"
+    },
+    {
       "id": "ADA_DIAGNOSIS_2026",
       "title": "ADA Diagnosis and Classification of Diabetes 2026",
       "source": "American Diabetes Association",
@@ -121,6 +148,15 @@
       "citation": "AUA Erectile Dysfunction Guideline"
     },
     {
+      "id": "AUA_TESTOSTERONE_2024",
+      "title": "AUA Testosterone Deficiency Guideline; validity confirmed 2024",
+      "source": "American Urological Association",
+      "version": "2024",
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines/testosterone-deficiency-guideline",
+      "date_accessed": "2026-06-06",
+      "citation": "AUA Testosterone Deficiency Guideline; validity confirmed 2024"
+    },
+    {
       "id": "ENDO_OSTEOPOROSIS_2020",
       "title": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update",
       "source": "Endocrine Society",
@@ -148,6 +184,15 @@
       "citation": "Endotext Diabetes Insipidus/AVP-deficiency Testing"
     },
     {
+      "id": "ES_ACROMEGALY_2014",
+      "title": "Endocrine Society Acromegaly Clinical Practice Guideline",
+      "source": "Endocrine Society",
+      "version": "2014",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/acromegaly",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Acromegaly Clinical Practice Guideline"
+    },
+    {
       "id": "ES_ADRENAL_INSUFFICIENCY_2016",
       "title": "Endocrine Society Primary Adrenal Insufficiency Guideline",
       "source": "Endocrine Society",
@@ -173,6 +218,15 @@
       "url": "https://academic.oup.com/jcem/article/93/5/1526/2598096",
       "date_accessed": "2026-06-06",
       "citation": "Endocrine Society Diagnosis of Cushing Syndrome Guideline"
+    },
+    {
+      "id": "ES_CUSHING_TREATMENT_2015",
+      "title": "Endocrine Society Treatment of Cushing Syndrome Guideline",
+      "source": "Endocrine Society",
+      "version": "2015",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/treatment-of-cushing-syndrome",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Treatment of Cushing Syndrome Guideline"
     },
     {
       "id": "ES_HIRSUTISM_2018",
@@ -229,6 +283,15 @@
       "citation": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline"
     },
     {
+      "id": "ESE_ADRENAL_INCIDENTALOMA_2023",
+      "title": "European Society of Endocrinology Adrenal Incidentaloma Guideline",
+      "source": "European Society of Endocrinology",
+      "version": "2023",
+      "url": "https://academic.oup.com/ejendo/article/189/1/G1/7198474",
+      "date_accessed": "2026-06-06",
+      "citation": "European Society of Endocrinology Adrenal Incidentaloma Guideline"
+    },
+    {
       "id": "ESHRE_POI_2024",
       "title": "International Guideline on Premature Ovarian Insufficiency 2024",
       "source": "European Society of Human Reproduction and Embryology",
@@ -254,6 +317,24 @@
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10118814/",
       "date_accessed": "2026-06-06",
       "citation": "2022 International Task Force Hypoparathyroidism Guidelines"
+    },
+    {
+      "id": "IMS_MENOPAUSE_2026",
+      "title": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause",
+      "source": "International Menopause Society",
+      "version": "2026",
+      "url": "https://www.imsociety.org/statements/ims-recommendations/",
+      "date_accessed": "2026-06-06",
+      "citation": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause"
+    },
+    {
+      "id": "MENOPAUSE_SOCIETY_HT_2022",
+      "title": "The Menopause Society Hormone Therapy Position Statement",
+      "source": "The Menopause Society",
+      "version": "2022",
+      "url": "https://www.menopause.org/publications/clinical-practice-materials/the-2022-hormone-therapy-position-statement-of-the-north-american-menopause-society",
+      "date_accessed": "2026-06-06",
+      "citation": "The Menopause Society Hormone Therapy Position Statement"
     },
     {
       "id": "NHLBI_METABOLIC_SYNDROME",
@@ -299,6 +380,15 @@
       "url": "https://reference.medscape.com/viewarticle/946489",
       "date_accessed": "2026-06-06",
       "citation": "Pituitary Society Acromegaly Consensus"
+    },
+    {
+      "id": "PITUITARY_PROLACTINOMA_2023",
+      "title": "Pituitary Society Prolactinoma International Consensus Statement",
+      "source": "Pituitary Society",
+      "version": "2023",
+      "url": "https://www.nature.com/articles/s41574-023-00886-5",
+      "date_accessed": "2026-06-06",
+      "citation": "Pituitary Society Prolactinoma International Consensus Statement"
     },
     {
       "id": "SFE_CDI_2018",

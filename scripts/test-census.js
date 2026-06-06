@@ -27,8 +27,14 @@ const {
   normalizePatientCase,
   parseBatchSnippetBlocks,
   patientStatusLabels,
+  persistedMetadataWarnings,
   removePatientAndSelectNext
 } = await import("../census.js");
+
+assert.equal(persistedMetadataWarnings("John Smith", "alias").length > 0, true, "name-like aliases must be treated as unsafe for persisted metadata");
+assert.equal(persistedMetadataWarnings("Room 812", "roomBed").length > 0, true, "room labels must be treated as unsafe for persisted metadata");
+assert.equal(persistedMetadataWarnings("DKA consult", "serviceProblem").length, 0, "ordinary service labels should remain usable");
+assert.equal(persistedMetadataWarnings("Diabetes Insipidus", "serviceProblem").length, 0, "diagnosis phrases should not be blocked as names");
 
 const patientA = createPatientCase({
   alias: "Patient A",
@@ -41,6 +47,8 @@ const patientA = createPatientCase({
   }]
 }, new Date("2026-06-06T10:00:00Z"));
 assert.equal(patientA.alias, "Patient A");
+assert.equal(patientA.roomBed, "", "room labels must not persist in case metadata");
+assert.equal(patientA.serviceProblem, "DKA consult");
 assert.equal(patientA.openEvidenceResults.length, 1, "structured OpenEvidence summaries should persist on patient cases");
 assert.equal(derivePatientStatus(patientA), patientStatusLabels.needsChartInfo);
 
@@ -122,15 +130,37 @@ assert.equal(appended.assignedSnippets.length, 1);
 
 const legacyRaw = normalizePatientCase({
   alias: "Legacy raw patient",
+  roomBed: "Room 812",
+  serviceProblem: "DKA consult for MRN 1234567",
   rawSoapNote: "Raw note should be scrubbed from storage",
   rawLabs: "Raw labs should be scrubbed from storage",
   admission: { briefHpi: "Structured admission text should not persist without de-ID review" },
+  importedContext: {
+    schemaVersion: 1,
+    sourceMode: "admission",
+    label: "Admission intake information",
+    text: "Raw admission intake should not persist without de-ID review"
+  },
   scrubbedNote: "Existing de-identified note"
 });
 assert.equal(legacyRaw.rawSoapNote, "");
 assert.equal(legacyRaw.rawLabs, "");
+assert.equal(legacyRaw.roomBed, "");
+assert.equal(legacyRaw.serviceProblem, "");
 assert.deepEqual(legacyRaw.admission, {});
+assert.equal(legacyRaw.importedContext, null, "raw admission-style imported context must not persist in the vault");
 assert.equal(legacyRaw.scrubbedNote, "Existing de-identified note");
+
+const reviewedImported = normalizePatientCase({
+  importedContext: {
+    schemaVersion: 1,
+    sourceMode: "prior",
+    label: "De-identified source note",
+    text: "Adult with diabetic ketoacidosis and [MRN] already redacted.",
+    redactionSummary: { redactionTotal: 1 }
+  }
+});
+assert.equal(reviewedImported.importedContext?.label, "De-identified source note", "reviewed de-identified imported context may persist");
 
 const removeResult = removePatientAndSelectNext([patientA, patientB, patientC], patientB.id, patientB.id);
 assert.equal(removeResult.patients.length, 2);

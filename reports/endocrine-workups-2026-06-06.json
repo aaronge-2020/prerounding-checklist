@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-06T21:53:11.771Z",
+  "generated_at": "2026-06-06T22:20:17.753Z",
   "accessed_date": "2026-06-06",
   "sources": {
     "ADA_SOC_2026": [
@@ -38,6 +38,10 @@
       "ATA Differentiated Thyroid Cancer Guideline Resource",
       "https://www.thyroid.org/professionals/ata-professional-guidelines/"
     ],
+    "AACE_OSTEOPOROSIS_2020": [
+      "AACE Clinical Practice Guideline for Postmenopausal Osteoporosis",
+      "https://pro.aace.com/clinical-guidance/2020-clinical-practice-guidelines-diagnosis-and-treatment-postmenopausal"
+    ],
     "ENDO_OSTEOPOROSIS_2020": [
       "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update",
       "https://academic.oup.com/jcem/article/105/3/587/5739968"
@@ -66,6 +70,14 @@
       "Endocrine Society Diagnosis of Cushing Syndrome Guideline",
       "https://academic.oup.com/jcem/article/93/5/1526/2598096"
     ],
+    "ES_CUSHING_TREATMENT_2015": [
+      "Endocrine Society Treatment of Cushing Syndrome Guideline",
+      "https://www.endocrine.org/clinical-practice-guidelines/treatment-of-cushing-syndrome"
+    ],
+    "ESE_ADRENAL_INCIDENTALOMA_2023": [
+      "European Society of Endocrinology Adrenal Incidentaloma Guideline",
+      "https://academic.oup.com/ejendo/article/189/1/G1/7198474"
+    ],
     "ES_PRIMARY_ALDO_2025": [
       "Endocrine Society Primary Aldosteronism Guideline 2025",
       "https://www.endocrine.org/clinical-practice-guidelines/primary-aldosteronism-2"
@@ -86,9 +98,21 @@
       "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline",
       "https://doi.org/10.1210/JC.2018-00229"
     ],
+    "AUA_TESTOSTERONE_2024": [
+      "AUA Testosterone Deficiency Guideline; validity confirmed 2024",
+      "https://www.auanet.org/guidelines-and-quality/guidelines/testosterone-deficiency-guideline"
+    ],
     "AUA_ED_2018": [
       "AUA Erectile Dysfunction Guideline",
       "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction-%28ed%29-guideline"
+    ],
+    "MENOPAUSE_SOCIETY_HT_2022": [
+      "The Menopause Society Hormone Therapy Position Statement",
+      "https://www.menopause.org/publications/clinical-practice-materials/the-2022-hormone-therapy-position-statement-of-the-north-american-menopause-society"
+    ],
+    "IMS_MENOPAUSE_2026": [
+      "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause",
+      "https://www.imsociety.org/statements/ims-recommendations/"
     ],
     "ESHRE_POI_2024": [
       "International Guideline on Premature Ovarian Insufficiency 2024",
@@ -106,13 +130,29 @@
       "Endocrine Society Hyperprolactinemia Guideline",
       "https://www.guidelinecentral.com/guideline/41733/"
     ],
+    "PITUITARY_PROLACTINOMA_2023": [
+      "Pituitary Society Prolactinoma International Consensus Statement",
+      "https://www.nature.com/articles/s41574-023-00886-5"
+    ],
     "ES_HYPOPITUITARISM_2016": [
       "Endocrine Society Hormone Replacement in Hypopituitarism Guideline",
       "https://www.endocrine.org/clinical-practice-guidelines/hormone-replacement-in-hypopituitarism"
     ],
+    "ES_ACROMEGALY_2014": [
+      "Endocrine Society Acromegaly Clinical Practice Guideline",
+      "https://www.endocrine.org/clinical-practice-guidelines/acromegaly"
+    ],
     "PITUITARY_ACROMEGALY_2021": [
-      "Pituitary Society Acromegaly Consensus",
-      "https://reference.medscape.com/viewarticle/946489"
+      "Pituitary Society Update to Acromegaly Management Guidelines",
+      "https://pituitarysociety.org/wp-content/uploads/2024/04/A-Pituitary-Society-Update-to-Acromegaly-Management-Guidelines.pdf"
+    ],
+    "ACROMEGALY_DIAGNOSIS_REMISSION_2024": [
+      "Acromegaly Consensus Group Criteria for Diagnosis and Remission",
+      "https://pubmed.ncbi.nlm.nih.gov/37923946/"
+    ],
+    "ACROMEGALY_COMPLICATIONS_2026": [
+      "Acromegaly Consensus Group Complications Update",
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC13124806/"
     ],
     "ENDOTEXT_DI_2026": [
       "Endotext Diabetes Insipidus/AVP-deficiency Testing",
@@ -141,33 +181,53 @@
       ],
       "questions": [
         "Polyuria, polydipsia, weight change, blurred vision, infections.",
-        "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
+        "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
       ],
       "exam": [
         "BP, BMI/waist, volume if symptomatic.",
         "Foot skin/pulses/monofilament or vibration when neuropathy risk.",
-        "Cardiovascular and thyroid exam when indicated."
+        "Cardiovascular and thyroid exam when indicated.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
       ],
       "tests": [
         "A1c, fasting plasma glucose, or 2-hour OGTT to confirm.",
         "CMP/eGFR, urine albumin-creatinine ratio, fasting lipids.",
-        "Ketones/anion gap if vomiting, weight loss, dehydration, or acute symptoms."
+        "Ketones/anion gap if vomiting, weight loss, dehydration, or acute symptoms.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
       ],
       "reference_values": [
         "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
         "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
         "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
         "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
-        "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
+        "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
         "DKA/HHS symptoms, dehydration, vomiting, altered mental status.",
-        "Random glucose >=200 mg/dL with classic symptoms."
+        "Random glucose >=200 mg/dL with classic symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
       ],
       "management_changes": [
         "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
-        "UACR >=30 or reduced eGFR changes kidney-protective therapy."
+        "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
       ],
+      "app_module_id": "type_2_diabetes_mellitus_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -187,17 +247,29 @@
       "questions": [
         "Rapid polyuria, polydipsia, weight loss.",
         "Vomiting, abdominal pain, Kussmaul breathing, confusion.",
-        "Personal/family autoimmune disease."
+        "Personal/family autoimmune disease.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
       ],
       "exam": [
         "Vitals, hydration, mental status.",
         "Respiratory pattern/Kussmaul concern.",
-        "Abdomen and infection/skin trigger exam."
+        "Abdomen and infection/skin trigger exam.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
       ],
       "tests": [
         "A1c/glucose criteria plus ketones/acid-base if symptomatic.",
         "Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.",
-        "Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose."
+        "Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
       ],
       "reference_values": [
         "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
@@ -205,16 +277,24 @@
         "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
         "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
         "DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA.",
-        "DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
+        "DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
         "Vomiting, dehydration, hypotension, Kussmaul respirations, altered mental status.",
-        "SGLT2 inhibitor with ketotic symptoms even if glucose is not very high."
+        "SGLT2 inhibitor with ketotic symptoms even if glucose is not very high.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
       ],
       "management_changes": [
         "Ketosis plus acidosis requires urgent DKA pathway.",
-        "Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes."
+        "Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
       ],
+      "app_module_id": "type_1_diabetes_mellitus_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -228,29 +308,49 @@
       ],
       "questions": [
         "Weight, activity, family history, prior GDM.",
-        "Sleep apnea, fatty liver, PCOS, steroid exposure."
+        "Sleep apnea, fatty liver, PCOS, steroid exposure.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
       ],
       "exam": [
         "BP, BMI/waist.",
-        "Acanthosis nigricans and cardiometabolic exam."
+        "Acanthosis nigricans and cardiometabolic exam.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
       ],
       "tests": [
         "A1c, fasting plasma glucose, or 2-hour 75-g OGTT.",
-        "Lipids, ALT if fatty liver risk, BP/BMI/waist."
+        "Lipids, ALT if fatty liver risk, BP/BMI/waist.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
       ],
       "reference_values": [
         "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
         "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
         "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
-        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
+        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Diabetes-range glycemia or hyperglycemic symptoms."
+        "Diabetes-range glycemia or hyperglycemic symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
       ],
       "management_changes": [
         "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance.",
-        "Diabetes-range values change diagnosis."
+        "Diabetes-range values change diagnosis.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
       ],
+      "app_module_id": "prediabetes_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -267,17 +367,29 @@
       ],
       "questions": [
         "Gestational age, prior GDM/macrosomia.",
-        "Preexisting diabetes risk and fetal growth/polyhydramnios if known."
+        "Preexisting diabetes risk and fetal growth/polyhydramnios if known.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
       ],
       "exam": [
         "BP and weight.",
         "Volume status if vomiting/hyperglycemia.",
-        "Pregnancy-focused assessment with OB team."
+        "Pregnancy-focused assessment with OB team.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
       ],
       "tests": [
         "Early risk testing if high risk.",
         "24-28 week one-step 75-g OGTT or local two-step strategy.",
-        "Postpartum 75-g OGTT at 4-12 weeks."
+        "Postpartum 75-g OGTT at 4-12 weeks.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
       ],
       "reference_values": [
         "One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL.",
@@ -285,16 +397,24 @@
         "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
         "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
         "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
-        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
+        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
         "Ketones, vomiting/dehydration, severe hyperglycemia.",
-        "Hypertension or preeclampsia features."
+        "Hypertension or preeclampsia features.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
       ],
       "management_changes": [
         "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
-        "Postpartum abnormal OGTT changes long-term prevention."
+        "Postpartum abnormal OGTT changes long-term prevention.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
       ],
+      "app_module_id": "gestational_diabetes_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -308,27 +428,47 @@
       ],
       "questions": [
         "Weight/waist trajectory, sleep apnea, activity.",
-        "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
+        "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
       ],
       "exam": [
         "Waist circumference, BP, BMI.",
-        "Acanthosis and cardiovascular risk exam."
+        "Acanthosis and cardiovascular risk exam.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
       ],
       "tests": [
         "Waist circumference.",
         "Fasting triglycerides, HDL, fasting glucose/A1c.",
-        "Blood pressure and medication review."
+        "Blood pressure and medication review.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
       ],
       "reference_values": [
-        "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
+        "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Diabetes-range glycemia, severe hypertension, ASCVD symptoms."
+        "Diabetes-range glycemia, severe hypertension, ASCVD symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
       ],
       "management_changes": [
         "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
-        "Diabetes thresholds change diagnosis."
+        "Diabetes thresholds change diagnosis.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
       ],
+      "app_module_id": "metabolic_syndrome_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -344,30 +484,50 @@
       ],
       "questions": [
         "Fatigue, cold intolerance, constipation, weight gain, depression, menorrhagia.",
-        "Amiodarone, lithium, immune checkpoint inhibitor, pregnancy/fertility context."
+        "Amiodarone, lithium, immune checkpoint inhibitor, pregnancy/fertility context.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "HR/BP, thyroid size/nodules.",
         "Delayed reflexes, edema, skin/hair.",
-        "Mental status if severe."
+        "Mental status if severe.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH and free T4.",
         "TPO antibody for autoimmune etiology.",
-        "Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern."
+        "Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status."
+        "Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
         "High TSH plus low FT4 confirms overt primary hypothyroidism.",
-        "Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway."
+        "Low FT4 with low/normal TSH triggers central hypothyroidism/pituitary pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "hypothyroidism_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -391,29 +551,49 @@
       ],
       "questions": [
         "Hypothyroid symptoms, family autoimmune disease.",
-        "Neck swelling, nodules, compressive symptoms."
+        "Neck swelling, nodules, compressive symptoms.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "Firm/rubbery goiter, nodules, cervical nodes.",
-        "Bradycardia, skin/reflex signs."
+        "Bradycardia, skin/reflex signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH, free T4, TPO antibody.",
         "Thyroglobulin antibody as adjunct.",
-        "Ultrasound only for nodule, goiter, or compressive symptoms."
+        "Ultrasound only for nodule, goiter, or compressive symptoms.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes."
+        "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
         "Positive TPO Ab supports autoimmune thyroiditis.",
-        "Suspicious nodule/compressive findings move to ultrasound/FNA pathway."
+        "Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "hashimotos_thyroiditis_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -434,30 +614,50 @@
       ],
       "questions": [
         "Palpitations, tremor, heat intolerance, weight loss, diarrhea, anxiety, insomnia.",
-        "Iodine/amiodarone, postpartum, neck pain, eye symptoms."
+        "Iodine/amiodarone, postpartum, neck pain, eye symptoms.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "HR/rhythm, BP, tremor/hyperreflexia.",
         "Thyroid size/bruit/nodules.",
-        "Eye/orbitopathy and heart failure signs."
+        "Eye/orbitopathy and heart failure signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH, free T4, total/free T3.",
         "TRAb/TSI.",
-        "RAIU or Doppler ultrasound when etiology unclear."
+        "RAIU or Doppler ultrasound when etiology unclear.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Thyroid storm: fever, severe tachycardia/AF, heart failure, agitation, GI symptoms, altered mental status."
+        "Thyroid storm: fever, severe tachycardia/AF, heart failure, agitation, GI symptoms, altered mental status.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
         "Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism.",
-        "TRAb or uptake pattern changes etiology-specific treatment."
+        "TRAb or uptake pattern changes etiology-specific treatment.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "hyperthyroidism_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -476,29 +676,49 @@
       ],
       "questions": [
         "Hyperthyroid symptoms, eye irritation/diplopia/vision change.",
-        "Smoking, pregnancy plans, prior antithyroid drug reaction."
+        "Smoking, pregnancy plans, prior antithyroid drug reaction.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "Diffuse goiter/bruit, tachycardia/AF, tremor.",
-        "Lid lag/proptosis/EOM, pretibial myxedema."
+        "Lid lag/proptosis/EOM, pretibial myxedema.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH, free T4, T3.",
         "TRAb/TSI.",
-        "RAIU if TRAb negative, nodular, or unclear."
+        "RAIU if TRAb negative, nodular, or unclear.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism."
+        "Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
         "TRAb-positive biochemical hyperthyroidism supports Graves.",
-        "Orbitopathy changes radioactive iodine risk and ophthalmology urgency."
+        "Orbitopathy changes radioactive iodine risk and ophthalmology urgency.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "graves_disease_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -517,29 +737,49 @@
       ],
       "questions": [
         "Exogenous thyroid hormone, supplements/biotin.",
-        "Neck pain, viral illness, iodine exposure, amiodarone, postpartum."
+        "Neck pain, viral illness, iodine exposure, amiodarone, postpartum.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "Vitals/rhythm, thyroid tenderness/nodules, tremor.",
-        "Heart failure signs and mental status if severe."
+        "Heart failure signs and mental status if severe.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH, free T4, T3.",
         "TRAb/TSI.",
         "RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.",
-        "ESR/CRP if painful thyroid."
+        "ESR/CRP if painful thyroid.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Storm physiology, AF, heart failure, severe weight loss, altered mental status."
+        "Storm physiology, AF, heart failure, severe weight loss, altered mental status.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
-        "Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway."
+        "Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "thyrotoxicosis_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -561,29 +801,49 @@
       ],
       "questions": [
         "Growth, dysphagia, dyspnea, hoarseness.",
-        "Radiation exposure, family thyroid cancer/MEN2, hyperthyroid symptoms."
+        "Radiation exposure, family thyroid cancer/MEN2, hyperthyroid symptoms.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
-        "Thyroid palpation, cervical nodes, voice/airway assessment."
+        "Thyroid palpation, cervical nodes, voice/airway assessment.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "TSH.",
         "High-quality thyroid ultrasound with risk stratification.",
-        "FNA when indicated by size/risk system; low TSH prompts radionuclide scan."
+        "FNA when indicated by size/risk system; low TSH prompts radionuclide scan.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
-        "FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules."
+        "FNA size thresholds are risk-system-specific; high-risk nodules are sampled at smaller sizes than low-risk nodules.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history."
+        "Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
         "Suspicious ultrasound/Bethesda cytology changes cancer pathway.",
-        "Low TSH with hot nodule shifts to autonomous-function pathway."
+        "Low TSH with hot nodule shifts to autonomous-function pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "thyroid_nodules_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -609,31 +869,51 @@
       "questions": [
         "Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2.",
         "Diarrhea/flushing if medullary disease possible.",
-        "Prior FNA Bethesda category."
+        "Prior FNA Bethesda category.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       ],
       "exam": [
         "Thyroid mass and cervical nodal mapping by exam.",
-        "Voice/airway; hyper/hypothyroid signs."
+        "Voice/airway; hyper/hypothyroid signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
       ],
       "tests": [
         "Neck ultrasound and nodal mapping.",
         "FNA cytology with Bethesda category.",
         "TSH/free T4.",
         "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
-        "RET testing for medullary thyroid cancer."
+        "RET testing for medullary thyroid cancer.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
       ],
       "reference_values": [
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
-        "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning."
+        "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation."
+        "Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
       ],
       "management_changes": [
-        "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway."
+        "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
       ],
+      "app_module_id": "thyroid_cancer_v1",
       "app_intent_matches": [
         {
           "intent_id": "routine_thyroid_disease_v1",
@@ -648,33 +928,54 @@
       "diagnosis": "Osteoporosis",
       "aliases": [],
       "source_ids": [
-        "ENDO_OSTEOPOROSIS_2020"
+        "ENDO_OSTEOPOROSIS_2020",
+        "AACE_OSTEOPOROSIS_2020"
       ],
       "questions": [
         "Fragility fracture, falls, height loss/back pain.",
-        "Glucocorticoids, aromatase inhibitors, androgen deprivation, menopause, calcium/vitamin D intake."
+        "Glucocorticoids, aromatase inhibitors, androgen deprivation, menopause, calcium/vitamin D intake.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       ],
       "exam": [
         "Height/weight, kyphosis/spine tenderness, gait/fall risk.",
-        "Dental/jaw risk before antiresorptive therapy."
+        "Dental/jaw risk before antiresorptive therapy.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
       ],
       "tests": [
         "DXA and vertebral imaging when indicated.",
-        "Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated."
+        "Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
-        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures."
+        "New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
       ],
       "management_changes": [
         "T-score <= -2.5 or fragility fracture confirms osteoporosis.",
-        "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway."
+        "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       ],
+      "app_module_id": "osteoporosis_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -683,31 +984,52 @@
       "diagnosis": "Osteopenia",
       "aliases": [],
       "source_ids": [
-        "ENDO_OSTEOPOROSIS_2020"
+        "ENDO_OSTEOPOROSIS_2020",
+        "AACE_OSTEOPOROSIS_2020"
       ],
       "questions": [
-        "Fracture/fall risk, menopause, family hip fracture, steroid exposure."
+        "Fracture/fall risk, menopause, family hip fracture, steroid exposure.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       ],
       "exam": [
-        "Height, gait/balance, spine tenderness/kyphosis."
+        "Height, gait/balance, spine tenderness/kyphosis.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
       ],
       "tests": [
         "DXA.",
         "FRAX or validated fracture-risk tool.",
-        "Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated."
+        "Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
-        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs."
+        "Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
       ],
       "management_changes": [
-        "Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."
+        "Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       ],
+      "app_module_id": "osteopenia_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -720,29 +1042,49 @@
       ],
       "questions": [
         "Kidney stones, fractures, bone pain, constipation, neurocognitive symptoms.",
-        "Lithium/thiazides, calcium/vitamin D, family MEN/FHH."
+        "Lithium/thiazides, calcium/vitamin D, family MEN/FHH.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       ],
       "exam": [
-        "Volume status if hypercalcemic, bone tenderness/fracture signs, neuromuscular weakness."
+        "Volume status if hypercalcemic, bone tenderness/fracture signs, neuromuscular weakness.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
       ],
       "tests": [
         "Repeat albumin-corrected/ionized calcium with intact PTH.",
         "25(OH)D, phosphorus, creatinine/eGFR.",
-        "24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA."
+        "24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
         "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
-        "PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."
+        "PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis."
+        "Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
       ],
       "management_changes": [
-        "Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway."
+        "Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       ],
+      "app_module_id": "primary_hyperparathyroidism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -755,29 +1097,49 @@
       ],
       "questions": [
         "Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures.",
-        "Calcium/vitamin D therapy and kidney stones."
+        "Calcium/vitamin D therapy and kidney stones.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       ],
       "exam": [
-        "Neuromuscular irritability, Chvostek/Trousseau when appropriate, mental status if severe."
+        "Neuromuscular irritability, Chvostek/Trousseau when appropriate, mental status if severe.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
       ],
       "tests": [
         "Calcium plus PTH.",
         "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
-        "24-hour urine calcium during chronic treatment."
+        "24-hour urine calcium during chronic treatment.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
         "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
-        "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."
+        "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia."
+        "Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
       ],
       "management_changes": [
-        "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring."
+        "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       ],
+      "app_module_id": "hypoparathyroidism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -791,28 +1153,48 @@
       ],
       "questions": [
         "Bone pain, proximal weakness, falls.",
-        "Malabsorption/bariatric surgery, CKD/liver disease, anticonvulsants, diet/sun exposure."
+        "Malabsorption/bariatric surgery, CKD/liver disease, anticonvulsants, diet/sun exposure.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       ],
       "exam": [
-        "Proximal strength, bone tenderness, gait/falls, hypocalcemia signs."
+        "Proximal strength, bone tenderness, gait/falls, hypocalcemia signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
       ],
       "tests": [
         "25(OH)D when clinically indicated.",
-        "Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR."
+        "Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
         "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
-        "Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH."
+        "Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state."
+        "Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
       ],
       "management_changes": [
-        "Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation."
+        "Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       ],
+      "app_module_id": "vitamin_d_deficiency_osteomalacia_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -825,27 +1207,47 @@
       ],
       "questions": [
         "Fatigue, weight loss, anorexia, nausea/vomiting, abdominal pain, salt craving.",
-        "Steroid exposure/withdrawal, pituitary disease, autoimmune disease, orthostasis."
+        "Steroid exposure/withdrawal, pituitary disease, autoimmune disease, orthostasis.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "Orthostatic vitals, volume status, hyperpigmentation in primary AI, mental status if crisis, abdominal exam."
+        "Orthostatic vitals, volume status, hyperpigmentation in primary AI, mental status if crisis, abdominal exam.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "8 AM cortisol and ACTH.",
         "Cosyntropin stimulation test.",
-        "BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected."
+        "BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
         "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
         "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
-        "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+        "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status."
+        "Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."
+        "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "adrenal_insufficiency_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -859,28 +1261,48 @@
         "ES_ADRENAL_INSUFFICIENCY_2016"
       ],
       "questions": [
-        "Salt craving, hyperpigmentation, autoimmune history, weight loss/GI symptoms, orthostasis."
+        "Salt craving, hyperpigmentation, autoimmune history, weight loss/GI symptoms, orthostasis.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "Orthostatic vitals, hyperpigmentation including oral mucosa/palmar creases, volume status."
+        "Orthostatic vitals, hyperpigmentation including oral mucosa/palmar creases, volume status.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "8 AM cortisol/ACTH.",
         "Cosyntropin stimulation.",
         "Renin/aldosterone.",
-        "21-hydroxylase antibodies."
+        "21-hydroxylase antibodies.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
         "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
         "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
-        "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+        "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Adrenal crisis, severe hyperkalemia, shock, infection."
+        "Adrenal crisis, severe hyperkalemia, shock, infection.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        "High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance."
+        "High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "addisons_disease_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -889,32 +1311,54 @@
       "diagnosis": "Cushing's Syndrome",
       "aliases": [],
       "source_ids": [
-        "ES_CUSHING_DX_2008"
+        "ES_CUSHING_DX_2008",
+        "ES_CUSHING_TREATMENT_2015",
+        "ESE_ADRENAL_INCIDENTALOMA_2023"
       ],
       "questions": [
         "Proximal weakness, easy bruising, purple striae, fractures, infections.",
         "Exogenous glucocorticoids including injections/creams/inhaled.",
-        "Hypertension, diabetes, mood/sleep changes."
+        "Hypertension, diabetes, mood/sleep changes.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "BP/BMI/waist, proximal strength, bruising/striae/thin skin, supraclavicular/dorsocervical fat, edema."
+        "BP/BMI/waist, proximal strength, bruising/striae/thin skin, supraclavicular/dorsocervical fat, edema.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "Exclude exogenous steroids.",
         "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
         "Late-night salivary cortisol, often two samples.",
         "24-hour urinary free cortisol, at least two collections.",
-        "ACTH after confirmed hypercortisolism."
+        "ACTH after confirmed hypercortisolism.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
-        "DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+        "DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE."
+        "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."
+        "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "cushings_syndrome_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -930,25 +1374,45 @@
       ],
       "questions": [
         "Resistant/early hypertension, OSA, adrenal incidentaloma.",
-        "Hypokalemia, cramps, weakness, polyuria, medication effects on ARR."
+        "Hypokalemia, cramps, weakness, polyuria, medication effects on ARR.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "Blood pressure severity, volume/edema, weakness if hypokalemic."
+        "Blood pressure severity, volume/edema, weakness if hypokalemic.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "Aldosterone, renin, and ARR with potassium correction.",
         "Overt PA example: PRA <0.2 ng/mL/h or DRC <2 mU/L with aldosterone >15 ng/dL by LC-MS/MS or >20 ng/dL by immunoassay.",
-        "Adrenal CT and adrenal vein sampling after biochemical diagnosis."
+        "Adrenal CT and adrenal vein sampling after biochemical diagnosis.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
-        "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
+        "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms."
+        "Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping."
+        "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "hyperaldosteronism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -957,29 +1421,50 @@
       "diagnosis": "Pheochromocytoma",
       "aliases": [],
       "source_ids": [
-        "ES_PHEO_PPGL_2014"
+        "ES_PHEO_PPGL_2014",
+        "ESE_ADRENAL_INCIDENTALOMA_2023"
       ],
       "questions": [
         "Episodic headaches, sweating, palpitations, panic-like spells.",
-        "Paroxysmal/resistant hypertension, adrenal incidentaloma, MEN2/VHL/NF1/SDHx history."
+        "Paroxysmal/resistant hypertension, adrenal incidentaloma, MEN2/VHL/NF1/SDHx history.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "BP and orthostasis, tachyarrhythmia, volume status, hereditary stigmata if relevant."
+        "BP and orthostasis, tachyarrhythmia, volume status, hereditary stigmata if relevant.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "Plasma free metanephrines or urinary fractionated metanephrines.",
         "Use proper sampling conditions; supine rest for plasma when possible.",
-        "CT/MRI only after biochemical evidence."
+        "CT/MRI only after biochemical evidence.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
-        "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."
+        "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade."
+        "Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway."
+        ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "pheochromocytoma_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -992,26 +1477,46 @@
       ],
       "questions": [
         "Neonatal ambiguous genitalia/salt wasting, early pubarche, hirsutism/acne, infertility.",
-        "Family history, glucocorticoid adherence, adrenal crisis history."
+        "Family history, glucocorticoid adherence, adrenal crisis history.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       ],
       "exam": [
-        "BP/volume, virilization/genital exam by appropriate specialist, growth/puberty, hyperpigmentation."
+        "BP/volume, virilization/genital exam by appropriate specialist, growth/puberty, hyperpigmentation.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
       ],
       "tests": [
         "17-hydroxyprogesterone, often with cosyntropin stimulation.",
         "Electrolytes, glucose, renin/aldosterone.",
         "Androgens: testosterone, androstenedione, DHEAS as indicated.",
-        "CYP21A2 genetic testing when diagnosis/family planning unclear."
+        "CYP21A2 genetic testing when diagnosis/family planning unclear.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
       ],
       "reference_values": [
-        "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."
+        "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia."
+        "Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
       ],
       "management_changes": [
-        "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway."
+        "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
       ],
+      "app_module_id": "congenital_adrenal_hyperplasia_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1024,27 +1529,47 @@
       ],
       "questions": [
         "Cycle irregularity, infertility, hirsutism/acne/alopecia.",
-        "Weight/metabolic history, sleep apnea/mood, rapid virilization."
+        "Weight/metabolic history, sleep apnea/mood, rapid virilization.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
         "BMI/waist/BP, hirsutism/acne/alopecia, acanthosis.",
-        "Pelvic/ultrasound by appropriate clinician if indicated."
+        "Pelvic/ultrasound by appropriate clinician if indicated.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Pregnancy test.",
         "Total/free testosterone by reliable assay.",
         "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
-        "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP."
+        "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
-        "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+        "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding."
+        "Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation."
+        "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "polycystic_ovary_syndrome_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1053,32 +1578,53 @@
       "diagnosis": "Hypogonadism (Low Testosterone in Men)",
       "aliases": [],
       "source_ids": [
-        "ES_TESTOSTERONE_2018"
+        "ES_TESTOSTERONE_2018",
+        "AUA_TESTOSTERONE_2024"
       ],
       "questions": [
         "Libido, ED, infertility, low energy/mood, muscle loss.",
-        "Puberty history, testicular injury, opioids/anabolic steroids, fertility plans."
+        "Puberty history, testicular injury, opioids/anabolic steroids, fertility plans.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "Testicular size/consistency, body hair/gynecomastia, BMI/waist/BP, visual fields if pituitary concern."
+        "Testicular size/consistency, body hair/gynecomastia, BMI/waist/BP, visual fields if pituitary concern.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Morning total testosterone on two occasions.",
         "Free testosterone if SHBG altered or total near lower limit.",
         "LH/FSH.",
-        "Prolactin, iron studies, pituitary evaluation when secondary."
+        "Prolactin, iron studies, pituitary evaluation when secondary.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority."
+        "New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."
+        "Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "hypogonadism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1091,32 +1637,54 @@
       ],
       "source_ids": [
         "ESHRE_POI_2024",
-        "ASRM_AMENORRHEA_2024"
+        "ASRM_AMENORRHEA_2024",
+        "IMS_MENOPAUSE_2026",
+        "MENOPAUSE_SOCIETY_HT_2022"
       ],
       "questions": [
         "Age, last menstrual period, vasomotor/sleep/mood/genitourinary symptoms.",
-        "Pregnancy possibility, chemo/radiation/surgery, autoimmune/family POI."
+        "Pregnancy possibility, chemo/radiation/surgery, autoimmune/family POI.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "BP/BMI, estrogen-deficiency signs, thyroid/autoimmune clues, pelvic exam when indicated."
+        "BP/BMI, estrogen-deficiency signs, thyroid/autoimmune clues, pelvic exam when indicated.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Pregnancy test if amenorrhea.",
         "FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty.",
         "TSH/prolactin.",
-        "POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA as indicated."
+        "POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA as indicated.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling."
+        "Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention."
+        "POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "menopause_premature_ovarian_insufficiency_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1126,19 +1694,32 @@
       "aliases": [],
       "source_ids": [
         "AUA_ED_2018",
-        "ES_TESTOSTERONE_2018"
+        "ES_TESTOSTERONE_2018",
+        "AUA_TESTOSTERONE_2024"
       ],
       "questions": [
         "Onset, libido, morning erections, ejaculation/orgasm.",
-        "Diabetes, vascular disease, depression, medications, sleep apnea."
+        "Diabetes, vascular disease, depression, medications, sleep apnea.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "BP/BMI/waist, genital/testicular exam, secondary sex characteristics, vascular/neuro exam when indicated."
+        "BP/BMI/waist, genital/testicular exam, secondary sex characteristics, vascular/neuro exam when indicated.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Morning total testosterone.",
         "A1c/FPG and lipids.",
-        "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms."
+        "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
@@ -1147,14 +1728,22 @@
         "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
         "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
         "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
-        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis."
+        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms."
+        "New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management."
+        "Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "erectile_dysfunction_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1167,16 +1756,28 @@
       ],
       "questions": [
         "Primary vs secondary amenorrhea, cycle history, pregnancy risk.",
-        "Weight loss/exercise/stress/eating disorder, galactorrhea, headache/vision, hirsutism/acne/hot flashes."
+        "Weight loss/exercise/stress/eating disorder, galactorrhea, headache/vision, hirsutism/acne/hot flashes.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "BMI/vitals, pubertal development, hirsutism/acne/galactorrhea, thyroid, pelvic exam when indicated."
+        "BMI/vitals, pubertal development, hirsutism/acne/galactorrhea, thyroid, pelvic exam when indicated.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Pregnancy test first.",
         "TSH and prolactin.",
         "FSH and estradiol.",
-        "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP."
+        "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
@@ -1184,14 +1785,22 @@
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder."
+        "Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral."
+        "FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "amenorrhea_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1206,17 +1815,29 @@
       ],
       "questions": [
         "Duration trying, cycle regularity, ovulation symptoms.",
-        "Partner semen history, galactorrhea, thyroid symptoms, hyperandrogenism, prior loss."
+        "Partner semen history, galactorrhea, thyroid symptoms, hyperandrogenism, prior loss.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "BMI/BP, thyroid, hirsutism/acne, galactorrhea, testicular exam in male partner if in scope."
+        "BMI/BP, thyroid, hirsutism/acne, galactorrhea, testicular exam in male partner if in scope.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Pregnancy test if amenorrhea.",
         "TSH/prolactin.",
         "FSH/estradiol/AMH/antral follicle count as indicated.",
         "PCOS and androgen labs.",
-        "Semen analysis; male morning testosterone/LH/FSH if indicated."
+        "Semen analysis; male morning testosterone/LH/FSH if indicated.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
@@ -1224,14 +1845,22 @@
         "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
         "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
         "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
-        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup."
+        "Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral."
+        "Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "infertility_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1241,31 +1870,52 @@
       "aliases": [],
       "source_ids": [
         "ES_TESTOSTERONE_2018",
+        "AUA_TESTOSTERONE_2024",
         "ES_HYPERPROLACTINEMIA_2011"
       ],
       "questions": [
         "Duration, pain/tenderness, unilateral mass/nipple discharge.",
-        "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms."
+        "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "Glandular vs adiposity, breast mass/skin/nipple/nodes, testicular exam, thyroid/liver signs."
+        "Glandular vs adiposity, breast mass/skin/nipple/nodes, testicular exam, thyroid/liver signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Total testosterone, LH, FSH, estradiol.",
         "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
-        "TSH, prolactin, liver/kidney function."
+        "TSH, prolactin, liver/kidney function.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression."
+        "Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup."
+        "Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "gynecomastia_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1279,28 +1929,48 @@
       ],
       "questions": [
         "Onset/progression, virilization, menstrual irregularity.",
-        "Acne/alopecia, infertility, medications, family/ethnic hair pattern."
+        "Acne/alopecia, infertility, medications, family/ethnic hair pattern.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
       ],
       "exam": [
-        "Ferriman-Gallwey pattern/severity, virilization signs, acne/alopecia, BMI/BP/acanthosis."
+        "Ferriman-Gallwey pattern/severity, virilization signs, acne/alopecia, BMI/BP/acanthosis.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
       ],
       "tests": [
         "Total testosterone and free testosterone when indicated.",
         "Early morning 17-OHP.",
         "DHEAS when severe/rapid.",
-        "TSH/prolactin/metabolic PCOS tests when menstrual disturbance."
+        "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms."
+        "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
       ],
       "management_changes": [
-        "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway."
+        "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       ],
+      "app_module_id": "hirsutism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1309,31 +1979,52 @@
       "diagnosis": "Prolactinoma (Benign pituitary tumor)",
       "aliases": [],
       "source_ids": [
+        "PITUITARY_PROLACTINOMA_2023",
         "ES_HYPERPROLACTINEMIA_2011"
       ],
       "questions": [
         "Galactorrhea, amenorrhea/oligomenorrhea, infertility, low libido/ED.",
-        "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation."
+        "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Visual fields, galactorrhea/breast exam when appropriate, hypogonadism signs, cranial nerve symptoms."
+        "Visual fields, galactorrhea/breast exam when appropriate, hypogonadism signs, cranial nerve symptoms.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "Serum prolactin; repeat/macroprolactin if mild/discordant.",
         "Pregnancy test, TSH/free T4, renal function.",
-        "Pituitary MRI after persistent unexplained elevation or mass symptoms."
+        "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms."
+        "Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."
+        "Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "prolactinoma_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1342,32 +2033,55 @@
       "diagnosis": "Acromegaly",
       "aliases": [],
       "source_ids": [
-        "PITUITARY_ACROMEGALY_2021"
+        "ES_ACROMEGALY_2014",
+        "PITUITARY_ACROMEGALY_2021",
+        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+        "ACROMEGALY_COMPLICATIONS_2026"
       ],
       "questions": [
         "Enlarging hands/feet, ring/shoe size, facial changes.",
-        "Headache/vision, sweating, arthralgia, sleep apnea, diabetes, hypertension, colon polyps."
+        "Headache/vision, sweating, arthralgia, sleep apnea, diabetes, hypertension, colon polyps.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Coarse facial features, macroglossia, jaw spacing, hand/foot enlargement, BP/cardiac signs, visual fields."
+        "Coarse facial features, macroglossia, jaw spacing, hand/foot enlargement, BP/cardiac signs, visual fields.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "IGF-1 age/sex-adjusted.",
         "Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.",
         "Pituitary MRI after biochemical evidence.",
-        "A1c/BP/OSA/echo/colon risk screening."
+        "A1c/BP/OSA/echo/colon risk screening.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA."
+        "Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway."
+        "Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "acromegaly_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1376,30 +2090,53 @@
       "diagnosis": "Gigantism",
       "aliases": [],
       "source_ids": [
-        "PITUITARY_ACROMEGALY_2021"
+        "ES_ACROMEGALY_2014",
+        "PITUITARY_ACROMEGALY_2021",
+        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+        "ACROMEGALY_COMPLICATIONS_2026"
       ],
       "questions": [
         "Accelerated linear growth, headache/vision, puberty timing, family heights.",
-        "Sweating, sleep apnea, joint pain."
+        "Sweating, sleep apnea, joint pain.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields."
+        "Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "IGF-1 age/puberty-adjusted.",
         "GH suppression after oral glucose.",
         "Bone age and growth assessment.",
-        "Pituitary MRI after biochemical evidence."
+        "Pituitary MRI after biochemical evidence.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
-        "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy."
+        "Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
+        "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "gigantism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1412,17 +2149,29 @@
       ],
       "questions": [
         "Pituitary surgery/radiation/tumor/apoplexy/head trauma.",
-        "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."
+        "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Orthostatic vitals, visual fields, secondary sex characteristics, thyroid/skin signs, volume status."
+        "Orthostatic vitals, visual fields, secondary sex characteristics, thyroid/skin signs, volume status.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "8 AM cortisol +/- ACTH stimulation.",
         "Free T4 with TSH.",
         "LH/FSH with testosterone or estradiol.",
         "Prolactin, IGF-1 and dynamic GH testing when indicated.",
-        "Pituitary MRI."
+        "Pituitary MRI.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
         "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
@@ -1433,14 +2182,22 @@
         "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Adrenal crisis, pituitary apoplexy, visual loss, severe hyponatremia."
+        "Adrenal crisis, pituitary apoplexy, visual loss, severe hyponatremia.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "Central adrenal insufficiency must be addressed before thyroid hormone escalation."
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "hypopituitarism_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1458,27 +2215,47 @@
       ],
       "questions": [
         "24-hour urine volume, nocturia, thirst, access to water.",
-        "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor."
+        "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Volume status and orthostatic vitals, mental status, mucous membranes, neurologic/pituitary mass signs."
+        "Volume status and orthostatic vitals, mental status, mucous membranes, neurologic/pituitary mass signs.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
         "Serum sodium/plasma osmolality.",
         "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
-        "Water deprivation/desmopressin or copeptin-based test."
+        "Water deprivation/desmopressin or copeptin-based test.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
         "Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.",
-        "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+        "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access."
+        "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway."
+        "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "diabetes_insipidus_v1",
       "app_intent_matches": [],
       "quality_issues": []
     },
@@ -1488,30 +2265,51 @@
       "aliases": [],
       "source_ids": [
         "ES_CUSHING_DX_2008",
+        "ES_CUSHING_TREATMENT_2015",
         "ES_HYPOPITUITARISM_2016"
       ],
       "questions": [
         "Cushing phenotype plus headache/vision symptoms.",
-        "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
+        "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms.",
+        "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       ],
       "exam": [
-        "Cushing phenotype, BP/glucose complications, proximal weakness/skin, visual fields."
+        "Cushing phenotype, BP/glucose complications, proximal weakness/skin, visual fields.",
+        "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
       ],
       "tests": [
         "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
         "ACTH: normal/high supports ACTH-dependent disease.",
         "Pituitary MRI.",
-        "Inferior petrosal sinus sampling when MRI equivocal/discordant."
+        "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
+        "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
       ],
       "reference_values": [
-        "Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+        "Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "red_flags": [
-        "Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes."
+        "Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.",
+        "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
       ],
       "management_changes": [
-        "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."
+        "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.",
+        "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       ],
+      "app_module_id": "cushings_disease_v1",
       "app_intent_matches": [],
       "quality_issues": []
     }

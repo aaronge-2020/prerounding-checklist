@@ -38,10 +38,10 @@
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "source": {
-          "source_id": "ES_TESTOSTERONE_2018",
+          "source_id": "AUA_TESTOSTERONE_2024",
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
+          "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -69,6 +69,56 @@
             "very low T with low/normal LH/FSH",
             "testicular mass",
             "infertility priority."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_02",
+        "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hemodynamic instability",
+            "altered mental status",
+            "severe electrolyte/glucose abnormality",
+            "arrhythmia",
+            "airway compromise",
+            "vision threat requires urgent escalation."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_03",
+        "label": "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Positive pregnancy with pain/bleeding",
+            "rapid virilization",
+            "tumor-range androgens",
+            "severe abnormal bleeding",
+            "visual symptoms/headache",
+            "testicular mass",
+            "hard breast mass",
+            "priapism."
           ]
         }
       }
@@ -135,6 +185,130 @@
             "label": "Other"
           }
         ]
+      },
+      {
+        "id": "question_03",
+        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_04",
+        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_05",
+        "label": "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_06",
+        "label": "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
       }
     ],
     "conditionalQuestions": [],
@@ -142,6 +316,62 @@
       {
         "id": "exam_01",
         "label": "Testicular size/consistency, body hair/gynecomastia, BMI/waist/BP, visual fields if pituitary concern.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_03",
+        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_04",
+        "label": "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_05",
+        "label": "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present.",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: focused physical exam",
@@ -168,21 +398,21 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_02",
         "label": "Free testosterone if SHBG altered or total near lower limit.",
         "source": {
-          "source_id": "ES_TESTOSTERONE_2018",
+          "source_id": "AUA_TESTOSTERONE_2024",
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
+          "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_03",
@@ -196,11 +426,25 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_04",
         "label": "Prolactin, iron studies, pituitary evaluation when secondary.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_05",
+        "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
@@ -210,7 +454,49 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_06",
+        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_07",
+        "label": "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_08",
+        "label": "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "reference_01",
@@ -230,10 +516,10 @@
         "id": "reference_02",
         "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
         "source": {
-          "source_id": "ES_TESTOSTERONE_2018",
+          "source_id": "AUA_TESTOSTERONE_2024",
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
+          "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -248,6 +534,20 @@
           "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_04",
+        "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -269,6 +569,62 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."
+      },
+      {
+        "id": "management_02",
+        "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+      },
+      {
+        "id": "management_03",
+        "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+      },
+      {
+        "id": "management_04",
+        "label": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "source": {
+          "source_id": "AUA_TESTOSTERONE_2024",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway."
+      },
+      {
+        "id": "management_05",
+        "label": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Hypogonadism (Low Testosterone in Men) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
       }
     ],
     "endocrine_metadata": {
@@ -277,12 +633,14 @@
       "category": "Reproductive and Gonadal Disorders",
       "aliases": [],
       "source_ids": [
-        "ES_TESTOSTERONE_2018"
+        "ES_TESTOSTERONE_2018",
+        "AUA_TESTOSTERONE_2024"
       ],
       "reference_values": [
         "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
         "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
-        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "quality_issues": [],
       "activation_status": "active_guideline_workup"

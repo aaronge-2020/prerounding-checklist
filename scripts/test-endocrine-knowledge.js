@@ -21,10 +21,20 @@ const requiredSources = [
   "ATA_HYPERTHYROIDISM_2016",
   "ATA_THYROID_NODULE_DTC_2015",
   "ATA_THYROID_CANCER_2025",
+  "AACE_OSTEOPOROSIS_2020",
+  "ES_CUSHING_TREATMENT_2015",
+  "ESE_ADRENAL_INCIDENTALOMA_2023",
   "ES_PRIMARY_ALDO_2025",
   "PCOS_GUIDELINE_2023",
+  "AUA_TESTOSTERONE_2024",
+  "IMS_MENOPAUSE_2026",
   "ESHRE_POI_2024",
   "ASRM_AMENORRHEA_2024",
+  "PITUITARY_PROLACTINOMA_2023",
+  "ES_ACROMEGALY_2014",
+  "PITUITARY_ACROMEGALY_2021",
+  "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+  "ACROMEGALY_COMPLICATIONS_2026",
   "ES_HYPOPITUITARISM_2016",
   "ENDOTEXT_DI_2026"
 ];
@@ -49,15 +59,21 @@ function flattenModuleText(module) {
 for (const module of endocrineModules) {
   assert.equal(module.status, "mvp", `${module.id} should be active mvp`);
   assert.ok(module.triggers.length >= 2, `${module.id} should have searchable triggers`);
-  assert.ok(module.requiredQuestions.length, `${module.id} should include clinical questions`);
-  assert.ok(module.requiredExam.length, `${module.id} should include focused exam`);
-  assert.ok(module.initialTests.length >= 2, `${module.id} should include tests and reference anchors`);
-  assert.ok(module.redFlags.length, `${module.id} should include red flags`);
-  assert.ok(module.dispositionRules.length, `${module.id} should include management-changing results`);
+  assert.ok(module.requiredQuestions.length >= 4, `${module.id} should include a deployment-grade question set`);
+  assert.ok(module.requiredExam.length >= 3, `${module.id} should include focused exam plus severity/complication checks`);
+  assert.ok(module.initialTests.length >= 6, `${module.id} should include tests and reference anchors`);
+  assert.ok(module.redFlags.length >= 2, `${module.id} should include red flags and escalation cues`);
+  assert.ok(module.dispositionRules.length >= 3, `${module.id} should include management-changing results`);
   assert.ok(module.differentialBuckets.length >= 2, `${module.id} should include diagnostic buckets`);
-  assert.ok(module.endocrine_metadata.reference_values.length, `${module.id} should preserve reference values`);
+  assert.ok(module.endocrine_metadata.reference_values.length >= 2, `${module.id} should preserve reference values`);
   assert.ok(module.endocrine_metadata.source_ids.every((sourceId) => sourceIds.has(sourceId)), `${module.id} should reference valid sources`);
   assert.doesNotMatch(flattenModuleText(module), /\b(?:MRN|DOB|John Smith|Room 412B|Riverside General)\b/i, `${module.id} should not include PHI fixture text`);
+  assert.equal(selectComplaintModule(module.label)?.id, module.id, `${module.id} should be searchable/selectable by exact diagnosis label`);
+  module.endocrine_metadata.source_ids.forEach((sourceId) => {
+    const source = complaintSourceRegistry.find((row) => row.id === sourceId);
+    assert.equal(source?.date_accessed, "2026-06-06", `${module.id} source ${sourceId} should have current access date`);
+    assert.match(source?.url || "", /^https:\/\//, `${module.id} source ${sourceId} should have HTTPS provenance`);
+  });
 }
 
 function labels(items) {

@@ -36,7 +36,7 @@
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
         "source": {
-          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_id": "AACE_OSTEOPOROSIS_2020",
           "source_section": "Osteoporosis generated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2020",
@@ -67,6 +67,52 @@
             "neurologic symptoms",
             "hip fracture",
             "multiple fragility fractures."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_02",
+        "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hemodynamic instability",
+            "altered mental status",
+            "severe electrolyte/glucose abnormality",
+            "arrhythmia",
+            "airway compromise",
+            "vision threat requires urgent escalation."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_03",
+        "label": "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hip/vertebral fracture",
+            "cord/neurologic symptoms with back pain",
+            "severe hypercalcemia with dehydration/AKI/confusion",
+            "symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
           ]
         }
       }
@@ -133,6 +179,130 @@
             "label": "Other"
           }
         ]
+      },
+      {
+        "id": "question_03",
+        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_04",
+        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_05",
+        "label": "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_06",
+        "label": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
       }
     ],
     "conditionalQuestions": [],
@@ -164,6 +334,62 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_03",
+        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_04",
+        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_05",
+        "label": "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_06",
+        "label": "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
       }
     ],
     "conditionalExam": [],
@@ -180,11 +406,25 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_02",
         "label": "Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_03",
+        "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
         "source": {
           "source_id": "ENDO_OSTEOPOROSIS_2020",
           "source_section": "Osteoporosis generated endocrine workup: diagnostic workup",
@@ -194,7 +434,49 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_04",
+        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_05",
+        "label": "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_06",
+        "label": "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "reference_01",
@@ -214,7 +496,7 @@
         "id": "reference_02",
         "label": "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "source": {
-          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_id": "AACE_OSTEOPOROSIS_2020",
           "source_section": "Osteoporosis generated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2020",
@@ -241,6 +523,20 @@
       {
         "id": "reference_04",
         "label": "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_05",
+        "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
         "source": {
           "source_id": "ENDO_OSTEOPOROSIS_2020",
           "source_section": "Osteoporosis generated endocrine workup: reference ranges and diagnostic thresholds",
@@ -272,7 +568,7 @@
         "id": "management_02",
         "label": "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
         "source": {
-          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_id": "AACE_OSTEOPOROSIS_2020",
           "source_section": "Osteoporosis generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2020",
@@ -281,6 +577,62 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway."
+      },
+      {
+        "id": "management_03",
+        "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+      },
+      {
+        "id": "management_04",
+        "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+      },
+      {
+        "id": "management_05",
+        "label": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency."
+      },
+      {
+        "id": "management_06",
+        "label": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway.",
+        "source": {
+          "source_id": "AACE_OSTEOPOROSIS_2020",
+          "source_section": "Osteoporosis generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
       }
     ],
     "endocrine_metadata": {
@@ -289,13 +641,15 @@
       "category": "Bone and Parathyroid Disorders",
       "aliases": [],
       "source_ids": [
-        "ENDO_OSTEOPOROSIS_2020"
+        "ENDO_OSTEOPOROSIS_2020",
+        "AACE_OSTEOPOROSIS_2020"
       ],
       "reference_values": [
         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
         "Intact PTH often about 10-65 pg/mL but assay-specific.",
         "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
-        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "quality_issues": [],
       "activation_status": "active_guideline_workup"

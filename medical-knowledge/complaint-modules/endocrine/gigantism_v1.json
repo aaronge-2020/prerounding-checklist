@@ -22,10 +22,10 @@
         "id": "differential_01",
         "label": "Gigantism: diagnostic frame from guideline-sourced endocrine workup",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -34,7 +34,7 @@
       },
       {
         "id": "differential_02",
-        "label": "Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "label": "Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
         "source": {
           "source_id": "PITUITARY_ACROMEGALY_2021",
           "source_section": "Gigantism generated endocrine workup: thresholds",
@@ -52,10 +52,10 @@
         "id": "red_flag_01",
         "label": "Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -69,6 +69,56 @@
             "pituitary apoplexy."
           ]
         }
+      },
+      {
+        "id": "red_flag_02",
+        "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hemodynamic instability",
+            "altered mental status",
+            "severe electrolyte/glucose abnormality",
+            "arrhythmia",
+            "airway compromise",
+            "vision threat requires urgent escalation."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_03",
+        "label": "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Pituitary apoplexy",
+            "acute severe headache",
+            "visual field deficit",
+            "cranial nerve palsy",
+            "adrenal crisis",
+            "severe hypernatremia",
+            "inability to drink",
+            "macroadenoma symptoms in pregnancy."
+          ]
+        }
       }
     ],
     "requiredQuestions": [
@@ -76,10 +126,10 @@
         "id": "question_01",
         "label": "Accelerated linear growth, headache/vision, puberty timing, family heights.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -107,10 +157,134 @@
         "id": "question_02",
         "label": "Sweating, sleep apnea, joint pain.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: clinical questions",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_03",
+        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_04",
+        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_05",
+        "label": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_06",
+        "label": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -141,10 +315,66 @@
         "id": "exam_01",
         "label": "Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: focused physical exam",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_03",
+        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_04",
+        "label": "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_05",
+        "label": "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
@@ -158,15 +388,15 @@
         "id": "test_01",
         "label": "IGF-1 age/puberty-adjusted.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ES_ACROMEGALY_2014",
           "source_section": "Gigantism generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2014",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_02",
@@ -180,25 +410,53 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_03",
         "label": "Bone age and growth assessment.",
         "source": {
-          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_id": "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
           "source_section": "Gigantism generated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
+          "version_date": "2024",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "test_04",
         "label": "Pituitary MRI after biochemical evidence.",
+        "source": {
+          "source_id": "ACROMEGALY_COMPLICATIONS_2026",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_05",
+        "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_06",
+        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
         "source": {
           "source_id": "PITUITARY_ACROMEGALY_2021",
           "source_section": "Gigantism generated endocrine workup: diagnostic workup",
@@ -208,11 +466,53 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_07",
+        "label": "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "source": {
+          "source_id": "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+      },
+      {
+        "id": "test_08",
+        "label": "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated.",
+        "source": {
+          "source_id": "ACROMEGALY_COMPLICATIONS_2026",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       },
       {
         "id": "reference_01",
         "label": "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
         "source": {
           "source_id": "PITUITARY_ACROMEGALY_2021",
           "source_section": "Gigantism generated endocrine workup: reference ranges and diagnostic thresholds",
@@ -230,6 +530,20 @@
         "id": "management_01",
         "label": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
         "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
+      },
+      {
+        "id": "management_02",
+        "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "source": {
           "source_id": "PITUITARY_ACROMEGALY_2021",
           "source_section": "Gigantism generated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
@@ -238,7 +552,49 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
+        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
+      },
+      {
+        "id": "management_03",
+        "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "source": {
+          "source_id": "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+          "source_section": "Gigantism generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+      },
+      {
+        "id": "management_04",
+        "label": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "source": {
+          "source_id": "ACROMEGALY_COMPLICATIONS_2026",
+          "source_section": "Gigantism generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency."
+      },
+      {
+        "id": "management_05",
+        "label": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
       }
     ],
     "endocrine_metadata": {
@@ -247,10 +603,14 @@
       "category": "Pituitary Gland Disorders",
       "aliases": [],
       "source_ids": [
-        "PITUITARY_ACROMEGALY_2021"
+        "ES_ACROMEGALY_2014",
+        "PITUITARY_ACROMEGALY_2021",
+        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
+        "ACROMEGALY_COMPLICATIONS_2026"
       ],
       "reference_values": [
-        "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+        "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
       ],
       "quality_issues": [],
       "activation_status": "active_guideline_workup"

@@ -15,6 +15,7 @@ const sources = {
   ATA_THYROID_NODULE_DTC_2015: ["ATA Thyroid Nodules and Differentiated Thyroid Cancer Guideline", "https://www.thyroid.org/professionals/ata-professional-guidelines/"],
   ETA_THYROID_NODULE_2023: ["2023 European Thyroid Association Thyroid Nodule Guideline", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/"],
   ATA_THYROID_CANCER_2025: ["ATA Differentiated Thyroid Cancer Guideline Resource", "https://www.thyroid.org/professionals/ata-professional-guidelines/"],
+  AACE_OSTEOPOROSIS_2020: ["AACE Clinical Practice Guideline for Postmenopausal Osteoporosis", "https://pro.aace.com/clinical-guidance/2020-clinical-practice-guidelines-diagnosis-and-treatment-postmenopausal"],
   ENDO_OSTEOPOROSIS_2020: ["Endocrine Society Osteoporosis Pharmacologic Management Guideline Update", "https://academic.oup.com/jcem/article/105/3/587/5739968"],
   PHPT_WORKSHOP_2022: ["Fifth International Workshop Primary Hyperparathyroidism Guidelines", "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.4677"],
   HYPOPARA_TASK_FORCE_2022: ["2022 International Task Force Hypoparathyroidism Guidelines", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10118814/"],
@@ -22,18 +23,27 @@ const sources = {
   NIH_VITD_FACTSHEET: ["NIH ODS Vitamin D Health Professional Fact Sheet", "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"],
   ES_ADRENAL_INSUFFICIENCY_2016: ["Endocrine Society Primary Adrenal Insufficiency Guideline", "https://www.endocrine.org/clinical-practice-guidelines/primary-adrenal-insufficiency"],
   ES_CUSHING_DX_2008: ["Endocrine Society Diagnosis of Cushing Syndrome Guideline", "https://academic.oup.com/jcem/article/93/5/1526/2598096"],
+  ES_CUSHING_TREATMENT_2015: ["Endocrine Society Treatment of Cushing Syndrome Guideline", "https://www.endocrine.org/clinical-practice-guidelines/treatment-of-cushing-syndrome"],
+  ESE_ADRENAL_INCIDENTALOMA_2023: ["European Society of Endocrinology Adrenal Incidentaloma Guideline", "https://academic.oup.com/ejendo/article/189/1/G1/7198474"],
   ES_PRIMARY_ALDO_2025: ["Endocrine Society Primary Aldosteronism Guideline 2025", "https://www.endocrine.org/clinical-practice-guidelines/primary-aldosteronism-2"],
   ES_PHEO_PPGL_2014: ["Endocrine Society Pheochromocytoma/Paraganglioma Guideline", "https://pubmed.ncbi.nlm.nih.gov/24893135/"],
   ES_CAH_2018: ["Endocrine Society Congenital Adrenal Hyperplasia Guideline", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6456929/"],
   PCOS_GUIDELINE_2023: ["2023 International Evidence-based PCOS Guideline", "https://pmc.ncbi.nlm.nih.gov/articles/PMC10755126/"],
   ES_TESTOSTERONE_2018: ["Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline", "https://doi.org/10.1210/JC.2018-00229"],
+  AUA_TESTOSTERONE_2024: ["AUA Testosterone Deficiency Guideline; validity confirmed 2024", "https://www.auanet.org/guidelines-and-quality/guidelines/testosterone-deficiency-guideline"],
   AUA_ED_2018: ["AUA Erectile Dysfunction Guideline", "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction-%28ed%29-guideline"],
+  MENOPAUSE_SOCIETY_HT_2022: ["The Menopause Society Hormone Therapy Position Statement", "https://www.menopause.org/publications/clinical-practice-materials/the-2022-hormone-therapy-position-statement-of-the-north-american-menopause-society"],
+  IMS_MENOPAUSE_2026: ["International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause", "https://www.imsociety.org/statements/ims-recommendations/"],
   ESHRE_POI_2024: ["International Guideline on Premature Ovarian Insufficiency 2024", "https://www.eshre.eu/-/media/sitecore-files/Guidelines/POI/2024/INTERNATIONAL-GUIDELINE-ON-POI_2024_2.pdf"],
   ASRM_AMENORRHEA_2024: ["ASRM Current Evaluation of Amenorrhea Committee Opinion 2024", "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/"],
   ES_HIRSUTISM_2018: ["Endocrine Society Hirsutism Guideline", "https://www.endocrine.org/clinical-practice-guidelines/hirsutism"],
   ES_HYPERPROLACTINEMIA_2011: ["Endocrine Society Hyperprolactinemia Guideline", "https://www.guidelinecentral.com/guideline/41733/"],
+  PITUITARY_PROLACTINOMA_2023: ["Pituitary Society Prolactinoma International Consensus Statement", "https://www.nature.com/articles/s41574-023-00886-5"],
   ES_HYPOPITUITARISM_2016: ["Endocrine Society Hormone Replacement in Hypopituitarism Guideline", "https://www.endocrine.org/clinical-practice-guidelines/hormone-replacement-in-hypopituitarism"],
-  PITUITARY_ACROMEGALY_2021: ["Pituitary Society Acromegaly Consensus", "https://reference.medscape.com/viewarticle/946489"],
+  ES_ACROMEGALY_2014: ["Endocrine Society Acromegaly Clinical Practice Guideline", "https://www.endocrine.org/clinical-practice-guidelines/acromegaly"],
+  PITUITARY_ACROMEGALY_2021: ["Pituitary Society Update to Acromegaly Management Guidelines", "https://pituitarysociety.org/wp-content/uploads/2024/04/A-Pituitary-Society-Update-to-Acromegaly-Management-Guidelines.pdf"],
+  ACROMEGALY_DIAGNOSIS_REMISSION_2024: ["Acromegaly Consensus Group Criteria for Diagnosis and Remission", "https://pubmed.ncbi.nlm.nih.gov/37923946/"],
+  ACROMEGALY_COMPLICATIONS_2026: ["Acromegaly Consensus Group Complications Update", "https://pmc.ncbi.nlm.nih.gov/articles/PMC13124806/"],
   ENDOTEXT_DI_2026: ["Endotext Diabetes Insipidus/AVP-deficiency Testing", "https://www.ncbi.nlm.nih.gov/books/NBK537591/"],
   SFE_CDI_2018: ["Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance", "https://pmc.ncbi.nlm.nih.gov/articles/PMC6013691/"],
   NHLBI_METABOLIC_SYNDROME: ["NHLBI Metabolic Syndrome Diagnosis", "https://www.nhlbi.nih.gov/health/metabolic-syndrome/diagnosis"]
@@ -165,37 +175,37 @@ const dx = [
 ];
 
 const moreDx = [
-  w("Bone and Parathyroid Disorders", "Osteoporosis", ["ENDO_OSTEOPOROSIS_2020"], ["Fragility fracture, falls, height loss/back pain.", "Glucocorticoids, aromatase inhibitors, androgen deprivation, menopause, calcium/vitamin D intake."], ["Height/weight, kyphosis/spine tenderness, gait/fall risk.", "Dental/jaw risk before antiresorptive therapy."], ["DXA and vertebral imaging when indicated.", "Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated."], refs.bone, ["New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures."], ["T-score <= -2.5 or fragility fracture confirms osteoporosis.", "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway."]),
-  w("Bone and Parathyroid Disorders", "Osteopenia", ["ENDO_OSTEOPOROSIS_2020"], ["Fracture/fall risk, menopause, family hip fracture, steroid exposure."], ["Height, gait/balance, spine tenderness/kyphosis."], ["DXA.", "FRAX or validated fracture-risk tool.", "Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated."], refs.bone, ["Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs."], ["Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."]),
+  w("Bone and Parathyroid Disorders", "Osteoporosis", ["ENDO_OSTEOPOROSIS_2020", "AACE_OSTEOPOROSIS_2020"], ["Fragility fracture, falls, height loss/back pain.", "Glucocorticoids, aromatase inhibitors, androgen deprivation, menopause, calcium/vitamin D intake."], ["Height/weight, kyphosis/spine tenderness, gait/fall risk.", "Dental/jaw risk before antiresorptive therapy."], ["DXA and vertebral imaging when indicated.", "Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated."], refs.bone, ["New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures."], ["T-score <= -2.5 or fragility fracture confirms osteoporosis.", "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway."]),
+  w("Bone and Parathyroid Disorders", "Osteopenia", ["ENDO_OSTEOPOROSIS_2020", "AACE_OSTEOPOROSIS_2020"], ["Fracture/fall risk, menopause, family hip fracture, steroid exposure."], ["Height, gait/balance, spine tenderness/kyphosis."], ["DXA.", "FRAX or validated fracture-risk tool.", "Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated."], refs.bone, ["Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs."], ["Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."]),
   w("Bone and Parathyroid Disorders", "Primary Hyperparathyroidism", ["PHPT_WORKSHOP_2022"], ["Kidney stones, fractures, bone pain, constipation, neurocognitive symptoms.", "Lithium/thiazides, calcium/vitamin D, family MEN/FHH."], ["Volume status if hypercalcemic, bone tenderness/fracture signs, neuromuscular weakness."], ["Repeat albumin-corrected/ionized calcium with intact PTH.", "25(OH)D, phosphorus, creatinine/eGFR.", "24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA."], refs.bone.concat(["PHPT: high calcium with elevated or inappropriately normal PTH; FHH often Ca/Cr clearance ratio <0.01 but overlap exists."]), ["Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis."], ["Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway."]),
   w("Bone and Parathyroid Disorders", "Hypoparathyroidism", ["HYPOPARA_TASK_FORCE_2022"], ["Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures.", "Calcium/vitamin D therapy and kidney stones."], ["Neuromuscular irritability, Chvostek/Trousseau when appropriate, mental status if severe."], ["Calcium plus PTH.", "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.", "24-hour urine calcium during chronic treatment."], refs.bone.concat(["Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus."]), ["Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia."], ["Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring."]),
   w("Bone and Parathyroid Disorders", "Vitamin D Deficiency / Osteomalacia", ["ENDO_VITD_2024", "NIH_VITD_FACTSHEET"], ["Bone pain, proximal weakness, falls.", "Malabsorption/bariatric surgery, CKD/liver disease, anticonvulsants, diet/sun exposure."], ["Proximal strength, bone tenderness, gait/falls, hypocalcemia signs."], ["25(OH)D when clinically indicated.", "Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR."], refs.bone.concat(["Osteomalacia pattern can include low/normal calcium, low phosphorus, high alkaline phosphatase, and secondary high PTH."]), ["Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state."], ["Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation."]),
   w("Adrenal Gland Disorders", "Adrenal Insufficiency", ["ES_ADRENAL_INSUFFICIENCY_2016"], ["Fatigue, weight loss, anorexia, nausea/vomiting, abdominal pain, salt craving.", "Steroid exposure/withdrawal, pituitary disease, autoimmune disease, orthostasis."], ["Orthostatic vitals, volume status, hyperpigmentation in primary AI, mental status if crisis, abdominal exam."], ["8 AM cortisol and ACTH.", "Cosyntropin stimulation test.", "BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected."], refs.adrenal, ["Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status."], ["Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."]),
   w("Adrenal Gland Disorders", "Addison's Disease", ["ES_ADRENAL_INSUFFICIENCY_2016"], ["Salt craving, hyperpigmentation, autoimmune history, weight loss/GI symptoms, orthostasis."], ["Orthostatic vitals, hyperpigmentation including oral mucosa/palmar creases, volume status."], ["8 AM cortisol/ACTH.", "Cosyntropin stimulation.", "Renin/aldosterone.", "21-hydroxylase antibodies."], refs.adrenal, ["Adrenal crisis, severe hyperkalemia, shock, infection."], ["High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance."], ["primary adrenal insufficiency"]),
-  w("Adrenal Gland Disorders", "Cushing's Syndrome", ["ES_CUSHING_DX_2008"], ["Proximal weakness, easy bruising, purple striae, fractures, infections.", "Exogenous glucocorticoids including injections/creams/inhaled.", "Hypertension, diabetes, mood/sleep changes."], ["BP/BMI/waist, proximal strength, bruising/striae/thin skin, supraclavicular/dorsocervical fat, edema."], ["Exclude exogenous steroids.", "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.", "Late-night salivary cortisol, often two samples.", "24-hour urinary free cortisol, at least two collections.", "ACTH after confirmed hypercortisolism."], ["DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."], ["Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE."], ["Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."]),
+  w("Adrenal Gland Disorders", "Cushing's Syndrome", ["ES_CUSHING_DX_2008", "ES_CUSHING_TREATMENT_2015", "ESE_ADRENAL_INCIDENTALOMA_2023"], ["Proximal weakness, easy bruising, purple striae, fractures, infections.", "Exogenous glucocorticoids including injections/creams/inhaled.", "Hypertension, diabetes, mood/sleep changes."], ["BP/BMI/waist, proximal strength, bruising/striae/thin skin, supraclavicular/dorsocervical fat, edema."], ["Exclude exogenous steroids.", "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.", "Late-night salivary cortisol, often two samples.", "24-hour urinary free cortisol, at least two collections.", "ACTH after confirmed hypercortisolism."], ["DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."], ["Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE."], ["Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."]),
   w("Adrenal Gland Disorders", "Hyperaldosteronism (Conn's Syndrome)", ["ES_PRIMARY_ALDO_2025"], ["Resistant/early hypertension, OSA, adrenal incidentaloma.", "Hypokalemia, cramps, weakness, polyuria, medication effects on ARR."], ["Blood pressure severity, volume/edema, weakness if hypokalemic."], ["Aldosterone, renin, and ARR with potassium correction.", "Overt PA example: PRA <0.2 ng/mL/h or DRC <2 mU/L with aldosterone >15 ng/dL by LC-MS/MS or >20 ng/dL by immunoassay.", "Adrenal CT and adrenal vein sampling after biochemical diagnosis."], ["ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."], ["Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms."], ["Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping."], ["primary aldosteronism", "Conn syndrome"]),
-  w("Adrenal Gland Disorders", "Pheochromocytoma", ["ES_PHEO_PPGL_2014"], ["Episodic headaches, sweating, palpitations, panic-like spells.", "Paroxysmal/resistant hypertension, adrenal incidentaloma, MEN2/VHL/NF1/SDHx history."], ["BP and orthostasis, tachyarrhythmia, volume status, hereditary stigmata if relevant."], ["Plasma free metanephrines or urinary fractionated metanephrines.", "Use proper sampling conditions; supine rest for plasma when possible.", "CT/MRI only after biochemical evidence."], ["Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."], ["Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade."], [">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway."]),
+  w("Adrenal Gland Disorders", "Pheochromocytoma", ["ES_PHEO_PPGL_2014", "ESE_ADRENAL_INCIDENTALOMA_2023"], ["Episodic headaches, sweating, palpitations, panic-like spells.", "Paroxysmal/resistant hypertension, adrenal incidentaloma, MEN2/VHL/NF1/SDHx history."], ["BP and orthostasis, tachyarrhythmia, volume status, hereditary stigmata if relevant."], ["Plasma free metanephrines or urinary fractionated metanephrines.", "Use proper sampling conditions; supine rest for plasma when possible.", "CT/MRI only after biochemical evidence."], ["Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive."], ["Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade."], [">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway."]),
   w("Adrenal Gland Disorders", "Congenital Adrenal Hyperplasia (CAH)", ["ES_CAH_2018"], ["Neonatal ambiguous genitalia/salt wasting, early pubarche, hirsutism/acne, infertility.", "Family history, glucocorticoid adherence, adrenal crisis history."], ["BP/volume, virilization/genital exam by appropriate specialist, growth/puberty, hyperpigmentation."], ["17-hydroxyprogesterone, often with cosyntropin stimulation.", "Electrolytes, glucose, renin/aldosterone.", "Androgens: testosterone, androstenedione, DHEAS as indicated.", "CYP21A2 genetic testing when diagnosis/family planning unclear."], ["17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening."], ["Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia."], ["Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway."])
 ];
 
 const reproductiveDx = [
   w("Reproductive and Gonadal Disorders", "Polycystic Ovary Syndrome (PCOS)", ["PCOS_GUIDELINE_2023"], ["Cycle irregularity, infertility, hirsutism/acne/alopecia.", "Weight/metabolic history, sleep apnea/mood, rapid virilization."], ["BMI/waist/BP, hirsutism/acne/alopecia, acanthosis.", "Pelvic/ultrasound by appropriate clinician if indicated."], ["Pregnancy test.", "Total/free testosterone by reliable assay.", "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.", "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP."], ["Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."], ["Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding."], ["Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation."]),
-  w("Reproductive and Gonadal Disorders", "Hypogonadism (Low Testosterone in Men)", ["ES_TESTOSTERONE_2018"], ["Libido, ED, infertility, low energy/mood, muscle loss.", "Puberty history, testicular injury, opioids/anabolic steroids, fertility plans."], ["Testicular size/consistency, body hair/gynecomastia, BMI/waist/BP, visual fields if pituitary concern."], ["Morning total testosterone on two occasions.", "Free testosterone if SHBG altered or total near lower limit.", "LH/FSH.", "Prolactin, iron studies, pituitary evaluation when secondary."], refs.pituitary, ["New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority."], ["Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."]),
-  w("Reproductive and Gonadal Disorders", "Menopause / Premature Ovarian Insufficiency", ["ESHRE_POI_2024", "ASRM_AMENORRHEA_2024"], ["Age, last menstrual period, vasomotor/sleep/mood/genitourinary symptoms.", "Pregnancy possibility, chemo/radiation/surgery, autoimmune/family POI."], ["BP/BMI, estrogen-deficiency signs, thyroid/autoimmune clues, pelvic exam when indicated."], ["Pregnancy test if amenorrhea.", "FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty.", "TSH/prolactin.", "POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA as indicated."], refs.pituitary, ["Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling."], ["POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention."], ["POI", "premature ovarian insufficiency"]),
-  w("Reproductive and Gonadal Disorders", "Erectile Dysfunction (Endocrine-related)", ["AUA_ED_2018", "ES_TESTOSTERONE_2018"], ["Onset, libido, morning erections, ejaculation/orgasm.", "Diabetes, vascular disease, depression, medications, sleep apnea."], ["BP/BMI/waist, genital/testicular exam, secondary sex characteristics, vascular/neuro exam when indicated."], ["Morning total testosterone.", "A1c/FPG and lipids.", "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms."], refs.pituitary.concat(refs.glycemia), ["New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms."], ["Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management."]),
+  w("Reproductive and Gonadal Disorders", "Hypogonadism (Low Testosterone in Men)", ["ES_TESTOSTERONE_2018", "AUA_TESTOSTERONE_2024"], ["Libido, ED, infertility, low energy/mood, muscle loss.", "Puberty history, testicular injury, opioids/anabolic steroids, fertility plans."], ["Testicular size/consistency, body hair/gynecomastia, BMI/waist/BP, visual fields if pituitary concern."], ["Morning total testosterone on two occasions.", "Free testosterone if SHBG altered or total near lower limit.", "LH/FSH.", "Prolactin, iron studies, pituitary evaluation when secondary."], refs.pituitary, ["New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority."], ["Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."]),
+  w("Reproductive and Gonadal Disorders", "Menopause / Premature Ovarian Insufficiency", ["ESHRE_POI_2024", "ASRM_AMENORRHEA_2024", "IMS_MENOPAUSE_2026", "MENOPAUSE_SOCIETY_HT_2022"], ["Age, last menstrual period, vasomotor/sleep/mood/genitourinary symptoms.", "Pregnancy possibility, chemo/radiation/surgery, autoimmune/family POI."], ["BP/BMI, estrogen-deficiency signs, thyroid/autoimmune clues, pelvic exam when indicated."], ["Pregnancy test if amenorrhea.", "FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty.", "TSH/prolactin.", "POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA as indicated."], refs.pituitary, ["Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling."], ["POI changes routine menopause counseling to etiologic evaluation, fertility counseling, and bone/cardiovascular prevention."], ["POI", "premature ovarian insufficiency"]),
+  w("Reproductive and Gonadal Disorders", "Erectile Dysfunction (Endocrine-related)", ["AUA_ED_2018", "ES_TESTOSTERONE_2018", "AUA_TESTOSTERONE_2024"], ["Onset, libido, morning erections, ejaculation/orgasm.", "Diabetes, vascular disease, depression, medications, sleep apnea."], ["BP/BMI/waist, genital/testicular exam, secondary sex characteristics, vascular/neuro exam when indicated."], ["Morning total testosterone.", "A1c/FPG and lipids.", "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms."], refs.pituitary.concat(refs.glycemia), ["New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms."], ["Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management."]),
   w("Reproductive and Gonadal Disorders", "Amenorrhea (Absence of menstruation)", ["ASRM_AMENORRHEA_2024"], ["Primary vs secondary amenorrhea, cycle history, pregnancy risk.", "Weight loss/exercise/stress/eating disorder, galactorrhea, headache/vision, hirsutism/acne/hot flashes."], ["BMI/vitals, pubertal development, hirsutism/acne/galactorrhea, thyroid, pelvic exam when indicated."], ["Pregnancy test first.", "TSH and prolactin.", "FSH and estradiol.", "Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP."], refs.pituitary.concat(refs.thyroid), ["Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder."], ["FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral."]),
   w("Reproductive and Gonadal Disorders", "Infertility (Hormonal causes)", ["ASRM_AMENORRHEA_2024", "PCOS_GUIDELINE_2023", "ES_TESTOSTERONE_2018"], ["Duration trying, cycle regularity, ovulation symptoms.", "Partner semen history, galactorrhea, thyroid symptoms, hyperandrogenism, prior loss."], ["BMI/BP, thyroid, hirsutism/acne, galactorrhea, testicular exam in male partner if in scope."], ["Pregnancy test if amenorrhea.", "TSH/prolactin.", "FSH/estradiol/AMH/antral follicle count as indicated.", "PCOS and androgen labs.", "Semen analysis; male morning testosterone/LH/FSH if indicated."], refs.pituitary.concat(refs.thyroid), ["Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup."], ["Anovulation, thyroid/prolactin abnormality, POI pattern, or male factor changes treatment/referral."]),
-  w("Reproductive and Gonadal Disorders", "Gynecomastia (Enlarged male breast tissue)", ["ES_TESTOSTERONE_2018", "ES_HYPERPROLACTINEMIA_2011"], ["Duration, pain/tenderness, unilateral mass/nipple discharge.", "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms."], ["Glandular vs adiposity, breast mass/skin/nipple/nodes, testicular exam, thyroid/liver signs."], ["Total testosterone, LH, FSH, estradiol.", "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.", "TSH, prolactin, liver/kidney function."], refs.pituitary, ["Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression."], ["Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup."]),
+  w("Reproductive and Gonadal Disorders", "Gynecomastia (Enlarged male breast tissue)", ["ES_TESTOSTERONE_2018", "AUA_TESTOSTERONE_2024", "ES_HYPERPROLACTINEMIA_2011"], ["Duration, pain/tenderness, unilateral mass/nipple discharge.", "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms."], ["Glandular vs adiposity, breast mass/skin/nipple/nodes, testicular exam, thyroid/liver signs."], ["Total testosterone, LH, FSH, estradiol.", "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.", "TSH, prolactin, liver/kidney function."], refs.pituitary, ["Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression."], ["Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup."]),
   w("Reproductive and Gonadal Disorders", "Hirsutism (Excessive hair growth)", ["ES_HIRSUTISM_2018", "PCOS_GUIDELINE_2023"], ["Onset/progression, virilization, menstrual irregularity.", "Acne/alopecia, infertility, medications, family/ethnic hair pattern."], ["Ferriman-Gallwey pattern/severity, virilization signs, acne/alopecia, BMI/BP/acanthosis."], ["Total testosterone and free testosterone when indicated.", "Early morning 17-OHP.", "DHEAS when severe/rapid.", "TSH/prolactin/metabolic PCOS tests when menstrual disturbance."], refs.pituitary, ["Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms."], ["Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway."])
 ];
 
 const pituitaryDx = [
-  w("Pituitary Gland Disorders", "Prolactinoma (Benign pituitary tumor)", ["ES_HYPERPROLACTINEMIA_2011"], ["Galactorrhea, amenorrhea/oligomenorrhea, infertility, low libido/ED.", "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation."], ["Visual fields, galactorrhea/breast exam when appropriate, hypogonadism signs, cranial nerve symptoms."], ["Serum prolactin; repeat/macroprolactin if mild/discordant.", "Pregnancy test, TSH/free T4, renal function.", "Pituitary MRI after persistent unexplained elevation or mass symptoms."], refs.pituitary, ["Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms."], ["Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."]),
-  w("Pituitary Gland Disorders", "Acromegaly", ["PITUITARY_ACROMEGALY_2021"], ["Enlarging hands/feet, ring/shoe size, facial changes.", "Headache/vision, sweating, arthralgia, sleep apnea, diabetes, hypertension, colon polyps."], ["Coarse facial features, macroglossia, jaw spacing, hand/foot enlargement, BP/cardiac signs, visual fields."], ["IGF-1 age/sex-adjusted.", "Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.", "Pituitary MRI after biochemical evidence.", "A1c/BP/OSA/echo/colon risk screening."], refs.pituitary, ["Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA."], ["Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway."]),
-  w("Pituitary Gland Disorders", "Gigantism", ["PITUITARY_ACROMEGALY_2021"], ["Accelerated linear growth, headache/vision, puberty timing, family heights.", "Sweating, sleep apnea, joint pain."], ["Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields."], ["IGF-1 age/puberty-adjusted.", "GH suppression after oral glucose.", "Bone age and growth assessment.", "Pituitary MRI after biochemical evidence."], ["Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."], ["Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy."], ["Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."]),
+  w("Pituitary Gland Disorders", "Prolactinoma (Benign pituitary tumor)", ["PITUITARY_PROLACTINOMA_2023", "ES_HYPERPROLACTINEMIA_2011"], ["Galactorrhea, amenorrhea/oligomenorrhea, infertility, low libido/ED.", "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation."], ["Visual fields, galactorrhea/breast exam when appropriate, hypogonadism signs, cranial nerve symptoms."], ["Serum prolactin; repeat/macroprolactin if mild/discordant.", "Pregnancy test, TSH/free T4, renal function.", "Pituitary MRI after persistent unexplained elevation or mass symptoms."], refs.pituitary, ["Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms."], ["Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."]),
+  w("Pituitary Gland Disorders", "Acromegaly", ["ES_ACROMEGALY_2014", "PITUITARY_ACROMEGALY_2021", "ACROMEGALY_DIAGNOSIS_REMISSION_2024", "ACROMEGALY_COMPLICATIONS_2026"], ["Enlarging hands/feet, ring/shoe size, facial changes.", "Headache/vision, sweating, arthralgia, sleep apnea, diabetes, hypertension, colon polyps."], ["Coarse facial features, macroglossia, jaw spacing, hand/foot enlargement, BP/cardiac signs, visual fields."], ["IGF-1 age/sex-adjusted.", "Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.", "Pituitary MRI after biochemical evidence.", "A1c/BP/OSA/echo/colon risk screening."], refs.pituitary, ["Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA."], ["Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway."]),
+  w("Pituitary Gland Disorders", "Gigantism", ["ES_ACROMEGALY_2014", "PITUITARY_ACROMEGALY_2021", "ACROMEGALY_DIAGNOSIS_REMISSION_2024", "ACROMEGALY_COMPLICATIONS_2026"], ["Accelerated linear growth, headache/vision, puberty timing, family heights.", "Sweating, sleep apnea, joint pain."], ["Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields."], ["IGF-1 age/puberty-adjusted.", "GH suppression after oral glucose.", "Bone age and growth assessment.", "Pituitary MRI after biochemical evidence."], ["Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."], ["Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy."], ["Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."]),
   w("Pituitary Gland Disorders", "Hypopituitarism", ["ES_HYPOPITUITARISM_2016"], ["Pituitary surgery/radiation/tumor/apoplexy/head trauma.", "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."], ["Orthostatic vitals, visual fields, secondary sex characteristics, thyroid/skin signs, volume status."], ["8 AM cortisol +/- ACTH stimulation.", "Free T4 with TSH.", "LH/FSH with testosterone or estradiol.", "Prolactin, IGF-1 and dynamic GH testing when indicated.", "Pituitary MRI."], refs.adrenal.concat(refs.thyroid, refs.pituitary), ["Adrenal crisis, pituitary apoplexy, visual loss, severe hyponatremia."], ["Central adrenal insufficiency must be addressed before thyroid hormone escalation."]),
   w("Pituitary Gland Disorders", "Diabetes Insipidus", ["ENDOTEXT_DI_2026", "SFE_CDI_2018"], ["24-hour urine volume, nocturia, thirst, access to water.", "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor."], ["Volume status and orthostatic vitals, mental status, mucous membranes, neurologic/pituitary mass signs."], ["Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.", "Serum sodium/plasma osmolality.", "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.", "Water deprivation/desmopressin or copeptin-based test."], ["Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.", "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."], ["Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access."], ["Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway."], ["AVP deficiency", "central DI", "nephrogenic DI"]),
-  w("Pituitary Gland Disorders", "Cushing's Disease (Pituitary-dependent Cushing's)", ["ES_CUSHING_DX_2008", "ES_HYPOPITUITARISM_2016"], ["Cushing phenotype plus headache/vision symptoms.", "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."], ["Cushing phenotype, BP/glucose complications, proximal weakness/skin, visual fields."], ["First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.", "ACTH: normal/high supports ACTH-dependent disease.", "Pituitary MRI.", "Inferior petrosal sinus sampling when MRI equivocal/discordant."], ["Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."], ["Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes."], ["ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."])
+  w("Pituitary Gland Disorders", "Cushing's Disease (Pituitary-dependent Cushing's)", ["ES_CUSHING_DX_2008", "ES_CUSHING_TREATMENT_2015", "ES_HYPOPITUITARISM_2016"], ["Cushing phenotype plus headache/vision symptoms.", "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."], ["Cushing phenotype, BP/glucose complications, proximal weakness/skin, visual fields."], ["First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.", "ACTH: normal/high supports ACTH-dependent disease.", "Pituitary MRI.", "Inferior petrosal sinus sampling when MRI equivocal/discordant."], ["Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."], ["Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes."], ["ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."])
 ];
 
 const workups = [...dx, ...moreDx, ...reproductiveDx, ...pituitaryDx];
@@ -206,12 +216,217 @@ function resolveAppSupport(row) {
   return result.validatedMatches.map((intent) => ({ intent_id: intent.intent_id, label: intent.label, score: intent.score }));
 }
 
+function slug(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/['']/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_+/g, "_");
+}
+
+function diagnosisModuleId(diagnosis) {
+  return `${slug(diagnosis.replace(/\([^)]*\)/g, "").replace(/\//g, " "))}_v1`;
+}
+
+function uniqueList(items = []) {
+  const seen = new Set();
+  return items
+    .map((item) => String(item || "").trim())
+    .filter(Boolean)
+    .filter((item) => {
+      const key = item.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function deploymentAdditions(row) {
+  const shared = {
+    questions: [
+      "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+      "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?"
+    ],
+    exam: [
+      "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+      "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications."
+    ],
+    tests: [
+      "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+      "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG."
+    ],
+    reference_values: [
+      "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
+    ],
+    red_flags: [
+      "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation."
+    ],
+    management_changes: [
+      "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+      "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
+    ]
+  };
+
+  const byCategory = {
+    "Diabetes and Blood Sugar Disorders": {
+      questions: [
+        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
+      ],
+      exam: [
+        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
+      ],
+      tests: [
+        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
+      ],
+      red_flags: [
+        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
+      ],
+      management_changes: [
+        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
+      ]
+    },
+    "Thyroid Disorders": {
+      questions: [
+        "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
+      ],
+      exam: [
+        "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present."
+      ],
+      tests: [
+        "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context."
+      ],
+      red_flags: [
+        "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes."
+      ],
+      management_changes: [
+        "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway."
+      ]
+    },
+    "Bone and Parathyroid Disorders": {
+      questions: [
+        "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
+      ],
+      exam: [
+        "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible."
+      ],
+      tests: [
+        "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant."
+      ],
+      red_flags: [
+        "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia."
+      ],
+      management_changes: [
+        "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway."
+      ]
+    },
+    "Adrenal Gland Disorders": {
+      questions: [
+        "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      ],
+      exam: [
+        "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible."
+      ],
+      tests: [
+        "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context."
+      ],
+      red_flags: [
+        "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE."
+      ],
+      management_changes: [
+        "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning."
+      ]
+    },
+    "Reproductive and Gonadal Disorders": {
+      questions: [
+        "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact."
+      ],
+      exam: [
+        "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
+        "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present."
+      ],
+      tests: [
+        "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
+      ],
+      red_flags: [
+        "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism."
+      ],
+      management_changes: [
+        "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection."
+      ]
+    },
+    "Pituitary Gland Disorders": {
+      questions: [
+        "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
+      ],
+      exam: [
+        "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy."
+      ],
+      tests: [
+        "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated."
+      ],
+      red_flags: [
+        "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy."
+      ],
+      management_changes: [
+        "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway."
+      ]
+    }
+  };
+  const extra = byCategory[row.category] || {};
+  return {
+    questions: uniqueList([...(row.questions || []), ...shared.questions, ...(extra.questions || [])]),
+    exam: uniqueList([...(row.exam || []), ...shared.exam, ...(extra.exam || [])]),
+    tests: uniqueList([...(row.tests || []), ...shared.tests, ...(extra.tests || [])]),
+    reference_values: uniqueList([...(row.reference_values || []), ...shared.reference_values, ...(extra.reference_values || [])]),
+    red_flags: uniqueList([...(row.red_flags || []), ...shared.red_flags, ...(extra.red_flags || [])]),
+    management_changes: uniqueList([...(row.management_changes || []), ...shared.management_changes, ...(extra.management_changes || [])])
+  };
+}
+
+function augmentWorkup(row) {
+  return {
+    ...row,
+    ...deploymentAdditions(row)
+  };
+}
+
 function validate(row) {
   const issues = [];
   const validSources = new Set(Object.keys(sources));
   for (const key of ["category", "diagnosis"]) if (!row[key]) issues.push(`missing ${key}`);
   for (const key of ["source_ids", "questions", "exam", "tests", "reference_values", "red_flags", "management_changes"]) {
     if (!Array.isArray(row[key]) || !row[key].length) issues.push(`missing ${key}`);
+  }
+  const minimums = { questions: 4, exam: 3, tests: 4, reference_values: 2, red_flags: 2, management_changes: 3 };
+  for (const [key, minimum] of Object.entries(minimums)) {
+    if ((row[key] || []).length < minimum) {
+      issues.push(`${key} has ${row[key]?.length || 0}; expected at least ${minimum}`);
+    }
   }
   for (const sourceId of row.source_ids || []) if (!validSources.has(sourceId)) issues.push(`unknown source ${sourceId}`);
   const hasNumericValue = [...row.tests, ...row.reference_values].some((value) => /(?:>=|<=|>|<|\d)/.test(String(value)));
@@ -239,8 +454,8 @@ function formatReport(results) {
     "## Coverage Summary",
     "",
     ...Array.from(categoryCounts.entries()).map(([category, count]) => `- ${category}: ${count}`),
+    `- Current app installed module support: ${results.filter((row) => row.app_module_id).length}/${results.length}`,
     `- Current app validated-intent matches: ${results.filter((row) => row.app_intent_matches.length).length}/${results.length}`,
-    `- Current app registry gaps: ${results.filter((row) => !row.app_intent_matches.length).length}/${results.length}`,
     "",
     "## Guideline Source Registry",
     ""
@@ -255,7 +470,7 @@ function formatReport(results) {
       "",
       `Category: ${row.category}`,
       `Quality status: ${row.quality_issues.length ? "review" : "pass"}`,
-      `Current app support: ${row.app_intent_matches.length ? row.app_intent_matches.map((match) => `${match.intent_id} (${match.score})`).join("; ") : "registry gap - needs validated clinical intent/knowledge pack before app recommendations"}`,
+      `Current app support: installed module ${row.app_module_id}; validated intent matches: ${row.app_intent_matches.length ? row.app_intent_matches.map((match) => `${match.intent_id} (${match.score})`).join("; ") : "none - searchable through installed medical knowledge module"}`,
       `Guidelines: ${row.source_ids.join("; ")}`,
       "",
       "Clinical questions:",
@@ -303,18 +518,19 @@ function write(path, text) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  const results = workups.map((row) => ({
+  const results = workups.map((row) => augmentWorkup(row)).map((row) => ({
     ...row,
+    app_module_id: diagnosisModuleId(row.diagnosis),
     app_intent_matches: resolveAppSupport(row),
     quality_issues: validate(row)
   }));
   const reportPath = write(args.out, formatReport(results));
   const jsonPath = write(args.json, `${JSON.stringify({ generated_at: generatedAt, accessed_date: accessedDate, sources, workups: results }, null, 2)}\n`);
   const issueCount = results.reduce((sum, row) => sum + row.quality_issues.length, 0);
-  const registryGapCount = results.filter((row) => !row.app_intent_matches.length).length;
+  const registryGapCount = results.filter((row) => !row.app_module_id).length;
   process.stdout.write(`Generated ${results.length} endocrine workups: ${reportPath}\n`);
   process.stdout.write(`JSON: ${jsonPath}\n`);
-  process.stdout.write(`Quality issues: ${issueCount}; current app registry gaps: ${registryGapCount}\n`);
+  process.stdout.write(`Quality issues: ${issueCount}; current app installed-module gaps: ${registryGapCount}\n`);
 }
 
 main();

@@ -4,7 +4,7 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 
 ## What The App Does
 
-- Starts from either a local encrypted census vault or a single-patient workspace.
+- Starts from either a local encrypted de-identified case vault or a single-patient workspace.
 - Accepts chart notes, labs, handoff text, medication orders, and MAR context.
 - De-identifies pasted text locally in the browser before prompts are copied elsewhere.
 - Builds a structured workflow: chart info -> checklist -> bedside findings -> final update.
@@ -34,6 +34,8 @@ npm run build:medical-knowledge
 npm run test:medical-knowledge
 ```
 
+The app also has a local Medical knowledge base editor under Tools. Use it to inspect a module, edit recommendation cards, add or remove local items, and save a device-local override that the clinical workup uses immediately. Those local edits stay in the browser until reset. Use Suggest to maintainer to export and stage a review proposal; use Submit source text or clinical script for pasted guideline/pathway material that needs reviewer extraction.
+
 Endocrine workup expansion has a separate generator/install path:
 
 ```bash
@@ -62,9 +64,9 @@ Use `npm run test:evidence-suite` when touching `data/evidence/` or evidence ran
 
 ## Security And Privacy
 
-The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, and saved census workspaces are encrypted in the browser vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
+The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, no cloud backend receives patient data by default, and saved vault records are encrypted de-identified case workspaces. Raw chart text, admission intake text, patient names, MRNs, room numbers, and obvious roster identifiers are not persisted in the vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
 
-This app can reduce PHI exposure, but it does not by itself certify HIPAA de-identification or make an external AI workflow HIPAA compliant. Institutional policy, approved tool use, required Business Associate Agreements, and documented risk analysis still govern.
+This app can reduce PHI exposure, but it does not by itself certify HIPAA de-identification or satisfy HIPAA obligations for an external AI workflow. Institutional policy, approved tool use, required Business Associate Agreements, and documented risk analysis still govern.
 
 ## Safety Notes
 

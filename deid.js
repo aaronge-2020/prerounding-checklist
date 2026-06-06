@@ -2199,6 +2199,7 @@ function buildAliasVariantsForIdentity(identity) {
   }
   if (identity.first && identity.surname) {
     variants.push({ text: `${identity.first} ${identity.surname}` });
+    variants.push({ text: identity.first, requiresStrongContext: true, source: "first-name alias" });
   }
 
   const distinctive = isDistinctiveSurname(identity.surname);
@@ -2290,7 +2291,7 @@ function hasStrongNameContext(rawText, start, end) {
   const span = rawText.slice(start, end);
   const sameLine = sameLineContext(rawText, start, end);
   return /^(?:dr|doctor|mr|mrs|ms|miss)\.?\s+/i.test(span) ||
-    /\b(?:one-line summary|overall assessment|patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|follow up with|spoke with|call|called|contact|can bring|confirm|before leaving|prescriptions to|admitted|discharge|scheduling|appointment)\b/.test(sameLine) ||
+    /\b(?:one-line summary|overall assessment|patient name|pt name|patient|provider|doctor|physician|attending|resident|fellow|consultant|surgeon|pcp|endocrinologist|referring provider|ordering provider|emergency contact|mother|father|spouse|daughter|son|guardian|caregiver|follow-up with|follow up with|spoke with|call|called|contact|can bring|confirm|before leaving|prescriptions to|admitted|discharge|scheduling|appointment|reports|reported|states|stated|says|said|endorses|denies|feels|complains|presents|presented|at bedside)\b/.test(sameLine) ||
     /\b(?:\d{1,3}\s*(?:y\.?o\.?|yo)|\d{1,3}[- ]year[- ]old|female|male|woman|man|adult)\b/.test(sameLine);
 }
 

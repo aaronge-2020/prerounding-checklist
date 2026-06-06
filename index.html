@@ -5155,6 +5155,8 @@
             <div id="complaintCdsSummary" class="complaint-cds-summary" hidden></div>
             <div id="complaintCdsSources" class="complaint-cds-tags" hidden></div>
             <div id="complaintCdsResults" class="complaint-cds-results" hidden></div>
+          </div>
+        </details>
 
         <details id="examTesterPanel" class="exam-tester-panel">
           <summary>Reviewer audit / evidence retrieval</summary>
@@ -5205,8 +5207,6 @@
             <div id="examTesterTags" class="exam-tester-tags" hidden></div>
             <div id="examTesterResults" class="exam-tester-results" hidden></div>
             <div id="examTesterGaps" class="exam-tester-gaps" hidden></div>
-          </div>
-        </details>
           </div>
         </details>
 
@@ -5433,7 +5433,7 @@
       <header class="census-header">
         <div>
           <h1 id="censusTitle">Start Rounds Workspace</h1>
-          <p class="census-subtitle">Choose whether to unlock your encrypted local census, start a new one, or work on one patient without saving a vault.</p>
+          <p class="census-subtitle">Choose whether to unlock your encrypted de-identified case vault, start a new one, or work on one patient without saving a vault.</p>
         </div>
         <button id="lockCensusButton" class="btn btn-secondary" type="button" hidden>Lock Census</button>
       </header>
@@ -5443,8 +5443,8 @@
           <div>
             <p class="eyebrow">Local privacy vault</p>
             <h2 id="censusVaultTitle" class="workflow-title">Choose how to start</h2>
-            <p class="vault-claim">Patient data stays on this computer.</p>
-            <p class="vault-copy">This app supports one encrypted local vault per browser. Unlock the vault already saved here, create a new one when no vault exists, or use one-patient mode without creating saved census storage.</p>
+            <p class="vault-claim">No cloud upload by default.</p>
+            <p class="vault-copy">This app does not send patient data to a cloud backend. The vault saves only reviewed de-identified case workspace data in this browser; raw chart text, admission intake text, patient names, MRNs, and room numbers are not persisted.</p>
           </div>
           <div id="vaultStatusBanner" class="vault-status-banner" role="status" aria-live="polite">
             <span id="vaultStatusTitle" class="vault-status-title">Checking vault</span>
@@ -5458,7 +5458,7 @@
               <span class="vault-icon" aria-hidden="true">U</span>
               <div>
                 <h3 id="unlockVaultTitle" class="vault-card-title">Unlock existing vault</h3>
-                <p id="unlockVaultCopy" class="vault-card-copy">This unlocks data already saved in this browser. It is not an account login.</p>
+                <p id="unlockVaultCopy" class="vault-card-copy">This unlocks reviewed de-identified workspace data already saved in this browser. It is not an account login.</p>
               </div>
             </div>
             <div class="vault-field-group">
@@ -5478,7 +5478,7 @@
               <span class="vault-icon" aria-hidden="true">N</span>
               <div>
                 <h3 id="createVaultTitle" class="vault-card-title">Create new vault</h3>
-                <p id="createVaultCopy" class="vault-card-copy">This starts a brand-new encrypted vault in this browser.</p>
+                <p id="createVaultCopy" class="vault-card-copy">This starts a brand-new encrypted vault for de-identified case workspace data in this browser.</p>
               </div>
             </div>
             <div class="vault-field-group">
@@ -5490,7 +5490,7 @@
               <label for="createCensusPassphraseConfirmInput">Confirm new passcode</label>
               <input id="createCensusPassphraseConfirmInput" class="census-input" type="password" autocomplete="new-password" placeholder="Re-enter new passcode" aria-describedby="createVaultError">
               <p id="createCapsWarning" class="vault-caps-warning" hidden>Caps Lock is on.</p>
-              <p id="createVaultContextCopy" class="vault-mode-note">A blank vault starts with Patient A.</p>
+              <p id="createVaultContextCopy" class="vault-mode-note">A blank vault starts with Case A. Use non-identifying labels only.</p>
               <p id="createVaultError" class="vault-inline-error" role="status" aria-live="polite"></p>
             </div>
             <button id="createCensusButton" class="btn btn-primary" type="button">Create local vault</button>
@@ -5548,9 +5548,9 @@
         </details>
 
         <ul class="vault-assurance-list" aria-label="Local privacy protections">
-          <li><strong>No app server upload</strong>This app does not send your census, pasted chart text, or saved patient workspace to a backend service.</li>
-          <li><strong>Encrypted saved census</strong>Saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
-          <li><strong>You control sharing</strong>Information leaves this computer only when you intentionally copy and paste reviewed text into another site.</li>
+          <li><strong>No app server upload</strong>This app does not send pasted chart text, census data, or case workspaces to a backend service by default.</li>
+          <li><strong>De-identified vault records</strong>Only reviewed de-identified workspace data is saved; raw chart text and obvious roster identifiers are dropped before vault storage.</li>
+          <li><strong>You control sharing</strong>Information leaves this device only when you intentionally copy reviewed text into another site or export an encrypted file.</li>
         </ul>
         <p id="censusVaultStatus" class="vault-status" role="status" aria-live="polite"></p>
         <p id="censusPasscodeHelp" class="passcode-help">There is no account login. The passcode is only for this browser's encrypted vault; the app cannot recover it if it is forgotten.</p>
@@ -5569,7 +5569,7 @@
           <div class="census-toolbar">
             <div>
               <p class="eyebrow">Roster</p>
-              <h2 id="patientRosterTitle" class="workflow-title">Local patient workspaces</h2>
+              <h2 id="patientRosterTitle" class="workflow-title">Local de-identified case workspaces</h2>
             </div>
             <div class="filter-group" role="group" aria-label="Census filters">
               <button class="filter-toggle" type="button" aria-pressed="false" data-census-filter="needsBedside">Needs bedside</button>
@@ -5582,15 +5582,15 @@
           <form id="patientEditorForm" class="surface patient-editor-panel" autocomplete="off">
             <div class="patient-editor-grid">
               <div>
-                <label for="patientAliasInput">Alias</label>
-                <input id="patientAliasInput" class="census-input" type="text" placeholder="Patient A">
+                <label for="patientAliasInput">Case alias</label>
+                <input id="patientAliasInput" class="census-input" type="text" placeholder="Case A">
               </div>
               <div>
-                <label for="patientRoomInput">Room / bed</label>
-                <input id="patientRoomInput" class="census-input" type="text" placeholder="Room 812">
+                <label for="patientRoomInput">Non-identifying sort label</label>
+                <input id="patientRoomInput" class="census-input" type="text" placeholder="Slot A">
               </div>
               <div>
-                <label for="patientProblemInput">Service problem</label>
+                <label for="patientProblemInput">Non-identifying problem label</label>
                 <input id="patientProblemInput" class="census-input" type="text" placeholder="DKA consult">
               </div>
               <div class="census-checks">
@@ -5676,10 +5676,10 @@
           <h2 id="privacyStatusTitle" class="workflow-title">Local-only privacy guardrails</h2>
         </div>
         <ul class="privacy-list">
-          <li>This app does not upload pasted chart text, census data, or patient workspaces to an app server.</li>
+          <li>This app does not upload pasted chart text, census data, or case workspaces to an app server by default.</li>
           <li>No analytics, telemetry, tracking pixels, or ad scripts are included in this app.</li>
           <li>Raw pasted chart text is used only for local de-identification in this browser tab, then cleared after review.</li>
-          <li>In census mode, saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
+          <li>In census mode, saved de-identified case workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
           <li>Review every prompt before copying to OpenEvidence or another external tool. This app reduces PHI risk but does not legally certify HIPAA de-identification; institutional policy, approved tool use, and any required Business Associate Agreement still govern.</li>
         </ul>
         <details id="securitySettingsPanel" class="security-settings-panel" open>
@@ -6450,12 +6450,12 @@ enoxaparin 40 mg held by provider"></textarea>
           <div class="surface patient-editor-panel">
             <div class="continuity-case-grid">
               <div>
-                <label for="continuityCaseSelect">Saved patient case</label>
+                <label for="continuityCaseSelect">Saved case</label>
                 <select id="continuityCaseSelect" class="census-select"></select>
               </div>
               <div>
                 <label for="continuityCaseLabelInput">Case label</label>
-                <input id="continuityCaseLabelInput" class="census-input" type="text" placeholder="Patient A">
+                <input id="continuityCaseLabelInput" class="census-input" type="text" placeholder="Case A">
               </div>
               <div>
                 <label for="continuityCaseKeyInput">Conversation key</label>
@@ -6995,6 +6995,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       evidenceMatchedTags: [],
       clinicalIntentMatches: [],
       selectedClinicalIntentIds: [],
+      selectedKnowledgeModuleId: "",
       stagedClinicalIntentGaps: [],
       complaintCdsResult: null,
       complaintCdsAnswers: {},
@@ -9049,7 +9050,7 @@ Sensory level present: No / Yes, at ___`;
         if (!activeContinuityCase()) {
           return {
             title: "Resume a patient",
-            copy: "Create or select the local patient case for today's update.",
+            copy: "Create or select the local de-identified case for today's update.",
             label: "Open resume case",
             action: "focus-continuity"
           };
@@ -9323,8 +9324,34 @@ Sensory level present: No / Yes, at ___`;
 
     function normalizeOpenEvidenceResultsList(value = []) {
       return Array.isArray(value)
-        ? value.map((result) => normalizeOpenEvidenceTaskResult(result)).filter((result) => result.taskId)
+        ? value.map((result) => storageSafeOpenEvidenceResult(result)).filter((result) => result.taskId)
         : [];
+    }
+
+    function openEvidenceResultStorageText(result = {}) {
+      const normalized = normalizeOpenEvidenceTaskResult(result);
+      return [
+        normalized.acceptedSummary,
+        normalized.checklistText,
+        ...normalized.concerns.map((concern) => concern.text || ""),
+        ...normalized.citations
+      ].filter(Boolean).join("\n");
+    }
+
+    function storageSafeOpenEvidenceResult(result = {}) {
+      const normalized = normalizeOpenEvidenceTaskResult(result);
+      return normalizeOpenEvidenceTaskResult({
+        ...normalized,
+        sections: [],
+        concerns: normalized.concerns.map((concern) => ({
+          priority: String(concern.priority || "review").trim(),
+          section: String(concern.section || "").trim(),
+          text: String(concern.text || "").trim()
+        })).filter((concern) => concern.text),
+        citations: normalized.citations.map((citation) => String(citation || "").trim()).filter(Boolean).slice(0, 24),
+        checklistText: normalized.checklistText,
+        acceptedSummary: normalized.acceptedSummary
+      });
     }
 
     function saveOpenEvidenceResultsToStorage() {
@@ -9738,7 +9765,27 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       if (!state.pendingOpenEvidenceResult) {
         return false;
       }
-      const accepted = normalizeOpenEvidenceTaskResult({
+      const storageText = openEvidenceResultStorageText(state.pendingOpenEvidenceResult);
+      const storageCheck = runPhiSafetyCheck(storageText, {
+        reviewTarget: "paste",
+        reviewScope: "custom",
+        reviewText: storageText
+      });
+      const storageBlockers = blockingPhiWarnings(storageCheck.warnings);
+      if (storageBlockers.length) {
+        renderPhiSafetyPanel({ ...storageCheck, warnings: storageBlockers }, {
+          title: "PHI safety check for stored OpenEvidence summary",
+          subject: "reviewed OpenEvidence summary",
+          reviewTarget: "paste",
+          allowOverride: false
+        });
+        elements.openEvidencePastebackSummary.hidden = false;
+        elements.openEvidencePastebackSummary.textContent = "Possible identifiers remain in the OpenEvidence answer. Remove or redact them before marking this summary reviewed.";
+        elements.acceptOpenEvidenceResultButton.disabled = true;
+        showToast("Possible PHI remains. Summary was not stored.", { duration: 6000 });
+        return false;
+      }
+      const accepted = storageSafeOpenEvidenceResult({
         ...state.pendingOpenEvidenceResult,
         reviewStatus: "accepted",
         createdAt: state.pendingOpenEvidenceResult.createdAt || new Date().toISOString()
@@ -9761,6 +9808,23 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       if (!checklistText) {
         elements.openEvidencePastebackSummary.hidden = false;
         elements.openEvidencePastebackSummary.textContent = "No checklist text was detected in this pasted answer.";
+        return false;
+      }
+      const checklistCheck = runPhiSafetyCheck(checklistText, {
+        reviewTarget: "paste",
+        reviewScope: "custom",
+        reviewText: checklistText
+      });
+      const checklistBlockers = blockingPhiWarnings(checklistCheck.warnings);
+      if (checklistBlockers.length) {
+        renderPhiSafetyPanel({ ...checklistCheck, warnings: checklistBlockers }, {
+          title: "PHI safety check for checklist paste-back",
+          subject: "OpenEvidence checklist",
+          reviewTarget: "paste",
+          allowOverride: false
+        });
+        elements.openEvidencePastebackSummary.hidden = false;
+        elements.openEvidencePastebackSummary.textContent = "Possible identifiers remain in the checklist answer. Remove or redact them before applying it.";
         return false;
       }
       elements.checklistInput.value = checklistText;
@@ -10161,7 +10225,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       renderContinuityReview(null);
       elements.continuityStatus.textContent = normalized
         ? `Loaded ${normalized.label}${todayDay ? " with today's de-identified changes." : "."}`
-        : "Create or select a saved patient case.";
+        : "Create or select a saved de-identified case.";
     }
 
     function renderContinuityCases() {
@@ -10328,7 +10392,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         elements.vaultStatusDetail.textContent = "Single-patient mode still works, but this browser cannot protect a saved local census right now.";
       } else if (isUnlocked) {
         elements.vaultStatusTitle.textContent = "Vault unlocked";
-        elements.vaultStatusDetail.textContent = `${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`;
+        elements.vaultStatusDetail.textContent = `${state.census.patients.length} de-identified case workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`;
       } else if (vaultExists) {
         elements.vaultStatusTitle.textContent = "Vault found on this browser";
         elements.vaultStatusDetail.textContent = ["Unlock with the passcode created here.", envelopeDate].filter(Boolean).join(" ");
@@ -10355,7 +10419,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
         ? "Raw chart text is not saved into the vault. Run local de-ID first if you want current source context preserved."
         : hasWorkspaceContent
           ? "Create local vault from current workspace. Review de-identified content before saving."
-          : "A blank vault starts with Patient A.";
+          : "A blank vault starts with Case A.";
       elements.createVaultContextCopy.classList.toggle("is-warning", hasUnreviewedSource);
 
       elements.unlockCensusButton.classList.toggle("btn-primary", vaultExists && !storageUnavailable);
@@ -10392,8 +10456,8 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       elements.censusUnlockedSummary.hidden = !isUnlocked;
       if (isUnlocked) {
         elements.censusUnlockedSummaryCopy.textContent = active
-          ? `Resume ${active.alias}. ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`
-          : "Vault is unlocked with no patient workspaces yet.";
+          ? `Resume ${active.alias}. ${state.census.patients.length} de-identified case workspace${state.census.patients.length === 1 ? "" : "s"} loaded.`
+          : "Vault is unlocked with no case workspaces yet.";
         elements.continueUnlockedWorkspaceButton.textContent = active ? `Resume ${active.alias}` : "Add first patient";
       }
     }
@@ -10969,7 +11033,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
           : `Loaded with review issues: ${validation.issues.slice(0, 2).join(" ")}`);
         return;
       }
-      const module = selectedKnowledgeModule();
+      const module = selectedKnowledgeEditorModule();
       if (!module) {
         setKnowledgeBaseStatus("Select a module or paste JSON first.");
         return;
@@ -10998,7 +11062,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
     }
 
     function renderKnowledgeLocalSummary() {
-      const module = state.editableKnowledgeEnvelope?.module || selectedKnowledgeModule();
+      const module = state.editableKnowledgeEnvelope?.module || selectedKnowledgeEditorModule();
       const override = localKnowledgeOverrideForModule(module?.id || state.activeKnowledgeEditSourceModuleId);
       if (elements.knowledgeLocalModeSummary) {
         const mode = state.activeKnowledgeDirty
@@ -11484,7 +11548,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       };
     }
 
-    function selectedKnowledgeModule() {
+    function selectedKnowledgeEditorModule() {
       const id = elements.knowledgeModuleSelect?.value || "";
       return effectiveComplaintModules().find((module) => module.id === id) || effectiveComplaintModules()[0] || null;
     }
@@ -11499,7 +11563,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
     }
 
     function buildKnowledgeSourceRow() {
-      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "User source";
+      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeEditorModule()?.label || "User source";
       const title = elements.knowledgeSourceTitleInput.value.trim() || condition;
       const sourceType = elements.knowledgeSourceTypeSelect.value.trim() || "User submitted";
       const today = new Date().toISOString().slice(0, 10);
@@ -11609,7 +11673,7 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       const sourceRow = buildKnowledgeSourceRow();
       const owner = sanitizeKnowledgeId(elements.knowledgeSubmitterInput.value.trim() || "pending_reviewer", "pending_reviewer").toLowerCase();
       const sourceReference = sourceReferenceFromRow(sourceRow, owner);
-      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "the submitted condition";
+      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeEditorModule()?.label || "the submitted condition";
       const kind = elements.knowledgeProposalKind.value;
       const sourceText = elements.knowledgeSourceTextInput.value.trim();
       return `You are helping create a draft clinical decision support module for a pre-rounding checklist app.
@@ -11647,30 +11711,35 @@ ${sourceText || "[Paste source text here]"}`;
       }
       const now = new Date().toISOString();
       const sourceRow = buildKnowledgeSourceRow();
-      const moduleValidation = validateKnowledgeModuleEnvelope(elements.knowledgeModuleEditor.value, [sourceRow]);
       const hasModuleText = Boolean(elements.knowledgeModuleEditor.value.trim());
+      const kind = elements.knowledgeProposalKind.value;
+      const moduleEditKind = kind === "module_edit";
+      const moduleValidation = moduleEditKind && hasModuleText
+        ? validateKnowledgeModuleEnvelope(elements.knowledgeModuleEditor.value, [sourceRow])
+        : { ok: false, envelope: null, issues: [] };
       const sourceText = elements.knowledgeSourceTextInput.value.trim();
       const title = [
-        elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "Knowledge suggestion",
+        elements.knowledgeConditionInput.value.trim() || selectedKnowledgeEditorModule()?.label || "Knowledge suggestion",
         elements.knowledgeProposalKind.options[elements.knowledgeProposalKind.selectedIndex]?.textContent || ""
       ].filter(Boolean).join(" - ");
       const phiWarnings = sourceText ? scanResidualPhiShared(sourceText) : [];
       const validationIssues = [
-        ...(hasModuleText ? moduleValidation.issues : []),
+        ...(moduleEditKind && hasModuleText ? moduleValidation.issues : []),
+        ...(!moduleEditKind && !sourceText ? ["Paste guideline or script source text before staging this source submission."] : []),
         ...(phiWarnings.length ? [`Possible PHI-like text in source submission (${phiWarnings.length} warning${phiWarnings.length === 1 ? "" : "s"}).`] : [])
       ];
       return normalizeKnowledgeProposal({
         id: `kbp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
-        kind: elements.knowledgeProposalKind.value,
+        kind,
         status: "pending",
         title,
-        conditionLabel: elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "",
+        conditionLabel: elements.knowledgeConditionInput.value.trim() || selectedKnowledgeEditorModule()?.label || "",
         submitter: elements.knowledgeSubmitterInput.value.trim(),
         sourceRow,
         sourceText,
         notes: elements.knowledgeReviewerNotesInput.value.trim(),
         extractionPrompt: buildGuidelineExtractionPrompt(),
-        moduleEnvelope: hasModuleText && moduleValidation.ok ? moduleValidation.envelope : null,
+        moduleEnvelope: moduleEditKind && hasModuleText && moduleValidation.ok ? moduleValidation.envelope : null,
         validationIssues,
         createdAt: now,
         updatedAt: now
@@ -11749,6 +11818,10 @@ ${sourceText || "[Paste source text here]"}`;
       return summary.length ? summary.slice(0, 30) : ["No item-level changes detected."];
     }
 
+    function knowledgeChangeSummaryHasMeaningfulChanges(summary = []) {
+      return summary.some((line) => line && line !== "No item-level changes detected.");
+    }
+
     function refreshKnowledgeDependentViews() {
       renderClinicalIntentSelection();
       if (state.complaintCdsResult) {
@@ -11818,7 +11891,7 @@ ${sourceText || "[Paste source text here]"}`;
     }
 
     function resetCurrentKnowledgeOverride() {
-      const currentId = state.activeKnowledgeEditSourceModuleId || state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeModule()?.id;
+      const currentId = state.activeKnowledgeEditSourceModuleId || state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeEditorModule()?.id;
       if (!currentId) {
         setKnowledgeBaseStatus("No module selected.");
         return;
@@ -11826,7 +11899,7 @@ ${sourceText || "[Paste source text here]"}`;
       const removed = removeKnowledgeLocalOverride(currentId);
       state.activeKnowledgeDirty = false;
       renderKnowledgeBaseWorkbench();
-      const baseModule = selectedKnowledgeModule();
+      const baseModule = selectedKnowledgeEditorModule();
       if (baseModule) {
         elements.knowledgeModuleSelect.value = baseModule.id;
         loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(baseModule), { keepJson: true });
@@ -11869,10 +11942,18 @@ ${sourceText || "[Paste source text here]"}`;
       if (state.activeKnowledgeDirty) {
         override = saveCurrentKnowledgeOverride({ silent: true });
       } else {
-        const moduleId = state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeModule()?.id;
-        override = localKnowledgeOverrideForModule(moduleId) || saveCurrentKnowledgeOverride({ silent: true });
+        const moduleId = state.editableKnowledgeEnvelope?.module?.id || selectedKnowledgeEditorModule()?.id;
+        override = localKnowledgeOverrideForModule(moduleId);
+        if (!override) {
+          setKnowledgeBaseStatus("Make a local edit and save it before suggesting a module change, or use the source/script submission drawer.");
+          return;
+        }
       }
       if (!override) {
+        return;
+      }
+      if (!knowledgeChangeSummaryHasMeaningfulChanges(override.changeSummary)) {
+        setKnowledgeBaseStatus("No local module changes were detected. Edit a card, add an item, remove an item, or use the source/script submission drawer.");
         return;
       }
       override.suggestedAt = new Date().toISOString();
@@ -11996,7 +12077,7 @@ ${sourceText || "[Paste source text here]"}`;
     }
 
     function loadSelectedKnowledgeModuleIntoEditor(options = {}) {
-      const module = selectedKnowledgeModule();
+      const module = selectedKnowledgeEditorModule();
       if (!module) {
         setKnowledgeBaseStatus("No module is selected.");
         return;
@@ -12026,7 +12107,7 @@ ${sourceText || "[Paste source text here]"}`;
       if (previous && modules.some((module) => module.id === previous)) {
         elements.knowledgeModuleSelect.value = previous;
       }
-      const module = selectedKnowledgeModule();
+      const module = selectedKnowledgeEditorModule();
       const localCount = localKnowledgeOverrides().length;
       elements.knowledgeBaseManifestSummary.textContent = `${medicalKnowledgeDbManifest.title} ${medicalKnowledgeDbManifest.version}: ${complaintModules.length} bundled modules, ${localCount} local edit${localCount === 1 ? "" : "s"} on this device, ${approvedKnowledgeProposals().length} reviewer-approved override${approvedKnowledgeProposals().length === 1 ? "" : "s"}.`;
       elements.knowledgeModuleSummary.innerHTML = "";
@@ -12409,7 +12490,7 @@ ${sourceText || "[Paste source text here]"}`;
     function nextAlias() {
       const index = state.census.patients.length;
       const letter = index < 26 ? String.fromCharCode(65 + index) : String(index + 1);
-      return `Patient ${letter}`;
+      return `Case ${letter}`;
     }
 
     function formatCensusTime(value) {
@@ -12681,7 +12762,7 @@ ${sourceText || "[Paste source text here]"}`;
         safeLocalStorageRemove(CONTINUITY_STORAGE_KEY);
         state.census.vaultExists = true;
         state.census.vaultEnvelopeCreatedAt = envelope.createdAt || new Date().toISOString();
-        elements.censusStatus.textContent = `Saved ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"}.`;
+        elements.censusStatus.textContent = `Saved ${state.census.patients.length} de-identified case workspace${state.census.patients.length === 1 ? "" : "s"}.`;
         return true;
       } catch (error) {
         console.error(error);
@@ -12725,7 +12806,7 @@ ${sourceText || "[Paste source text here]"}`;
       elements.patientTable.innerHTML = "";
       const header = document.createElement("div");
       header.className = "patient-row patient-row-header";
-      ["Alias", "Room", "Problem", "Status", "Updated", ""].forEach((label) => {
+      ["Alias", "Sort", "Problem", "Status", "Updated", ""].forEach((label) => {
         const span = document.createElement("span");
         span.textContent = label;
         header.appendChild(span);
@@ -12767,7 +12848,7 @@ ${sourceText || "[Paste source text here]"}`;
 
         const room = document.createElement("div");
         room.className = "patient-cell patient-cell-muted";
-        room.textContent = normalized.roomBed || "No room";
+        room.textContent = normalized.roomBed || "No sort label";
 
         const problem = document.createElement("div");
         problem.className = "patient-cell";
@@ -12839,7 +12920,7 @@ ${sourceText || "[Paste source text here]"}`;
         const meta = document.createElement("p");
         meta.className = "queue-meta";
         const patient = patientById(item.patientId);
-        meta.textContent = `${patient?.roomBed || "No room"} · ${item.label}`;
+        meta.textContent = `${patient?.roomBed || "No sort label"} · ${item.label}`;
         row.append(title, meta);
         elements.promptQueueList.appendChild(row);
       });
@@ -12949,8 +13030,8 @@ ${sourceText || "[Paste source text here]"}`;
       setVaultActionBusy(true, "Creating encrypted local vault...");
       try {
         const patient = workspaceHasContent()
-          ? normalizePatientCase({ ...snapshotWorkspaceToPatient(createPatientCase({ alias: "Patient A" })), alias: "Patient A" })
-          : createPatientCase({ alias: "Patient A" });
+          ? normalizePatientCase({ ...snapshotWorkspaceToPatient(createPatientCase({ alias: "Case A" })), alias: "Case A" })
+          : createPatientCase({ alias: "Case A" });
         state.census.unlocked = true;
         state.census.passphrase = passphrase;
         state.census.patients = [patient];
@@ -13064,7 +13145,7 @@ ${sourceText || "[Paste source text here]"}`;
     function openPatientWorkspace(patientId) {
       switchActivePatient(patientId);
       showScreen("pasteScreen");
-      showToast("Patient workspace opened.");
+      showToast("Case workspace opened.");
     }
 
     function switchActivePatient(patientId) {
@@ -13371,7 +13452,7 @@ ${sourceText || "[Paste source text here]"}`;
         renderContinuityCases();
         renderCensusDashboard();
         scheduleCensusSave(50);
-        elements.censusTransferStatus.textContent = `Imported ${additions.length} new patient workspace${additions.length === 1 ? "" : "s"} and ${continuityAdditions.length} continuity timeline${continuityAdditions.length === 1 ? "" : "s"}. Existing local cases were preserved.`;
+        elements.censusTransferStatus.textContent = `Imported ${additions.length} new de-identified case workspace${additions.length === 1 ? "" : "s"} and ${continuityAdditions.length} continuity timeline${continuityAdditions.length === 1 ? "" : "s"}. Existing local cases were preserved.`;
         return true;
       } catch (error) {
         console.error(error);
@@ -13390,7 +13471,7 @@ ${sourceText || "[Paste source text here]"}`;
         renderCensusDashboard();
         showScreen("censusScreen");
         elements.censusVaultStatus.textContent = state.census.vaultExists
-          ? "Encrypted local vault found on this computer. Enter the passcode you created here to unlock it."
+          ? "Encrypted local vault found in this browser. Enter the passcode you created here to unlock it."
           : "No local vault exists yet. Choose a new passcode and click Create local vault.";
       } catch (error) {
         console.warn(error);
@@ -13948,6 +14029,23 @@ ${sourceText || "[Paste source text here]"}`;
       if (!sourceContext) {
         return false;
       }
+      const exportCheck = runPhiSafetyCheck(sourceContext.text, {
+        reviewTarget: state.sourceMode === "admission" ? "admission" : state.sourceMode === "continuity" ? "continuity" : "source",
+        reviewScope: "custom",
+        reviewText: sourceContext.text
+      });
+      const exportBlockers = blockingPhiWarnings(exportCheck.warnings);
+      if (exportBlockers.length) {
+        renderPhiSafetyPanel({ ...exportCheck, warnings: exportBlockers }, {
+          title: "PHI safety check for encrypted export",
+          subject: "context export",
+          reviewTarget: state.sourceMode === "admission" ? "admission" : state.sourceMode === "continuity" ? "continuity" : "source",
+          allowOverride: false
+        });
+        statusElement.textContent = "Review possible identifiers before exporting. Redact or de-identify the context, then try again.";
+        showToast("Possible PHI remains. Encrypted export was not created.", { duration: 6000 });
+        return false;
+      }
       const transferCode = generateTransferCode();
       const exportPayload = buildTransferPayload(sourceContext);
       const encryptedFile = await encryptContextPayload(exportPayload, transferCode);
@@ -14117,6 +14215,17 @@ ${sourceText || "[Paste source text here]"}`;
         .map((group) => ({ group, warnings: groups.get(group) }));
     }
 
+    function isLikelyClinicalNameFalsePositive(warning = {}) {
+      if (String(warning.type || "").toLowerCase() !== "possible full name") {
+        return false;
+      }
+      return /\b(?:diabetes|dka|hhs|cushing|graves|hashimoto|addison|hodgkin|parkinson|alzheimer|crohn|disease|syndrome|failure|cancer|carcinoma|asthma|copd|pneumonia|sepsis|stroke|thyroid|adrenal|pituitary|osteoporosis|osteopenia|care|society|association|college|heart|kidney|liver)\b/i.test(warning.snippet || "");
+    }
+
+    function blockingPhiWarnings(warnings = []) {
+      return warnings.filter((warning) => !isLikelyClinicalNameFalsePositive(warning));
+    }
+
     function renderPhiSafetyPanel(check, copyContext = {}) {
       const warnings = check.warnings
         .slice()
@@ -14176,6 +14285,7 @@ ${sourceText || "[Paste source text here]"}`;
         elements.phiSafetyList.appendChild(item);
       }
 
+      elements.copyPhiAnywayButton.hidden = copyContext.allowOverride === false;
       elements.phiSafetyPanel.hidden = false;
       elements.phiSafetyPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
@@ -16060,6 +16170,13 @@ Now create the initial rounds report for this case. Output the report only and n
       return selectedValidatedClinicalIntents(state.selectedClinicalIntentIds, clinicalIntentRegistry);
     }
 
+    function selectedKnowledgeModule() {
+      if (!state.selectedKnowledgeModuleId) {
+        return null;
+      }
+      return effectiveComplaintModules().find((module) => module.id === state.selectedKnowledgeModuleId) || null;
+    }
+
     function primaryClinicalIntent() {
       return selectedClinicalIntents()[0] || null;
     }
@@ -16098,6 +16215,7 @@ Now create the initial rounds report for this case. Output the report only and n
       syncClinicalModifierQuickChips();
       elements.examTesterInput.value = [
         selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+        selectedKnowledgeModule()?.label || "",
         clinicalIntentModifierText()
       ].filter(Boolean).join(" | ");
       autoResize(elements.clinicalIntentModifierInput);
@@ -16116,6 +16234,10 @@ Now create the initial rounds report for this case. Output the report only and n
     }
 
     function matchedKnowledgeModuleForCurrentSearch() {
+      const selected = selectedKnowledgeModule();
+      if (selected) {
+        return selected;
+      }
       const context = complaintCdsContextTextFrom(
         combinedClinicalIntentText(),
         elements.complaintCdsSettingSelect.value.trim(),
@@ -16126,8 +16248,20 @@ Now create the initial rounds report for this case. Output the report only and n
 
     function renderClinicalIntentSelection() {
       const selected = selectedClinicalIntents();
+      const knowledgeModule = selectedKnowledgeModule();
       elements.clinicalIntentSelection.innerHTML = "";
-      elements.clinicalIntentSelection.hidden = !selected.length;
+      elements.clinicalIntentSelection.hidden = !selected.length && !knowledgeModule;
+      if (knowledgeModule) {
+        const chip = createComplaintCdsChip(`Workup: ${knowledgeModule.label}`, true);
+        chip.title = knowledgeModule.id;
+        elements.clinicalIntentSelection.appendChild(chip);
+        const remove = document.createElement("button");
+        remove.className = "evidence-review-button";
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.dataset.knowledgeModuleRemoveId = knowledgeModule.id;
+        elements.clinicalIntentSelection.appendChild(remove);
+      }
       selected.forEach((intentRow, index) => {
         const chip = createComplaintCdsChip(`${index === 0 ? "Primary: " : "Also: "}${intentRow.label}`, true);
         chip.title = intentRow.intent_id;
@@ -16145,6 +16279,45 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.stageKnowledgeGapButton.hidden = Boolean(selected.length || hasKnowledgeModuleMatch);
     }
 
+    function renderKnowledgeModuleResultRow(module) {
+      if (!module) {
+        return;
+      }
+      const row = document.createElement("article");
+      row.className = "exam-result-row complaint-cds-item";
+      const head = document.createElement("div");
+      head.className = "exam-result-head";
+      const title = document.createElement("p");
+      title.className = "exam-result-title";
+      title.textContent = module.label;
+      const badge = document.createElement("span");
+      badge.className = "exam-result-rank";
+      badge.textContent = "installed workup";
+      head.append(title, badge);
+      row.appendChild(head);
+
+      const meta = document.createElement("div");
+      meta.className = "exam-result-meta";
+      [
+        module.id,
+        module.status,
+        module.complaint_group,
+        ...(module.endocrine_metadata?.source_ids || []).slice(0, 4)
+      ].filter(Boolean).forEach((text) => {
+        meta.appendChild(createExamTesterChip(text, "is-main"));
+      });
+      row.appendChild(meta);
+
+      appendExamTesterText(row, "Includes", "history, focused exam, tests, reference thresholds, red flags, management-changing results, and source citations");
+      const action = document.createElement("button");
+      action.className = "btn btn-secondary";
+      action.type = "button";
+      action.textContent = state.selectedKnowledgeModuleId === module.id ? "Selected" : "Use workup";
+      action.dataset.knowledgeModuleSelectId = module.id;
+      row.appendChild(action);
+      elements.clinicalIntentResults.appendChild(row);
+    }
+
     function renderClinicalIntentResults() {
       const result = resolveClinicalIntents(clinicalIntentSearchText(), clinicalIntentRegistry, { limit: 8 });
       state.clinicalIntentMatches = result.matches;
@@ -16159,19 +16332,22 @@ Now create the initial rounds report for this case. Output the report only and n
 
       if (!result.matches.length) {
         const knowledgeModule = matchedKnowledgeModuleForCurrentSearch();
-        const empty = document.createElement("p");
-        empty.className = "exam-result-text";
-        empty.textContent = knowledgeModule
-          ? `${knowledgeModule.label} matched the installed medical knowledge database.`
-          : "No validated clinical intent matched. This needs expert review before recommendations.";
-        elements.clinicalIntentResults.appendChild(empty);
+        if (knowledgeModule) {
+          renderKnowledgeModuleResultRow(knowledgeModule);
+        } else {
+          const empty = document.createElement("p");
+          empty.className = "exam-result-text";
+          empty.textContent = "No validated clinical intent matched. This needs expert review before recommendations.";
+          elements.clinicalIntentResults.appendChild(empty);
+        }
         renderClinicalIntentSelection();
         setComplaintCdsStatus(knowledgeModule
-          ? "Installed medical knowledge matched. Build the workup or stage suggested improvements."
+          ? "Installed medical knowledge matched. Select it, build the workup, or stage suggested improvements."
           : "No validated clinical intent matched. This needs expert review before recommendations.");
         return;
       }
 
+      renderKnowledgeModuleResultRow(matchedKnowledgeModuleForCurrentSearch());
       result.matches.forEach((intentRow) => {
         const row = document.createElement("article");
         row.className = "exam-result-row complaint-cds-item";
@@ -16216,7 +16392,7 @@ Now create the initial rounds report for this case. Output the report only and n
         setComplaintCdsStatus(result.validatedMatches.length
           ? "Select a validated clinical intent before building recommendations."
           : knowledgeModule
-            ? "Installed medical knowledge matched. Build the workup or stage suggested improvements."
+            ? "Installed medical knowledge matched. Select it, build the workup, or stage suggested improvements."
             : "No validated clinical intent matched. This needs expert review before recommendations.");
       }
     }
@@ -16231,6 +16407,30 @@ Now create the initial rounds report for this case. Output the report only and n
       }
       renderClinicalIntentResults();
       setComplaintCdsStatus("Validated clinical intent selected. Add patient modifiers, then build the workup.");
+    }
+
+    function selectKnowledgeModule(moduleId) {
+      const module = effectiveComplaintModules().find((row) => row.id === moduleId);
+      if (!module) {
+        setComplaintCdsStatus("That installed workup is no longer available.");
+        return;
+      }
+      state.selectedKnowledgeModuleId = module.id;
+      renderClinicalIntentResults();
+      elements.examTesterInput.value = [
+        selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+        module.label,
+        clinicalIntentModifierText()
+      ].filter(Boolean).join(" | ");
+      autoResize(elements.examTesterInput);
+      setComplaintCdsStatus("Installed guideline-backed workup selected. Add patient modifiers, then build.");
+    }
+
+    function removeKnowledgeModule(moduleId) {
+      if (state.selectedKnowledgeModuleId === moduleId) {
+        state.selectedKnowledgeModuleId = "";
+      }
+      renderClinicalIntentResults();
     }
 
     function removeClinicalIntent(intentId) {
@@ -16263,8 +16463,9 @@ Now create the initial rounds report for this case. Output the report only and n
     function complaintCdsContextText() {
       const selected = selectedClinicalIntents();
       const selectedText = selected.map((intentRow) => intentRow.label).join(" ");
+      const knowledgeText = selectedKnowledgeModule()?.label || "";
       return complaintCdsContextTextFrom(
-        [selectedText, clinicalIntentSearchText(), clinicalIntentModifierText()].filter(Boolean).join(" "),
+        [selectedText, knowledgeText, clinicalIntentSearchText(), clinicalIntentModifierText()].filter(Boolean).join(" "),
         elements.complaintCdsSettingSelect.value.trim(),
         elements.complaintCdsPopulationSelect.value.trim()
       );
@@ -16392,7 +16593,7 @@ Now create the initial rounds report for this case. Output the report only and n
         }
       } else {
         elements.examTesterInput.value = [
-          selectedClinicalIntents().map((intentRow) => intentRow.label).join("; ") || text,
+          selectedClinicalIntents().map((intentRow) => intentRow.label).join("; ") || selectedKnowledgeModule()?.label || text,
           clinicalIntentModifierText()
         ].filter(Boolean).join(" | ");
         const examSetting = settingForUnifiedExam(elements.complaintCdsSettingSelect.value.trim());
@@ -16552,7 +16753,7 @@ Now create the initial rounds report for this case. Output the report only and n
       const hasKnowledgeModule = Boolean(result?.matched);
       const hasWorkupEvidence = Boolean(state.examTesterRecommendation || state.examTesterCandidates?.length || state.examTesterGapRows?.length);
       elements.copyComplaintCdsButton.disabled = (!hasSelectedIntent && !hasKnowledgeModule) || (!result?.matched && !hasWorkupEvidence);
-      elements.copyClinicalImprovementAuditButton.disabled = (!hasSelectedIntent && !hasKnowledgeModule) || !hasWorkupEvidence;
+      elements.copyClinicalImprovementAuditButton.disabled = (!hasSelectedIntent && !hasKnowledgeModule) || !result;
 
       if (!result) {
         return;
@@ -16612,6 +16813,7 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.clinicalIntentModifierInput.value = "";
       state.clinicalIntentMatches = [];
       state.selectedClinicalIntentIds = [];
+      state.selectedKnowledgeModuleId = "";
       state.complaintCdsResult = null;
       state.complaintCdsAnswers = {};
       state.complaintCdsModuleId = "";
@@ -17076,14 +17278,21 @@ Now create the initial rounds report for this case. Output the report only and n
         });
         applyExamTesterWorkup(examWorkup, evidenceContext);
       } catch (error) {
-        console.error(error);
+        const expectedKnowledgeOnlyGap = !selectedIntents.length
+          && complaintResult.matched
+          && error?.message === "Selected intent has no validated evidence rows yet.";
+        if (!expectedKnowledgeOnlyGap) {
+          console.error(error);
+        }
         state.examTesterCandidates = [];
         state.examTesterRecommendation = null;
         state.examTesterGapRows = [];
         state.examTesterMatchedTags = [];
         state.examTesterLastContext = evidenceContext;
         renderExamTesterResults();
-        setExamTesterStatus(error?.message || "Could not run evidence retrieval.");
+        setExamTesterStatus(expectedKnowledgeOnlyGap
+          ? "Guideline-backed workup built. Evidence exam retrieval is skipped until a validated intent is selected."
+          : error?.message || "Could not run evidence retrieval.");
       }
 
       state.unifiedClinicalWorkup = {
@@ -17100,7 +17309,9 @@ Now create the initial rounds report for this case. Output the report only and n
 
       const examStatus = examWorkup ? examTesterStatusText(examWorkup) : "Evidence exam retrieval did not complete.";
       const complaintStatus = complaintResult.matched
-        ? `Matched ${complaintResult.module.label}; evidence-backed exam recommendation built from the same clinical context.`
+        ? examWorkup
+          ? `Matched ${complaintResult.module.label}; guideline workup and evidence-backed exam recommendation built from the same clinical context.`
+          : `Matched ${complaintResult.module.label}; guideline-backed workup built from the installed medical knowledge module.`
         : `Built validated-intent evidence workup for ${selectedIntents.map((intentRow) => intentRow.label).join("; ")}. Bedside recommendations are traceable to the local evidence catalog, bundle rules, and active modifiers.`;
       setComplaintCdsStatus(complaintStatus);
       if (examWorkup) {
@@ -18916,12 +19127,20 @@ If source context is missing from this conversation, say that the prior context 
       if (intentId) {
         selectClinicalIntent(intentId);
       }
+      const moduleId = event.target?.dataset?.knowledgeModuleSelectId;
+      if (moduleId) {
+        selectKnowledgeModule(moduleId);
+      }
     });
 
     elements.clinicalIntentSelection.addEventListener("click", (event) => {
       const intentId = event.target?.dataset?.intentRemoveId;
       if (intentId) {
         removeClinicalIntent(intentId);
+      }
+      const moduleId = event.target?.dataset?.knowledgeModuleRemoveId;
+      if (moduleId) {
+        removeKnowledgeModule(moduleId);
       }
     });
 
@@ -18942,6 +19161,7 @@ If source context is missing from this conversation, say that the prior context 
         clearComplaintCds();
       } else {
         state.selectedClinicalIntentIds = [];
+        state.selectedKnowledgeModuleId = "";
         state.complaintCdsResult = null;
         state.examTesterRecommendation = null;
         state.examTesterCandidates = [];
@@ -20126,8 +20346,8 @@ heparin 5000 units held by provider`;
     loadKnowledgeBaseReviewStateFromStorage();
     loadKnowledgeLocalStateFromStorage();
     renderKnowledgeBaseWorkbench();
-    if (!state.editableKnowledgeEnvelope && selectedKnowledgeModule()) {
-      loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(selectedKnowledgeModule()));
+    if (!state.editableKnowledgeEnvelope && selectedKnowledgeEditorModule()) {
+      loadKnowledgeEnvelopeIntoReadableEditor(knowledgeModuleEnvelope(selectedKnowledgeEditorModule()));
     }
     const restoredSession = restoreChecklistSession();
     setupAdmissionIntakeNavigation();
