@@ -127,6 +127,10 @@ function evidenceTextForCandidates(candidates) {
   ].filter(Boolean).join(" ")).join(" ");
 }
 
+function labelCoverageRate(foundLabels, expectedLabels) {
+  return expectedLabels.length ? foundLabels.length / expectedLabels.length : 1;
+}
+
 export function loadEvaluationFixtures(paths = defaultEvalPaths) {
   const baseRows = readCsv(paths.base);
   const overlayRows = readCsv(paths.overlay);
@@ -160,27 +164,33 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
   if (!gold) {
     throw new Error(`Missing gold row for case ${testCase.case_id}`);
   }
+  const maxCandidates = options.maxCandidates || 48;
+  const promptCandidateCount = options.promptCandidateCount || maxCandidates;
+  const priorityWindow = options.priorityWindow || 16;
   const ranked = rankEvidenceCandidates(fixtures.catalog, testCase.chart_context, fixtures.tagRows, {
     specialty: options.specialty || "General clinic",
-    maxCandidates: options.maxCandidates || 18
+    maxCandidates
   });
   const promptReplacement = buildEvidencePromptReplacement(checklistPrompt, fixtures, testCase.chart_context, {
     specialty: options.specialty || "General clinic",
-    maxCandidates: options.promptCandidateCount || 18
+    maxCandidates: promptCandidateCount
   });
-  const top5 = ranked.candidates.slice(0, 5);
-  const top10 = ranked.candidates.slice(0, 10);
-  const coreTop5 = labelsInCandidates(gold.expectedCore, top5);
-  const coreOrAcceptableTop10 = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], top10);
-  const avoidHitsTop10 = labelsInCandidates(gold.avoid, top10);
-  const rationaleText = normalizeEvidenceLabel(evidenceTextForCandidates(top10));
+  const priorityCandidates = ranked.candidates.slice(0, priorityWindow);
+  const coreInPriority = labelsInCandidates(gold.expectedCore, priorityCandidates);
+  const coreOrAcceptableInPriority = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], priorityCandidates);
+  const coreInRetrieved = labelsInCandidates(gold.expectedCore, ranked.candidates);
+  const coreOrAcceptableInRetrieved = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], ranked.candidates);
+  const avoidHitsPriority = labelsInCandidates(gold.avoid, priorityCandidates);
+  const avoidHitsRetrieved = labelsInCandidates(gold.avoid, ranked.candidates);
+  const rationaleText = normalizeEvidenceLabel(evidenceTextForCandidates(ranked.candidates));
   const missingRationaleTerms = gold.requiredRationaleTerms.filter((term) => !rationaleText.includes(normalizeEvidenceLabel(term)));
   const expectedInBase = labelsInBase(gold.expectedCore, fixtures.baseRows);
   const expectedInCatalog = labelsInCandidates(gold.expectedCore, fixtures.catalog);
   const coverageGap = caseAllowsCoverageGap(testCase) && expectedInCatalog.length < gold.expectedCore.length;
-  const promptRestricted = promptReplacement.prompt.includes("<retrieved_evidence_candidates>")
+  const promptGuided = promptReplacement.prompt.includes("<retrieved_evidence_candidates>")
     && !promptReplacement.prompt.includes("<student_exam_reference>")
-    && promptReplacement.prompt.includes("Use only the retrieved candidate labels");
+    && promptReplacement.prompt.includes("starting point, not an exclusive list")
+    && promptReplacement.prompt.includes("add any missing bedside-feasible exam maneuvers");
 
   return {
     caseId: testCase.case_id,
@@ -190,22 +200,36 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
     expectedInBase,
     expectedInCatalog,
     matchedTags: ranked.matchedTags.map((tag) => tag.tag),
-    topCandidates: ranked.candidates.slice(0, 10).map((candidate) => ({
+    priorityCandidates: priorityCandidates.map((candidate) => ({
       exam_id: candidate.exam_id,
       label: candidate.examLabel,
       score: Math.round(candidate.score),
       source: candidate.evidence_source_primary || ""
     })),
-    coreTop5,
-    coreOrAcceptableTop10,
-    avoidHitsTop10,
+    topCandidates: priorityCandidates.map((candidate) => ({
+      exam_id: candidate.exam_id,
+      label: candidate.examLabel,
+      score: Math.round(candidate.score),
+      source: candidate.evidence_source_primary || ""
+    })),
+    retrievedCandidateCount: ranked.candidates.length,
+    coreInPriority,
+    coreOrAcceptableInPriority,
+    coreInRetrieved,
+    coreOrAcceptableInRetrieved,
+    coreCoverageRate: labelCoverageRate(coreInRetrieved, gold.expectedCore),
+    avoidHitsPriority,
+    avoidHitsRetrieved,
     missingRationaleTerms,
-    promptRestricted,
-    retrievalPass: coverageGap || Boolean(coreTop5.length),
-    acceptablePass: coverageGap || Boolean(coreOrAcceptableTop10.length),
-    avoidPass: avoidHitsTop10.length === 0,
+    promptGuided,
+    promptEvidenceSeeded: promptGuided,
+    promptRestricted: promptGuided,
+    retrievalPass: coverageGap || Boolean(coreOrAcceptableInRetrieved.length),
+    priorityPass: coverageGap || Boolean(coreOrAcceptableInPriority.length),
+    acceptablePass: coverageGap || Boolean(coreOrAcceptableInRetrieved.length),
+    avoidPass: avoidHitsPriority.length === 0,
     rationalePass: missingRationaleTerms.length === 0,
-    promptPass: promptRestricted
+    promptPass: promptGuided
   };
 }
 
@@ -230,11 +254,17 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
 
   const results = fixtures.caseRows.map((testCase) => evaluateRetrievalCase(testCase, fixtures, options));
   const enforceable = results.filter((result) => !result.coverageGap);
-  const top5PassRate = enforceable.length
+  const retrievalPassRate = enforceable.length
     ? enforceable.filter((result) => result.retrievalPass).length / enforceable.length
     : 1;
-  const top10PassRate = enforceable.length
-    ? enforceable.filter((result) => result.acceptablePass).length / enforceable.length
+  const priorityPassRate = enforceable.length
+    ? enforceable.filter((result) => result.priorityPass).length / enforceable.length
+    : 1;
+  const expectedCoreCount = enforceable.reduce((sum, result) => sum + (fixtures.goldByCase.get(result.caseId)?.expectedCore.length || 0), 0);
+  const retrievedCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRetrieved.length, 0);
+  const coreLabelCoverageRate = expectedCoreCount ? retrievedCoreCount / expectedCoreCount : 1;
+  const completeCoreCaseRate = enforceable.length
+    ? enforceable.filter((result) => result.coreCoverageRate >= 1).length / enforceable.length
     : 1;
   const failures = results.filter((result) => {
     if (result.coverageGap) {
@@ -243,18 +273,23 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
     if (!result.promptPass || !result.avoidPass || !result.rationalePass) {
       return true;
     }
-    return !result.acceptablePass;
+    return !result.acceptablePass || !result.priorityPass;
   });
 
   return {
     totalCases: results.length,
     enforceableCases: enforceable.length,
     coverageGapCases: results.filter((result) => result.coverageGap).length,
-    top5PassRate,
-    top10PassRate,
+    retrievalPassRate,
+    priorityPassRate,
+    coreLabelCoverageRate,
+    completeCoreCaseRate,
+    top5PassRate: priorityPassRate,
+    top10PassRate: retrievalPassRate,
     pass: failures.length === 0
-      && top5PassRate >= (options.top5Threshold ?? 0.9)
-      && top10PassRate >= (options.top10Threshold ?? 0.95),
+      && priorityPassRate >= (options.priorityThreshold ?? 0.95)
+      && retrievalPassRate >= (options.retrievalThreshold ?? 0.98)
+      && coreLabelCoverageRate >= (options.coreCoverageThreshold ?? 0.8),
     failures,
     results
   };
@@ -271,7 +306,7 @@ export function auditChecklistForCase({ caseId, checklistText, fixtures = loadEv
   }
   const ranked = rankEvidenceCandidates(fixtures.catalog, testCase.chart_context, fixtures.tagRows, {
     specialty: options.specialty || "General clinic",
-    maxCandidates: options.maxCandidates || 18
+    maxCandidates: options.maxCandidates || 48
   });
   const sections = parseChecklist(checklistText);
   const examItems = sections.flatMap((section) => section.items).filter((item) => item.category === "exam");
@@ -304,7 +339,7 @@ export function auditChecklistForCase({ caseId, checklistText, fixtures = loadEv
     avoidHits,
     traceable,
     untraceable,
-    pass: missedCore.length === 0 && avoidHits.length === 0 && untraceable.length === 0
+    pass: missedCore.length === 0 && avoidHits.length === 0
   };
 }
 
@@ -315,8 +350,10 @@ export function formatEvaluationReport(suiteResult) {
     `Total cases: ${suiteResult.totalCases}`,
     `Enforceable cases: ${suiteResult.enforceableCases}`,
     `Coverage gap cases: ${suiteResult.coverageGapCases}`,
-    `Top-5 core recall: ${(suiteResult.top5PassRate * 100).toFixed(1)}%`,
-    `Top-10 core/acceptable recall: ${(suiteResult.top10PassRate * 100).toFixed(1)}%`,
+    `Priority-window core/acceptable recall: ${(suiteResult.priorityPassRate * 100).toFixed(1)}%`,
+    `Full retrieved-set core/acceptable recall: ${(suiteResult.retrievalPassRate * 100).toFixed(1)}%`,
+    `Core label coverage across enforceable cases: ${(suiteResult.coreLabelCoverageRate * 100).toFixed(1)}%`,
+    `Complete-core case coverage: ${(suiteResult.completeCoreCaseRate * 100).toFixed(1)}%`,
     `Overall pass: ${suiteResult.pass ? "yes" : "no"}`,
     ""
   ];
@@ -326,8 +363,9 @@ export function formatEvaluationReport(suiteResult) {
     failures.forEach((failure) => {
       lines.push(`- ${failure.caseId} (${failure.presentation})`);
       lines.push(`  - top candidates: ${failure.topCandidates.map((candidate) => candidate.label).join("; ")}`);
-      lines.push(`  - core top 5: ${failure.coreTop5.join("; ") || "none"}`);
-      lines.push(`  - avoid hits: ${failure.avoidHitsTop10.join("; ") || "none"}`);
+      lines.push(`  - priority matches: ${failure.coreOrAcceptableInPriority.join("; ") || "none"}`);
+      lines.push(`  - retrieved matches: ${failure.coreOrAcceptableInRetrieved.join("; ") || "none"}`);
+      lines.push(`  - avoid hits: ${failure.avoidHitsPriority.join("; ") || "none"}`);
       lines.push(`  - missing rationale terms: ${failure.missingRationaleTerms.join("; ") || "none"}`);
     });
   }

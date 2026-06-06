@@ -36,7 +36,7 @@ function formatAudit(audit) {
     `Included acceptable: ${audit.includedAcceptable.join("; ") || "none"}`,
     `Missed core: ${audit.missedCore.join("; ") || "none"}`,
     `Avoid hits: ${audit.avoidHits.join("; ") || "none"}`,
-    `Untraceable exam labels: ${audit.untraceable.join("; ") || "none"}`,
+    `Outside retrieved evidence seeds: ${audit.untraceable.join("; ") || "none"}`,
     "",
     "Traceable exam labels:",
     ...audit.traceable.map((item) => `- ${item.label} -> ${item.exam_id}${item.source ? ` (${item.source})` : ""}`)

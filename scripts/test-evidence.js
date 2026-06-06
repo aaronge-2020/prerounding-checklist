@@ -170,7 +170,8 @@ const promptReplacement = buildEvidencePromptReplacement(prompt, {
 });
 assert.ok(promptReplacement.prompt.includes("<retrieved_evidence_candidates>"), "prompt should include retrieved evidence candidates");
 assert.ok(!promptReplacement.prompt.includes("<student_exam_reference>"), "evidence prompt should replace legacy student exam reference");
-assert.ok(promptReplacement.prompt.includes("Use only the retrieved candidate labels"), "prompt should constrain candidate use");
+assert.ok(promptReplacement.prompt.includes("starting point, not an exclusive list"), "prompt should describe retrieved candidates as prioritized guidance");
+assert.ok(promptReplacement.prompt.includes("add any missing bedside-feasible exam maneuvers"), "prompt should ask OpenEvidence to identify clinically important gaps");
 assert.ok(promptReplacement.prompt.includes("Return exactly two parent checklists"), "format contract should remain intact");
 
 const jvpCandidate = catalog.find((candidate) => candidate.examLabel === "JVP");

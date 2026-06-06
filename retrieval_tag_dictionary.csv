@@ -19,3 +19,10 @@ abdominal_pain,abdominal pain;abd pain;nausea;vomiting;constipation;peritonitis;
 infection,infection;fever;sepsis;leukocytosis;wound;line infection;pneumonia;pyelonephritis,syndrome,vitals source exam and escalation signs
 hypoxia,hypoxia;desaturation;oxygen requirement;nasal cannula;HFNC;BiPAP;ventilator,setting,respiratory support and lung findings
 diagnostic_safety,diagnostic uncertainty;missed diagnosis;red flag;change in trajectory;does not fit;unexpected worsening,safety,favor high-actionability confirmation findings
+syncope,syncope;presyncope;near syncope;fainting;fainted;lightheadedness;orthostasis;orthostatic,syndrome,vitals perfusion cardiac and focused neurologic findings
+chest_pain,chest pain;ACS;acute coronary syndrome;angina;pericarditis;pleuritic chest pain;pulmonary embolism;PE;pneumothorax,syndrome,cardiopulmonary vascular and respiratory findings
+vision_change,vision change;blurry vision;visual loss;diplopia;eye redness;eye discharge;red eye;photophobia;eye pain,syndrome,visual acuity pupils extraocular conjunctival and visual field findings
+lymphadenopathy,lymphadenopathy;swollen glands;lymph nodes;neck mass;night sweats;malignancy;cancer,syndrome,regional node stations spleen and infection/malignancy findings
+back_spine,back pain;radiculopathy;sciatica;myelopathy;cord compression;saddle anesthesia;spine;spinal,syndrome,lower extremity motor sensory reflex gait and spine findings
+scrotal_pain,scrotal pain;testicular pain;testicular torsion;torsion;scrotal swelling;penile discharge,syndrome,urgent GU exam gaps plus abdominal vitals and pain severity findings
+dermatology,rash;skin lesion;mole;urticaria;hives;pruritus;itching;ulcer;wound;alopecia;hair loss;dry skin;non-healing wound,syndrome,skin morphology mucosal involvement wounds and vascular risk findings

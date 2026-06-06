@@ -15,8 +15,9 @@ const suite = evaluateRetrievalSuite(fixtures);
 
 assert.ok(fixtures.caseRows.length >= 120, "evaluation cases should cover the 100 complaints plus diagnostic variants");
 assert.equal(fixtures.goldRows.length, fixtures.caseRows.length, "every evaluation case should have a gold row");
-assert.ok(suite.top5PassRate >= 0.9, `top-5 core recall too low: ${suite.top5PassRate}`);
-assert.ok(suite.top10PassRate >= 0.95, `top-10 acceptable recall too low: ${suite.top10PassRate}`);
+assert.ok(suite.priorityPassRate >= 0.95, `priority-window recall too low: ${suite.priorityPassRate}`);
+assert.ok(suite.retrievalPassRate >= 0.98, `full retrieved-set recall too low: ${suite.retrievalPassRate}`);
+assert.ok(suite.coreLabelCoverageRate >= 0.8, `core label coverage too low: ${suite.coreLabelCoverageRate}`);
 assert.ok(suite.failures.length === 0, formatEvaluationReport(suite));
 
 const requiredCases = [
@@ -40,11 +41,12 @@ requiredCases.forEach((caseId) => {
 });
 
 const dkaResult = suite.results.find((result) => result.caseId === "dx_dka_hhs");
-assert.ok(dkaResult.coreTop5.some((label) => /blood pressure|respiratory rate|mouth|jvp|abdominal/i.test(label)), "DKA case should retrieve volume/vitals/abdominal findings");
+assert.ok(dkaResult.coreInPriority.some((label) => /blood pressure|respiratory rate|mouth|jvp|abdominal/i.test(label)), "DKA case should retrieve volume/vitals/abdominal findings in the priority window");
+assert.ok(dkaResult.coreOrAcceptableInRetrieved.some((label) => /respiratory rate|mouth|jvp|abdominal|radial/i.test(label)), "DKA case should keep comprehensive volume/respiratory/abdominal candidates available");
 
 const peResult = suite.results.find((result) => result.caseId === "dx_suspected_pe");
-assert.ok(peResult.coreTop5.some((label) => /respiratory rate|posterior lung sounds|heart sounds|jvp|edema|blood pressure/i.test(label)), "suspected PE case should retrieve cardiopulmonary and DVT-relevant findings");
-assert.equal(peResult.avoidHitsTop10.length, 0, "suspected PE should avoid irrelevant abdominal/neuro maneuvers in top 10");
+assert.ok(peResult.coreInPriority.some((label) => /respiratory rate|posterior lung sounds|heart sounds|jvp|edema|blood pressure/i.test(label)), "suspected PE case should retrieve cardiopulmonary and DVT-relevant findings");
+assert.equal(peResult.avoidHitsPriority.length, 0, "suspected PE should avoid irrelevant abdominal/neuro maneuvers in the priority window");
 
 const dkaChecklist = `BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY

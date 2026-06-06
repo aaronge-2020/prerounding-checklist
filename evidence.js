@@ -452,14 +452,15 @@ function scoreSpecialtyContext(candidate, context, options = {}) {
   return 50;
 }
 
-function candidateRedundancyKey(candidate) {
+function candidateRedundancyKey(candidate, context = "") {
   const keyText = normalizeEvidenceLabel([
     candidate.examLabel,
     candidate.maneuver,
     candidate.base?.section,
     candidate.base?.region_or_subsection
   ].join(" "));
-  if (/\b(?:lymph|nodes?)\b/.test(keyText)) {
+  if (/\b(?:lymph|nodes?)\b/.test(keyText)
+    && !/\b(?:lymph|lymphadenopathy|adenopathy|swollen glands|neck mass|malignancy|cancer|night sweats)\b/.test(context)) {
     return "lymph-node-survey";
   }
   return normalizeEvidenceLabel(candidate.examLabel || candidate.maneuver || candidate.exam_id);
@@ -478,6 +479,11 @@ function lowActionabilityContextPenalty(candidate, context) {
   if (/\b(?:sclerae|conjunctivae|mouth|oropharynx)\b/.test(candidateText) && !/\b(?:eye|sclera|conjunct|mouth|oral|throat|jaundice|dry|dehydration|hypovolemia|infection|sore throat)\b/.test(context)) {
     return 18;
   }
+  if (/\b(?:eye redness|eye discharge|red eye|ocular|vision change|blurry vision|diplopia|photophobia|eye pain)\b/.test(context)
+    && /\b(?:nodes?|respiratory rate|cva tenderness|posterior lung sounds|bowel sounds)\b/.test(candidateText)
+    && !/\b(?:fever|sepsis|lymph|sore throat|dyspnea|cough|flank|urinary|abdominal)\b/.test(context)) {
+    return 30;
+  }
   if (/\bcva tenderness\b/.test(candidateText) && !/\b(?:flank|cva|pyelo|stone|renal colic|uti|costovertebral)\b/.test(context)) {
     return 32;
   }
@@ -490,8 +496,28 @@ function lowActionabilityContextPenalty(candidate, context) {
   if (/\b(?:toe walking|heel walking|tandem gait)\b/.test(candidateText) && !/\b(?:gait|walk|fall|ataxia|vertigo|neuropathy|foot drop|leg weakness)\b/.test(context)) {
     return 22;
   }
+  if (/\b(?:syncope|presyncope|lightheadedness|dizziness|near syncope|faint)\b/.test(context)
+    && /\b(?:rapid alternating movements|finger to nose|heel to shin|toe walking|heel walking|tandem gait|romberg)\b/.test(candidateText)
+    && !/\b(?:ataxia|vertigo|gait abnormality|fall|cerebellar|coordination)\b/.test(context)) {
+    return 34;
+  }
+  if (/\b(?:pulmonary embolism|suspected pe|dvt|pleuritic chest pain)\b/.test(context)
+    && /\b(?:pupils|pronator drift|gait|rapid alternating|finger to nose|heel to shin|romberg|carotids)\b/.test(candidateText)
+    && !/\b(?:stroke|seizure|focal|facial droop|aphasia|headache|vision|ataxia)\b/.test(context)) {
+    return 36;
+  }
+  if (/\b(?:back pain|radiculopathy|sciatica|cord compression|saddle anesthesia|myelopathy)\b/.test(context)
+    && /\b(?:wrist|finger abduction|facial|visual|extraocular|coordination|rapid alternating|finger to nose|heel to shin)\b/.test(candidateText)
+    && !/\b(?:upper extremity|arm|hand|stroke|facial droop|vision|ataxia)\b/.test(context)) {
+    return 28;
+  }
   if (/\b(?:abdominal inspection|abdominal palpation|abdominal percussion|murphy|rebound|psoas|obturator|spleen|liver)\b/.test(candidateText) && !/\b(?:abdomen|abdominal|nausea|vomit|diarrhea|constipation|distension|bloating|jaundice|melena|hematochezia|gi bleed|heartburn|dysphagia|urinary|flank|dysuria|hematuria)\b/.test(context)) {
     return 44;
+  }
+  if (/\b(?:scrotal|testicular|torsion|penile discharge)\b/.test(context)
+    && /\b(?:murphy|psoas|obturator|rebound|liver edge|spleen palpation|abdominal percussion)\b/.test(candidateText)
+    && !/\b(?:right upper quadrant|ruq|appendicitis|peritonitis|guarding)\b/.test(context)) {
+    return 26;
   }
   if (/\b(?:femoral pulses|posterior tibial pulses|dorsalis pedis pulses)\b/.test(candidateText) && !/\b(?:leg|foot|edema|swelling|claudication|vascular|diabetes|neuropathy|dvt|wound|ulcer|shock|hypovolemia|dehydration|dyspnea)\b/.test(context)) {
     return 24;
@@ -513,7 +539,11 @@ function highYieldContextBoost(candidate, context) {
   let boost = 0;
   if (/\b(?:dka|hhs|anion gap|insulin drip|hyperglycemic crisis)\b/.test(context)
     && /\b(?:blood pressure|heart rate|respiratory rate|mouth|mucous|jvp|abdominal tenderness|abdominal palpation|bowel sounds|radial pulses|capillary)\b/.test(candidateText)) {
-    boost += 30;
+    boost += 42;
+  }
+  if (/\b(?:dka|hhs|anion gap|insulin drip|hyperglycemic crisis)\b/.test(context)
+    && /\b(?:respiratory rate|work of breathing|posterior lung sounds)\b/.test(candidateText)) {
+    boost += 26;
   }
   if (/\b(?:thyroid storm|thyrotoxicosis|graves|myxedema|severe hypothyroidism)\b/.test(context)
     && /\b(?:heart rate|blood pressure|respiratory rate|heart sounds|thyroid|jvp|edema|vital signs|vitals)\b/.test(candidateText)) {
@@ -531,13 +561,25 @@ function highYieldContextBoost(candidate, context) {
     && /\b(?:jvp|edema|posterior lung sounds|lung sounds|lung percussion|fremitus|heart sounds|blood pressure|respiratory rate)\b/.test(candidateText)) {
     boost += 34;
   }
+  if (/\b(?:pulmonary embolism|suspected pe|pleuritic chest pain|dyspnea|hypoxia|oxygen requirement)\b/.test(context)
+    && /\b(?:respiratory rate|posterior lung sounds|lateral lung sounds|work of breathing|oxygen support)\b/.test(candidateText)) {
+    boost += 44;
+  }
   if (/\b(?:aki|acute kidney injury|rising creatinine|oliguria|hypovolemia|dehydration)\b/.test(context)
     && /\b(?:blood pressure|jvp|mouth|mucous|radial pulses|heart rate|cva tenderness)\b/.test(candidateText)) {
     boost += 24;
   }
   if (/\b(?:palpitations|tachycardia|syncope|presyncope|dizziness|lightheadedness)\b/.test(context)
     && /\b(?:heart rate|blood pressure|heart sounds|pupils|gait|jvp|thyroid)\b/.test(candidateText)) {
-    boost += 34;
+    boost += 42;
+  }
+  if (/\b(?:syncope|presyncope|near syncope|faint|lightheadedness)\b/.test(context)
+    && /\b(?:heart rate|blood pressure|heart sounds|jvp|posterior lung sounds|radial pulses|carotids|pupils|pronator drift)\b/.test(candidateText)) {
+    boost += 52;
+  }
+  if (/\b(?:syncope|presyncope|near syncope|faint|lightheadedness)\b/.test(context)
+    && /\b(?:heart rate|blood pressure|heart sounds|radial pulses|carotids)\b/.test(candidateText)) {
+    boost += 46;
   }
   if (/\b(?:abdominal pain|nausea|vomit|diarrhea|constipation|distension|bloating|jaundice|melena|hematochezia|heartburn|dysphagia|early satiety|anorexia|gi bleed)\b/.test(context)
     && /\b(?:abdominal palpation|abdominal inspection|abdominal percussion|bowel sounds|murphy|rebound|psoas|obturator|liver|spleen|mouth|blood pressure|heart rate|sclerae)\b/.test(candidateText)) {
@@ -546,6 +588,10 @@ function highYieldContextBoost(candidate, context) {
   if (/\b(?:headache|vision|blurry|diplopia|facial droop|aphasia|stroke|tia|focal deficit)\b/.test(context)
     && /\b(?:pupils|visual fields|visual acuity|extraocular|facial symmetry|pronator drift|tongue|gait)\b/.test(candidateText)) {
     boost += 40;
+  }
+  if (/\b(?:eye redness|eye discharge|red eye|ocular|vision change|blurry vision|diplopia|photophobia|eye pain)\b/.test(context)
+    && /\b(?:sclerae|conjunctivae|visual acuity|pupils|extraocular|ophthalmoscopic|visual fields)\b/.test(candidateText)) {
+    boost += 58;
   }
   if (/\b(?:numbness|tingling|paresthesia|neuropathy|weakness|hemiparesis|seizure)\b/.test(context)
     && /\b(?:extremity light touch|extremity pinprick|vibration|proprioception|pronator drift|deltoid|hip flexion|babinski|pupils|gait)\b/.test(candidateText)) {
@@ -563,9 +609,17 @@ function highYieldContextBoost(candidate, context) {
     && /\b(?:gait|romberg|tandem|finger to nose|heel to shin|extraocular|pupils)\b/.test(candidateText)) {
     boost += 40;
   }
+  if (/\b(?:back pain|radiculopathy|sciatica|cord compression|saddle anesthesia|myelopathy|urinary incontinence)\b/.test(context)
+    && /\b(?:babinski|patellar reflex|achilles|extremity light touch|extremity pinprick|hip flexion|knee extension|ankle dorsiflexion|ankle plantarflexion|gait|toe walking|heel walking)\b/.test(candidateText)) {
+    boost += 52;
+  }
   if (/\b(?:fever|chills|rigors|night sweats|sore throat|pharyngitis|nasal congestion|runny nose|earache|otalgia|eye redness|discharge|lymphadenitis|lymphadenopathy)\b/.test(context)
     && /\b(?:respiratory rate|blood pressure|mouth|oropharynx|sclerae|conjunctivae|nodes|posterior lung sounds|cva tenderness|abdominal palpation|spleen)\b/.test(candidateText)) {
     boost += 34;
+  }
+  if (/\b(?:lymphadenopathy|swollen glands|lymph nodes|night sweats|malignancy|neck mass)\b/.test(context)
+    && /\b(?:anterior cervical nodes|posterior cervical nodes|supraclavicular nodes|tonsillar nodes|submandibular nodes|spleen palpation)\b/.test(candidateText)) {
+    boost += 58;
   }
   if (/\b(?:bruising|petechiae|pallor|bleeding gums|epistaxis|anemia|thrombocytopenia|anticoagulation)\b/.test(context)
     && /\b(?:mouth|oropharynx|sclerae|conjunctivae|blood pressure|heart rate|jvp)\b/.test(candidateText)) {
@@ -574,6 +628,10 @@ function highYieldContextBoost(candidate, context) {
   if (/\b(?:dysuria|hematuria|urinary|oliguria|flank pain|pyelonephritis|renal colic|polyuria)\b/.test(context)
     && /\b(?:cva tenderness|abdominal palpation|blood pressure|mouth|jvp|heart rate|bowel sounds)\b/.test(candidateText)) {
     boost += 34;
+  }
+  if (/\b(?:scrotal pain|testicular|torsion|penile discharge)\b/.test(context)
+    && /\b(?:abdominal palpation|blood pressure|heart rate|bowel sounds)\b/.test(candidateText)) {
+    boost += 36;
   }
   if (/\b(?:anxiety|depression|insomnia|malaise|fatigue|weight change)\b/.test(context)
     && /\b(?:heart rate|blood pressure|thyroid|sclerae|conjunctivae|mouth|respiratory rate)\b/.test(candidateText)) {
@@ -639,9 +697,9 @@ export function rankEvidenceCandidates(catalog = [], contextText = "", tagRows =
 
   const selected = [];
   const seen = new Set();
-  const maxCandidates = options.maxCandidates || 32;
+  const maxCandidates = options.maxCandidates || 48;
   for (const candidate of scored) {
-    const key = candidateRedundancyKey(candidate);
+    const key = candidateRedundancyKey(candidate, context);
     if (seen.has(key)) {
       continue;
     }
@@ -675,12 +733,14 @@ export function formatEvidenceCandidatesBlock(candidates = [], options = {}) {
 
   const lines = [
     "<retrieved_evidence_candidates>",
-    "Use only the retrieved candidate labels and options below for bedside questions and targeted physical exam items. You may tailor wording only enough to fit the patient while preserving the same clinical intent. Do not add new bedside questions or exam maneuvers outside this list.",
-    "Choose the highest-yield candidates for today's management, then return only the standard two plain-text checklists.",
+    "These are prioritized evidence-backed bedside question and exam seeds from the local maneuver catalog. They are a starting point, not an exclusive list.",
+    "Prefer relevant candidate labels/options when they fit the patient, improve wording/options when clinically clearer, and add any missing bedside-feasible exam maneuvers or questions that are important for today's management.",
+    "Do not copy low-relevance candidates just because they appear here. Use the source, LR, rationale, difficulty, and time fields to judge value, but keep citations and rationale out of the final checklist because the app displays metadata separately.",
+    "Return only the standard two plain-text checklists.",
     ""
   ];
 
-  candidates.slice(0, options.maxCandidates || 32).forEach((candidate, index) => {
+  candidates.slice(0, options.maxCandidates || 48).forEach((candidate, index) => {
     const lrParts = [
       candidate.LR_plus ? `LR+ ${candidate.LR_plus}` : "",
       candidate.LR_minus ? `LR- ${candidate.LR_minus}` : ""

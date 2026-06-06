@@ -87,13 +87,13 @@ First reason from the patient's active problems, abnormal vitals/labs/trends, co
 Use broader clinical knowledge, medical literature, and bedside clinical reasoning to choose the most important exam findings.
 Use the student exam reference as a completeness check for maneuvers the student has learned, but do not restrict the final exam checklist to that reference.
 You may add exam items not listed in the reference when they are clinically important, evidence-based, safe, and feasible at bedside for a third-year medical student.
-Use 10 to 14 focused exam items total. Never exceed 16 exam items.
+Use 12 to 18 focused exam items total. For complex multi-system patients, you may include up to 22 exam items when each item could affect management today.
 Group exam items by exam system or exam type.
-Use no more than 4 items in any one exam subsection.
+Use no more than 5 items in any one exam subsection.
 Focus on vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
 Prefer grouped screening items over exhaustive right-left inventories.
 
-If a <retrieved_evidence_candidates> block is present, it overrides the nonrestrictive student exam reference. In that case, use only candidate bedside question labels/options and targeted exam labels/options from the retrieved block, with patient-specific tailoring only when it preserves the same clinical intent. Do not invent additional bedside questions, exam maneuvers, citations, or rationale text outside the candidate list.
+If a <retrieved_evidence_candidates> block is present, treat it as a prioritized evidence-seeded starting point and completeness check, not as an exclusive list. Prefer relevant candidate bedside question labels/options and targeted exam labels/options when they fit the patient, but improve unclear wording, change options when clinically better, and add any missing evidence-based, safe, bedside-feasible questions or exam maneuvers needed to cover the patient's active problems and red flags. Do not copy low-relevance candidates merely because they were retrieved. Do not include citations or rationale text in the final checklist.
 
 Do not include generic review-of-systems questions, a full head-to-toe exam, teaching, explanations, citations, caveats, or oral presentation text.
 Do not mention that the note is de-identified.
@@ -130,8 +130,8 @@ Before finalizing, silently verify:
 3. Every bedside label is a patient-facing question ending in ?.
 4. No bedside item asks the patient to perform an exam maneuver.
 5. The bedside checklist has 6 to 8 items.
-6. The targeted physical exam checklist has 10 to 14 items and no more than 16 items.
-7. No exam subsection contains more than 4 items.
+6. The targeted physical exam checklist has 12 to 18 items, or up to 22 only for complex multi-system patients.
+7. No exam subsection contains more than 5 items.
 8. Every item is parseable as Label: options.
 9. No item uses ___ / 5, ___ / 10, ___ / ___, or a blank before another slash option.
 </final_self_check>`;
@@ -516,13 +516,13 @@ export function validateChecklist(sections) {
     issues.push({ type: "bedside-count-high", message: `Bedside checklist has ${bedsideItems.length} patient questions. Aim for 6 to 8.` });
   }
 
-  if (examItems.length > 16) {
-    issues.push({ type: "exam-count-high", message: `Focused exam has ${examItems.length} items. Aim for 10 to 14 and never more than 16.` });
+  if (examItems.length > 22) {
+    issues.push({ type: "exam-count-high", message: `Focused exam has ${examItems.length} items. Aim for 12 to 18 and use no more than 22 for complex multi-system patients.` });
   }
 
   examSections.forEach((section) => {
-    if (section.items.length > 4) {
-      issues.push({ type: "exam-section-long", message: `${section.title} has ${section.items.length} exam items. Keep each exam section to 4 or fewer.` });
+    if (section.items.length > 5) {
+      issues.push({ type: "exam-section-long", message: `${section.title} has ${section.items.length} exam items. Keep each exam section to 5 or fewer.` });
     }
   });
 

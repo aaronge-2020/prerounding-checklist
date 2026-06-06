@@ -164,7 +164,7 @@ assert.ok(!checklistPrompt.includes("BEDSIDE QUESTION CHECKLIST:"), "main prompt
 assert.ok(checklistPrompt.includes("<student_exam_reference>"), "main prompt should include the student exam reference block");
 assert.ok(checklistPrompt.includes("Use it as a floor, not a ceiling"), "exam reference should guide, not restrict, OpenEvidence");
 assert.ok(checklistPrompt.includes("<retrieved_evidence_candidates>"), "main prompt should support retrieved evidence candidates");
-assert.ok(checklistPrompt.includes("use only candidate bedside question labels/options"), "retrieved evidence should restrict candidate use");
+assert.ok(checklistPrompt.includes("prioritized evidence-seeded starting point"), "retrieved evidence should guide candidate use without becoming exclusive");
 assert.ok(newAdmissionChecklistPrompt.includes("No prior SOAP note is available"), "new admission prompt should retain admission context");
 assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission write-up"), "new admission prompt should prioritize first-history write-up gaps");
 
