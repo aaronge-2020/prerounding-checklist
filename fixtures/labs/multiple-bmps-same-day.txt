@@ -1,0 +1,6 @@
+Basic Metabolic Panel
+Collected: 06/06/2026 0612
+Na 132, K 3.4, Cl 98, CO2 20, BUN 21, Cr 1.5, Glucose 412
+
+BMP Collected: 06/06/2026 14:48 Resulted: 06/06/2026 15:30 Na 136, K 4.2, Cl 102, CO2 24, BUN 18, Cr 1.2, Glucose 210
+A1c 7.4%

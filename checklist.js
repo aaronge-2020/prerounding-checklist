@@ -93,6 +93,8 @@ Use no more than 4 items in any one exam subsection.
 Focus on vital signs, devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific objective findings.
 Prefer grouped screening items over exhaustive right-left inventories.
 
+If a <retrieved_evidence_candidates> block is present, it overrides the nonrestrictive student exam reference. In that case, use only candidate bedside question labels/options and targeted exam labels/options from the retrieved block, with patient-specific tailoring only when it preserves the same clinical intent. Do not invent additional bedside questions, exam maneuvers, citations, or rationale text outside the candidate list.
+
 Do not include generic review-of-systems questions, a full head-to-toe exam, teaching, explanations, citations, caveats, or oral presentation text.
 Do not mention that the note is de-identified.
 </content_rules>

@@ -1,0 +1,21 @@
+tag,trigger_terms,category,score_hint
+dyspnea,dyspnea;shortness of breath;SOB;hypoxia;oxygen;respiratory distress;tachypnea,syndrome,pulmonary exam and volume signs
+volume_overload,volume overload;edema;leg swelling;JVP;heart failure;CHF;pulmonary edema;orthopnea;diuresis,syndrome,JVP edema lung and cardiac findings
+hypovolemia,hypovolemia;dehydration;poor intake;vomiting;diarrhea;dry mucous membranes;orthostasis;low urine;hypotension,syndrome,vitals mucosa JVP pulses perfusion
+AKI,AKI;acute kidney injury;rising creatinine;creatinine;oliguria;low urine;renal;kidney;CVA tenderness,problem,volume renal and flank findings
+DKA_HHS,DKA;diabetic ketoacidosis;HHS;hyperosmolar;ketosis;anion gap;insulin drip;hyperglycemic crisis;ketones,endocrine,volume respiratory abdominal and diabetes safety
+inpatient_diabetes,diabetes;T1DM;T2DM;insulin;basal;bolus;glucose;A1c;diabetic foot;neuropathy,endocrine,glycemic safety vascular and sensory checks
+hypoglycemia,hypoglycemia;low glucose;shaky;sweaty;confused;glucagon;insulin reaction;near syncope,endocrine,symptom safety neuro and vitals
+adrenal_insufficiency,adrenal insufficiency;adrenal crisis;Addison;steroids;hydrocortisone;hypotension;hyponatremia;hyperkalemia,endocrine,vitals volume abdominal and mental status
+thyroid_disease,thyroid;goiter;Graves;hypothyroid;hyperthyroid;TSH;free T4;levothyroxine;methimazole,endocrine,thyroid neck cardiac and neuro findings
+thyroid_storm,thyroid storm;thyrotoxicosis;hyperthermia;palpitations;atrial fibrillation;agitation;Graves,endocrine,heart rate thyroid CNS and volume signs
+myxedema,myxedema;severe hypothyroidism;hypothermia;bradycardia;somnolence;hypoventilation;levothyroxine,endocrine,vitals respiratory neuro and thyroid signs
+hyponatremia,hyponatremia;low sodium;SIADH;seizure;confusion;osmolality;Na;overcorrection,electrolyte,volume neurologic and safety findings
+hypercalcemia,hypercalcemia;high calcium;Ca;PTH;malignancy;constipation;polyuria;bone pain;confusion,electrolyte,volume abdominal neuro and rhythm findings
+pituitary_sellar,pituitary;sellar;suprasellar;optic chiasm;visual field;headache;apoplexy;hypopituitarism,endocrine,visual fields pupils EOM and neuro findings
+stroke,stroke;TIA;focal deficit;aphasia;facial droop;weakness;numbness;vision loss,syndrome,cranial nerve motor sensory gait findings
+weakness,weakness;fall;gait;unable to walk;neuropathy;myopathy;paresis;foot drop,syndrome,motor reflex sensory and gait findings
+abdominal_pain,abdominal pain;abd pain;nausea;vomiting;constipation;peritonitis;guarding;Murphy;rebound,syndrome,abdominal and volume findings
+infection,infection;fever;sepsis;leukocytosis;wound;line infection;pneumonia;pyelonephritis,syndrome,vitals source exam and escalation signs
+hypoxia,hypoxia;desaturation;oxygen requirement;nasal cannula;HFNC;BiPAP;ventilator,setting,respiratory support and lung findings
+diagnostic_safety,diagnostic uncertainty;missed diagnosis;red flag;change in trajectory;does not fit;unexpected worsening,safety,favor high-actionability confirmation findings

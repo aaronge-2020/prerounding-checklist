@@ -1,0 +1,140 @@
+import assert from "node:assert/strict";
+import {
+  CONTINUITY_REQUIRED_PROMPT_PHRASE,
+  CONTINUITY_STORAGE_KEY,
+  appendOrUpdateContinuityDay,
+  buildSmartUpdateReview,
+  buildContinuityChecklistPrompt,
+  buildContinuityUpdatePrompt,
+  classifySmartUpdateSections,
+  createContinuityCase,
+  hasDailyInputs,
+  normalizeContinuityCase,
+  normalizeDailyInputs,
+  smartSectionsToDailyInputs,
+  stripRawDailyInputsForStorage
+} from "../continuity.js";
+
+assert.equal(CONTINUITY_STORAGE_KEY, "preRoundPatientCasesV1");
+
+const patientCase = createContinuityCase({
+  label: "Patient A",
+  conversationCaseKey: "PREROUNDS-ABCD",
+  baselineSummary: "T1DM admitted with DKA, gap closed.",
+  activeProblems: "T1DM; hypokalemia",
+  pendingItems: "Confirm discharge supplies."
+}, new Date("2026-06-06T12:00:00Z"));
+
+assert.equal(patientCase.label, "Patient A");
+assert.equal(patientCase.days.length, 0);
+assert.equal(normalizeContinuityCase({ label: "  Patient B  " }).label, "Patient B");
+
+const dailyInputs = normalizeDailyInputs({
+  todayNote: "Feels better today.",
+  todayLabs: "K 3.4, glucose 180",
+  updatedMar: "Glargine given.",
+  overnightEvents: "No acute events.",
+  subjectiveChange: "Less nausea.",
+  rawExtra: "should not survive"
+});
+assert.equal(dailyInputs.rawExtra, undefined);
+assert.ok(hasDailyInputs(dailyInputs));
+
+const dayOne = appendOrUpdateContinuityDay(patientCase, {
+  date: "2026-06-06",
+  deidentifiedInputs: dailyInputs,
+  copiedContinuityPrompt: true
+}, new Date("2026-06-06T13:00:00Z"));
+assert.equal(dayOne.days.length, 1);
+assert.equal(dayOne.days[0].deidentifiedInputs.todayLabs, "K 3.4, glucose 180");
+
+const updatedSameDay = appendOrUpdateContinuityDay(dayOne, {
+  date: "2026-06-06",
+  finalCompiledFindings: "Bedside findings ready."
+}, new Date("2026-06-06T15:00:00Z"));
+assert.equal(updatedSameDay.days.length, 1, "same date should update rather than append");
+assert.equal(updatedSameDay.days[0].finalCompiledFindings, "Bedside findings ready.");
+assert.equal(updatedSameDay.days[0].deidentifiedInputs.todayNote, "Feels better today.");
+
+const dayTwo = appendOrUpdateContinuityDay(updatedSameDay, {
+  date: "2026-06-07",
+  deidentifiedInputs: { subjectiveChange: "Eating full meals." }
+}, new Date("2026-06-07T09:00:00Z"));
+assert.equal(dayTwo.days.length, 2);
+assert.equal(dayTwo.days[1].date, "2026-06-07");
+
+const storagePatch = stripRawDailyInputsForStorage({
+  rawInputs: { todayNote: "raw PHI text" },
+  todayInputs: { todayNote: "also raw" },
+  rawSections: [{ text: "raw section" }],
+  deidentifiedInputs: { todayNote: "de-identified only" }
+});
+assert.equal(Object.hasOwn(storagePatch, "rawInputs"), false);
+assert.equal(Object.hasOwn(storagePatch, "todayInputs"), false);
+assert.equal(Object.hasOwn(storagePatch, "rawSections"), false);
+assert.equal(storagePatch.deidentifiedInputs.todayNote, "de-identified only");
+
+const smartSections = classifySmartUpdateSections(`Labs:
+Glucose 140
+K 4.1
+
+---
+
+MAR:
+Glargine 18 units given
+
+---
+
+Overnight:
+No acute events`);
+assert.equal(smartSections.length, 3);
+assert.equal(smartSections[0].type, "labs");
+assert.equal(smartSections[1].type, "mar");
+assert.equal(smartSections[2].type, "handoff");
+const smartInputs = smartSectionsToDailyInputs(smartSections.map((section) => ({
+  ...section,
+  deidentifiedText: section.text.replace("Glargine", "Insulin glargine")
+})));
+assert.ok(smartInputs.todayLabs.includes("Glucose 140"));
+assert.ok(smartInputs.updatedMar.includes("Insulin glargine"));
+assert.ok(smartInputs.overnightEvents.includes("No acute events"));
+
+const smartReview = buildSmartUpdateReview(smartSections.map((section) => ({
+  ...section,
+  deidentifiedText: section.text
+})), dayOne);
+assert.ok(smartReview.rows.some((row) => row.type === "labs" && row.status === "changed"));
+assert.ok(smartReview.rows.some((row) => row.type === "subjective" && row.status === "missing"));
+assert.ok(smartReview.rows.find((row) => row.type === "labs").details.some((detail) => /parsed lab row/i.test(detail)));
+assert.ok(smartReview.rows.find((row) => row.type === "mar").details.some((detail) => /MAR line/i.test(detail)));
+
+const dayWithSmartReview = appendOrUpdateContinuityDay(dayOne, {
+  date: "2026-06-06",
+  smartUpdateReview: smartReview.rows,
+  carryForwardUpdates: smartReview.carryForwardSuggestions
+});
+assert.equal(dayWithSmartReview.days[0].smartUpdateReview.length, smartReview.rows.length);
+
+const updatePrompt = buildContinuityUpdatePrompt({
+  patientCase: dayTwo,
+  todayInputs: dailyInputs,
+  userContext: "<user_context>\nService: Endocrinology consult\n</user_context>"
+});
+assert.ok(updatePrompt.startsWith(CONTINUITY_REQUIRED_PROMPT_PHRASE));
+assert.ok(updatePrompt.includes("Today note:\nFeels better today."));
+assert.ok(updatePrompt.includes("Today labs:\nK 3.4, glucose 180"));
+assert.ok(updatePrompt.includes("Updated MAR:\nGlargine given."));
+assert.ok(updatePrompt.includes("Overnight events:\nNo acute events."));
+assert.ok(updatePrompt.includes("Subjective change:\nLess nausea."));
+assert.ok(updatePrompt.includes("Do not ask me to paste yesterday's OpenEvidence report back into the app."));
+assert.ok(!/paste yesterday.?s report back into the app/i.test(updatePrompt.replace("Do not ask me to paste yesterday's OpenEvidence report back into the app.", "")));
+
+const checklistPrompt = buildContinuityChecklistPrompt({
+  patientCase: dayTwo,
+  todayInputs: dailyInputs
+});
+assert.ok(checklistPrompt.includes("Do not ask me to paste yesterday's report or resend prior days."));
+assert.ok(checklistPrompt.includes("Now produce today's bedside checklist only."));
+assert.ok(checklistPrompt.includes("Today labs:\nK 3.4, glucose 180"));
+
+console.log("Continuity tests passed.");

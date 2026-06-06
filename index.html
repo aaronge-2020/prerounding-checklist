@@ -856,7 +856,7 @@
 
     .source-toggle {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -895,6 +895,128 @@
 
     .source-toggle button[aria-pressed="true"] .source-choice-copy {
       color: #b8dce1;
+    }
+
+    .continuity-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .continuity-case-grid,
+    .continuity-daily-grid,
+    .continuity-carry-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .continuity-case-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .continuity-daily-grid,
+    .continuity-carry-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .continuity-field-wide {
+      grid-column: 1 / -1;
+    }
+
+    .continuity-case-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .continuity-case-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .continuity-case-list strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .continuity-case-list span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .continuity-preview {
+      min-height: 170px;
+      padding: 12px;
+    }
+
+    .continuity-status {
+      min-height: 22px;
+      margin: 0;
+      color: var(--accent-strong);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .privacy-panel {
+      display: grid;
+      gap: 10px;
+      border-color: rgba(106, 179, 189, 0.28);
+      background: rgba(79, 152, 163, 0.08);
+    }
+
+    .privacy-list,
+    .smart-review-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .privacy-list li,
+    .smart-review-list li {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+      font-weight: 760;
+      line-height: 1.35;
+    }
+
+    .smart-update-panel {
+      display: grid;
+      gap: 12px;
+    }
+
+    .smart-update-textarea {
+      min-height: 150px;
+    }
+
+    .smart-review-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .smart-review-meta {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 750;
     }
 
     .profile-panel,
@@ -1606,7 +1728,20 @@
       background: rgba(79, 152, 163, 0.08);
     }
 
+    .lab-timeline-preview {
+      display: grid;
+      gap: 10px;
+      border: 1px solid rgba(106, 179, 189, 0.26);
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      background: rgba(106, 179, 189, 0.07);
+    }
+
     .scrub-review[hidden] {
+      display: none !important;
+    }
+
+    .lab-timeline-preview[hidden] {
       display: none !important;
     }
 
@@ -1678,6 +1813,27 @@
       background: rgba(255, 255, 255, 0.046);
       font-size: 0.82rem;
       font-weight: 800;
+    }
+
+    .lab-timeline-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .lab-timeline-list li {
+      min-height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #eee8dc;
+      background: rgba(0, 0, 0, 0.15);
+      font-size: 0.84rem;
+      font-weight: 850;
+      overflow-wrap: anywhere;
     }
 
     .review-group-grid {
@@ -2488,6 +2644,84 @@
       line-height: 1.22;
     }
 
+    .evidence-meta {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .evidence-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .evidence-chip {
+      display: inline-flex;
+      max-width: 100%;
+      align-items: center;
+      border: 1px solid rgba(106, 179, 189, 0.22);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--text-muted);
+      background: rgba(79, 152, 163, 0.08);
+      font-size: 0.72rem;
+      font-weight: 780;
+      line-height: 1.25;
+    }
+
+    .evidence-chip-main {
+      border-color: rgba(216, 176, 106, 0.28);
+      color: var(--text);
+      background: rgba(216, 176, 106, 0.09);
+    }
+
+    .evidence-review-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .evidence-review-button {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 0 9px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.72rem;
+      font-weight: 850;
+    }
+
+    .evidence-review-button:hover,
+    .evidence-review-button.is-active {
+      border-color: rgba(106, 179, 189, 0.42);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .evidence-suggest-input {
+      flex: 1 1 180px;
+      min-height: 34px;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 7px 9px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      font: inherit;
+      font-size: 0.78rem;
+    }
+
+    .evidence-review-status {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
     .finding-state {
       display: inline-flex;
       flex: 0 0 10px;
@@ -2758,6 +2992,316 @@
       white-space: nowrap;
     }
 
+    .census-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 2px 14px;
+    }
+
+    .active-patient-chip {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .active-patient-chip strong {
+      color: var(--text);
+    }
+
+    .census-screen {
+      padding-bottom: 28px;
+    }
+
+    .census-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: end;
+      padding: 22px 2px 16px;
+    }
+
+    .census-header h1 {
+      max-width: none;
+      margin-bottom: 8px;
+      font-size: clamp(2rem, 5vw, 3.1rem);
+    }
+
+    .census-subtitle {
+      max-width: 70ch;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .vault-card,
+    .census-dashboard,
+    .batch-intake-panel,
+    .prompt-queue-panel,
+    .patient-editor-panel {
+      padding: 16px;
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .census-input,
+    .census-select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0 12px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .census-input:focus,
+    .census-select:focus {
+      border-color: rgba(79, 152, 163, 0.8);
+      box-shadow: 0 0 0 4px rgba(79, 152, 163, 0.12);
+      outline: none;
+    }
+
+    .vault-status,
+    .census-status,
+    .batch-status {
+      min-height: 22px;
+      margin: 10px 0 0;
+      color: var(--accent-strong);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .census-main-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .census-toolbar,
+    .patient-editor-grid,
+    .batch-actions,
+    .census-export-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .census-toolbar {
+      grid-template-columns: minmax(0, 1fr);
+      margin-bottom: 14px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-toggle {
+      min-height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .filter-toggle[aria-pressed="true"] {
+      border-color: var(--accent-border);
+      color: #effdff;
+      background: rgba(79, 152, 163, 0.22);
+    }
+
+    .patient-table {
+      display: grid;
+      gap: 6px;
+    }
+
+    .patient-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 1.1fr) minmax(76px, 0.6fr) minmax(130px, 1fr) minmax(118px, 0.8fr) minmax(96px, 0.7fr) auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 58px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .patient-row.is-active {
+      border-color: rgba(106, 179, 189, 0.6);
+      background: rgba(79, 152, 163, 0.11);
+    }
+
+    .patient-row-header {
+      min-height: 0;
+      color: var(--quiet);
+      background: transparent;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .patient-row-header span {
+      white-space: nowrap;
+    }
+
+    .patient-cell {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .patient-cell-muted {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 0 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.76rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status-badge.is-ready {
+      border-color: rgba(79, 152, 163, 0.54);
+      color: var(--accent-strong);
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .status-badge.is-priority {
+      border-color: rgba(230, 174, 95, 0.5);
+      color: #e8bd72;
+      background: rgba(230, 174, 95, 0.1);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .mini-icon-button {
+      min-height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0 10px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .prompt-queue-list,
+    .batch-snippet-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .queue-item,
+    .batch-snippet-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.16);
+    }
+
+    .queue-item.is-next {
+      border-color: rgba(106, 179, 189, 0.56);
+      background: rgba(79, 152, 163, 0.12);
+    }
+
+    .queue-title,
+    .batch-snippet-title {
+      margin: 0 0 4px;
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .queue-meta,
+    .batch-snippet-preview {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .batch-snippet-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(120px, 0.7fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .patient-editor-panel {
+      margin-bottom: 14px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .patient-editor-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: end;
+    }
+
+    .census-checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .census-checks label {
+      display: inline-flex;
+      gap: 7px;
+      align-items: center;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .census-side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .batch-textarea {
+      min-height: 180px;
+      padding: 12px;
+      line-height: 1.45;
+    }
+
+    .census-file-input {
+      width: 100%;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
     @media (min-width: 720px) {
       .app-shell {
         padding-right: 0;
@@ -2796,6 +3340,17 @@
 
       .finding-options.count-4 {
         grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .census-toolbar,
+      .batch-actions,
+      .census-export-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .census-main-grid {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: start;
       }
     }
 
@@ -3015,6 +3570,26 @@
         grid-column: 1 / -1;
         justify-content: center;
       }
+
+      .census-header,
+      .vault-grid,
+      .patient-editor-grid,
+      .batch-snippet-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .patient-row {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .patient-row-header {
+        display: none;
+      }
+
+      .row-actions {
+        justify-content: flex-start;
+      }
     }
 
     @media (max-width: 700px) {
@@ -3063,6 +3638,11 @@
       <span id="findingsReadyStatus">Findings ready</span>
       <span class="status-arrow" aria-hidden="true">-></span>
       <span id="outputReadyStatus">Update ready</span>
+    </div>
+    <div class="census-topbar" aria-label="Patient census navigation">
+      <button id="openCensusButton" class="btn btn-secondary" type="button">Patient Census</button>
+      <span id="activePatientChip" class="active-patient-chip">Single-patient workspace</span>
+      <button id="dischargeActivePatientButton" class="btn btn-quiet" type="button" hidden>Discharge</button>
     </div>
 
     <details id="toolsDrawer" class="tools-drawer">
@@ -3244,6 +3824,116 @@
       </div>
     </details>
 
+    <section id="censusScreen" class="screen census-screen" aria-labelledby="censusTitle">
+      <header class="census-header">
+        <div>
+          <h1 id="censusTitle">Patient Census</h1>
+          <p class="census-subtitle">Manage local patient aliases, chart context, bedside status, and OpenEvidence prompt order from one browser tab.</p>
+        </div>
+        <button id="lockCensusButton" class="btn btn-secondary" type="button" hidden>Lock Census</button>
+      </header>
+
+      <section id="censusVaultCard" class="surface vault-card" aria-labelledby="censusVaultTitle">
+        <p class="eyebrow">Local encrypted storage</p>
+        <h2 id="censusVaultTitle" class="workflow-title">Unlock census vault</h2>
+        <p class="workflow-copy">The passphrase stays in memory for this tab. Patient workspaces are stored encrypted in this browser.</p>
+        <div class="vault-grid">
+          <div>
+            <label for="censusPassphraseInput">Census passphrase</label>
+            <input id="censusPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Enter passphrase">
+          </div>
+          <div class="compact-summary-actions">
+            <button id="unlockCensusButton" class="btn btn-primary" type="button">Unlock</button>
+            <button id="createCensusButton" class="btn btn-secondary" type="button">Create vault</button>
+            <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Single patient</button>
+          </div>
+        </div>
+        <p id="censusVaultStatus" class="vault-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <div id="censusUnlockedShell" class="census-main-grid" hidden>
+        <section class="surface census-dashboard" aria-labelledby="patientRosterTitle">
+          <div class="census-toolbar">
+            <div>
+              <p class="eyebrow">Roster</p>
+              <h2 id="patientRosterTitle" class="workflow-title">Local patient workspaces</h2>
+            </div>
+            <div class="filter-group" role="group" aria-label="Census filters">
+              <button class="filter-toggle" type="button" aria-pressed="false" data-census-filter="needsBedside">Needs bedside</button>
+              <button class="filter-toggle" type="button" aria-pressed="false" data-census-filter="needsUpdate">Needs update</button>
+              <button class="filter-toggle" type="button" aria-pressed="false" data-census-filter="highPriority">High priority</button>
+              <button class="filter-toggle" type="button" aria-pressed="false" data-census-filter="seenToday">Seen today</button>
+            </div>
+          </div>
+
+          <form id="patientEditorForm" class="surface patient-editor-panel" autocomplete="off">
+            <div class="patient-editor-grid">
+              <div>
+                <label for="patientAliasInput">Alias</label>
+                <input id="patientAliasInput" class="census-input" type="text" placeholder="Patient A">
+              </div>
+              <div>
+                <label for="patientRoomInput">Room / bed</label>
+                <input id="patientRoomInput" class="census-input" type="text" placeholder="Room 812">
+              </div>
+              <div>
+                <label for="patientProblemInput">Service problem</label>
+                <input id="patientProblemInput" class="census-input" type="text" placeholder="DKA consult">
+              </div>
+              <div class="census-checks">
+                <label><input id="patientHighPriorityInput" type="checkbox"> High priority</label>
+                <label><input id="patientSeenTodayInput" type="checkbox"> Seen today</label>
+              </div>
+            </div>
+            <div class="compact-summary-actions">
+              <button id="savePatientButton" class="btn btn-primary" type="submit">Save patient</button>
+              <button id="newPatientButton" class="btn btn-secondary" type="button">New patient</button>
+            </div>
+          </form>
+
+          <div id="patientTable" class="patient-table" aria-label="Patient roster"></div>
+          <p id="censusStatus" class="census-status" role="status" aria-live="polite"></p>
+        </section>
+
+        <aside class="census-side">
+          <section class="surface prompt-queue-panel" aria-labelledby="promptQueueTitle">
+            <p class="eyebrow">Queue</p>
+            <h2 id="promptQueueTitle" class="workflow-title">Copy next prompt</h2>
+            <p class="workflow-copy">Moves patient-by-patient using the current filters and priority order.</p>
+            <button id="copyNextPromptButton" class="btn btn-primary btn-full" type="button">Copy next prompt</button>
+            <div id="promptQueueList" class="prompt-queue-list" aria-label="Prompt queue"></div>
+          </section>
+
+          <section class="surface batch-intake-panel" aria-labelledby="batchIntakeTitle">
+            <p class="eyebrow">Batch Intake</p>
+            <h2 id="batchIntakeTitle" class="workflow-title">Paste chart snippets</h2>
+            <label for="batchPasteInput">Multiple chart snippets</label>
+            <textarea id="batchPasteInput" class="batch-textarea" spellcheck="false" placeholder="Paste snippets separated by blank lines or --- lines. Assign each snippet before de-identifying."></textarea>
+            <div class="batch-actions">
+              <button id="splitBatchButton" class="btn btn-secondary" type="button">Split snippets</button>
+              <button id="deidentifyBatchButton" class="btn btn-primary" type="button">De-identify all</button>
+              <button id="generateBatchPromptsButton" class="btn btn-secondary" type="button">Generate all initial report prompts</button>
+            </div>
+            <div id="batchSnippetList" class="batch-snippet-list" aria-label="Batch snippet assignments"></div>
+            <p id="batchStatus" class="batch-status" role="status" aria-live="polite"></p>
+          </section>
+
+          <section class="surface batch-intake-panel" aria-labelledby="censusExportTitle">
+            <p class="eyebrow">Move devices</p>
+            <h2 id="censusExportTitle" class="workflow-title">Encrypted census file</h2>
+            <div class="census-export-actions">
+              <button id="exportCensusButton" class="btn btn-secondary" type="button">Export census</button>
+              <button id="importCensusButton" class="btn btn-secondary" type="button">Import census</button>
+            </div>
+            <label for="censusTransferCodeInput">Transfer code</label>
+            <input id="censusTransferCodeInput" class="census-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <input id="censusImportFile" class="census-file-input" type="file" accept=".json,application/json">
+            <p id="censusTransferStatus" class="batch-status" role="status" aria-live="polite"></p>
+          </section>
+        </aside>
+      </div>
+    </section>
+
     <section id="pasteScreen" class="screen is-active" aria-labelledby="pasteTitle">
       <header class="hero">
         <p id="pasteEyebrow" class="eyebrow">Prepare on laptop</p>
@@ -3266,6 +3956,18 @@
         <p><strong>Laptop:</strong> chart context → first report → checklist</p>
         <p><strong>Phone:</strong> checklist → bedside answers → final update</p>
       </div>
+
+      <section id="privacyStatusPanel" class="surface privacy-panel" aria-labelledby="privacyStatusTitle">
+        <div>
+          <p class="eyebrow">Privacy</p>
+          <h2 id="privacyStatusTitle" class="workflow-title">Local de-ID guardrails</h2>
+        </div>
+        <ul class="privacy-list">
+          <li>Raw pasted chart text is used only for local de-identification and is not saved in the census vault.</li>
+          <li>Only reviewed de-identified context, checklist data, and local aliases are stored for future days.</li>
+          <li>Review every prompt before copying to OpenEvidence. This app reduces PHI risk but does not legally certify HIPAA de-identification; follow institutional policy and approved tool use.</li>
+        </ul>
+      </section>
 
       <section id="phoneQuickStartCard" class="surface phone-quick-card" aria-labelledby="phoneQuickStartTitle">
         <div>
@@ -3369,6 +4071,10 @@
             <span class="source-choice-title">New admission</span>
             <span class="source-choice-copy">Tap first-history intake.</span>
           </button>
+          <button id="continuityModeButton" type="button" aria-pressed="false">
+            <span class="source-choice-title">Resume patient</span>
+            <span class="source-choice-copy">Day 2 or later changes.</span>
+          </button>
         </div>
 
         <section id="priorSourcePanel" class="source-panel is-active" aria-labelledby="priorSourceTitle">
@@ -3431,6 +4137,17 @@ enoxaparin 40 mg held by provider"></textarea>
               <div id="deidProgressFill" class="deid-progress-fill"></div>
             </div>
             <p id="deidProgressDetail" class="deid-progress-detail">Starting local scrubber...</p>
+          </div>
+          <div id="labTimelinePreview" class="lab-timeline-preview" hidden>
+            <div class="review-header">
+              <div>
+                <p class="eyebrow">Labs</p>
+                <p class="review-title">Lab timeline preview</p>
+              </div>
+              <p id="labTimelineSummary" class="review-count">0 lab rows</p>
+            </div>
+            <ul id="labTimelineList" class="lab-timeline-list" aria-label="Parsed lab timeline"></ul>
+            <ul id="labTimelineWarnings" class="flag-list" aria-label="Ambiguous lab timing warnings"></ul>
           </div>
           <div id="scrubReview" class="scrub-review" hidden>
             <div class="review-header">
@@ -3948,6 +4665,129 @@ enoxaparin 40 mg held by provider"></textarea>
           </div>
         </section>
 
+        <section id="continuitySourcePanel" class="source-panel continuity-panel" aria-labelledby="continuitySourceTitle">
+          <div class="guided-step">
+            <p class="eyebrow">Continuity</p>
+            <h3 id="continuitySourceTitle" class="guided-step-title">Resume patient</h3>
+            <p class="guided-step-copy">Use the same OpenEvidence conversation. Add today's de-identified changes without pasting yesterday's report back into the app.</p>
+          </div>
+
+          <div class="surface patient-editor-panel">
+            <div class="continuity-case-grid">
+              <div>
+                <label for="continuityCaseSelect">Saved patient case</label>
+                <select id="continuityCaseSelect" class="census-select"></select>
+              </div>
+              <div>
+                <label for="continuityCaseLabelInput">Case label</label>
+                <input id="continuityCaseLabelInput" class="census-input" type="text" placeholder="Patient A">
+              </div>
+              <div>
+                <label for="continuityCaseKeyInput">Conversation key</label>
+                <input id="continuityCaseKeyInput" class="census-input" type="text" placeholder="Optional local OpenEvidence key">
+              </div>
+              <div class="compact-summary-actions">
+                <button id="newContinuityCaseButton" class="btn btn-secondary" type="button">New case</button>
+                <button id="saveContinuityCaseButton" class="btn btn-primary" type="button">Save case</button>
+                <button id="deleteContinuityCaseButton" class="btn btn-quiet" type="button">Delete case</button>
+              </div>
+            </div>
+            <ul id="continuityCaseList" class="continuity-case-list" aria-label="Saved continuity cases"></ul>
+          </div>
+
+          <details class="more-options" open>
+            <summary>Carry-forward</summary>
+            <div class="more-options-body continuity-carry-grid">
+              <div class="continuity-field-wide">
+                <label for="baselineSummaryInput">Stable background</label>
+                <textarea id="baselineSummaryInput" class="admission-input" spellcheck="false" placeholder="De-identified baseline summary, stable PMH, reason for admission or consult."></textarea>
+              </div>
+              <div>
+                <label for="activeProblemsInput">Active problems</label>
+                <textarea id="activeProblemsInput" class="admission-input" spellcheck="false" placeholder="Problem list or consult focus."></textarea>
+              </div>
+              <div>
+                <label for="yesterdayPlanInput">Yesterday plan</label>
+                <textarea id="yesterdayPlanInput" class="admission-input" spellcheck="false" placeholder="Plan from prior day, de-identified and concise."></textarea>
+              </div>
+              <div>
+                <label for="pendingItemsInput">Unresolved pending items</label>
+                <textarea id="pendingItemsInput" class="admission-input" spellcheck="false" placeholder="Pending studies, tasks, discharge barriers."></textarea>
+              </div>
+              <div>
+                <label for="medicationTrendNotesInput">Medication trend notes</label>
+                <textarea id="medicationTrendNotesInput" class="admission-input" spellcheck="false" placeholder="Medication changes to track over days."></textarea>
+              </div>
+              <div>
+                <label for="labTrendNotesInput">Lab trend notes</label>
+                <textarea id="labTrendNotesInput" class="admission-input" spellcheck="false" placeholder="Lab trend context to carry forward."></textarea>
+              </div>
+            </div>
+          </details>
+
+          <div class="surface patient-editor-panel smart-update-panel">
+            <div>
+              <p class="compact-summary-title">Smart Daily Update</p>
+              <p class="compact-summary-copy">Paste today's mixed note, labs, MAR, and events. The app classifies and de-identifies sections locally, then shows what changed before saving.</p>
+            </div>
+            <label for="smartDailyPasteInput">Today's mixed update</label>
+            <textarea id="smartDailyPasteInput" class="admission-input smart-update-textarea" spellcheck="false" placeholder="Paste today's note, labs/results, MAR, handoff, events, or subjective updates. Separate sections with headings or --- lines."></textarea>
+            <div class="prompt-actions guided-primary-actions">
+              <button id="classifySmartUpdateButton" class="btn btn-secondary" type="button">Classify sections</button>
+              <button id="deidentifySmartUpdateButton" class="btn btn-primary" type="button">De-identify smart update</button>
+              <button id="saveSmartUpdateButton" class="btn btn-secondary" type="button">Save reviewed update</button>
+            </div>
+            <ul id="smartUpdateReviewList" class="smart-review-list" aria-label="Smart update review"></ul>
+            <p id="smartUpdateStatus" class="continuity-status" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="surface patient-editor-panel">
+            <p class="compact-summary-title">Today's changes</p>
+            <p class="compact-summary-copy">Raw text is cleared after local de-identification. Only the reviewed de-identified text is saved.</p>
+            <div class="continuity-daily-grid">
+              <div class="continuity-field-wide">
+                <label for="todayNoteInput">Today's note</label>
+                <textarea id="todayNoteInput" class="admission-input admission-input-primary" spellcheck="false" placeholder="Paste today's note or interval chart context."></textarea>
+              </div>
+              <div>
+                <label for="todayLabsInput">Today's labs</label>
+                <textarea id="todayLabsInput" class="admission-input" spellcheck="false" placeholder="Paste today's labs, trends, imaging impressions, or results."></textarea>
+              </div>
+              <div>
+                <label for="updatedMarInput">Updated MAR</label>
+                <textarea id="updatedMarInput" class="admission-input" spellcheck="false" placeholder="Paste current med orders or MAR updates."></textarea>
+              </div>
+              <div>
+                <label for="overnightEventsInput">Overnight events</label>
+                <textarea id="overnightEventsInput" class="admission-input" spellcheck="false" placeholder="Events, nursing concerns, cross-cover updates, to-dos."></textarea>
+              </div>
+              <div>
+                <label for="subjectiveChangeInput">Subjective change</label>
+                <textarea id="subjectiveChangeInput" class="admission-input" spellcheck="false" placeholder="Symptoms better/worse, new concerns, patient goals."></textarea>
+              </div>
+            </div>
+            <div class="prompt-actions guided-primary-actions">
+              <button id="continuityDeidButton" class="btn btn-primary" type="button">De-identify today</button>
+              <button id="copyContinuityPromptButton" class="btn btn-secondary" type="button">Copy continuity prompt</button>
+              <button id="copyContinuityChecklistButton" class="btn btn-secondary" type="button">Copy today's checklist prompt</button>
+            </div>
+          </div>
+
+          <div id="continuityReview" class="scrub-review" hidden>
+            <div class="review-header">
+              <div>
+                <p class="eyebrow">Review</p>
+                <p class="review-title">Today's de-identified changes</p>
+              </div>
+              <p id="continuitySummary" class="review-count">0 redactions</p>
+            </div>
+            <p id="continuityVerdict" class="scrub-verdict">Review before copying.</p>
+            <textarea id="continuityScrubbedInput" class="continuity-preview" spellcheck="false" placeholder="Today's de-identified changes..."></textarea>
+            <p id="continuityWarnings" class="continuity-status" role="status" aria-live="polite"></p>
+          </div>
+          <p id="continuityStatus" class="continuity-status" role="status" aria-live="polite"></p>
+        </section>
+
         <div id="transferExportPanel" class="transfer-panel" hidden>
           <p class="compact-summary-title">Context file ready</p>
           <p class="compact-summary-copy">Use only when the phone needs a local context file.</p>
@@ -4127,6 +4967,17 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
             <div id="sectionJump" class="section-jump" aria-label="Section jumps"></div>
           </div>
         </details>
+        <details id="evidenceReviewDrawer" class="section-drawer">
+          <summary>Evidence review</summary>
+          <div class="section-drawer-body">
+            <div class="tool-row" role="group" aria-label="Evidence review import and export">
+              <button id="exportEvidenceReviewButton" class="mini-btn" type="button">Export</button>
+              <button id="importEvidenceReviewButton" class="mini-btn" type="button">Import</button>
+              <input id="evidenceReviewFile" type="file" accept="application/json" hidden>
+            </div>
+            <p id="evidenceReviewStatus" class="evidence-review-status" role="status" aria-live="polite"></p>
+          </div>
+        </details>
       </div>
 
       <div id="checklistList" class="checklist-list"></div>
@@ -4189,7 +5040,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       <div class="phi-safety-actions">
         <button id="reviewPhiPreviewButton" class="btn btn-secondary" type="button">Review Preview</button>
         <button id="rerunPhiCheckButton" class="btn btn-secondary" type="button">Run Check Again</button>
-        <button id="copyPhiAnywayButton" class="btn btn-primary" type="button">I reviewed this, copy anyway</button>
+        <button id="copyPhiAnywayButton" class="btn btn-primary" type="button">I reviewed this for PHI, copy anyway</button>
         <button id="dismissPhiPanelButton" class="btn btn-quiet" type="button">Dismiss</button>
       </div>
     </section>
@@ -4211,6 +5062,58 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       parseChecklist,
       validateChecklist
     } from "./checklist.js";
+    import {
+      buildEvidencePromptReplacement,
+      evidenceFileUrls,
+      exportEvidenceReviewState,
+      importEvidenceReviewState,
+      loadEvidenceCatalog,
+      matchEvidenceForChecklistItem,
+      normalizeEvidenceReviewState,
+      updateEvidenceReviewState
+    } from "./evidence.js";
+    import {
+      formatLabChronologyPromptBlock,
+      formatLabTimelinePreview,
+      parseLabTimeline
+    } from "./labs.js";
+    import {
+      CENSUS_EXPORT_TYPE,
+      CENSUS_STORAGE_TYPE,
+      appendSnippetToPatient,
+      buildPromptQueue,
+      createPatientCase,
+      deidentifiedSourceText,
+      decryptJsonPayload,
+      derivePatientStatus,
+      encryptJsonPayload,
+      filterPatients,
+      hasSourceContext,
+      nextPromptForPatient,
+      normalizeCensusVault,
+      normalizeDeidentifiedSourceSections,
+      normalizePatientCase,
+      parseBatchSnippetBlocks,
+      patientStatusLabels,
+      removePatientAndSelectNext
+    } from "./census.js";
+    import {
+      CONTINUITY_STORAGE_KEY,
+      appendOrUpdateContinuityDay,
+      buildSmartUpdateReview,
+      buildContinuityChecklistPrompt as buildContinuityChecklistPromptShared,
+      buildContinuityUpdatePrompt as buildContinuityUpdatePromptShared,
+      classifySmartUpdateSections,
+      createContinuityCase,
+      formatDailyInputs,
+      hasDailyInputs,
+      normalizeContinuityCase,
+      normalizeContinuityCases,
+      normalizeDailyInputs,
+      smartSectionsToDailyInputs,
+      smartUpdateTypes,
+      stripRawDailyInputsForStorage
+    } from "./continuity.js";
 
     const state = {
       sections: [],
@@ -4221,6 +5124,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       rawLabs: "",
       rawHandoff: "",
       rawMedicationText: "",
+      labTimeline: null,
+      labChronologyBlock: "",
       scrubbedNote: "",
       scrubResult: null,
       admission: {},
@@ -4255,7 +5160,43 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       laptopPrepareStep: "source",
       phoneBedsideStep: "paste",
       useChecklistOnLaptop: false,
-      recoveredChecklistAvailable: false
+      recoveredChecklistAvailable: false,
+      evidenceCatalog: null,
+      evidenceCatalogLoadPromise: null,
+      retrievedEvidenceCandidates: [],
+      evidenceMatchedTags: [],
+      evidenceReviewState: normalizeEvidenceReviewState(),
+      continuity: {
+        cases: [],
+        activeCaseId: "",
+        todayRawInputs: {},
+        todayDeidentifiedInputs: {},
+        todayScrubResult: null,
+        smartUpdateSections: [],
+        smartUpdateReview: null,
+        deleteConfirming: false
+      },
+      census: {
+        unlocked: false,
+        passphrase: "",
+        vaultExists: false,
+        patients: [],
+        activePatientId: "",
+        editingPatientId: "",
+        filters: {
+          needsBedside: false,
+          needsUpdate: false,
+          highPriority: false,
+          seenToday: false
+        },
+        batchSnippets: [],
+        saveTimer: null,
+        saveInProgress: false,
+        savePending: false,
+        hydrating: false,
+        pendingDischargePatientId: "",
+        loadedAt: ""
+      }
     };
 
     const elements = {
@@ -4269,6 +5210,41 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       checklistReadyStatus: document.getElementById("checklistReadyStatus"),
       findingsReadyStatus: document.getElementById("findingsReadyStatus"),
       outputReadyStatus: document.getElementById("outputReadyStatus"),
+      openCensusButton: document.getElementById("openCensusButton"),
+      activePatientChip: document.getElementById("activePatientChip"),
+      dischargeActivePatientButton: document.getElementById("dischargeActivePatientButton"),
+      censusScreen: document.getElementById("censusScreen"),
+      censusVaultCard: document.getElementById("censusVaultCard"),
+      censusUnlockedShell: document.getElementById("censusUnlockedShell"),
+      censusPassphraseInput: document.getElementById("censusPassphraseInput"),
+      unlockCensusButton: document.getElementById("unlockCensusButton"),
+      createCensusButton: document.getElementById("createCensusButton"),
+      continueSinglePatientButton: document.getElementById("continueSinglePatientButton"),
+      lockCensusButton: document.getElementById("lockCensusButton"),
+      censusVaultStatus: document.getElementById("censusVaultStatus"),
+      patientTable: document.getElementById("patientTable"),
+      patientEditorForm: document.getElementById("patientEditorForm"),
+      patientAliasInput: document.getElementById("patientAliasInput"),
+      patientRoomInput: document.getElementById("patientRoomInput"),
+      patientProblemInput: document.getElementById("patientProblemInput"),
+      patientHighPriorityInput: document.getElementById("patientHighPriorityInput"),
+      patientSeenTodayInput: document.getElementById("patientSeenTodayInput"),
+      savePatientButton: document.getElementById("savePatientButton"),
+      newPatientButton: document.getElementById("newPatientButton"),
+      censusStatus: document.getElementById("censusStatus"),
+      copyNextPromptButton: document.getElementById("copyNextPromptButton"),
+      promptQueueList: document.getElementById("promptQueueList"),
+      batchPasteInput: document.getElementById("batchPasteInput"),
+      splitBatchButton: document.getElementById("splitBatchButton"),
+      deidentifyBatchButton: document.getElementById("deidentifyBatchButton"),
+      generateBatchPromptsButton: document.getElementById("generateBatchPromptsButton"),
+      batchSnippetList: document.getElementById("batchSnippetList"),
+      batchStatus: document.getElementById("batchStatus"),
+      exportCensusButton: document.getElementById("exportCensusButton"),
+      importCensusButton: document.getElementById("importCensusButton"),
+      censusTransferCodeInput: document.getElementById("censusTransferCodeInput"),
+      censusImportFile: document.getElementById("censusImportFile"),
+      censusTransferStatus: document.getElementById("censusTransferStatus"),
       toolsDrawer: document.getElementById("toolsDrawer"),
       pasteScreen: document.getElementById("pasteScreen"),
       checklistScreen: document.getElementById("checklistScreen"),
@@ -4336,8 +5312,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       profileContextPreviewText: document.getElementById("profileContextPreviewText"),
       priorModeButton: document.getElementById("priorModeButton"),
       admissionModeButton: document.getElementById("admissionModeButton"),
+      continuityModeButton: document.getElementById("continuityModeButton"),
       priorSourcePanel: document.getElementById("priorSourcePanel"),
       admissionSourcePanel: document.getElementById("admissionSourcePanel"),
+      continuitySourcePanel: document.getElementById("continuitySourcePanel"),
       loadDemoSoapButton: document.getElementById("loadDemoSoapButton"),
       rawSoapInput: document.getElementById("rawSoapInput"),
       rawLabsInput: document.getElementById("rawLabsInput"),
@@ -4354,6 +5332,10 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       deidProgressPercent: document.getElementById("deidProgressPercent"),
       deidProgressFill: document.getElementById("deidProgressFill"),
       deidProgressDetail: document.getElementById("deidProgressDetail"),
+      labTimelinePreview: document.getElementById("labTimelinePreview"),
+      labTimelineSummary: document.getElementById("labTimelineSummary"),
+      labTimelineList: document.getElementById("labTimelineList"),
+      labTimelineWarnings: document.getElementById("labTimelineWarnings"),
       scrubbedNoteInput: document.getElementById("scrubbedNoteInput"),
       scrubReview: document.getElementById("scrubReview"),
       scrubVerdict: document.getElementById("scrubVerdict"),
@@ -4381,6 +5363,39 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       admissionProgressLabel: document.getElementById("admissionProgressLabel"),
       admissionProgressFill: document.getElementById("admissionProgressFill"),
       admissionNextGap: document.getElementById("admissionNextGap"),
+      continuityCaseSelect: document.getElementById("continuityCaseSelect"),
+      continuityCaseLabelInput: document.getElementById("continuityCaseLabelInput"),
+      continuityCaseKeyInput: document.getElementById("continuityCaseKeyInput"),
+      newContinuityCaseButton: document.getElementById("newContinuityCaseButton"),
+      saveContinuityCaseButton: document.getElementById("saveContinuityCaseButton"),
+      deleteContinuityCaseButton: document.getElementById("deleteContinuityCaseButton"),
+      continuityCaseList: document.getElementById("continuityCaseList"),
+      baselineSummaryInput: document.getElementById("baselineSummaryInput"),
+      activeProblemsInput: document.getElementById("activeProblemsInput"),
+      yesterdayPlanInput: document.getElementById("yesterdayPlanInput"),
+      pendingItemsInput: document.getElementById("pendingItemsInput"),
+      medicationTrendNotesInput: document.getElementById("medicationTrendNotesInput"),
+      labTrendNotesInput: document.getElementById("labTrendNotesInput"),
+      todayNoteInput: document.getElementById("todayNoteInput"),
+      todayLabsInput: document.getElementById("todayLabsInput"),
+      updatedMarInput: document.getElementById("updatedMarInput"),
+      overnightEventsInput: document.getElementById("overnightEventsInput"),
+      subjectiveChangeInput: document.getElementById("subjectiveChangeInput"),
+      smartDailyPasteInput: document.getElementById("smartDailyPasteInput"),
+      classifySmartUpdateButton: document.getElementById("classifySmartUpdateButton"),
+      deidentifySmartUpdateButton: document.getElementById("deidentifySmartUpdateButton"),
+      saveSmartUpdateButton: document.getElementById("saveSmartUpdateButton"),
+      smartUpdateReviewList: document.getElementById("smartUpdateReviewList"),
+      smartUpdateStatus: document.getElementById("smartUpdateStatus"),
+      continuityDeidButton: document.getElementById("continuityDeidButton"),
+      copyContinuityPromptButton: document.getElementById("copyContinuityPromptButton"),
+      copyContinuityChecklistButton: document.getElementById("copyContinuityChecklistButton"),
+      continuityReview: document.getElementById("continuityReview"),
+      continuitySummary: document.getElementById("continuitySummary"),
+      continuityVerdict: document.getElementById("continuityVerdict"),
+      continuityScrubbedInput: document.getElementById("continuityScrubbedInput"),
+      continuityWarnings: document.getElementById("continuityWarnings"),
+      continuityStatus: document.getElementById("continuityStatus"),
       transferExportPanel: document.getElementById("transferExportPanel"),
       transferCodeDisplay: document.getElementById("transferCodeDisplay"),
       transferExportStatus: document.getElementById("transferExportStatus"),
@@ -4448,6 +5463,11 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       copyCleanupPromptButton: document.getElementById("copyCleanupPromptButton"),
       continueAnywayButton: document.getElementById("continueAnywayButton"),
       sectionDrawer: document.getElementById("sectionDrawer"),
+      evidenceReviewDrawer: document.getElementById("evidenceReviewDrawer"),
+      exportEvidenceReviewButton: document.getElementById("exportEvidenceReviewButton"),
+      importEvidenceReviewButton: document.getElementById("importEvidenceReviewButton"),
+      evidenceReviewFile: document.getElementById("evidenceReviewFile"),
+      evidenceReviewStatus: document.getElementById("evidenceReviewStatus"),
       sectionJump: document.getElementById("sectionJump"),
       clearButton: document.getElementById("clearButton"),
       generateButton: document.getElementById("generateButton"),
@@ -4498,6 +5518,23 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       { key: "monitoringConcerns", label: "Main concerns to monitor today", element: document.getElementById("monitoringConcernsInput") }
     ];
 
+    const continuityCarryFields = [
+      { key: "baselineSummary", label: "Stable background", element: elements.baselineSummaryInput },
+      { key: "activeProblems", label: "Active problems", element: elements.activeProblemsInput },
+      { key: "yesterdayPlan", label: "Yesterday plan", element: elements.yesterdayPlanInput },
+      { key: "pendingItems", label: "Unresolved pending items", element: elements.pendingItemsInput },
+      { key: "medicationTrendNotes", label: "Medication trend notes", element: elements.medicationTrendNotesInput },
+      { key: "labTrendNotes", label: "Lab trend notes", element: elements.labTrendNotesInput }
+    ];
+
+    const continuityDailyFields = [
+      { key: "todayNote", label: "Today note", element: elements.todayNoteInput },
+      { key: "todayLabs", label: "Today labs", element: elements.todayLabsInput },
+      { key: "updatedMar", label: "Updated MAR", element: elements.updatedMarInput },
+      { key: "overnightEvents", label: "Overnight events", element: elements.overnightEventsInput },
+      { key: "subjectiveChange", label: "Subjective change", element: elements.subjectiveChangeInput }
+    ];
+
     const userProfileDefaults = {
       service: "",
       serviceOther: "",
@@ -4526,11 +5563,18 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const importedContextKey = "preRoundImportedContextV1";
     const userProfileKey = "preRoundUserProfileV1";
     const deviceModeKey = "preRoundDeviceModeV1";
+    const evidenceReviewStorageKey = "preRoundEvidenceReviewV1";
     const studentExamReferenceUrl = "physical_exam_reference.csv";
+    const studentExamEvidenceOverlayUrl = "physical_exam_evidence_overlay.csv";
     const studentExamReferenceMaxRows = 30;
+    const evidenceCandidateMaxRows = 32;
     const contextExportType = "prerounds-context-export";
     const contextSchemaVersion = 1;
     const contextKdfIterations = 250000;
+    const censusDbName = "preRoundsCensusVaultV1";
+    const censusStoreName = "vault";
+    const censusRecordKey = "active";
+    const censusSaveDelayMs = 900;
     const initialHtml = `<!DOCTYPE html>\n${document.documentElement.outerHTML}`;
     let deferredInstallPrompt = null;
     let deidWorker = null;
@@ -4540,6 +5584,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const pendingDeidRequests = new Map();
     let studentExamReferenceRows = null;
     let studentExamReferenceLoadPromise = null;
+    let studentExamEvidenceOverlayRows = null;
+    let studentExamEvidenceOverlayLoadPromise = null;
 
     const presentationPromptInstructions = `<role>
 You are an experienced attending physician and clerkship coach helping a third-year medical student prepare both a concise rounds presentation and a detailed interval SOAP note.
@@ -5272,7 +6318,10 @@ Sensory level present: No / Yes, at ___`;
         elements.rawHandoffInput.value.trim() ||
         elements.rawMedicationInput.value.trim() ||
         elements.scrubbedNoteInput.value.trim() ||
-        admissionFields.some((field) => field.element.value.trim());
+        admissionFields.some((field) => field.element.value.trim()) ||
+        state.continuity.cases.length ||
+        hasDailyInputs(readContinuityRawInputs()) ||
+        hasDailyInputs(currentContinuityTodayInputs());
     }
 
     function isPhoneLikeViewport() {
@@ -5289,7 +6338,9 @@ Sensory level present: No / Yes, at ___`;
         elements.rawLabsInput.value.trim() ||
         elements.rawHandoffInput.value.trim() ||
         elements.rawMedicationInput.value.trim() ||
-        admissionFields.some((field) => field.element.value.trim())
+        admissionFields.some((field) => field.element.value.trim()) ||
+        hasDailyInputs(readContinuityRawInputs()) ||
+        hasDailyInputs(currentContinuityTodayInputs())
       );
     }
 
@@ -5553,6 +6604,7 @@ Sensory level present: No / Yes, at ___`;
       updateConversationStatus();
       updateSourcePrimaryActions();
       updateStepRail(elements.outputScreen.classList.contains("is-active") ? "output" : elements.checklistScreen.classList.contains("is-active") ? "bedside" : state.promptCollapsed ? "paste" : "source");
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function invalidateConversationContext() {
@@ -5570,6 +6622,7 @@ Sensory level present: No / Yes, at ___`;
       renderPacketFlow();
       updateConversationStatus();
       updateSourcePrimaryActions();
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function isBedsideWorkflow() {
@@ -5608,7 +6661,8 @@ Sensory level present: No / Yes, at ___`;
         hasChecklistPasteText() ||
         state.sections.length ||
         state.compiledText ||
-        formatAdmissionContext()
+        formatAdmissionContext() ||
+        hasDailyInputs(currentContinuityTodayInputs())
       );
 
       elements.conversationStatusCard.hidden = !visible;
@@ -5622,9 +6676,13 @@ Sensory level present: No / Yes, at ___`;
       } else if (state.checklistPromptCopied || state.conversationChecklistReady) {
         elements.conversationStatusText.textContent = "Checklist prompt copied. Copy OpenEvidence's checklist and paste it here.";
       } else if (state.initialRoundsPromptCopied || state.conversationContextReady) {
-        elements.conversationStatusText.textContent = "Initial rounds prompt copied. Read the report, then copy the checklist prompt.";
+        elements.conversationStatusText.textContent = state.sourceMode === "continuity"
+          ? "Continuity prompt copied. Next, copy today's checklist prompt in the same conversation."
+          : "Initial rounds prompt copied. Read the report, then copy the checklist prompt.";
       } else {
-        elements.conversationStatusText.textContent = "Copy the initial rounds prompt first. The checklist prompt comes next.";
+        elements.conversationStatusText.textContent = state.sourceMode === "continuity"
+          ? "Copy the continuity prompt first. The checklist prompt comes next."
+          : "Copy the initial rounds prompt first. The checklist prompt comes next.";
       }
     }
 
@@ -5795,8 +6853,10 @@ Sensory level present: No / Yes, at ___`;
     function workflowFacts() {
       const rawPriorReady = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim());
       const admissionReady = Boolean(formatAdmissionContext());
-      const sourceReviewed = Boolean(state.scrubbedNote || state.scrubResult || state.importedContext || state.promptCollapsed || (state.sourceMode === "admission" && admissionReady));
-      const sourceInputReady = Boolean(rawPriorReady || admissionReady || state.importedContext || state.promptCollapsed);
+      const continuityRawReady = hasDailyInputs(readContinuityRawInputs());
+      const continuityReady = Boolean(activeContinuityCase() && hasDailyInputs(currentContinuityTodayInputs()));
+      const sourceReviewed = Boolean(state.scrubbedNote || state.scrubResult || state.importedContext || state.promptCollapsed || (state.sourceMode === "admission" && admissionReady) || (state.sourceMode === "continuity" && continuityReady));
+      const sourceInputReady = Boolean(rawPriorReady || admissionReady || continuityRawReady || continuityReady || state.importedContext || state.promptCollapsed);
       const checklistBuilt = state.sections.length > 0;
       const checklistPromptReady = Boolean(state.checklistPromptCopied || state.conversationChecklistReady);
       const checklistPasted = hasChecklistPasteText();
@@ -5806,6 +6866,8 @@ Sensory level present: No / Yes, at ___`;
       return {
         rawPriorReady,
         admissionReady,
+        continuityRawReady,
+        continuityReady,
         sourceInputReady,
         sourceReviewed,
         checklistBuilt,
@@ -5909,6 +6971,47 @@ Sensory level present: No / Yes, at ___`;
           copy: "Capture the first-history sections, then copy the initial report prompt.",
           label: "Go to first history",
           action: "focus-admission"
+        };
+      }
+
+      if (state.sourceMode === "continuity") {
+        if (!activeContinuityCase()) {
+          return {
+            title: "Resume a patient",
+            copy: "Create or select the local patient case for today's update.",
+            label: "Open resume case",
+            action: "focus-continuity"
+          };
+        }
+        if (!facts.continuityRawReady && !facts.continuityReady) {
+          return {
+            title: "Paste today's changes",
+            copy: "Add today's note, labs, MAR, events, or subjective change, then de-identify locally.",
+            label: "Go to today changes",
+            action: "focus-continuity"
+          };
+        }
+        if (!facts.continuityReady) {
+          return {
+            title: "De-identify today",
+            copy: "Run the local de-identifier on today's changes. Raw text will be cleared after review.",
+            label: "De-identify today",
+            action: "deidentify-continuity"
+          };
+        }
+        if (!(state.initialRoundsPromptCopied || state.conversationContextReady)) {
+          return {
+            title: "Copy continuity prompt",
+            copy: "Paste this into the same OpenEvidence conversation to update the longitudinal case.",
+            label: "Copy continuity prompt",
+            action: "copy-continuity"
+          };
+        }
+        return {
+          title: "Copy today's checklist",
+          copy: "Ask the same OpenEvidence conversation for today's bedside checklist.",
+          label: "Copy checklist prompt",
+          action: "copy-continuity-checklist"
         };
       }
 
@@ -6028,13 +7131,26 @@ Sensory level present: No / Yes, at ___`;
         elements.admissionSourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
+      if (action === "focus-continuity") {
+        setSourceMode("continuity");
+        const target = activeContinuityCase() ? continuityDailyFields.find((field) => !field.element.value.trim())?.element || elements.todayNoteInput : elements.continuityCaseLabelInput;
+        target.focus({ preventScroll: true });
+        elements.continuitySourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
       if (action === "deidentify") {
         elements.scrubPreviewButton.click();
+        return;
+      }
+      if (action === "deidentify-continuity") {
+        elements.continuityDeidButton.click();
         return;
       }
       if (action === "copy-initial") {
         if (state.sourceMode === "admission") {
           elements.copyAdmissionRoundsPromptButton.click();
+        } else if (state.sourceMode === "continuity") {
+          elements.copyContinuityPromptButton.click();
         } else {
           elements.copySourceRoundsPromptButton.click();
         }
@@ -6043,9 +7159,19 @@ Sensory level present: No / Yes, at ___`;
       if (action === "copy-checklist") {
         if (state.sourceMode === "admission") {
           elements.copyAdmissionPromptButton.click();
+        } else if (state.sourceMode === "continuity") {
+          elements.copyContinuityChecklistButton.click();
         } else {
           elements.scrubAndCopyButton.click();
         }
+        return;
+      }
+      if (action === "copy-continuity") {
+        elements.copyContinuityPromptButton.click();
+        return;
+      }
+      if (action === "copy-continuity-checklist") {
+        elements.copyContinuityChecklistButton.click();
       }
     }
 
@@ -6074,9 +7200,11 @@ Sensory level present: No / Yes, at ___`;
       elements.priorModeButton.parentElement.hidden = isCollapsed;
       elements.priorSourcePanel.hidden = isCollapsed;
       elements.admissionSourcePanel.hidden = isCollapsed;
+      elements.continuitySourcePanel.hidden = isCollapsed;
       updateChecklistFirstControls();
       updateSourcePrimaryActions();
       updateStepRail(isCollapsed ? "paste" : "source");
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function setOutputMode(mode) {
@@ -6141,6 +7269,1753 @@ Sensory level present: No / Yes, at ___`;
         return false;
       }
       return true;
+    }
+
+    function currentIsoDate() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function nextContinuityLabel() {
+      const index = state.continuity.cases.length;
+      const letter = index < 26 ? String.fromCharCode(65 + index) : String(index + 1);
+      return `Patient ${letter}`;
+    }
+
+    function continuityCaseForStorage(patientCase) {
+      const normalized = normalizeContinuityCase(patientCase);
+      return normalizeContinuityCase({
+        ...normalized,
+        days: normalized.days.map((day) => stripRawDailyInputsForStorage(day))
+      });
+    }
+
+    function readContinuityCasesFromStorage() {
+      const saved = safeLocalStorageGet(CONTINUITY_STORAGE_KEY);
+      if (!saved) {
+        return [];
+      }
+      try {
+        const parsed = JSON.parse(saved);
+        return normalizeContinuityCases(Array.isArray(parsed) ? parsed : parsed.cases || []);
+      } catch (error) {
+        console.warn("Could not read continuity patient cases.", error);
+        return [];
+      }
+    }
+
+    function saveContinuityCasesToStorage() {
+      const payload = {
+        schemaVersion: 1,
+        updatedAt: new Date().toISOString(),
+        activeCaseId: state.continuity.activeCaseId,
+        cases: state.continuity.cases.map((patientCase) => continuityCaseForStorage(patientCase))
+      };
+      const saved = safeLocalStorageSet(CONTINUITY_STORAGE_KEY, JSON.stringify(payload));
+      if (!saved) {
+        elements.continuityStatus.textContent = "Continuity cases could not be saved. Browser storage may be full; nothing was deleted.";
+        showToast("Continuity cases were not saved. Browser storage may be full.", { duration: 7000 });
+        return false;
+      }
+      return true;
+    }
+
+    function activeContinuityCase() {
+      if (!state.continuity.activeCaseId) {
+        return null;
+      }
+      return state.continuity.cases.find((patientCase) => patientCase.id === state.continuity.activeCaseId) || null;
+    }
+
+    function continuityCaseForPatient(patient) {
+      if (!patient) {
+        return null;
+      }
+      return state.continuity.cases.find((patientCase) => (
+        patientCase.id === patient.continuityCaseId ||
+        patientCase.patientId === patient.id
+      )) || null;
+    }
+
+    function ensureContinuityCaseForPatient(patient) {
+      if (!patient) {
+        return null;
+      }
+      const normalizedPatient = normalizePatientCase(patient);
+      const existing = continuityCaseForPatient(normalizedPatient);
+      if (existing) {
+        normalizedPatient.continuityCaseId = existing.id;
+        existing.patientId = normalizedPatient.id;
+        existing.label = existing.label || normalizedPatient.alias;
+        replaceContinuityCase(existing);
+        return existing;
+      }
+      const created = createContinuityCase({
+        label: normalizedPatient.alias,
+        patientId: normalizedPatient.id,
+        conversationCaseKey: normalizedPatient.conversationCaseKey || ""
+      });
+      normalizedPatient.continuityCaseId = created.id;
+      replaceContinuityCase(created);
+      return created;
+    }
+
+    function activateContinuityCaseForPatient(patient) {
+      const continuityCase = continuityCaseForPatient(patient);
+      if (!continuityCase) {
+        return;
+      }
+      state.continuity.activeCaseId = continuityCase.id;
+      hydrateContinuityCaseForm(continuityCase);
+      renderContinuityCases();
+    }
+
+    function removeContinuityCasesForPatient(patient) {
+      if (!patient) {
+        return 0;
+      }
+      const before = state.continuity.cases.length;
+      state.continuity.cases = state.continuity.cases.filter((patientCase) => !(
+        patientCase.patientId === patient.id ||
+        patientCase.id === patient.continuityCaseId
+      ));
+      if (!state.continuity.cases.some((patientCase) => patientCase.id === state.continuity.activeCaseId)) {
+        state.continuity.activeCaseId = state.continuity.cases[0]?.id || "";
+      }
+      saveContinuityCasesToStorage();
+      renderContinuityCases();
+      hydrateContinuityCaseForm(activeContinuityCase());
+      return before - state.continuity.cases.length;
+    }
+
+    function ensureContinuityCasesForCensusPatients() {
+      if (!state.census.unlocked) {
+        return;
+      }
+      let changed = false;
+      state.census.patients = state.census.patients.map((patient) => {
+        const normalized = normalizePatientCase(patient);
+        const continuityCase = ensureContinuityCaseForPatient(normalized);
+        if (continuityCase && normalized.continuityCaseId !== continuityCase.id) {
+          changed = true;
+          normalized.continuityCaseId = continuityCase.id;
+        }
+        return normalized;
+      });
+      if (changed) {
+        saveContinuityCasesToStorage();
+      }
+    }
+
+    function replaceContinuityCase(patientCase) {
+      const normalized = continuityCaseForStorage(patientCase);
+      const index = state.continuity.cases.findIndex((item) => item.id === normalized.id);
+      if (index >= 0) {
+        state.continuity.cases[index] = normalized;
+      } else {
+        state.continuity.cases.push(normalized);
+      }
+      state.continuity.cases.sort((a, b) => {
+        const dateCompare = String(b.updatedAt || "").localeCompare(String(a.updatedAt || ""));
+        return dateCompare || a.label.localeCompare(b.label);
+      });
+      state.continuity.activeCaseId = normalized.id;
+      return normalized;
+    }
+
+    function readContinuityCaseForm(basePatientCase = activeContinuityCase()) {
+      const base = basePatientCase || createContinuityCase({
+        label: elements.continuityCaseLabelInput.value.trim() || nextContinuityLabel(),
+        conversationCaseKey: elements.continuityCaseKeyInput.value.trim() || state.conversationCaseKey || ""
+      });
+      const patch = {
+        ...base,
+        label: elements.continuityCaseLabelInput.value.trim() || base.label || nextContinuityLabel(),
+        conversationCaseKey: elements.continuityCaseKeyInput.value.trim() || base.conversationCaseKey || state.conversationCaseKey || "",
+        updatedAt: new Date().toISOString()
+      };
+      continuityCarryFields.forEach((field) => {
+        patch[field.key] = field.element.value.trim();
+      });
+      return normalizeContinuityCase(patch);
+    }
+
+    function readContinuityRawInputs() {
+      const values = {};
+      continuityDailyFields.forEach((field) => {
+        values[field.key] = field.element.value.trim();
+      });
+      return normalizeDailyInputs(values);
+    }
+
+    function clearContinuityRawInputs() {
+      continuityDailyFields.forEach((field) => {
+        field.element.value = "";
+        autoResize(field.element);
+      });
+      state.continuity.todayRawInputs = {};
+    }
+
+    function parseContinuityFormattedInputs(text) {
+      const labelToKey = new Map(continuityDailyFields.map((field) => [field.label.toLowerCase(), field.key]));
+      const values = {};
+      let currentKey = "";
+      String(text || "").split(/\r?\n/).forEach((line) => {
+        const match = line.match(/^\s*(Today note|Today labs|Updated MAR|Overnight events|Subjective change):\s*(.*)$/i);
+        if (match) {
+          currentKey = labelToKey.get(match[1].toLowerCase()) || "";
+          if (currentKey) {
+            values[currentKey] = match[2] ? match[2].trim() : "";
+          }
+          return;
+        }
+        if (currentKey) {
+          values[currentKey] = [values[currentKey], line].filter(Boolean).join("\n").trim();
+        }
+      });
+      return normalizeDailyInputs(values);
+    }
+
+    function currentContinuityTodayInputs() {
+      if (hasDailyInputs(state.continuity.todayDeidentifiedInputs)) {
+        return normalizeDailyInputs(state.continuity.todayDeidentifiedInputs);
+      }
+      return parseContinuityFormattedInputs(elements.continuityScrubbedInput.value);
+    }
+
+    function continuityStaleWarnings(inputs = currentContinuityTodayInputs()) {
+      const patientCase = activeContinuityCase();
+      const warnings = [];
+      if (!patientCase) {
+        warnings.push("Save or select a patient case before copying prompts.");
+      }
+      if (patientCase?.medicationTrendNotes && !inputs.updatedMar) {
+        warnings.push("Medication trend notes exist, but no updated MAR was added today.");
+      }
+      if (patientCase?.labTrendNotes && !inputs.todayLabs) {
+        warnings.push("Lab trend notes exist, but no today labs/results were added.");
+      }
+      if (!inputs.todayNote && !inputs.overnightEvents && !inputs.subjectiveChange) {
+        warnings.push("No interval note, overnight events, or subjective change is included yet.");
+      }
+      return warnings;
+    }
+
+    function renderContinuityWarnings() {
+      const warnings = continuityStaleWarnings();
+      elements.continuityWarnings.textContent = warnings.join(" ");
+      return warnings;
+    }
+
+    function renderContinuityReview(result = state.continuity.todayScrubResult) {
+      const inputs = currentContinuityTodayInputs();
+      const hasInputs = hasDailyInputs(inputs);
+      elements.continuityReview.hidden = !hasInputs && !result;
+      elements.continuityScrubbedInput.value = formatDailyInputs(inputs);
+      const residualCount = result?.residualWarnings?.length || 0;
+      const redactionTotal = result?.redactionTotal || 0;
+      elements.continuitySummary.textContent = `${redactionTotal} redaction${redactionTotal === 1 ? "" : "s"}; ${residualCount} review flag${residualCount === 1 ? "" : "s"}`;
+      elements.continuityVerdict.textContent = residualCount
+        ? "Review possible identifiers before copying."
+        : hasInputs
+          ? "No obvious identifiers found. Review still required."
+          : "Review before copying.";
+      elements.continuityVerdict.classList.toggle("is-warning", residualCount > 0);
+      renderContinuityWarnings();
+      updateSourcePrimaryActions();
+      updateGuidedStatus();
+    }
+
+    function hydrateContinuityCaseForm(patientCase) {
+      const normalized = patientCase ? normalizeContinuityCase(patientCase) : null;
+      elements.continuityCaseLabelInput.value = normalized?.label || nextContinuityLabel();
+      elements.continuityCaseKeyInput.value = normalized?.conversationCaseKey || state.conversationCaseKey || "";
+      continuityCarryFields.forEach((field) => {
+        field.element.value = normalized?.[field.key] || "";
+        autoResize(field.element);
+      });
+
+      clearContinuityRawInputs();
+      const today = currentIsoDate();
+      const todayDay = normalized?.days?.find((day) => day.date === today);
+      state.continuity.todayDeidentifiedInputs = normalizeDailyInputs(todayDay?.deidentifiedInputs || {});
+      state.continuity.todayScrubResult = null;
+      state.continuity.smartUpdateSections = [];
+      state.continuity.smartUpdateReview = null;
+      elements.smartDailyPasteInput.value = "";
+      elements.smartUpdateReviewList.innerHTML = "";
+      elements.smartUpdateStatus.textContent = "";
+      renderContinuityReview(null);
+      elements.continuityStatus.textContent = normalized
+        ? `Loaded ${normalized.label}${todayDay ? " with today's de-identified changes." : "."}`
+        : "Create or select a saved patient case.";
+    }
+
+    function renderContinuityCases() {
+      const activeId = state.continuity.activeCaseId;
+      elements.continuityCaseSelect.innerHTML = "";
+      if (!state.continuity.cases.length) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "No saved cases";
+        elements.continuityCaseSelect.appendChild(option);
+        elements.continuityCaseList.innerHTML = "<li><span>No saved continuity cases yet.</span></li>";
+        return;
+      }
+
+      state.continuity.cases.forEach((patientCase) => {
+        const option = document.createElement("option");
+        option.value = patientCase.id;
+        option.textContent = patientCase.label;
+        option.selected = patientCase.id === activeId;
+        elements.continuityCaseSelect.appendChild(option);
+      });
+
+      elements.continuityCaseList.innerHTML = "";
+      state.continuity.cases.forEach((patientCase) => {
+        const latestDay = patientCase.days[patientCase.days.length - 1];
+        const item = document.createElement("li");
+        const summary = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = patientCase.label;
+        const meta = document.createElement("span");
+        meta.textContent = `${patientCase.days.length} day${patientCase.days.length === 1 ? "" : "s"} saved${latestDay ? `; latest ${latestDay.date}` : ""}; updated ${formatCensusTime(patientCase.updatedAt)}`;
+        summary.append(title, meta);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mini-btn";
+        button.textContent = patientCase.id === activeId ? "Active" : "Resume";
+        button.disabled = patientCase.id === activeId;
+        button.addEventListener("click", () => {
+          selectContinuityCase(patientCase.id);
+        });
+        item.append(summary, button);
+        elements.continuityCaseList.appendChild(item);
+      });
+    }
+
+    function loadContinuityCases() {
+      const saved = safeLocalStorageGet(CONTINUITY_STORAGE_KEY);
+      let activeCaseId = "";
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          activeCaseId = String(parsed.activeCaseId || "");
+        } catch (error) {
+          activeCaseId = "";
+        }
+      }
+      state.continuity.cases = readContinuityCasesFromStorage();
+      state.continuity.activeCaseId = state.continuity.cases.some((patientCase) => patientCase.id === activeCaseId)
+        ? activeCaseId
+        : state.continuity.cases[0]?.id || "";
+      renderContinuityCases();
+      hydrateContinuityCaseForm(activeContinuityCase());
+    }
+
+    function selectContinuityCase(caseId) {
+      const patientCase = state.continuity.cases.find((item) => item.id === caseId);
+      if (!patientCase) {
+        return;
+      }
+      state.continuity.activeCaseId = patientCase.id;
+      state.continuity.deleteConfirming = false;
+      state.conversationCaseKey = patientCase.conversationCaseKey || state.conversationCaseKey;
+      renderContinuityCases();
+      hydrateContinuityCaseForm(patientCase);
+      updateConversationStatus();
+      updateSourcePrimaryActions();
+      saveContinuityCasesToStorage();
+    }
+
+    function ensureContinuityCase() {
+      const active = activeContinuityCase();
+      if (active) {
+        return active;
+      }
+      const values = {
+        label: elements.continuityCaseLabelInput.value.trim() || nextContinuityLabel(),
+        conversationCaseKey: elements.continuityCaseKeyInput.value.trim() || state.conversationCaseKey || ""
+      };
+      continuityCarryFields.forEach((field) => {
+        values[field.key] = field.element.value.trim();
+      });
+      const created = createContinuityCase(values);
+      replaceContinuityCase(created);
+      renderContinuityCases();
+      saveContinuityCasesToStorage();
+      return created;
+    }
+
+    function saveActiveContinuityCase(message = "Continuity case saved.") {
+      const updated = replaceContinuityCase(readContinuityCaseForm(ensureContinuityCase()));
+      state.conversationCaseKey = updated.conversationCaseKey || state.conversationCaseKey;
+      const saved = saveContinuityCasesToStorage();
+      renderContinuityCases();
+      elements.continuityStatus.textContent = saved ? message : "Could not save continuity case.";
+      updateConversationStatus();
+      updateSourcePrimaryActions();
+      return updated;
+    }
+
+    function startNewContinuityCase() {
+      const created = createContinuityCase({
+        label: nextContinuityLabel(),
+        conversationCaseKey: state.conversationCaseKey || ""
+      });
+      replaceContinuityCase(created);
+      state.continuity.deleteConfirming = false;
+      saveContinuityCasesToStorage();
+      renderContinuityCases();
+      hydrateContinuityCaseForm(created);
+      elements.continuityStatus.textContent = "New continuity case created. Add carry-forward details or today's changes.";
+      elements.continuityCaseLabelInput.focus({ preventScroll: true });
+    }
+
+    function deleteActiveContinuityCase() {
+      const active = activeContinuityCase();
+      if (!active) {
+        elements.continuityStatus.textContent = "No continuity case is selected.";
+        return;
+      }
+      if (!state.continuity.deleteConfirming) {
+        state.continuity.deleteConfirming = true;
+        elements.deleteContinuityCaseButton.textContent = "Confirm delete";
+        elements.continuityStatus.textContent = `Click again to delete ${active.label} from local storage.`;
+        return;
+      }
+      state.continuity.cases = state.continuity.cases.filter((patientCase) => patientCase.id !== active.id);
+      state.continuity.activeCaseId = state.continuity.cases[0]?.id || "";
+      state.continuity.deleteConfirming = false;
+      elements.deleteContinuityCaseButton.textContent = "Delete";
+      saveContinuityCasesToStorage();
+      renderContinuityCases();
+      hydrateContinuityCaseForm(activeContinuityCase());
+      elements.continuityStatus.textContent = "Continuity case deleted from this browser.";
+    }
+
+    function storeContinuityTodayDay(patch = {}) {
+      const base = readContinuityCaseForm(ensureContinuityCase());
+      const inputs = normalizeDailyInputs(patch.deidentifiedInputs || currentContinuityTodayInputs());
+      const updated = appendOrUpdateContinuityDay(base, stripRawDailyInputsForStorage({
+        date: currentIsoDate(),
+        deidentifiedInputs: inputs,
+        ...patch
+      }));
+      replaceContinuityCase(updated);
+      saveContinuityCasesToStorage();
+      renderContinuityCases();
+      return updated;
+    }
+
+    function mergedScrubResult(results, text) {
+      const counts = {};
+      results.forEach((result) => {
+        Object.entries(result.counts || {}).forEach(([key, value]) => {
+          counts[key] = (counts[key] || 0) + Number(value || 0);
+        });
+      });
+      const flags = results.flatMap((result) => result.flags || []);
+      const residualWarnings = results.flatMap((result) => result.residualWarnings || []);
+      const redactionTotal = results.reduce((total, result) => total + Number(result.redactionTotal || 0), 0);
+      return {
+        text,
+        counts,
+        flags,
+        residualWarnings,
+        redactionTotal,
+        entities: results.flatMap((result) => result.entities || [])
+      };
+    }
+
+    function setContinuityBusy(isBusy) {
+      elements.continuityDeidButton.disabled = isBusy;
+      elements.copyContinuityPromptButton.disabled = isBusy;
+      elements.copyContinuityChecklistButton.disabled = isBusy;
+      elements.continuityDeidButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.continuityDeidButton.textContent = isBusy ? "Working..." : "De-identify today";
+    }
+
+    async function scrubContinuityToday() {
+      const rawInputs = readContinuityRawInputs();
+      if (!hasDailyInputs(rawInputs)) {
+        elements.continuityStatus.textContent = "Paste today's note, labs, MAR, events, or subjective change first.";
+        continuityDailyFields[0].element.focus();
+        return null;
+      }
+
+      ensureContinuityCase();
+      state.continuity.todayRawInputs = rawInputs;
+      setContinuityBusy(true);
+      elements.continuityStatus.textContent = "Running local de-identifier on today's fields...";
+      showDeidProgress("Starting local de-identification...", 0.02, "Raw today fields stay in memory and are cleared after review.");
+      await waitForPaint();
+
+      const deidentified = {};
+      const results = [];
+      try {
+        const nonEmptyFields = continuityDailyFields.filter((field) => rawInputs[field.key]);
+        for (let index = 0; index < nonEmptyFields.length; index += 1) {
+          const field = nonEmptyFields[index];
+          updateDeidProgress({
+            message: `De-identifying ${field.label}...`,
+            percent: Math.max(0.08, index / Math.max(nonEmptyFields.length, 1)),
+            detail: "Each source section is scrubbed separately so today's context stays structured."
+          });
+          const result = await scrubSoapNoteText(rawInputs[field.key]);
+          deidentified[field.key] = result.text;
+          results.push(result);
+        }
+      } catch (error) {
+        elements.continuityStatus.textContent = "Could not run the local de-identifier. Raw today fields were not saved.";
+        hideDeidProgress(1600);
+        throw error;
+      } finally {
+        setContinuityBusy(false);
+      }
+
+      state.continuity.todayDeidentifiedInputs = normalizeDailyInputs(deidentified);
+      const text = formatDailyInputs(state.continuity.todayDeidentifiedInputs);
+      state.continuity.todayScrubResult = mergedScrubResult(results, text);
+      renderContinuityReview(state.continuity.todayScrubResult);
+      storeContinuityTodayDay({ deidentifiedInputs: state.continuity.todayDeidentifiedInputs });
+      clearContinuityRawInputs();
+      elements.continuityStatus.textContent = "Today's de-identified changes are saved locally. Raw pasted text was cleared.";
+      hideDeidProgress(900);
+      requestAnimationFrame(() => {
+        elements.continuityReview.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+      return state.continuity.todayScrubResult;
+    }
+
+    function syncContinuityScrubbedInput() {
+      state.continuity.todayDeidentifiedInputs = parseContinuityFormattedInputs(elements.continuityScrubbedInput.value);
+      if (hasDailyInputs(state.continuity.todayDeidentifiedInputs)) {
+        storeContinuityTodayDay({ deidentifiedInputs: state.continuity.todayDeidentifiedInputs });
+      }
+      renderContinuityWarnings();
+      updateSourcePrimaryActions();
+      updateGuidedStatus();
+    }
+
+    function renderSmartUpdateReview() {
+      elements.smartUpdateReviewList.innerHTML = "";
+      const review = state.continuity.smartUpdateReview;
+      if (!review?.rows?.length) {
+        elements.saveSmartUpdateButton.disabled = true;
+        return;
+      }
+      review.rows.forEach((row) => {
+        const item = document.createElement("li");
+        const header = document.createElement("div");
+        header.className = "smart-review-title";
+        const title = document.createElement("span");
+        title.textContent = `${row.label}: ${row.type}`;
+        const badge = document.createElement("span");
+        badge.className = `status-badge ${row.status === "changed" || row.status === "new" ? "is-ready" : ""}`;
+        badge.textContent = row.status;
+        header.append(title, badge);
+        const meta = document.createElement("p");
+        meta.className = "smart-review-meta";
+        meta.textContent = row.status === "missing"
+          ? "No section pasted today."
+          : `${row.currentCharacterCount} characters${row.previousCharacterCount ? `; previous ${row.previousCharacterCount}` : ""}`;
+        item.append(header, meta);
+        if (row.preview) {
+          const preview = document.createElement("p");
+          preview.className = "batch-snippet-preview";
+          preview.textContent = row.preview;
+          item.appendChild(preview);
+        }
+        if (Array.isArray(row.details) && row.details.length) {
+          const details = document.createElement("p");
+          details.className = "batch-snippet-preview";
+          details.textContent = row.details.join(" ");
+          item.appendChild(details);
+        }
+        elements.smartUpdateReviewList.appendChild(item);
+      });
+
+      if (review.carryForwardSuggestions?.length) {
+        const item = document.createElement("li");
+        item.textContent = review.carryForwardSuggestions.map((suggestion) => suggestion.reason).join(" ");
+        elements.smartUpdateReviewList.appendChild(item);
+      }
+      elements.saveSmartUpdateButton.disabled = !hasDailyInputs(state.continuity.todayDeidentifiedInputs) || !review.rows.length;
+    }
+
+    function classifySmartDailyUpdate() {
+      const rawText = elements.smartDailyPasteInput.value.trim();
+      state.continuity.smartUpdateSections = classifySmartUpdateSections(rawText);
+      state.continuity.smartUpdateReview = buildSmartUpdateReview(state.continuity.smartUpdateSections, activeContinuityCase() || {});
+      renderSmartUpdateReview();
+      updateSourcePrimaryActions();
+      elements.smartUpdateStatus.textContent = state.continuity.smartUpdateSections.length
+        ? `${state.continuity.smartUpdateSections.length} section${state.continuity.smartUpdateSections.length === 1 ? "" : "s"} classified. Review types, then de-identify.`
+        : "Paste today's mixed update first.";
+      return state.continuity.smartUpdateSections;
+    }
+
+    function setSmartUpdateBusy(isBusy) {
+      elements.classifySmartUpdateButton.disabled = isBusy;
+      elements.deidentifySmartUpdateButton.disabled = isBusy;
+      elements.saveSmartUpdateButton.disabled = isBusy || !hasDailyInputs(state.continuity.todayDeidentifiedInputs) || !state.continuity.smartUpdateReview?.rows?.length;
+      elements.deidentifySmartUpdateButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.deidentifySmartUpdateButton.textContent = isBusy ? "Working..." : "De-identify smart update";
+    }
+
+    async function deidentifySmartDailyUpdate() {
+      const sections = state.continuity.smartUpdateSections.length
+        ? state.continuity.smartUpdateSections
+        : classifySmartDailyUpdate();
+      const rawSections = sections.filter((section) => section.text);
+      if (!rawSections.length) {
+        elements.smartUpdateStatus.textContent = "Paste and classify today's mixed update first.";
+        elements.smartDailyPasteInput.focus();
+        return null;
+      }
+
+      ensureContinuityCase();
+      setSmartUpdateBusy(true);
+      elements.smartUpdateStatus.textContent = "Running local de-identifier on smart update sections...";
+      showDeidProgress("Smart update de-identifying...", 0.02, "Raw pasted smart update text stays in memory and is cleared after review.");
+      await waitForPaint();
+
+      try {
+        const redactedSections = [];
+        const results = [];
+        for (let index = 0; index < rawSections.length; index += 1) {
+          const section = rawSections[index];
+          updateDeidProgress({
+            message: `De-identifying ${section.type} section...`,
+            percent: Math.max(0.08, index / Math.max(rawSections.length, 1)),
+            detail: "Sections remain structured for the review table."
+          });
+          const result = await scrubSoapNoteText(section.text);
+          results.push(result);
+          redactedSections.push({
+            ...section,
+            text: "",
+            deidentifiedText: result.text
+          });
+        }
+        state.continuity.smartUpdateSections = redactedSections;
+        state.continuity.todayDeidentifiedInputs = smartSectionsToDailyInputs(redactedSections);
+        state.continuity.smartUpdateReview = buildSmartUpdateReview(redactedSections, activeContinuityCase() || {});
+        state.continuity.todayScrubResult = mergedScrubResult(results, formatDailyInputs(state.continuity.todayDeidentifiedInputs));
+        elements.smartDailyPasteInput.value = "";
+        renderSmartUpdateReview();
+        renderContinuityReview(state.continuity.todayScrubResult);
+        elements.smartUpdateStatus.textContent = "Smart update de-identified. Review the changes, then save.";
+        hideDeidProgress(900);
+        return state.continuity.smartUpdateReview;
+      } catch (error) {
+        elements.smartUpdateStatus.textContent = "Smart update de-identification stopped. Raw text was not saved.";
+        hideDeidProgress(1600);
+        throw error;
+      } finally {
+        setSmartUpdateBusy(false);
+      }
+    }
+
+    function saveReviewedSmartUpdate() {
+      const inputs = currentContinuityTodayInputs();
+      if (!hasDailyInputs(inputs)) {
+        elements.smartUpdateStatus.textContent = "De-identify the smart update before saving.";
+        return null;
+      }
+      const review = state.continuity.smartUpdateReview || buildSmartUpdateReview(state.continuity.smartUpdateSections, activeContinuityCase() || {});
+      const patientCase = storeContinuityTodayDay({
+        deidentifiedInputs: inputs,
+        smartUpdateReview: review.rows || [],
+        carryForwardUpdates: review.carryForwardSuggestions || []
+      });
+      elements.smartUpdateStatus.textContent = "Reviewed smart update saved to today's de-identified timeline.";
+      updateSourcePrimaryActions();
+      updateGuidedStatus();
+      return patientCase;
+    }
+
+    function continuityPromptPayload() {
+      const patientCase = saveActiveContinuityCase("Continuity case ready.");
+      const todayInputs = currentContinuityTodayInputs();
+      if (!patientCase || !hasDailyInputs(todayInputs)) {
+        elements.continuityStatus.textContent = "De-identify today's changes before copying continuity prompts.";
+        elements.continuityDeidButton.focus();
+        return null;
+      }
+      return { patientCase, todayInputs };
+    }
+
+    function markContinuityContextCopied() {
+      state.initialRoundsPromptCopied = true;
+      state.conversationContextReady = true;
+      state.laptopPrepareStep = "initialCopied";
+      const patientCase = storeContinuityTodayDay({
+        deidentifiedInputs: currentContinuityTodayInputs(),
+        copiedContinuityPrompt: true
+      });
+      state.conversationCaseKey = patientCase.conversationCaseKey || state.conversationCaseKey;
+      updateConversationStatus();
+      updateSourcePrimaryActions();
+      updateStepRail("source");
+      syncActivePatientFromWorkspace({ save: true });
+    }
+
+    async function copyContinuityUpdatePrompt() {
+      const payload = continuityPromptPayload();
+      if (!payload) {
+        return false;
+      }
+      const prompt = buildContinuityUpdatePromptShared({
+        patientCase: payload.patientCase,
+        todayInputs: payload.todayInputs,
+        userContext: buildUserContextBlock()
+      });
+      const copied = await copyPromptWithPhiWarning(prompt, elements.continuityStatus, "Continuity prompt copied. Paste it into the existing OpenEvidence conversation.", {
+        title: "PHI safety check for continuity prompt",
+        reviewTarget: "continuity",
+        reviewScope: "custom",
+        reviewText: formatDailyInputs(payload.todayInputs),
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000,
+        fitToOpenEvidence: false,
+        onCopied: markContinuityContextCopied
+      });
+      if (copied) {
+        markContinuityContextCopied();
+      }
+      return copied;
+    }
+
+    async function buildContinuityChecklistPrompt() {
+      const payload = continuityPromptPayload();
+      if (!payload) {
+        return "";
+      }
+      const prompt = buildContinuityChecklistPromptShared({
+        patientCase: payload.patientCase,
+        todayInputs: payload.todayInputs,
+        userContext: buildUserContextBlock()
+      });
+      return addEvidenceOrStudentReferenceToPrompt(prompt, formatDailyInputs(payload.todayInputs));
+    }
+
+    async function copyContinuityChecklistPrompt() {
+      const prompt = await buildContinuityChecklistPrompt();
+      if (!prompt) {
+        return false;
+      }
+      const copied = await copyPromptWithPhiWarning(prompt, elements.continuityStatus, "Today's checklist prompt copied. Paste it into OpenEvidence.", {
+        title: "PHI safety check for continuity checklist prompt",
+        reviewTarget: "continuity",
+        reviewScope: "source-free",
+        reviewText: formatDailyInputs(currentContinuityTodayInputs()),
+        actionLabel: "Open OpenEvidence",
+        actionUrl: openEvidenceUrl,
+        duration: 7000,
+        fitToOpenEvidence: false,
+        onCopied: handleChecklistPromptCopied
+      });
+      if (copied) {
+        handleChecklistPromptCopied();
+      }
+      return copied;
+    }
+
+    function loadEvidenceReviewStateFromStorage() {
+      state.evidenceReviewState = normalizeEvidenceReviewState(safeLocalStorageGet(evidenceReviewStorageKey) || {});
+      return state.evidenceReviewState;
+    }
+
+    function saveEvidenceReviewState() {
+      const serialized = exportEvidenceReviewState(state.evidenceReviewState);
+      safeLocalStorageSet(evidenceReviewStorageKey, serialized);
+      return serialized;
+    }
+
+    function updateEvidenceReviewStatus(message) {
+      if (elements.evidenceReviewStatus) {
+        elements.evidenceReviewStatus.textContent = message || "";
+      }
+    }
+
+    function openCensusDb() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error("IndexedDB is not available in this browser."));
+          return;
+        }
+        const request = window.indexedDB.open(censusDbName, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(censusStoreName)) {
+            db.createObjectStore(censusStoreName, { keyPath: "id" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error("Could not open census storage."));
+      });
+    }
+
+    async function readCensusEnvelope() {
+      const db = await openCensusDb();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(censusStoreName, "readonly");
+        const request = transaction.objectStore(censusStoreName).get(censusRecordKey);
+        request.onsuccess = () => resolve(request.result?.envelope || null);
+        request.onerror = () => reject(request.error || new Error("Could not read census storage."));
+        transaction.oncomplete = () => db.close();
+        transaction.onerror = () => {
+          db.close();
+          reject(transaction.error || new Error("Could not read census storage."));
+        };
+      });
+    }
+
+    async function writeCensusEnvelope(envelope) {
+      const db = await openCensusDb();
+      return new Promise((resolve, reject) => {
+        const transaction = db.transaction(censusStoreName, "readwrite");
+        transaction.objectStore(censusStoreName).put({ id: censusRecordKey, envelope });
+        transaction.oncomplete = () => {
+          db.close();
+          resolve(true);
+        };
+        transaction.onerror = () => {
+          db.close();
+          reject(transaction.error || new Error("Could not save census storage."));
+        };
+      });
+    }
+
+    function activeCensusPatient() {
+      if (!state.census.unlocked || !state.census.activePatientId) {
+        return null;
+      }
+      return state.census.patients.find((patient) => patient.id === state.census.activePatientId) || null;
+    }
+
+    function patientById(patientId) {
+      return state.census.patients.find((patient) => patient.id === patientId) || null;
+    }
+
+    function nextAlias() {
+      const index = state.census.patients.length;
+      const letter = index < 26 ? String.fromCharCode(65 + index) : String(index + 1);
+      return `Patient ${letter}`;
+    }
+
+    function formatCensusTime(value) {
+      if (!value) {
+        return "Not updated";
+      }
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return "Not updated";
+      }
+      return date.toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function workspaceHasContent() {
+      return Boolean(
+        elements.rawSoapInput.value.trim() ||
+        elements.rawLabsInput.value.trim() ||
+        elements.rawHandoffInput.value.trim() ||
+        elements.rawMedicationInput.value.trim() ||
+        elements.scrubbedNoteInput.value.trim() ||
+        elements.checklistInput.value.trim() ||
+        state.sections.length ||
+        state.compiledText ||
+        formatAdmissionContext() ||
+        hasDailyInputs(readContinuityRawInputs()) ||
+        hasDailyInputs(currentContinuityTodayInputs())
+      );
+    }
+
+    function snapshotWorkspaceToPatient(basePatient = activeCensusPatient()) {
+      const base = basePatient ? normalizePatientCase(basePatient) : createPatientCase({ alias: nextAlias() });
+      const admission = {};
+      admissionFields.forEach((field) => {
+        admission[field.key] = field.element.value.trim();
+      });
+      const now = new Date().toISOString();
+      const scrubbedText = elements.scrubbedNoteInput.value.trim() || state.scrubbedNote;
+      const deidentifiedSourceSections = normalizeDeidentifiedSourceSections(base.deidentifiedSourceSections || {});
+      if (scrubbedText && !deidentifiedSourceSections.general) {
+        deidentifiedSourceSections.general = scrubbedText;
+      }
+      return normalizePatientCase({
+        ...base,
+        sourceMode: state.sourceMode,
+        rawSoapNote: "",
+        rawLabs: "",
+        rawHandoff: "",
+        rawMedicationText: "",
+        scrubbedNote: scrubbedText,
+        deidentifiedSourceSections,
+        scrubResult: state.scrubResult,
+        admission,
+        importedContext: state.importedContext,
+        promptCollapsed: state.promptCollapsed,
+        checklistFirstMode: state.checklistFirstMode,
+        checklistRawText: state.checklistRawText || elements.checklistInput.value,
+        checklistText: elements.checklistInput.value,
+        sections: state.sections,
+        answers: state.answers,
+        notes: state.notes,
+        activeChecklistView: state.activeChecklistView,
+        activeSection: state.activeSection,
+        collapsedSections: state.collapsedSections,
+        auditResult: state.auditResult,
+        outputMode: state.outputMode,
+        compiledText: state.compiledText || elements.outputText.value,
+        conversationCaseKey: state.conversationCaseKey,
+        initialRoundsPromptCopied: state.initialRoundsPromptCopied,
+        checklistPromptCopied: state.checklistPromptCopied,
+        bedsideFindingsReady: state.bedsideFindingsReady,
+        conversationContextReady: state.conversationContextReady,
+        conversationChecklistReady: state.conversationChecklistReady,
+        conversationFinalReady: state.conversationFinalReady,
+        activePacketFlow: state.activePacketFlow,
+        lifecycleStatus: "active",
+        updatedAt: now
+      });
+    }
+
+    function replaceCensusPatient(patient) {
+      const normalized = normalizePatientCase(patient);
+      const index = state.census.patients.findIndex((item) => item.id === normalized.id);
+      if (index >= 0) {
+        state.census.patients[index] = normalized;
+      } else {
+        state.census.patients.push(normalized);
+      }
+      return normalized;
+    }
+
+    function syncActivePatientFromWorkspace(options = {}) {
+      if (!state.census.unlocked || state.census.hydrating || !state.census.activePatientId) {
+        return null;
+      }
+      const current = activeCensusPatient();
+      if (!current) {
+        return null;
+      }
+      const patient = snapshotWorkspaceToPatient(current);
+      replaceCensusPatient(patient);
+      if (options.save !== false) {
+        scheduleCensusSave();
+      }
+      if (options.render !== false) {
+        renderCensusDashboard();
+      }
+      return patient;
+    }
+
+    function renderStoredScrubPreview(patient) {
+      const scrubbedText = String(patient.scrubbedNote || deidentifiedSourceText(patient)).trim();
+      state.scrubbedNote = scrubbedText;
+      state.scrubResult = patient.scrubResult || null;
+      elements.scrubbedNoteInput.value = scrubbedText;
+      elements.scrubCounts.innerHTML = "";
+      elements.scrubFlags.innerHTML = "";
+      elements.scrubReviewGroups.innerHTML = "";
+      elements.scrubReviewGroups.hidden = true;
+      if (state.scrubResult && scrubbedText) {
+        renderScrubResult(state.scrubResult, buildRawPriorSourceText());
+        return;
+      }
+      elements.scrubReview.hidden = !scrubbedText;
+      elements.scrubSummary.textContent = scrubbedText ? "Saved redacted context" : "0 redactions";
+      elements.scrubVerdict.textContent = scrubbedText ? "Review saved redacted context before copying." : "Review before copying.";
+      elements.scrubVerdict.classList.toggle("is-warning", false);
+    }
+
+    function hydrateWorkspaceFromPatient(patient) {
+      const normalized = normalizePatientCase(patient);
+      state.census.hydrating = true;
+      try {
+        state.sourceMode = normalized.sourceMode;
+        state.promptCollapsed = normalized.promptCollapsed;
+        state.checklistFirstMode = normalized.checklistFirstMode;
+        state.activeChecklistView = normalized.activeChecklistView || "bedside";
+        state.activeSection = normalized.activeSection || "all";
+        state.collapsedSections = normalized.collapsedSections || {};
+        state.auditResult = normalized.auditResult || null;
+        state.checklistRawText = normalized.checklistRawText || normalized.checklistText || "";
+        state.outputMode = normalized.outputMode === "full" ? "full" : "assessed";
+        state.lastClearSnapshot = null;
+        state.newChecklistConfirming = false;
+        state.compiledText = normalized.compiledText || "";
+        state.importedContext = normalized.importedContext || null;
+        state.conversationCaseKey = normalized.conversationCaseKey || "";
+        state.initialRoundsPromptCopied = normalized.initialRoundsPromptCopied;
+        state.checklistPromptCopied = normalized.checklistPromptCopied;
+        state.bedsideFindingsReady = normalized.bedsideFindingsReady;
+        state.conversationContextReady = normalized.conversationContextReady;
+        state.conversationChecklistReady = normalized.conversationChecklistReady;
+        state.conversationFinalReady = normalized.conversationFinalReady;
+        state.activePacketFlow = normalized.activePacketFlow || null;
+        state.deviceWorkflowMode = normalized.checklistFirstMode ? "bedside" : "prepare";
+        state.laptopPrepareStep = normalized.promptCollapsed || normalized.checklistPromptCopied ? "checklistCopied" : normalized.scrubbedNote ? "review" : "source";
+        state.phoneBedsideStep = normalized.compiledText ? "output" : normalized.sections.length ? "checklist" : "paste";
+        state.useChecklistOnLaptop = false;
+        state.recoveredChecklistAvailable = false;
+
+        elements.rawSoapInput.value = "";
+        elements.rawLabsInput.value = "";
+        elements.rawHandoffInput.value = "";
+        elements.rawMedicationInput.value = "";
+        admissionFields.forEach((field) => {
+          field.element.value = normalized.admission?.[field.key] || "";
+          autoResize(field.element);
+        });
+        elements.checklistInput.value = normalized.checklistText || normalized.checklistRawText || "";
+        elements.outputText.value = normalized.compiledText || "";
+        elements.copyStatus.textContent = "";
+        elements.promptStatus.textContent = "";
+        elements.transferExportPanel.hidden = true;
+        elements.packetPanel.hidden = !state.activePacketFlow;
+        renderStoredScrubPreview(normalized);
+
+        state.sections = annotateChecklistSections(normalized.sections || []);
+        state.answers = normalized.answers || {};
+        state.notes = normalized.notes || {};
+        if (state.sections.length) {
+          setParseSummary(state.sections, "Loaded");
+          renderAudit(state.auditResult || validateChecklist(state.sections));
+          setChecklistView(state.activeChecklistView || "bedside");
+        } else {
+          elements.checklistList.innerHTML = "";
+          setParseSummary(null);
+          renderAudit(null);
+          updateProgress();
+        }
+
+        refreshAdmissionQuickButtons();
+        updateSourceCompleteness();
+        updateChecklistPasteState();
+        updateContextStatus();
+        setSourceMode(normalized.sourceMode);
+        activateContinuityCaseForPatient(normalized);
+        setPromptCollapsed(normalized.promptCollapsed);
+        if (!normalized.promptCollapsed && normalized.checklistFirstMode) {
+          setChecklistFirstMode(true, { save: false, silent: true });
+        }
+        if (state.activePacketFlow) {
+          renderPacketFlow();
+        }
+        setOutputMode(state.outputMode);
+        updateConversationStatus();
+        updateGuidedStatus();
+      } finally {
+        state.census.hydrating = false;
+      }
+    }
+
+    function censusVaultPayload() {
+      syncActivePatientFromWorkspace({ save: false });
+      ensureContinuityCasesForCensusPatients();
+      return normalizeCensusVault({
+        createdAt: state.census.loadedAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        activePatientId: state.census.activePatientId,
+        patients: state.census.patients
+      });
+    }
+
+    async function saveCensusNow() {
+      if (!state.census.unlocked || !state.census.passphrase || state.census.hydrating) {
+        return false;
+      }
+      if (state.census.saveInProgress) {
+        state.census.savePending = true;
+        return false;
+      }
+      state.census.saveInProgress = true;
+      state.census.savePending = false;
+      try {
+        const envelope = await encryptJsonPayload(censusVaultPayload(), state.census.passphrase, {
+          type: CENSUS_STORAGE_TYPE
+        });
+        await writeCensusEnvelope(envelope);
+        state.census.vaultExists = true;
+        elements.censusStatus.textContent = `Saved ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"}.`;
+        return true;
+      } catch (error) {
+        console.error(error);
+        elements.censusStatus.textContent = "Could not save encrypted census.";
+        return false;
+      } finally {
+        state.census.saveInProgress = false;
+        if (state.census.savePending) {
+          state.census.savePending = false;
+          scheduleCensusSave(50);
+        }
+      }
+    }
+
+    function scheduleCensusSave(delay = censusSaveDelayMs) {
+      if (!state.census.unlocked || state.census.hydrating) {
+        return;
+      }
+      window.clearTimeout(state.census.saveTimer);
+      state.census.saveTimer = window.setTimeout(() => {
+        saveCensusNow();
+      }, delay);
+    }
+
+    function statusClass(status) {
+      return status === patientStatusLabels.needsChartInfo ? "" : "is-ready";
+    }
+
+    function renderPatientEditor(patient = activeCensusPatient()) {
+      const current = patient ? normalizePatientCase(patient) : createPatientCase({ alias: nextAlias() });
+      state.census.editingPatientId = current.id;
+      elements.patientAliasInput.value = current.alias || "";
+      elements.patientRoomInput.value = current.roomBed || "";
+      elements.patientProblemInput.value = current.serviceProblem || "";
+      elements.patientHighPriorityInput.checked = Boolean(current.highPriority);
+      elements.patientSeenTodayInput.checked = Boolean(current.seenToday);
+      elements.savePatientButton.textContent = patient ? "Save patient" : "Add patient";
+    }
+
+    function renderPatientTable() {
+      elements.patientTable.innerHTML = "";
+      const header = document.createElement("div");
+      header.className = "patient-row patient-row-header";
+      ["Alias", "Room", "Problem", "Status", "Updated", ""].forEach((label) => {
+        const span = document.createElement("span");
+        span.textContent = label;
+        header.appendChild(span);
+      });
+      elements.patientTable.appendChild(header);
+
+      const visiblePatients = filterPatients(state.census.patients, state.census.filters)
+        .sort((a, b) => {
+          const high = Number(b.highPriority) - Number(a.highPriority);
+          if (high) return high;
+          return `${a.roomBed || ""} ${a.alias}`.localeCompare(`${b.roomBed || ""} ${b.alias}`, undefined, { numeric: true });
+        });
+
+      if (!visiblePatients.length) {
+        const empty = document.createElement("p");
+        empty.className = "workflow-copy";
+        empty.textContent = "No patients match the current filters.";
+        elements.patientTable.appendChild(empty);
+        return;
+      }
+
+      visiblePatients.forEach((patient) => {
+        const normalized = normalizePatientCase(patient);
+        const status = derivePatientStatus(normalized);
+        const row = document.createElement("article");
+        row.className = "patient-row";
+        row.classList.toggle("is-active", normalized.id === state.census.activePatientId);
+
+        const alias = document.createElement("div");
+        alias.className = "patient-cell";
+        alias.textContent = normalized.alias;
+        if (normalized.highPriority) {
+          const priority = document.createElement("span");
+          priority.className = "status-badge is-priority";
+          priority.textContent = "High";
+          alias.append(" ");
+          alias.appendChild(priority);
+        }
+
+        const room = document.createElement("div");
+        room.className = "patient-cell patient-cell-muted";
+        room.textContent = normalized.roomBed || "No room";
+
+        const problem = document.createElement("div");
+        problem.className = "patient-cell";
+        problem.textContent = normalized.serviceProblem || "No problem label";
+
+        const statusCell = document.createElement("div");
+        statusCell.className = "patient-cell";
+        const badge = document.createElement("span");
+        badge.className = `status-badge ${statusClass(status)}`;
+        badge.textContent = status;
+        statusCell.appendChild(badge);
+
+        const updated = document.createElement("div");
+        updated.className = "patient-cell patient-cell-muted";
+        updated.textContent = formatCensusTime(normalized.updatedAt);
+
+        const actions = document.createElement("div");
+        actions.className = "row-actions";
+        const openButton = document.createElement("button");
+        openButton.type = "button";
+        openButton.className = "mini-icon-button";
+        openButton.textContent = "Open";
+        openButton.addEventListener("click", () => {
+          openPatientWorkspace(normalized.id);
+        });
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "mini-icon-button";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", () => {
+          renderPatientEditor(normalized);
+          elements.patientAliasInput.focus();
+        });
+        const dischargeButton = document.createElement("button");
+        dischargeButton.type = "button";
+        dischargeButton.className = "mini-icon-button";
+        dischargeButton.textContent = state.census.pendingDischargePatientId === normalized.id ? "Confirm discharge" : "Discharge";
+        dischargeButton.addEventListener("click", () => {
+          dischargeCensusPatient(normalized.id).catch((error) => {
+            console.error(error);
+            elements.censusStatus.textContent = "Could not discharge this patient.";
+          });
+        });
+        actions.append(openButton, editButton, dischargeButton);
+
+        row.append(alias, room, problem, statusCell, updated, actions);
+        elements.patientTable.appendChild(row);
+      });
+    }
+
+    function renderPromptQueue() {
+      elements.promptQueueList.innerHTML = "";
+      const queue = buildPromptQueue(state.census.patients, state.census.filters);
+      elements.copyNextPromptButton.disabled = !queue.length;
+      if (!queue.length) {
+        const empty = document.createElement("p");
+        empty.className = "queue-meta";
+        empty.textContent = "No prompt-ready patients in the current filter.";
+        elements.promptQueueList.appendChild(empty);
+        return;
+      }
+      queue.slice(0, 8).forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "queue-item";
+        row.classList.toggle("is-next", index === 0);
+        const title = document.createElement("p");
+        title.className = "queue-title";
+        title.textContent = item.queueLabel;
+        const meta = document.createElement("p");
+        meta.className = "queue-meta";
+        const patient = patientById(item.patientId);
+        meta.textContent = `${patient?.roomBed || "No room"} · ${item.label}`;
+        row.append(title, meta);
+        elements.promptQueueList.appendChild(row);
+      });
+    }
+
+    function renderBatchSnippets() {
+      elements.batchSnippetList.innerHTML = "";
+      if (!state.census.batchSnippets.length) {
+        return;
+      }
+      state.census.batchSnippets.forEach((snippet) => {
+        const card = document.createElement("article");
+        card.className = "batch-snippet-card";
+        const title = document.createElement("p");
+        title.className = "batch-snippet-title";
+        title.textContent = snippet.label;
+        const preview = document.createElement("p");
+        preview.className = "batch-snippet-preview";
+        preview.textContent = snippet.text.slice(0, 180);
+
+        const controls = document.createElement("div");
+        controls.className = "batch-snippet-controls";
+        const patientSelect = document.createElement("select");
+        patientSelect.className = "census-select";
+        const emptyOption = document.createElement("option");
+        emptyOption.value = "";
+        emptyOption.textContent = "Assign patient";
+        patientSelect.appendChild(emptyOption);
+        state.census.patients.forEach((patient) => {
+          const option = document.createElement("option");
+          option.value = patient.id;
+          option.textContent = `${patient.alias}${patient.roomBed ? ` (${patient.roomBed})` : ""}`;
+          patientSelect.appendChild(option);
+        });
+        const newOption = document.createElement("option");
+        newOption.value = "__new__";
+        newOption.textContent = "Create new patient";
+        patientSelect.appendChild(newOption);
+        patientSelect.value = snippet.patientId || "";
+        patientSelect.addEventListener("change", () => {
+          snippet.patientId = patientSelect.value;
+        });
+
+        const typeSelect = document.createElement("select");
+        typeSelect.className = "census-select";
+        [
+          ["general", "General"],
+          ["note", "Note"],
+          ["labs", "Labs"],
+          ["handoff", "Handoff"],
+          ["mar", "MAR"]
+        ].forEach(([value, label]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = label;
+          typeSelect.appendChild(option);
+        });
+        typeSelect.value = snippet.type || "general";
+        typeSelect.addEventListener("change", () => {
+          snippet.type = typeSelect.value;
+        });
+
+        controls.append(patientSelect, typeSelect);
+        card.append(title, preview, controls);
+        elements.batchSnippetList.appendChild(card);
+      });
+    }
+
+    function renderCensusDashboard() {
+      const active = activeCensusPatient();
+      elements.activePatientChip.textContent = active
+        ? `Active: ${active.alias}${active.roomBed ? ` · ${active.roomBed}` : ""}`
+        : "Single-patient workspace";
+      elements.dischargeActivePatientButton.hidden = !(state.census.unlocked && active);
+      if (active) {
+        elements.dischargeActivePatientButton.textContent = state.census.pendingDischargePatientId === active.id
+          ? `Confirm discharge ${active.alias}`
+          : "Discharge active";
+      }
+      elements.censusVaultCard.hidden = state.census.unlocked;
+      elements.censusUnlockedShell.hidden = !state.census.unlocked;
+      elements.lockCensusButton.hidden = !state.census.unlocked;
+      elements.createCensusButton.textContent = "Create vault";
+      document.querySelectorAll("[data-census-filter]").forEach((button) => {
+        const key = button.dataset.censusFilter;
+        button.setAttribute("aria-pressed", state.census.filters[key] ? "true" : "false");
+      });
+      if (!state.census.unlocked) {
+        return;
+      }
+      renderPatientEditor(active);
+      renderPatientTable();
+      renderPromptQueue();
+      renderBatchSnippets();
+    }
+
+    async function createCensusVaultFromWorkspace() {
+      const passphrase = elements.censusPassphraseInput.value;
+      if (state.census.vaultExists && !state.census.unlocked) {
+        elements.censusVaultStatus.textContent = "An encrypted census already exists. Unlock it with the passphrase.";
+        return false;
+      }
+      if (passphrase.trim().length < 8) {
+        elements.censusVaultStatus.textContent = "Use at least 8 characters for the census passphrase.";
+        elements.censusPassphraseInput.focus();
+        return false;
+      }
+      const patient = workspaceHasContent()
+        ? normalizePatientCase({ ...snapshotWorkspaceToPatient(createPatientCase({ alias: "Patient A" })), alias: "Patient A" })
+        : createPatientCase({ alias: "Patient A" });
+      state.census.unlocked = true;
+      state.census.passphrase = passphrase;
+      state.census.patients = [patient];
+      state.census.activePatientId = patient.id;
+      state.census.loadedAt = new Date().toISOString();
+      ensureContinuityCasesForCensusPatients();
+      hydrateWorkspaceFromPatient(patient);
+      renderCensusDashboard();
+      await saveCensusNow();
+      elements.censusVaultStatus.textContent = "Encrypted census vault created.";
+      showToast("Census vault created.");
+      return true;
+    }
+
+    async function unlockCensusVault() {
+      const passphrase = elements.censusPassphraseInput.value;
+      if (!passphrase) {
+        elements.censusVaultStatus.textContent = "Enter the census passphrase.";
+        elements.censusPassphraseInput.focus();
+        return false;
+      }
+      let envelope = null;
+      try {
+        envelope = await readCensusEnvelope();
+      } catch (error) {
+        elements.censusVaultStatus.textContent = "Encrypted storage is not available in this browser.";
+        return false;
+      }
+      if (!envelope) {
+        return createCensusVaultFromWorkspace();
+      }
+      try {
+        const payload = await decryptJsonPayload(envelope, passphrase, { type: CENSUS_STORAGE_TYPE });
+        const vault = normalizeCensusVault(payload);
+        state.census.unlocked = true;
+        state.census.passphrase = passphrase;
+        state.census.patients = vault.patients;
+        state.census.activePatientId = vault.activePatientId;
+        state.census.loadedAt = vault.createdAt || new Date().toISOString();
+        if (!state.census.patients.length) {
+          state.census.activePatientId = "";
+        }
+        ensureContinuityCasesForCensusPatients();
+        const activePatient = activeCensusPatient();
+        if (activePatient) {
+          hydrateWorkspaceFromPatient(activePatient);
+        }
+        renderCensusDashboard();
+        scheduleCensusSave(50);
+        elements.censusVaultStatus.textContent = "Census vault unlocked. Legacy raw source fields are not retained.";
+        showToast("Census vault unlocked.");
+        return true;
+      } catch (error) {
+        console.error(error);
+        elements.censusVaultStatus.textContent = "Could not unlock census. Check the passphrase.";
+        return false;
+      }
+    }
+
+    function lockCensusVault() {
+      syncActivePatientFromWorkspace({ save: true });
+      state.census.unlocked = false;
+      state.census.passphrase = "";
+      state.census.activePatientId = "";
+      state.census.editingPatientId = "";
+      state.census.batchSnippets = [];
+      elements.censusPassphraseInput.value = "";
+      elements.censusVaultStatus.textContent = "Census locked.";
+      renderCensusDashboard();
+      showScreen("censusScreen");
+    }
+
+    function openPatientWorkspace(patientId) {
+      switchActivePatient(patientId);
+      showScreen("pasteScreen");
+      showToast("Patient workspace opened.");
+    }
+
+    function switchActivePatient(patientId) {
+      if (!patientId || patientId === state.census.activePatientId) {
+        return;
+      }
+      syncActivePatientFromWorkspace({ save: true });
+      const patient = patientById(patientId);
+      if (!patient) {
+        return;
+      }
+      state.census.activePatientId = patient.id;
+      patient.lastOpenedAt = new Date().toISOString();
+      hydrateWorkspaceFromPatient(patient);
+      renderCensusDashboard();
+      scheduleCensusSave();
+    }
+
+    function formatPatientDischargeLabel(patient) {
+      if (!patient) {
+        return "this patient";
+      }
+      return `${patient.alias}${patient.roomBed ? ` (${patient.roomBed})` : ""}`;
+    }
+
+    async function dischargeCensusPatient(patientId) {
+      if (!state.census.unlocked) {
+        return false;
+      }
+      const patient = patientById(patientId);
+      if (!patient) {
+        elements.censusStatus.textContent = "That patient is no longer in the census.";
+        state.census.pendingDischargePatientId = "";
+        renderCensusDashboard();
+        return false;
+      }
+
+      const label = formatPatientDischargeLabel(patient);
+      if (state.census.pendingDischargePatientId !== patientId) {
+        state.census.pendingDischargePatientId = patientId;
+        elements.censusStatus.textContent = `Click Discharge again to permanently delete ${label} and its local continuity timeline.`;
+        renderCensusDashboard();
+        return false;
+      }
+
+      syncActivePatientFromWorkspace({ save: false });
+      const wasActive = state.census.activePatientId === patientId;
+      const result = removePatientAndSelectNext(state.census.patients, patientId, state.census.activePatientId);
+      state.census.patients = result.patients;
+      state.census.activePatientId = result.activePatientId;
+      state.census.pendingDischargePatientId = "";
+      removeContinuityCasesForPatient(result.removedPatient || patient);
+
+      if (wasActive) {
+        const nextPatient = activeCensusPatient();
+        if (nextPatient) {
+          hydrateWorkspaceFromPatient(nextPatient);
+        } else {
+          resetApp();
+          showScreen("censusScreen");
+        }
+      }
+
+      renderCensusDashboard();
+      const saved = await saveCensusNow();
+      elements.censusStatus.textContent = saved
+        ? `${label} discharged and permanently removed from local storage.`
+        : `${label} was removed in memory, but encrypted storage could not be updated.`;
+      showToast(saved ? `${label} discharged.` : "Discharge could not be saved.", {
+        duration: 6000
+      });
+      return saved;
+    }
+
+    function savePatientEditor(event) {
+      event.preventDefault();
+      if (!state.census.unlocked) {
+        return;
+      }
+      const editingPatientId = state.census.editingPatientId;
+      syncActivePatientFromWorkspace({ save: false, render: false });
+      const existing = patientById(editingPatientId);
+      const isNewPatient = !existing;
+      let patient = normalizePatientCase({
+        ...(existing || createPatientCase({ alias: nextAlias() })),
+        alias: elements.patientAliasInput.value || nextAlias(),
+        roomBed: elements.patientRoomInput.value,
+        serviceProblem: elements.patientProblemInput.value,
+        highPriority: elements.patientHighPriorityInput.checked,
+        seenToday: elements.patientSeenTodayInput.checked,
+        updatedAt: new Date().toISOString()
+      });
+      const continuityCase = ensureContinuityCaseForPatient(patient);
+      patient = normalizePatientCase({
+        ...patient,
+        continuityCaseId: continuityCase?.id || patient.continuityCaseId
+      });
+      replaceCensusPatient(patient);
+      if (isNewPatient || !state.census.activePatientId) {
+        state.census.activePatientId = patient.id;
+        hydrateWorkspaceFromPatient(patient);
+      }
+      renderCensusDashboard();
+      scheduleCensusSave(50);
+      elements.censusStatus.textContent = `${patient.alias} saved.`;
+    }
+
+    function startNewPatientEditor() {
+      const patient = createPatientCase({ alias: nextAlias() });
+      state.census.editingPatientId = patient.id;
+      elements.patientAliasInput.value = patient.alias;
+      elements.patientRoomInput.value = "";
+      elements.patientProblemInput.value = "";
+      elements.patientHighPriorityInput.checked = false;
+      elements.patientSeenTodayInput.checked = false;
+      elements.patientAliasInput.focus();
+    }
+
+    function splitBatchSnippets() {
+      state.census.batchSnippets = parseBatchSnippetBlocks(elements.batchPasteInput.value);
+      renderBatchSnippets();
+      elements.batchStatus.textContent = state.census.batchSnippets.length
+        ? `${state.census.batchSnippets.length} snippet${state.census.batchSnippets.length === 1 ? "" : "s"} ready for assignment.`
+        : "Paste snippets separated by blank lines or --- lines.";
+    }
+
+    function setBatchBusy(isBusy) {
+      elements.deidentifyBatchButton.disabled = isBusy;
+      elements.generateBatchPromptsButton.disabled = isBusy;
+      elements.splitBatchButton.disabled = isBusy;
+      elements.deidentifyBatchButton.setAttribute("aria-busy", isBusy ? "true" : "false");
+      elements.deidentifyBatchButton.textContent = isBusy ? "Working..." : "De-identify all";
+    }
+
+    async function deidentifyBatchSnippets() {
+      if (!state.census.batchSnippets.length) {
+        splitBatchSnippets();
+      }
+      const assigned = state.census.batchSnippets.filter((snippet) => snippet.patientId);
+      if (!assigned.length) {
+        elements.batchStatus.textContent = "Assign at least one snippet to a patient.";
+        return;
+      }
+      syncActivePatientFromWorkspace({ save: false });
+      setBatchBusy(true);
+      try {
+        for (const snippet of assigned) {
+          let patientId = snippet.patientId;
+          if (patientId === "__new__") {
+            let patient = createPatientCase({ alias: nextAlias() });
+            const continuityCase = ensureContinuityCaseForPatient(patient);
+            patient = normalizePatientCase({
+              ...patient,
+              continuityCaseId: continuityCase?.id || patient.continuityCaseId
+            });
+            replaceCensusPatient(patient);
+            patientId = patient.id;
+            snippet.patientId = patientId;
+          }
+          const patient = patientById(patientId);
+          if (!patient) {
+            continue;
+          }
+          elements.batchStatus.textContent = `De-identifying ${snippet.label} for ${patient.alias}...`;
+          showDeidProgress("Batch de-identifying...", 0.02, "Raw snippets stay in memory; only reviewed de-identified text is saved.");
+          await waitForPaint();
+          const result = await scrubSoapNoteText(snippet.text);
+          replaceCensusPatient(appendSnippetToPatient(patient, snippet, result.text));
+        }
+        if (state.census.activePatientId) {
+          hydrateWorkspaceFromPatient(activeCensusPatient());
+        }
+        state.census.batchSnippets = [];
+        elements.batchPasteInput.value = "";
+        renderCensusDashboard();
+        scheduleCensusSave(50);
+        elements.batchStatus.textContent = "Batch snippets de-identified and assigned. Raw pasted snippets were cleared.";
+        hideDeidProgress(900);
+      } catch (error) {
+        console.error(error);
+        elements.batchStatus.textContent = "Batch de-identification stopped. Review assigned snippets and try again.";
+        hideDeidProgress(1600);
+      } finally {
+        setBatchBusy(false);
+      }
+    }
+
+    function generateAllInitialPrompts() {
+      syncActivePatientFromWorkspace({ save: false });
+      const ready = state.census.patients.filter((patient) => hasSourceContext(patient) && nextPromptForPatient(patient)?.kind === "initial");
+      elements.batchStatus.textContent = ready.length
+        ? `${ready.length} initial report prompt${ready.length === 1 ? "" : "s"} added to the queue.`
+        : "No patients with de-identified chart context need an initial prompt.";
+      renderPromptQueue();
+      scheduleCensusSave(50);
+    }
+
+    async function copyNextCensusPrompt() {
+      if (!state.census.unlocked) {
+        return false;
+      }
+      syncActivePatientFromWorkspace({ save: false });
+      const queue = buildPromptQueue(state.census.patients, state.census.filters);
+      const next = queue[0];
+      if (!next) {
+        elements.censusStatus.textContent = "No prompt-ready patients in the current filters.";
+        return false;
+      }
+      if (next.patientId !== state.census.activePatientId) {
+        switchActivePatient(next.patientId);
+      }
+      let copied = false;
+      if (next.kind === "packet") {
+        copied = await copyActivePacket();
+      } else if (next.kind === "initial") {
+        copied = await copySourceRoundsReportPrompt(elements.censusStatus);
+      } else if (next.kind === "checklist") {
+        if (state.sourceMode === "admission") {
+          const prompt = await buildAdmissionChecklistPrompt();
+          copied = await copyPromptWithPhiWarning(prompt, elements.censusStatus, "Checklist prompt copied.", {
+            title: "PHI safety check for checklist prompt",
+            reviewTarget: "admission",
+            onCopied: () => {
+              markConversationStep("checklist");
+              setPromptCollapsed(true);
+            }
+          });
+          if (copied) {
+            markConversationStep("checklist");
+            setPromptCollapsed(true);
+          }
+        } else {
+          const prompt = await buildPriorChecklistPrompt();
+          copied = await copyPromptWithPhiWarning(prompt, elements.censusStatus, "Checklist prompt copied.", {
+            title: "PHI safety check for checklist prompt",
+            reviewTarget: "source",
+            reviewText: state.scrubbedNote,
+            onCopied: () => {
+              markConversationStep("checklist");
+              setPromptCollapsed(true);
+            }
+          });
+          if (copied) {
+            markConversationStep("checklist");
+            setPromptCollapsed(true);
+          }
+        }
+      } else if (next.kind === "update") {
+        const prompt = buildPresentationPrompt();
+        copied = await copyPromptWithPhiWarning(prompt, elements.censusStatus, "Update prompt copied.", {
+          title: "PHI safety check for presentation prompt",
+          reviewTarget: "output",
+          reviewScope: "custom",
+          reviewText: buildPresentationPhiReviewText()
+        });
+        if (copied) {
+          markConversationStep("final");
+        }
+      }
+      syncActivePatientFromWorkspace({ save: true });
+      renderCensusDashboard();
+      return copied;
+    }
+
+    async function exportCensusVault() {
+      if (!state.census.unlocked) {
+        elements.censusTransferStatus.textContent = "Unlock the census first.";
+        return false;
+      }
+      const transferCode = generateTransferCode();
+      const envelope = await encryptJsonPayload(censusVaultPayload(), transferCode, {
+        type: CENSUS_EXPORT_TYPE
+      });
+      downloadTextFile("pre-rounds-census.prerounds-census.json", JSON.stringify(envelope, null, 2));
+      elements.censusTransferCodeInput.value = transferCode;
+      elements.censusTransferStatus.textContent = `Encrypted census exported. Transfer code: ${transferCode}`;
+      return true;
+    }
+
+    async function importCensusVault() {
+      if (!state.census.unlocked) {
+        elements.censusTransferStatus.textContent = "Unlock the local census before importing.";
+        return false;
+      }
+      const file = elements.censusImportFile.files?.[0];
+      const code = elements.censusTransferCodeInput.value.trim();
+      if (!file || !code) {
+        elements.censusTransferStatus.textContent = "Choose a census file and enter its transfer code.";
+        return false;
+      }
+      try {
+        const envelope = JSON.parse(await file.text());
+        const imported = normalizeCensusVault(await decryptJsonPayload(envelope, code, { type: CENSUS_EXPORT_TYPE }));
+        const existingIds = new Set(state.census.patients.map((patient) => patient.id));
+        const additions = imported.patients.filter((patient) => !existingIds.has(patient.id));
+        state.census.patients = [...state.census.patients, ...additions];
+        if (!state.census.activePatientId && state.census.patients[0]) {
+          state.census.activePatientId = state.census.patients[0].id;
+          hydrateWorkspaceFromPatient(state.census.patients[0]);
+        }
+        ensureContinuityCasesForCensusPatients();
+        renderCensusDashboard();
+        scheduleCensusSave(50);
+        elements.censusTransferStatus.textContent = `Imported ${additions.length} new patient workspace${additions.length === 1 ? "" : "s"}. Existing local cases were preserved.`;
+        return true;
+      } catch (error) {
+        console.error(error);
+        elements.censusTransferStatus.textContent = "Could not import that census file. Check the code and file.";
+        return false;
+      }
+    }
+
+    async function initializeCensus() {
+      try {
+        state.census.vaultExists = Boolean(await readCensusEnvelope());
+        renderCensusDashboard();
+        showScreen("censusScreen");
+        elements.censusVaultStatus.textContent = state.census.vaultExists
+          ? "Encrypted census found. Enter your passphrase to unlock."
+          : "No census vault yet. Enter a passphrase and create one.";
+      } catch (error) {
+        console.warn(error);
+        elements.censusVaultStatus.textContent = "Encrypted census storage is unavailable; single-patient mode still works.";
+        renderCensusDashboard();
+      }
     }
 
     function sanitizeProfileValue(value) {
@@ -6417,8 +9292,9 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function saveChecklistSession() {
-      if (!state.sections.length) {
+      if (!state.sections.length && !state.retrievedEvidenceCandidates.length) {
         safeStorageRemove(sessionKey);
+        syncActivePatientFromWorkspace({ save: true });
         return;
       }
 
@@ -6431,8 +9307,11 @@ Sensory level present: No / Yes, at ___`;
         auditResult: state.auditResult,
         checklistText: elements.checklistInput.value,
         outputMode: state.outputMode,
-        compiledText: state.compiledText
+        compiledText: state.compiledText,
+        retrievedEvidenceCandidates: state.retrievedEvidenceCandidates,
+        evidenceMatchedTags: state.evidenceMatchedTags
       }));
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function clearChecklistSession() {
@@ -6555,10 +9434,11 @@ Sensory level present: No / Yes, at ___`;
         schemaVersion: contextSchemaVersion,
         importedAt: new Date().toISOString(),
         createdAt: context.createdAt || "",
-        sourceMode: context.sourceMode === "admission" ? "admission" : "prior",
+        sourceMode: context.sourceMode === "admission" || context.sourceMode === "continuity" ? context.sourceMode : "prior",
         contextType: sanitizeProfileValue(context.contextType || ""),
         label: sanitizeProfileValue(context.label || "De-identified source note"),
         text: String(context.text || "").trim(),
+        labChronologyBlock: String(context.labChronologyBlock || "").trim(),
         userProfile: normalizeUserProfile(context.userProfile || {}),
         conversationCaseKey: sanitizeProfileValue(context.conversationCaseKey || ""),
         redactionSummary: context.redactionSummary || null
@@ -6601,7 +9481,11 @@ Sensory level present: No / Yes, at ___`;
       if (!state.importedContext) {
         return "";
       }
-      const mode = state.importedContext.sourceMode === "admission" ? "admission context" : "de-identified chart info";
+      const mode = state.importedContext.sourceMode === "admission"
+        ? "admission context"
+        : state.importedContext.sourceMode === "continuity"
+          ? "continuity context"
+          : "de-identified chart info";
       return `Imported ${mode}.`;
     }
 
@@ -6611,13 +9495,18 @@ Sensory level present: No / Yes, at ___`;
       let hasContext = false;
 
       if (state.conversationContextReady) {
-        message = "Update prompt will rely on the earlier OpenEvidence report.";
+        message = state.sourceMode === "continuity"
+          ? "Update prompt will rely on the same OpenEvidence continuity conversation."
+          : "Update prompt will rely on the earlier OpenEvidence report.";
         hasContext = true;
       } else if (state.scrubbedNote) {
         message = "Saved context available: this browser has de-identified chart info.";
         hasContext = true;
       } else if (admissionContext) {
         message = "Saved context available: this browser has admission context.";
+        hasContext = true;
+      } else if (hasDailyInputs(currentContinuityTodayInputs())) {
+        message = "Saved context available: this browser has today's de-identified continuity changes.";
         hasContext = true;
       } else if (state.importedContext) {
         message = "Imported context is loaded.";
@@ -6655,10 +9544,11 @@ Sensory level present: No / Yes, at ___`;
       return {
         schemaVersion: contextSchemaVersion,
         createdAt: new Date().toISOString(),
-        sourceMode: state.sourceMode === "admission" ? "admission" : "prior",
+        sourceMode: state.sourceMode === "admission" ? "admission" : state.sourceMode === "continuity" ? "continuity" : "prior",
         contextType: sourceContext.contextType,
         label: sourceContext.label,
         text: sourceContext.text,
+        labChronologyBlock: currentLabChronologyBlock(sourceContext),
         userProfile: normalizeUserProfile(profile),
         conversationCaseKey: state.conversationCaseKey || "",
         redactionSummary
@@ -7213,6 +10103,10 @@ Message ${index + 1} received.
 ${contextType}
 </context_type>
 
+<lab_chronology_rule>
+If a <lab_chronology> block is present, treat it as the authoritative lab recency ordering even if de-identified source rows contain rounded time language.
+</lab_chronology_rule>
+
 <patient_context_packet>
 ${chunk}
 </patient_context_packet>`;
@@ -7224,6 +10118,7 @@ ${chunk}
 <same_conversation_context>
 The de-identified patient source context was provided in the previous CASE CONTEXT MESSAGE prompts in this same OpenEvidence conversation.
 Use all previous messages for this case, including notes, labs/results, handoff, medication orders/MAR source text, service profile, consult question, hospital course, and chronology.
+If a <lab_chronology> block was provided earlier in this conversation, follow it for lab recency and do not infer most-recent labs from source order.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier messages.
 </same_conversation_context>
 
@@ -7425,7 +10320,7 @@ Now create the initial rounds report for this case.`;
         onCopied: options.onCopied
       };
       renderPhiSafetyPanel(check, state.pendingPhiCopy);
-      statusElement.textContent = "Review possible identifiers before copying. Use “I reviewed this, copy anyway” only after checking the preview.";
+      statusElement.textContent = "Review possible identifiers before copying. Use “I reviewed this for PHI, copy anyway” only after checking the preview.";
       showToast("Possible PHI remains. Review before copying.", { duration: 6000 });
       return false;
     }
@@ -7482,6 +10377,18 @@ Now create the initial rounds report for this case.`;
         return;
       }
 
+      if (target === "continuity") {
+        setSourceMode("continuity");
+        if (!elements.continuityReview.hidden) {
+          elements.continuityScrubbedInput.focus({ preventScroll: true });
+          elements.continuityReview.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          elements.todayNoteInput.focus({ preventScroll: true });
+          elements.continuitySourcePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
+
       setSourceMode("prior");
       if (!elements.scrubReview.hidden) {
         elements.scrubbedNoteInput.focus({ preventScroll: true });
@@ -7493,28 +10400,38 @@ Now create the initial rounds report for this case.`;
     }
 
     function setSourceMode(mode) {
-      state.sourceMode = mode;
+      state.sourceMode = mode === "admission" || mode === "continuity" ? mode : "prior";
+      mode = state.sourceMode;
       const isPrior = mode === "prior";
+      const isAdmission = mode === "admission";
+      const isContinuity = mode === "continuity";
       elements.priorModeButton.setAttribute("aria-pressed", isPrior ? "true" : "false");
-      elements.admissionModeButton.setAttribute("aria-pressed", isPrior ? "false" : "true");
+      elements.admissionModeButton.setAttribute("aria-pressed", isAdmission ? "true" : "false");
+      elements.continuityModeButton.setAttribute("aria-pressed", isContinuity ? "true" : "false");
       elements.priorSourcePanel.classList.toggle("is-active", isPrior);
-      elements.admissionSourcePanel.classList.toggle("is-active", !isPrior);
+      elements.admissionSourcePanel.classList.toggle("is-active", isAdmission);
+      elements.continuitySourcePanel.classList.toggle("is-active", isContinuity);
       elements.promptStatus.textContent = "";
       updateSourceCompleteness();
       updateSourcePrimaryActions();
       updateGuidedStatus();
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function updateSourcePrimaryActions() {
       const isPrior = state.sourceMode === "prior";
+      const isAdmission = state.sourceMode === "admission";
+      const isContinuity = state.sourceMode === "continuity";
       const hasReviewedPreview = Boolean(state.scrubResult || elements.scrubbedNoteInput.value.trim());
       const hasRawPriorSource = Boolean(elements.rawSoapInput.value.trim() || elements.rawLabsInput.value.trim() || elements.rawHandoffInput.value.trim() || elements.rawMedicationInput.value.trim());
       const hasPriorContext = hasReviewedPreview || hasRawPriorSource;
       const hasReviewedPriorContext = Boolean(hasReviewedPreview);
       const hasAdmissionContext = admissionFields.some((field) => field.element.value.trim());
+      const hasContinuityRawContext = hasDailyInputs(readContinuityRawInputs());
+      const hasContinuityContext = Boolean(activeContinuityCase() && hasDailyInputs(currentContinuityTodayInputs()));
       const initialCopied = state.initialRoundsPromptCopied || state.conversationContextReady;
-      const summaryContextReady = isPrior ? hasPriorContext : hasAdmissionContext;
-      const summaryChecklistContextReady = isPrior ? hasReviewedPriorContext : hasAdmissionContext;
+      const summaryContextReady = isPrior ? hasPriorContext : isAdmission ? hasAdmissionContext : hasContinuityContext;
+      const summaryChecklistContextReady = isPrior ? hasReviewedPriorContext : isAdmission ? hasAdmissionContext : hasContinuityContext;
       const isBusy = elements.scrubPreviewButton.getAttribute("aria-busy") === "true";
       elements.scrubPreviewButton.hidden = !isPrior || state.promptCollapsed || hasReviewedPreview;
       elements.scrubAndCopyButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
@@ -7522,13 +10439,16 @@ Now create the initial rounds report for this case.`;
       elements.copySourceRoundsPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.copyTeachingPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
       elements.copyMedicationSafetyPromptButton.hidden = !isPrior || state.promptCollapsed || !hasReviewedPriorContext;
-      elements.copyAdmissionPromptButton.hidden = isPrior || state.promptCollapsed;
-      elements.exportAdmissionContextButton.hidden = isPrior || state.promptCollapsed;
-      elements.copyAdmissionRoundsPromptButton.hidden = isPrior || state.promptCollapsed;
-      elements.copyAdmissionTeachingPromptButton.hidden = isPrior || state.promptCollapsed;
-      elements.copyAdmissionMedicationSafetyPromptButton.hidden = isPrior || state.promptCollapsed;
+      elements.copyAdmissionPromptButton.hidden = !isAdmission || state.promptCollapsed;
+      elements.exportAdmissionContextButton.hidden = !isAdmission || state.promptCollapsed;
+      elements.copyAdmissionRoundsPromptButton.hidden = !isAdmission || state.promptCollapsed;
+      elements.copyAdmissionTeachingPromptButton.hidden = !isAdmission || state.promptCollapsed;
+      elements.copyAdmissionMedicationSafetyPromptButton.hidden = !isAdmission || state.promptCollapsed;
+      elements.continuityDeidButton.hidden = !isContinuity || state.promptCollapsed || hasContinuityContext;
+      elements.copyContinuityPromptButton.hidden = !isContinuity || state.promptCollapsed;
+      elements.copyContinuityChecklistButton.hidden = !isContinuity || state.promptCollapsed;
       elements.exportSummaryContextButton.hidden = !state.promptCollapsed || !summaryContextReady;
-      elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
+      elements.copySummaryRoundsPromptButton.hidden = !state.promptCollapsed || !summaryContextReady || isContinuity;
       elements.copySummaryChecklistPromptButton.hidden = !state.promptCollapsed || !summaryChecklistContextReady;
       elements.copySummaryTeachingPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
       elements.copySummaryMedicationSafetyPromptButton.hidden = !state.promptCollapsed || !summaryContextReady;
@@ -7549,6 +10469,9 @@ Now create the initial rounds report for this case.`;
         elements.copySummaryChecklistPromptButton.disabled = !summaryChecklistContextReady || !initialCopied;
         elements.copySummaryTeachingPromptButton.disabled = !summaryContextReady;
         elements.copySummaryMedicationSafetyPromptButton.disabled = !summaryContextReady || !initialCopied;
+        elements.continuityDeidButton.disabled = isContinuity && !hasContinuityRawContext;
+        elements.copyContinuityPromptButton.disabled = isContinuity && !hasContinuityContext;
+        elements.copyContinuityChecklistButton.disabled = isContinuity && (!hasContinuityContext || !initialCopied);
       }
     }
 
@@ -7585,10 +10508,69 @@ Now create the initial rounds report for this case.`;
       return blocks.join("\n\n");
     }
 
+    function clearLabTimelinePreview() {
+      state.labTimeline = null;
+      state.labChronologyBlock = "";
+      elements.labTimelinePreview.hidden = true;
+      elements.labTimelineSummary.textContent = "0 lab rows";
+      elements.labTimelineList.innerHTML = "";
+      elements.labTimelineWarnings.innerHTML = "";
+    }
+
+    function renderLabTimelinePreview(timeline) {
+      const preview = formatLabTimelinePreview(timeline);
+      elements.labTimelineList.innerHTML = "";
+      elements.labTimelineWarnings.innerHTML = "";
+      elements.labTimelineSummary.textContent = preview.summary;
+
+      if (!timeline?.hasLabs) {
+        elements.labTimelinePreview.hidden = true;
+        return;
+      }
+
+      preview.items.slice(0, 18).forEach((item) => {
+        const row = document.createElement("li");
+        row.textContent = item.text;
+        elements.labTimelineList.appendChild(row);
+      });
+
+      preview.warnings.forEach((warning) => {
+        const row = document.createElement("li");
+        row.textContent = warning.text;
+        elements.labTimelineWarnings.appendChild(row);
+      });
+
+      elements.labTimelinePreview.hidden = false;
+    }
+
+    function computeLabTimeline(rawPriorSource) {
+      const timeline = parseLabTimeline(rawPriorSource);
+      state.labTimeline = timeline;
+      state.labChronologyBlock = formatLabChronologyPromptBlock(timeline);
+      renderLabTimelinePreview(timeline);
+      return timeline;
+    }
+
+    function currentLabChronologyBlock(sourceContext = null) {
+      if (sourceContext && Object.prototype.hasOwnProperty.call(sourceContext, "labChronologyBlock")) {
+        return sourceContext.labChronologyBlock || "";
+      }
+      if (state.sourceMode !== "prior") {
+        return "";
+      }
+      return state.labChronologyBlock || state.importedContext?.labChronologyBlock || "";
+    }
+
+    function prependLabChronology(text, sourceContext = null) {
+      const block = currentLabChronologyBlock(sourceContext);
+      return [block, text].filter(Boolean).join("\n\n");
+    }
+
     function clearScrubPreview() {
       state.scrubbedNote = "";
       state.scrubResult = null;
       state.laptopPrepareStep = "source";
+      clearLabTimelinePreview();
       elements.scrubbedNoteInput.value = "";
       elements.scrubReview.hidden = true;
       elements.scrubVerdict.textContent = "Review before copying.";
@@ -7602,6 +10584,7 @@ Now create the initial rounds report for this case.`;
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function syncScrubbedNote() {
@@ -7609,6 +10592,7 @@ Now create the initial rounds report for this case.`;
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function readAdmissionFields() {
@@ -7624,6 +10608,7 @@ Now create the initial rounds report for this case.`;
       updateSourcePrimaryActions();
       updateGuidedStatus();
       updateContextStatus();
+      syncActivePatientFromWorkspace({ save: true });
     }
 
     function formatAdmissionContext() {
@@ -8164,6 +11149,7 @@ Now create the initial rounds report for this case.`;
         return null;
       }
 
+      computeLabTimeline(rawPriorSource);
       setScrubBusy(true, "De-identifying...");
       elements.promptStatus.textContent = "Running local PII deidentifier...";
       showDeidProgress("Starting local de-identification...", 0.02, "The scrubber runs away from the page UI so the app stays responsive.");
@@ -8190,6 +11176,7 @@ Now create the initial rounds report for this case.`;
       state.scrubbedNote = result.text;
       state.laptopPrepareStep = "review";
       renderScrubResult(result, rawPriorSource);
+      syncActivePatientFromWorkspace({ save: true });
       elements.promptStatus.textContent = "De-identified note, labs, and handoff preview ready. Review before pasting into OpenEvidence.";
       hideDeidProgress(900);
       requestAnimationFrame(() => {
@@ -8250,15 +11237,54 @@ Now create the initial rounds report for this case.`;
       }).filter(Boolean);
     }
 
+    function mergeStudentExamEvidenceRows(referenceRows, overlayRows) {
+      if (!overlayRows.length) {
+        return referenceRows;
+      }
+      const overlayByExamId = new Map();
+      for (const row of overlayRows) {
+        if (row.exam_id) {
+          overlayByExamId.set(row.exam_id, row);
+        }
+      }
+      return referenceRows.map((row) => {
+        const overlay = overlayByExamId.get(row.exam_id);
+        return overlay ? { ...row, ...overlay } : row;
+      });
+    }
+
+    async function loadStudentExamEvidenceOverlayRows() {
+      if (studentExamEvidenceOverlayRows) {
+        return studentExamEvidenceOverlayRows;
+      }
+      if (!studentExamEvidenceOverlayLoadPromise) {
+        studentExamEvidenceOverlayLoadPromise = fetch(studentExamEvidenceOverlayUrl, { cache: "force-cache" })
+          .then((response) => response.ok ? response.text() : "")
+          .then((csvText) => {
+            studentExamEvidenceOverlayRows = parseStudentExamReferenceCsv(csvText);
+            return studentExamEvidenceOverlayRows;
+          })
+          .catch(() => {
+            studentExamEvidenceOverlayRows = [];
+            return studentExamEvidenceOverlayRows;
+          });
+      }
+      return studentExamEvidenceOverlayLoadPromise;
+    }
+
     async function loadStudentExamReferenceRows() {
       if (studentExamReferenceRows) {
         return studentExamReferenceRows;
       }
       if (!studentExamReferenceLoadPromise) {
-        studentExamReferenceLoadPromise = fetch(studentExamReferenceUrl, { cache: "force-cache" })
-          .then((response) => response.ok ? response.text() : "")
-          .then((csvText) => {
-            studentExamReferenceRows = parseStudentExamReferenceCsv(csvText);
+        studentExamReferenceLoadPromise = Promise.all([
+          fetch(studentExamReferenceUrl, { cache: "force-cache" })
+            .then((response) => response.ok ? response.text() : "")
+            .catch(() => ""),
+          loadStudentExamEvidenceOverlayRows()
+        ])
+          .then(([csvText, overlayRows]) => {
+            studentExamReferenceRows = mergeStudentExamEvidenceRows(parseStudentExamReferenceCsv(csvText), overlayRows);
             return studentExamReferenceRows;
           })
           .catch(() => {
@@ -8279,6 +11305,45 @@ Now create the initial rounds report for this case.`;
 
     function contextHasAny(context, terms) {
       return terms.some((term) => context.includes(term));
+    }
+
+    function splitExamMetadataList(value) {
+      return String(value || "")
+        .split(/[;|]/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+    }
+
+    function normalizedExamTag(value) {
+      return normalizedExamText(value).replace(/[_-]+/g, " ").trim();
+    }
+
+    function numericExamMetadata(value) {
+      const number = Number.parseFloat(String(value || "").trim());
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function hasStudentExamEvidence(row) {
+      return Boolean(row.evidence_status && row.evidence_status !== "pending" && row.evidence_summary);
+    }
+
+    function countContextPhraseMatches(context, phrases, maxMatches) {
+      let matches = 0;
+      const seen = new Set();
+      for (const phrase of phrases) {
+        const normalized = normalizedExamTag(phrase);
+        if (normalized.length < 3 || seen.has(normalized)) {
+          continue;
+        }
+        seen.add(normalized);
+        if (context.includes(normalized)) {
+          matches += 1;
+          if (matches >= maxMatches) {
+            break;
+          }
+        }
+      }
+      return matches;
     }
 
     const studentExamReferenceBoosts = [
@@ -8335,6 +11400,13 @@ Now create the initial rounds report for this case.`;
         return 0;
       }
       let score = 0;
+      const tagMatches = countContextPhraseMatches(context, splitExamMetadataList(row.retrieval_tags), 10);
+      score += tagMatches * 7;
+
+      const structuredText = normalizedExamText(`${row.condition_or_syndrome || ""} ${row.diagnostic_target || ""}`);
+      const structuredTerms = structuredText.split(/\s+/).filter((term) => term.length >= 5);
+      score += structuredTerms.filter((term) => context.includes(term)).slice(0, 8).length * 4;
+
       for (const boost of studentExamReferenceBoosts) {
         if (contextHasAny(context, boost.context) && contextHasAny(rowText, boost.row)) {
           score += boost.score;
@@ -8349,6 +11421,19 @@ Now create the initial rounds report for this case.`;
 
       if (/vital|temperature|heart rate|respiratory rate|blood pressure/i.test(row.maneuver_or_finding) && /fever|sepsis|infection|shock|dyspnea|dka|hypertension|hypotension/i.test(context)) {
         score += 8;
+      }
+      if (score > 0) {
+        score += Math.min(numericExamMetadata(row.actionability_score_seed), 10);
+        if (hasStudentExamEvidence(row)) {
+          score += 4;
+        }
+        const timeBurden = numericExamMetadata(row.time_burden_minutes);
+        if (timeBurden > 0 && timeBurden <= 1) {
+          score += 2;
+        }
+        if (row.difficulty === "low") {
+          score += 1;
+        }
       }
       return score;
     }
@@ -8385,6 +11470,29 @@ Now create the initial rounds report for this case.`;
       return text.length > maxLength ? `${text.slice(0, maxLength - 1).trim()}...` : text;
     }
 
+    function formatStudentExamEvidencePhrase(row) {
+      if (!hasStudentExamEvidence(row)) {
+        return "";
+      }
+      const details = [];
+      if (row.diagnostic_target) {
+        details.push(`target: ${truncatePromptField(row.diagnostic_target, 48)}`);
+      }
+      if (row.LR_plus) {
+        details.push(`LR+ ${truncatePromptField(row.LR_plus, 12)}`);
+      }
+      if (row.LR_minus) {
+        details.push(`LR- ${truncatePromptField(row.LR_minus, 12)}`);
+      }
+      if (row.result_changes_management) {
+        details.push(`management: ${truncatePromptField(row.result_changes_management, 56)}`);
+      }
+      if (row.evidence_source_primary) {
+        details.push(`source: ${truncatePromptField(row.evidence_source_primary, 42)}`);
+      }
+      return details.length ? ` | evidence: ${truncatePromptField(details.join("; "), 160)}` : "";
+    }
+
     function formatStudentExamReferenceBlock(rows) {
       if (!rows.length) {
         return "";
@@ -8394,13 +11502,15 @@ Now create the initial rounds report for this case.`;
         "These are patient-relevant examples from the student's learned physical exam toolkit. This reference is not exhaustive and is not a restriction.",
         "Do not limit yourself to this reference. Use it as a floor, not a ceiling. Add other clinically important, evidence-based, safe, bedside-feasible exam items when patient-specific reasoning supports them.",
         "Use the reference to avoid missing student-performable maneuvers, then choose the final concise exam checklist from patient-specific reasoning plus this reference.",
+        "When evidence metadata appears, treat it as a concise rationale aid rather than a standalone diagnostic rule.",
         "",
         "Relevant reference rows:"
       ];
 
       for (const row of rows) {
         const location = [row.exam_system, row.section, row.region_or_subsection].filter(Boolean).join(" > ");
-        lines.push(`- ${location}: ${truncatePromptField(row.maneuver_or_finding, 70)} | label: ${truncatePromptField(row.suggested_checklist_label, 60)} | options: ${truncatePromptField(row.suggested_options, 90)} | use when: ${truncatePromptField(row.include_when, 110)}`);
+        const evidencePhrase = formatStudentExamEvidencePhrase(row);
+        lines.push(`- ${location}: ${truncatePromptField(row.maneuver_or_finding, 70)} | label: ${truncatePromptField(row.suggested_checklist_label, 60)} | options: ${truncatePromptField(row.suggested_options, 90)} | use when: ${truncatePromptField(row.include_when, 110)}${evidencePhrase}`);
       }
 
       lines.push("</student_exam_reference>");
@@ -8421,6 +11531,8 @@ Now create the initial rounds report for this case.`;
       const parts = [buildUserContextBlock()];
       if (mode === "admission") {
         parts.push(formatAdmissionContext());
+      } else if (mode === "continuity") {
+        parts.push(formatDailyInputs(currentContinuityTodayInputs()));
       } else {
         syncScrubbedNote();
         parts.push(state.scrubbedNote);
@@ -8438,6 +11550,59 @@ Now create the initial rounds report for this case.`;
       return replaceStudentExamReferenceBlock(prompt, referenceBlock);
     }
 
+    async function fetchEvidenceText(url) {
+      const response = await fetch(url, { cache: "force-cache" });
+      return response.ok ? response.text() : "";
+    }
+
+    async function loadClinicalEvidenceCatalog() {
+      if (state.evidenceCatalog) {
+        return state.evidenceCatalog;
+      }
+      if (!state.evidenceCatalogLoadPromise) {
+        state.evidenceCatalogLoadPromise = loadEvidenceCatalog(fetchEvidenceText, evidenceFileUrls)
+          .then((catalog) => {
+            state.evidenceCatalog = catalog;
+            return catalog;
+          })
+          .catch(() => {
+            state.evidenceCatalog = null;
+            return null;
+          });
+      }
+      return state.evidenceCatalogLoadPromise;
+    }
+
+    function currentEvidenceSpecialty() {
+      const profile = syncUserProfileFromFields({ save: false });
+      const service = userProfileServiceText(profile);
+      const role = profileFieldValue(profile, userProfileFields.find((field) => field.key === "teamRole"));
+      const focus = profileFieldValue(profile, userProfileFields.find((field) => field.key === "clinicalFocus"));
+      return [service, role, focus].filter(Boolean).join(" / ");
+    }
+
+    async function addEvidenceOrStudentReferenceToPrompt(prompt, contextText) {
+      const catalog = await loadClinicalEvidenceCatalog();
+      if (catalog?.catalog?.length) {
+        const reviewState = loadEvidenceReviewStateFromStorage();
+        const replacement = buildEvidencePromptReplacement(prompt, catalog, contextText, {
+          maxCandidates: evidenceCandidateMaxRows,
+          reviewState,
+          specialty: currentEvidenceSpecialty()
+        });
+        if (replacement.evidenceBlock && replacement.candidates.length) {
+          state.retrievedEvidenceCandidates = replacement.candidates;
+          state.evidenceMatchedTags = replacement.matchedTags || [];
+          saveChecklistSession();
+          return replacement.prompt;
+        }
+      }
+
+      state.retrievedEvidenceCandidates = [];
+      state.evidenceMatchedTags = [];
+      return addStudentExamReferenceToPrompt(prompt, contextText);
+    }
+
     async function buildPriorChecklistPrompt() {
       const userContext = buildUserContextBlock();
 
@@ -8449,12 +11614,13 @@ Prior SOAP note, lab results, handoff summaries, medication orders/MAR source te
 
 <same_conversation_context>
 Use the patient context already provided earlier in this same OpenEvidence conversation, including notes, overnight events, labs/results, handoff, medication orders/MAR source text, selected service profile, consult question, hospital course, and chronology.
+If a <lab_chronology> block was provided earlier in this conversation, follow it for lab recency and do not infer most-recent labs from source order.
 Do not ask the user to paste the source context again unless this conversation does not contain the earlier context.
 </same_conversation_context>
 
 Now produce the final bedside pre-rounding checklist only.`;
 
-      return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("prior"));
+      return addEvidenceOrStudentReferenceToPrompt(prompt, buildStudentExamReferenceContext("prior"));
     }
 
     async function getCurrentSourcePromptContext() {
@@ -8466,6 +11632,7 @@ Now produce the final bedside pre-rounding checklist only.`;
               contextType: state.importedContext.contextType || "No prior SOAP note is available. The patient is newly admitted or being admitted now.",
               label: state.importedContext.label || "Admission intake information",
               text: state.importedContext.text,
+              labChronologyBlock: state.importedContext.labChronologyBlock || "",
               reviewTarget: "imported"
             };
           }
@@ -8481,11 +11648,28 @@ Now produce the final bedside pre-rounding checklist only.`;
         };
       }
 
+      if (state.sourceMode === "continuity") {
+        const patientCase = activeContinuityCase();
+        const todayInputs = currentContinuityTodayInputs();
+        if (!patientCase || !hasDailyInputs(todayInputs)) {
+          elements.continuityStatus.textContent = "De-identify today's changes before exporting or copying prompts.";
+          setSourceMode("continuity");
+          return null;
+        }
+        return {
+          contextType: "Continuity patient case. Prior reports and prior-day clinical context are already in the same OpenEvidence conversation.",
+          label: "Today's de-identified changes",
+          text: formatDailyInputs(todayInputs),
+          reviewTarget: "continuity"
+        };
+      }
+
       if (!state.scrubResult && !state.scrubbedNote && state.importedContext) {
         return {
           contextType: state.importedContext.contextType || "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
           label: state.importedContext.label || "De-identified source note",
           text: state.importedContext.text,
+          labChronologyBlock: state.importedContext.labChronologyBlock || "",
           reviewTarget: "imported"
         };
       }
@@ -8498,6 +11682,7 @@ Now produce the final bedside pre-rounding checklist only.`;
         contextType: "Prior SOAP note, lab results, handoff summaries, and/or other context available.",
         label: "De-identified SOAP note, labs, handoff summaries, and other context",
         text: scrubbedNote,
+        labChronologyBlock: state.labChronologyBlock || "",
         reviewTarget: "source"
       };
     }
@@ -8508,6 +11693,8 @@ Now produce the final bedside pre-rounding checklist only.`;
         return "";
       }
       const userContext = buildUserContextBlock();
+      const patientContextText = prependLabChronology(`${sourceContext.label}:
+${sourceContext.text}`, sourceContext);
 
       return `${patientTeachingPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
@@ -8515,9 +11702,12 @@ Now produce the final bedside pre-rounding checklist only.`;
 ${sourceContext.contextType}
 </context_type>
 
+<lab_chronology_rule>
+If a <lab_chronology> block is present, treat it as the authoritative lab recency ordering even if de-identified source rows contain rounded time language.
+</lab_chronology_rule>
+
 <patient_context>
-${sourceContext.label}:
-${sourceContext.text}
+${patientContextText}
 </patient_context>
 
 Now teach me this patient.`;
@@ -8541,14 +11731,18 @@ Now perform the medication safety review only.`;
       }
       const userContext = buildUserContextBlock();
       const caseKey = "";
-      const contextText = `${sourceContext.label}:
-${sourceContext.text}`;
+      const contextText = prependLabChronology(`${sourceContext.label}:
+${sourceContext.text}`, sourceContext);
 
       const singlePrompt = `${sourceRoundsReportPromptInstructions}${userContext ? `\n\n${userContext}` : ""}
 
 <context_type>
 ${sourceContext.contextType}
 </context_type>
+
+<lab_chronology_rule>
+If a <lab_chronology> block is present, treat it as the authoritative lab recency ordering even if de-identified source rows contain rounded time language.
+</lab_chronology_rule>
 
 <source_context>
 ${contextText}
@@ -8605,7 +11799,7 @@ Because no prior SOAP note is available, design the checklist to fill remaining 
 
 Now produce the final checklist only.`;
 
-      return addStudentExamReferenceToPrompt(prompt, buildStudentExamReferenceContext("admission"));
+      return addEvidenceOrStudentReferenceToPrompt(prompt, buildStudentExamReferenceContext("admission"));
     }
 
     function buildPresentationPrompt() {
@@ -8620,7 +11814,7 @@ Now produce the final checklist only.`;
         const label = importedContext.sourceMode === "admission"
           ? "Admission intake information"
           : "De-identified source note";
-        sourceBlocks.push(`${label}:\n${importedContext.text}`);
+        sourceBlocks.push(prependLabChronology(`${label}:\n${importedContext.text}`, importedContext));
       }
 
       const promptIntro = sourceBlocks.length
@@ -8630,7 +11824,9 @@ Now produce the final checklist only.`;
 
 <same_conversation_context>
 ${conversationReferenceLine()}
-Use the patient context and initial rounds presentation already provided earlier in this same OpenEvidence conversation.
+${state.sourceMode === "continuity"
+  ? "Use the prior case context from previous days plus today's continuity update already provided earlier in this same OpenEvidence conversation."
+  : "Use the patient context and initial rounds presentation already provided earlier in this same OpenEvidence conversation."}
 Update that earlier rounds report using only the new bedside interview and focused exam findings below.
 Do not ask the user to paste the entire source note again unless this conversation truly does not contain the earlier patient context.
 If source context is missing from this conversation, say that the prior context is missing rather than inventing it.
@@ -8642,7 +11838,7 @@ If source context is missing from this conversation, say that the prior context 
       const admissionContext = formatAdmissionContext();
       const useImportedFallback = Boolean(!state.conversationCaseKey && !state.conversationContextReady && !state.scrubbedNote && !admissionContext && state.importedContext);
       return [
-        useImportedFallback ? state.importedContext.text : "",
+        useImportedFallback ? prependLabChronology(state.importedContext.text, state.importedContext) : "",
         state.compiledText
       ].filter((value) => String(value || "").trim()).join("\n\n");
     }
@@ -8658,7 +11854,7 @@ If source context is missing from this conversation, say that the prior context 
 
     function showScreen(name) {
       document.body.dataset.screen = name;
-      const screens = [elements.pasteScreen, elements.checklistScreen, elements.outputScreen];
+      const screens = [elements.censusScreen, elements.pasteScreen, elements.checklistScreen, elements.outputScreen];
       screens.forEach((screen) => {
         screen.classList.toggle("is-active", screen.id === name);
       });
@@ -8666,6 +11862,8 @@ If source context is missing from this conversation, say that the prior context 
         updateStepRail("bedside");
       } else if (name === "outputScreen") {
         updateStepRail("output");
+      } else if (name === "censusScreen") {
+        updateStepRail(state.promptCollapsed || state.checklistFirstMode || hasChecklistPasteText() ? "paste" : "source");
       } else {
         updateStepRail(state.promptCollapsed || state.checklistFirstMode || hasChecklistPasteText() ? "paste" : "source");
       }
@@ -8999,6 +12197,143 @@ If source context is missing from this conversation, say that the prior context 
       return null;
     }
 
+    function evidenceForChecklistItem(item) {
+      if (!state.retrievedEvidenceCandidates.length) {
+        return null;
+      }
+      return matchEvidenceForChecklistItem(item, state.retrievedEvidenceCandidates);
+    }
+
+    function formatEvidenceSource(candidate) {
+      return candidate.source?.source_id || candidate.evidence_source_primary || "source";
+    }
+
+    function formatEvidenceLikelihood(candidate) {
+      const parts = [
+        candidate.LR_plus ? `LR+ ${candidate.LR_plus}` : "",
+        candidate.LR_minus ? `LR- ${candidate.LR_minus}` : ""
+      ].filter(Boolean);
+      return parts.length ? parts.join(" / ") : "LR n/a";
+    }
+
+    function currentReviewForCandidate(candidate) {
+      return state.evidenceReviewState?.items?.[candidate.exam_id] || null;
+    }
+
+    function saveEvidenceReviewForCandidate(candidate, update) {
+      state.evidenceReviewState = updateEvidenceReviewState(state.evidenceReviewState, candidate.exam_id, update);
+      saveEvidenceReviewState();
+      updateEvidenceReviewStatus(`${candidate.examLabel || candidate.exam_id}: ${update.status}.`);
+      showToast(`Evidence review saved: ${update.status}.`);
+      renderChecklist();
+    }
+
+    function renderEvidenceMeta(item) {
+      const candidate = evidenceForChecklistItem(item);
+      if (!candidate) {
+        return null;
+      }
+
+      const review = currentReviewForCandidate(candidate);
+      const wrapper = document.createElement("div");
+      wrapper.className = "evidence-meta";
+
+      const chipRow = document.createElement("div");
+      chipRow.className = "evidence-chip-row";
+
+      const rationale = document.createElement("span");
+      rationale.className = "evidence-chip evidence-chip-main";
+      rationale.title = candidate.result_changes_management || candidate.management_link || "";
+      rationale.textContent = truncatePromptField(candidate.result_changes_management || candidate.management_link || candidate.diagnostic_target, 120);
+      chipRow.appendChild(rationale);
+
+      [
+        formatEvidenceSource(candidate),
+        formatEvidenceLikelihood(candidate),
+        `${candidate.difficulty || "moderate"}, ${candidate.time_burden_minutes || "?"} min`,
+        review?.status ? `review: ${review.status}` : ""
+      ].filter(Boolean).forEach((text) => {
+        const chip = document.createElement("span");
+        chip.className = "evidence-chip";
+        chip.textContent = text;
+        chipRow.appendChild(chip);
+      });
+      wrapper.appendChild(chipRow);
+
+      const controls = document.createElement("div");
+      controls.className = "evidence-review-controls";
+
+      const acceptButton = document.createElement("button");
+      acceptButton.type = "button";
+      acceptButton.className = `evidence-review-button${review?.status === "accepted" ? " is-active" : ""}`;
+      acceptButton.textContent = "Accept";
+      acceptButton.addEventListener("click", () => {
+        saveEvidenceReviewForCandidate(candidate, { status: "accepted" });
+      });
+
+      const rejectButton = document.createElement("button");
+      rejectButton.type = "button";
+      rejectButton.className = `evidence-review-button${review?.status === "rejected" ? " is-active" : ""}`;
+      rejectButton.textContent = "Reject";
+      rejectButton.addEventListener("click", () => {
+        saveEvidenceReviewForCandidate(candidate, { status: "rejected" });
+      });
+
+      const suggestionInput = document.createElement("input");
+      suggestionInput.className = "evidence-suggest-input";
+      suggestionInput.type = "text";
+      suggestionInput.value = review?.suggested_label || "";
+      suggestionInput.placeholder = "Non-patient edit";
+      suggestionInput.setAttribute("aria-label", `Suggested evidence edit for ${item.label}`);
+
+      const saveEditButton = document.createElement("button");
+      saveEditButton.type = "button";
+      saveEditButton.className = `evidence-review-button${review?.status === "edited" ? " is-active" : ""}`;
+      saveEditButton.textContent = "Save edit";
+      saveEditButton.addEventListener("click", () => {
+        const suggestedLabel = suggestionInput.value.trim();
+        saveEvidenceReviewForCandidate(candidate, {
+          status: "edited",
+          suggested_label: suggestedLabel
+        });
+      });
+
+      controls.appendChild(acceptButton);
+      controls.appendChild(rejectButton);
+      controls.appendChild(suggestionInput);
+      controls.appendChild(saveEditButton);
+      wrapper.appendChild(controls);
+      return wrapper;
+    }
+
+    function exportEvidenceReviewFile() {
+      const serialized = saveEvidenceReviewState();
+      downloadTextFile("pre-round-evidence-review.json", serialized, "application/json;charset=utf-8");
+      updateEvidenceReviewStatus("Evidence review exported.");
+      showToast("Evidence review exported.");
+    }
+
+    async function importEvidenceReviewFile(file) {
+      if (!file) {
+        return;
+      }
+      try {
+        const text = await file.text();
+        state.evidenceReviewState = importEvidenceReviewState(text);
+        saveEvidenceReviewState();
+        updateEvidenceReviewStatus("Evidence review imported.");
+        showToast("Evidence review imported.");
+        renderChecklist();
+      } catch (error) {
+        updateEvidenceReviewStatus("Could not import evidence review.");
+        showToast("Could not import evidence review.", {
+          detail: "Check that the file is a valid review JSON export."
+        });
+      } finally {
+        elements.evidenceReviewFile.value = "";
+      }
+    }
+
     function renderChecklist() {
       elements.checklistList.innerHTML = "";
       renderSectionJump();
@@ -9100,6 +12435,11 @@ If source context is missing from this conversation, say that the prior context 
           labelWrap.appendChild(title);
           labelWrap.appendChild(stateBadge);
           row.appendChild(labelWrap);
+
+          const evidenceMeta = renderEvidenceMeta(item);
+          if (evidenceMeta) {
+            row.appendChild(evidenceMeta);
+          }
 
           if (item.options.length) {
             const group = document.createElement("div");
@@ -9264,6 +12604,8 @@ If source context is missing from this conversation, say that the prior context 
       state.rawLabs = "";
       state.rawHandoff = "";
       state.rawMedicationText = "";
+      state.labTimeline = null;
+      state.labChronologyBlock = "";
       state.scrubbedNote = "";
       state.scrubResult = null;
       state.admission = {};
@@ -9293,6 +12635,8 @@ If source context is missing from this conversation, say that the prior context 
       state.phoneBedsideStep = "paste";
       state.useChecklistOnLaptop = false;
       state.recoveredChecklistAvailable = false;
+      state.retrievedEvidenceCandidates = [];
+      state.evidenceMatchedTags = [];
       elements.outputText.value = "";
       elements.copyStatus.textContent = "";
       elements.promptStatus.textContent = "";
@@ -9302,6 +12646,8 @@ If source context is missing from this conversation, say that the prior context 
       elements.packetPanel.hidden = true;
       elements.transferCodeInput.value = "";
       elements.contextImportFile.value = "";
+      elements.evidenceReviewFile.value = "";
+      updateEvidenceReviewStatus("");
       elements.parseSummary.textContent = "";
       elements.rawSoapInput.value = "";
       elements.rawLabsInput.value = "";
@@ -9310,6 +12656,20 @@ If source context is missing from this conversation, say that the prior context 
       admissionFields.forEach((field) => {
         field.element.value = "";
       });
+      state.continuity.todayRawInputs = {};
+      state.continuity.todayDeidentifiedInputs = {};
+      state.continuity.todayScrubResult = null;
+      state.continuity.smartUpdateSections = [];
+      state.continuity.smartUpdateReview = null;
+      clearContinuityRawInputs();
+      elements.smartDailyPasteInput.value = "";
+      elements.smartUpdateReviewList.innerHTML = "";
+      elements.smartUpdateStatus.textContent = "";
+      elements.saveSmartUpdateButton.disabled = true;
+      elements.continuityScrubbedInput.value = "";
+      elements.continuityReview.hidden = true;
+      elements.continuityStatus.textContent = "";
+      elements.continuityWarnings.textContent = "";
       refreshAdmissionQuickButtons();
       clearScrubPreview();
       clearChecklistSession();
@@ -9393,6 +12753,13 @@ If source context is missing from this conversation, say that the prior context 
       setChecklistView("bedside");
       showScreen("checklistScreen");
       saveChecklistSession();
+      if (state.sourceMode === "continuity" && activeContinuityCase()) {
+        storeContinuityTodayDay({
+          deidentifiedInputs: currentContinuityTodayInputs(),
+          generatedChecklistText: normalizedText,
+          parsedChecklist: sections
+        });
+      }
       requestAnimationFrame(() => {
         const firstVisibleRow = elements.checklistList.querySelector(".finding-row:not(.is-hidden)");
         if (firstVisibleRow) {
@@ -9411,6 +12778,8 @@ If source context is missing from this conversation, say that the prior context 
 
       try {
         const parsed = JSON.parse(saved);
+        state.retrievedEvidenceCandidates = Array.isArray(parsed.retrievedEvidenceCandidates) ? parsed.retrievedEvidenceCandidates : [];
+        state.evidenceMatchedTags = Array.isArray(parsed.evidenceMatchedTags) ? parsed.evidenceMatchedTags : [];
         if (!Array.isArray(parsed.sections) || !parsed.sections.length) {
           return false;
         }
@@ -9453,6 +12822,83 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.buildButton.addEventListener("click", () => {
       tryBuildChecklist();
+    });
+
+    elements.openCensusButton.addEventListener("click", () => {
+      syncActivePatientFromWorkspace({ save: true });
+      renderCensusDashboard();
+      showScreen("censusScreen");
+    });
+
+    elements.continueSinglePatientButton.addEventListener("click", () => {
+      showScreen("pasteScreen");
+    });
+
+    elements.unlockCensusButton.addEventListener("click", () => {
+      unlockCensusVault().catch((error) => {
+        console.error(error);
+        elements.censusVaultStatus.textContent = "Could not unlock census.";
+      });
+    });
+
+    elements.createCensusButton.addEventListener("click", () => {
+      createCensusVaultFromWorkspace().catch((error) => {
+        console.error(error);
+        elements.censusVaultStatus.textContent = "Could not create census vault.";
+      });
+    });
+
+    elements.censusPassphraseInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        unlockCensusVault().catch((error) => {
+          console.error(error);
+          elements.censusVaultStatus.textContent = "Could not unlock census.";
+        });
+      }
+    });
+
+    elements.lockCensusButton.addEventListener("click", lockCensusVault);
+    elements.dischargeActivePatientButton.addEventListener("click", () => {
+      const active = activeCensusPatient();
+      if (!active) {
+        return;
+      }
+      dischargeCensusPatient(active.id).catch((error) => {
+        console.error(error);
+        elements.censusStatus.textContent = "Could not discharge the active patient.";
+      });
+    });
+    elements.patientEditorForm.addEventListener("submit", savePatientEditor);
+    elements.newPatientButton.addEventListener("click", startNewPatientEditor);
+
+    document.querySelectorAll("[data-census-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.censusFilter;
+        state.census.filters[key] = !state.census.filters[key];
+        renderCensusDashboard();
+      });
+    });
+
+    elements.splitBatchButton.addEventListener("click", splitBatchSnippets);
+    elements.deidentifyBatchButton.addEventListener("click", () => {
+      deidentifyBatchSnippets();
+    });
+    elements.generateBatchPromptsButton.addEventListener("click", generateAllInitialPrompts);
+    elements.copyNextPromptButton.addEventListener("click", () => {
+      copyNextCensusPrompt().catch((error) => {
+        console.error(error);
+        elements.censusStatus.textContent = "Could not copy the next prompt.";
+      });
+    });
+    elements.exportCensusButton.addEventListener("click", () => {
+      exportCensusVault().catch((error) => {
+        console.error(error);
+        elements.censusTransferStatus.textContent = "Could not export census.";
+      });
+    });
+    elements.importCensusButton.addEventListener("click", () => {
+      importCensusVault();
     });
 
     userProfileFields.forEach((field) => {
@@ -9536,6 +12982,100 @@ If source context is missing from this conversation, say that the prior context 
     elements.admissionModeButton.addEventListener("click", () => {
       setChecklistFirstMode(false);
       setSourceMode("admission");
+    });
+
+    elements.continuityModeButton.addEventListener("click", () => {
+      setChecklistFirstMode(false);
+      setSourceMode("continuity");
+      if (!activeContinuityCase() && !state.continuity.cases.length) {
+        elements.continuityCaseLabelInput.value = elements.continuityCaseLabelInput.value.trim() || nextContinuityLabel();
+      }
+    });
+
+    elements.continuityCaseSelect.addEventListener("change", () => {
+      selectContinuityCase(elements.continuityCaseSelect.value);
+    });
+
+    elements.newContinuityCaseButton.addEventListener("click", startNewContinuityCase);
+    elements.saveContinuityCaseButton.addEventListener("click", () => {
+      saveActiveContinuityCase();
+    });
+    elements.deleteContinuityCaseButton.addEventListener("click", deleteActiveContinuityCase);
+
+    continuityCarryFields.forEach((field) => {
+      field.element.addEventListener("input", () => {
+        autoResize(field.element);
+        state.continuity.deleteConfirming = false;
+        elements.deleteContinuityCaseButton.textContent = "Delete";
+        renderContinuityWarnings();
+        updateSourcePrimaryActions();
+      });
+    });
+
+    continuityDailyFields.forEach((field) => {
+      field.element.addEventListener("input", () => {
+        invalidateConversationContext();
+        autoResize(field.element);
+        state.continuity.todayRawInputs = readContinuityRawInputs();
+        state.continuity.todayDeidentifiedInputs = {};
+        state.continuity.todayScrubResult = null;
+        elements.continuityScrubbedInput.value = "";
+        elements.continuityReview.hidden = true;
+        elements.continuityStatus.textContent = "";
+        renderContinuityWarnings();
+        updateSourcePrimaryActions();
+        updateGuidedStatus();
+        if (hasDailyInputs(state.continuity.todayRawInputs)) {
+          prepareDeidentifierModel();
+        }
+      });
+      field.element.addEventListener("focus", prepareDeidentifierModel);
+      field.element.addEventListener("paste", () => {
+        window.setTimeout(prepareDeidentifierModel, 0);
+      });
+    });
+
+    elements.continuityScrubbedInput.addEventListener("input", syncContinuityScrubbedInput);
+    elements.smartDailyPasteInput.addEventListener("input", () => {
+      state.continuity.smartUpdateSections = [];
+      state.continuity.smartUpdateReview = null;
+      elements.smartUpdateReviewList.innerHTML = "";
+      elements.smartUpdateStatus.textContent = "";
+      elements.saveSmartUpdateButton.disabled = true;
+      if (elements.smartDailyPasteInput.value.trim()) {
+        prepareDeidentifierModel();
+      }
+    });
+    elements.smartDailyPasteInput.addEventListener("focus", prepareDeidentifierModel);
+    elements.smartDailyPasteInput.addEventListener("paste", () => {
+      window.setTimeout(prepareDeidentifierModel, 0);
+    });
+    elements.classifySmartUpdateButton.addEventListener("click", classifySmartDailyUpdate);
+    elements.deidentifySmartUpdateButton.addEventListener("click", () => {
+      deidentifySmartDailyUpdate().catch((error) => {
+        console.error(error);
+      });
+    });
+    elements.saveSmartUpdateButton.addEventListener("click", saveReviewedSmartUpdate);
+
+    elements.continuityDeidButton.addEventListener("click", () => {
+      scrubContinuityToday().catch((error) => {
+        console.error(error);
+      });
+    });
+
+    elements.copyContinuityPromptButton.addEventListener("click", () => {
+      copyContinuityUpdatePrompt().catch((error) => {
+        console.error(error);
+        elements.continuityStatus.textContent = "Could not copy the continuity prompt.";
+      });
+    });
+
+    elements.copyContinuityChecklistButton.addEventListener("click", () => {
+      copyContinuityChecklistPrompt().catch((error) => {
+        console.error(error);
+        elements.continuityStatus.textContent = "Could not copy today's checklist prompt.";
+      });
     });
 
     elements.rawSoapInput.addEventListener("input", () => {
@@ -9792,7 +13332,7 @@ heparin 5000 units held by provider`;
       }
       return copyPromptPackage(promptPackage, statusElement, "Initial rounds prompt copied. Paste it into OpenEvidence.", {
         title: "PHI safety check for rounds report prompt",
-        reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
+        reviewTarget: state.sourceMode === "admission" ? "admission" : state.sourceMode === "continuity" ? "continuity" : "source",
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000
@@ -9806,7 +13346,7 @@ heparin 5000 units held by provider`;
       }
       return copyPromptWithPhiWarning(prompt, statusElement, "Teaching prompt copied. Open OpenEvidence to paste.", {
         title: "PHI safety check for teaching prompt",
-        reviewTarget: state.sourceMode === "admission" ? "admission" : "source",
+        reviewTarget: state.sourceMode === "admission" ? "admission" : state.sourceMode === "continuity" ? "continuity" : "source",
         actionLabel: "Open OpenEvidence",
         actionUrl: openEvidenceUrl,
         duration: 7000
@@ -9884,6 +13424,10 @@ heparin 5000 units held by provider`;
     elements.copySummaryChecklistPromptButton.addEventListener("click", () => {
       if (state.sourceMode === "admission") {
         elements.copyAdmissionPromptButton.click();
+        return;
+      }
+      if (state.sourceMode === "continuity") {
+        elements.copyContinuityChecklistButton.click();
         return;
       }
       elements.scrubAndCopyButton.click();
@@ -10053,6 +13597,16 @@ heparin 5000 units held by provider`;
       }
     });
 
+    elements.exportEvidenceReviewButton.addEventListener("click", exportEvidenceReviewFile);
+
+    elements.importEvidenceReviewButton.addEventListener("click", () => {
+      elements.evidenceReviewFile.click();
+    });
+
+    elements.evidenceReviewFile.addEventListener("change", () => {
+      importEvidenceReviewFile(elements.evidenceReviewFile.files?.[0]);
+    });
+
     elements.expandAllButton.addEventListener("click", () => {
       state.collapsedSections = {};
       renderChecklist();
@@ -10096,6 +13650,14 @@ heparin 5000 units held by provider`;
       elements.outputText.value = state.compiledText;
       elements.copyStatus.textContent = "";
       setOutputMode("assessed");
+      if (state.sourceMode === "continuity" && activeContinuityCase()) {
+        storeContinuityTodayDay({
+          deidentifiedInputs: currentContinuityTodayInputs(),
+          bedsideAnswers: state.answers,
+          notes: state.notes,
+          finalCompiledFindings: state.compiledText
+        });
+      }
       updateContextStatus();
       saveChecklistSession();
       showScreen("outputScreen");
@@ -10170,7 +13732,7 @@ heparin 5000 units held by provider`;
       state.lastPhiSafetyCheck = check;
       renderPhiSafetyPanel(check, state.pendingPhiCopy);
       state.pendingPhiCopy.statusElement.textContent = check.warnings.length
-        ? "Review possible identifiers before copying. Use “I reviewed this, copy anyway” only after checking the preview."
+        ? "Review possible identifiers before copying. Use “I reviewed this for PHI, copy anyway” only after checking the preview."
         : "No obvious remaining identifiers found. You can copy now.";
     });
     elements.copyPhiAnywayButton.addEventListener("click", () => {
@@ -10185,6 +13747,8 @@ heparin 5000 units held by provider`;
 
     restoreUserProfile();
     restoreImportedContext();
+    loadContinuityCases();
+    loadEvidenceReviewStateFromStorage();
     const restoredSession = restoreChecklistSession();
     setupAdmissionIntakeNavigation();
     maybeStartPhoneChecklistFirst(restoredSession);
@@ -10196,6 +13760,7 @@ heparin 5000 units held by provider`;
     updateContextStatus();
     updateStepRail(restoredSession ? "bedside" : state.checklistFirstMode ? "paste" : "source");
     elements.offlineHomeScreen.checked = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    initializeCensus();
   </script>
 </body>
 </html>

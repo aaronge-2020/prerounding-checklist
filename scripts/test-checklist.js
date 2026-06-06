@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   buildCleanupPrompt,
   checklistPrompt,
@@ -162,8 +163,89 @@ assert.ok(checklistPrompt.includes("Parent checklist titles must be the exact al
 assert.ok(!checklistPrompt.includes("BEDSIDE QUESTION CHECKLIST:"), "main prompt should not show colon after parent title");
 assert.ok(checklistPrompt.includes("<student_exam_reference>"), "main prompt should include the student exam reference block");
 assert.ok(checklistPrompt.includes("Use it as a floor, not a ceiling"), "exam reference should guide, not restrict, OpenEvidence");
+assert.ok(checklistPrompt.includes("<retrieved_evidence_candidates>"), "main prompt should support retrieved evidence candidates");
+assert.ok(checklistPrompt.includes("use only candidate bedside question labels/options"), "retrieved evidence should restrict candidate use");
 assert.ok(newAdmissionChecklistPrompt.includes("No prior SOAP note is available"), "new admission prompt should retain admission context");
 assert.ok(newAdmissionChecklistPrompt.includes("full first-history admission write-up"), "new admission prompt should prioritize first-history write-up gaps");
+
+const appHtml = readFileSync("index.html", "utf8");
+const evidenceModule = readFileSync("evidence.js", "utf8");
+const examReferenceCsv = readFileSync("physical_exam_reference.csv", "utf8");
+const examEvidenceOverlayCsv = readFileSync("physical_exam_evidence_overlay.csv", "utf8");
+
+function parseCsvRow(line) {
+  const fields = [];
+  let value = "";
+  let inQuotes = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (char === "\"") {
+      if (inQuotes && line[index + 1] === "\"") {
+        value += "\"";
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === "," && !inQuotes) {
+      fields.push(value);
+      value = "";
+    } else {
+      value += char;
+    }
+  }
+  fields.push(value);
+  return fields.map((field) => field.trim());
+}
+
+function parseCsv(csvText) {
+  const lines = String(csvText || "").split(/\r?\n/).filter((line) => line.trim());
+  const headers = parseCsvRow(lines[0]);
+  return lines.slice(1).map((line) => {
+    const fields = parseCsvRow(line);
+    return headers.reduce((row, header, index) => {
+      row[header] = fields[index] || "";
+      return row;
+    }, {});
+  });
+}
+
+function truncatePromptField(value, maxLength = 120) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength - 1).trim()}...` : text;
+}
+
+assert.ok(examReferenceCsv.includes("exam_id"), "physical exam base CSV should expose stable exam_id keys");
+assert.ok(examEvidenceOverlayCsv.includes("retrieval_tags"), "evidence overlay should include retrieval tags");
+assert.ok(examEvidenceOverlayCsv.includes("cardiopulmonary_vascular_exam_neck_jvp"), "evidence overlay should include high-yield JVP metadata");
+assert.ok(appHtml.includes("studentExamEvidenceOverlayUrl"), "app should load the exam evidence overlay");
+assert.ok(appHtml.includes("formatStudentExamEvidencePhrase"), "app should append compact evidence phrases to selected exam rows");
+assert.ok(appHtml.includes("When evidence metadata appears"), "student exam reference prompt should scope evidence metadata");
+assert.ok(appHtml.includes("studentExamReferenceMaxRows = 30"), "exam reference prompt should keep the existing row cap for prompt budget");
+assert.ok(appHtml.includes("evidenceFileUrls"), "app should know the requested evidence CSV file set");
+assert.ok(appHtml.includes("addEvidenceOrStudentReferenceToPrompt"), "app should try evidence retrieval before legacy exam reference fallback");
+assert.ok(appHtml.includes("renderEvidenceMeta"), "app should render evidence rationale chips for matched checklist rows");
+assert.ok(appHtml.includes("evidenceReviewStorageKey"), "app should persist expert review feedback locally");
+assert.ok(evidenceModule.includes("retrieved_evidence_candidates"), "evidence module should inject retrieved evidence candidates");
+
+const baseExamRows = parseCsv(examReferenceCsv);
+const overlayById = new Map(parseCsv(examEvidenceOverlayCsv).map((row) => [row.exam_id, row]));
+const evidenceRows = baseExamRows
+  .map((row) => ({ ...row, ...overlayById.get(row.exam_id) }))
+  .filter((row) => row.evidence_status && row.evidence_status !== "pending")
+  .slice(0, 30);
+const estimatedEvidenceBlock = evidenceRows.map((row) => {
+  const location = [row.exam_system, row.section, row.region_or_subsection].filter(Boolean).join(" > ");
+  const evidencePhrase = [
+    row.diagnostic_target ? `target: ${truncatePromptField(row.diagnostic_target, 48)}` : "",
+    row.LR_plus ? `LR+ ${truncatePromptField(row.LR_plus, 12)}` : "",
+    row.LR_minus ? `LR- ${truncatePromptField(row.LR_minus, 12)}` : "",
+    row.result_changes_management ? `management: ${truncatePromptField(row.result_changes_management, 56)}` : "",
+    row.evidence_source_primary ? `source: ${truncatePromptField(row.evidence_source_primary, 42)}` : ""
+  ].filter(Boolean).join("; ");
+  return `- ${location}: ${truncatePromptField(row.maneuver_or_finding, 70)} | label: ${truncatePromptField(row.suggested_checklist_label, 60)} | options: ${truncatePromptField(row.suggested_options, 90)} | use when: ${truncatePromptField(row.include_when, 110)} | evidence: ${truncatePromptField(evidencePhrase, 160)}`;
+}).join("\n");
+assert.ok(estimatedEvidenceBlock.includes("evidence:"), "evidence-enhanced rows should produce compact evidence text");
+assert.ok(estimatedEvidenceBlock.length < 12000, "evidence-enhanced exam block should stay within prompt budget");
 
 const cleanupPrompt = buildCleanupPrompt("BEDSIDE QUESTION CHECKLIST:", { issues: [{ message: "Example issue" }] }, { userContext: "<user_context>\nService: Endocrinology\n</user_context>" });
 assert.ok(cleanupPrompt.includes("Example issue"), "cleanup prompt should include audit issues");
