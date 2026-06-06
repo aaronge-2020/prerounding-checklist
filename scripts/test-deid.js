@@ -477,6 +477,23 @@ Special Send Out Test: Rpt 1/19/26 13:10
 HCV Spec Site: Blood 2/3/26 08:51
 Iron: Not Performed 2/2/26 06:19
 Vitamin B-12: 322 1/15/26 04:20
+Test Cup: Plain Cup 2/2/26 15:00
+Appearance, Ur: Slightly Cloudy 2/3/26 18:57
+Ketones, Ur: Trace ! 2/3/26 18:57
+Mucus, Ur: Small 2/3/26 18:57
+Appearance: Clear 1/28/26 01:51
+R Axis: -2 2/3/26 18:12
+Banding Type: FISH 2/5/26 02:31
+Source: Blood
+ 2/5/26 02:31
+TEG Platelet Aggregation (MA): 68.3 2/2/26 15:00
+TEG Fibrinogen Activity (Angle): 65.2 2/2/26 15:00
+TEG Clotting Time (R): 9.5 2/2/26 15:00
+Beta HCG Tumor Marker (Male): 2080 (H) 2/1/26 04:33
+XR Hip Bilateral & Pelvis 2 Views: Rpt 2/3/26 17:57
+Prelim Result: Normal FISH 2/5/26 02:31
+XR FEMUR 2 VIEWS: Rpt 2/2/26 22:25
+XR FOOT MIN 3 VIEWS: Rpt 2/2/26 22:25
 
 02/09/26 07:51
 POC Glucose: 101
@@ -501,11 +518,27 @@ assert.ok(epicRespImagingResult.text.includes("Special Send Out Test: Rpt 13:10 
 assert.ok(epicRespImagingResult.text.includes("HCV Spec Site: Blood 08:51 on Day -7 (2026)"), "HCV spec site value Blood should remain clinical text");
 assert.ok(epicRespImagingResult.text.includes("Iron: Not Performed 06:19 on Day -8 (2026)"), "Not Performed should remain a result value");
 assert.ok(epicRespImagingResult.text.includes("Vitamin B-12: 322 04:20 on Day -26 (2026)"), "Vitamin B-12 should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Test Cup: Plain Cup 15:00 on Day -8 (2026)"), "TEG cup descriptor should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Appearance, Ur: Slightly Cloudy 18:57 on Day -7 (2026)"), "urine appearance descriptor should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Ketones, Ur: Trace ! 18:57 on Day -7 (2026)"), "urine trace values should not be treated as narrative time");
+assert.ok(epicRespImagingResult.text.includes("Mucus, Ur: Small 18:57 on Day -7 (2026)"), "urine small values should not be treated as names or narrative time");
+assert.ok(epicRespImagingResult.text.includes("Appearance: Clear 01:51 on Day -13 (2026)"), "generic appearance row should preserve exact result time");
+assert.ok(epicRespImagingResult.text.includes("R Axis: -2 18:12 on Day -7 (2026)"), "EKG axis result should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Banding Type: FISH 02:31 on Day -5 (2026)"), "cytogenetics banding row should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("Source: Blood\n 02:31 on Day -5 (2026)"), "standalone timestamp after specimen source should keep exact result time");
+assert.ok(epicRespImagingResult.text.includes("TEG Platelet Aggregation (MA): 68.3 15:00 on Day -8 (2026)"), "TEG platelet aggregation should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("TEG Fibrinogen Activity (Angle): 65.2 15:00 on Day -8 (2026)"), "TEG fibrinogen activity should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("TEG Clotting Time (R): 9.5 15:00 on Day -8 (2026)"), "TEG clotting time should not create residual name warnings");
+assert.ok(epicRespImagingResult.text.includes("Beta HCG Tumor Marker (Male): 2080 (H) 04:33 on Day -9 (2026)"), "tumor-marker lab label should not be redacted as a patient name");
+assert.ok(epicRespImagingResult.text.includes("XR Hip Bilateral & Pelvis 2 Views: Rpt 17:57 on Day -7 (2026)"), "hip/pelvis imaging title should not be redacted as a name");
+assert.ok(epicRespImagingResult.text.includes("Prelim Result: Normal FISH 02:31 on Day -5 (2026)"), "Normal FISH result should remain clinical text");
+assert.ok(epicRespImagingResult.text.includes("XR FEMUR 2 VIEWS: Rpt 22:25 on Day -8 (2026)"), "all-caps femur imaging title should not create name warnings");
+assert.ok(epicRespImagingResult.text.includes("XR FOOT MIN 3 VIEWS: Rpt 22:25 on Day -8 (2026)"), "all-caps foot imaging title should not create name warnings");
 assert.ok(epicRespImagingResult.text.includes("07:51 on Day -1 (2026)\nPOC Glucose: 101"), "timestamped POC glucose block should keep exact clock time");
 assert.ok(!epicRespImagingResult.text.includes("[FACILITY]"), "Results Review clinical values should not become facilities");
 assert.ok(!epicRespImagingResult.text.includes("[NAME]"), "Results Review clinical labels should not become names");
 assert.ok(!epicRespImagingResult.text.includes("Day +30"), "Card 1 Collection Date should not create future lab days");
-assert.ok(!epicRespImagingResult.text.includes("early morning"), "result chronology should keep exact clocks instead of buckets");
+assert.ok(!/\b(?:early morning|morning|afternoon|evening|night|overnight)\b/.test(epicRespImagingResult.text), "result chronology should keep exact clocks instead of buckets");
 assert.deepEqual(epicRespImagingResult.residualWarnings, [], "respiratory/imaging Results Review specimen should not create residual PHI warnings");
 
 const guardText = clinicalGuardTerms.join("\n");
