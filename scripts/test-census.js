@@ -156,6 +156,28 @@ const decryptedStorage = await decryptJsonPayload(storageEnvelope, secret, {
 });
 assert.equal(decryptedStorage.patients.length, 2);
 
+const legacyRawVault = normalizeCensusVault({
+  patients: [normalizePatientCase({
+    alias: "Legacy vault patient",
+    rawSoapNote: "DO NOT STORE RAW SOAP",
+    rawLabs: "DO NOT STORE RAW LABS",
+    rawHandoff: "DO NOT STORE RAW HANDOFF",
+    rawMedicationText: "DO NOT STORE RAW MAR",
+    admission: { briefHpi: "DO NOT STORE RAW ADMISSION" },
+    scrubbedNote: "Reviewed de-identified note"
+  })]
+});
+const legacyRawEnvelope = await encryptJsonPayload(legacyRawVault, secret, {
+  type: CENSUS_STORAGE_TYPE,
+  iterations: 1000
+});
+const decryptedLegacyVault = await decryptJsonPayload(legacyRawEnvelope, secret, {
+  type: CENSUS_STORAGE_TYPE
+});
+const decryptedLegacyText = JSON.stringify(decryptedLegacyVault);
+assert.ok(decryptedLegacyText.includes("Reviewed de-identified note"));
+assert.equal(/DO NOT STORE RAW/.test(decryptedLegacyText), false, "decrypted vault payload must not contain raw legacy text");
+
 await assert.rejects(
   () => decryptJsonPayload(storageEnvelope, "wrong passphrase", { type: CENSUS_STORAGE_TYPE }),
   /decrypt|operation|failed/i
