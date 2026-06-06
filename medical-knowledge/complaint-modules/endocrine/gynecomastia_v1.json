@@ -1,0 +1,280 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "gynecomastia_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Gynecomastia (Enlarged male breast tissue)",
+    "complaint_group": "reproductive_and_gonadal_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Gynecomastia (Enlarged male breast tissue)",
+      "Gynecomastia",
+      "Enlarged male breast tissue",
+      "gynecomastia"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Gynecomastia (Enlarged male breast tissue): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Total testosterone, LH, FSH, estradiol."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hard eccentric breast mass",
+            "nipple discharge",
+            "skin changes",
+            "nodes",
+            "testicular mass",
+            "rapid progression."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Duration, pain/tenderness, unilateral mass/nipple discharge.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Glandular vs adiposity, breast mass/skin/nipple/nodes, testicular exam, thyroid/liver signs.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Total testosterone, LH, FSH, estradiol.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_02",
+        "label": "hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_03",
+        "label": "TSH, prolactin, liver/kidney function.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "reference_01",
+        "label": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup.",
+        "source": {
+          "source_id": "ES_TESTOSTERONE_2018",
+          "source_section": "Gynecomastia (Enlarged male breast tissue) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Testicular mass/hCG elevation changes to urgent tumor pathway; hypogonadism pattern changes endocrine workup."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Gynecomastia (Enlarged male breast tissue)",
+      "category": "Reproductive and Gonadal Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_TESTOSTERONE_2018",
+        "ES_HYPERPROLACTINEMIA_2011"
+      ],
+      "reference_values": [
+        "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

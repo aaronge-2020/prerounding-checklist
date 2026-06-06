@@ -1,0 +1,295 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "source_registry",
+  "generated_from": "medical-knowledge modules and endocrine workup automation",
+  "sources": [
+    {
+      "id": "AACE_ATA_HYPOTHYROIDISM_2012",
+      "title": "AACE/ATA Hypothyroidism in Adults Guideline",
+      "source": "American Association of Clinical Endocrinology / American Thyroid Association",
+      "version": "2012",
+      "url": "https://www.guidelinecentral.com/guideline/6855/",
+      "date_accessed": "2026-06-06",
+      "citation": "AACE/ATA Hypothyroidism in Adults Guideline"
+    },
+    {
+      "id": "ADA_DIAGNOSIS_2026",
+      "title": "ADA Diagnosis and Classification of Diabetes 2026",
+      "source": "American Diabetes Association",
+      "version": "2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+      "date_accessed": "2026-06-06",
+      "citation": "ADA Diagnosis and Classification of Diabetes 2026"
+    },
+    {
+      "id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+      "title": "Hyperglycemic Crises in Adults With Diabetes: A Consensus Report",
+      "source": "ADA/EASD/JBDS/AACE/DTS consensus panel",
+      "version": "2024",
+      "url": "https://diabetesjournals.org/care/article/47/8/1257/156808/Hyperglycemic-Crises-in-Adults-With-Diabetes-A",
+      "date_accessed": "2026-06-06",
+      "citation": "2024 Diabetes Care hyperglycemic crises consensus report"
+    },
+    {
+      "id": "ADA_SOC_2026",
+      "title": "ADA Standards of Care in Diabetes 2026",
+      "source": "American Diabetes Association",
+      "version": "2026",
+      "url": "https://professional.diabetes.org/standards-of-care/practice-guidelines-resources",
+      "date_accessed": "2026-06-06",
+      "citation": "ADA Standards of Care in Diabetes 2026"
+    },
+    {
+      "id": "ADA_STANDARDS_HOSPITAL_2026",
+      "title": "Diabetes Care in the Hospital: Standards of Care in Diabetes-2026",
+      "source": "American Diabetes Association Professional Practice Committee",
+      "version": "2026",
+      "url": "https://doi.org/10.2337/dc26-S016",
+      "date_accessed": "2026-06-06",
+      "citation": "ADA Standards of Care in Diabetes-2026, Section 16"
+    },
+    {
+      "id": "AHA_ACC_CHEST_PAIN_2021",
+      "title": "2021 AHA/ACC/ASE/CHEST/SAEM/SCCT/SCMR Guideline for the Evaluation and Diagnosis of Chest Pain",
+      "source": "AHA/ACC Joint Committee on Clinical Practice Guidelines",
+      "version": "2021",
+      "url": "https://professional.heart.org/en/guidelines-statements/2021-ahaaccasechestsaemscctscmr-guideline-for-the-evaluation-and-diagnosis-ofcir0000000000001029",
+      "date_accessed": "2026-06-06",
+      "citation": "2021 AHA/ACC multisociety chest pain guideline"
+    },
+    {
+      "id": "AHRQ_CDS_IMPLEMENTATION",
+      "title": "Clinical Decision Support",
+      "source": "Agency for Healthcare Research and Quality",
+      "version": "current",
+      "url": "https://www.ahrq.gov/cpi/about/otherwebsites/clinical-decision-support/index.html",
+      "date_accessed": "2026-06-06",
+      "citation": "AHRQ clinical decision support resources"
+    },
+    {
+      "id": "ASRM_AMENORRHEA_2024",
+      "title": "ASRM Current Evaluation of Amenorrhea Committee Opinion 2024",
+      "source": "American Society for Reproductive Medicine",
+      "version": "2024",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+      "date_accessed": "2026-06-06",
+      "citation": "ASRM Current Evaluation of Amenorrhea Committee Opinion 2024"
+    },
+    {
+      "id": "ATA_HYPERTHYROIDISM_2016",
+      "title": "ATA Hyperthyroidism and Thyrotoxicosis Guideline",
+      "source": "American Thyroid Association",
+      "version": "2016",
+      "url": "https://journals.sagepub.com/doi/10.1089/thy.2016.0229",
+      "date_accessed": "2026-06-06",
+      "citation": "ATA Hyperthyroidism and Thyrotoxicosis Guideline"
+    },
+    {
+      "id": "ATA_THYROID_CANCER_2025",
+      "title": "ATA Differentiated Thyroid Cancer Guideline Resource",
+      "source": "American Thyroid Association",
+      "version": "2025",
+      "url": "https://www.thyroid.org/ata-professional-guidelines/",
+      "date_accessed": "2026-06-06",
+      "citation": "ATA Differentiated Thyroid Cancer Guideline Resource"
+    },
+    {
+      "id": "AUA_ED_2018",
+      "title": "AUA Erectile Dysfunction Guideline",
+      "source": "American Urological Association",
+      "version": "2018",
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction-%28ed%29-guideline",
+      "date_accessed": "2026-06-06",
+      "citation": "AUA Erectile Dysfunction Guideline"
+    },
+    {
+      "id": "ENDO_OSTEOPOROSIS_2020",
+      "title": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update",
+      "source": "Endocrine Society",
+      "version": "2020",
+      "url": "https://academic.oup.com/jcem/article/105/3/587/5739968",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Osteoporosis Pharmacologic Management Guideline Update"
+    },
+    {
+      "id": "ENDO_VITD_2024",
+      "title": "Endocrine Society Vitamin D for Prevention of Disease Guideline",
+      "source": "Endocrine Society",
+      "version": "2024",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/vitamin-d-for-prevention-of-disease",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Vitamin D for Prevention of Disease Guideline"
+    },
+    {
+      "id": "ENDOTEXT_DI_2026",
+      "title": "Endotext Diabetes Insipidus/AVP-deficiency Testing",
+      "source": "Endotext",
+      "version": "2026",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK537591/",
+      "date_accessed": "2026-06-06",
+      "citation": "Endotext Diabetes Insipidus/AVP-deficiency Testing"
+    },
+    {
+      "id": "ES_ADRENAL_INSUFFICIENCY_2016",
+      "title": "Endocrine Society Primary Adrenal Insufficiency Guideline",
+      "source": "Endocrine Society",
+      "version": "2016",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/primary-adrenal-insufficiency",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Primary Adrenal Insufficiency Guideline"
+    },
+    {
+      "id": "ES_CAH_2018",
+      "title": "Endocrine Society Congenital Adrenal Hyperplasia Guideline",
+      "source": "Endocrine Society",
+      "version": "2018",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6456929/",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Congenital Adrenal Hyperplasia Guideline"
+    },
+    {
+      "id": "ES_CUSHING_DX_2008",
+      "title": "Endocrine Society Diagnosis of Cushing Syndrome Guideline",
+      "source": "Endocrine Society",
+      "version": "2008",
+      "url": "https://academic.oup.com/jcem/article/93/5/1526/2598096",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Diagnosis of Cushing Syndrome Guideline"
+    },
+    {
+      "id": "ES_HIRSUTISM_2018",
+      "title": "Endocrine Society Hirsutism Guideline",
+      "source": "Endocrine Society",
+      "version": "2018",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Hirsutism Guideline"
+    },
+    {
+      "id": "ES_HYPERPROLACTINEMIA_2011",
+      "title": "Endocrine Society Hyperprolactinemia Guideline",
+      "source": "Endocrine Society",
+      "version": "2011",
+      "url": "https://www.guidelinecentral.com/guideline/41733/",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Hyperprolactinemia Guideline"
+    },
+    {
+      "id": "ES_HYPOPITUITARISM_2016",
+      "title": "Endocrine Society Hormone Replacement in Hypopituitarism Guideline",
+      "source": "Endocrine Society",
+      "version": "2016",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/hormone-replacement-in-hypopituitarism",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Hormone Replacement in Hypopituitarism Guideline"
+    },
+    {
+      "id": "ES_PHEO_PPGL_2014",
+      "title": "Endocrine Society Pheochromocytoma/Paraganglioma Guideline",
+      "source": "Endocrine Society",
+      "version": "2014",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24893135/",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Pheochromocytoma/Paraganglioma Guideline"
+    },
+    {
+      "id": "ES_PRIMARY_ALDO_2025",
+      "title": "Endocrine Society Primary Aldosteronism Guideline 2025",
+      "source": "Endocrine Society",
+      "version": "2025",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/primary-aldosteronism-2",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Primary Aldosteronism Guideline 2025"
+    },
+    {
+      "id": "ES_TESTOSTERONE_2018",
+      "title": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline",
+      "source": "Endocrine Society",
+      "version": "2018",
+      "url": "https://doi.org/10.1210/JC.2018-00229",
+      "date_accessed": "2026-06-06",
+      "citation": "Endocrine Society Testosterone Therapy in Men With Hypogonadism Guideline"
+    },
+    {
+      "id": "ESHRE_POI_2024",
+      "title": "International Guideline on Premature Ovarian Insufficiency 2024",
+      "source": "European Society of Human Reproduction and Embryology",
+      "version": "2024",
+      "url": "https://www.eshre.eu/-/media/sitecore-files/Guidelines/POI/2024/INTERNATIONAL-GUIDELINE-ON-POI_2024_2.pdf",
+      "date_accessed": "2026-06-06",
+      "citation": "International Guideline on Premature Ovarian Insufficiency 2024"
+    },
+    {
+      "id": "ETA_THYROID_NODULE_2023",
+      "title": "2023 European Thyroid Association Thyroid Nodule Guideline",
+      "source": "European Thyroid Association",
+      "version": "2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448590/",
+      "date_accessed": "2026-06-06",
+      "citation": "2023 European Thyroid Association Thyroid Nodule Guideline"
+    },
+    {
+      "id": "HYPOPARA_TASK_FORCE_2022",
+      "title": "2022 International Task Force Hypoparathyroidism Guidelines",
+      "source": "International Task Force on Hypoparathyroidism",
+      "version": "2022",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10118814/",
+      "date_accessed": "2026-06-06",
+      "citation": "2022 International Task Force Hypoparathyroidism Guidelines"
+    },
+    {
+      "id": "NHLBI_METABOLIC_SYNDROME",
+      "title": "NHLBI Metabolic Syndrome Diagnosis",
+      "source": "National Heart, Lung, and Blood Institute",
+      "version": "current",
+      "url": "https://www.nhlbi.nih.gov/health/metabolic-syndrome/diagnosis",
+      "date_accessed": "2026-06-06",
+      "citation": "NHLBI Metabolic Syndrome Diagnosis"
+    },
+    {
+      "id": "NIH_VITD_FACTSHEET",
+      "title": "NIH ODS Vitamin D Health Professional Fact Sheet",
+      "source": "NIH Office of Dietary Supplements",
+      "version": "current",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/",
+      "date_accessed": "2026-06-06",
+      "citation": "NIH ODS Vitamin D Health Professional Fact Sheet"
+    },
+    {
+      "id": "PCOS_GUIDELINE_2023",
+      "title": "2023 International Evidence-based PCOS Guideline",
+      "source": "International PCOS Guideline Network",
+      "version": "2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10755126/",
+      "date_accessed": "2026-06-06",
+      "citation": "2023 International Evidence-based PCOS Guideline"
+    },
+    {
+      "id": "PHPT_WORKSHOP_2022",
+      "title": "Fifth International Workshop Primary Hyperparathyroidism Guidelines",
+      "source": "Fifth International Workshop on Primary Hyperparathyroidism",
+      "version": "2022",
+      "url": "https://onlinelibrary.wiley.com/doi/10.1002/jbmr.4677",
+      "date_accessed": "2026-06-06",
+      "citation": "Fifth International Workshop Primary Hyperparathyroidism Guidelines"
+    },
+    {
+      "id": "PITUITARY_ACROMEGALY_2021",
+      "title": "Pituitary Society Acromegaly Consensus",
+      "source": "Pituitary Society",
+      "version": "2021",
+      "url": "https://reference.medscape.com/viewarticle/946489",
+      "date_accessed": "2026-06-06",
+      "citation": "Pituitary Society Acromegaly Consensus"
+    },
+    {
+      "id": "SFE_CDI_2018",
+      "title": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance",
+      "source": "Society for Endocrinology",
+      "version": "2018",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6013691/",
+      "date_accessed": "2026-06-06",
+      "citation": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance"
+    }
+  ]
+}

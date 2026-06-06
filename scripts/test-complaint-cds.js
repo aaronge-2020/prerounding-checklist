@@ -35,7 +35,7 @@ assert.equal(dkaModule?.id, "hyperglycemia_possible_dka_v1", "hyperglycemia text
 
 const unmatched = evaluateComplaintCds("ankle sprain after basketball");
 assert.equal(unmatched.matched, false, "unsupported complaint should return no-match response");
-assert.ok(/chest pain/.test(unmatched.message), "no-match response should name MVP coverage");
+assert.ok(/medical knowledge database/.test(unmatched.message), "no-match response should point to installed knowledge database coverage");
 
 const chestPain = evaluateComplaintCds(
   "Emergency medicine/admission adult acute chest pain with pressure, diaphoresis, dyspnea, syncope, hypoxia, and possible leg swelling",

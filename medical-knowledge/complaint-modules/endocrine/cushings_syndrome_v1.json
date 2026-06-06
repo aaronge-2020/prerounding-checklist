@@ -1,0 +1,305 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "cushings_syndrome_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Cushing's Syndrome",
+    "complaint_group": "adrenal_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Cushing's Syndrome",
+      "cushings syndrome"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Exclude exogenous steroids."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Severe hypokalemia",
+            "uncontrolled hypertension/diabetes",
+            "infection",
+            "psychosis",
+            "VTE."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Proximal weakness, easy bruising, purple striae, fractures, infections.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Exogenous glucocorticoids including injections/creams/inhaled.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_03",
+        "label": "Hypertension, diabetes, mood/sleep changes.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "BP/BMI/waist, proximal strength, bruising/striae/thin skin, supraclavicular/dorsocervical fat, edema.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Exclude exogenous steroids.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      },
+      {
+        "id": "test_02",
+        "label": "1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      },
+      {
+        "id": "test_03",
+        "label": "Late-night salivary cortisol, often two samples.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      },
+      {
+        "id": "test_04",
+        "label": "24-hour urinary free cortisol, at least two collections.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      },
+      {
+        "id": "test_05",
+        "label": "ACTH after confirmed hypercortisolism.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      },
+      {
+        "id": "reference_01",
+        "label": "DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Cushing's Syndrome",
+      "category": "Adrenal Gland Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_CUSHING_DX_2008"
+      ],
+      "reference_values": [
+        "DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

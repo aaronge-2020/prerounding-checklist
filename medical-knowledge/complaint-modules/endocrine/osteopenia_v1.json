@@ -1,0 +1,258 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "osteopenia_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Osteopenia",
+    "complaint_group": "bone_and_parathyroid_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Osteopenia",
+      "osteopenia"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Osteopenia: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "DXA."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Fragility fracture despite osteopenic T-score",
+            "rapid bone loss",
+            "secondary cause signs."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Fracture/fall risk, menopause, family hip fracture, steroid exposure.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Height, gait/balance, spine tenderness/kyphosis.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "DXA.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+      },
+      {
+        "id": "test_02",
+        "label": "FRAX or validated fracture-risk tool.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+      },
+      {
+        "id": "test_03",
+        "label": "Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+      },
+      {
+        "id": "reference_01",
+        "label": "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Intact PTH often about 10-65 pg/mL but assay-specific.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_04",
+        "label": "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Osteopenia",
+      "category": "Bone and Parathyroid Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ENDO_OSTEOPOROSIS_2020"
+      ],
+      "reference_values": [
+        "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+        "Intact PTH often about 10-65 pg/mL but assay-specific.",
+        "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
+        "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

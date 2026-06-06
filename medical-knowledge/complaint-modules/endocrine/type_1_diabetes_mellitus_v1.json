@@ -1,0 +1,422 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "type_1_diabetes_mellitus_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Type 1 Diabetes Mellitus",
+    "complaint_group": "diabetes_and_blood_sugar_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Type 1 Diabetes Mellitus",
+      "T1DM",
+      "LADA",
+      "autoimmune diabetes",
+      "type 1 diabetes mellitus"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Type 1 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "A1c/glucose criteria plus ketones/acid-base if symptomatic."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Vomiting, dehydration, hypotension, Kussmaul respirations, altered mental status.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Vomiting",
+            "dehydration",
+            "hypotension",
+            "Kussmaul respirations",
+            "altered mental status."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_02",
+        "label": "SGLT2 inhibitor with ketotic symptoms even if glucose is not very high.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "SGLT2 inhibitor with ketotic symptoms even if glucose is not very high."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Rapid polyuria, polydipsia, weight loss.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Vomiting, abdominal pain, Kussmaul breathing, confusion.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_03",
+        "label": "Personal/family autoimmune disease.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Vitals, hydration, mental status.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Respiratory pattern/Kussmaul concern.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_03",
+        "label": "Abdomen and infection/skin trigger exam.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "A1c/glucose criteria plus ketones/acid-base if symptomatic.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
+      },
+      {
+        "id": "test_02",
+        "label": "Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
+      },
+      {
+        "id": "test_03",
+        "label": "Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA. DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
+      },
+      {
+        "id": "reference_01",
+        "label": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_04",
+        "label": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_05",
+        "label": "DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_06",
+        "label": "DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Ketosis plus acidosis requires urgent DKA pathway.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Ketosis plus acidosis requires urgent DKA pathway."
+      },
+      {
+        "id": "management_02",
+        "label": "Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 1 Diabetes Mellitus generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Type 1 Diabetes Mellitus",
+      "category": "Diabetes and Blood Sugar Disorders",
+      "aliases": [
+        "T1DM",
+        "LADA",
+        "autoimmune diabetes"
+      ],
+      "source_ids": [
+        "ADA_SOC_2026",
+        "ADA_DIAGNOSIS_2026",
+        "ADA_HYPERGLYCEMIC_CRISES_2024"
+      ],
+      "reference_values": [
+        "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "DKA: diabetes/hyperglycemia plus ketosis plus metabolic acidosis; glucose may be lower in euglycemic DKA.",
+        "DKA beta-hydroxybutyrate often >=3.0 mmol/L with pH <7.3 or bicarbonate <18 mmol/L."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

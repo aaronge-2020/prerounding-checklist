@@ -786,6 +786,26 @@ const clinicalRecommendationProfiles = [
         management: "New focal lung findings can change infection workup, oxygen strategy, imaging, and escalation."
       }
     ],
+    requiredGaps: [
+      {
+        exam_id: "GAP-dka-hhs-mental-status",
+        label: "Mental status assessment",
+        options: "Alert and oriented / Confused / Somnolent / Obtunded / Unable",
+        domain: "Mental Status",
+        reason: "Checks cerebral perfusion, hyperosmolarity severity, and need for escalation in DKA/HHS.",
+        diagnosticTarget: "DKA/HHS severity: confusion, somnolence, obtundation, or inability to protect airway.",
+        management: "Altered mental status changes monitoring level, airway/ICU concern, osmolality assessment, and urgency of reassessment.",
+        bedsideQuestion: "Any confusion, unusual sleepiness, severe weakness, or trouble staying awake?",
+        bedsideQuestionOptions: "No / Confusion / Sleepy / Weak / Trouble staying awake / Other ___",
+        source: "ADA_HYPERGLYCEMIC_CRISES_2024",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "0.5",
+        equipment_needed: "none",
+        matchedTags: ["DKA_HHS", "mental_status"],
+        satisfiedBy: /\b(?:mental status|alert|oriented|confusion|somnolent|obtunded)\b/
+      }
+    ],
     conditional: [
       { pattern: /\b(?:lower extremity edema)\b/, strength: 54, domain: "Volume Add-on", reason: "Adds edema assessment when DKA/HHS overlaps with renal disease, heart failure, leg swelling, or volume-overload concern.", when: /\b(?:edema|leg swelling|heart failure|chf|renal|aki|volume overload)\b/ },
       { pattern: /\b(?:dorsalis pedis|posterior tibial|extremity light touch|extremity pinprick|vibration sense|proprioception)\b/, strength: 58, domain: "Diabetes Foot/Neuro", reason: "Adds diabetes foot or neuropathy assessment when infection, wound, neuropathy, or discharge planning is relevant.", when: /\b(?:foot|ulcer|wound|infection|cellulitis|neuropathy|numbness|tingling|discharge|skin)\b/ },
@@ -808,10 +828,40 @@ const clinicalRecommendationProfiles = [
     name: "Suspected pulmonary embolism",
     context: /\b(?:pulmonary embolism|suspected pe|pleuritic chest pain|dvt|venous thromboembolism)\b/,
     core: [
-      { pattern: /\b(?:blood pressure|heart rate|respiratory rate)\b/, strength: 92, domain: "Vitals", reason: "Checks hemodynamic and respiratory severity in suspected PE." },
-      { pattern: /\b(?:posterior lung sounds|lateral lung sounds)\b/, strength: 78, domain: "Pulmonary", reason: "Assesses workup alternatives and respiratory complications while PE remains on the table." },
-      { pattern: /\b(?:heart sounds|jvp|radial pulses)\b/, strength: 72, domain: "Cardiac/Perfusion", reason: "Looks for strain, shock, or perfusion changes that would alter escalation and disposition." },
-      { pattern: /\b(?:lower extremity edema|dorsalis pedis|posterior tibial|femoral pulses)\b/, strength: 72, domain: "DVT/Vascular", reason: "Checks unilateral swelling or vascular findings relevant to VTE probability and anticoagulation framing." }
+      {
+        pattern: /\b(?:blood pressure|heart rate|respiratory rate)\b/,
+        strength: 92,
+        domain: "Vitals",
+        reason: "Checks hemodynamic and respiratory severity in suspected PE.",
+        diagnosticTarget: "PE severity screen: tachycardia, tachypnea, hypotension, hypoxemia clue, or shock physiology.",
+        management: "Abnormal vitals can change urgency of PE risk stratification, oxygen/support needs, monitoring level, and escalation for unstable PE.",
+        bedsideQuestion: "Any sudden shortness of breath, pleuritic pain, fainting, coughing blood, or one-sided leg swelling?",
+        bedsideQuestionOptions: "No / Sudden dyspnea / Pleuritic pain / Fainting / Hemoptysis / One-sided leg swelling / Other ___"
+      },
+      {
+        pattern: /\b(?:posterior lung sounds|lateral lung sounds|anterior lung sounds|posterior thorax inspection|anterior thorax inspection)\b/,
+        strength: 78,
+        domain: "Pulmonary",
+        reason: "Checks work of breathing and alternate pulmonary diagnoses while PE remains on the table.",
+        diagnosticTarget: "Respiratory distress, wheeze, crackles, focal diminished sounds, or other findings that point to PE severity or competing lung diagnoses.",
+        management: "Work of breathing or focal lung findings can change oxygen strategy, imaging review, treatment for alternatives such as pneumonia/pneumothorax, and escalation."
+      },
+      {
+        pattern: /\b(?:heart sounds|jvp|radial pulses)\b/,
+        strength: 72,
+        domain: "Cardiac/Perfusion",
+        reason: "Looks for right-heart strain, shock, or perfusion changes that would alter escalation and disposition.",
+        diagnosticTarget: "Cardiac/perfusion severity: elevated JVP, abnormal heart sounds, hypotension/perfusion deficit, or shock physiology.",
+        management: "Strain or shock findings can change monitoring level, anticoagulation/thrombolysis discussion urgency, imaging interpretation, and disposition."
+      },
+      {
+        pattern: /\b(?:lower extremity edema|dorsalis pedis|posterior tibial|femoral pulses)\b/,
+        strength: 72,
+        domain: "DVT/Vascular",
+        reason: "Checks unilateral swelling or vascular findings relevant to VTE probability and anticoagulation framing.",
+        diagnosticTarget: "DVT clue: asymmetric leg swelling/tenderness/perfusion abnormality or limb-risk finding.",
+        management: "DVT-compatible findings can strengthen VTE probability, ultrasound urgency, anticoagulation framing, and documentation of limb/perfusion risk."
+      }
     ],
     suppress: [
       { pattern: /\b(?:abdominal inspection|abdominal palpation|abdominal percussion|bowel sounds|murphy|rebound|psoas|obturator|liver|spleen|cva tenderness)\b/, unless: /\b(?:abdominal|flank|vomit|diarrhea|jaundice|gi bleed|urinary|renal)\b/, reason: "Abdominal maneuvers are not PE-focused without abdominal, renal, or GI symptoms." },
@@ -824,16 +874,65 @@ const clinicalRecommendationProfiles = [
     name: "Dyspnea, hypoxia, or heart failure/volume overload",
     context: /\b(?:dyspnea|shortness of breath|sob|hypoxia|oxygen|orthopnea|pnd|heart failure|chf|volume overload|pulmonary edema|diuresis)\b/,
     core: [
-      { pattern: /\b(?:blood pressure|heart rate|respiratory rate)\b/, strength: 88, domain: "Vitals", reason: "Determines cardiopulmonary severity and whether support/escalation is needed." },
-      { pattern: /\b(?:posterior lung sounds|lateral lung sounds|anterior lung sounds)\b/, strength: 84, domain: "Pulmonary", reason: "Differentiates congestion, wheeze, consolidation, effusion, or other pulmonary causes." },
-      { pattern: /\b(?:lung percussion|fremitus)\b/, strength: 54, domain: "Pulmonary Add-on", reason: "Adds effusion or consolidation assessment when the lung exam suggests it.", when: /\b(?:effusion|consolidation|pneumonia|diminished|asymmetric|pleural)\b/ },
-      { pattern: /\b(?:jvp|lower extremity edema|heart sounds|radial pulses)\b/, strength: 82, domain: "Volume/Cardiac", reason: "Checks congestion, cardiac exam findings, and perfusion relevant to fluid and diuretic strategy.", when: /\b(?:orthopnea|pnd|heart failure|chf|volume overload|pulmonary edema|diuresis|edema|leg swelling|aki|renal|shock|hypotension|chest pain|palpitations|syncope|presyncope)\b/ }
+      {
+        pattern: /\b(?:blood pressure|heart rate|respiratory rate)\b/,
+        strength: 88,
+        domain: "Vitals",
+        reason: "Determines cardiopulmonary severity and whether oxygen, diuresis, bronchodilator, or escalation decisions are urgent.",
+        diagnosticTarget: "Dyspnea severity: tachypnea, tachycardia, hypotension/hypertension, hypoxemia clue, or shock physiology.",
+        management: "Abnormal vitals can change oxygen/support strategy, diuresis urgency, bronchodilator/antibiotic consideration, monitoring level, and escalation.",
+        bedsideQuestion: "Is breathing worse lying flat, are you waking up short of breath, and has leg swelling or oxygen need changed?",
+        bedsideQuestionOptions: "No / Orthopnea / Waking short of breath / Leg swelling / Higher oxygen need / Other ___"
+      },
+      {
+        pattern: /\b(?:posterior thorax inspection|anterior thorax inspection)\b/,
+        strength: 82,
+        domain: "Work of Breathing",
+        reason: "Assesses respiratory effort and distress before deciding whether bedside support or escalation is needed.",
+        diagnosticTarget: "Work of breathing: accessory muscle use, retractions, asymmetry, fatigue, or distress.",
+        management: "Increased work of breathing can change oxygen/ventilatory support, monitoring location, and urgency of reassessment."
+      },
+      {
+        pattern: /\b(?:posterior lung sounds|lateral lung sounds|anterior lung sounds)\b/,
+        strength: 84,
+        domain: "Pulmonary",
+        reason: "Differentiates congestion, wheeze, consolidation, effusion, or other pulmonary causes.",
+        diagnosticTarget: "Lung findings: crackles, wheeze, rhonchi, diminished sounds, asymmetry, or focal ventilation abnormality.",
+        management: "New or changed lung findings can change diuresis, bronchodilator, antibiotic, imaging, oxygen/support, or escalation decisions."
+      },
+      {
+        pattern: /\b(?:lung percussion|fremitus)\b/,
+        strength: 54,
+        domain: "Pulmonary Add-on",
+        reason: "Adds effusion or consolidation assessment when the lung exam or fever/cough context suggests it.",
+        when: /\b(?:effusion|consolidation|pneumonia|diminished|asymmetric|pleural|fever|cough)\b/,
+        diagnosticTarget: "Consolidation/effusion clue: dullness, asymmetric fremitus, or focal decreased ventilation.",
+        management: "Effusion or consolidation clues can change imaging review, antibiotic consideration, drainage/consult questions, and oxygen strategy."
+      },
+      {
+        pattern: /\b(?:jvp|lower extremity edema|heart sounds|radial pulses)\b/,
+        strength: 82,
+        domain: "Volume/Cardiac",
+        reason: "Checks congestion, cardiac auscultation, and perfusion relevant to fluid and diuretic strategy.",
+        when: /\b(?:orthopnea|pnd|heart failure|chf|volume overload|pulmonary edema|diuresis|edema|leg swelling|aki|renal|shock|hypotension|chest pain|palpitations|syncope|presyncope)\b/,
+        diagnosticTarget: "Heart-failure/volume clue: elevated JVP, edema, S3/gallop or murmur, irregular rhythm, or perfusion deficit.",
+        management: "Congestion or poor perfusion findings can change diuretic/fluid strategy, telemetry/ECG/echo urgency, respiratory support, and disposition."
+      }
     ],
     conditional: [
-      { pattern: /\b(?:pmi|apical impulse)\b/, strength: 46, domain: "Cardiac Add-on", reason: "Adds apical impulse only when dyspnea overlaps with heart failure, cardiomyopathy, pulmonary hypertension, or volume-overload context.", when: /\b(?:heart failure|chf|cardiomyopathy|volume overload|orthopnea|pnd|pulmonary hypertension|cardiomegaly)\b/ }
+      {
+        pattern: /\b(?:pmi|apical impulse)\b/,
+        strength: 46,
+        domain: "Cardiac Add-on",
+        reason: "Adds apical impulse only when dyspnea overlaps with heart failure, cardiomyopathy, pulmonary hypertension, or volume-overload context.",
+        when: /\b(?:heart failure|chf|cardiomyopathy|volume overload|orthopnea|pnd|pulmonary hypertension|cardiomegaly)\b/,
+        diagnosticTarget: "Precordial structural clue: displaced/diffuse apical impulse or visible heave in cardiomyopathy/volume-overload context.",
+        management: "A displaced or diffuse impulse can support cardiac structural framing and echo/cardiology review when consistent with the rest of the case."
+      }
     ],
     suppress: [
       { pattern: /\b(?:murphy|psoas|obturator|rebound|cva tenderness|spleen palpation)\b/, unless: /\b(?:abdominal|flank|urinary|jaundice|gi bleed)\b/, reason: "Not dyspnea-focused without abdominal, renal, or GU symptoms." },
+      { pattern: /\b(?:aortic area|pulmonic area|tricuspid area|mitral area)\b/, unless: /\b(?:murmur|valvular|aortic stenosis|mitral|tricuspid|pulmonic|endocarditis)\b/, reason: "Individual valve-area cards are redundant when the general heart-sounds exam is already selected unless murmur/valvular disease is a specific concern." },
       { pattern: /\b(?:visual acuity|visual fields|extraocular|finger to nose|heel to shin|vibration sense)\b/, unless: /\b(?:vision|ataxia|neuropathy|numbness|weakness|stroke|seizure)\b/, reason: "Neuro-localizing maneuvers need neurologic symptoms." }
     ]
   },
@@ -928,6 +1027,37 @@ const clinicalRecommendationProfiles = [
       { pattern: /\b(?:murphy|liver edge|liver span)\b/, strength: 64, domain: "RUQ/Liver", reason: "Targets biliary or liver disease when RUQ pain or jaundice is present.", when: /\b(?:ruq|right upper quadrant|jaundice|biliary|cholecystitis|liver)\b/ },
       { pattern: /\b(?:rebound|psoas|obturator)\b/, strength: 62, domain: "Peritoneal/RLQ", reason: "Targets peritoneal signs or appendicitis when localized pain/guarding exists.", when: /\b(?:rlq|right lower quadrant|appendicitis|peritonitis|guarding|rebound)\b/ },
       { pattern: /\b(?:cva tenderness)\b/, strength: 58, domain: "Renal/GU", reason: "Adds renal/GU source check when flank, urinary, or renal symptoms coexist.", when: /\b(?:flank|urinary|dysuria|hematuria|pyelo|stone|renal)\b/ }
+    ],
+    conditional: [
+      {
+        pattern: /\b(?:mouth exam)\b/,
+        strength: 56,
+        domain: "Hydration Add-on",
+        reason: "Adds mucous membrane assessment when vomiting, poor intake, dehydration, orthostasis, or hypovolemia modifies abdominal pain.",
+        when: /\b(?:vomit|emesis|poor intake|dehydrat|hypovolem|orthostasis|lightheaded|dry|diarrhea)\b/,
+        diagnosticTarget: "Hydration clue: dry mucosa, poor intake/vomiting physiology, or dehydration contributing to abdominal symptoms.",
+        management: "Dry mucosa or dehydration clues can change oral/IV fluid strategy, antiemetic urgency, orthostasis assessment, and reassessment frequency.",
+        bedsideQuestion: "Have you been able to keep fluids down, and are you lightheaded or urinating less?",
+        bedsideQuestionOptions: "Keeping fluids down / Vomiting / Lightheaded / Less urine / Dry mouth / Other ___"
+      },
+      {
+        pattern: /\b(?:sclerae and conjunctivae)\b/,
+        strength: 54,
+        domain: "Jaundice/Anemia Add-on",
+        reason: "Adds visible jaundice or pallor assessment when abdominal pain includes jaundice, dark urine, GI bleeding, or anemia concern.",
+        when: /\b(?:jaundice|dark urine|pale stool|melena|black stool|hematochezia|gi bleed|anemia|pallor)\b/,
+        diagnosticTarget: "Visible anemia or hepatobiliary clue: conjunctival pallor or scleral icterus.",
+        management: "Pallor or jaundice can change urgency of CBC/LFT review, bleeding/hepatobiliary workup, imaging, and escalation."
+      },
+      {
+        pattern: /\b(?:radial pulses)\b/,
+        strength: 52,
+        domain: "Perfusion Add-on",
+        reason: "Adds quick perfusion assessment when abdominal pain includes dehydration, bleeding, sepsis, shock, syncope, or marked lightheadedness.",
+        when: /\b(?:dehydrat|hypovolem|bleeding|melena|hematochezia|sepsis|shock|syncope|faint|lightheaded|poor perfusion)\b/,
+        diagnosticTarget: "Perfusion clue: weak/asymmetric pulse or poor peripheral perfusion in an unstable abdominal presentation.",
+        management: "Poor perfusion can change resuscitation urgency, monitoring level, and escalation."
+      }
     ]
   },
   {
@@ -1152,6 +1282,27 @@ const clinicalRecommendationProfiles = [
       { pattern: /\b(?:thyroid exam|heart sounds|jvp|lower extremity edema)\b/, strength: 82, domain: "Thyroid/Cardiac", reason: "Links neck and cardiovascular findings to thyroid severity and escalation." },
       { pattern: /\b(?:pupils|gait|pronator drift)\b/, strength: 52, domain: "Neuro", reason: "Adds focused neuro safety checks when mental status, weakness, or myxedema/storm concern exists.", when: /\b(?:confusion|somnolence|agitation|weakness|myxedema|storm)\b/ }
     ],
+    requiredGaps: [
+      {
+        exam_id: "GAP-thyroid-crisis-mental-status",
+        label: "Mental status assessment",
+        options: "Baseline / Agitated / Confused / Somnolent / Comatose / Unable",
+        domain: "Mental Status",
+        reason: "Checks thyroid-storm or myxedema-coma severity that changes escalation and treatment urgency.",
+        diagnosticTarget: "Thyroid emergency severity: agitation, delirium, somnolence, coma, or inability to participate in care.",
+        management: "Altered mental status supports crisis severity, ICU-level monitoring, airway/temperature strategy, and urgent endocrine escalation.",
+        bedsideQuestion: "Any new confusion, agitation, unusual sleepiness, or trouble staying awake?",
+        bedsideQuestionOptions: "No / Agitation / Confusion / Sleepiness / Trouble staying awake / Other ___",
+        source: "ATA_HYPERTHYROIDISM_2016; JTA_JES_THYROID_STORM_2016",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "0.5",
+        equipment_needed: "none",
+        matchedTags: ["thyroid_storm", "myxedema", "mental_status"],
+        when: /\b(?:storm|myxedema|crisis|agitation|confusion|somnolence|altered|coma)\b/,
+        satisfiedBy: /\b(?:mental status|alert|oriented|agitation|confusion|somnolent|coma)\b/
+      }
+    ],
     suppress: [
       { pattern: /\b(?:preauricular nodes|posterior auricular nodes|occipital nodes|tonsillar nodes|submandibular nodes|submental nodes|posterior cervical nodes|supraclavicular nodes)\b/, unless: /\b(?:lymph|adenopathy|neck mass|malignancy|infection|sore throat)\b/, reason: "A full lymph-node survey is not core thyroid exam unless nodes, infection, or malignancy are part of the concern." }
     ]
@@ -1221,6 +1372,10 @@ function activeRecommendationProfiles(context, rawContext = "") {
     return clinicalRecommendationProfiles.filter((profile) => validatedBundleIds.has(profile.id));
   }
   return clinicalRecommendationProfiles.filter((profile) => profile.context.test(context));
+}
+
+function hasValidatedClinicalBundleScope(rawContext = "") {
+  return clinicalBundleIdsFromContext(rawContext).size > 0;
 }
 
 function recommendationGroupApplies(group, candidateText, context) {
@@ -1369,7 +1524,7 @@ function recommendationContextOverlap(candidateText, context) {
     .slice(0, 8);
 }
 
-function recommendationCandidateEntry(candidate, context, activeProfiles) {
+function recommendationCandidateEntry(candidate, context, activeProfiles, options = {}) {
   const candidateText = candidateRecommendationText(candidate);
   const maneuverText = candidateManeuverText(candidate);
   const profileSignals = activeProfiles.flatMap((profile) => profileSignalsForCandidate(maneuverText, context, profile));
@@ -1378,6 +1533,8 @@ function recommendationCandidateEntry(candidate, context, activeProfiles) {
   const overlapTerms = recommendationContextOverlap(candidateText, context);
   const weakOnlyMatch = (candidate.matchedTags || []).length > 0 && specificMatchedTags.length === 0 && !profileSignals.length;
   const suppressionReason = suppressionForCandidate(maneuverText, context, activeProfiles);
+  const strictProfileScope = Boolean(options.strictProfileScope);
+  const outsideStrictBundle = strictProfileScope && !bestSignal && candidate.review?.status !== "accepted";
   const scoreBreakdown = candidate.scoreBreakdown || {};
   let contextFitScore = 0;
 
@@ -1395,17 +1552,21 @@ function recommendationCandidateEntry(candidate, context, activeProfiles) {
   if (suppressionReason) {
     contextFitScore -= 85;
   }
+  if (outsideStrictBundle) {
+    contextFitScore -= 70;
+  }
   contextFitScore = Math.max(0, Math.min(100, Math.round(contextFitScore)));
 
   let role = "suppressed";
-  if (!suppressionReason && (candidate.review?.status === "accepted" || bestSignal?.type === "core")) {
+  if (!suppressionReason && !outsideStrictBundle && (candidate.review?.status === "accepted" || bestSignal?.type === "core")) {
     role = "core";
-  } else if (!suppressionReason && (bestSignal?.type === "conditional" || contextFitScore >= 54 || (specificMatchedTags.length && (candidate.score || 0) >= 70))) {
+  } else if (!suppressionReason && !outsideStrictBundle && (bestSignal?.type === "conditional" || (!strictProfileScope && (contextFitScore >= 54 || (specificMatchedTags.length && (candidate.score || 0) >= 70))))) {
     role = "conditional";
   }
 
   const reason = suppressionReason
     || bestSignal?.reason
+    || (outsideStrictBundle ? "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item." : "")
     || (specificMatchedTags.length ? `Matches ${specificMatchedTags.slice(0, 4).join(", ")} context with management-linked evidence.` : "")
     || (overlapTerms.length ? `Shares context terms: ${overlapTerms.slice(0, 5).join(", ")}.` : "")
     || "Lower context fit than the recommended checklist.";
@@ -1455,7 +1616,9 @@ function selectRecommendationEntries(entries, context, options = {}) {
     .sort((a, b) => b.contextFitScore - a.contextFitScore || b.score - a.score || (a.candidate.originalIndex || 0) - (b.candidate.originalIndex || 0));
 
   for (const entry of sorted) {
-    const key = candidateRedundancyKey(entry.candidate, context);
+    const key = options.collapseFamilies
+      ? recommendationFamilyRedundancyKey(entry.candidate, context)
+      : candidateRedundancyKey(entry.candidate, context);
     if (seen.has(key)) {
       continue;
     }
@@ -1474,6 +1637,107 @@ function selectRecommendationEntries(entries, context, options = {}) {
   return selected;
 }
 
+function recommendationFamilyRedundancyKey(candidate, context = "") {
+  const keyText = normalizeEvidenceLabel([
+    candidate.examLabel,
+    candidate.maneuver,
+    candidate.base?.section,
+    candidate.base?.region_or_subsection
+  ].join(" "));
+  if (/\b(?:posterior lung sounds|lateral lung sounds|anterior lung sounds|auscultate posterior lung fields|auscultate lateral lung fields|auscultate anterior lung fields)\b/.test(keyText)) {
+    return "lung-auscultation";
+  }
+  if (/\b(?:posterior thorax inspection|anterior thorax inspection|inspect posterior thorax|inspect anterior thorax)\b/.test(keyText)) {
+    return "work-of-breathing-inspection";
+  }
+  if (/\b(?:aortic area|pulmonic area|tricuspid area|mitral area)\b/.test(keyText)) {
+    return "individual-valve-listening-areas";
+  }
+  return candidateRedundancyKey(candidate, context);
+}
+
+function gapAlreadySatisfied(gap, selectedEntries = []) {
+  const pattern = gap.satisfiedBy || new RegExp(normalizeEvidenceLabel(gap.label || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+  return selectedEntries.some((entry) => {
+    const text = normalizeEvidenceText([
+      entry.label,
+      entry.domain,
+      entry.reason,
+      entry.displayDiagnosticTarget,
+      entry.displayManagement,
+      entry.candidate?.examLabel,
+      entry.candidate?.maneuver
+    ].filter(Boolean).join(" "));
+    return pattern.test(text);
+  });
+}
+
+function bundleCatalogGapEntries(activeProfiles, context, selectedEntries = []) {
+  return activeProfiles
+    .flatMap((profile) => (profile.requiredGaps || []).map((gap) => ({ profile, gap })))
+    .filter(({ gap }) => (!gap.when || gap.when.test(context)) && !gapAlreadySatisfied(gap, selectedEntries))
+    .map(({ profile, gap }) => {
+      const candidate = {
+        exam_id: gap.exam_id,
+        examLabel: gap.label,
+        maneuver: gap.label,
+        examOptions: gap.options || "",
+        score: 100,
+        scoreBreakdown: { clinicalRelevance: 100, actionability: 100, diagnosticValue: 75, bedsideFeasibility: 100 },
+        condition_or_syndrome: profile.name,
+        diagnostic_target: gap.diagnosticTarget || "",
+        result_changes_management: gap.management || "",
+        management_link: gap.management || "",
+        evidence_source_primary: gap.source || "",
+        source_citation: gap.source || "",
+        LR_plus: gap.LR_plus || "",
+        LR_minus: gap.LR_minus || "",
+        evidence_tier: gap.evidenceTier || "Guideline",
+        difficulty: gap.difficulty || "easy",
+        time_burden_minutes: gap.time_burden_minutes || "0.5",
+        equipment_needed: gap.equipment_needed || "none",
+        patient_cooperation_required: gap.patient_cooperation_required || "low",
+        matchedTags: gap.matchedTags || [],
+        retrievalRoutes: ["validated_bundle_gap"],
+        catalogGap: true
+      };
+      return {
+        candidate,
+        exam_id: gap.exam_id,
+        label: gap.label,
+        options: gap.options || "",
+        domain: gap.domain || "Catalog Gap",
+        role: "core",
+        reason: gap.reason || "Required by the selected validated clinical bundle but not yet represented as a base catalog maneuver.",
+        rationale: gap.reason || "Required by the selected validated clinical bundle but not yet represented as a base catalog maneuver.",
+        managementRelevance: gap.management || "",
+        evidence: {
+          source: gap.source || "",
+          LR_plus: gap.LR_plus || "",
+          LR_minus: gap.LR_minus || "",
+          tier: gap.evidenceTier || "Guideline"
+        },
+        feasibility: {
+          difficulty: gap.difficulty || "easy",
+          time_burden_minutes: gap.time_burden_minutes || "0.5",
+          equipment_needed: gap.equipment_needed || "none",
+          patient_cooperation_required: gap.patient_cooperation_required || "low"
+        },
+        matchedTags: gap.matchedTags || [],
+        specificMatchedTags: gap.matchedTags || [],
+        recommendationSignals: [{ type: "validated_bundle_gap", domain: gap.domain || "Catalog Gap", strength: 100 }],
+        displayDiagnosticTarget: gap.diagnosticTarget || "",
+        displayManagement: gap.management || "",
+        displayBedsideQuestion: gap.bedsideQuestion || "",
+        displayBedsideQuestionOptions: gap.bedsideQuestionOptions || "",
+        contextFitScore: 100,
+        score: 100,
+        suppressionReason: "",
+        catalogGap: true
+      };
+    });
+}
+
 export function buildRecommendedExamChecklist(contextText = "", rankedCandidates = [], options = {}) {
   const ranked = Array.isArray(rankedCandidates)
     ? { candidates: rankedCandidates, matchedTags: options.matchedTags || [] }
@@ -1481,18 +1745,23 @@ export function buildRecommendedExamChecklist(contextText = "", rankedCandidates
   const candidates = ranked.candidates || [];
   const context = normalizeEvidenceText(expandEvidenceContextText(contextText));
   const activeProfiles = activeRecommendationProfiles(context, contextText);
+  const strictProfileScope = hasValidatedClinicalBundleScope(contextText);
   const matchedTags = ranked.matchedTags || options.matchedTags || [];
-  const entries = candidates.map((candidate) => recommendationCandidateEntry(candidate, context, activeProfiles));
+  const entries = candidates.map((candidate) => recommendationCandidateEntry(candidate, context, activeProfiles, { strictProfileScope }));
   const coreItems = selectRecommendationEntries(entries.filter((entry) => entry.role === "core"), context, {
     maxItems: options.maxCoreItems || 24,
-    maxPerDomain: options.maxCorePerDomain || 7
+    maxPerDomain: options.maxCorePerDomain || 7,
+    collapseFamilies: strictProfileScope
   });
   const coreIds = new Set(coreItems.map((entry) => entry.exam_id));
   const conditionalItems = selectRecommendationEntries(entries.filter((entry) => entry.role === "conditional" && !coreIds.has(entry.exam_id)), context, {
     maxItems: options.maxConditionalItems || 36,
-    maxPerDomain: options.maxConditionalPerDomain || 8
+    maxPerDomain: options.maxConditionalPerDomain || 8,
+    collapseFamilies: strictProfileScope
   });
-  const selectedIds = new Set([...coreIds, ...conditionalItems.map((entry) => entry.exam_id)]);
+  const catalogGapItems = bundleCatalogGapEntries(activeProfiles, context, [...coreItems, ...conditionalItems, ...(options.catalogGaps || [])]);
+  coreItems.push(...catalogGapItems);
+  const selectedIds = new Set([...coreIds, ...coreItems.map((entry) => entry.exam_id), ...conditionalItems.map((entry) => entry.exam_id)]);
   const suppressedItems = entries
     .filter((entry) => !selectedIds.has(entry.exam_id))
     .sort((a, b) => b.score - a.score || b.contextFitScore - a.contextFitScore)
@@ -1517,7 +1786,7 @@ export function buildRecommendedExamChecklist(contextText = "", rankedCandidates
     coreItems,
     conditionalItems,
     suppressedItems,
-    catalogGaps: options.catalogGaps || [],
+    catalogGaps: [...(options.catalogGaps || []), ...catalogGapItems],
     matchedTags,
     activeProfiles: activeProfiles.map((profile) => ({ id: profile.id, name: profile.name })),
     retrievedCandidates: candidates,

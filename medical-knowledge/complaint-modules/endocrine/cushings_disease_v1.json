@@ -1,0 +1,262 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "cushings_disease_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Cushing's Disease (Pituitary-dependent Cushing's)",
+    "complaint_group": "pituitary_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Cushing's Disease (Pituitary-dependent Cushing's)",
+      "Cushing's Disease",
+      "Pituitary-dependent Cushing's",
+      "cushings disease"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Cushing's Disease (Pituitary-dependent Cushing's): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Severe hypercortisolism with infection",
+            "hypokalemia",
+            "psychosis",
+            "uncontrolled hypertension/diabetes."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Cushing phenotype plus headache/vision symptoms.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Cushing phenotype, BP/glucose complications, proximal weakness/skin, visual fields.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+      },
+      {
+        "id": "test_02",
+        "label": "ACTH: normal/high supports ACTH-dependent disease.",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+      },
+      {
+        "id": "test_03",
+        "label": "Pituitary MRI.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+      },
+      {
+        "id": "test_04",
+        "label": "Inferior petrosal sinus sampling when MRI equivocal/discordant.",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+      },
+      {
+        "id": "reference_01",
+        "label": "Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Cushing's Disease (Pituitary-dependent Cushing's)",
+      "category": "Pituitary Gland Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_CUSHING_DX_2008",
+        "ES_HYPOPITUITARISM_2016"
+      ],
+      "reference_values": [
+        "Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "diabetes_insipidus_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Diabetes Insipidus",
+    "complaint_group": "pituitary_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Diabetes Insipidus",
+      "AVP deficiency",
+      "central DI",
+      "nephrogenic DI",
+      "diabetes insipidus"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Diabetes Insipidus: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
+        "source": {
+          "source_id": "SFE_CDI_2018",
+          "source_section": "Diabetes Insipidus generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Hypernatremia",
+            "inability to drink",
+            "impaired consciousness",
+            "postoperative pituitary patient without desmopressin access."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "24-hour urine volume, nocturia, thirst, access to water.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Volume status and orthostatic vitals, mental status, mucous membranes, neurologic/pituitary mass signs.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+      },
+      {
+        "id": "test_02",
+        "label": "Serum sodium/plasma osmolality.",
+        "source": {
+          "source_id": "SFE_CDI_2018",
+          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+      },
+      {
+        "id": "test_03",
+        "label": "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+      },
+      {
+        "id": "test_04",
+        "label": "Water deprivation/desmopressin or copeptin-based test.",
+        "source": {
+          "source_id": "SFE_CDI_2018",
+          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+      },
+      {
+        "id": "reference_01",
+        "label": "Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
+        "source": {
+          "source_id": "SFE_CDI_2018",
+          "source_section": "Diabetes Insipidus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Diabetes Insipidus",
+      "category": "Pituitary Gland Disorders",
+      "aliases": [
+        "AVP deficiency",
+        "central DI",
+        "nephrogenic DI"
+      ],
+      "source_ids": [
+        "ENDOTEXT_DI_2026",
+        "SFE_CDI_2018"
+      ],
+      "reference_values": [
+        "Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.",
+        "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

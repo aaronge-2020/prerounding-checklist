@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prerounding.local/schemas/medical-knowledge-database-v1.schema.json",
+  "title": "Pre-Rounding Medical Knowledge Database v1",
+  "type": "object",
+  "required": ["schema_version", "artifact_type"],
+  "properties": {
+    "schema_version": {
+      "const": "medical_knowledge_database_v1"
+    },
+    "artifact_type": {
+      "enum": ["complaint_cds_module", "source_registry", "manifest"]
+    }
+  },
+  "$defs": {
+    "sourceReference": {
+      "type": "object",
+      "required": ["source_id", "source_section", "version_date", "last_reviewed", "clinical_owner"],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "source_section": { "type": "string", "minLength": 1 },
+        "evidence_strength": { "type": "string" },
+        "version_date": { "type": "string", "minLength": 1 },
+        "last_reviewed": { "type": "string", "minLength": 1 },
+        "clinical_owner": { "type": "string", "minLength": 1 },
+        "implementation_notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "condition": {
+      "type": "object",
+      "properties": {
+        "termsAny": { "type": "array", "items": { "type": "string" } },
+        "termsAll": { "type": "array", "items": { "type": "string" } },
+        "answersAny": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "answersAll": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "not": { "$ref": "#/$defs/condition" }
+      },
+      "additionalProperties": false
+    },
+    "moduleItem": {
+      "type": "object",
+      "required": ["id", "label", "source"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "action": { "type": "string" },
+        "options": { "type": "array" },
+        "when": { "$ref": "#/$defs/condition" },
+        "source": { "$ref": "#/$defs/sourceReference" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

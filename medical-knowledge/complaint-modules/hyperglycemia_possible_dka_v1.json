@@ -1,0 +1,1093 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "hyperglycemia_possible_dka_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Hyperglycemia / possible DKA or HHS",
+    "complaint_group": "endocrine_metabolic",
+    "version": "1.1.0",
+    "status": "mvp",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "hyperglycemia",
+      "high blood sugar",
+      "dka",
+      "diabetic ketoacidosis",
+      "hhs",
+      "hyperosmolar",
+      "hyperosmolarity",
+      "euglycemic dka",
+      "ketones",
+      "anion gap",
+      "vomiting in diabetes",
+      "sglt2",
+      "missed insulin"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "dka",
+        "label": "DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "DKA diagnostic criteria and euglycemic presentations",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "hhs",
+        "label": "HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "HHS diagnostic criteria and mixed DKA/HHS",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "trigger",
+        "label": "Precipitating illness or barrier: infection, insulin omission/access issue, pump failure, MI/stroke, pancreatitis, glucocorticoids/other medications, pregnancy, alcohol, or other physiologic stress",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes and recurrence prevention",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "noncrisis",
+        "label": "Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol",
+        "source": {
+          "source_id": "ADA_STANDARDS_HOSPITAL_2026",
+          "source_section": "inpatient hyperglycemia treatment thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "dka_mental_status",
+        "label": "Altered mental status, confusion, obtundation, seizure, or coma",
+        "action": "Urgent escalation; assess airway, perfusion, osmolality, acidosis, and high-acuity disposition.",
+        "when": {
+          "termsAny": [
+            "altered mental status",
+            "confusion",
+            "obtunded",
+            "coma",
+            "seizure",
+            "somnolence"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity and clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_shock_dehydration",
+        "label": "Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO",
+        "action": "Urgent volume/perfusion assessment and monitored treatment setting.",
+        "when": {
+          "termsAny": [
+            "hypotension",
+            "shock",
+            "dehydration",
+            "severe dehydration",
+            "poor perfusion",
+            "syncope",
+            "unable to tolerate po",
+            "poor oral intake"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "fluid losses and clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_kussmaul_resp",
+        "label": "Kussmaul respirations, respiratory distress, or severe acidosis concern",
+        "action": "Assess respiratory compensation and acidosis severity urgently.",
+        "when": {
+          "termsAny": [
+            "kussmaul",
+            "deep breathing",
+            "respiratory distress",
+            "severe acidosis"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_euglycemic_risk",
+        "label": "SGLT2 inhibitor, pregnancy, fasting, or lower glucose with ketotic symptoms",
+        "action": "Do not exclude DKA based only on glucose; check ketones and acidosis.",
+        "when": {
+          "termsAny": [
+            "sglt2",
+            "empagliflozin",
+            "dapagliflozin",
+            "canagliflozin",
+            "pregnant",
+            "fasting",
+            "euglycemic"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "DKA diagnostic criteria and euglycemic presentations",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_potassium_danger",
+        "label": "Hypokalemia, marked hyperkalemia, ECG changes, severe AKI/ESKD, or inability to monitor electrolytes safely",
+        "action": "Use monitored protocol care; potassium replacement and ECG monitoring drive timing of insulin, and insulin infusion should be delayed when potassium is <3.5 mmol/L until corrected.",
+        "when": {
+          "termsAny": [
+            "hypokalemia",
+            "low potassium",
+            "k <3.5",
+            "k 3.5",
+            "hyperkalemia",
+            "high potassium",
+            "ecg changes",
+            "arrhythmia",
+            "esrd",
+            "eskd",
+            "severe aki",
+            "renal failure"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "potassium monitoring and treatment safety",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_special_population",
+        "label": "Pregnancy, frailty/older adult, heart failure, advanced kidney disease, or major comorbidity affecting fluids/insulin",
+        "action": "Escalate early to senior endocrinology and the appropriate specialty team; fluid and insulin plans need individualized monitoring.",
+        "when": {
+          "termsAny": [
+            "pregnant",
+            "pregnancy",
+            "older adult",
+            "frail",
+            "heart failure",
+            "esrd",
+            "eskd",
+            "dialysis",
+            "kidney failure",
+            "ckd",
+            "cirrhosis"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "special populations and fluid safety",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "dka_diabetes_type",
+        "label": "Known diabetes type, duration, insulin regimen, pump/CGM use, and last insulin dose?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical history",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_recent_glucose",
+        "label": "Recent glucose values, beta-hydroxybutyrate/urine ketones, anion gap, bicarbonate, pH, potassium, creatinine, and osmolality if known?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "diagnostic criteria and severity classification",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_missed_insulin",
+        "label": "Missed or reduced insulin, pump/infusion-set failure, empty reservoir, expired insulin, medication access issue, or recent dose change?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_polyuria_polydipsia",
+        "label": "Polyuria, polydipsia, weight loss, dehydration, or very dry mouth?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_vomit_abdomen",
+        "label": "Vomiting, abdominal pain, poor oral intake, or inability to keep fluids down?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_infection_trigger",
+        "label": "Fever, dysuria, cough, wound, line infection, dental/skin infection, chest pain, stroke symptoms, pancreatitis symptoms, steroids, or other trigger?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_mental_status_question",
+        "label": "Any confusion, sleepiness, seizure, severe weakness, or inability to participate in care?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity and clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_sglt2_pregnancy",
+        "label": "SGLT2 inhibitor use, pregnancy/postpartum state, fasting/low-carb intake, alcohol, toxin exposure, or recent surgery?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes and euglycemic DKA",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_comorbidity_fluid_risk",
+        "label": "Heart failure, CKD/ESKD, frailty, cirrhosis, pregnancy, or other reason to use smaller fluid boluses and closer electrolyte monitoring?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "special populations and fluid safety",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_treatment_started",
+        "label": "What has already been given: fluids, insulin route/rate, potassium/phosphate, dextrose, bicarbonate, antibiotics, and current monitoring level?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "treatment monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "conditionalQuestions": [
+      {
+        "id": "dka_hhs_features",
+        "label": "Older adult, glucose near/above 600 mg/dL, profound dehydration, neurologic symptoms, high effective/total osmolality, or suspected mixed DKA/HHS?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "hhs",
+            "hyperosmolar",
+            "hyperosmolarity",
+            "very high glucose",
+            "glucose 600",
+            "older",
+            "confusion",
+            "dehydration"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "HHS diagnosis and presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_infection_source_detail",
+        "label": "If infection or ischemia is possible, what source is most likely: urinary, pulmonary, skin/foot, line, abdomen, dental, MI, stroke, pancreatitis, or other?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "infection",
+            "fever",
+            "wound",
+            "dysuria",
+            "cough",
+            "chest pain",
+            "stroke",
+            "pancreatitis"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_discharge_barriers",
+        "label": "Before discharge planning: insulin/supply access, ketone strips, glucagon, sick-day plan, mental health/substance use, food/housing insecurity, and follow-up arranged?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "discharge",
+            "readmission",
+            "recurrent",
+            "access",
+            "homeless",
+            "insurance"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_missed_insulin",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "prevention, discharge education, and social barriers",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "requiredExam": [
+      {
+        "id": "dka_vitals",
+        "label": "Vital signs including BP, HR, RR, oxygen saturation, temperature, and weight if available",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_hydration",
+        "label": "Hydration and volume status: mucous membranes, JVP, skin turgor, edema, urine output context",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "fluid losses and clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_resp_pattern",
+        "label": "Respiratory pattern and work of breathing, including Kussmaul pattern",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_mental_status_exam",
+        "label": "Mental status and ability to protect airway/participate in care",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_perfusion",
+        "label": "Perfusion: capillary refill, peripheral pulses, extremity temperature, signs of shock",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_abdomen",
+        "label": "Abdominal exam for tenderness, guarding, ileus, or alternate trigger",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "conditionalExam": [
+      {
+        "id": "dka_infection_exam",
+        "label": "Focused infection source exam: lungs, CVA tenderness, skin/feet/wounds/lines, oropharynx as indicated",
+        "when": {
+          "termsAny": [
+            "infection",
+            "fever",
+            "wound",
+            "dysuria",
+            "cough"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_diabetes_foot",
+        "label": "Diabetes foot/skin exam when wound, neuropathy, ulcer, infection, or discharge planning is relevant",
+        "when": {
+          "termsAny": [
+            "foot",
+            "ulcer",
+            "wound",
+            "neuropathy",
+            "cellulitis"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes and recurrence prevention",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_neuro_screen",
+        "label": "Focused neurologic exam when confusion, seizure, focal symptoms, or hyperosmolarity is present",
+        "when": {
+          "termsAny": [
+            "confusion",
+            "seizure",
+            "focal",
+            "hhs",
+            "hyperosmolar"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_mental_status_question",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity and HHS features",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "initialTests": [
+      {
+        "id": "dka_poc_glucose",
+        "label": "Point-of-care glucose now",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "diagnostic criteria",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_beta_hydroxybutyrate",
+        "label": "Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "ketosis criterion and monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_bmp_gap",
+        "label": "Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "diagnosis and monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_blood_gas",
+        "label": "Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or local protocol requires it",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "acidosis criterion",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_osmolality",
+        "label": "Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "HHS diagnosis and osmolality monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_ecg_potassium",
+        "label": "ECG and potassium-focused monitoring if potassium abnormality, weakness, renal failure, or insulin therapy is expected",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "potassium and treatment monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_cbc_phos_mg",
+        "label": "CBC with differential plus magnesium and phosphate when crisis is suspected or insulin therapy is expected",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "initial evaluation and electrolyte monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_trigger_tests",
+        "label": "Precipitant workup guided by presentation: urinalysis/culture, blood cultures, chest imaging, viral testing, pregnancy test, lipase, troponin/ECG, neuroimaging, or other source evaluation",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_a1c",
+        "label": "Hemoglobin A1c if no reliable result in the prior 3 months or if baseline control is unclear",
+        "source": {
+          "source_id": "ADA_STANDARDS_HOSPITAL_2026",
+          "source_section": "A1c testing in hospitalized patients with diabetes or hyperglycemia",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_serial_monitoring",
+        "label": "If treating DKA/HHS: glucose every 1-2 h; electrolytes, creatinine, phosphate, beta-hydroxybutyrate, and venous pH about every 4 h until DKA resolves; osmolality every 4 h in HHS",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "treatment monitoring",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "dka_emergency",
+        "label": "Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "treatment setting and severity",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_high_acuity",
+        "label": "ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.",
+        "when": {
+          "termsAny": [
+            "hhs",
+            "shock",
+            "hypotension",
+            "coma",
+            "severe acidosis",
+            "altered mental status",
+            "severe potassium",
+            "icu"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_hhs_features",
+              "value": "yes"
+            },
+            {
+              "id": "dka_mental_status_question",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity and treatment setting",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_mild_moderate_dka",
+        "label": "Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "level of care and subcutaneous insulin option",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_potassium_rule",
+        "label": "Do not start or continue insulin infusion without potassium-aware protocol monitoring; if K <3.5 mmol/L, replace potassium and delay insulin until K is >3.5 mmol/L.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "potassium replacement and insulin timing",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_euglycemic",
+        "label": "If SGLT2/pregnancy/fasting risk exists, evaluate ketones/acidosis even if glucose is <200 mg/dL; stop SGLT2 inhibitor on admission and generally do not restart after DKA without a specialist risk-benefit decision.",
+        "when": {
+          "answersAny": [
+            {
+              "id": "dka_sglt2_pregnancy",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "euglycemic DKA and SGLT2 inhibitor management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_hhs_correction",
+        "label": "For HHS, avoid overly rapid glucose, sodium, or osmolality correction; monitor neurologic status and osmolality closely.",
+        "when": {
+          "termsAny": [
+            "hhs",
+            "hyperosmolar",
+            "hyperosmolarity",
+            "very high glucose"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_hhs_features",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "HHS osmolality correction and neurologic complications",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_resolution_transition",
+        "label": "Transition off IV insulin only after biochemical resolution and clinical stability; use basal-bolus insulin with basal overlap 1-2 h before stopping IV insulin, and do not use anion gap alone as the resolution criterion.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "resolution criteria and transition to subcutaneous insulin",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "dka_discharge_prevention",
+        "label": "Before discharge, confirm insulin and diabetes supplies, ketone testing plan, sick-day rules, glucagon when indicated, medication affordability, education, and close follow-up; address recurrent DKA or social/mental-health barriers.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "prevention, discharge education, and follow-up",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ]
+  }
+}

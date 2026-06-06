@@ -1,0 +1,42 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "replace_with_condition_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Replace with condition label",
+    "complaint_group": "replace_with_group",
+    "version": "0.1.0",
+    "status": "draft",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "replace with trigger"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "replace_differential_bucket",
+        "label": "Replace with diagnostic distinction or bucket.",
+        "source": {
+          "source_id": "REPLACE_SOURCE_ID",
+          "source_section": "replace with guideline section",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "replace with source year",
+          "last_reviewed": "YYYY-MM-DD",
+          "clinical_owner": "replace_with_reviewer",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "redFlags": [],
+    "requiredQuestions": [],
+    "conditionalQuestions": [],
+    "requiredExam": [],
+    "conditionalExam": [],
+    "initialTests": [],
+    "dispositionRules": []
+  }
+}

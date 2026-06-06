@@ -1,0 +1,292 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "hirsutism_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Hirsutism (Excessive hair growth)",
+    "complaint_group": "reproductive_and_gonadal_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Hirsutism (Excessive hair growth)",
+      "Hirsutism",
+      "Excessive hair growth",
+      "hirsutism"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Hirsutism (Excessive hair growth): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Total testosterone and free testosterone when indicated."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Rapid onset",
+            "virilization",
+            "very high testosterone/DHEAS",
+            "pelvic/adrenal mass symptoms."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Onset/progression, virilization, menstrual irregularity.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Acne/alopecia, infertility, medications, family/ethnic hair pattern.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Ferriman-Gallwey pattern/severity, virilization signs, acne/alopecia, BMI/BP/acanthosis.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Total testosterone and free testosterone when indicated.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_02",
+        "label": "Early morning 17-OHP.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_03",
+        "label": "DHEAS when severe/rapid.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_04",
+        "label": "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "reference_01",
+        "label": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Hirsutism (Excessive hair growth)",
+      "category": "Reproductive and Gonadal Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_HIRSUTISM_2018",
+        "PCOS_GUIDELINE_2023"
+      ],
+      "reference_values": [
+        "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

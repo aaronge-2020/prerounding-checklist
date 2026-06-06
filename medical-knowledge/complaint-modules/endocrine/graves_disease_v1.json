@@ -1,0 +1,302 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "graves_disease_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Graves' Disease",
+    "complaint_group": "thyroid_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Graves' Disease",
+      "graves disease"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Graves' Disease: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "TSH, free T4, T3."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Thyroid storm",
+            "vision-threatening orbitopathy",
+            "pregnancy with uncontrolled hyperthyroidism."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Hyperthyroid symptoms, eye irritation/diplopia/vision change.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Smoking, pregnancy plans, prior antithyroid drug reaction.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Diffuse goiter/bruit, tachycardia/AF, tremor.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Lid lag/proptosis/EOM, pretibial myxedema.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "TSH, free T4, T3.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+      },
+      {
+        "id": "test_02",
+        "label": "TRAb/TSI.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+      },
+      {
+        "id": "test_03",
+        "label": "RAIU if TRAb negative, nodular, or unclear.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+      },
+      {
+        "id": "reference_01",
+        "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "TRAb-positive biochemical hyperthyroidism supports Graves.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "TRAb-positive biochemical hyperthyroidism supports Graves."
+      },
+      {
+        "id": "management_02",
+        "label": "Orbitopathy changes radioactive iodine risk and ophthalmology urgency.",
+        "source": {
+          "source_id": "ATA_HYPERTHYROIDISM_2016",
+          "source_section": "Graves' Disease generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Orbitopathy changes radioactive iodine risk and ophthalmology urgency."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Graves' Disease",
+      "category": "Thyroid Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ATA_HYPERTHYROIDISM_2016"
+      ],
+      "reference_values": [
+        "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
+        "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

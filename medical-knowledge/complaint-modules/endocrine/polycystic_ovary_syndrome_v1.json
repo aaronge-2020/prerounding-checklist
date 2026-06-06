@@ -1,0 +1,275 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "polycystic_ovary_syndrome_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Polycystic Ovary Syndrome (PCOS)",
+    "complaint_group": "reproductive_and_gonadal_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Polycystic Ovary Syndrome (PCOS)",
+      "Polycystic Ovary Syndrome",
+      "PCOS",
+      "polycystic ovary syndrome"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Polycystic Ovary Syndrome (PCOS): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Pregnancy test."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Rapid virilization",
+            "very high testosterone/DHEAS",
+            "pelvic mass",
+            "severe abnormal uterine bleeding."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Cycle irregularity, infertility, hirsutism/acne/alopecia.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Weight/metabolic history, sleep apnea/mood, rapid virilization.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "BMI/waist/BP, hirsutism/acne/alopecia, acanthosis.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Pelvic/ultrasound by appropriate clinician if indicated.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Pregnancy test.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+      },
+      {
+        "id": "test_02",
+        "label": "Total/free testosterone by reliable assay.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+      },
+      {
+        "id": "test_03",
+        "label": "Exclude mimics: TSH, prolactin, 17-OHP; DHEAS/androstenedione if severe.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+      },
+      {
+        "id": "test_04",
+        "label": "Ovulatory dysfunction criteria; ultrasound or AMH in adults; metabolic screen A1c/OGTT/lipids/BP.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+      },
+      {
+        "id": "reference_01",
+        "label": "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation.",
+        "source": {
+          "source_id": "PCOS_GUIDELINE_2023",
+          "source_section": "Polycystic Ovary Syndrome (PCOS) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2023",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Polycystic Ovary Syndrome (PCOS)",
+      "category": "Reproductive and Gonadal Disorders",
+      "aliases": [],
+      "source_ids": [
+        "PCOS_GUIDELINE_2023"
+      ],
+      "reference_values": [
+        "Adults: PCOS generally requires 2 of 3 Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, PCOM/elevated AMH."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

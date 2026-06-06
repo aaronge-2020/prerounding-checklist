@@ -30,6 +30,15 @@ assert.equal(topIntent("burning pee with fever"), "gu_renal_dysuria_v1");
 assert.equal(topIntent("can't breathe lying flat"), "dyspnea_hf_v1");
 assert.equal(topIntent("face droop and aphasia"), "stroke_focal_neuro_v1");
 assert.equal(topIntent("black stool and dizziness"), "bleeding_anemia_v1");
+assert.equal(topIntent("thyroid storm with fever and agitation"), "thyroid_crisis_v1");
+
+const routineGraves = resolveClinicalIntents("Graves disease palpitations heat intolerance");
+assert.equal(routineGraves.validatedMatches.length, 0, "routine Graves disease should not auto-authorize the thyroid crisis intent");
+assert.equal(routineGraves.unsupported, true, "routine thyroid disease remains a searchable gap until the routine thyroid module is validated");
+assert.ok(
+  routineGraves.matches.some((intentRow) => intentRow.intent_id === "routine_thyroid_disease_gap_v1" && intentRow.status === "partial"),
+  "routine thyroid disease should surface a partial intent for review"
+);
 
 const unsupported = resolveClinicalIntents("purple fingernails after eating mango while juggling");
 assert.equal(unsupported.unsupported, true, "unsupported free text should not authorize recommendations");
@@ -101,5 +110,65 @@ const abdominalCoreText = abdominalRecommendation.coreItems
 assert.match(abdominalCoreText, /abdominal palpation|abdominal inspection|bowel sounds/i);
 assert.doesNotMatch(abdominalCoreText, /Mouth exam/i, "abdominal cramps should not promote volume/renal mouth exam to core without dehydration modifier");
 assert.doesNotMatch(abdominalCoreText, /sepsis physiology/i, "abdominal cramps should not inherit sepsis rationale without a sepsis intent");
+const abdominalConditionalText = abdominalRecommendation.conditionalItems
+  .map((entry) => `${entry.label} ${entry.domain} ${entry.reason}`)
+  .join(" | ");
+assert.doesNotMatch(abdominalConditionalText, /Lower extremity edema|Otoscope|nodes|fremitus|JVP/i, "abdominal cramps should not show broad tag-only add-ons");
+
+const abdominalDehydrationContext = buildClinicalIntentRetrievalContext(
+  abdominalIntent,
+  "vomiting, poor intake or dehydration",
+  "General medicine",
+  "Adult"
+);
+const abdominalDehydrationRanked = rankEvidenceCandidates(abdominalCatalog, abdominalDehydrationContext, tagRows, {
+  maxCandidates: 80,
+  specialty: "General medicine"
+});
+const abdominalDehydrationRecommendation = buildRecommendedExamChecklist(abdominalDehydrationContext, abdominalDehydrationRanked, {
+  specialty: "General medicine",
+  maxCoreItems: 24,
+  maxConditionalItems: 36
+});
+assert.match(
+  abdominalDehydrationRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
+  /Mouth exam/i,
+  "dehydration/vomiting modifier should activate hydration add-ons for abdominal pain"
+);
+
+const heartFailureIntent = selectedValidatedClinicalIntents(["dyspnea_hf_v1"]);
+const heartFailureContext = buildClinicalIntentRetrievalContext(
+  heartFailureIntent,
+  "",
+  "General medicine",
+  "Adult"
+);
+const heartFailureCatalog = filterEvidenceCatalogForClinicalIntents(catalog, heartFailureIntent);
+const heartFailureRanked = rankEvidenceCandidates(heartFailureCatalog, heartFailureContext, tagRows, {
+  maxCandidates: 80,
+  specialty: "General medicine"
+});
+const heartFailureRecommendation = buildRecommendedExamChecklist(heartFailureContext, heartFailureRanked, {
+  specialty: "General medicine",
+  maxCoreItems: 24,
+  maxConditionalItems: 36
+});
+assert.deepEqual(
+  heartFailureRecommendation.activeProfiles.map((profile) => profile.id),
+  ["dyspnea_hf"],
+  "validated dyspnea/HF intent should activate only its declared bundle"
+);
+const heartFailureCoreLabels = heartFailureRecommendation.coreItems.map((entry) => entry.label).join(" | ");
+assert.match(heartFailureCoreLabels, /Respiratory rate|Blood pressure|Heart rate/i);
+assert.match(heartFailureCoreLabels, /Posterior lung sounds|Lateral lung sounds|Anterior lung sounds|thorax inspection/i);
+assert.match(heartFailureCoreLabels, /JVP|Lower extremity edema|Heart sounds|Radial pulses/i);
+const heartSoundsEntry = heartFailureRecommendation.coreItems.find((entry) => /Heart sounds/i.test(entry.label));
+assert.ok(heartSoundsEntry, "HF/dyspnea should include heart sounds when volume/cardiac bundle is selected");
+assert.doesNotMatch(heartSoundsEntry.displayDiagnosticTarget || "", /focal consolidation|effusion|wheeze/i, "heart sounds should not inherit pulmonary diagnostic target");
+assert.doesNotMatch(
+  heartFailureRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
+  /Aortic area|Pulmonic area|Tricuspid area|Mitral area/i,
+  "HF/dyspnea should not show individual valve-area cards unless murmur/valve modifier is present"
+);
 
 console.log("Clinical intent tests passed.");

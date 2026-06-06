@@ -1,0 +1,277 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "prolactinoma_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Prolactinoma (Benign pituitary tumor)",
+    "complaint_group": "pituitary_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Prolactinoma (Benign pituitary tumor)",
+      "Prolactinoma",
+      "Benign pituitary tumor",
+      "prolactinoma"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Prolactinoma (Benign pituitary tumor): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Serum prolactin; repeat/macroprolactin if mild/discordant."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Visual field deficit",
+            "severe headache/apoplexy",
+            "cranial nerve palsy",
+            "pregnancy with macroadenoma symptoms."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Galactorrhea, amenorrhea/oligomenorrhea, infertility, low libido/ED.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Visual fields, galactorrhea/breast exam when appropriate, hypogonadism signs, cranial nerve symptoms.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Serum prolactin; repeat/macroprolactin if mild/discordant.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_02",
+        "label": "Pregnancy test, TSH/free T4, renal function.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "test_03",
+        "label": "Pituitary MRI after persistent unexplained elevation or mass symptoms.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      },
+      {
+        "id": "reference_01",
+        "label": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.",
+        "source": {
+          "source_id": "ES_HYPERPROLACTINEMIA_2011",
+          "source_section": "Prolactinoma (Benign pituitary tumor) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2011",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Prolactinoma (Benign pituitary tumor)",
+      "category": "Pituitary Gland Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_HYPERPROLACTINEMIA_2011"
+      ],
+      "reference_values": [
+        "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

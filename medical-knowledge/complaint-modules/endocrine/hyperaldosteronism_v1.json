@@ -1,0 +1,252 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "hyperaldosteronism_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Hyperaldosteronism (Conn's Syndrome)",
+    "complaint_group": "adrenal_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Hyperaldosteronism (Conn's Syndrome)",
+      "Hyperaldosteronism",
+      "Conn's Syndrome",
+      "primary aldosteronism",
+      "Conn syndrome",
+      "hyperaldosteronism"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Hyperaldosteronism (Conn's Syndrome): diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Aldosterone, renin, and ARR with potassium correction."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Severe hypertension, hypokalemic paralysis, arrhythmia, stroke/ACS symptoms.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Severe hypertension",
+            "hypokalemic paralysis",
+            "arrhythmia",
+            "stroke/ACS symptoms."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Resistant/early hypertension, OSA, adrenal incidentaloma.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Hypokalemia, cramps, weakness, polyuria, medication effects on ARR.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Blood pressure severity, volume/edema, weakness if hypokalemic.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Aldosterone, renin, and ARR with potassium correction.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
+      },
+      {
+        "id": "test_02",
+        "label": "Overt PA example: PRA <0.2 ng/mL/h or DRC <2 mU/L with aldosterone >15 ng/dL by LC-MS/MS or >20 ng/dL by immunoassay.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
+      },
+      {
+        "id": "test_03",
+        "label": "Adrenal CT and adrenal vein sampling after biochemical diagnosis.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
+      },
+      {
+        "id": "reference_01",
+        "label": "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping.",
+        "source": {
+          "source_id": "ES_PRIMARY_ALDO_2025",
+          "source_section": "Hyperaldosteronism (Conn's Syndrome) generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Suppressed renin with clearly elevated aldosterone changes to PA pathway and targeted therapy/subtyping."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Hyperaldosteronism (Conn's Syndrome)",
+      "category": "Adrenal Gland Disorders",
+      "aliases": [
+        "primary aldosteronism",
+        "Conn syndrome"
+      ],
+      "source_ids": [
+        "ES_PRIMARY_ALDO_2025"
+      ],
+      "reference_values": [
+        "ARR cutoffs are assay/unit/medication-specific; interpret with local lab guidance."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

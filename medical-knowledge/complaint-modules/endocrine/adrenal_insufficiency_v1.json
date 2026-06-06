@@ -1,0 +1,276 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "adrenal_insufficiency_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Adrenal Insufficiency",
+    "complaint_group": "adrenal_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Adrenal Insufficiency",
+      "adrenal insufficiency"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Adrenal Insufficiency: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "8 AM cortisol and ACTH."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Shock",
+            "vomiting/dehydration",
+            "hypoglycemia",
+            "severe hyponatremia/hyperkalemia",
+            "altered mental status."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Fatigue, weight loss, anorexia, nausea/vomiting, abdominal pain, salt craving.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Steroid exposure/withdrawal, pituitary disease, autoimmune disease, orthostasis.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Orthostatic vitals, volume status, hyperpigmentation in primary AI, mental status if crisis, abdominal exam.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "8 AM cortisol and ACTH.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+      },
+      {
+        "id": "test_02",
+        "label": "Cosyntropin stimulation test.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+      },
+      {
+        "id": "test_03",
+        "label": "BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+      },
+      {
+        "id": "reference_01",
+        "label": "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Adrenal Insufficiency",
+      "category": "Adrenal Gland Disorders",
+      "aliases": [],
+      "source_ids": [
+        "ES_ADRENAL_INSUFFICIENCY_2016"
+      ],
+      "reference_values": [
+        "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
+        "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
+        "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

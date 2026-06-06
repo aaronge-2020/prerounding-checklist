@@ -1,0 +1,372 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "type_2_diabetes_mellitus_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Type 2 Diabetes Mellitus",
+    "complaint_group": "diabetes_and_blood_sugar_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Type 2 Diabetes Mellitus",
+      "T2DM",
+      "adult-onset diabetes",
+      "type 2 diabetes mellitus"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Type 2 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "DKA/HHS symptoms, dehydration, vomiting, altered mental status.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "DKA/HHS symptoms",
+            "dehydration",
+            "vomiting",
+            "altered mental status."
+          ]
+        }
+      },
+      {
+        "id": "red_flag_02",
+        "label": "Random glucose >=200 mg/dL with classic symptoms.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Random glucose >=200 mg/dL with classic symptoms."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Polyuria, polydipsia, weight change, blurred vision, infections.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "BP, BMI/waist, volume if symptomatic.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Foot skin/pulses/monofilament or vibration when neuropathy risk.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_03",
+        "label": "Cardiovascular and thyroid exam when indicated.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
+      },
+      {
+        "id": "test_02",
+        "label": "CMP/eGFR, urine albumin-creatinine ratio, fasting lipids.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
+      },
+      {
+        "id": "test_03",
+        "label": "Ketones/anion gap if vomiting, weight loss, dehydration, or acute symptoms.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
+      },
+      {
+        "id": "reference_01",
+        "label": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_02",
+        "label": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_03",
+        "label": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_04",
+        "label": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      },
+      {
+        "id": "reference_05",
+        "label": "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity."
+      },
+      {
+        "id": "management_02",
+        "label": "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
+        "source": {
+          "source_id": "ADA_DIAGNOSIS_2026",
+          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "UACR >=30 or reduced eGFR changes kidney-protective therapy."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Type 2 Diabetes Mellitus",
+      "category": "Diabetes and Blood Sugar Disorders",
+      "aliases": [
+        "T2DM",
+        "adult-onset diabetes"
+      ],
+      "source_ids": [
+        "ADA_SOC_2026",
+        "ADA_DIAGNOSIS_2026"
+      ],
+      "reference_values": [
+        "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

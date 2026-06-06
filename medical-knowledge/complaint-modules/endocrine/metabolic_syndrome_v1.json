@@ -1,0 +1,273 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "metabolic_syndrome_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Metabolic Syndrome",
+    "complaint_group": "diabetes_and_blood_sugar_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Metabolic Syndrome",
+      "metabolic syndrome"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Metabolic Syndrome: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Waist circumference."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Metabolic Syndrome generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Diabetes-range glycemia, severe hypertension, ASCVD symptoms.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Diabetes-range glycemia",
+            "severe hypertension",
+            "ASCVD symptoms."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Weight/waist trajectory, sleep apnea, activity.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Waist circumference, BP, BMI.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      },
+      {
+        "id": "exam_02",
+        "label": "Acanthosis and cardiovascular risk exam.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "Waist circumference.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
+      },
+      {
+        "id": "test_02",
+        "label": "Fasting triglycerides, HDL, fasting glucose/A1c.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
+      },
+      {
+        "id": "test_03",
+        "label": "Blood pressure and medication review.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
+      },
+      {
+        "id": "reference_01",
+        "label": "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "3 or more criteria shifts to intensive cardiometabolic risk reduction."
+      },
+      {
+        "id": "management_02",
+        "label": "Diabetes thresholds change diagnosis.",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Diabetes thresholds change diagnosis."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Metabolic Syndrome",
+      "category": "Diabetes and Blood Sugar Disorders",
+      "aliases": [],
+      "source_ids": [
+        "NHLBI_METABOLIC_SYNDROME",
+        "ADA_SOC_2026"
+      ],
+      "reference_values": [
+        "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}

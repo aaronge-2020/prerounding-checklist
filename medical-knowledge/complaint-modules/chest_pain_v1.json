@@ -1,0 +1,797 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "chest_pain_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Chest pain",
+    "complaint_group": "cardiovascular",
+    "version": "1.0.0",
+    "status": "mvp",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "chest pain",
+      "pressure",
+      "tightness",
+      "angina",
+      "acute coronary syndrome",
+      "acs",
+      "pleuritic chest pain",
+      "chest discomfort"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "acs",
+        "label": "ACS or myocardial injury",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "structured chest pain pathways",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "pe_pulmonary",
+        "label": "PE, pneumothorax, pneumonia, or pleural disease",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening nonischemic causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "aortic",
+        "label": "Aortic syndrome or vascular emergency",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "noncardiac",
+        "label": "Musculoskeletal, GI, anxiety, or other noncardiac causes after red flags are addressed",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "stable and acute chest pain evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "chest_pain_unstable_vitals",
+        "label": "Unstable vitals or shock physiology",
+        "action": "Urgent emergency evaluation, monitoring, ECG, and escalation.",
+        "when": {
+          "termsAny": [
+            "hypotension",
+            "shock",
+            "unstable",
+            "diaphoretic",
+            "clammy",
+            "respiratory distress",
+            "hypoxia"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation of acute chest pain",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "chest_pain_syncope_neuro",
+        "label": "Syncope, new neurologic deficit, or severe sudden pain",
+        "action": "Treat as high-risk chest pain until life-threatening causes are excluded.",
+        "when": {
+          "termsAny": [
+            "syncope",
+            "fainted",
+            "neurologic deficit",
+            "facial droop",
+            "aphasia",
+            "worst",
+            "sudden",
+            "tearing"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening causes of chest pain",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "chest_pain_dissection_features",
+        "label": "Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms",
+        "action": "Escalate urgently and consider aortic imaging pathway per local protocol.",
+        "when": {
+          "termsAny": [
+            "tearing",
+            "ripping",
+            "radiating to back",
+            "pulse deficit",
+            "blood pressure differential",
+            "aortic dissection"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening nonischemic causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "cp_onset_duration",
+        "label": "When did the chest discomfort start, and is it ongoing?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "symptom characterization",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_quality_location_radiation",
+        "label": "What does it feel like, where is it, and does it radiate to arm, jaw, back, or shoulder?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "symptom characterization",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_exertional_pattern",
+        "label": "Is it exertional, relieved by rest, or similar to prior angina?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "ischemic symptom assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_dyspnea",
+        "label": "Any shortness of breath, pleuritic pain, cough, hemoptysis, or oxygen requirement?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "associated symptoms and alternative emergencies",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_diaphoresis_nausea",
+        "label": "Any diaphoresis, nausea/vomiting, palpitations, or marked weakness?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "associated symptoms",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_syncope",
+        "label": "Any syncope, presyncope, neurologic symptoms, or sudden maximal pain?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "high-risk features",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_cad_risk",
+        "label": "Known CAD, prior MI/stent/CABG, diabetes, CKD, smoking, hypertension, or strong family history?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "risk assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_med_toxin",
+        "label": "Recent cocaine/stimulant use, anticoagulants, estrogen therapy, or medication changes?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "risk modifiers and alternative causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "conditionalQuestions": [
+      {
+        "id": "cp_vte_risk",
+        "label": "Any unilateral leg swelling, recent surgery/immobility, cancer, prior VTE, pregnancy/postpartum state, or estrogen exposure?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "pleuritic",
+            "dyspnea",
+            "hypoxia",
+            "leg swelling",
+            "dvt",
+            "pulmonary embolism"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_dyspnea",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "pulmonary embolism as alternative emergency",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_repro_pregnancy",
+        "label": "If relevant, is pregnancy possible or is the patient postpartum?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "pregnant",
+            "postpartum",
+            "amenorrhea",
+            "reproductive"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "patient-specific risk assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_reproducible_tenderness",
+        "label": "Is the pain reproducible with movement, palpation, position, or meals?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "sharp",
+            "positional",
+            "reproducible",
+            "after meal",
+            "heartburn",
+            "gerd",
+            "costochondritis"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "noncardiac symptom features",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "requiredExam": [
+      {
+        "id": "cp_vitals",
+        "label": "Vital signs including BP, HR, RR, oxygen saturation, and general appearance",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_cardiac_exam",
+        "label": "Cardiac exam: rhythm, murmurs, gallop, rub, signs of heart failure",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "focused cardiovascular exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_lung_exam",
+        "label": "Pulmonary exam: work of breathing, lung sounds, asymmetry, wheeze/crackles",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "alternative cardiopulmonary emergencies",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_perf_pulses",
+        "label": "Perfusion and pulses: radial pulses, extremity perfusion, pulse deficit if concern",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "conditionalExam": [
+      {
+        "id": "cp_jvp_edema",
+        "label": "JVP, lower extremity edema, and volume status",
+        "when": {
+          "termsAny": [
+            "dyspnea",
+            "orthopnea",
+            "edema",
+            "heart failure",
+            "volume overload"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_dyspnea",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "heart failure findings",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_chest_wall",
+        "label": "Chest wall palpation for reproducible tenderness",
+        "when": {
+          "termsAny": [
+            "reproducible",
+            "movement",
+            "costochondritis",
+            "trauma"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_reproducible_tenderness",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "noncardiac causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_leg_dvt",
+        "label": "Unilateral leg swelling/tenderness and calf asymmetry if PE/DVT concern",
+        "when": {
+          "termsAny": [
+            "leg swelling",
+            "dvt",
+            "pulmonary embolism",
+            "pleuritic",
+            "hypoxia"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_vte_risk",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "pulmonary embolism as alternative emergency",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_bilateral_bp",
+        "label": "Blood pressure in both arms and pulse symmetry if dissection concern",
+        "when": {
+          "termsAny": [
+            "tearing",
+            "ripping",
+            "back",
+            "pulse deficit",
+            "aortic dissection"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "aortic syndrome concern",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "initialTests": [
+      {
+        "id": "cp_ecg_10_min",
+        "label": "12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "ECG for acute chest pain",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_troponin",
+        "label": "High-sensitivity troponin pathway with serial testing per local protocol",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "cardiac troponin recommendations",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_monitoring",
+        "label": "Cardiac monitor, IV access, and repeat vitals if acute or unstable",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation and risk stratification",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_cxr",
+        "label": "Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "evaluation for nonischemic causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_pe_testing",
+        "label": "If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography",
+        "when": {
+          "termsAny": [
+            "pleuritic",
+            "hypoxia",
+            "dvt",
+            "pulmonary embolism"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_vte_risk",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "pulmonary embolism as alternative emergency",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_pregnancy_test",
+        "label": "Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it",
+        "when": {
+          "answersAny": [
+            {
+              "id": "cp_repro_pregnancy",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "patient-specific testing considerations",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "cp_emergency_escalation",
+        "label": "Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.",
+        "when": {
+          "termsAny": [
+            "ongoing",
+            "unstable",
+            "syncope",
+            "hypotension",
+            "diaphoresis",
+            "hypoxia",
+            "tearing",
+            "stemi"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "structured clinical decision pathways",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      },
+      {
+        "id": "cp_structured_pathway",
+        "label": "Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "structured clinical decision pathways",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        }
+      }
+    ]
+  }
+}

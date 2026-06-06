@@ -3168,14 +3168,16 @@
     }
 
     .complaint-cds-panel,
-    .exam-tester-panel {
+    .exam-tester-panel,
+    .knowledge-base-panel {
       border: 1px solid rgba(106, 179, 189, 0.22);
       border-radius: var(--radius-sm);
       background: rgba(79, 152, 163, 0.07);
     }
 
     .complaint-cds-panel summary,
-    .exam-tester-panel summary {
+    .exam-tester-panel summary,
+    .knowledge-base-panel summary {
       min-height: 44px;
       padding: 12px 13px;
       color: var(--accent-strong);
@@ -3184,7 +3186,8 @@
     }
 
     .complaint-cds-body,
-    .exam-tester-body {
+    .exam-tester-body,
+    .knowledge-base-body {
       display: grid;
       gap: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -3416,6 +3419,182 @@
     .complaint-cds-item.is-triggered {
       border-color: rgba(242, 118, 118, 0.34);
       background: rgba(242, 118, 118, 0.08);
+    }
+
+    .knowledge-base-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.45fr) minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .knowledge-base-section {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 11px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+
+    .knowledge-base-section-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .knowledge-base-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 950;
+    }
+
+    .knowledge-base-copy,
+    .knowledge-base-status {
+      margin: 3px 0 0;
+      color: var(--quiet);
+      font-size: 0.78rem;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .knowledge-base-summary,
+    .knowledge-base-actions,
+    .knowledge-proposal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .knowledge-base-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .knowledge-base-form-grid input,
+    .knowledge-base-form-grid select,
+    .knowledge-base-section > select {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .knowledge-base-preview,
+    .knowledge-base-editor,
+    .knowledge-base-source-input,
+    .knowledge-base-notes-input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.22);
+      font: inherit;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .knowledge-base-preview {
+      max-height: 310px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .knowledge-base-editor {
+      min-height: 220px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    }
+
+    .knowledge-base-source-input {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .knowledge-base-notes-input {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .knowledge-proposal-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .knowledge-proposal-card {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .knowledge-proposal-card.is-approved {
+      border-color: rgba(96, 187, 134, 0.46);
+      background: rgba(96, 187, 134, 0.075);
+    }
+
+    .knowledge-proposal-card.is-denied {
+      opacity: 0.74;
+    }
+
+    .knowledge-proposal-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .knowledge-proposal-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.86rem;
+      font-weight: 950;
+      line-height: 1.25;
+    }
+
+    .knowledge-proposal-meta {
+      margin: 0;
+      color: var(--quiet);
+      font-size: 0.76rem;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .knowledge-proposal-badge {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .knowledge-proposal-badge.is-approved {
+      border-color: rgba(96, 187, 134, 0.56);
+      color: #dff8e8;
+      background: rgba(96, 187, 134, 0.14);
+    }
+
+    .knowledge-proposal-badge.is-denied {
+      border-color: rgba(224, 106, 106, 0.42);
+      color: #ffd9d9;
+      background: rgba(224, 106, 106, 0.1);
     }
 
     .exam-tester-audit {
@@ -4242,7 +4421,9 @@
       .quick-cluster-grid,
       .status-chip-grid,
       .complaint-cds-grid,
-      .exam-tester-grid {
+      .exam-tester-grid,
+      .knowledge-base-grid,
+      .knowledge-base-form-grid {
         grid-template-columns: 1fr;
       }
 
@@ -4710,6 +4891,7 @@
             <div class="complaint-cds-actions">
               <button id="runComplaintCdsButton" class="btn btn-primary" type="button" disabled>Build clinical workup</button>
               <button id="copyComplaintCdsButton" class="btn btn-secondary" type="button" disabled>Copy workup</button>
+              <button id="copyClinicalImprovementAuditButton" class="btn btn-secondary" type="button" disabled>Copy improvement audit</button>
               <button id="stageKnowledgeGapButton" class="btn btn-secondary" type="button">Stage as knowledge gap</button>
               <button id="clearComplaintCdsButton" class="btn btn-quiet" type="button">Clear</button>
             </div>
@@ -4757,6 +4939,7 @@
             <div class="exam-tester-actions">
               <button id="runExamTesterButton" class="btn btn-primary" type="button">Build clinical workup</button>
               <button id="copyExamTesterButton" class="btn btn-secondary" type="button" disabled>Copy workup</button>
+              <button id="copyExamImprovementAuditButton" class="btn btn-secondary" type="button" disabled>Copy improvement audit</button>
               <label class="btn btn-secondary" for="knowledgePackImportInput">Import knowledge pack</label>
               <input id="knowledgePackImportInput" type="file" accept="application/json,.json" hidden>
               <button id="clearExamTesterButton" class="btn btn-quiet" type="button">Clear</button>
@@ -4768,6 +4951,101 @@
             <div id="examTesterGaps" class="exam-tester-gaps" hidden></div>
           </div>
         </details>
+          </div>
+        </details>
+
+        <details id="knowledgeBasePanel" class="knowledge-base-panel">
+          <summary>Medical knowledge base</summary>
+          <div class="knowledge-base-body">
+            <div class="knowledge-base-grid">
+              <section class="knowledge-base-section" aria-labelledby="knowledgeBaseInstalledTitle">
+                <div class="knowledge-base-section-head">
+                  <div>
+                    <p id="knowledgeBaseInstalledTitle" class="knowledge-base-title">Installed modules</p>
+                    <p id="knowledgeBaseManifestSummary" class="knowledge-base-copy"></p>
+                  </div>
+                  <button id="refreshKnowledgeBaseButton" class="btn btn-secondary" type="button">Refresh</button>
+                </div>
+                <label for="knowledgeModuleSelect">Module</label>
+                <select id="knowledgeModuleSelect"></select>
+                <div id="knowledgeModuleSummary" class="knowledge-base-summary" hidden></div>
+                <pre id="knowledgeModulePreview" class="knowledge-base-preview" aria-label="Selected module JSON preview"></pre>
+              </section>
+
+              <section class="knowledge-base-section" aria-labelledby="knowledgeBaseDraftTitle">
+                <div class="knowledge-base-section-head">
+                  <div>
+                    <p id="knowledgeBaseDraftTitle" class="knowledge-base-title">Draft a suggestion</p>
+                    <p class="knowledge-base-copy">Use reviewed source material only. Keep patient identifiers out.</p>
+                  </div>
+                  <label class="btn btn-secondary" for="knowledgeProposalImportInput">Import proposal</label>
+                  <input id="knowledgeProposalImportInput" type="file" accept="application/json,.json" hidden>
+                </div>
+                <div class="knowledge-base-form-grid">
+                  <div>
+                    <label for="knowledgeProposalKind">Suggestion type</label>
+                    <select id="knowledgeProposalKind">
+                      <option value="module_edit">Modify selected module</option>
+                      <option value="new_guideline">Submit guideline/source</option>
+                      <option value="clinical_script">Submit clinical script</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="knowledgeSubmitterInput">Submitter</label>
+                    <input id="knowledgeSubmitterInput" type="text" spellcheck="false" placeholder="Name, role, or team">
+                  </div>
+                  <div>
+                    <label for="knowledgeConditionInput">Condition or topic</label>
+                    <input id="knowledgeConditionInput" type="text" spellcheck="false" placeholder="DKA, asthma exacerbation, cirrhosis ascites">
+                  </div>
+                  <div>
+                    <label for="knowledgeSourceTypeSelect">Source type</label>
+                    <select id="knowledgeSourceTypeSelect">
+                      <option>Guideline</option>
+                      <option>Institutional pathway</option>
+                      <option>Clinical script</option>
+                      <option>Review article</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="knowledgeSourceTitleInput">Source title</label>
+                    <input id="knowledgeSourceTitleInput" type="text" spellcheck="false" placeholder="Title of guideline or script">
+                  </div>
+                  <div>
+                    <label for="knowledgeSourceUrlInput">URL / DOI / local reference</label>
+                    <input id="knowledgeSourceUrlInput" type="text" spellcheck="false" placeholder="https://, doi:, local policy name">
+                  </div>
+                </div>
+                <label for="knowledgeSourceTextInput">Clinical source text or script</label>
+                <textarea id="knowledgeSourceTextInput" class="knowledge-base-source-input" spellcheck="false" placeholder="Paste non-patient source material here."></textarea>
+                <label for="knowledgeReviewerNotesInput">Notes for reviewer</label>
+                <textarea id="knowledgeReviewerNotesInput" class="knowledge-base-notes-input" spellcheck="false" placeholder="What should change, why, and any local practice caveats."></textarea>
+                <div class="knowledge-base-actions">
+                  <button id="loadSelectedKnowledgeModuleButton" class="btn btn-secondary" type="button">Load selected JSON</button>
+                  <button id="copyKnowledgeExtractionPromptButton" class="btn btn-secondary" type="button">Copy extraction prompt</button>
+                  <button id="stageKnowledgeProposalButton" class="btn btn-primary" type="button">Stage suggestion</button>
+                  <button id="exportKnowledgeProposalButton" class="btn btn-secondary" type="button">Export suggestion</button>
+                </div>
+                <label for="knowledgeModuleEditor">Structured module JSON</label>
+                <textarea id="knowledgeModuleEditor" class="knowledge-base-editor" spellcheck="false" placeholder="Paste or edit complaint_cds_module JSON here."></textarea>
+                <p id="knowledgeBaseStatus" class="knowledge-base-status" role="status" aria-live="polite"></p>
+              </section>
+            </div>
+
+            <section class="knowledge-base-section" aria-labelledby="knowledgeProposalQueueTitle">
+              <div class="knowledge-base-section-head">
+                <div>
+                  <p id="knowledgeProposalQueueTitle" class="knowledge-base-title">Review queue</p>
+                  <p id="knowledgeProposalQueueSummary" class="knowledge-base-copy"></p>
+                </div>
+                <div class="knowledge-base-actions">
+                  <button id="exportKnowledgeQueueButton" class="btn btn-secondary" type="button">Export queue</button>
+                  <button id="clearDeniedKnowledgeProposalsButton" class="btn btn-quiet" type="button">Clear denied</button>
+                </div>
+              </div>
+              <div id="knowledgeProposalList" class="knowledge-proposal-list"></div>
+            </section>
           </div>
         </details>
 
@@ -6225,9 +6503,14 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     } from "./clinical-intents.js";
     import {
       complaintModules,
+      complaintSourceRegistry,
       evaluateComplaintCds,
-      formatComplaintCdsReport
+      formatComplaintCdsReport,
+      selectComplaintModule
     } from "./complaint-cds.js";
+    import {
+      medicalKnowledgeDbManifest
+    } from "./medical-knowledge-db.js";
     import {
       buildEvidencePromptReplacement,
       buildRecommendedExamChecklist,
@@ -6372,6 +6655,12 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       examEmbeddingIndex: null,
       examEmbeddingStatus: null,
       knowledgePackReviewState: normalizeKnowledgePackReviewState(),
+      knowledgeBaseReviewState: {
+        schema: "medicalKnowledgeProposalReviewV1",
+        proposals: [],
+        updatedAt: ""
+      },
+      activeKnowledgeProposalId: "",
       evidenceReviewState: normalizeEvidenceReviewState(),
       continuity: {
         cases: [],
@@ -6590,6 +6879,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       complaintCdsPopulationSelect: document.getElementById("complaintCdsPopulationSelect"),
       runComplaintCdsButton: document.getElementById("runComplaintCdsButton"),
       copyComplaintCdsButton: document.getElementById("copyComplaintCdsButton"),
+      copyClinicalImprovementAuditButton: document.getElementById("copyClinicalImprovementAuditButton"),
       stageKnowledgeGapButton: document.getElementById("stageKnowledgeGapButton"),
       clearComplaintCdsButton: document.getElementById("clearComplaintCdsButton"),
       complaintCdsStatus: document.getElementById("complaintCdsStatus"),
@@ -6602,8 +6892,34 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       examTesterEmbeddingToggle: document.getElementById("examTesterEmbeddingToggle"),
       runExamTesterButton: document.getElementById("runExamTesterButton"),
       copyExamTesterButton: document.getElementById("copyExamTesterButton"),
+      copyExamImprovementAuditButton: document.getElementById("copyExamImprovementAuditButton"),
       clearExamTesterButton: document.getElementById("clearExamTesterButton"),
       knowledgePackImportInput: document.getElementById("knowledgePackImportInput"),
+      knowledgeBasePanel: document.getElementById("knowledgeBasePanel"),
+      knowledgeBaseManifestSummary: document.getElementById("knowledgeBaseManifestSummary"),
+      refreshKnowledgeBaseButton: document.getElementById("refreshKnowledgeBaseButton"),
+      knowledgeModuleSelect: document.getElementById("knowledgeModuleSelect"),
+      knowledgeModuleSummary: document.getElementById("knowledgeModuleSummary"),
+      knowledgeModulePreview: document.getElementById("knowledgeModulePreview"),
+      knowledgeProposalImportInput: document.getElementById("knowledgeProposalImportInput"),
+      knowledgeProposalKind: document.getElementById("knowledgeProposalKind"),
+      knowledgeSubmitterInput: document.getElementById("knowledgeSubmitterInput"),
+      knowledgeConditionInput: document.getElementById("knowledgeConditionInput"),
+      knowledgeSourceTypeSelect: document.getElementById("knowledgeSourceTypeSelect"),
+      knowledgeSourceTitleInput: document.getElementById("knowledgeSourceTitleInput"),
+      knowledgeSourceUrlInput: document.getElementById("knowledgeSourceUrlInput"),
+      knowledgeSourceTextInput: document.getElementById("knowledgeSourceTextInput"),
+      knowledgeReviewerNotesInput: document.getElementById("knowledgeReviewerNotesInput"),
+      loadSelectedKnowledgeModuleButton: document.getElementById("loadSelectedKnowledgeModuleButton"),
+      copyKnowledgeExtractionPromptButton: document.getElementById("copyKnowledgeExtractionPromptButton"),
+      stageKnowledgeProposalButton: document.getElementById("stageKnowledgeProposalButton"),
+      exportKnowledgeProposalButton: document.getElementById("exportKnowledgeProposalButton"),
+      knowledgeModuleEditor: document.getElementById("knowledgeModuleEditor"),
+      knowledgeBaseStatus: document.getElementById("knowledgeBaseStatus"),
+      knowledgeProposalQueueSummary: document.getElementById("knowledgeProposalQueueSummary"),
+      exportKnowledgeQueueButton: document.getElementById("exportKnowledgeQueueButton"),
+      clearDeniedKnowledgeProposalsButton: document.getElementById("clearDeniedKnowledgeProposalsButton"),
+      knowledgeProposalList: document.getElementById("knowledgeProposalList"),
       examTesterStatus: document.getElementById("examTesterStatus"),
       examTesterSummary: document.getElementById("examTesterSummary"),
       examTesterTags: document.getElementById("examTesterTags"),
@@ -6858,6 +7174,8 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
     const deviceModeKey = "preRoundDeviceModeV1";
     const evidenceReviewStorageKey = "preRoundEvidenceReviewV1";
     const knowledgePackReviewStorageKey = "preRoundClinicalKnowledgePackReviewV1";
+    const knowledgeBaseReviewStorageKey = "preRoundMedicalKnowledgeProposalsV1";
+    const knowledgeBaseProposalSchemaVersion = "medicalKnowledgeProposalV1";
     const openEvidenceResultsStorageKey = "preRoundOpenEvidenceTaskResultsV1";
     const studentExamReferenceUrl = "physical_exam_reference.csv";
     const studentExamEvidenceOverlayUrl = "physical_exam_evidence_overlay.csv";
@@ -9985,6 +10303,518 @@ The de-identified source context was provided in the previous CASE CONTEXT MESSA
       } finally {
         elements.knowledgePackImportInput.value = "";
       }
+    }
+
+    function normalizeKnowledgeBaseReviewState(value = {}) {
+      let parsed = {};
+      try {
+        parsed = typeof value === "string" && value.trim() ? JSON.parse(value) : (value || {});
+      } catch (error) {
+        parsed = {};
+      }
+      const proposals = Array.isArray(parsed.proposals) ? parsed.proposals : [];
+      return {
+        schema: "medicalKnowledgeProposalReviewV1",
+        proposals: proposals.map((proposal) => normalizeKnowledgeProposal(proposal)).filter((proposal) => proposal.id),
+        updatedAt: parsed.updatedAt || ""
+      };
+    }
+
+    function normalizeKnowledgeProposal(proposal = {}) {
+      const createdAt = proposal.createdAt || new Date().toISOString();
+      return {
+        schema_version: knowledgeBaseProposalSchemaVersion,
+        id: String(proposal.id || "").trim(),
+        kind: proposal.kind || "module_edit",
+        status: proposal.status || "pending",
+        title: proposal.title || proposal.conditionLabel || "Untitled suggestion",
+        conditionLabel: proposal.conditionLabel || "",
+        submitter: proposal.submitter || "",
+        sourceRow: proposal.sourceRow || null,
+        sourceText: proposal.sourceText || "",
+        notes: proposal.notes || "",
+        extractionPrompt: proposal.extractionPrompt || "",
+        moduleEnvelope: proposal.moduleEnvelope || null,
+        validationIssues: Array.isArray(proposal.validationIssues) ? proposal.validationIssues : [],
+        reviewerNote: proposal.reviewerNote || "",
+        createdAt,
+        updatedAt: proposal.updatedAt || createdAt
+      };
+    }
+
+    function loadKnowledgeBaseReviewStateFromStorage() {
+      state.knowledgeBaseReviewState = normalizeKnowledgeBaseReviewState(safeLocalStorageGet(knowledgeBaseReviewStorageKey) || {});
+      return state.knowledgeBaseReviewState;
+    }
+
+    function saveKnowledgeBaseReviewState() {
+      state.knowledgeBaseReviewState.updatedAt = new Date().toISOString();
+      const serialized = JSON.stringify(state.knowledgeBaseReviewState);
+      safeLocalStorageSet(knowledgeBaseReviewStorageKey, serialized);
+      return serialized;
+    }
+
+    function approvedKnowledgeProposals() {
+      return (state.knowledgeBaseReviewState.proposals || [])
+        .filter((proposal) => proposal.status === "approved" && proposal.moduleEnvelope?.module?.id);
+    }
+
+    function effectiveComplaintModules() {
+      const byId = new Map(complaintModules.map((module) => [module.id, module]));
+      approvedKnowledgeProposals().forEach((proposal) => {
+        byId.set(proposal.moduleEnvelope.module.id, proposal.moduleEnvelope.module);
+      });
+      return Array.from(byId.values());
+    }
+
+    function effectiveComplaintSourceRegistry() {
+      const byId = new Map(complaintSourceRegistry.map((sourceRow) => [sourceRow.id, sourceRow]));
+      approvedKnowledgeProposals().forEach((proposal) => {
+        if (proposal.sourceRow?.id) {
+          byId.set(proposal.sourceRow.id, proposal.sourceRow);
+        }
+        (proposal.moduleEnvelope?.source_registry || []).forEach((sourceRow) => {
+          if (sourceRow?.id) {
+            byId.set(sourceRow.id, sourceRow);
+          }
+        });
+      });
+      return Array.from(byId.values());
+    }
+
+    function knowledgeModuleEnvelope(module) {
+      return {
+        schema_version: "medical_knowledge_database_v1",
+        artifact_type: "complaint_cds_module",
+        complaint_cds_schema_version: "complaint-cds-artifact-v1",
+        module
+      };
+    }
+
+    function selectedKnowledgeModule() {
+      const id = elements.knowledgeModuleSelect?.value || "";
+      return effectiveComplaintModules().find((module) => module.id === id) || effectiveComplaintModules()[0] || null;
+    }
+
+    function sanitizeKnowledgeId(value, fallback = "USER_SOURCE") {
+      const cleaned = String(value || "")
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 48);
+      return cleaned || fallback;
+    }
+
+    function buildKnowledgeSourceRow() {
+      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "User source";
+      const title = elements.knowledgeSourceTitleInput.value.trim() || condition;
+      const sourceType = elements.knowledgeSourceTypeSelect.value.trim() || "User submitted";
+      const today = new Date().toISOString().slice(0, 10);
+      return {
+        id: `${sanitizeKnowledgeId(sourceType, "SOURCE")}_${sanitizeKnowledgeId(condition, "TOPIC")}_${today.replace(/-/g, "")}`,
+        title,
+        source: sourceType,
+        version: today.slice(0, 4),
+        url: elements.knowledgeSourceUrlInput.value.trim() || "user-submitted",
+        date_accessed: today,
+        citation: title
+      };
+    }
+
+    function sourceReferenceFromRow(sourceRow, owner = "pending_reviewer") {
+      const today = new Date().toISOString().slice(0, 10);
+      return {
+        source_id: sourceRow.id,
+        source_section: "user-submitted source",
+        evidence_strength: "pending reviewer extraction",
+        version_date: sourceRow.version || today.slice(0, 4),
+        last_reviewed: today,
+        clinical_owner: owner,
+        implementation_notes: ""
+      };
+    }
+
+    function parseKnowledgeModuleEnvelope(textOrObject) {
+      let parsed = textOrObject;
+      if (typeof textOrObject === "string") {
+        parsed = textOrObject.trim() ? JSON.parse(textOrObject) : {};
+      }
+      if (parsed?.module) {
+        return parsed;
+      }
+      if (parsed?.id && parsed?.label && parsed?.triggers) {
+        return knowledgeModuleEnvelope(parsed);
+      }
+      return parsed || {};
+    }
+
+    function collectKnowledgeModuleItems(module) {
+      return [
+        "redFlags",
+        "requiredQuestions",
+        "conditionalQuestions",
+        "requiredExam",
+        "conditionalExam",
+        "initialTests",
+        "dispositionRules",
+        "differentialBuckets"
+      ].flatMap((group) => (module?.[group] || []).map((item) => ({ group, item })));
+    }
+
+    function validateKnowledgeModuleEnvelope(textOrObject, extraSources = []) {
+      const issues = [];
+      let envelope = null;
+      try {
+        envelope = parseKnowledgeModuleEnvelope(textOrObject);
+      } catch (error) {
+        return { ok: false, envelope: null, issues: [`JSON could not be parsed: ${error?.message || "invalid JSON"}`] };
+      }
+      const module = envelope?.module;
+      if (envelope?.schema_version && envelope.schema_version !== "medical_knowledge_database_v1") {
+        issues.push("schema_version must be medical_knowledge_database_v1.");
+      }
+      if (envelope?.artifact_type && envelope.artifact_type !== "complaint_cds_module") {
+        issues.push("artifact_type must be complaint_cds_module.");
+      }
+      if (!module) {
+        issues.push("No module object found.");
+      }
+      if (module) {
+        for (const field of ["id", "schema_version", "label", "version", "status", "triggers"]) {
+          if (!module[field] || (Array.isArray(module[field]) && !module[field].length)) {
+            issues.push(`module is missing ${field}.`);
+          }
+        }
+        const sourceIds = new Set([
+          ...effectiveComplaintSourceRegistry().map((sourceRow) => sourceRow.id),
+          ...extraSources.map((sourceRow) => sourceRow?.id).filter(Boolean),
+          ...(envelope.source_registry || []).map((sourceRow) => sourceRow?.id).filter(Boolean)
+        ]);
+        collectKnowledgeModuleItems(module).forEach(({ group, item }) => {
+          if (!item.id || !item.label) {
+            issues.push(`${group} item is missing id or label.`);
+          }
+          const sourceId = item.source?.source_id;
+          if (!sourceId || !sourceIds.has(sourceId)) {
+            issues.push(`${group}.${item.id || "missing"} references unknown source ${sourceId || "missing"}.`);
+          }
+          for (const field of ["source_section", "version_date", "last_reviewed", "clinical_owner"]) {
+            if (!item.source?.[field]) {
+              issues.push(`${group}.${item.id || "missing"} source missing ${field}.`);
+            }
+          }
+        });
+      }
+      const phiWarnings = scanResidualPhiShared(JSON.stringify(envelope || {}));
+      if (phiWarnings.length) {
+        issues.push(`Possible PHI-like text in structured JSON (${phiWarnings.length} warning${phiWarnings.length === 1 ? "" : "s"}).`);
+      }
+      return { ok: issues.length === 0, envelope, issues };
+    }
+
+    function buildGuidelineExtractionPrompt() {
+      const sourceRow = buildKnowledgeSourceRow();
+      const owner = sanitizeKnowledgeId(elements.knowledgeSubmitterInput.value.trim() || "pending_reviewer", "pending_reviewer").toLowerCase();
+      const sourceReference = sourceReferenceFromRow(sourceRow, owner);
+      const condition = elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "the submitted condition";
+      const kind = elements.knowledgeProposalKind.value;
+      const sourceText = elements.knowledgeSourceTextInput.value.trim();
+      return `You are helping create a draft clinical decision support module for a pre-rounding checklist app.
+
+Transform the provided medical source text into JSON only. Do not include markdown.
+
+Rules:
+- Use schema_version "medical_knowledge_database_v1".
+- Use artifact_type "complaint_cds_module".
+- Use complaint_cds_schema_version "complaint-cds-artifact-v1".
+- Do not include patient identifiers or raw chart text.
+- Do not copy long passages from the source. Paraphrase into concise clinical actions.
+- Mark module.status "draft" unless a clinical reviewer has approved it.
+- Every recommendation item must include a source object. Use this source object unless a more specific section is obvious:
+${JSON.stringify(sourceReference, null, 2)}
+- Add trigger terms that would match real user context for ${condition}.
+- Use only this condition grammar: termsAny, termsAll, answersAny, answersAll, and nested not.
+- If the source is insufficient for a section, use an empty array.
+
+Source registry row:
+${JSON.stringify(sourceRow, null, 2)}
+
+Suggestion type: ${kind}
+Condition/topic: ${condition}
+Reviewer notes:
+${elements.knowledgeReviewerNotesInput.value.trim() || "None"}
+
+Source text:
+${sourceText || "[Paste source text here]"}`;
+    }
+
+    function createKnowledgeProposal() {
+      const now = new Date().toISOString();
+      const sourceRow = buildKnowledgeSourceRow();
+      const moduleValidation = validateKnowledgeModuleEnvelope(elements.knowledgeModuleEditor.value, [sourceRow]);
+      const hasModuleText = Boolean(elements.knowledgeModuleEditor.value.trim());
+      const sourceText = elements.knowledgeSourceTextInput.value.trim();
+      const title = [
+        elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "Knowledge suggestion",
+        elements.knowledgeProposalKind.options[elements.knowledgeProposalKind.selectedIndex]?.textContent || ""
+      ].filter(Boolean).join(" - ");
+      const phiWarnings = sourceText ? scanResidualPhiShared(sourceText) : [];
+      const validationIssues = [
+        ...(hasModuleText ? moduleValidation.issues : []),
+        ...(phiWarnings.length ? [`Possible PHI-like text in source submission (${phiWarnings.length} warning${phiWarnings.length === 1 ? "" : "s"}).`] : [])
+      ];
+      return normalizeKnowledgeProposal({
+        id: `kbp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+        kind: elements.knowledgeProposalKind.value,
+        status: "pending",
+        title,
+        conditionLabel: elements.knowledgeConditionInput.value.trim() || selectedKnowledgeModule()?.label || "",
+        submitter: elements.knowledgeSubmitterInput.value.trim(),
+        sourceRow,
+        sourceText,
+        notes: elements.knowledgeReviewerNotesInput.value.trim(),
+        extractionPrompt: buildGuidelineExtractionPrompt(),
+        moduleEnvelope: hasModuleText && moduleValidation.ok ? moduleValidation.envelope : null,
+        validationIssues,
+        createdAt: now,
+        updatedAt: now
+      });
+    }
+
+    function setKnowledgeBaseStatus(message) {
+      elements.knowledgeBaseStatus.textContent = message || "";
+    }
+
+    function upsertKnowledgeProposal(proposal) {
+      const normalized = normalizeKnowledgeProposal(proposal);
+      const proposals = (state.knowledgeBaseReviewState.proposals || []).filter((row) => row.id !== normalized.id);
+      proposals.unshift(normalized);
+      state.knowledgeBaseReviewState.proposals = proposals;
+      state.activeKnowledgeProposalId = normalized.id;
+      saveKnowledgeBaseReviewState();
+      renderKnowledgeBaseWorkbench();
+      return normalized;
+    }
+
+    function updateKnowledgeProposalStatus(id, status) {
+      const proposal = state.knowledgeBaseReviewState.proposals.find((row) => row.id === id);
+      if (!proposal) {
+        return;
+      }
+      if (status === "approved") {
+        const validation = validateKnowledgeModuleEnvelope(proposal.moduleEnvelope, [proposal.sourceRow].filter(Boolean));
+        if (!validation.ok) {
+          proposal.validationIssues = validation.issues;
+          proposal.updatedAt = new Date().toISOString();
+          saveKnowledgeBaseReviewState();
+          renderKnowledgeBaseWorkbench();
+          setKnowledgeBaseStatus(`Could not approve: ${validation.issues.slice(0, 2).join(" ")}`);
+          return;
+        }
+        proposal.moduleEnvelope = validation.envelope;
+      }
+      proposal.status = status;
+      proposal.updatedAt = new Date().toISOString();
+      saveKnowledgeBaseReviewState();
+      renderKnowledgeBaseWorkbench();
+      setKnowledgeBaseStatus(status === "approved"
+        ? "Approved locally. This module is active in this browser and will export with the queue."
+        : "Suggestion denied locally.");
+    }
+
+    function removeKnowledgeProposal(id) {
+      state.knowledgeBaseReviewState.proposals = state.knowledgeBaseReviewState.proposals.filter((proposal) => proposal.id !== id);
+      if (state.activeKnowledgeProposalId === id) {
+        state.activeKnowledgeProposalId = "";
+      }
+      saveKnowledgeBaseReviewState();
+      renderKnowledgeBaseWorkbench();
+    }
+
+    function loadKnowledgeProposalIntoEditor(id) {
+      const proposal = state.knowledgeBaseReviewState.proposals.find((row) => row.id === id);
+      if (!proposal) {
+        return;
+      }
+      state.activeKnowledgeProposalId = proposal.id;
+      elements.knowledgeProposalKind.value = proposal.kind || "module_edit";
+      elements.knowledgeSubmitterInput.value = proposal.submitter || "";
+      elements.knowledgeConditionInput.value = proposal.conditionLabel || "";
+      elements.knowledgeSourceTypeSelect.value = proposal.sourceRow?.source || "Guideline";
+      elements.knowledgeSourceTitleInput.value = proposal.sourceRow?.title || "";
+      elements.knowledgeSourceUrlInput.value = proposal.sourceRow?.url || "";
+      elements.knowledgeSourceTextInput.value = proposal.sourceText || "";
+      elements.knowledgeReviewerNotesInput.value = proposal.notes || "";
+      elements.knowledgeModuleEditor.value = proposal.moduleEnvelope ? JSON.stringify(proposal.moduleEnvelope, null, 2) : "";
+      autoResize(elements.knowledgeSourceTextInput);
+      autoResize(elements.knowledgeReviewerNotesInput);
+      autoResize(elements.knowledgeModuleEditor);
+      renderKnowledgeBaseWorkbench();
+      setKnowledgeBaseStatus("Suggestion loaded.");
+    }
+
+    function exportKnowledgeProposal(proposal) {
+      const normalized = normalizeKnowledgeProposal(proposal);
+      downloadTextFile(
+        `medical-knowledge-proposal-${normalized.id}.json`,
+        JSON.stringify(normalized, null, 2),
+        "application/json;charset=utf-8"
+      );
+    }
+
+    function exportKnowledgeQueue() {
+      const payload = {
+        schema: "medicalKnowledgeProposalReviewV1",
+        exportedAt: new Date().toISOString(),
+        appKnowledgeDatabase: medicalKnowledgeDbManifest,
+        proposals: state.knowledgeBaseReviewState.proposals || []
+      };
+      downloadTextFile("medical-knowledge-review-queue.json", JSON.stringify(payload, null, 2), "application/json;charset=utf-8");
+      setKnowledgeBaseStatus("Knowledge review queue exported.");
+    }
+
+    async function importKnowledgeProposalFile(file) {
+      if (!file) {
+        return;
+      }
+      try {
+        const parsed = JSON.parse(await file.text());
+        const imported = Array.isArray(parsed.proposals) ? parsed.proposals : [parsed];
+        imported.forEach((proposal) => {
+          upsertKnowledgeProposal({
+            ...proposal,
+            id: proposal.id || `kbp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`
+          });
+        });
+        setKnowledgeBaseStatus(`Imported ${imported.length} proposal${imported.length === 1 ? "" : "s"}.`);
+      } catch (error) {
+        setKnowledgeBaseStatus(`Proposal import failed: ${error?.message || "unknown error"}.`);
+      } finally {
+        elements.knowledgeProposalImportInput.value = "";
+      }
+    }
+
+    function loadSelectedKnowledgeModuleIntoEditor() {
+      const module = selectedKnowledgeModule();
+      if (!module) {
+        setKnowledgeBaseStatus("No module is selected.");
+        return;
+      }
+      elements.knowledgeProposalKind.value = "module_edit";
+      elements.knowledgeConditionInput.value = module.label || "";
+      elements.knowledgeModuleEditor.value = JSON.stringify(knowledgeModuleEnvelope(module), null, 2);
+      autoResize(elements.knowledgeModuleEditor);
+      setKnowledgeBaseStatus(`${module.label} JSON loaded for editing.`);
+    }
+
+    function renderKnowledgeModuleBrowser() {
+      const modules = effectiveComplaintModules();
+      const previous = elements.knowledgeModuleSelect.value;
+      elements.knowledgeModuleSelect.innerHTML = "";
+      modules.forEach((module) => {
+        const option = document.createElement("option");
+        option.value = module.id;
+        option.textContent = `${module.label} v${module.version}${complaintModules.some((base) => base.id === module.id) ? "" : " (local)"}`;
+        elements.knowledgeModuleSelect.appendChild(option);
+      });
+      if (previous && modules.some((module) => module.id === previous)) {
+        elements.knowledgeModuleSelect.value = previous;
+      }
+      const module = selectedKnowledgeModule();
+      elements.knowledgeBaseManifestSummary.textContent = `${medicalKnowledgeDbManifest.title} ${medicalKnowledgeDbManifest.version}: ${complaintModules.length} bundled modules, ${approvedKnowledgeProposals().length} local approved override${approvedKnowledgeProposals().length === 1 ? "" : "s"}.`;
+      elements.knowledgeModuleSummary.innerHTML = "";
+      elements.knowledgeModuleSummary.hidden = !module;
+      if (module) {
+        [
+          module.status,
+          `${module.triggers?.length || 0} triggers`,
+          `${collectKnowledgeModuleItems(module).length} sourced items`,
+          module.population?.age_group,
+          module.population?.setting
+        ].filter(Boolean).forEach((text, index) => {
+          elements.knowledgeModuleSummary.appendChild(createComplaintCdsChip(text, index === 0));
+        });
+        elements.knowledgeModulePreview.textContent = JSON.stringify(knowledgeModuleEnvelope(module), null, 2);
+      } else {
+        elements.knowledgeModulePreview.textContent = "No modules installed.";
+      }
+    }
+
+    function renderKnowledgeProposalList() {
+      const proposals = state.knowledgeBaseReviewState.proposals || [];
+      const counts = proposals.reduce((acc, proposal) => {
+        acc[proposal.status] = (acc[proposal.status] || 0) + 1;
+        return acc;
+      }, {});
+      elements.knowledgeProposalQueueSummary.textContent = `${proposals.length} total; ${counts.pending || 0} pending, ${counts.approved || 0} approved, ${counts.denied || 0} denied.`;
+      elements.knowledgeProposalList.innerHTML = "";
+      if (!proposals.length) {
+        const empty = document.createElement("p");
+        empty.className = "knowledge-base-copy";
+        empty.textContent = "No suggestions staged in this browser.";
+        elements.knowledgeProposalList.appendChild(empty);
+        return;
+      }
+      proposals.forEach((proposal) => {
+        const card = document.createElement("article");
+        card.className = `knowledge-proposal-card is-${proposal.status}`;
+        const top = document.createElement("div");
+        top.className = "knowledge-proposal-top";
+        const titleWrap = document.createElement("div");
+        const title = document.createElement("p");
+        title.className = "knowledge-proposal-title";
+        title.textContent = proposal.title;
+        const meta = document.createElement("p");
+        meta.className = "knowledge-proposal-meta";
+        meta.textContent = [
+          proposal.kind,
+          proposal.submitter ? `from ${proposal.submitter}` : "",
+          proposal.sourceRow?.source,
+          proposal.createdAt ? `created ${proposal.createdAt.slice(0, 10)}` : ""
+        ].filter(Boolean).join(" | ");
+        titleWrap.append(title, meta);
+        const badge = document.createElement("span");
+        badge.className = `knowledge-proposal-badge is-${proposal.status}`;
+        badge.textContent = proposal.status;
+        top.append(titleWrap, badge);
+        card.appendChild(top);
+
+        if (proposal.validationIssues?.length) {
+          const issue = document.createElement("p");
+          issue.className = "knowledge-proposal-meta";
+          issue.textContent = `Review issues: ${proposal.validationIssues.slice(0, 3).join(" ")}`;
+          card.appendChild(issue);
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "knowledge-proposal-actions";
+        [
+          ["Load", "load"],
+          ["Approve", "approve"],
+          ["Deny", "deny"],
+          ["Export", "export"],
+          ["Remove", "remove"]
+        ].forEach(([label, action]) => {
+          const button = document.createElement("button");
+          button.className = action === "remove" ? "btn btn-quiet" : "btn btn-secondary";
+          button.type = "button";
+          button.textContent = label;
+          button.dataset.knowledgeProposalAction = action;
+          button.dataset.knowledgeProposalId = proposal.id;
+          if (action === "approve" && !proposal.moduleEnvelope?.module) {
+            button.disabled = true;
+            button.title = "Add valid structured module JSON before approving for local use.";
+          }
+          actions.appendChild(button);
+        });
+        card.appendChild(actions);
+        elements.knowledgeProposalList.appendChild(card);
+      });
+    }
+
+    function renderKnowledgeBaseWorkbench() {
+      renderKnowledgeModuleBrowser();
+      renderKnowledgeProposalList();
     }
 
     function updateEvidenceReviewStatus(message) {
@@ -13954,6 +14784,15 @@ Now create the initial rounds report for this case. Output the report only and n
       ].filter(Boolean).join(" ");
     }
 
+    function matchedKnowledgeModuleForCurrentSearch() {
+      const context = complaintCdsContextTextFrom(
+        combinedClinicalIntentText(),
+        elements.complaintCdsSettingSelect.value.trim(),
+        elements.complaintCdsPopulationSelect.value.trim()
+      );
+      return selectComplaintModule(context, effectiveComplaintModules());
+    }
+
     function renderClinicalIntentSelection() {
       const selected = selectedClinicalIntents();
       elements.clinicalIntentSelection.innerHTML = "";
@@ -13969,9 +14808,10 @@ Now create the initial rounds report for this case. Output the report only and n
         remove.dataset.intentRemoveId = intentRow.intent_id;
         elements.clinicalIntentSelection.appendChild(remove);
       });
-      elements.runComplaintCdsButton.disabled = !selected.length;
-      elements.copyComplaintCdsButton.disabled = !selected.length || !(state.examTesterRecommendation || state.examTesterCandidates?.length || state.complaintCdsResult);
-      elements.stageKnowledgeGapButton.hidden = Boolean(selected.length);
+      const hasKnowledgeModuleMatch = Boolean(matchedKnowledgeModuleForCurrentSearch());
+      elements.runComplaintCdsButton.disabled = !selected.length && !hasKnowledgeModuleMatch;
+      elements.copyComplaintCdsButton.disabled = (!selected.length && !state.complaintCdsResult?.matched) || !(state.examTesterRecommendation || state.examTesterCandidates?.length || state.complaintCdsResult);
+      elements.stageKnowledgeGapButton.hidden = Boolean(selected.length || hasKnowledgeModuleMatch);
     }
 
     function renderClinicalIntentResults() {
@@ -13987,12 +14827,17 @@ Now create the initial rounds report for this case. Output the report only and n
       }
 
       if (!result.matches.length) {
+        const knowledgeModule = matchedKnowledgeModuleForCurrentSearch();
         const empty = document.createElement("p");
         empty.className = "exam-result-text";
-        empty.textContent = "No validated clinical intent matched. This needs expert review before recommendations.";
+        empty.textContent = knowledgeModule
+          ? `${knowledgeModule.label} matched the installed medical knowledge database.`
+          : "No validated clinical intent matched. This needs expert review before recommendations.";
         elements.clinicalIntentResults.appendChild(empty);
         renderClinicalIntentSelection();
-        setComplaintCdsStatus("No validated clinical intent matched. This needs expert review before recommendations.");
+        setComplaintCdsStatus(knowledgeModule
+          ? "Installed medical knowledge matched. Build the workup or stage suggested improvements."
+          : "No validated clinical intent matched. This needs expert review before recommendations.");
         return;
       }
 
@@ -14036,9 +14881,12 @@ Now create the initial rounds report for this case. Output the report only and n
 
       renderClinicalIntentSelection();
       if (!selectedClinicalIntents().length) {
+        const knowledgeModule = matchedKnowledgeModuleForCurrentSearch();
         setComplaintCdsStatus(result.validatedMatches.length
           ? "Select a validated clinical intent before building recommendations."
-          : "No validated clinical intent matched. This needs expert review before recommendations.");
+          : knowledgeModule
+            ? "Installed medical knowledge matched. Build the workup or stage suggested improvements."
+            : "No validated clinical intent matched. This needs expert review before recommendations.");
       }
     }
 
@@ -14178,7 +15026,10 @@ Now create the initial rounds report for this case. Output the report only and n
       let guidelineResult = complaintResult;
       if (!guidelineResult?.matched && baseContext) {
         try {
-          guidelineResult = evaluateComplaintCds(baseContext, state.complaintCdsAnswers || {});
+          guidelineResult = evaluateComplaintCds(baseContext, state.complaintCdsAnswers || {}, {
+            modules: effectiveComplaintModules(),
+            sources: effectiveComplaintSourceRegistry()
+          });
         } catch (error) {
           guidelineResult = null;
         }
@@ -14210,7 +15061,7 @@ Now create the initial rounds report for this case. Output the report only and n
         }
       } else {
         elements.examTesterInput.value = [
-          selectedClinicalIntents().map((intentRow) => intentRow.label).join("; "),
+          selectedClinicalIntents().map((intentRow) => intentRow.label).join("; ") || text,
           clinicalIntentModifierText()
         ].filter(Boolean).join(" | ");
         const examSetting = settingForUnifiedExam(elements.complaintCdsSettingSelect.value.trim());
@@ -14367,7 +15218,10 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.complaintCdsSources.hidden = !result?.matched;
       elements.complaintCdsResults.hidden = !result;
       const hasSelectedIntent = Boolean(selectedClinicalIntents().length);
-      elements.copyComplaintCdsButton.disabled = !hasSelectedIntent || (!result?.matched && !(state.examTesterRecommendation || state.examTesterCandidates?.length));
+      const hasKnowledgeModule = Boolean(result?.matched);
+      const hasWorkupEvidence = Boolean(state.examTesterRecommendation || state.examTesterCandidates?.length || state.examTesterGapRows?.length);
+      elements.copyComplaintCdsButton.disabled = (!hasSelectedIntent && !hasKnowledgeModule) || (!result?.matched && !hasWorkupEvidence);
+      elements.copyClinicalImprovementAuditButton.disabled = (!hasSelectedIntent && !hasKnowledgeModule) || !hasWorkupEvidence;
 
       if (!result) {
         return;
@@ -14442,6 +15296,7 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.complaintCdsSources.innerHTML = "";
       elements.complaintCdsResults.innerHTML = "";
       elements.copyComplaintCdsButton.disabled = true;
+      elements.copyClinicalImprovementAuditButton.disabled = true;
       elements.runComplaintCdsButton.disabled = true;
       elements.stageKnowledgeGapButton.hidden = false;
       syncClinicalModifierQuickChips();
@@ -14750,6 +15605,7 @@ Now create the initial rounds report for this case. Output the report only and n
       }
 
       elements.copyExamTesterButton.disabled = !coreItems.length && !conditionalItems.length && !candidates.length && !gapRows.length;
+      elements.copyExamImprovementAuditButton.disabled = elements.copyExamTesterButton.disabled;
     }
 
     async function buildExamTesterWorkup(context, options = {}) {
@@ -14829,9 +15685,10 @@ Now create the initial rounds report for this case. Output the report only and n
 
     async function buildUnifiedClinicalWorkup(source = "complaint") {
       const selectedIntents = selectedClinicalIntents();
-      if (!selectedIntents.length) {
+      const knowledgeModule = matchedKnowledgeModuleForCurrentSearch();
+      if (!selectedIntents.length && !knowledgeModule) {
         renderClinicalIntentResults();
-        const message = "No validated clinical intent selected. Select a validated intent before building recommendations.";
+        const message = "No validated clinical intent or installed knowledge module matched.";
         setComplaintCdsStatus(message);
         setExamTesterStatus(message);
         elements.complaintCdsInput.focus();
@@ -14839,7 +15696,7 @@ Now create the initial rounds report for this case. Output the report only and n
       }
 
       const concern = [
-        selectedIntents.map((intentRow) => intentRow.label).join("; "),
+        selectedIntents.length ? selectedIntents.map((intentRow) => intentRow.label).join("; ") : knowledgeModule?.label,
         clinicalIntentModifierText()
       ].filter(Boolean).join(" | ");
       syncUnifiedClinicalInputs(source, concern);
@@ -14847,22 +15704,30 @@ Now create the initial rounds report for this case. Output the report only and n
       setExamTesterStatus("Building unified clinical workup...");
 
       const complaintContext = complaintCdsContextText();
-      let complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers);
+      let complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers, {
+        modules: effectiveComplaintModules(),
+        sources: effectiveComplaintSourceRegistry()
+      });
       if (complaintResult.matched && state.complaintCdsModuleId && state.complaintCdsModuleId !== complaintResult.module.id) {
         state.complaintCdsAnswers = {};
-        complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers);
+        complaintResult = evaluateComplaintCds(complaintContext, state.complaintCdsAnswers, {
+          modules: effectiveComplaintModules(),
+          sources: effectiveComplaintSourceRegistry()
+        });
       }
       state.complaintCdsResult = complaintResult;
       state.complaintCdsModuleId = complaintResult.matched ? complaintResult.module.id : "";
       renderComplaintCdsResult();
 
       const evidenceContext = examTesterContextFrom(
-        buildClinicalIntentRetrievalContext(
-          selectedIntents,
-          clinicalIntentModifierText(),
-          elements.examTesterServiceSelect.value.trim(),
-          elements.complaintCdsPopulationSelect.value.trim()
-        ),
+        selectedIntents.length
+          ? buildClinicalIntentRetrievalContext(
+            selectedIntents,
+            clinicalIntentModifierText(),
+            elements.examTesterServiceSelect.value.trim(),
+            elements.complaintCdsPopulationSelect.value.trim()
+          )
+          : complaintContext,
         elements.examTesterServiceSelect.value.trim(),
         complaintResult
       );
@@ -15021,6 +15886,120 @@ Now create the initial rounds report for this case. Output the report only and n
       return `${parts.filter(Boolean).join("\n\n---\n\n")}\n`;
     }
 
+    function sanitizeClinicalAuditText(value) {
+      return String(value || "")
+        .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "[email]")
+        .replace(/\b(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b/g, "[phone]")
+        .replace(/\b(?:MRN|FIN|CSN|DOB|SSN)\s*[:#]?\s*[\w-]+\b/gi, "[identifier]")
+        .replace(/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g, "[date]")
+        .replace(/\b\d{4}-\d{2}-\d{2}\b/g, "[date]")
+        .replace(/\b\d{1,2}:\d{2}\s*(?:am|pm)?\b/gi, "[time]")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 700);
+    }
+
+    function activeClinicalModifierChips() {
+      return Array.from(elements.clinicalModifierQuickChips.querySelectorAll("[data-clinical-modifier]"))
+        .filter((button) => button.getAttribute("aria-pressed") === "true")
+        .map((button) => button.dataset.clinicalModifier || button.textContent.trim())
+        .filter(Boolean);
+    }
+
+    function compactClinicalAuditEntry(entry, index, role = "") {
+      const candidate = entry.candidate || entry;
+      return [
+        `${index + 1}. ${candidate.examLabel || entry.label || candidate.maneuver || candidate.exam_id || "Unlabeled item"}${role ? ` [${role}]` : ""}`,
+        `   exam_id: ${candidate.exam_id || entry.exam_id || "n/a"}`,
+        `   options: ${candidate.examOptions || "n/a"}`,
+        `   reason: ${entry.reason || entry.rationale || "n/a"}`,
+        `   diagnostic_target: ${entry.displayDiagnosticTarget || candidate.diagnostic_target || "n/a"}`,
+        `   management_change: ${entry.displayManagement || candidate.result_changes_management || candidate.management_link || "n/a"}`,
+        `   evidence: ${formatEvidenceSource(candidate)}; ${formatEvidenceLikelihood(candidate)}; tier ${candidate.evidence_tier || "n/a"}`,
+        `   score: ${Math.round(candidate.score || entry.score || 0)}; fit: ${entry.contextFitScore ?? "n/a"}; routes: ${(candidate.retrievalRoutes || []).join("+") || "n/a"}${candidate.embedding_score !== undefined ? `; semantic ${Math.round(candidate.embedding_score * 100)}` : ""}`,
+        `   feasibility: ${candidate.difficulty || "n/a"}; ${candidate.time_burden_minutes || "?"} min; equipment ${candidate.equipment_needed || "none"}; cooperation ${candidate.patient_cooperation_required || "n/a"}`,
+        (entry.displayBedsideQuestion || candidate.bedside_question_label)
+          ? `   bedside_question: ${entry.displayBedsideQuestion || candidate.bedside_question_label}: ${entry.displayBedsideQuestionOptions || candidate.bedside_question_options || ""}`
+          : ""
+      ].filter(Boolean).join("\n");
+    }
+
+    function formatClinicalImprovementAuditReport() {
+      const recommendation = state.examTesterRecommendation || {};
+      const coreItems = recommendation.coreItems || [];
+      const conditionalItems = recommendation.conditionalItems || [];
+      const suppressedItems = recommendation.suppressedItems || [];
+      const candidates = state.examTesterCandidates || [];
+      const gapRows = state.examTesterGapRows || [];
+      const selectedIntents = selectedClinicalIntents();
+      const activeChips = activeClinicalModifierChips();
+      const matchedTags = (state.examTesterMatchedTags || [])
+        .map((match) => `${match.tag}${match.matchedTerms?.length ? ` (${match.matchedTerms.slice(0, 3).join(", ")})` : ""}`)
+        .join("; ");
+      const lines = [
+        "# Clinical Workup Improvement Audit",
+        "",
+        "Purpose: paste this into Codex to critique and improve the validated clinical workup logic. This is a reviewer artifact, not a patient note.",
+        "PHI guardrail: raw chart/admission text is intentionally excluded. Review modifier text before sharing.",
+        "",
+        "## Input Scope",
+        `Search text: ${sanitizeClinicalAuditText(elements.complaintCdsInput.value.trim()) || "n/a"}`,
+        `Selected intents: ${selectedIntents.map((intentRow) => `${intentRow.intent_id} (${intentRow.label})`).join("; ") || "none"}`,
+        `Setting: ${elements.complaintCdsSettingSelect.value.trim() || "n/a"} / ${elements.examTesterServiceSelect.value.trim() || "n/a"}`,
+        `Population: ${elements.complaintCdsPopulationSelect.value.trim() || "n/a"}`,
+        `Active modifier chips: ${activeChips.join("; ") || "none"}`,
+        `Modifier text, sanitized: ${sanitizeClinicalAuditText(clinicalIntentModifierText()) || "none"}`,
+        `Built at: ${state.unifiedClinicalWorkup?.builtAt || "not built"}`,
+        "",
+        "## Intent Requirements",
+        ...(selectedIntents.length ? selectedIntents.map((intentRow) => [
+          `- ${intentRow.intent_id}: ${intentRow.label}`,
+          `  sources: ${(intentRow.source_ids || []).join("; ") || "n/a"}`,
+          `  clinical_bundle_ids: ${(intentRow.clinical_bundle_ids || []).join("; ") || "n/a"}`,
+          `  required_domains: ${(intentRow.required_domains || []).join("; ") || "n/a"}`,
+          `  avoid_labels: ${(intentRow.avoid_labels || []).join("; ") || "n/a"}`
+        ].join("\n")) : ["- none"]),
+        "",
+        "## Output Summary",
+        `Core exam items: ${coreItems.length}`,
+        `Conditional add-ons: ${conditionalItems.length}`,
+        `Retrieved candidates: ${candidates.length}`,
+        `Suppressed/lower-fit: ${suppressedItems.length}`,
+        `Catalog gaps: ${gapRows.length}`,
+        `Matched tags: ${matchedTags || "none"}`,
+        `Clinical bundles active: ${(recommendation.activeProfiles || []).map((profile) => profile.id || profile.name).join("; ") || "none"}`,
+        `Embedding status: ${examTesterEmbeddingStatusLabel(state.examEmbeddingStatus || recommendation.embeddingStatus)}`,
+        "",
+        "## Recommended Core Exam",
+        coreItems.length ? coreItems.map((entry, index) => compactClinicalAuditEntry(entry, index, "core")).join("\n\n") : "None.",
+        "",
+        "## Conditional Add-ons",
+        conditionalItems.length ? conditionalItems.map((entry, index) => compactClinicalAuditEntry(entry, index, "conditional")).join("\n\n") : "None.",
+        "",
+        "## Top Retrieved Evidence Candidates",
+        candidates.length ? candidates.slice(0, 16).map((candidate, index) => compactClinicalAuditEntry(candidate, index, "retrieved")).join("\n\n") : "None.",
+        "",
+        "## Suppressed Or Lower-fit Candidates",
+        suppressedItems.length ? suppressedItems.slice(0, 16).map((entry, index) => compactClinicalAuditEntry(entry, index, "suppressed")).join("\n\n") : "None.",
+        "",
+        "## Catalog Gaps",
+        gapRows.length ? gapRows.slice(0, 12).map((row, index) => [
+          `${index + 1}. ${row.suggested_checklist_label || row.maneuver_or_finding || row.exam_id}`,
+          `   options: ${row.suggested_options || "n/a"}`,
+          `   system: ${[row.exam_system, row.section, row.region_or_subsection].filter(Boolean).join(" > ") || "n/a"}`,
+          `   include_when: ${row.include_when || row.when_to_use_structured || "n/a"}`,
+          `   evidence_status: ${hasStudentExamEvidence(row) ? "legacy metadata available" : "overlay gap"}`
+        ].join("\n")).join("\n\n") : "None.",
+        "",
+        "## Review Instructions For Codex",
+        "- Identify missing required domains, clinically irrelevant core items, weak rationales, and avoid-list leaks.",
+        "- Prefer bundle/rule/catalog improvements over one-off hard-coded fixes.",
+        "- Suggest evidence overlay or clinical-intent edits only when they remain traceable and reusable.",
+        "- Do not infer raw patient facts beyond the selected intent and sanitized modifiers above."
+      ];
+      return `${lines.join("\n")}\n`;
+    }
+
     function clearExamTester() {
       elements.examTesterInput.value = "";
       state.unifiedClinicalWorkup = null;
@@ -15039,6 +16018,7 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.examTesterResults.innerHTML = "";
       elements.examTesterGaps.innerHTML = "";
       elements.copyExamTesterButton.disabled = true;
+      elements.copyExamImprovementAuditButton.disabled = true;
       setExamTesterStatus("");
     }
 
@@ -16590,6 +17570,10 @@ If source context is missing from this conversation, say that the prior context 
       await copyText(formatUnifiedClinicalWorkupReport(), elements.complaintCdsStatus, "Unified clinical workup copied.");
     });
 
+    elements.copyClinicalImprovementAuditButton.addEventListener("click", async () => {
+      await copyText(formatClinicalImprovementAuditReport(), elements.complaintCdsStatus, "Clinical improvement audit copied.");
+    });
+
     elements.clearComplaintCdsButton.addEventListener("click", clearComplaintCds);
 
     elements.clinicalIntentResults.addEventListener("click", (event) => {
@@ -16676,6 +17660,10 @@ If source context is missing from this conversation, say that the prior context 
 
     elements.copyExamTesterButton.addEventListener("click", async () => {
       await copyText(formatUnifiedClinicalWorkupReport(), elements.examTesterStatus, "Unified clinical workup copied.");
+    });
+
+    elements.copyExamImprovementAuditButton.addEventListener("click", async () => {
+      await copyText(formatClinicalImprovementAuditReport(), elements.examTesterStatus, "Clinical improvement audit copied.");
     });
 
     elements.clearExamTesterButton.addEventListener("click", clearExamTester);
@@ -17457,6 +18445,87 @@ heparin 5000 units held by provider`;
       importKnowledgePackFile(elements.knowledgePackImportInput.files?.[0]);
     });
 
+    elements.refreshKnowledgeBaseButton.addEventListener("click", () => {
+      renderKnowledgeBaseWorkbench();
+      setKnowledgeBaseStatus("Knowledge base view refreshed.");
+    });
+
+    elements.knowledgeModuleSelect.addEventListener("change", () => {
+      renderKnowledgeModuleBrowser();
+    });
+
+    elements.loadSelectedKnowledgeModuleButton.addEventListener("click", loadSelectedKnowledgeModuleIntoEditor);
+
+    elements.copyKnowledgeExtractionPromptButton.addEventListener("click", async () => {
+      const prompt = buildGuidelineExtractionPrompt();
+      await copyText(prompt, elements.knowledgeBaseStatus, "Extraction prompt copied.");
+    });
+
+    elements.stageKnowledgeProposalButton.addEventListener("click", () => {
+      const proposal = createKnowledgeProposal();
+      upsertKnowledgeProposal(proposal);
+      const issueText = proposal.validationIssues.length
+        ? ` Staged with review issues: ${proposal.validationIssues.slice(0, 2).join(" ")}`
+        : "";
+      setKnowledgeBaseStatus(`Suggestion staged.${issueText}`);
+    });
+
+    elements.exportKnowledgeProposalButton.addEventListener("click", () => {
+      const proposal = state.activeKnowledgeProposalId
+        ? state.knowledgeBaseReviewState.proposals.find((row) => row.id === state.activeKnowledgeProposalId)
+        : createKnowledgeProposal();
+      exportKnowledgeProposal(proposal || createKnowledgeProposal());
+      setKnowledgeBaseStatus("Suggestion exported.");
+    });
+
+    elements.knowledgeProposalImportInput.addEventListener("change", () => {
+      importKnowledgeProposalFile(elements.knowledgeProposalImportInput.files?.[0]);
+    });
+
+    elements.exportKnowledgeQueueButton.addEventListener("click", exportKnowledgeQueue);
+
+    elements.clearDeniedKnowledgeProposalsButton.addEventListener("click", () => {
+      state.knowledgeBaseReviewState.proposals = (state.knowledgeBaseReviewState.proposals || [])
+        .filter((proposal) => proposal.status !== "denied");
+      saveKnowledgeBaseReviewState();
+      renderKnowledgeBaseWorkbench();
+      setKnowledgeBaseStatus("Denied suggestions cleared.");
+    });
+
+    elements.knowledgeProposalList.addEventListener("click", (event) => {
+      const button = event.target?.closest?.("[data-knowledge-proposal-action]");
+      if (!button) {
+        return;
+      }
+      const id = button.dataset.knowledgeProposalId;
+      const proposal = state.knowledgeBaseReviewState.proposals.find((row) => row.id === id);
+      if (!proposal) {
+        return;
+      }
+      const action = button.dataset.knowledgeProposalAction;
+      if (action === "load") {
+        loadKnowledgeProposalIntoEditor(id);
+      } else if (action === "approve") {
+        updateKnowledgeProposalStatus(id, "approved");
+      } else if (action === "deny") {
+        updateKnowledgeProposalStatus(id, "denied");
+      } else if (action === "export") {
+        exportKnowledgeProposal(proposal);
+        setKnowledgeBaseStatus("Suggestion exported.");
+      } else if (action === "remove") {
+        removeKnowledgeProposal(id);
+        setKnowledgeBaseStatus("Suggestion removed.");
+      }
+    });
+
+    [
+      elements.knowledgeSourceTextInput,
+      elements.knowledgeReviewerNotesInput,
+      elements.knowledgeModuleEditor
+    ].forEach((input) => {
+      input.addEventListener("input", () => autoResize(input));
+    });
+
     elements.examTesterEmbeddingToggle.addEventListener("change", () => {
       state.examEmbeddingStatus = null;
       setExamTesterStatus(elements.examTesterEmbeddingToggle.checked
@@ -17599,6 +18668,8 @@ heparin 5000 units held by provider`;
     loadContinuityCases();
     loadEvidenceReviewStateFromStorage();
     loadKnowledgePackReviewStateFromStorage();
+    loadKnowledgeBaseReviewStateFromStorage();
+    renderKnowledgeBaseWorkbench();
     const restoredSession = restoreChecklistSession();
     setupAdmissionIntakeNavigation();
     maybeStartPhoneChecklistFirst(restoredSession);

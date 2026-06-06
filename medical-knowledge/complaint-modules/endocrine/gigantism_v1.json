@@ -1,0 +1,259 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "gigantism_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Gigantism",
+    "complaint_group": "pituitary_gland_disorders",
+    "version": "0.9.0",
+    "status": "review_ready",
+    "population": {
+      "age_group": "adult",
+      "setting": "clinician support"
+    },
+    "triggers": [
+      "Gigantism",
+      "gigantism"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "differential_01",
+        "label": "Gigantism: diagnostic frame from guideline-sourced endocrine workup",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: diagnostic frame",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "IGF-1 age/puberty-adjusted."
+      },
+      {
+        "id": "differential_02",
+        "label": "Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation."
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "red_flag_01",
+        "label": "Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: red flags",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "when": {
+          "termsAny": [
+            "Visual symptoms",
+            "severe headache",
+            "rapid growth acceleration",
+            "pituitary apoplexy."
+          ]
+        }
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "question_01",
+        "label": "Accelerated linear growth, headache/vision, puberty timing, family heights.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      },
+      {
+        "id": "question_02",
+        "label": "Sweating, sleep apnea, joint pain.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ]
+      }
+    ],
+    "conditionalQuestions": [],
+    "requiredExam": [
+      {
+        "id": "exam_01",
+        "label": "Height/weight/growth velocity plotted, pubertal staging, coarse features, visual fields.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: focused physical exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Perform and document positive, negative, and unable-to-assess findings."
+      }
+    ],
+    "conditionalExam": [],
+    "initialTests": [
+      {
+        "id": "test_01",
+        "label": "IGF-1 age/puberty-adjusted.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+      },
+      {
+        "id": "test_02",
+        "label": "GH suppression after oral glucose.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+      },
+      {
+        "id": "test_03",
+        "label": "Bone age and growth assessment.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+      },
+      {
+        "id": "test_04",
+        "label": "Pituitary MRI after biochemical evidence.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: diagnostic workup",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Interpret with local lab ranges. Reference anchors: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+      },
+      {
+        "id": "reference_01",
+        "label": "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context."
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "management_01",
+        "label": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
+        "source": {
+          "source_id": "PITUITARY_ACROMEGALY_2021",
+          "source_section": "Gigantism generated endocrine workup: results that change management",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Generated from endocrine workup automation; requires clinician sign-off before validated-intent activation."
+        },
+        "action": "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
+      }
+    ],
+    "endocrine_metadata": {
+      "generated_from": "scripts/generate-endocrine-workups.js",
+      "source_diagnosis": "Gigantism",
+      "category": "Pituitary Gland Disorders",
+      "aliases": [],
+      "source_ids": [
+        "PITUITARY_ACROMEGALY_2021"
+      ],
+      "reference_values": [
+        "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient."
+      ],
+      "quality_issues": [],
+      "activation_status": "review_ready_not_validated_intent"
+    }
+  }
+}
