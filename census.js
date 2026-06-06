@@ -179,15 +179,25 @@ export function normalizeCensusVault(vault = {}) {
     ? vault.patients.map((patient) => normalizePatientCase(patient))
       .filter((patient) => patient.lifecycleStatus !== "discharged")
     : [];
+  const continuityCases = Array.isArray(vault.continuityCases)
+    ? vault.continuityCases.map((patientCase) => (
+      patientCase && typeof patientCase === "object" ? { ...patientCase } : patientCase
+    ))
+    : [];
   const activePatientId = patients.some((patient) => patient.id === vault.activePatientId)
     ? vault.activePatientId
     : patients[0]?.id || "";
+  const activeContinuityCaseId = continuityCases.some((patientCase) => patientCase?.id === vault.activeContinuityCaseId)
+    ? vault.activeContinuityCaseId
+    : continuityCases[0]?.id || "";
 
   return {
     schemaVersion: CENSUS_SCHEMA_VERSION,
     createdAt: vault.createdAt || isoNow(),
     updatedAt: vault.updatedAt || isoNow(),
     activePatientId,
+    activeContinuityCaseId,
+    continuityCases,
     patients
   };
 }

@@ -974,6 +974,68 @@
       background: rgba(79, 152, 163, 0.08);
     }
 
+    .vault-claim {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(1.55rem, 4vw, 2.35rem);
+      font-weight: 950;
+      line-height: 1.05;
+    }
+
+    .vault-copy {
+      max-width: 76ch;
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      font-weight: 720;
+      line-height: 1.48;
+    }
+
+    .vault-copy strong {
+      color: var(--accent-strong);
+      font-weight: 900;
+    }
+
+    .vault-assurance-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      margin: 2px 0 4px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .vault-assurance-list li {
+      min-width: 0;
+      padding: 12px 13px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 720;
+      line-height: 1.38;
+    }
+
+    .vault-assurance-list li + li {
+      border-left: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .vault-assurance-list strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .passcode-help {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 740;
+      line-height: 1.38;
+    }
+
     .privacy-list,
     .smart-review-list {
       display: grid;
@@ -4099,24 +4161,31 @@
       <header class="census-header">
         <div>
           <h1 id="censusTitle">Patient Census</h1>
-          <p class="census-subtitle">Manage local patient aliases, chart context, bedside status, and OpenEvidence prompt order from one browser tab.</p>
+          <p class="census-subtitle">A local-only encrypted workspace for patient aliases, de-identified context, bedside status, and prompt order. No account or cloud login is used by this app.</p>
         </div>
         <button id="lockCensusButton" class="btn btn-secondary" type="button" hidden>Lock Census</button>
       </header>
 
       <section id="censusVaultCard" class="surface vault-card" aria-labelledby="censusVaultTitle">
-        <p class="eyebrow">Local encrypted storage</p>
-        <h2 id="censusVaultTitle" class="workflow-title">Unlock census vault</h2>
-        <p class="workflow-copy">The passphrase stays in memory for this tab. Patient workspaces are stored encrypted in this browser.</p>
+        <p class="eyebrow">Local privacy vault</p>
+        <h2 id="censusVaultTitle" class="workflow-title">Create or unlock your local vault</h2>
+        <p class="vault-claim">Patient data stays on this computer.</p>
+        <p class="vault-copy"><strong>First time here?</strong> Choose a new local passcode and click Create local vault. <strong>Returning?</strong> Enter the same passcode to unlock the encrypted vault stored in this browser.</p>
+        <ul class="vault-assurance-list" aria-label="Local privacy protections">
+          <li><strong>No app server upload</strong>This app does not send your census, pasted chart text, or saved patient workspace to a backend service.</li>
+          <li><strong>Encrypted saved census</strong>Saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
+          <li><strong>You control sharing</strong>Information leaves this computer only when you intentionally copy and paste reviewed text into another site.</li>
+        </ul>
         <div class="vault-grid">
           <div>
-            <label for="censusPassphraseInput">Census passphrase</label>
-            <input id="censusPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Enter passphrase">
+            <label for="censusPassphraseInput">Local vault passcode</label>
+            <input id="censusPassphraseInput" class="census-input" type="password" autocomplete="current-password" placeholder="Create or enter local passcode" aria-describedby="censusPasscodeHelp censusVaultStatus">
+            <p id="censusPasscodeHelp" class="passcode-help">There is no account login. The passcode is only for this browser's encrypted vault; the app cannot recover it if it is forgotten.</p>
           </div>
           <div class="compact-summary-actions">
-            <button id="unlockCensusButton" class="btn btn-primary" type="button">Unlock</button>
-            <button id="createCensusButton" class="btn btn-secondary" type="button">Create vault</button>
-            <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Single patient</button>
+            <button id="unlockCensusButton" class="btn btn-secondary" type="button">Unlock existing vault</button>
+            <button id="createCensusButton" class="btn btn-primary" type="button">Create local vault</button>
+            <button id="continueSinglePatientButton" class="btn btn-quiet" type="button">Use without vault</button>
           </div>
         </div>
         <p id="censusVaultStatus" class="vault-status" role="status" aria-live="polite"></p>
@@ -4231,12 +4300,13 @@
       <section id="privacyStatusPanel" class="surface privacy-panel" aria-labelledby="privacyStatusTitle">
         <div>
           <p class="eyebrow">Privacy</p>
-          <h2 id="privacyStatusTitle" class="workflow-title">Local de-ID guardrails</h2>
+          <h2 id="privacyStatusTitle" class="workflow-title">Local-only privacy guardrails</h2>
         </div>
         <ul class="privacy-list">
-          <li>Raw pasted chart text is used only for local de-identification and is not saved in the census vault.</li>
-          <li>Only reviewed de-identified context, checklist data, and local aliases are stored for future days.</li>
-          <li>Review every prompt before copying to OpenEvidence. This app reduces PHI risk but does not legally certify HIPAA de-identification; follow institutional policy and approved tool use.</li>
+          <li>This app does not upload pasted chart text, census data, or patient workspaces to an app server.</li>
+          <li>Raw pasted chart text is used only for local de-identification in this browser tab, then cleared after review.</li>
+          <li>In census mode, saved patient workspaces and continuity timelines are encrypted in this browser with your local passcode.</li>
+          <li>Review every prompt before copying to OpenEvidence. This app reduces PHI risk but does not legally certify HIPAA de-identification; institutional policy and approved tool use still govern.</li>
         </ul>
       </section>
 
@@ -7658,6 +7728,11 @@ Sensory level present: No / Yes, at ___`;
     }
 
     function saveContinuityCasesToStorage() {
+      if (state.census.unlocked) {
+        safeLocalStorageRemove(CONTINUITY_STORAGE_KEY);
+        scheduleCensusSave(50);
+        return true;
+      }
       const payload = {
         schemaVersion: 1,
         updatedAt: new Date().toISOString(),
@@ -8680,6 +8755,8 @@ Sensory level present: No / Yes, at ___`;
         createdAt: state.census.loadedAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         activePatientId: state.census.activePatientId,
+        activeContinuityCaseId: state.continuity.activeCaseId,
+        continuityCases: state.continuity.cases.map((patientCase) => continuityCaseForStorage(patientCase)),
         patients: state.census.patients
       });
     }
@@ -8699,6 +8776,7 @@ Sensory level present: No / Yes, at ___`;
           type: CENSUS_STORAGE_TYPE
         });
         await writeCensusEnvelope(envelope);
+        safeLocalStorageRemove(CONTINUITY_STORAGE_KEY);
         state.census.vaultExists = true;
         elements.censusStatus.textContent = `Saved ${state.census.patients.length} patient workspace${state.census.patients.length === 1 ? "" : "s"}.`;
         return true;
@@ -9008,6 +9086,11 @@ Sensory level present: No / Yes, at ___`;
         state.census.patients = vault.patients;
         state.census.activePatientId = vault.activePatientId;
         state.census.loadedAt = vault.createdAt || new Date().toISOString();
+        const vaultContinuityCases = normalizeContinuityCases(vault.continuityCases || []);
+        if (vaultContinuityCases.length) {
+          state.continuity.cases = vaultContinuityCases;
+          state.continuity.activeCaseId = vault.activeContinuityCaseId || vaultContinuityCases[0]?.id || "";
+        }
         if (!state.census.patients.length) {
           state.census.activePatientId = "";
         }
@@ -9341,14 +9424,22 @@ Sensory level present: No / Yes, at ___`;
         const existingIds = new Set(state.census.patients.map((patient) => patient.id));
         const additions = imported.patients.filter((patient) => !existingIds.has(patient.id));
         state.census.patients = [...state.census.patients, ...additions];
+        const existingContinuityIds = new Set(state.continuity.cases.map((patientCase) => patientCase.id));
+        const continuityAdditions = normalizeContinuityCases(imported.continuityCases || [])
+          .filter((patientCase) => !existingContinuityIds.has(patientCase.id));
+        state.continuity.cases = [...state.continuity.cases, ...continuityAdditions];
+        if (!state.continuity.activeCaseId && state.continuity.cases[0]) {
+          state.continuity.activeCaseId = state.continuity.cases[0].id;
+        }
         if (!state.census.activePatientId && state.census.patients[0]) {
           state.census.activePatientId = state.census.patients[0].id;
           hydrateWorkspaceFromPatient(state.census.patients[0]);
         }
         ensureContinuityCasesForCensusPatients();
+        renderContinuityCases();
         renderCensusDashboard();
         scheduleCensusSave(50);
-        elements.censusTransferStatus.textContent = `Imported ${additions.length} new patient workspace${additions.length === 1 ? "" : "s"}. Existing local cases were preserved.`;
+        elements.censusTransferStatus.textContent = `Imported ${additions.length} new patient workspace${additions.length === 1 ? "" : "s"} and ${continuityAdditions.length} continuity timeline${continuityAdditions.length === 1 ? "" : "s"}. Existing local cases were preserved.`;
         return true;
       } catch (error) {
         console.error(error);
@@ -9363,11 +9454,11 @@ Sensory level present: No / Yes, at ___`;
         renderCensusDashboard();
         showScreen("censusScreen");
         elements.censusVaultStatus.textContent = state.census.vaultExists
-          ? "Encrypted census found. Enter your passphrase to unlock."
-          : "No census vault yet. Enter a passphrase and create one.";
+          ? "Encrypted local vault found on this computer. Enter the passcode you created here to unlock it."
+          : "No local vault exists yet. Choose a new passcode and click Create local vault.";
       } catch (error) {
         console.warn(error);
-        elements.censusVaultStatus.textContent = "Encrypted census storage is unavailable; single-patient mode still works.";
+        elements.censusVaultStatus.textContent = "Encrypted local storage is unavailable in this browser; single-patient mode still works, but the census vault cannot be protected here.";
         renderCensusDashboard();
       }
     }
