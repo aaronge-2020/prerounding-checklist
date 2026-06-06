@@ -30,7 +30,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "DXA.",
+        "action": "Use this frame to decide whether DXA. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Osteopenia."
       },
       {
@@ -61,7 +61,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Osteopenia workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Osteopenia diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [

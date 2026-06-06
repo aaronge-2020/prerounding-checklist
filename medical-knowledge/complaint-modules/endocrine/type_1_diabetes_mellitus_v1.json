@@ -33,7 +33,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c/glucose criteria plus ketones/acid-base if symptomatic.",
+        "action": "Use this frame to decide whether A1c/glucose criteria plus ketones/acid-base if symptomatic. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 1 Diabetes Mellitus."
       },
       {
@@ -64,7 +64,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Type 1 Diabetes Mellitus workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Type 1 Diabetes Mellitus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [

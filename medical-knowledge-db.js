@@ -1231,7 +1231,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "IGF-1 age/sex-adjusted.",
+        "action": "Use this frame to decide whether IGF-1 age/sex-adjusted. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Acromegaly."
       },
       {
@@ -1262,7 +1262,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Acromegaly workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Acromegaly diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -2051,7 +2051,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "8 AM cortisol/ACTH.",
+        "action": "Use this frame to decide whether 8 AM cortisol/ACTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Addison's Disease."
       },
       {
@@ -2082,7 +2082,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Addison's Disease workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Addison's Disease diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -2835,7 +2835,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "8 AM cortisol and ACTH.",
+        "action": "Use this frame to decide whether 8 AM cortisol and ACTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Adrenal Insufficiency."
       },
       {
@@ -2866,7 +2866,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Adrenal Insufficiency workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Adrenal Insufficiency diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -3638,7 +3638,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Pregnancy test first.",
+        "action": "Use this frame to decide whether Pregnancy test first. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Amenorrhea (Absence of menstruation)."
       },
       {
@@ -3669,7 +3669,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Amenorrhea (Absence of menstruation) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Amenorrhea (Absence of menstruation) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -4503,7 +4503,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "17-hydroxyprogesterone, often with cosyntropin stimulation.",
+        "action": "Use this frame to decide whether 17-hydroxyprogesterone, often with cosyntropin stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
       },
       {
@@ -4534,7 +4534,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Congenital Adrenal Hyperplasia (CAH) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Congenital Adrenal Hyperplasia (CAH) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -5288,7 +5288,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
+        "action": "Use this frame to decide whether First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Disease (Pituitary-dependent Cushing's)."
       },
       {
@@ -5319,7 +5319,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Cushing's Disease (Pituitary-dependent Cushing's) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Cushing's Disease (Pituitary-dependent Cushing's) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -6074,7 +6074,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Exclude exogenous steroids.",
+        "action": "Use this frame to decide whether Exclude exogenous steroids. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Cushing's Syndrome."
       },
       {
@@ -6105,7 +6105,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Cushing's Syndrome workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Cushing's Syndrome diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -6911,7 +6911,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
+        "action": "Use this frame to decide whether Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
       },
       {
@@ -6942,7 +6942,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Diabetes Insipidus workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Diabetes Insipidus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -7718,7 +7718,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Morning total testosterone.",
+        "action": "Use this frame to decide whether Morning total testosterone. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Erectile Dysfunction (Endocrine-related)."
       },
       {
@@ -7749,7 +7749,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Erectile Dysfunction (Endocrine-related) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Erectile Dysfunction (Endocrine-related) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -8586,7 +8586,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Early risk testing if high risk.",
+        "action": "Use this frame to decide whether Early risk testing if high risk. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
       },
       {
@@ -8617,7 +8617,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Gestational Diabetes workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Gestational Diabetes diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -9502,7 +9502,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "IGF-1 age/puberty-adjusted.",
+        "action": "Use this frame to decide whether IGF-1 age/puberty-adjusted. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gigantism."
       },
       {
@@ -9533,7 +9533,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Gigantism workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Gigantism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -10289,7 +10289,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH, free T4, T3.",
+        "action": "Use this frame to decide whether TSH, free T4, T3. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Graves' Disease."
       },
       {
@@ -10320,7 +10320,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Graves' Disease workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Graves' Disease diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -11121,7 +11121,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Total testosterone, LH, FSH, estradiol.",
+        "action": "Use this frame to decide whether Total testosterone, LH, FSH, estradiol. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gynecomastia (Enlarged male breast tissue)."
       },
       {
@@ -11152,7 +11152,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Gynecomastia (Enlarged male breast tissue) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Gynecomastia (Enlarged male breast tissue) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -11928,7 +11928,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH, free T4, TPO antibody.",
+        "action": "Use this frame to decide whether TSH, free T4, TPO antibody. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hashimoto's Thyroiditis (Autoimmune Hypothyroidism)."
       },
       {
@@ -11959,7 +11959,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -12766,7 +12766,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Total testosterone and free testosterone when indicated.",
+        "action": "Use this frame to decide whether Total testosterone and free testosterone when indicated. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
       },
       {
@@ -12797,7 +12797,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hirsutism (Excessive hair growth) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hirsutism (Excessive hair growth) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -13586,7 +13586,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Aldosterone, renin, and ARR with potassium correction.",
+        "action": "Use this frame to decide whether Aldosterone, renin, and ARR with potassium correction. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hyperaldosteronism (Conn's Syndrome)."
       },
       {
@@ -13617,7 +13617,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hyperaldosteronism (Conn's Syndrome) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hyperaldosteronism (Conn's Syndrome) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -14360,7 +14360,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH, free T4, total/free T3.",
+        "action": "Use this frame to decide whether TSH, free T4, total/free T3. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hyperthyroidism (Overactive Thyroid)."
       },
       {
@@ -14391,7 +14391,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hyperthyroidism (Overactive Thyroid) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hyperthyroidism (Overactive Thyroid) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -15212,7 +15212,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Morning total testosterone on two occasions.",
+        "action": "Use this frame to decide whether Morning total testosterone on two occasions. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypogonadism (Low Testosterone in Men)."
       },
       {
@@ -15243,7 +15243,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hypogonadism (Low Testosterone in Men) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hypogonadism (Low Testosterone in Men) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -16028,7 +16028,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Calcium plus PTH.",
+        "action": "Use this frame to decide whether Calcium plus PTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism."
       },
       {
@@ -16059,7 +16059,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hypoparathyroidism workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hypoparathyroidism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -16857,7 +16857,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "8 AM cortisol +/- ACTH stimulation.",
+        "action": "Use this frame to decide whether 8 AM cortisol +/- ACTH stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
       },
       {
@@ -16888,7 +16888,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hypopituitarism workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hypopituitarism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -17787,7 +17787,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH and free T4.",
+        "action": "Use this frame to decide whether TSH and free T4. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypothyroidism (Underactive Thyroid)."
       },
       {
@@ -17818,7 +17818,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Hypothyroidism (Underactive Thyroid) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Hypothyroidism (Underactive Thyroid) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -18640,7 +18640,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Pregnancy test if amenorrhea.",
+        "action": "Use this frame to decide whether Pregnancy test if amenorrhea. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Infertility (Hormonal causes)."
       },
       {
@@ -18671,7 +18671,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Infertility (Hormonal causes) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Infertility (Hormonal causes) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -19524,7 +19524,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Pregnancy test if amenorrhea.",
+        "action": "Use this frame to decide whether Pregnancy test if amenorrhea. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Menopause / Premature Ovarian Insufficiency."
       },
       {
@@ -19555,7 +19555,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Menopause / Premature Ovarian Insufficiency workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Menopause / Premature Ovarian Insufficiency diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -20345,7 +20345,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Waist circumference.",
+        "action": "Use this frame to decide whether Waist circumference. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
       },
       {
@@ -20376,7 +20376,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Metabolic Syndrome workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Metabolic Syndrome diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -21142,7 +21142,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "DXA.",
+        "action": "Use this frame to decide whether DXA. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Osteopenia."
       },
       {
@@ -21173,7 +21173,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Osteopenia workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Osteopenia diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -21922,7 +21922,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "DXA and vertebral imaging when indicated.",
+        "action": "Use this frame to decide whether DXA and vertebral imaging when indicated. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Osteoporosis."
       },
       {
@@ -21953,7 +21953,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Osteoporosis workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Osteoporosis diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -22751,7 +22751,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Plasma free metanephrines or urinary fractionated metanephrines.",
+        "action": "Use this frame to decide whether Plasma free metanephrines or urinary fractionated metanephrines. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Pheochromocytoma."
       },
       {
@@ -22782,7 +22782,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Pheochromocytoma workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Pheochromocytoma diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -23522,7 +23522,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Pregnancy test.",
+        "action": "Use this frame to decide whether Pregnancy test. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Polycystic Ovary Syndrome (PCOS)."
       },
       {
@@ -23553,7 +23553,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Polycystic Ovary Syndrome (PCOS) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Polycystic Ovary Syndrome (PCOS) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -24320,7 +24320,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c, fasting plasma glucose, or 2-hour 75-g OGTT.",
+        "action": "Use this frame to decide whether A1c, fasting plasma glucose, or 2-hour 75-g OGTT. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Prediabetes."
       },
       {
@@ -24351,7 +24351,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Prediabetes workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Prediabetes diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -25149,7 +25149,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Repeat albumin-corrected/ionized calcium with intact PTH.",
+        "action": "Use this frame to decide whether Repeat albumin-corrected/ionized calcium with intact PTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Primary Hyperparathyroidism."
       },
       {
@@ -25180,7 +25180,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Primary Hyperparathyroidism workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Primary Hyperparathyroidism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -25980,7 +25980,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Serum prolactin; repeat/macroprolactin if mild/discordant.",
+        "action": "Use this frame to decide whether Serum prolactin; repeat/macroprolactin if mild/discordant. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Prolactinoma (Benign pituitary tumor)."
       },
       {
@@ -26011,7 +26011,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Prolactinoma (Benign pituitary tumor) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Prolactinoma (Benign pituitary tumor) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -26789,7 +26789,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Neck ultrasound and nodal mapping.",
+        "action": "Use this frame to decide whether Neck ultrasound and nodal mapping. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
       },
       {
@@ -26820,7 +26820,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Thyroid Cancer (Papillary, Follicular, Medullary) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Thyroid Cancer (Papillary, Follicular, Medullary) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -27694,7 +27694,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH.",
+        "action": "Use this frame to decide whether TSH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Nodules (Benign)."
       },
       {
@@ -27725,7 +27725,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Thyroid Nodules (Benign) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Thyroid Nodules (Benign) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -28531,7 +28531,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "TSH, free T4, T3.",
+        "action": "Use this frame to decide whether TSH, free T4, T3. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyrotoxicosis."
       },
       {
@@ -28562,7 +28562,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Thyrotoxicosis workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Thyrotoxicosis diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -29365,7 +29365,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c/glucose criteria plus ketones/acid-base if symptomatic.",
+        "action": "Use this frame to decide whether A1c/glucose criteria plus ketones/acid-base if symptomatic. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 1 Diabetes Mellitus."
       },
       {
@@ -29396,7 +29396,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Type 1 Diabetes Mellitus workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Type 1 Diabetes Mellitus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -30319,7 +30319,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm.",
+        "action": "Use this frame to decide whether A1c, fasting plasma glucose, or 2-hour OGTT to confirm. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
       },
       {
@@ -30350,7 +30350,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Type 2 Diabetes Mellitus workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Type 2 Diabetes Mellitus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [
@@ -31221,7 +31221,7 @@ export const complaintModules = [
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "25(OH)D when clinically indicated.",
+        "action": "Use this frame to decide whether 25(OH)D when clinically indicated. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Vitamin D Deficiency / Osteomalacia."
       },
       {
@@ -31252,7 +31252,7 @@ export const complaintModules = [
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Vitamin D Deficiency / Osteomalacia workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Vitamin D Deficiency / Osteomalacia diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [

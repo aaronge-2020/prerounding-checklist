@@ -32,7 +32,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
+        "action": "Use this frame to decide whether First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
         "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Cushing's Disease (Pituitary-dependent Cushing's)."
       },
       {
@@ -63,7 +63,7 @@
           "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Prevents generic endocrine labeling by forcing the Cushing's Disease (Pituitary-dependent Cushing's) workup to consider dangerous mimics, common confounders, and assay/context pitfalls."
+        "rationale": "Improves Cushing's Disease (Pituitary-dependent Cushing's) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
       }
     ],
     "redFlags": [

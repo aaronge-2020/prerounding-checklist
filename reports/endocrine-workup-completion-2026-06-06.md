@@ -1,6 +1,6 @@
 # Endocrine Workup Completion Report
 
-Generated: 2026-06-06T23:44:13.023Z
+Generated: 2026-06-06T23:46:02.213Z
 Completed modules: 37
 Source registry entries: 44
 
@@ -266,4 +266,3 @@ Status: mvp. These modules are active guideline-backed endocrine workups with lo
    - Questions: 6; required exams: 5; conditional exam add-ons: 4; tests/reference anchors: 10; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/cushings_disease_v1.json
-

@@ -349,7 +349,7 @@ function moduleFromWorkup(row) {
       triggers: triggerTerms(row),
       differentialBuckets: [
         item("differential", 0, `${row.diagnosis}: diagnostic frame from guideline-sourced endocrine workup`, primarySourceId, `${sourceSectionPrefix}: diagnostic frame`, {
-          action: row.tests[0] || row.management_changes[0] || row.diagnosis,
+          action: `Use this frame to decide whether ${row.tests[0] || row.management_changes[0] || row.diagnosis} is the right first confirmatory step and whether urgent endocrine escalation is needed.`,
           rationale: clinicalRationale("test", row.tests[0] || row.management_changes[0] || row.diagnosis, row)
         }),
         item("differential", 1, `Key thresholds and interpretation caveats: ${row.reference_values.slice(0, 2).join(" ")}`, row.source_ids[Math.min(1, row.source_ids.length - 1)], `${sourceSectionPrefix}: thresholds`, {
@@ -358,7 +358,7 @@ function moduleFromWorkup(row) {
         }),
         item("differential", 2, differentialMimics(row), row.source_ids[Math.min(2, row.source_ids.length - 1)], `${sourceSectionPrefix}: mimics and exclusions`, {
           action: "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-          rationale: `Prevents generic endocrine labeling by forcing the ${row.diagnosis} workup to consider dangerous mimics, common confounders, and assay/context pitfalls.`
+          rationale: `Improves ${row.diagnosis} diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.`
         })
       ],
       redFlags,
@@ -431,9 +431,11 @@ function formatCompletionReport(workups, modulePaths, sourceRegistry) {
       `   - Sources: ${row.source_ids.join("; ")}`,
       `   - Questions: ${row.questions.length}; required exams: ${row.exam.length}; conditional exam add-ons: ${conditionalExamTemplates(row).length}; tests/reference anchors: ${row.tests.length + row.reference_values.length}; red flags: ${row.red_flags.length}; management rules: ${row.management_changes.length}`,
       `   - Quality issues: ${row.quality_issues.length ? row.quality_issues.join("; ") : "none"}`,
-      `   - File: ${modulePaths[index]}`,
-      ""
+      `   - File: ${modulePaths[index]}`
     );
+    if (index < workups.length - 1) {
+      lines.push("");
+    }
   });
   return `${lines.join("\n")}\n`;
 }
