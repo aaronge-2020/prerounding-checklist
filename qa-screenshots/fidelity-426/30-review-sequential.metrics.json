@@ -1,0 +1,22 @@
+{
+  "reviewVisible": true,
+  "h1": "Bedside findings",
+  "rows": [
+    "Patient summary Feels better; Short of breath with stairs only",
+    "Heart rhythm Regular rhythm",
+    "Peripheral edema No edema",
+    "Work of breathing Comfortable",
+    "Lung exam Bibasilar crackles, improves after cough",
+    "Abdomen No abdominal tenderness",
+    "Bowel sounds Present",
+    "Line sites Line sites clean",
+    "Skin Warm, dry, intact",
+    "Peripheral pulses 2+",
+    "JVD None",
+    "Heart rate Normal"
+  ],
+  "actionText": [
+    "Back to checklist",
+    "Copy final update"
+  ]
+}

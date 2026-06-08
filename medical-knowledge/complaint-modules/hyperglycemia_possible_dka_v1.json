@@ -1155,7 +1155,7 @@
       },
       {
         "id": "dka_assess_skin_turgor",
-        "label": "Assess skin turgor",
+        "label": "Test skin turgor",
         "action": "Document poor skin turgor because this supports clinically important volume depletion and fluid replacement urgency.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -1189,7 +1189,6 @@
           "metabolic",
           "hyperglycemia",
           "possible",
-          "assess",
           "skin",
           "turgor",
           "fluid",
@@ -1200,7 +1199,7 @@
       },
       {
         "id": "dka_assess_kussmaul_breathing",
-        "label": "Assess Kussmaul breathing",
+        "label": "Observe Kussmaul breathing",
         "action": "Document deep labored respirations because this changes acidosis severity assessment and urgency of crisis management.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -1235,7 +1234,7 @@
           "metabolic",
           "hyperglycemia",
           "possible",
-          "assess",
+          "observe",
           "kussmaul",
           "breathing",
           "clinical",
@@ -1246,7 +1245,7 @@
       },
       {
         "id": "dka_check_capillary_refill",
-        "label": "Check capillary refill",
+        "label": "Test capillary refill",
         "action": "Document delayed refill because this changes shock assessment, fluid urgency, and monitored-care level.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -1281,7 +1280,7 @@
           "metabolic",
           "hyperglycemia",
           "possible",
-          "check",
+          "test",
           "capillary",
           "refill",
           "clinical",
@@ -1339,7 +1338,7 @@
       },
       {
         "id": "dka_assess_extremity_temperature",
-        "label": "Assess extremity temperature",
+        "label": "Palpate distal extremity warmth",
         "action": "Document cool extremities because this changes shock assessment and perfusion monitoring.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -1374,9 +1373,9 @@
           "metabolic",
           "hyperglycemia",
           "possible",
-          "assess",
+          "palpate",
           "extremity",
-          "temperature",
+          "warmth",
           "clinical",
           "assessment"
         ],
@@ -1432,7 +1431,7 @@
       },
       {
         "id": "dka_assess_abdominal_guarding",
-        "label": "Assess abdominal guarding",
+        "label": "Palpate for abdominal guarding",
         "action": "Document guarding because this changes surgical mimic concern and escalation pathway.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -1481,7 +1480,7 @@
     "conditionalExam": [
       {
         "id": "dka_assess_jvp",
-        "label": "Assess jugular venous pressure",
+        "label": "Inspect jugular venous pressure",
         "action": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because elevated JVP changes fluid safety.",
         "when": {
           "termsAny": [
@@ -1539,7 +1538,7 @@
       },
       {
         "id": "dka_assess_peripheral_edema",
-        "label": "Assess peripheral edema",
+        "label": "Inspect and press peripheral edema",
         "action": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because edema changes fluid safety and monitoring.",
         "when": {
           "termsAny": [
@@ -1661,7 +1660,7 @@
       },
       {
         "id": "dka_assess_cva_tenderness",
-        "label": "Assess costovertebral angle tenderness",
+        "label": "Percuss costovertebral angle tenderness",
         "action": "Add this when dysuria, flank pain, fever, or infection concern is present because CVA tenderness changes pyelonephritis concern.",
         "when": {
           "termsAny": [
@@ -2030,7 +2029,7 @@
       },
       {
         "id": "dka_assess_focal_neurologic_deficits",
-        "label": "Assess focal neurologic deficits",
+        "label": "Test focal neurologic deficits",
         "action": "Add this when confusion, seizure, focal symptoms, or hyperosmolarity is present because focal findings change neuroimaging and alternate-diagnosis urgency.",
         "when": {
           "termsAny": [
@@ -2876,7 +2875,7 @@
       },
       {
         "id": "dka_assess_mental_status",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "action": "Document confusion, somnolence, or coma because this changes HHS severity, airway concern, and monitored-care level.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -2912,7 +2911,7 @@
           "metabolic",
           "hyperglycemia",
           "possible",
-          "assess",
+          "document",
           "mental",
           "status",
           "severity",
@@ -2926,7 +2925,7 @@
       },
       {
         "id": "dka_check_airway_protection",
-        "label": "Check ability to protect airway",
+        "label": "Verify airway protection",
         "action": "Document inability to protect the airway because this changes respiratory support and high-acuity disposition.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",

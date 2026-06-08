@@ -406,6 +406,23 @@ function mappedQuestionText(phrase, row) {
   const diagnosisLower = String(diagnosis || "").toLowerCase();
   const category = endocrineCategoryFlags(row.category);
   const lower = String(phrase || "").toLowerCase();
+  if (/^(?:fever or rigors|systemic infection symptoms|fever or infectious trigger)$/i.test(lower)) {
+    return "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?";
+  }
+  if (/^(?:respiratory infection symptoms|pneumonia symptoms)$/i.test(lower)) {
+    return "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?";
+  }
+  if (/^(?:urinary or flank infection symptoms|urinary infection symptoms)$/i.test(lower)) {
+    return "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?";
+  }
+  if (/^(?:skin wound line or procedure site infection symptoms|skin foot wound or line infection symptoms|skin or wound infection symptoms)$/i.test(lower)) {
+    return category.diabetes
+      ? "Any foot ulcer, wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?"
+      : "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?";
+  }
+  if (/^(?:healthcare exposure or sick contact|recent healthcare or exposure context)$/i.test(lower)) {
+    return "Any recent hospitalization, procedure, device/line placement, antimicrobial exposure, congregate exposure, or sick contact?";
+  }
   if (category.diabetes && /^(?:vomiting|abdominal pain|kussmaul breathing|confusion|dehydration|ketones?|acute illness|infection)$/i.test(lower)) {
     return "Any vomiting, abdominal pain, deep or labored breathing, confusion, dehydration, infection symptoms, missed insulin, pump failure, steroid use, or very high glucose/ketones suggesting hyperglycemic crisis?";
   }
@@ -583,7 +600,7 @@ function mappedQuestionText(phrase, row) {
     [/^growth$/i, "Has the thyroid nodule or neck mass grown rapidly, become painful, fixed, or associated with hoarseness, dysphagia, dyspnea, or suspicious nodes?"],
     [/medication|medications|supplements|missed doses|amiodarone|lithium|biotin|iodine|contrast/, `Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter ${diagnosis} interpretation or safety?`],
     [/current trajectory|tempo|onset|duration/, "When did this start, how quickly is it changing, and what is different from baseline today?"],
-    [/infection|fever|acute illness/, "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?"]
+    [/infection|fever|acute illness/, "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?"]
   ];
   const match = templates.find(([pattern]) => pattern.test(lower));
   return match?.[1] || "";
@@ -633,6 +650,21 @@ function questionSemanticBucket(text = "", row = {}) {
   const lower = String(text || "").toLowerCase();
   const diagnosis = String(row.diagnosis || "").toLowerCase();
   const category = endocrineCategoryFlags(row.category);
+  if (/\b(?:measured fever|rigors|hypothermia|toxic appearance)\b/.test(lower)) {
+    return "infection_systemic_or_acuity_context";
+  }
+  if (/\b(?:cough|sputum|pleuritic|dyspnea|hypoxemia|pneumonia|respiratory infection)\b/.test(lower)) {
+    return "infection_respiratory_source_context";
+  }
+  if (/\b(?:dysuria|urinary frequency|urinary urgency|suprapubic|hematuria|flank pain|pyelonephritis|uti)\b/.test(lower)) {
+    return "infection_urinary_flank_source_context";
+  }
+  if (/\b(?:foot ulcer|wound|skin redness|drainage|line\/device|device\/line|procedure-site|indwelling line)\b/.test(lower)) {
+    return "infection_skin_wound_line_source_context";
+  }
+  if (/\b(?:hospitalization|procedure|antimicrobial|congregate|sick contact|device\/line placement)\b/.test(lower)) {
+    return "infection_exposure_context";
+  }
   if (/\b(?:antiseizure|antiepileptic|enzyme-inducing|aromatase inhibitor|androgen-deprivation|bone density|vitamin d metabolism|calcium interpretation)\b/.test(lower)) {
     return "bone_active_medication_exposure";
   }
@@ -775,6 +807,39 @@ function splitQuestionSeed(seed = "") {
     .filter((part) => !/^(and|or|when|because)$/i.test(part));
 }
 
+function expandedQuestionPhrases(seed = "", row = {}) {
+  const phrases = splitQuestionSeed(seed);
+  const category = endocrineCategoryFlags(row.category);
+  const diagnosis = String(row.diagnosis || "").toLowerCase();
+  const shouldLocalizeInfection = category.adrenal
+    || (category.diabetes && !/\b(?:prediabetes|metabolic syndrome)\b/.test(diagnosis))
+    || /\b(?:cushing|adrenal insufficiency|addison|congenital adrenal hyperplasia|type 1 diabetes|type 2 diabetes)\b/.test(diagnosis);
+  const infectionBundlePattern = /\b(?:infections?|infectious|fever|acute illness|recent illness|sick-day triggers|sick day triggers)\b/i;
+  const sourceOrExposurePattern = /\b(?:wound|urinary|cough|procedure|hospitalization|sick contact|skin|line|device|foot ulcer)\b/i;
+  const expanded = [];
+  for (const phrase of phrases) {
+    if (shouldLocalizeInfection && infectionBundlePattern.test(phrase)) {
+      expanded.push(
+        "fever or rigors",
+        "respiratory infection symptoms",
+        "urinary or flank infection symptoms",
+        category.diabetes ? "skin foot wound or line infection symptoms" : "skin wound line or procedure site infection symptoms",
+        "healthcare exposure or sick contact"
+      );
+      continue;
+    }
+    if (shouldLocalizeInfection && sourceOrExposurePattern.test(phrase)) {
+      if (/\b(?:cough|respiratory|pneumonia)\b/i.test(phrase)) expanded.push("respiratory infection symptoms");
+      if (/\b(?:urinary|dysuria|flank|uti)\b/i.test(phrase)) expanded.push("urinary or flank infection symptoms");
+      if (/\b(?:wound|skin|line|device|foot ulcer|procedure)\b/i.test(phrase)) expanded.push(category.diabetes ? "skin foot wound or line infection symptoms" : "skin wound line or procedure site infection symptoms");
+      if (/\b(?:hospitalization|sick contact|procedure)\b/i.test(phrase)) expanded.push("healthcare exposure or sick contact");
+      continue;
+    }
+    expanded.push(phrase);
+  }
+  return uniqueList(expanded);
+}
+
 function questionTagsForPhrase(phrase, row) {
   return uniqueList([
     slug(row.category),
@@ -784,6 +849,7 @@ function questionTagsForPhrase(phrase, row) {
       .replace(/[()]/g, " ")
       .split(/[^a-z0-9+]+/)
       .filter((term) => term.length >= 4)
+      .filter((term) => !genericClinicalTriggerTerm(term))
       .slice(0, 8)
   ]);
 }
@@ -817,7 +883,7 @@ function genericFallbackQuestionAtom(atom = {}) {
 function requiredQuestionTemplates(row) {
   const atoms = [];
   for (const seed of row.questions || []) {
-    for (const phrase of splitQuestionSeed(seed)) {
+    for (const phrase of expandedQuestionPhrases(seed, row)) {
       const atom = questionAtom(phrase, row, seed);
       if (atom) atoms.push(atom);
     }
@@ -881,6 +947,33 @@ function diagnosisExcludedTriggerTerms(row = {}) {
     "today",
     "which",
     "what",
+    "when",
+    "where",
+    "why",
+    "how",
+    "known",
+    "change",
+    "changes",
+    "changed",
+    "changing",
+    "targets",
+    "target",
+    "therapy",
+    "because",
+    "these",
+    "those",
+    "this",
+    "that",
+    "from",
+    "with",
+    "associated",
+    "reliable",
+    "enough",
+    "guide",
+    "guides",
+    "data",
+    "work",
+    "treatment",
     "relevant",
     "interpretation",
     "treatment",
@@ -914,33 +1007,39 @@ function diagnosisExcludedTriggerTerms(row = {}) {
   return terms;
 }
 
-function questionTriggerTerms(atom = {}, row = {}) {
+function genericClinicalTriggerTerm(term = "") {
+  return /^(?:unknown|other|current|prior|diagnosis|condition|conditions|syndrome|disease|disorder|disorders|severe|possible|relevant|interpretation|treatment|safety|endocrine|workup|context|symptom|symptoms|known|change|changes|changed|changing|target|targets|therapy|because|these|those|this|that|from|with|associated|reliable|enough|guide|guides|data|work|patient|history|modifier|modifiers|feature|features|baseline|status|today|which|what|when|where|why|how)$/i.test(String(term || "").trim());
+}
+
+function cleanClinicalTriggerTerms(terms = [], row = {}) {
   const excluded = diagnosisExcludedTriggerTerms(row);
-  return uniqueList([
+  return uniqueList(terms)
+    .map((term) => slug(term).replace(/_/g, " "))
+    .map((term) => term.replace(/\s+/g, " ").trim())
+    .filter((term) => term.length >= 3)
+    .filter((term) => !genericClinicalTriggerTerm(term))
+    .filter((term) => !excluded.has(slug(term)))
+    .filter((term) => {
+      const tokens = term.split(/\s+/).map((token) => slug(token)).filter(Boolean);
+      return tokens.length > 0
+        && !tokens.every((token) => excluded.has(token) || genericClinicalTriggerTerm(token));
+    });
+}
+
+function questionTriggerTerms(atom = {}, row = {}) {
+  return cleanClinicalTriggerTerms([
     ...(atom.tags || []),
     ...String(`${atom.label || ""} ${atom.text || ""}`)
       .toLowerCase()
       .replace(/[()]/g, " ")
       .split(/[^a-z0-9+]+/)
       .filter((term) => term.length >= 4)
-  ])
-    .map((term) => slug(term).replace(/_/g, " "))
-    .filter((term) => term && !excluded.has(slug(term)))
-    .filter((term) => !/^(?:unknown|other|relevant|interpretation|treatment|safety)$/.test(term))
+  ], row)
     .slice(0, 10);
 }
 
 function modifierTriggerTerms(terms = [], row = {}) {
-  const excluded = diagnosisExcludedTriggerTerms(row);
-  return uniqueList(terms)
-    .map((term) => slug(term).replace(/_/g, " "))
-    .filter((term) => term.length >= 3)
-    .filter((term) => !excluded.has(slug(term)))
-    .filter((term) => {
-      const tokens = term.split(/\s+/).map((token) => slug(token)).filter(Boolean);
-      return tokens.length > 0 && !tokens.every((token) => excluded.has(token));
-    })
-    .filter((term) => !/^(?:unknown|other|current|prior|diagnosis|condition|syndrome|disease|disorder|severe|possible|relevant)$/.test(term))
+  return cleanClinicalTriggerTerms(terms, row)
     .slice(0, 10);
 }
 
@@ -999,15 +1098,54 @@ function tierQuestionTemplates(row) {
 }
 
 function conditionalQuestionAction(question = {}, row = {}) {
-  const triggerSummary = (question.when?.termsAny || [])
-    .map((term) => readableClinicalPhrase(term))
-    .filter(Boolean)
-    .slice(0, 5)
-    .join(", ");
+  const triggerSummary = clinicalTriggerDisplaySummary(question.when?.termsAny || [], question, row);
   const prefix = triggerSummary
-    ? `Ask when the history or modifiers mention ${triggerSummary}.`
+    ? `Ask when the history or modifiers support ${triggerSummary}.`
     : `Ask when a related modifier changes the ${row.diagnosis} differential, treatment safety, or test interpretation.`;
   return `${prefix} ${question.management_implication}`;
+}
+
+function clinicalTriggerDisplaySummary(terms = [], question = {}, row = {}) {
+  const text = `${question.label || ""} ${question.text || ""} ${(question.tags || []).join(" ")}`.toLowerCase();
+  const termText = cleanClinicalTriggerTerms(terms, row).join(" ").toLowerCase();
+  const combined = `${text} ${termText}`;
+  const category = endocrineCategoryFlags(row.category);
+  const diagnosis = String(row.diagnosis || "").toLowerCase();
+  const summaries = [];
+  if (/\b(?:cgm|insulin pump|smart pen|glucometer|diabetes app|technology|device|pump)\b/.test(combined)) {
+    summaries.push("diabetes technology or glucose-device use");
+  }
+  if (category.diabetes && /\b(?:meal|nutrition|carbohydrate|food|insecurity|work schedule|glucose target|nausea|vomiting)\b/.test(combined)) {
+    summaries.push("nutrition access, vomiting, or glucose-management barriers");
+  }
+  if (/\b(?:retinopathy|vision|laser|dilated|eye)\b/.test(combined)) {
+    summaries.push("retinopathy, vision, or eye-care concerns");
+  }
+  if (/\b(?:weight|appetite|fluid|systemic)\b/.test(combined)) {
+    summaries.push("weight, appetite, fluid, or systemic-symptom change");
+  }
+  if ((category.adrenal || /\b(?:adrenal|addison|cah|hyperaldosteronism|pheochromocytoma|cushing)\b/.test(diagnosis))
+    && /\b(?:vomiting|nausea|abdominal|poor intake|salt craving|orthostasis|dehydration)\b/.test(combined)) {
+    summaries.push("adrenal-crisis or volume-depletion symptoms");
+  }
+  if (/\b(?:headache|sweat|palpitation|spell|resistant hypertension|hypokalemia)\b/.test(combined)) {
+    summaries.push("adrenergic spells, resistant hypertension, or hypokalemia");
+  }
+  if (summaries.length) {
+    return uniqueList(summaries).slice(0, 2).join("; ");
+  }
+  const cleanedTerms = cleanClinicalTriggerTerms(terms, row)
+    .map((term) => readableClinicalPhrase(term))
+    .filter(Boolean)
+    .slice(0, 4);
+  return cleanedTerms.length ? cleanedTerms.join(", ") : "";
+}
+
+function conditionalQuestionWhenToAsk(question = {}, row = {}) {
+  const triggerSummary = clinicalTriggerDisplaySummary(question.when?.termsAny || [], question, row);
+  return triggerSummary
+    ? `Ask when patient context includes ${triggerSummary}.`
+    : "Ask when patient context includes a relevant non-identifying modifier that changes endocrine interpretation, urgency, or treatment safety.";
 }
 
 function equipmentForBasicBedsideAtom(label) {
@@ -1025,14 +1163,34 @@ function equipmentForBasicBedsideAtom(label) {
   return "";
 }
 
+function canonicalPhysicalExamLabel(label = "") {
+  const text = String(label || "").trim();
+  const lower = text.toLowerCase();
+  const replacements = [
+    [/^assess tremor with outstretched hands$/, "Observe outstretched-hands tremor"],
+    [/^assess extraocular movements$/, "Test extraocular movements"],
+    [/^assess voice quality$/, "Listen to voice quality"],
+    [/^assess proximal hip flexor strength$/, "Test proximal hip flexor strength"],
+    [/^assess gait stability if safe$/, "Observe gait stability if safe"],
+    [/^assess lower leg edema$/, "Inspect and press lower leg edema"],
+    [/^assess lower extremity edema$/, "Inspect and press lower extremity edema"],
+    [/^assess pubertal stage$/, "Stage pubertal development"],
+    [/^assess body hair distribution$/, "Inspect body hair distribution"],
+    [/^assess secondary sex characteristics$/, "Inspect secondary sex characteristics"]
+  ];
+  const match = replacements.find(([pattern]) => pattern.test(lower));
+  return match ? match[1] : text;
+}
+
 function examAtom(label, whenToPerform, managementChange, extra = {}) {
+  const canonicalLabel = canonicalPhysicalExamLabel(label);
   return {
-    label,
+    label: canonicalLabel,
     when_to_perform: whenToPerform,
     management_change: managementChange,
     difficulty: extra.difficulty || "easy",
     time_burden_minutes: extra.time_burden_minutes || 1,
-    equipment_needed: extra.equipment_needed || equipmentForBasicBedsideAtom(label) || "none",
+    equipment_needed: extra.equipment_needed || equipmentForBasicBedsideAtom(canonicalLabel) || "none",
     patient_cooperation_required: extra.patient_cooperation_required || "low",
     termsAny: extra.termsAny || []
   };
@@ -1116,7 +1274,7 @@ function requiredSafetyTemplates(row) {
     );
     safetyAtoms.push(
       examAtom(
-        "Assess mental status",
+        "Document mental status",
         "When diabetes insipidus, hypernatremia, or acute water-balance change is possible",
         "Confusion or somnolence changes hypernatremia severity, disposition, and monitored correction strategy."
       )
@@ -1130,7 +1288,7 @@ function conditionalSafetyTemplates(row) {
   const category = endocrineCategoryFlags(row.category);
   const safetyAtoms = [
     examAtom(
-      "Assess mental status",
+      "Document mental status",
       "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
       "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
       { termsAny: ["unstable", "confusion", "altered mental status", "severe", "crisis", "hypernatremia", "hyponatremia", "hypoglycemia", "hypercalcemia"] }
@@ -1166,7 +1324,7 @@ function atomicExamUnique(items = []) {
   return Array.from(byLabel.values());
 }
 
-const basicSafetyAtomPattern = /\b(?:Measure blood pressure|Measure heart rate|Measure respiratory rate|Measure oxygen saturation|Measure temperature|Measure current weight|Measure body mass index|Measure waist circumference|Calculate body mass index|Measure orthostatic blood pressure|Measure standing blood pressure|Check bedside glucose|Measure bedside glucose|Bedside glucose|Assess general appearance)\b/i;
+const basicSafetyAtomPattern = /\b(?:Measure blood pressure|Measure heart rate|Measure respiratory rate|Measure oxygen saturation|Measure temperature|Measure current weight|Measure body mass index|Measure waist circumference|Calculate body mass index|Measure orthostatic blood pressure|Measure standing blood pressure|Check bedside glucose|Measure bedside glucose|Bedside glucose|Document mental status|Observe general appearance)\b/i;
 
 function isSafetyCheckAtom(exam = {}) {
   return basicSafetyAtomPattern.test(String(exam.label || ""));
@@ -1195,7 +1353,7 @@ function diagnosticTargetForExam(label, row) {
   if (/temperature/.test(lower)) return "fever, hypothermia, inflammatory illness, infection, or endocrine-crisis physiology";
   if (/current weight|body mass index|waist circumference/.test(lower)) return "anthropometric risk, treatment dosing context, and cardiometabolic phenotype";
   if (/acanthosis/.test(lower)) return "insulin resistance or cardiometabolic risk phenotype";
-  if (/pubertal stage|secondary sex/.test(lower)) return "pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype";
+  if (/pubertal (?:stage|development)|stage pubertal|secondary sex/.test(lower)) return "pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype";
   if (/insulin pump|device site|infusion/.test(lower)) return "insulin delivery failure, infusion-site infection, or device-related precipitant";
   if (/diaphoresis|sweating/.test(lower)) return "catecholamine excess, adrenergic spell severity, or autonomic instability";
   if (/tremor/.test(lower) && /pheochromocytoma/.test(diagnosis)) return "catecholamine excess, adrenergic spell severity, or autonomic instability";
@@ -1281,7 +1439,7 @@ function techniqueForExam(label) {
   if (/testicular volume/.test(lower)) return "Estimate testicular volume with orchidometer when available or careful exam, documenting asymmetry, tenderness, or mass separately.";
   if (/breast tissue/.test(lower)) return "Inspect and palpate breast tissue to distinguish glandular tissue from adiposity and to identify discrete mass, tenderness, or discharge.";
   if (/terminal hair|body hair|acne|clitoromegaly/.test(lower)) return "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.";
-  if (/pubertal stage|secondary sex/.test(lower)) return "Assess Tanner stage or secondary sex characteristics only when clinically appropriate and with consent/chaperone practices.";
+  if (/pubertal (?:stage|development)|stage pubertal|secondary sex/.test(lower)) return "Assess Tanner stage or secondary sex characteristics only when clinically appropriate and with consent/chaperone practices.";
   if (/hands|acral/.test(lower)) return "Inspect and compare hands, fingers, ring/shoe-size clues, acral contours, and facial soft-tissue changes with prior photos or baseline when available.";
   if (/tongue|macroglossia/.test(lower)) return "Inspect tongue size at rest and with protrusion, noting macroglossia, dental impressions, speech effects, and airway or sleep-apnea relevance.";
   if (/inspect/.test(lower)) return "Inspect the named area directly, comparing sides when relevant and documenting presence, absence, severity, and inability to assess.";
@@ -1329,7 +1487,7 @@ function findingsOptionsForExam(label) {
   if (/bone tenderness|spine.*focal tenderness|focal tenderness/.test(lower)) return ["No focal tenderness", "Focal tenderness", "Diffuse tenderness", "Unable/unsafe to assess"];
   if (/gait stability/.test(lower)) return ["Stable", "Unsteady", "Needs assistive device/help", "Unable/unsafe to assess"];
   if (/spine posture|kyphosis/.test(lower)) return ["No kyphosis/height-loss concern", "Kyphosis", "Height-loss concern", "Unable to assess"];
-  if (/pubertal stage|secondary sex/.test(lower)) return ["Age-appropriate", "Delayed/underdeveloped", "Advanced/virilized", "Unable/deferred"];
+  if (/pubertal (?:stage|development)|stage pubertal|secondary sex/.test(lower)) return ["Age-appropriate", "Delayed/underdeveloped", "Advanced/virilized", "Unable/deferred"];
   if (/testicular volume/.test(lower)) return ["Expected volume", "Small bilaterally", "Asymmetric/mass concern", "Unable/deferred"];
   if (/body hair distribution/.test(lower)) return ["Expected distribution", "Reduced androgen-dependent hair", "Excess/virilizing pattern", "Unable/deferred"];
   if (/oral mucosa.*hyperpigmentation|hyperpigmentation/.test(lower)) return ["Absent", "Oral/palmar hyperpigmentation", "Diffuse or scar hyperpigmentation", "Unable to assess"];
@@ -1519,8 +1677,8 @@ function requiredExamTemplates(row) {
     }
     if (/diabetes insipidus/.test(diagnosis)) {
       pituitaryAtoms.push(examAtom("Inspect mucous membranes for dehydration", "When polyuria, polydipsia, or hypernatremia is present", "Dehydration changes fluid and desmopressin monitoring urgency."));
-      pituitaryAtoms.push(examAtom("Check capillary refill", "When water-balance disorder, dehydration, or hypernatremia is possible", "Delayed refill changes dehydration severity, fluid urgency, and monitored-care threshold."));
-      pituitaryAtoms.push(examAtom("Assess skin turgor", "When polyuria, polydipsia, dehydration, or hypernatremia is present", "Reduced turgor supports clinically important dehydration but must be interpreted cautiously with age and skin changes."));
+      pituitaryAtoms.push(examAtom("Test capillary refill", "When water-balance disorder, dehydration, or hypernatremia is possible", "Delayed refill changes dehydration severity, fluid urgency, and monitored-care threshold."));
+      pituitaryAtoms.push(examAtom("Test skin turgor", "When polyuria, polydipsia, dehydration, or hypernatremia is present", "Reduced turgor supports clinically important dehydration but must be interpreted cautiously with age and skin changes."));
     }
     return atomicExamUnique([...shared, ...pituitaryAtoms]).filter((exam) => examCompatibleWithDiagnosis(exam, row));
   }
@@ -1546,7 +1704,7 @@ function conditionalExamTemplates(row) {
         ]
       : [];
     return [
-      examAtom("Assess Kussmaul breathing", "When DKA or metabolic acidosis is possible", "Kussmaul breathing changes crisis severity and urgent treatment pathway.", { termsAny: ["dka", "hhs", "hyperglycemic crisis", "ketones", "acidosis", "vomiting"] }),
+      examAtom("Observe Kussmaul breathing", "When DKA or metabolic acidosis is possible", "Kussmaul breathing changes crisis severity and urgent treatment pathway.", { termsAny: ["dka", "hhs", "hyperglycemic crisis", "ketones", "acidosis", "vomiting"] }),
       examAtom("Palpate abdomen for tenderness", "When vomiting or abdominal pain accompanies hyperglycemia", "Tenderness changes precipitant evaluation and concern for surgical or pancreatitis mimic.", { termsAny: ["abdominal pain", "vomiting", "pancreatitis", "dka"] }),
       examAtom("Inspect insulin pump site", "When pump therapy or device failure is possible", "Site failure changes precipitant assessment and insulin delivery plan.", { termsAny: ["pump", "device", "missed insulin", "site"] }),
       examAtom("Inspect foot wound", "When established diabetes with foot wound, ulcer, fever, or infection is present", "A wound changes infection workup, antibiotics, and disposition.", { termsAny: ["foot wound", "ulcer", "infection", "fever", "established diabetes"] }),
@@ -1607,7 +1765,7 @@ function conditionalExamTemplates(row) {
     ];
     if (/diabetes insipidus/.test(diagnosis)) {
       pituitaryConditionals.push(
-        examAtom("Assess skin turgor", "When dehydration, poor intake, or hypernatremia is present", "Reduced turgor supports clinically important dehydration but must be interpreted cautiously.", { termsAny: ["dehydration", "poor intake", "hypernatremia"] })
+        examAtom("Test skin turgor", "When dehydration, poor intake, or hypernatremia is present", "Reduced turgor supports clinically important dehydration but must be interpreted cautiously.", { termsAny: ["dehydration", "poor intake", "hypernatremia"] })
       );
     }
     if (/prolactinoma|hypopituitarism/.test(diagnosis)) {
@@ -1690,7 +1848,7 @@ function moduleFromWorkup(row) {
   const conditionalQuestions = questionTiers.conditional.map((question, index) => item("question", index, question.label, primarySourceId, `${sourceSectionPrefix}: conditional clinical questions`, {
     ...questionItemExtra(question),
     action: conditionalQuestionAction(question, row),
-    when_to_ask: `Ask when patient context includes one of: ${(question.when?.termsAny || []).join(", ") || "a relevant non-identifying modifier"}.`,
+    when_to_ask: conditionalQuestionWhenToAsk(question, row),
     when: question.when?.termsAny?.length ? question.when : { termsAny: [`${slug(row.diagnosis)} modifier`] }
   }));
   const requiredSafetyAtoms = requiredSafetyTemplates(row);

@@ -44,8 +44,7 @@
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "cushing",
-          "syndrome"
+          "cushing"
         ]
       },
       {
@@ -142,7 +141,6 @@
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "severe",
           "hypokalemia",
           "uncontrolled",
           "hypertension",
@@ -188,10 +186,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -231,10 +229,11 @@
           "adrenal",
           "crisis",
           "shock",
-          "severe",
           "vomiting",
           "dehydration",
-          "hypoglycemia"
+          "hypoglycemia",
+          "hyperkalemia",
+          "hyponatremia"
         ],
         "when": {
           "termsAny": [
@@ -376,7 +375,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_CUSHING_DX_2008",
@@ -410,9 +409,8 @@
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -477,7 +475,7 @@
       },
       {
         "id": "question_02",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_CUSHING_DX_2008",
@@ -488,7 +486,143 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Cushing's Syndrome.",
+        "when_to_ask": "Ask when Cushing's Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Cushing's Syndrome.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "cushings_syndrome",
+          "fever",
+          "rigors"
+        ],
+        "source_seed": "Proximal weakness, easy bruising, purple striae, fractures, infections."
+      },
+      {
+        "id": "question_03",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Cushing's Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "cushings_syndrome",
+          "respiratory",
+          "infection"
+        ],
+        "source_seed": "Proximal weakness, easy bruising, purple striae, fractures, infections."
+      },
+      {
+        "id": "question_04",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Cushing's Syndrome pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Cushing's Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Cushing's Syndrome pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "cushings_syndrome",
+          "urinary",
+          "flank",
+          "infection"
+        ],
+        "source_seed": "Proximal weakness, easy bruising, purple striae, fractures, infections."
+      },
+      {
+        "id": "question_05",
+        "label": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
             "value": "unknown",
@@ -515,12 +649,17 @@
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "infections"
+          "skin",
+          "wound",
+          "line",
+          "procedure",
+          "site",
+          "infection"
         ],
         "source_seed": "Proximal weakness, easy bruising, purple striae, fractures, infections."
       },
       {
-        "id": "question_03",
+        "id": "question_06",
         "label": "Any new, worsening, resistant, or treatment-limiting hypertension or diabetes that changes endocrine severity, complication screening, or medication choice?",
         "item_type": "history_question",
         "source": {
@@ -564,7 +703,7 @@
         "source_seed": "Hypertension, diabetes, mood/sleep changes."
       },
       {
-        "id": "question_04",
+        "id": "question_07",
         "label": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
         "item_type": "history_question",
         "source": {
@@ -608,7 +747,7 @@
         "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
       },
       {
-        "id": "question_05",
+        "id": "question_08",
         "label": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
         "item_type": "history_question",
         "source": {
@@ -653,7 +792,7 @@
         "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
       },
       {
-        "id": "question_06",
+        "id": "question_09",
         "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "item_type": "history_question",
         "source": {
@@ -698,52 +837,7 @@
         "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
       },
       {
-        "id": "question_07",
-        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ES_CUSHING_DX_2008",
-          "source_section": "Cushing's Syndrome curated endocrine workup: required clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2008",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
-        "when_to_ask": "Ask when Cushing's Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
-        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
-        "tags": [
-          "adrenal_gland_disorders",
-          "cushings_syndrome",
-          "abdominal",
-          "pain"
-        ],
-        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
-      },
-      {
-        "id": "question_08",
+        "id": "question_10",
         "label": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
         "item_type": "history_question",
         "source": {
@@ -782,13 +876,72 @@
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "autoimmune",
-          "disease"
+          "autoimmune"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Syndrome curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Syndrome needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Cushing's Syndrome.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "cushings_syndrome",
+          "abdominal",
+          "pain"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "when": {
+          "termsAny": [
+            "abdominal",
+            "pain",
+            "nausea",
+            "vomiting",
+            "poor",
+            "intake",
+            "salt",
+            "craving",
+            "orthostasis",
+            "weight"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
@@ -1063,7 +1216,7 @@
       },
       {
         "id": "conditional_exam_03",
-        "label": "Assess lower leg edema",
+        "label": "Inspect and press lower leg edema",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CUSHING_DX_2008",
@@ -1074,7 +1227,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add when edema, heart failure, kidney disease, vte, severe cushing is present; this evaluates volume overload, venous disease, or medication/renal-cardiac complication. Edema changes volume, VTE, renal-cardiac, and medication-safety interpretation.",
+        "action": "Add when edema, heart failure, kidney disease, vte is present; this evaluates volume overload, venous disease, or medication/renal-cardiac complication. Edema changes volume, VTE, renal-cardiac, and medication-safety interpretation.",
         "rationale": "Targets volume overload, venous disease, or medication/renal-cardiac complication; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Cushing's Syndrome.",
         "technique": "Inspect and press over both lower legs or dependent areas for pitting, symmetry, tenderness, and proximal extent.",
         "findings_options": [
@@ -1096,11 +1249,12 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess lower leg edema is supportive for Cushing's Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect and press lower leg edema is supportive for Cushing's Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "adrenal_gland_disorders",
           "cushings_syndrome",
-          "assess",
+          "inspect",
+          "press",
           "lower",
           "edema"
         ],
@@ -1109,8 +1263,7 @@
             "edema",
             "heart failure",
             "kidney disease",
-            "vte",
-            "severe cushing"
+            "vte"
           ]
         }
       }
@@ -1295,13 +1448,13 @@
           "adrenal_gland_disorders",
           "cushings_syndrome",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1329,13 +1482,13 @@
           "adrenal_gland_disorders",
           "cushings_syndrome",
           "cushing",
-          "safety",
           "tests",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "dexamethasone"
+          "dexamethasone",
+          "suppression"
         ]
       },
       {
@@ -1398,12 +1551,12 @@
           "cushings_syndrome",
           "cushing",
           "screening",
-          "with",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "hour"
+          "hour",
+          "after"
         ]
       },
       {
@@ -1470,8 +1623,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1507,7 +1660,7 @@
           "phenotype",
           "triggers",
           "confirmatory",
-          "endocrine"
+          "pathway"
         ]
       },
       {
@@ -1536,12 +1689,12 @@
           "cushings_syndrome",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1570,12 +1723,12 @@
           "cushings_syndrome",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1607,9 +1760,9 @@
           "crisis",
           "treated",
           "immediately",
-          "with",
           "stress",
-          "dose"
+          "dose",
+          "steroids"
         ]
       },
       {
@@ -1641,9 +1794,9 @@
           "elevation",
           "suppressed",
           "renin",
-          "with",
           "high",
-          "aldosterone"
+          "aldosterone",
+          "confirmed"
         ]
       }
     ],

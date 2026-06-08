@@ -1,0 +1,286 @@
+{
+  "setup": {
+    "screen": "outputScreen",
+    "answered": [
+      [
+        "Symptoms today",
+        false
+      ],
+      [
+        "Since yesterday",
+        false
+      ],
+      [
+        "Any chest pain",
+        false
+      ],
+      [
+        "Eating and drinking",
+        false
+      ],
+      [
+        "Any nausea",
+        false
+      ],
+      [
+        "Any dizziness",
+        false
+      ],
+      [
+        "Work of breathing",
+        true
+      ],
+      [
+        "Lung exam",
+        true
+      ],
+      [
+        "Heart rhythm",
+        true
+      ],
+      [
+        "Peripheral edema",
+        true
+      ],
+      [
+        "Abdomen",
+        true
+      ],
+      [
+        "Bowel sounds",
+        true
+      ],
+      [
+        "Line sites",
+        true
+      ],
+      [
+        "Skin",
+        true
+      ]
+    ],
+    "reviewText": "Case A - DKA consult 2 ⋮ Ready to update Everything reviewed Assessed8 Notes0 PHI safe Questions 6 Exam 12 Review Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Cardio Heart rhythm Regular rhythm P"
+  },
+  "viewport": {
+    "w": 426,
+    "h": 922,
+    "dpr": 2
+  },
+  "screen": "outputScreen",
+  "topbar": {
+    "x": 0,
+    "y": 0,
+    "width": 426,
+    "height": 52,
+    "right": 426,
+    "bottom": 52,
+    "text": "Case A - DKA consult 2 ⋮"
+  },
+  "status": {
+    "x": 0,
+    "y": 52,
+    "width": 426,
+    "height": 62,
+    "right": 426,
+    "bottom": 114,
+    "text": "Ready to update Everything reviewed Assessed8 Notes0 PHI safe"
+  },
+  "body": {
+    "x": 0,
+    "y": 114,
+    "width": 426,
+    "height": 840.453125,
+    "right": 426,
+    "bottom": 954.453125,
+    "text": "Questions 6 Exam 12 Review Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Cardio Heart rhythm Reg"
+  },
+  "railItems": [
+    {
+      "x": 0,
+      "y": 114,
+      "width": 74,
+      "height": 112,
+      "right": 74,
+      "bottom": 226,
+      "text": "Questions 6"
+    },
+    {
+      "x": 0,
+      "y": 226,
+      "width": 74,
+      "height": 112,
+      "right": 74,
+      "bottom": 338,
+      "text": "Exam 12"
+    },
+    {
+      "x": 0,
+      "y": 338,
+      "width": 74,
+      "height": 112,
+      "right": 74,
+      "bottom": 450,
+      "text": "Review"
+    }
+  ],
+  "main": {
+    "x": 75,
+    "y": 114,
+    "width": 351,
+    "height": 752.453125,
+    "right": 426,
+    "bottom": 866.453125,
+    "text": "Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Cardio Heart rhythm Regular rhythm Peripheral edem"
+  },
+  "title": {
+    "x": 93,
+    "y": 134.46875,
+    "width": 187.75,
+    "height": 20.046875,
+    "right": 280.75,
+    "bottom": 154.515625,
+    "text": "Bedside findings"
+  },
+  "edit": {
+    "x": 292.75,
+    "y": 128,
+    "width": 115.25,
+    "height": 33,
+    "right": 408,
+    "bottom": 161,
+    "text": "Edit findings"
+  },
+  "phiCard": {
+    "x": 93,
+    "y": 173,
+    "width": 315,
+    "height": 80.078125,
+    "right": 408,
+    "bottom": 253.078125,
+    "text": "PHI safety passedThis update is safe to copy. No patient identifiers detected."
+  },
+  "groups": [
+    {
+      "x": 93,
+      "y": 274.078125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 298.078125,
+      "text": "Cardio"
+    },
+    {
+      "x": 93,
+      "y": 392.953125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 416.953125,
+      "text": "Respiratory"
+    },
+    {
+      "x": 93,
+      "y": 511.828125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 535.828125,
+      "text": "Abdomen / Skin"
+    }
+  ],
+  "rows": [
+    {
+      "x": 93,
+      "y": 304.078125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 343.515625,
+      "text": "Heart rhythm Regular rhythm"
+    },
+    {
+      "x": 93,
+      "y": 343.515625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 382.953125,
+      "text": "Peripheral edema No edema"
+    },
+    {
+      "x": 93,
+      "y": 422.953125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 462.390625,
+      "text": "Work of breathing Comfortable"
+    },
+    {
+      "x": 93,
+      "y": 462.390625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 501.828125,
+      "text": "Lung exam Crackles"
+    },
+    {
+      "x": 93,
+      "y": 541.828125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 581.265625,
+      "text": "Abdomen No abdominal tenderness"
+    },
+    {
+      "x": 93,
+      "y": 581.265625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 620.703125,
+      "text": "Bowel sounds Present"
+    },
+    {
+      "x": 93,
+      "y": 620.703125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 660.140625,
+      "text": "Line sites Line sites clean"
+    },
+    {
+      "x": 93,
+      "y": 660.140625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 699.578125,
+      "text": "Skin Warm, dry, intact"
+    }
+  ],
+  "noteTotal": {
+    "x": 93,
+    "y": 699.578125,
+    "width": 315,
+    "height": 58.875,
+    "right": 408,
+    "bottom": 758.453125,
+    "text": "Update includes 0 note(s) with additional detail."
+  },
+  "actions": {
+    "x": 0,
+    "y": 856,
+    "width": 426,
+    "height": 66,
+    "right": 426,
+    "bottom": 922,
+    "text": "Back to checklist Copy final update"
+  },
+  "symptomGrids": 0,
+  "openQuestionPanels": 0,
+  "screenshotPath": "C:\\Users\\Aaron Ge\\Documents\\GitHub\\prerounding-checklist\\qa-screenshots\\fidelity-426\\37-review-reference-state-after-patch.png"
+}

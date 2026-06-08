@@ -1,0 +1,41 @@
+{
+  "progress": "Exam 8/18",
+  "remaining": "10 remaining",
+  "rail": [
+    "Vitals 2",
+    "Cardio",
+    "Abd 2",
+    "Neuro 2",
+    "Skin 1",
+    "Lines 1",
+    "Other 2"
+  ],
+  "rows": [
+    "Work of breathing",
+    "Lung exam",
+    "Heart rhythm",
+    "Peripheral pulses",
+    "Peripheral edema",
+    "JVD",
+    "Heart rate",
+    "Heart sounds"
+  ],
+  "actions": [
+    "Review findings",
+    "Next 10"
+  ],
+  "actionsRect": {
+    "x": 0,
+    "y": 856,
+    "width": 426,
+    "height": 66,
+    "top": 856,
+    "right": 426,
+    "bottom": 922,
+    "left": 0
+  },
+  "heartBottom": 852,
+  "clearance": 4,
+  "symptomGrids": 0,
+  "openNotePanels": 0
+}

@@ -1,0 +1,409 @@
+{
+  "bodyGrid": "79px 347px",
+  "actionsRect": {
+    "x": 0,
+    "y": 856,
+    "width": 426,
+    "height": 66,
+    "top": 856,
+    "right": 426,
+    "bottom": 922,
+    "left": 0
+  },
+  "actionsButtons": [
+    {
+      "text": "Review findings",
+      "rect": {
+        "x": 14,
+        "y": 867,
+        "width": 193,
+        "height": 40,
+        "top": 867,
+        "right": 207,
+        "bottom": 907,
+        "left": 14
+      },
+      "minHeight": "40px",
+      "font": "13.76px"
+    },
+    {
+      "text": "Next 10",
+      "rect": {
+        "x": 219,
+        "y": 867,
+        "width": 193,
+        "height": 40,
+        "top": 867,
+        "right": 412,
+        "bottom": 907,
+        "left": 219
+      },
+      "minHeight": "40px",
+      "font": "13.76px"
+    }
+  ],
+  "railMetrics": [
+    {
+      "active": false,
+      "text": "Vitals 2",
+      "rect": {
+        "x": 0,
+        "y": 106,
+        "width": 78,
+        "height": 93.25,
+        "top": 106,
+        "right": 78,
+        "bottom": 199.25,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": true,
+      "text": "Cardio",
+      "rect": {
+        "x": 0,
+        "y": 199.25,
+        "width": 78,
+        "height": 84,
+        "top": 199.25,
+        "right": 78,
+        "bottom": 283.25,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": false,
+      "text": "Abd 2",
+      "rect": {
+        "x": 0,
+        "y": 283.25,
+        "width": 78,
+        "height": 93.25,
+        "top": 283.25,
+        "right": 78,
+        "bottom": 376.5,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": false,
+      "text": "Neuro 2",
+      "rect": {
+        "x": 0,
+        "y": 376.5,
+        "width": 78,
+        "height": 93.25,
+        "top": 376.5,
+        "right": 78,
+        "bottom": 469.75,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": false,
+      "text": "Skin 1",
+      "rect": {
+        "x": 0,
+        "y": 469.75,
+        "width": 78,
+        "height": 93.25,
+        "top": 469.75,
+        "right": 78,
+        "bottom": 563,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": false,
+      "text": "Lines 1",
+      "rect": {
+        "x": 0,
+        "y": 563,
+        "width": 78,
+        "height": 93.25,
+        "top": 563,
+        "right": 78,
+        "bottom": 656.25,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    },
+    {
+      "active": false,
+      "text": "Other 2",
+      "rect": {
+        "x": 0,
+        "y": 656.25,
+        "width": 78,
+        "height": 93.25,
+        "top": 656.25,
+        "right": 78,
+        "bottom": 749.5,
+        "left": 0
+      },
+      "widthStyle": "78px"
+    }
+  ],
+  "progressText": "Exam 8/18",
+  "remainingText": "10 remaining",
+  "sectionText": "CARDIO",
+  "sectionHeadMetrics": {
+    "rect": {
+      "x": 79,
+      "y": 106,
+      "width": 347,
+      "height": 59,
+      "top": 106,
+      "right": 426,
+      "bottom": 165,
+      "left": 79
+    },
+    "paddingTop": "14px",
+    "paddingBottom": "14px"
+  },
+  "sectionMetrics": {
+    "rect": {
+      "x": 103,
+      "y": 127.21875,
+      "width": 136.140625,
+      "height": 15.546875,
+      "top": 127.21875,
+      "right": 239.140625,
+      "bottom": 142.765625,
+      "left": 103
+    },
+    "font": "14.4px",
+    "weight": "680"
+  },
+  "firstRowMetrics": {
+    "rect": {
+      "x": 79,
+      "y": 165,
+      "width": 347,
+      "height": 81,
+      "top": 165,
+      "right": 426,
+      "bottom": 246,
+      "left": 79
+    },
+    "paddingTop": "8px",
+    "paddingBottom": "8px",
+    "rowTopAlign": "center"
+  },
+  "rowRects": [
+    {
+      "text": "Work of breathing",
+      "rect": {
+        "x": 79,
+        "y": 165,
+        "width": 347,
+        "height": 81,
+        "top": 165,
+        "right": 426,
+        "bottom": 246,
+        "left": 79
+      }
+    },
+    {
+      "text": "Lung exam",
+      "rect": {
+        "x": 79,
+        "y": 246,
+        "width": 347,
+        "height": 129,
+        "top": 246,
+        "right": 426,
+        "bottom": 375,
+        "left": 79
+      }
+    },
+    {
+      "text": "Heart rhythm",
+      "rect": {
+        "x": 79,
+        "y": 375,
+        "width": 347,
+        "height": 81,
+        "top": 375,
+        "right": 426,
+        "bottom": 456,
+        "left": 79
+      }
+    },
+    {
+      "text": "Peripheral pulses",
+      "rect": {
+        "x": 79,
+        "y": 456,
+        "width": 347,
+        "height": 81,
+        "top": 456,
+        "right": 426,
+        "bottom": 537,
+        "left": 79
+      }
+    },
+    {
+      "text": "Peripheral edema",
+      "rect": {
+        "x": 79,
+        "y": 537,
+        "width": 347,
+        "height": 81,
+        "top": 537,
+        "right": 426,
+        "bottom": 618,
+        "left": 79
+      }
+    },
+    {
+      "text": "JVD",
+      "rect": {
+        "x": 79,
+        "y": 618,
+        "width": 347,
+        "height": 81,
+        "top": 618,
+        "right": 426,
+        "bottom": 699,
+        "left": 79
+      }
+    },
+    {
+      "text": "Heart rate",
+      "rect": {
+        "x": 79,
+        "y": 699,
+        "width": 347,
+        "height": 81,
+        "top": 699,
+        "right": 426,
+        "bottom": 780,
+        "left": 79
+      }
+    },
+    {
+      "text": "Heart sounds",
+      "rect": {
+        "x": 79,
+        "y": 780,
+        "width": 347,
+        "height": 81,
+        "top": 780,
+        "right": 426,
+        "bottom": 861,
+        "left": 79
+      }
+    }
+  ],
+  "firstRowTitleMetrics": {
+    "text": "Work of breathing",
+    "rect": {
+      "x": 103,
+      "y": 180.703125,
+      "width": 251,
+      "height": 14.578125,
+      "top": 180.703125,
+      "right": 354,
+      "bottom": 195.28125,
+      "left": 103
+    },
+    "font": "12.8px",
+    "weight": "610"
+  },
+  "firstSelectedMetrics": {
+    "text": "Comfortable",
+    "rect": {
+      "x": 103,
+      "y": 209,
+      "width": 104.109375,
+      "height": 28,
+      "top": 209,
+      "right": 207.109375,
+      "bottom": 237,
+      "left": 103
+    },
+    "font": "11.2px",
+    "weight": "540"
+  },
+  "firstOptionMetrics": [
+    {
+      "text": "Comfortable",
+      "rect": {
+        "x": 103,
+        "y": 209,
+        "width": 104.109375,
+        "height": 28,
+        "top": 209,
+        "right": 207.109375,
+        "bottom": 237,
+        "left": 103
+      },
+      "font": "11.2px",
+      "weight": "540"
+    },
+    {
+      "text": "Labored",
+      "rect": {
+        "x": 217.109375,
+        "y": 209,
+        "width": 59.515625,
+        "height": 28,
+        "top": 209,
+        "right": 276.625,
+        "bottom": 237,
+        "left": 217.109375
+      },
+      "font": "11.2px",
+      "weight": "540"
+    },
+    {
+      "text": "Other",
+      "rect": {
+        "x": 286.625,
+        "y": 209,
+        "width": 58,
+        "height": 28,
+        "top": 209,
+        "right": 344.625,
+        "bottom": 237,
+        "left": 286.625
+      },
+      "font": "11.2px",
+      "weight": "540"
+    },
+    {
+      "text": "Clear",
+      "rect": {
+        "x": 103,
+        "y": 290,
+        "width": 65.828125,
+        "height": 28,
+        "top": 290,
+        "right": 168.828125,
+        "bottom": 318,
+        "left": 103
+      },
+      "font": "11.2px",
+      "weight": "540"
+    }
+  ],
+  "heartSoundsRow": {
+    "x": 79,
+    "y": 780,
+    "width": 347,
+    "height": 81,
+    "top": 780,
+    "right": 426,
+    "bottom": 861,
+    "left": 79
+  },
+  "heartSoundsOptionBottom": 852,
+  "heartOptionsClearActions": true,
+  "clearancePx": 4
+}

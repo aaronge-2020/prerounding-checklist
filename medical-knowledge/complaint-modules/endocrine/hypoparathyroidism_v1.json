@@ -140,7 +140,6 @@
           "laryngospasm",
           "arrhythmia",
           "prolongation",
-          "severe",
           "symptomatic",
           "hypocalcemia"
         ],
@@ -181,10 +180,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -225,10 +224,10 @@
           "fracture",
           "cord",
           "neurologic",
-          "symptoms",
-          "with",
           "back",
-          "pain"
+          "pain",
+          "hypercalcemia",
+          "dehydration"
         ],
         "when": {
           "termsAny": [
@@ -325,7 +324,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
@@ -359,9 +358,8 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -556,7 +554,6 @@
           "hypoparathyroidism",
           "calcium",
           "vitamin",
-          "therapy",
           "kidney",
           "stones"
         ],
@@ -652,6 +649,51 @@
       },
       {
         "id": "question_07",
+        "label": "Any prior neck, thyroid, or parathyroid surgery, radiation, or postoperative calcium problems?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any prior neck, thyroid, or parathyroid surgery, radiation, or postoperative calcium problems?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypoparathyroidism.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypoparathyroidism.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "neck",
+          "surgery"
+        ],
+        "source_seed": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
+      },
+      {
+        "id": "question_08",
         "label": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
         "item_type": "history_question",
         "source": {
@@ -690,7 +732,6 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
-          "symptoms",
           "hypo",
           "hypercalcemia"
         ],
@@ -701,7 +742,7 @@
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Assess proximal hip flexor strength",
+        "label": "Test proximal hip flexor strength",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
@@ -731,11 +772,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess proximal hip flexor strength is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Test proximal hip flexor strength is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
-          "assess",
+          "test",
           "proximal",
           "flexor",
           "strength"
@@ -785,7 +826,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess gait stability if safe",
+        "label": "Observe gait stability if safe",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
@@ -815,11 +856,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess gait stability if safe is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe gait stability if safe is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
-          "assess",
+          "observe",
           "gait",
           "stability",
           "safe"
@@ -1142,8 +1183,7 @@
           "urine",
           "calcium",
           "during",
-          "chronic",
-          "treatment"
+          "chronic"
         ]
       },
       {
@@ -1171,13 +1211,13 @@
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1205,13 +1245,13 @@
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
           "thyroid",
-          "safety",
-          "data",
           "pair",
           "free",
-          "with",
-          "syndrome",
-          "specific"
+          "specific",
+          "such",
+          "antibodies",
+          "ultrasound",
+          "radionuclide"
         ]
       },
       {
@@ -1243,9 +1283,9 @@
           "fracture",
           "risk",
           "tool",
-          "when",
           "bone",
-          "density"
+          "density",
+          "scope"
         ]
       },
       {
@@ -1277,9 +1317,9 @@
           "calcium",
           "renal",
           "imaging",
-          "when",
           "primary",
-          "hyperparathyroidism"
+          "hyperparathyroidism",
+          "kidney"
         ]
       },
       {
@@ -1404,9 +1444,9 @@
           "many",
           "labs",
           "flag",
-          "severe",
           "deficiency",
-          "while"
+          "while",
+          "2024"
         ]
       },
       {
@@ -1434,7 +1474,6 @@
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
           "calcium",
-          "with",
           "inappropriately",
           "normal",
           "often",
@@ -1472,8 +1511,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1503,9 +1542,7 @@
           "bone_and_parathyroid_disorders",
           "hypoparathyroidism",
           "symptomatic",
-          "severe",
           "hypocalcemia",
-          "changes",
           "urgent",
           "calcium",
           "replacement",
@@ -1538,12 +1575,12 @@
           "hypoparathyroidism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1572,12 +1609,12 @@
           "hypoparathyroidism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1643,7 +1680,7 @@
           "involvement",
           "stones",
           "osteoporosis",
-          "severe"
+          "surgical"
         ]
       }
     ],

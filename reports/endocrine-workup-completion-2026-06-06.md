@@ -1,6 +1,6 @@
 # Endocrine Workup Completion Report
 
-Generated: 2026-06-08T06:32:47.446Z
+Generated: 2026-06-08T22:16:03.121Z
 Completed modules: 37
 Source registry entries: 50
 
@@ -11,14 +11,14 @@ Status: mvp. These modules are active guideline-backed endocrine workups with lo
 1. Type 2 Diabetes Mellitus (type_2_diabetes_mellitus_v1)
    - Category: Diabetes and Blood Sugar Disorders
    - Sources: ADA_SOC_2026; ADA_DIAGNOSIS_2026
-   - Required questions: 9; conditional question add-ons: 2; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 13; red flags: 4; management rules: 6
+   - Required questions: 10; conditional question add-ons: 3; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 13; red flags: 4; management rules: 6
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/type_2_diabetes_mellitus_v1.json
 
 2. Type 1 Diabetes Mellitus (type_1_diabetes_mellitus_v1)
    - Category: Diabetes and Blood Sugar Disorders
    - Sources: ADA_SOC_2026; ADA_DIAGNOSIS_2026; ADA_HYPERGLYCEMIC_CRISES_2024
-   - Required questions: 5; conditional question add-ons: 5; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 14; red flags: 4; management rules: 6
+   - Required questions: 8; conditional question add-ons: 4; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 14; red flags: 4; management rules: 6
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/type_1_diabetes_mellitus_v1.json
 
@@ -95,77 +95,77 @@ Status: mvp. These modules are active guideline-backed endocrine workups with lo
 13. Osteoporosis (osteoporosis_v1)
    - Category: Bone and Parathyroid Disorders
    - Sources: ENDO_OSTEOPOROSIS_2020; AACE_OSTEOPOROSIS_2020
-   - Required questions: 4; conditional question add-ons: 0; safety checks: 3; required exams: 4; conditional exam add-ons: 5; tests/reference anchors: 11; red flags: 3; management rules: 6
+   - Required questions: 5; conditional question add-ons: 0; safety checks: 3; required exams: 4; conditional exam add-ons: 5; tests/reference anchors: 11; red flags: 3; management rules: 6
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/osteoporosis_v1.json
 
 14. Osteopenia (osteopenia_v1)
    - Category: Bone and Parathyroid Disorders
    - Sources: ENDO_OSTEOPOROSIS_2020; AACE_OSTEOPOROSIS_2020
-   - Required questions: 4; conditional question add-ons: 0; safety checks: 3; required exams: 4; conditional exam add-ons: 5; tests/reference anchors: 12; red flags: 3; management rules: 5
+   - Required questions: 5; conditional question add-ons: 0; safety checks: 3; required exams: 4; conditional exam add-ons: 5; tests/reference anchors: 12; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/osteopenia_v1.json
 
 15. Primary Hyperparathyroidism (primary_hyperparathyroidism_v1)
    - Category: Bone and Parathyroid Disorders
    - Sources: PHPT_WORKSHOP_2022
-   - Required questions: 4; conditional question add-ons: 0; safety checks: 3; required exams: 5; conditional exam add-ons: 5; tests/reference anchors: 13; red flags: 3; management rules: 5
+   - Required questions: 5; conditional question add-ons: 0; safety checks: 3; required exams: 5; conditional exam add-ons: 5; tests/reference anchors: 13; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/primary_hyperparathyroidism_v1.json
 
 16. Hypoparathyroidism (hypoparathyroidism_v1)
    - Category: Bone and Parathyroid Disorders
    - Sources: HYPOPARA_TASK_FORCE_2022
-   - Required questions: 7; conditional question add-ons: 0; safety checks: 3; required exams: 6; conditional exam add-ons: 5; tests/reference anchors: 13; red flags: 3; management rules: 5
+   - Required questions: 8; conditional question add-ons: 0; safety checks: 3; required exams: 6; conditional exam add-ons: 5; tests/reference anchors: 13; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/hypoparathyroidism_v1.json
 
 17. Vitamin D Deficiency / Osteomalacia (vitamin_d_deficiency_osteomalacia_v1)
    - Category: Bone and Parathyroid Disorders
    - Sources: ENDO_VITD_2024; NIH_VITD_FACTSHEET
-   - Required questions: 4; conditional question add-ons: 0; safety checks: 3; required exams: 6; conditional exam add-ons: 5; tests/reference anchors: 12; red flags: 3; management rules: 5
+   - Required questions: 5; conditional question add-ons: 0; safety checks: 3; required exams: 6; conditional exam add-ons: 5; tests/reference anchors: 12; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/vitamin_d_deficiency_osteomalacia_v1.json
 
 18. Adrenal Insufficiency (adrenal_insufficiency_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_ADRENAL_INSUFFICIENCY_2016
-   - Required questions: 8; conditional question add-ons: 0; safety checks: 4; required exams: 3; conditional exam add-ons: 2; tests/reference anchors: 11; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 1; safety checks: 4; required exams: 3; conditional exam add-ons: 2; tests/reference anchors: 11; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/adrenal_insufficiency_v1.json
 
 19. Addison's Disease (addisons_disease_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_ADRENAL_INSUFFICIENCY_2016
-   - Required questions: 7; conditional question add-ons: 0; safety checks: 4; required exams: 3; conditional exam add-ons: 2; tests/reference anchors: 12; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 0; safety checks: 4; required exams: 3; conditional exam add-ons: 2; tests/reference anchors: 12; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/addisons_disease_v1.json
 
 20. Cushing's Syndrome (cushings_syndrome_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_CUSHING_DX_2008; ES_CUSHING_TREATMENT_2015; ESE_ADRENAL_INCIDENTALOMA_2023
-   - Required questions: 8; conditional question add-ons: 0; safety checks: 4; required exams: 4; conditional exam add-ons: 3; tests/reference anchors: 11; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 1; safety checks: 4; required exams: 4; conditional exam add-ons: 3; tests/reference anchors: 11; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/cushings_syndrome_v1.json
 
 21. Hyperaldosteronism (Conn's Syndrome) (hyperaldosteronism_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_PRIMARY_ALDO_2025
-   - Required questions: 10; conditional question add-ons: 0; safety checks: 4; required exams: 3; conditional exam add-ons: 4; tests/reference anchors: 9; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 3; safety checks: 4; required exams: 3; conditional exam add-ons: 4; tests/reference anchors: 9; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/hyperaldosteronism_v1.json
 
 22. Pheochromocytoma (pheochromocytoma_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_PHEO_PPGL_2014; ESE_ADRENAL_INCIDENTALOMA_2023
-   - Required questions: 9; conditional question add-ons: 0; safety checks: 5; required exams: 3; conditional exam add-ons: 3; tests/reference anchors: 9; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 2; safety checks: 5; required exams: 3; conditional exam add-ons: 3; tests/reference anchors: 9; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/pheochromocytoma_v1.json
 
 23. Congenital Adrenal Hyperplasia (CAH) (congenital_adrenal_hyperplasia_v1)
    - Category: Adrenal Gland Disorders
    - Sources: ES_CAH_2018
-   - Required questions: 9; conditional question add-ons: 0; safety checks: 4; required exams: 5; conditional exam add-ons: 2; tests/reference anchors: 10; red flags: 3; management rules: 5
+   - Required questions: 10; conditional question add-ons: 2; safety checks: 4; required exams: 5; conditional exam add-ons: 2; tests/reference anchors: 10; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/congenital_adrenal_hyperplasia_v1.json
 

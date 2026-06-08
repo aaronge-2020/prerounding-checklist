@@ -112,8 +112,8 @@
           "pregnancy",
           "hypothalamic",
           "pituitary",
-          "disease",
-          "thyroid"
+          "thyroid",
+          "hyperprolactinemia"
         ]
       }
     ],
@@ -144,12 +144,12 @@
           "amenorrhea",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "visual",
           "loss",
-          "headache"
+          "headache",
+          "rapid"
         ],
         "when": {
           "termsAny": [
@@ -188,10 +188,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -230,12 +230,12 @@
           "amenorrhea",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "rapid",
           "virilization",
-          "tumor"
+          "tumor",
+          "range"
         ],
         "when": {
           "termsAny": [
@@ -377,7 +377,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ASRM_AMENORRHEA_2024",
@@ -411,9 +411,8 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "amenorrhea",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -516,8 +515,7 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "amenorrhea",
-          "cycle",
-          "history"
+          "cycle"
         ],
         "source_seed": "Primary vs secondary amenorrhea, cycle history, pregnancy risk."
       },
@@ -610,8 +608,7 @@
           "loss",
           "exercise",
           "stress",
-          "eating",
-          "disorder"
+          "eating"
         ],
         "source_seed": "Weight loss/exercise/stress/eating disorder, galactorrhea, headache/vision, hirsutism/acne/hot flashes."
       },
@@ -873,9 +870,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention puberty, timing, height, growth, velocity. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Amenorrhea (Absence of menstruation).",
+        "action": "Ask when the history or modifiers support puberty, timing, height, growth. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Amenorrhea (Absence of menstruation).",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
-        "when_to_ask": "Ask when patient context includes one of: puberty, timing, height, growth, velocity, changed, compared, with, measurements, family.",
+        "when_to_ask": "Ask when patient context includes puberty, timing, height, growth.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
         "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Amenorrhea (Absence of menstruation).",
         "tags": [
@@ -892,11 +889,10 @@
             "height",
             "growth",
             "velocity",
-            "changed",
             "compared",
-            "with",
             "measurements",
-            "family"
+            "family",
+            "pattern"
           ]
         }
       },
@@ -932,9 +928,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Amenorrhea (Absence of menstruation).",
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Amenorrhea (Absence of menstruation).",
         "rationale": "Defines symptom severity, tempo, complications, and whether Amenorrhea (Absence of menstruation) needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Amenorrhea (Absence of menstruation) needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Amenorrhea (Absence of menstruation).",
         "tags": [
@@ -955,8 +951,8 @@
             "restriction",
             "intense",
             "psychosocial",
-            "change",
-            "energy"
+            "energy",
+            "balance"
           ]
         }
       },
@@ -992,9 +988,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention chemotherapy, radiation, surgery, pelvic, cranial. The answer changes the leading Amenorrhea (Absence of menstruation) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Amenorrhea (Absence of menstruation) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
-        "when_to_ask": "Ask when patient context includes one of: chemotherapy, radiation, surgery, pelvic, cranial, cancer, that, could, affect, function.",
+        "when_to_ask": "Ask when patient context includes chemotherapy, radiation, surgery, pelvic.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
         "management_implication": "The answer changes the leading Amenorrhea (Absence of menstruation) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "tags": [
@@ -1013,7 +1009,6 @@
             "pelvic",
             "cranial",
             "cancer",
-            "that",
             "could",
             "affect",
             "function"
@@ -1052,9 +1047,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention family, pcos, history, premature, ovarian. The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Amenorrhea (Absence of menstruation).",
+        "action": "Ask when the history or modifiers support family, pcos, premature, ovarian. The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Amenorrhea (Absence of menstruation).",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
-        "when_to_ask": "Ask when patient context includes one of: family, pcos, history, premature, ovarian, insufficiency, that, changes, risk, test.",
+        "when_to_ask": "Ask when patient context includes family, pcos, premature, ovarian.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Amenorrhea (Absence of menstruation).",
         "management_implication": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Amenorrhea (Absence of menstruation).",
         "tags": [
@@ -1068,12 +1063,9 @@
           "termsAny": [
             "family",
             "pcos",
-            "history",
             "premature",
             "ovarian",
             "insufficiency",
-            "that",
-            "changes",
             "risk",
             "test"
           ]
@@ -1554,7 +1546,6 @@
           "amenorrhea",
           "androgen",
           "testing",
-          "when",
           "hyperandrogenism",
           "testosterone",
           "dheas"
@@ -1585,13 +1576,13 @@
           "reproductive_and_gonadal_disorders",
           "amenorrhea",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1620,12 +1611,12 @@
           "amenorrhea",
           "gonadal",
           "axis",
-          "safety",
           "tests",
           "pregnancy",
           "test",
-          "when",
-          "possible"
+          "prolactin",
+          "estradiol",
+          "repeated"
         ]
       },
       {
@@ -1655,9 +1646,9 @@
           "pregnancy",
           "test",
           "first",
-          "when",
-          "possible",
-          "prolactin"
+          "prolactin",
+          "gonadotropins",
+          "estradiol"
         ]
       },
       {
@@ -1686,12 +1677,12 @@
           "amenorrhea",
           "androgen",
           "testing",
-          "with",
-          "reliable",
           "assays",
           "hyperandrogenism",
           "metabolic",
-          "screening"
+          "screening",
+          "pcos",
+          "semen"
         ]
       },
       {
@@ -1826,8 +1817,7 @@
           "about",
           "local",
           "pregnancy",
-          "illness",
-          "context"
+          "illness"
         ]
       },
       {
@@ -1923,8 +1913,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1957,10 +1947,10 @@
           "separates",
           "ovarian",
           "failure",
-          "from",
           "central",
           "hypothalamic",
-          "causes"
+          "causes",
+          "imaging"
         ]
       },
       {
@@ -1989,12 +1979,12 @@
           "amenorrhea",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -2023,12 +2013,12 @@
           "amenorrhea",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -2094,9 +2084,9 @@
           "hyperprolactinemia",
           "pcos",
           "thyroid",
-          "disease",
-          "changes",
-          "counseling"
+          "counseling",
+          "bone",
+          "cardiometabolic"
         ]
       }
     ],

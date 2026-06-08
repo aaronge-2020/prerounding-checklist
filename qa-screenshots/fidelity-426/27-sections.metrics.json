@@ -1,0 +1,13 @@
+{
+  "checklistVisible": true,
+  "startVisible": true,
+  "reviewVisible": false,
+  "title": "Case A - DKA consult",
+  "h1": "Checklist is ready",
+  "actionText": [
+    "Review checklist",
+    "Start bedside",
+    "Review findings",
+    "Next unfinished (8)"
+  ]
+}

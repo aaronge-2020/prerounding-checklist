@@ -5,6 +5,7 @@ import {
   buildCleanupPrompt,
   buildLocalChecklistFromWorkup,
   checklistPrompt,
+  expandedLocalBedsideQuestionItems,
   mergeChecklistAuditResults,
   newAdmissionChecklistPrompt,
   normalizeChecklistText,
@@ -185,6 +186,7 @@ assert.ok(issueTypes(badCoughCommandAudit).includes("bedside-exam-maneuver"), "b
 
 const feverSourceHistoryChecklist = `BEDSIDE QUESTION CHECKLIST
 FOCUSED HISTORY
+How high was the fever, how was it measured, when did it start, and what antipyretics, antibiotics, steroids, or immunosuppressants have you taken?: Unknown / Short duration / Persistent or recurrent / Antipyretic used / Antibiotic already used / Steroid or immunosuppression / Other ___
 What symptoms localize the fever source: cough, sputum, dyspnea, pleuritic pain, sore throat, ear or sinus pain, dental pain, dysuria, flank pain, abdominal pain, vomiting, diarrhea, rash, wound, line concern, headache, neck stiffness, hot joint, back pain, confusion, low urine output, fainting, or rapid worsening?: No localizing symptoms / Cough-dyspnea-sputum-pleuritic pain / Dysuria-frequency-flank pain / Rash-wound-line / Other ___
 Any cough, sputum, shortness of breath, pleuritic pain, wheeze, hypoxia, aspiration risk, or sick respiratory contacts?: No / Yes / Other ___
 Have you been able to walk safely since the fever started?: Yes / No / Not tried / Other ___
@@ -197,6 +199,32 @@ Work of breathing: Normal / Mildly increased / Markedly increased
 Auscultate posterior lung fields: Clear / Crackles / Wheezes / Diminished`;
 const feverSourceHistoryAudit = validateChecklist(parseChecklist(feverSourceHistoryChecklist));
 assert.ok(!issueTypes(feverSourceHistoryAudit).includes("bedside-exam-maneuver"), "source-localizing fever symptom history should not be flagged as an exam maneuver");
+const feverSourceHistorySections = parseChecklist(feverSourceHistoryChecklist);
+const feverSourceHistoryLabels = itemsByCategory(feverSourceHistorySections, "bedside").map((item) => item.label);
+assert.ok(
+  feverSourceHistoryLabels.includes("How high was the measured temperature?")
+    && feverSourceHistoryLabels.includes("Any antibiotic use before evaluation?")
+    && feverSourceHistoryLabels.includes("Any steroid or immunosuppressant use before evaluation?"),
+  "parsed pasted fever timeline/medication bundles should become separate bedside questions"
+);
+assert.ok(
+  feverSourceHistoryLabels.includes("Any respiratory source symptoms?"),
+  "parsed pasted fever source bundles should become a respiratory source bedside question"
+);
+assert.ok(
+  feverSourceHistoryLabels.includes("Any urinary or flank source symptoms?"),
+  "parsed pasted fever source bundles should become a urinary/flank source bedside question"
+);
+assert.ok(
+  !feverSourceHistoryLabels.some((label) => /What symptoms localize the fever source|How high was the fever, how was it measured/i.test(label)),
+  "parsed pasted fever source and timeline bundles should not keep the original giant grouped labels"
+);
+const parsedRespiratorySource = itemsByCategory(feverSourceHistorySections, "bedside")
+  .find((item) => item.label === "Any respiratory source symptoms?");
+assert.ok(
+  parsedRespiratorySource?.options?.includes("Cough") && parsedRespiratorySource.options.includes("Shortness of breath"),
+  "parsed respiratory source rows should preserve independently markable symptom options"
+);
 
 const badBlankChecklist = `TARGETED PHYSICAL EXAM CHECKLIST
 MUSCULOSKELETAL STRENGTH EXAM
@@ -210,11 +238,63 @@ assert.ok(normalized.includes("How are you?: Better / Worse / Other ___"), "norm
 const unsupportedLocalChecklist = buildLocalChecklistFromWorkup({});
 assert.equal(unsupportedLocalChecklist, "", "local checklist generation should block unsupported/no-intent workups instead of emitting generic defaults");
 
+const broadFeverSourceQuestion = {
+  id: "REQ-infection-source-severity-history",
+  label: "Fever source-localizing and sepsis severity question",
+  text: "What symptoms localize the fever source: cough, sputum, dyspnea, pleuritic pain, sore throat, ear/sinus/dental pain, dysuria, flank pain, abdominal pain, vomiting/diarrhea, rash, wound/line concern, headache/neck stiffness, hot joint/back pain, confusion, low urine output, fainting, or rapid worsening?",
+  options: "No localizing symptoms / Cough-dyspnea-sputum-pleuritic pain / Sore throat-ear-sinus-dental / Dysuria-frequency-flank pain / Abdominal pain-vomiting-diarrhea / Rash-wound-line / Headache-neck stiffness-confusion / Hot joint-back pain / Low urine output / Rapid worsening / Other ___",
+  tags: ["infection", "sepsis", "source_localizing_history"]
+};
+const atomizedFeverSourceQuestions = expandedLocalBedsideQuestionItems(broadFeverSourceQuestion);
+assert.equal(atomizedFeverSourceQuestions.length, 6, "broad fever source questions should become six source-domain bedside questions");
+assert.ok(
+  atomizedFeverSourceQuestions.every((item) => /\?$/.test(item.label) && !/What symptoms localize the fever source/i.test(item.label)),
+  "atomized fever source rows should be directly askable questions, not the original bundled prompt"
+);
+assert.ok(
+  atomizedFeverSourceQuestions.some((item) => /respiratory source/i.test(item.label) && /Cough \/ Sputum \/ Shortness of breath/i.test(item.options)),
+  "atomized fever source rows should preserve respiratory options for multi-mark response controls"
+);
+assert.ok(
+  atomizedFeverSourceQuestions.every((item) => item.source_domain_key && /^bedside:infection-/i.test(item.source_domain_key)),
+  "atomized fever source rows should preserve source-domain semantic keys for dedupe and traceability"
+);
+
+const respiratorySourceFollowup = {
+  id: "REQ-respiratory-infection-source-history",
+  label: "Any cough, sputum, shortness of breath, pleuritic pain, wheeze, hypoxia, aspiration risk, or sick respiratory contacts?",
+  options: "None / Cough / Sputum / Shortness of breath / Pleuritic pain / Wheeze / Hypoxia or oxygen need / Aspiration risk / Sick respiratory contacts",
+  tags: ["fever", "infection", "respiratory_source"]
+};
+assert.ok(
+  expandedLocalBedsideQuestionItems(respiratorySourceFollowup).every((item) => item.source_domain_key === "bedside:infection-respiratory-source"),
+  "atomized respiratory infection follow-up rows should dedupe against the respiratory source-domain row"
+);
+
+const olderMultiDomainSourceFeatureQuestion = {
+  id: "REQ-older-source-feature-wording",
+  label: "Any abdominal, CNS, skin, line, joint, or spine source features?",
+  options: "No / Abdominal pain / Vomiting / Diarrhea / Rash / Wound / Line pain / Severe headache / Neck stiffness / Confusion / Hot swollen joint / Back pain / Rapid worsening / Other ___",
+  tags: ["fever", "infection", "sepsis"]
+};
+const olderMultiDomainSourceFeatureRows = expandedLocalBedsideQuestionItems(olderMultiDomainSourceFeatureQuestion);
+assert.ok(
+  olderMultiDomainSourceFeatureRows.some((item) => item.source_domain_key === "bedside:infection-abdominal-gi-source")
+    && olderMultiDomainSourceFeatureRows.some((item) => item.source_domain_key === "bedside:infection-cns-joint-spine-danger")
+    && olderMultiDomainSourceFeatureRows.some((item) => item.source_domain_key === "bedside:infection-skin-line-source"),
+  "older multi-domain source-feature wording should be atomized into source-domain bedside rows"
+);
+assert.ok(
+  !olderMultiDomainSourceFeatureRows.some((item) => /abdominal, CNS, skin, line, joint, or spine source features/i.test(item.label)),
+  "older multi-domain source-feature wording should not survive as one giant bedside question"
+);
+
 const locallyGeneratedChecklist = buildLocalChecklistFromWorkup({
   complaintResult: {
     matched: true,
     requiredQuestions: [
       { label: "Known diabetes type, home insulin regimen, and last insulin dose?", options: [{ label: "Unknown" }, { label: "Yes" }, { label: "No" }] },
+      { label: "Recent glucose values, beta-hydroxybutyrate/urine ketones, anion gap, bicarbonate, pH, potassium, creatinine, and osmolality if known?", options: [{ label: "Known / reviewed" }, { label: "Hyperglycemia" }, { label: "Ketones elevated" }, { label: "Acidosis or anion gap" }] },
       { label: "Vomiting, abdominal pain, poor oral intake, or inability to keep fluids down?", options: [{ label: "No" }, { label: "Yes" }, { label: "Other ___" }] },
       { label: "Any confusion, sleepiness, seizure, severe weakness, or inability to participate in care?", options: [{ label: "No" }, { label: "Yes" }, { label: "Other ___" }] }
     ],
@@ -226,7 +306,7 @@ const locallyGeneratedChecklist = buildLocalChecklistFromWorkup({
       { label: "Measure heart rate" },
       { label: "Measure respiratory rate" },
       { label: "Inspect mucous membranes for dehydration" },
-      { label: "Assess Kussmaul breathing" },
+      { label: "Observe Kussmaul breathing" },
       { label: "Assess mental status" }
     ]
   },
@@ -235,33 +315,230 @@ const locallyGeneratedChecklist = buildLocalChecklistFromWorkup({
       { text: "What was the most recent glucose value and timing of last insulin?", options: "Value ___ / Last insulin ___ / Unsure / Other ___" }
     ],
     basicSafetyChecks: [
-      { label: "Bedside glucose safety check", options: "___" }
+      { label: "Measure bedside glucose", options: "___" }
     ],
     corePhysicalExamManeuvers: [
-      { label: "Capillary refill", options: "Less than 2 seconds / 2 seconds or more" }
+      { label: "Test capillary refill", options: "Less than 2 seconds / 2 seconds or more" }
     ]
   }
 });
 const localSections = parseChecklist(locallyGeneratedChecklist);
 const localAudit = validateChecklist(localSections);
 assert.ok(
-  itemsByCategory(localSections, "bedside").length >= 6 && itemsByCategory(localSections, "bedside").length <= 8,
-  "local workup checklist should use validated/guideline history plus contextual clinical backfill without generic padding"
+  itemsByCategory(localSections, "bedside").length >= 6 && itemsByCategory(localSections, "bedside").length <= 24,
+  "local workup checklist should use validated/guideline history plus contextual clinical backfill without generic padding or bundled-row pressure"
 );
 assert.ok(itemsByCategory(localSections, "exam").length >= 4, "local workup checklist should include validated/guideline exam items without an external generator");
 assert.doesNotMatch(
   locallyGeneratedChecklist,
-  /(?:Blood pressure|Heart rate|Respiratory rate|Oxygen saturation|Temperature|Bedside glucose safety check):/i,
+  /(?:Blood pressure|Heart rate|Respiratory rate|Oxygen saturation|Temperature|Measure bedside glucose):/i,
   "local physical exam checklist should not emit vital signs or basic bedside measurements as exam rows"
 );
 assert.match(
   locallyGeneratedChecklist,
-  /Inspect mucous membranes|Assess Kussmaul breathing|Assess mental status|Capillary refill/i,
+  /Inspect mucous membranes|Observe Kussmaul breathing|Assess mental status|Test capillary refill/i,
   "local physical exam checklist should preserve actual bedside maneuvers after removing basic safety checks"
 );
 assert.ok(localAudit.ok, localAudit.issues.map((issue) => issue.message).join("\n"));
 assert.doesNotMatch(locallyGeneratedChecklist, /OpenEvidence/i, "local checklist output should not be an OpenEvidence prompt");
 assert.doesNotMatch(locallyGeneratedChecklist, /Since yesterday, is your main symptom|What is your main concern today|General appearance/i, "local checklist output should not add generic fallback rows when validated content exists");
+assert.doesNotMatch(
+  locallyGeneratedChecklist,
+  /beta-hydroxybutyrate|anion gap|bicarbonate|osmolality/i,
+  "local bedside question checklist should not turn chart/lab review rows into patient-facing questions"
+);
+assert.doesNotMatch(
+  locallyGeneratedChecklist,
+  /^Any cough, sputum, shortness of breath, pleuritic pain, wheeze, hypoxia, aspiration risk, or sick respiratory contacts\?$/im,
+  "local checklist should not emit bare orphan question lines without parseable options"
+);
+assert.match(
+  locallyGeneratedChecklist,
+  /Any confusion\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "local checklist should atomize broad symptom-list questions into one symptom per row"
+);
+
+const dyspneaAtomicLocalChecklist = buildLocalChecklistFromWorkup({
+  selectedIntents: [{
+    intent_id: "dyspnea_hf_v1",
+    label: "Dyspnea / heart failure or volume overload",
+    aliases: ["dyspnea", "shortness of breath"],
+    evidence_tags: ["dyspnea", "heart_failure", "orthopnea", "edema"],
+    clinical_bundle_ids: ["dyspnea_hf"],
+    required_domains: ["lungs/work of breathing", "JVP/edema"]
+  }],
+  recommendation: {
+    focusedHistoryQuestions: [
+      {
+        label: "Ask cardiopulmonary associated symptoms",
+        text: "What changed with breathing: onset, exertional dyspnea, orthopnea or PND, cough/wheeze, chest pain, leg swelling, weight change, oxygen need, or missed diuretics?",
+        options: "No change / Exertional dyspnea / Orthopnea-PND / Cough-wheeze / Chest pain / Leg swelling / Weight change / Oxygen need / Missed diuretics / Other ___",
+        diagnosticPurpose: "Dyspnea and heart-failure source and severity: pulmonary congestion, obstructive or infectious symptoms, ischemic symptoms, oxygen escalation, or volume change.",
+        managementImplication: "Changes oxygen/support strategy, diuresis versus alternate pulmonary workup, ECG/troponin/imaging urgency, medication review, and disposition.",
+        tags: ["dyspnea", "heart_failure", "pulmonary_exam"]
+      },
+      {
+        label: "Ask respiratory red flags",
+        text: "Is breathing worse at rest, with exertion, lying flat, during sleep, or with chest pain, cough, wheeze, fever, leg swelling, or higher oxygen need?",
+        options: "Rest dyspnea / Exertional / Orthopnea / PND / Chest pain / Cough-wheeze / Fever / Leg swelling / Higher oxygen need / Other ___",
+        tags: ["dyspnea", "hypoxia", "respiratory_status", "red_flag"]
+      }
+    ],
+    corePhysicalExamManeuvers: [
+      { label: "Observe work of breathing", options: "Normal / Increased / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 18 });
+assert.match(
+  dyspneaAtomicLocalChecklist,
+  /Any exertional dyspnea\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "dyspnea local checklist should keep atomic dyspnea symptom questions"
+);
+assert.match(
+  dyspneaAtomicLocalChecklist,
+  /Is breathing worse when lying flat\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "dyspnea local checklist should turn position fragments into askable questions"
+);
+assert.doesNotMatch(
+  dyspneaAtomicLocalChecklist,
+  /How high was the measured temperature|Any antipyretic use before evaluation/i,
+  "dyspnea local checklist should not misroute broad cardiopulmonary questions into fever timeline rows"
+);
+assert.doesNotMatch(
+  dyspneaAtomicLocalChecklist,
+  /^Any with walking|^when lying flat\?:/im,
+  "dyspnea local checklist should not emit unaskable fragment questions"
+);
+
+const residualOrAtomicChecklist = buildLocalChecklistFromWorkup({
+  recommendation: {
+    focusedHistoryQuestions: [{
+      label: "Ask thyroid temperature symptoms",
+      text: "Any heat intolerance or sweating or cold intolerance or dry change?",
+      options: "No / Yes / Unsure / Other ___",
+      tags: ["thyroid", "temperature_symptoms"]
+    }],
+    corePhysicalExamManeuvers: [
+      { label: "Inspect thyroid/neck", options: "Normal / Goiter / Nodule / Tender / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 8, allowContextualBackfill: false });
+["heat intolerance", "sweating", "cold intolerance", "dry change"].forEach((term) => {
+  assert.match(
+    residualOrAtomicChecklist,
+    new RegExp(`Any ${term}\\?: No / Yes / Unsure / Other ___`, "i"),
+    `local checklist should split residual or-list component for ${term}`
+  );
+});
+
+const stiSourceWordIntent = {
+  intent_id: "genital_discharge_sti_v1",
+  label: "Genital discharge or STI-source evaluation",
+  aliases: ["genital discharge", "STI source"],
+  evidence_tags: ["sti", "genital_discharge", "urinary"],
+  clinical_bundle_ids: ["genital_discharge_sti"],
+  required_domains: ["GU/STI history", "genital exam"]
+};
+const stiSourceWordChecklist = buildLocalChecklistFromWorkup({
+  selectedIntents: [stiSourceWordIntent],
+  recommendation: {
+    corePhysicalExamManeuvers: [
+      { label: "Inspect genital discharge source", options: "No discharge / Urethral / Cervical-vaginal / Ulcer / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 12 });
+assert.doesNotMatch(
+  stiSourceWordChecklist,
+  /Any respiratory source symptoms|Any CNS, joint, spine, or rapid-worsening danger symptoms/i,
+  "non-fever intents should not activate the full infection-source screen merely because their label contains source"
+);
+
+const stiWithFeverModifierChecklist = buildLocalChecklistFromWorkup({
+  selectedIntents: [stiSourceWordIntent],
+  patientModifiers: "fever and sepsis concern",
+  recommendation: {
+    corePhysicalExamManeuvers: [
+      { label: "Inspect genital discharge source", options: "No discharge / Urethral / Cervical-vaginal / Ulcer / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 18 });
+assert.match(
+  stiWithFeverModifierChecklist,
+  /Any respiratory source symptoms\?: No \/ Cough \/ Sputum/i,
+  "explicit fever or sepsis modifiers should activate the infection-source screen inside another validated intent"
+);
+
+const nonThyroidMedicationExposureChecklist = buildLocalChecklistFromWorkup({
+  recommendation: {
+    focusedHistoryQuestions: [{
+      label: "Medication exposure check",
+      text: "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hirsutism interpretation or safety?",
+      options: "Medications / Supplements / Missed doses / Biotin / Iodine exposure / Contrast exposure / Hormone therapy / Recent treatment changes / Other ___",
+      tags: ["hirsutism", "reproductive_and_gonadal_disorders", "medications"]
+    }],
+    corePhysicalExamManeuvers: [
+      { label: "Inspect hair distribution", options: "Normal / Hirsutism / Virilization / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 12, allowContextualBackfill: false });
+assert.doesNotMatch(
+  nonThyroidMedicationExposureChecklist,
+  /iodine exposure|contrast exposure/i,
+  "non-thyroid endocrine workups should not inherit thyroid-only iodine/contrast exposure questions"
+);
+assert.match(
+  nonThyroidMedicationExposureChecklist,
+  /Any biotin\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "non-thyroid medication exposure atomization should keep generally relevant medication/supplement questions"
+);
+assert.match(
+  nonThyroidMedicationExposureChecklist,
+  /Any recent treatment changes\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "generic endocrine medication rows should render recent treatment changes as an askable question"
+);
+
+const diabetesFamilyHistoryChecklist = buildLocalChecklistFromWorkup({
+  recommendation: {
+    focusedHistoryQuestions: [{
+      label: "Family endocrine history",
+      text: "Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?",
+      options: "Personal / Family autoimmune disease / Endocrine disease / Thyroid cancer / MEN2 / Adrenal disease / Related inherited condition / Other ___",
+      tags: ["type_1_diabetes_mellitus", "diabetes_and_blood_sugar_disorders", "family_history"]
+    }],
+    corePhysicalExamManeuvers: [
+      { label: "Inspect injection sites", options: "Normal / Lipohypertrophy / Irritation / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 12, allowContextualBackfill: false });
+assert.doesNotMatch(
+  diabetesFamilyHistoryChecklist,
+  /thyroid cancer|MEN2/i,
+  "diabetes family-history rows should not inherit thyroid cancer or MEN2 questions outside thyroid/MEN contexts"
+);
+
+const adrenalSteroidCrisisChecklist = buildLocalChecklistFromWorkup({
+  recommendation: {
+    focusedHistoryQuestions: [{
+      label: "Adrenal crisis symptoms",
+      text: "Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?",
+      options: "Vomiting / Severe weakness / Abdominal pain / Fever / Missed steroid doses / Recent illness / Cannot keep down stress-dose steroids / Other ___",
+      tags: ["adrenal_insufficiency", "steroid_replacement", "sick_day"]
+    }],
+    corePhysicalExamManeuvers: [
+      { label: "Check mucous membranes", options: "Moist / Dry / Unable" }
+    ]
+  }
+}, { maxBedsideQuestions: 12, allowContextualBackfill: false });
+assert.match(
+  adrenalSteroidCrisisChecklist,
+  /Any missed steroid doses\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  "missed steroid dose questions should remain adrenal-specific bedside questions"
+);
+assert.doesNotMatch(
+  adrenalSteroidCrisisChecklist,
+  /How high was the measured temperature|Any antipyretic use before evaluation/i,
+  "adrenal sick-day questions should not be rewritten into fever timeline medication rows"
+);
 
 const feverDedupedLocalChecklist = buildLocalChecklistFromWorkup({
   complaintResult: {
@@ -318,11 +595,28 @@ const feverDedupedQuestionLabelRows = itemsByCategory(feverDedupedSections, "bed
 const feverDedupedExamLabelRows = itemsByCategory(feverDedupedSections, "exam").map((item) => item.label);
 assert.equal(
   feverDedupedQuestionLabelRows.filter((label) => /fever source|symptoms localize/i.test(label)).length,
+  0,
+  "local checklist should expand broad fever source-localizing questions instead of preserving an overloaded source question"
+);
+[
+  [/respiratory source symptoms/i, "respiratory source"],
+  [/throat.*ear.*sinus.*dental.*oral source symptoms/i, "HEENT/oral source"],
+  [/urinary or flank source symptoms/i, "urinary/flank source"],
+  [/abdominal or GI source symptoms/i, "abdominal/GI source"],
+  [/skin.*wound.*line.*device source symptoms/i, "skin/wound/line/device source"],
+  [/CNS.*joint.*spine.*rapid-worsening danger symptoms/i, "CNS/joint/spine danger source"]
+].forEach(([pattern, domain]) => assert.equal(
+  feverDedupedQuestionLabelRows.filter((label) => pattern.test(label)).length,
   1,
-  "local checklist should not duplicate broad fever source-localizing questions from module and evidence recommendation"
+  `local checklist should include one focused ${domain} row after expanding broad source-localizing history`
+));
+assert.match(
+  feverDedupedLocalChecklist,
+  /Any urinary or flank source symptoms\?: No \/ Dysuria \/ Frequency \/ Urgency \/ Flank pain \/ Hematuria \/ Low urine output \/ Other ___/i,
+  "expanded source-domain rows should retain specific selectable symptom options"
 );
 assert.equal(
-  feverDedupedQuestionLabelRows.filter((label) => /cough|shortness of breath|respiratory/i.test(label)).length,
+  feverDedupedQuestionLabelRows.filter((label) => /^Any respiratory source symptoms\?$/i.test(label)).length,
   1,
   "local checklist should not duplicate fever respiratory-source questions from module and evidence recommendation"
 );
@@ -478,6 +772,46 @@ assert.ok(appHtml.includes("Copy review prompt"), "checklist screen should offer
 assert.ok(
   /taskId:\s*"checklist_improvement_review"[\s\S]*?filterLikelyFalsePositiveWarnings:\s*true/.test(appHtml),
   "checklist improvement prompt copy should one-click through likely clinical false-positive name warnings"
+);
+assert.ok(
+  appHtml.includes('} from "./checklist.js?v=20260608-history-response-controls";'),
+  "app should load the current checklist atomizer/control module instead of a stale cached build"
+);
+assert.ok(
+  /\.finding-symptom-response-part,\s*body\[data-screen="checklistScreen"\] \.finding-symptom-response-part/.test(appHtml),
+  "positive/negative symptom controls should be styled by component class, not only the checklistScreen body state"
+);
+assert.ok(
+  appHtml.includes('content: "(-)" !important;')
+    && appHtml.includes('content: "(+)" !important;')
+    && appHtml.includes("grid-template-columns: 58px minmax(0, 1fr) 58px !important;"),
+  "mobile checklist response controls should visibly expose left denied (-) and right endorsed (+) buttons"
+);
+assert.ok(
+  appHtml.includes(".history-response-action.is-negative::after")
+    && appHtml.includes(".history-response-action.is-positive::after")
+    && appHtml.includes("grid-template-columns: 54px minmax(0, 1fr) 54px;"),
+  "mobile clinical-workup response controls should also expose compact left denied (-) and right endorsed (+) buttons"
+);
+assert.ok(
+  appHtml.includes("complaintCdsComponentAnswers: {}")
+    && appHtml.includes("function renderComplaintComponentAnswerBoard")
+    && appHtml.includes("data-complaint-component-answer")
+    && appHtml.includes("function aggregateComplaintComponentAnswer"),
+  "compound installed-workup questions should render per-component answer controls instead of only a single select"
+);
+assert.ok(
+  /control\.appendChild\(negativeButton\);[\s\S]*control\.appendChild\(labelEl\);[\s\S]*control\.appendChild\(positiveButton\);/.test(appHtml)
+    && appHtml.includes(".complaint-component-answer-control > .history-response-action.is-negative::after")
+    && appHtml.includes(".complaint-component-answer-control > .history-response-action.is-positive::after")
+    && appHtml.includes("grid-template-columns: 54px minmax(0, 1fr) 54px !important;"),
+  "compound installed-workup controls should visibly use left denied (-), middle symptom label, and right endorsed (+) buttons on mobile"
+);
+assert.ok(
+  appHtml.includes('closest?.("[data-intent-select-id]")')
+    && appHtml.includes("max-height: 148px !important;")
+    && appHtml.includes("z-index: 2 !important;"),
+  "validated clinical intent rows should keep their Select buttons reachable in the compact desktop workup drawer"
 );
 
 const baseExamRows = parseCsv(examReferenceCsv);

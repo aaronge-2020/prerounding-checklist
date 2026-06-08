@@ -1,0 +1,76 @@
+{
+  "activeRail": {
+    "color": "rgb(0, 127, 121)",
+    "fontSize": "11.84px",
+    "fontWeight": "670",
+    "minHeight": "84px",
+    "text": "Start",
+    "width": 0
+  },
+  "dockTop": 0,
+  "option": {
+    "color": "rgb(7, 24, 50)",
+    "fontSize": "11.2px",
+    "fontWeight": "540",
+    "height": 28,
+    "left": 92,
+    "lineHeight": "15.904px",
+    "text": "Comfortable",
+    "top": 193,
+    "width": 82
+  },
+  "progress": {
+    "color": "rgb(7, 24, 50)",
+    "fontSize": "13.76px",
+    "fontWeight": "760",
+    "height": 20,
+    "left": 72,
+    "lineHeight": "19.5392px",
+    "text": "Exam 10/11",
+    "top": 68,
+    "width": 74
+  },
+  "rail": {
+    "color": "rgb(38, 53, 77)",
+    "fontSize": "11.84px",
+    "fontWeight": "560",
+    "minHeight": "84px",
+    "text": "Qs\n          3",
+    "width": 0
+  },
+  "rowTitle": {
+    "color": "rgb(7, 24, 50)",
+    "fontSize": "13.44px",
+    "fontWeight": "650",
+    "height": 15,
+    "left": 92,
+    "lineHeight": "15.3216px",
+    "text": "Work of breathing",
+    "top": 157,
+    "width": 268
+  },
+  "section": {
+    "color": "rgb(7, 24, 50)",
+    "fontSize": "15.36px",
+    "fontWeight": "740",
+    "height": 17,
+    "left": 92,
+    "lineHeight": "16.5888px",
+    "text": "CARDIO",
+    "top": 117,
+    "width": 153
+  },
+  "svgStrokeWidth": "1.82px",
+  "title": {
+    "color": "rgb(7, 24, 50)",
+    "fontSize": "15.36px",
+    "fontWeight": "720",
+    "height": 0,
+    "left": 0,
+    "lineHeight": "17.2032px",
+    "text": "Case A - DKA consult",
+    "top": 0,
+    "width": 0
+  },
+  "screenshotPath": "C:\\Users\\Aaron Ge\\Documents\\GitHub\\prerounding-checklist\\qa-screenshots\\fidelity-426\\14-exam-rail-weight.png"
+}

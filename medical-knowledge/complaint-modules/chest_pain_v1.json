@@ -996,7 +996,7 @@
       },
       {
         "id": "cp_assess_work_of_breathing",
-        "label": "Assess work of breathing",
+        "label": "Observe work of breathing",
         "action": "Document increased work of breathing because it changes respiratory support needs and cardiopulmonary emergency concern.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
@@ -1133,7 +1133,7 @@
       },
       {
         "id": "cp_assess_extremity_perfusion",
-        "label": "Assess extremity perfusion",
+        "label": "Inspect and palpate extremity perfusion",
         "action": "Document cool extremities, delayed capillary refill, or poor perfusion because these change shock assessment and escalation.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
@@ -1180,7 +1180,7 @@
     "conditionalExam": [
       {
         "id": "cp_assess_jvp",
-        "label": "Assess jugular venous pressure",
+        "label": "Inspect jugular venous pressure",
         "action": "Add this when dyspnea or heart failure features are present because elevated JVP changes congestion and right-heart strain assessment.",
         "when": {
           "termsAny": [
@@ -1241,7 +1241,7 @@
       },
       {
         "id": "cp_assess_leg_edema",
-        "label": "Assess lower extremity edema",
+        "label": "Inspect and press lower extremity edema",
         "action": "Add this when dyspnea or heart failure features are present because edema changes volume overload and venous thromboembolism framing.",
         "when": {
           "termsAny": [
@@ -1962,7 +1962,7 @@
       },
       {
         "id": "cp_assess_general_appearance",
-        "label": "Assess general appearance",
+        "label": "Observe general appearance",
         "action": "Document diaphoresis, distress, pallor, or toxic appearance because these change urgency and pretest concern for dangerous causes.",
         "tags": [
           "chest_pain",

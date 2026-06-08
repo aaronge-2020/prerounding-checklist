@@ -138,8 +138,7 @@
           "diabetes",
           "range",
           "glycemia",
-          "hyperglycemic",
-          "symptoms"
+          "hyperglycemic"
         ],
         "when": {
           "termsAny": [
@@ -176,10 +175,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -219,11 +218,11 @@
           "diabetes",
           "range",
           "glycemia",
-          "with",
           "classic",
-          "symptoms",
-          "severe",
-          "hypertension"
+          "hypertension",
+          "ascvd",
+          "pregnancy",
+          "hyperglycemia"
         ],
         "when": {
           "termsAny": [
@@ -355,7 +354,6 @@
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
           "measure",
-          "current",
           "weight"
         ]
       },
@@ -401,7 +399,7 @@
       },
       {
         "id": "safety_check_05",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -435,9 +433,8 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -583,8 +580,7 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
-          "family",
-          "history"
+          "family"
         ],
         "source_seed": "Weight, activity, family history, prior GDM."
       },
@@ -627,8 +623,7 @@
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
-          "prediabetes",
-          "prior"
+          "prediabetes"
         ],
         "source_seed": "Weight, activity, family history, prior GDM."
       },
@@ -853,8 +848,7 @@
           "prediabetes",
           "family",
           "diabetes",
-          "ascvd",
-          "history"
+          "ascvd"
         ],
         "source_seed": "Ask about weight trajectory, activity, nutrition, sleep apnea, fatty liver, PCOS, prior gestational diabetes, family diabetes/ASCVD history, steroid exposure, and cardiometabolic medications."
       }
@@ -892,9 +886,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention smoking, currently, smoke, recently, does. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Prediabetes.",
+        "action": "Ask when the history or modifiers support smoking, currently, smoke, recently. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Prediabetes.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Prediabetes.",
-        "when_to_ask": "Ask when patient context includes one of: smoking, currently, smoke, recently, does, tobacco, exposure, change, cardiovascular, metabolic.",
+        "when_to_ask": "Ask when patient context includes smoking, currently, smoke, recently.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Prediabetes.",
         "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Prediabetes.",
         "tags": [
@@ -912,9 +906,9 @@
             "does",
             "tobacco",
             "exposure",
-            "change",
             "cardiovascular",
-            "metabolic"
+            "metabolic",
+            "bone"
           ]
         }
       }
@@ -965,7 +959,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess lower leg edema",
+        "label": "Inspect and press lower leg edema",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -998,11 +992,12 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess lower leg edema is supportive for Prediabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect and press lower leg edema is supportive for Prediabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
-          "assess",
+          "inspect",
+          "press",
           "lower",
           "edema"
         ],
@@ -1159,13 +1154,13 @@
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1193,13 +1188,13 @@
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
           "cardiometabolic",
-          "safety",
-          "data",
           "confirm",
           "ogtt",
           "classification",
           "document",
-          "waist"
+          "waist",
+          "check",
+          "lipids"
         ]
       },
       {
@@ -1231,8 +1226,8 @@
           "criteria",
           "diabetes",
           "classification",
-          "with",
-          "repeat"
+          "repeat",
+          "confirmatory"
         ]
       },
       {
@@ -1265,8 +1260,8 @@
           "kidney",
           "function",
           "albuminuria",
-          "when",
-          "diabetes"
+          "diabetes",
+          "range"
         ]
       },
       {
@@ -1385,9 +1380,7 @@
           "random",
           "plasma",
           "glucose",
-          "with",
           "classic",
-          "symptoms",
           "supports",
           "diabetes"
         ]
@@ -1422,8 +1415,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1485,9 +1478,7 @@
           "prediabetes",
           "diabetes",
           "range",
-          "values",
-          "change",
-          "diagnosis"
+          "values"
         ]
       },
       {
@@ -1517,11 +1508,11 @@
           "markedly",
           "abnormal",
           "glucose",
-          "severe",
           "hypertension",
           "pregnancy",
-          "context",
-          "concern"
+          "concern",
+          "cardiopulmonary",
+          "disposition"
         ]
       },
       {
@@ -1550,12 +1541,12 @@
           "prediabetes",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1583,12 +1574,12 @@
           "diabetes_and_blood_sugar_disorders",
           "prediabetes",
           "metabolic",
-          "syndrome",
           "thresholds",
-          "change",
           "prevention",
           "intensity",
-          "lifestyle"
+          "lifestyle",
+          "intervention",
+          "cardiometabolic"
         ]
       },
       {

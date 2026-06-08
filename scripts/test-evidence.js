@@ -207,8 +207,26 @@ assert.ok(
     .every((type) => badOverlayMetadataAudit.issues.some((issue) => issue.type === type)),
   "evidence overlay metadata failures should identify missing fields, unknown sources, bad base rows, and fingerprint mismatches"
 );
-const sourceRegistryAudit = validateEvidenceSourceRows(sourceRows);
+const sourceRegistryAudit = validateEvidenceSourceRows(sourceRows, { maxAccessDate: "2026-06-08" });
 assert.ok(sourceRegistryAudit.ok, sourceRegistryAudit.issues.map((issue) => issue.message).join("\n"));
+[
+  {
+    source_id: "SSC_SEPSIS_2026",
+    url: "https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+    citationPattern: /Surviving Sepsis Campaign[\s\S]*Sepsis and Septic Shock 2026/i
+  },
+  {
+    source_id: "ATS_CAP_2025",
+    url: "https://academic.oup.com/ajrccm/article/212/1/24/8435770",
+    citationPattern: /Am J Respir Crit Care Med\. 2026;212\(1\):24-44/i
+  }
+].forEach((expected) => {
+  const row = sourceRows.find((source) => source.source_id === expected.source_id);
+  assert.ok(row, `${expected.source_id} should be present in the evidence source registry`);
+  assert.equal(row.url_or_doi, expected.url, `${expected.source_id} should retain the manually verified source URL`);
+  assert.match(row.preferred_citation, expected.citationPattern, `${expected.source_id} should retain the manually verified citation form`);
+  assert.ok(row.date_accessed <= "2026-06-08", `${expected.source_id} access date should not be later than this audit`);
+});
 const badSourceRegistryAudit = validateEvidenceSourceRows([
   sourceRows[0],
   {
@@ -217,13 +235,23 @@ const badSourceRegistryAudit = validateEvidenceSourceRows([
     source_type: "blog_post",
     url_or_doi: "not-a-url",
     date_accessed: "June 7, 2026"
+  },
+  {
+    ...sourceRows.find((row) => row.source_id === "SSC_SEPSIS_2026"),
+    source_id: "SYNTHETIC_GUIDELINE_2027",
+    date_accessed: "2026-06-08"
+  },
+  {
+    ...sourceRows.find((row) => row.source_id === "ATS_CAP_2025"),
+    source_id: "SYNTHETIC_FUTURE_ACCESS_2026",
+    date_accessed: "2026-06-09"
   }
-]);
-assert.ok(!badSourceRegistryAudit.ok, "source registry validation should reject duplicate, placeholder, bad type, bad URL, and bad date metadata");
+], { maxAccessDate: "2026-06-08" });
+assert.ok(!badSourceRegistryAudit.ok, "source registry validation should reject duplicate, placeholder, bad type, bad URL, bad date, impossible source-year, and future-access metadata");
 assert.ok(
-  ["duplicate-source-id", "placeholder-source", "bad-source-type", "bad-url-or-doi", "bad-date-accessed"]
+  ["duplicate-source-id", "placeholder-source", "bad-source-type", "bad-url-or-doi", "bad-date-accessed", "source-year-after-access", "future-date-accessed"]
     .every((type) => badSourceRegistryAudit.issues.some((issue) => issue.type === type)),
-  "source registry validation failures should identify duplicate, placeholder, type, URL, and date problems"
+  "source registry validation failures should identify duplicate, placeholder, type, URL, date, source-year, and future-access problems"
 );
 const acceptedCatalogAudit = validateAcceptedCatalogAdditionRows(acceptedCatalogAdditionRows, { knownSourceIds: sourceIds });
 assert.ok(acceptedCatalogAudit.ok, acceptedCatalogAudit.issues.map((issue) => issue.message).join("\n"));

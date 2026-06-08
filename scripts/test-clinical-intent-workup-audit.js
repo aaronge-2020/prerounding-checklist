@@ -7,6 +7,7 @@ import {
   selectedValidatedClinicalIntents
 } from "../clinical-intents.js";
 import {
+  complaintSourceRegistry,
   complaintModules,
   evaluateComplaintCds,
   isBasicBedsideDataItem
@@ -36,6 +37,10 @@ const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.c
 const legacyRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
 const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepted_exam_catalog_additions.csv", "utf8"));
 const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
+const registeredSourceIds = new Set([
+  ...sourceRows.map((row) => row.source_id).filter(Boolean),
+  ...complaintSourceRegistry.map((row) => row.id || row.source_id).filter(Boolean)
+]);
 const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
 const gapRows = parseCsv(readFileSync("data/evidence/catalog_gap_registry.csv", "utf8"));
 const gapRegistryIds = new Set(gapRows.map((row) => row.gap_exam_id));
@@ -52,17 +57,28 @@ assert.ok(
 
 const bundledLabelPattern = /[,;]|\b(?:and|plus)\b.*\b(?:and|plus)\b/i;
 const vaguePhysicalExamLabelPattern = /^(?:assess|evaluate|screen for|document|perform|review)\b|\b(?:screen|assessment|survey)\b/i;
+const weakSafetyCheckLabelPattern = /^(?:assess|check|evaluate)\b|^(?:mental status|general appearance|pregnancy possibility safety check|bedside glucose safety check)$|\bsafety check\b/i;
 const actionSpecificPhysicalExamLabelPattern = /^(?:inspect|palpate|auscultate|percuss|observe|test|check|compare|measure|listen|use|press|stage|estimate|elicit)\b/i;
 const allowedPairedAtomicExamLabelPattern = /\b(?:sclerae and conjunctivae)\b/i;
 const vitalsOrSafetyLabelPattern = /\b(?:blood pressure|heart rate|respiratory rate|temperature|bedside glucose|oxygen saturation|spo2|pulse oximetry|weight|bmi|orthostatic|pregnancy possibility|red-flag review|safety check)\b/i;
 const routineSafetyNormalizedLabels = new Set([
+  "measure blood pressure",
+  "measure heart rate",
+  "count respiratory rate",
+  "measure temperature",
+  "measure oxygen saturation and support"
+]);
+const bareRoutineSafetyNounLabels = new Set([
   "blood pressure",
   "heart rate",
   "respiratory rate",
   "temperature",
   "oxygen saturation support"
 ]);
+const actionSpecificRoutineSafetyLabelPattern = /^(?:measure|count)\b/i;
+const actionSpecificSafetyLabelPattern = /^(?:measure|count|document|verify|observe|clarify|calculate|review|screen|ask|obtain)\b/i;
 const genericHistoryQuestionPattern = /\bAny .+\brelevant to\b/i;
+const vagueFocusedHistoryLabelPattern = /^(?:ask focused source, severity, and safety features|review medication and fluid-balance triggers|review hyperglycemic-crisis diagnostic and severity data)$/i;
 const genericExamRationalePattern = /\bDocuments focused endocrine signs and complications that help distinguish severity, mimics, and management priorities\b/i;
 const genericEndocrineSafetyTestPattern = /Check safety labs that change immediate management when clinically relevant/i;
 
@@ -75,7 +91,7 @@ function isNonExamCompatibilityAliasEntry(entry = {}) {
 }
 
 function historyQuestionNeedsDetailPrompts(item = {}) {
-  const text = String(item.text || item.label || "");
+  const text = String(item.full_question || item.text || item.label || "");
   const commaCount = (text.match(/,/g) || []).length;
   const orCount = (text.match(/\bor\b/gi) || []).length;
   return text.length >= 150
@@ -84,12 +100,66 @@ function historyQuestionNeedsDetailPrompts(item = {}) {
     || (/^Any\b/i.test(text.trim()) && commaCount >= 3);
 }
 
+function historyQuestionLabelIsOverloaded(item = {}) {
+  const label = String(item.label || item.displayLabel || "");
+  if (!label) {
+    return false;
+  }
+  const commaCount = (label.match(/,/g) || []).length;
+  const orCount = (label.match(/\bor\b/gi) || []).length;
+  return label.length > 120
+    || commaCount >= 3
+    || orCount >= 3
+    || (/^Any\b/i.test(label.trim()) && commaCount >= 3);
+}
+
+function historyDetailPromptTooTerse(prompt = "") {
+  const text = String(prompt || "").replace(/\s+/g, " ").trim();
+  return text.length < 18
+    || /^(?:Ask specifically about|Clarify|Review)\s*\.?$/i.test(text)
+    || /^Review\s+(?:biotin|supplements?|medications?|missed doses)\.?$/i.test(text);
+}
+
+function historyDetailPromptHasBedsideAction(prompt = "") {
+  return /^(?:Ask|Clarify|Review|Confirm|Document|Screen|Localize|Check)\b/i.test(String(prompt || "").trim());
+}
+
+function assertExportedFields(result, sectionName, entries = [], requiredFields = []) {
+  entries.forEach((entry) => {
+    requiredFields.forEach(([field, label]) => {
+      assert.ok(
+        String(entry[field] ?? "").trim(),
+        `${result.intent_id}: ${entry.label || entry.exam_id || sectionName} ${sectionName} row should preserve ${label} in exported row data`
+      );
+    });
+  });
+}
+
 function normalizedLabel(value) {
   return String(value || "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function rawQuestionLikeLabel(value = "") {
+  const label = String(value || "").trim();
+  const commaCount = (label.match(/,/g) || []).length;
+  const orCount = (label.match(/\bor\b/gi) || []).length;
+  return /^(?:Any|What|How|When|Could|Are|Do you|Is there)\b/i.test(label)
+    || label.length > 140
+    || commaCount >= 3
+    || orCount >= 3;
+}
+
+function normalizedLimitationBaseLabel(value = "") {
+  return normalizedLabel(String(value || "").replace(/^interpretation caution\s*[-:]\s*/i, ""));
+}
+
+function genericLimitationBaseLabel(value = "") {
+  return /^(?:diagnostic test reference interpretation|red flag interpretation|management implication|focused history question|linked workup item|differential frame interpretation)$/i
+    .test(normalizedLimitationBaseLabel(value));
 }
 
 function checklistItemsByCategory(sections = [], category = "") {
@@ -111,6 +181,8 @@ function localChecklistTraceLabelsForEntry(entry = {}) {
   const candidate = entry.candidate || {};
   const base = entry.base || candidate.base || {};
   return [
+    ...(Array.isArray(entry.trace_labels) ? entry.trace_labels : []),
+    ...(Array.isArray(entry.traceLabels) ? entry.traceLabels : []),
     entry.label,
     entry.text,
     entry.examLabel,
@@ -174,7 +246,7 @@ function materializedLocalChecklistAuditIssues(intentRow) {
     recommendation,
     selectedIntents: [intentRow]
   }, {
-    maxBedsideQuestions: 8,
+    maxBedsideQuestions: 24,
     maxExamItems: 22
   });
   const sections = parseChecklist(checklistText);
@@ -378,7 +450,7 @@ function physicalExamLabelAtomicityIssues(label = "") {
 }
 
 function genericFindingsOptions(value) {
-  const options = Array.isArray(value) ? value : String(value || "").split(/[;|/]+/);
+  const options = Array.isArray(value) ? value : String(value || "").split(/\s*(?:[;|]|\s+\/\s+)\s*/);
   const tokens = options
     .map(normalizedLabel)
     .filter(Boolean);
@@ -503,7 +575,7 @@ function attendingBaselineIssuesForModule(intentRow = {}, module = {}, result = 
       {
         label: "source-localizing fever history must ask respiratory, urinary, skin/line/wound, abdominal/GI, CNS, and host/exposure questions",
         text: historyText,
-        pattern: /cough[\s\S]*(?:dysuria|urinary|flank)[\s\S]*(?:rash|wound|line)[\s\S]*(?:abdominal|vomiting|diarrhea)[\s\S]*(?:headache|neck|confusion)[\s\S]*(?:exposure|host|immunosuppression|pregnancy)/i
+        pattern: /(?=[\s\S]*cough)(?=[\s\S]*(?:dysuria|urinary|flank))(?=[\s\S]*(?:rash|wound|line))(?=[\s\S]*(?:abdominal|vomiting|diarrhea))(?=[\s\S]*(?:headache|neck|confusion))(?=[\s\S]*(?:exposure|host|immunosuppression|pregnancy))/i
       },
       {
         label: "fever/infection exam must include respiratory effort and lung auscultation for pneumonia/hypoxemia source screening",
@@ -538,6 +610,37 @@ function attendingBaselineIssuesForModule(intentRow = {}, module = {}, result = 
   }
 
   return issues;
+}
+
+function sourceDomainHistorySatisfiedByEvaluatedQuestion(item = {}, result = {}) {
+  const itemText = `${item.id || ""} ${item.label || ""} ${item.text || ""} ${(item.tags || []).join(" ")}`;
+  const evaluatedText = moduleSectionText([
+    ...(result.requiredQuestions || []),
+    ...(result.conditionalQuestions || [])
+  ]);
+  const checks = [
+    {
+      trigger: /urinary|flank|pyelonephritis|dysuria/i,
+      coverage: /urinary and flank|dysuria|urinary frequency|flank pain|pyelonephritis/i
+    },
+    {
+      trigger: /abdominal|gi|vomiting|diarrhea|jaundice/i,
+      coverage: /abdominal and GI|abdominal pain|vomiting|diarrhea|jaundice/i
+    },
+    {
+      trigger: /cns|meningeal|meningitis|headache|neck stiffness|photophobia/i,
+      coverage: /CNS, joint, spine|severe headache|neck stiffness|photophobia|seizure/i
+    },
+    {
+      trigger: /skin|wound|line|soft[- ]tissue|cellulitis/i,
+      coverage: /skin, wound, and line|rash|wound|line pain|drainage|soft-tissue/i
+    },
+    {
+      trigger: /hot joint|bone|spine|back pain/i,
+      coverage: /CNS, joint, spine|hot swollen joint|focal bone|back pain|spine/i
+    }
+  ];
+  return checks.some((check) => check.trigger.test(itemText) && check.coverage.test(evaluatedText));
 }
 
 function requiredDomainSynonymPatterns(domain = "") {
@@ -753,6 +856,32 @@ function techniqueForEntry(entry) {
     candidate.maneuver,
     candidate.base?.maneuver_or_finding
   ].filter(Boolean).join("; ").trim();
+}
+
+function primaryTechniqueForEntry(entry = {}) {
+  const candidate = entry.candidate || entry;
+  return [
+    entry.technique,
+    candidate.technique,
+    candidate.examiner_technique,
+    candidate.base?.examiner_technique
+  ].find((value) => String(value || "").trim()) || "";
+}
+
+function physicalExamTechniqueTooThin(label = "", technique = "") {
+  const normalizedTechnique = normalizedLabel(technique);
+  return !String(technique || "").trim()
+    || String(technique || "").replace(/\s+/g, " ").trim().length < 28
+    || normalizedTechnique === normalizedLabel(label)
+    || /^(?:exam|physical exam|thyroid exam|skin exam|skin inspection|diaphoresis inspection|tremor observation|neck circumference|rebound tenderness|murphy sign|test both legs|observe ability|observe gait|inspect abdomen|inspect posterior thorax|inspect sclerae and conjunctivae|focused muscle tenderness)$/i.test(String(technique || "").trim());
+}
+
+function registryStyleSourceId(value = "") {
+  const text = String(value || "").trim();
+  return /^[A-Z][A-Z0-9_:-]{1,}$/.test(text)
+    && !/^https?:\/\//i.test(text)
+    && !/\s/.test(text)
+    && !/[.,()]/.test(text);
 }
 
 function whenToUseForEntry(entry) {
@@ -1038,6 +1167,10 @@ function auditRecommendation(intentRow, recommendation) {
 
   history.forEach((question) => {
     const label = question.text || question.label || question.id || "";
+    const displayLabel = question.displayLabel || question.label || "";
+    if (vagueFocusedHistoryLabelPattern.test(displayLabel)) {
+      issues.push(`history question display label is too vague for clinical use: ${displayLabel}`);
+    }
     if (!traceIdForEntry(question)) {
       issues.push(`history question missing traceable exam_id: ${label}`);
     }
@@ -1106,7 +1239,13 @@ function auditRecommendation(intentRow, recommendation) {
     const normalized = normalizedLabel(label);
     const examId = traceIdForEntry(entry);
     const candidate = entry.candidate || {};
+    if (bareRoutineSafetyNounLabels.has(normalized)) {
+      issues.push(`routine safety item should name the bedside action, not just the vital-sign noun: ${label}`);
+    }
     if (routineSafetyNormalizedLabels.has(normalized)) {
+      if (!actionSpecificRoutineSafetyLabelPattern.test(normalized)) {
+        issues.push(`routine safety item should name the bedside action, not just the vital-sign noun: ${label}`);
+      }
       if (!/^SAFETY-/i.test(examId)) {
         issues.push(`routine safety item should use modeled SAFETY-* id, not raw catalog/gap data: ${label} (${examId})`);
       }
@@ -1119,6 +1258,12 @@ function auditRecommendation(intentRow, recommendation) {
     }
     if (genericFindingsOptions(findingsOptionsForEntry(entry))) {
       issues.push(`safety check has generic findings/options instead of specific bedside values: ${label}`);
+    }
+    if (weakSafetyCheckLabelPattern.test(normalized)) {
+      issues.push(`safety check label should name a specific bedside action: ${label}`);
+    }
+    if (!actionSpecificSafetyLabelPattern.test(normalized)) {
+      issues.push(`safety check label should start with a specific bedside action: ${label}`);
     }
   });
 
@@ -1133,6 +1278,9 @@ function auditRecommendation(intentRow, recommendation) {
     issues.push(...physicalExamLabelAtomicityIssues(label));
     if (!techniqueForEntry(entry)) {
       issues.push(`physical exam missing bedside technique: ${label}`);
+    }
+    if (physicalExamTechniqueTooThin(label, primaryTechniqueForEntry(entry))) {
+      issues.push(`physical exam technique is too terse or placeholder-like: ${label}`);
     }
     if (!whenToUseForEntry(entry)) {
       issues.push(`physical exam missing when-to-use metadata: ${label}`);
@@ -1595,6 +1743,12 @@ function auditModuleBackedIntent(intentRow) {
     if (genericFindingsOptions(item.findings_options || item.findingsOptions || item.options)) {
       issues.push(`safety item has generic findings/options instead of specific bedside values: ${item.label}`);
     }
+    if (weakSafetyCheckLabelPattern.test(normalizedLabel(item.label || ""))) {
+      issues.push(`safety item label should name a specific bedside action: ${item.label}`);
+    }
+    if (!actionSpecificSafetyLabelPattern.test(normalizedLabel(item.label || ""))) {
+      issues.push(`safety item label should start with a specific bedside action: ${item.label}`);
+    }
   });
 
   (result.requiredQuestions || []).forEach((item) => {
@@ -1715,6 +1869,19 @@ assert.ok(
   ].some((entry) => entry.candidate?.exam_id === "EXAM-DERM-SKIN-INSPECTION"),
   "thyroid crisis should not use the broad dermatology skin inspection row as thyroid phenotype evidence"
 );
+assert.match(
+  (thyroidCrisisRecommendation.basicSafetyChecks || []).map((entry) => entry.label).join("; "),
+  /Temperature/i,
+  "thyroid crisis should include temperature as basic safety data"
+);
+assert.doesNotMatch(
+  [
+    ...(thyroidCrisisRecommendation.corePhysicalExamManeuvers || []),
+    ...(thyroidCrisisRecommendation.conditionalPhysicalExamManeuvers || [])
+  ].map((entry) => entry.label).join("; "),
+  /Temperature/i,
+  "thyroid crisis should not present temperature as a physical exam maneuver"
+);
 
 const failures = validatedIntents.flatMap((intentRow) => (
   ((intentRow.clinical_bundle_ids || []).includes("installed_guideline_module") || intentHasSameTopicComplaintModule(intentRow))
@@ -1765,6 +1932,110 @@ const highIssueRows = iterationRun.results.flatMap((result) => (
     .map((issue) => `${result.intent_id}: ${issue.type} - ${issue.detail}`)
 ));
 assert.deepEqual(highIssueRows, [], highIssueRows.join("\n"));
+const canonicalExportRequiredFields = {
+  safety: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "difficulty", "time_burden_minutes", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  history: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "diagnostic_purpose", "management_implication", "when_to_ask", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  core: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "difficulty", "time_burden_minutes", "technique", "when_to_use", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  conditional: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "difficulty", "time_burden_minutes", "technique", "when_to_use", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  tests: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  red_flags: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  management_changes: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  limitations: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "diagnostic_purpose", "limitations", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
+  evidence_metadata: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"]
+};
+const canonicalExportFieldIssues = [];
+Object.entries(canonicalExportRequiredFields).forEach(([section, fields]) => {
+  iterationRun.results.forEach((result) => {
+    assert.ok(Array.isArray(result.source_ids) && result.source_ids.length, `${result.intent_id}: top-level report row should expose source_ids`);
+    result.source_ids.forEach((sourceId) => {
+      assert.ok(
+        registryStyleSourceId(sourceId),
+        `${result.intent_id}: top-level source ID should be a registry identifier, not citation prose or a URL: ${sourceId}`
+      );
+      assert.ok(
+        registeredSourceIds.has(sourceId),
+        `${result.intent_id}: top-level source ID should exist in the evidence or medical-knowledge source registry: ${sourceId}`
+      );
+    });
+    (result[section] || []).forEach((entry) => {
+      fields.forEach((field) => {
+        const value = entry[field];
+        const present = field === "traceability"
+          ? value && Array.isArray(value.intent_ids) && value.intent_ids.length
+          : String(value ?? "").trim();
+        if (!present) {
+          canonicalExportFieldIssues.push(`${result.intent_id}.${section}.${entry.label || entry.exam_id || "(unlabeled)"} missing ${field}`);
+        }
+      });
+    });
+  });
+});
+assert.deepEqual(
+  canonicalExportFieldIssues,
+  [],
+  `generated validated workup rows should preserve canonical source/LR/traceability schema fields:\n${canonicalExportFieldIssues.slice(0, 80).join("\n")}`
+);
+const reportShapeIssues = [];
+iterationRun.results.forEach((result) => {
+  [
+    "safety",
+    "history",
+    "tests",
+    "red_flags",
+    "management_changes",
+    "limitations",
+    "evidence_metadata",
+    "catalog_gaps",
+    "suppressed"
+  ].forEach((sectionName) => {
+    (result[sectionName] || []).forEach((entry) => {
+      if (String(entry.technique || "").trim()) {
+        reportShapeIssues.push(`${result.intent_id}.${sectionName}.${entry.label}: only core/conditional physical exam rows should export bedside technique text`);
+      }
+    });
+  });
+  [
+    "safety",
+    "history",
+    "tests",
+    "red_flags",
+    "management_changes",
+    "limitations",
+    "evidence_metadata",
+    "catalog_gaps",
+    "suppressed"
+  ].forEach((sectionName) => {
+    (result[sectionName] || []).forEach((entry) => {
+      if (/(?:^|\/)\s*(?:Or|And)\b/i.test(String(entry.options || ""))) {
+        reportShapeIssues.push(`${result.intent_id}.${sectionName}.${entry.label}: structured options should not contain leading Or/And fragments`);
+      }
+    });
+  });
+  (result.safety || []).forEach((entry) => {
+    if (/perform the named bedside item directly/i.test(entry.technique || "")) {
+      reportShapeIssues.push(`${result.intent_id}.safety.${entry.label}: safety rows should not export placeholder exam technique text`);
+    }
+  });
+  (result.history || []).forEach((entry) => {
+    const questionText = String(entry.text || entry.full_question || "").trim();
+    if (!questionText) {
+      reportShapeIssues.push(`${result.intent_id}.history.${entry.label}: history rows should expose text/full_question for audit and copy workflows`);
+    }
+    if (vagueFocusedHistoryLabelPattern.test(entry.label || "")) {
+      reportShapeIssues.push(`${result.intent_id}.history.${entry.label}: history labels should be clinically specific, not generic source/severity placeholders`);
+    }
+  });
+});
+assert.deepEqual(
+  reportShapeIssues,
+  [],
+  `clinical-workup report rows should keep safety, history, and exam semantics separate:\n${reportShapeIssues.slice(0, 80).join("\n")}`
+);
+assert.doesNotMatch(
+  iterationMarkdown,
+  /Basic bedside data \/ safety checks[\s\S]*?technique Perform the named bedside item directly/i,
+  "clinical-workup Markdown should not make basic safety checks look like physical exam maneuvers"
+);
 const readyRows = iterationRun.results.filter((result) => result.complete_validated_workup);
 const reviewRows = iterationRun.results.filter((result) => !result.complete_validated_workup);
 assert.ok(
@@ -1851,6 +2122,75 @@ assert.doesNotMatch(
   /protect airway|airway protection/i,
   "DKA/HHS should not classify airway protection as a core physical exam maneuver"
 );
+const dkaWithFeverRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["dka_hhs_v1"],
+  allMatches: false,
+  modifiers: "fever",
+  setting: "General medicine",
+  population: "Adult",
+  maxCandidates: 80,
+  maxCoreItems: 24,
+  maxConditionalItems: 36,
+  limit: 0
+});
+const dkaWithFeverRow = dkaWithFeverRun.results.find((result) => result.intent_id === "dka_hhs_v1");
+assert.ok(dkaWithFeverRow, "DKA/HHS with fever modifier audit row should exist");
+const dkaWithFeverHistoryText = (dkaWithFeverRow.history || [])
+  .map((entry) => [entry.label, entry.text, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const dkaWithFeverExamText = [...(dkaWithFeverRow.core || []), ...(dkaWithFeverRow.conditional || [])]
+  .map((entry) => [entry.label, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  dkaWithFeverHistoryText,
+  /respiratory infection-source symptoms/i,
+  "fever modifier should make respiratory infection-source history visible in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverHistoryText,
+  /urinary and flank infection-source symptoms/i,
+  "fever modifier should make urinary/flank infection-source history visible in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverHistoryText,
+  /wound and line infection symptoms/i,
+  "fever modifier should make skin/wound/line source history visible in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverHistoryText,
+  /host-risk and exposure history/i,
+  "fever modifier should make host-risk and exposure history visible in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverHistoryText,
+  /sepsis severity, hydration, and perfusion symptoms/i,
+  "fever modifier should make sepsis severity history visible in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverExamText,
+  /Auscultate lungs for infection source|Posterior lung sounds|Auscultate posterior lung fields/i,
+  "fever modifier should activate lung auscultation/source exam in DKA/HHS"
+);
+assert.match(
+  dkaWithFeverExamText,
+  /Inspect skin wounds|Inspect skin for infection source|Inspect line sites/i,
+  "fever modifier should activate skin/wound/line source inspection in DKA/HHS"
+);
+const thyroidCrisisRow = iterationRun.results.find((result) => result.intent_id === "thyroid_crisis_v1");
+assert.ok(thyroidCrisisRow, "thyroid crisis iteration row should exist");
+const thyroidCrisisSafetyText = (thyroidCrisisRow.safety || []).map((entry) => entry.label).join(" | ");
+const thyroidCrisisExamText = [...(thyroidCrisisRow.core || []), ...(thyroidCrisisRow.conditional || [])].map((entry) => entry.label).join(" | ");
+assert.match(
+  thyroidCrisisSafetyText,
+  /Temperature/i,
+  "thyroid crisis iteration output should include temperature in basic safety data"
+);
+assert.doesNotMatch(
+  thyroidCrisisExamText,
+  /Temperature/i,
+  "thyroid crisis iteration output should keep temperature out of physical exam maneuvers"
+);
 assert.ok(
   reviewRows.length === 0,
   `all validated intents should produce complete validated workups after accepted gap replacements: ${reviewRows.map((result) => result.intent_id).join(", ")}`
@@ -1877,6 +2217,46 @@ assert.match(acuteScrotalCoreLabels, /Test cremasteric reflex/i, "acute scrotal 
 assert.doesNotMatch(acuteScrotalCoreLabels, /Genital exam|Mucosal lesions/i, "acute scrotal pain core exam should not substitute broad genital or mucosal rows for scrotal exam");
 assert.match((acuteScrotalRow?.tests || []).map((entry) => entry.label).join("; "), /Acute scrotum torsion and infection pathway/i, "acute scrotal pain should include torsion and infection diagnostic pathway");
 assert.match((acuteScrotalRow?.red_flags || []).map((entry) => entry.label).join("; "), /Torsion and acute scrotum escalation cues/i, "acute scrotal pain should include torsion escalation cues");
+[
+  "vitamin_d_deficiency_osteomalacia_intent_v1",
+  "hypoparathyroidism_intent_v1",
+  "osteoporosis_intent_v1"
+].forEach((intentId) => {
+  const row = iterationRun.results.find((result) => result.intent_id === intentId);
+  assert.ok(row, `${intentId}: bone/mineral audit row should exist`);
+  const historyLabels = (row.history || []).map((entry) => entry.label).join("; ");
+  assert.doesNotMatch(
+    historyLabels,
+    /euglycemic DKA|hyperthyroid adrenergic|GU\/STI|host-risk and exposure|source-localizing infection/i,
+    `${intentId}: concise history labels should not borrow unrelated DKA, thyroid, STI, or infection-source frames`
+  );
+});
+const vitaminDHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "vitamin_d_deficiency_osteomalacia_intent_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(vitaminDHistoryLabels, /malabsorption and nutrient-absorption risks/i, "vitamin D workup should label malabsorption history as bone/mineral-specific");
+assert.match(vitaminDHistoryLabels, /renal, liver, and mineral-metabolism modifiers/i, "vitamin D workup should label CKD/liver/PTH history as mineral-metabolism context");
+assert.match(vitaminDHistoryLabels, /renal stone and calcium-complication symptoms/i, "vitamin D workup should label stone/polyuria history as calcium-complication context");
+const hypoparaHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "hypoparathyroidism_intent_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(hypoparaHistoryLabels, /neck surgery and postoperative calcium history/i, "hypoparathyroidism workup should label neck surgery history as postoperative calcium context");
+assert.match(hypoparaHistoryLabels, /hypocalcemia neuromuscular symptoms/i, "hypoparathyroidism workup should label cramps/tetany history as hypocalcemia symptoms");
+const longRawAnyHistoryLabels = iterationRun.results.flatMap((result) => (
+  (result.history || [])
+    .filter((entry) => /^Any\b/i.test(entry.label || "") && String(entry.label || "").length >= 105)
+    .map((entry) => `${result.intent_id}: ${entry.label}`)
+));
+assert.deepEqual(
+  longRawAnyHistoryLabels,
+  [],
+  `history labels should be concise clinical domains rather than long raw Any-questions:\n${longRawAnyHistoryLabels.join("\n")}`
+);
+const gestationalDiabetesHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "gestational_diabetes_intent_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(
+  gestationalDiabetesHistoryLabels,
+  /prior gestational diabetes and macrosomia history/i,
+  "gestational diabetes should label prior GDM/macrosomia risk as a concise obstetric-metabolic history domain"
+);
 const genericHighScoreSuppressedNotes = iterationRun.results.flatMap((result) => (
   (result.review_notes || [])
     .filter((issue) => issue.type === "high_score_suppressed")
@@ -1935,6 +2315,32 @@ iterationRun.results.forEach((result) => {
   );
 });
 const routineThyroidRow = iterationRun.results.find((result) => result.intent_id === "routine_thyroid_disease_v1");
+const routineThyroidHistoryLabels = (routineThyroidRow?.history || []).map((entry) => entry.label).join("; ");
+assert.match(
+  routineThyroidHistoryLabels,
+  /thyroid nodule, pain, and compressive symptoms/i,
+  "routine thyroid disease should label thyroid pain/compressive history as thyroid-specific, not generic pain/trauma"
+);
+assert.match(
+  routineThyroidHistoryLabels,
+  /thyroid cancer radiation, biopsy, and MEN2 risk/i,
+  "routine thyroid disease should label radiation/family-risk history as thyroid cancer risk"
+);
+assert.match(
+  routineThyroidHistoryLabels,
+  /pregnancy, postpartum, and fertility-related thyroid safety/i,
+  "routine thyroid disease should label pregnancy/fertility context as thyroid treatment and lab-safety context"
+);
+assert.match(
+  routineThyroidHistoryLabels,
+  /hyperthyroid adrenergic, weight, and GI symptoms/i,
+  "routine thyroid disease should label palpitations/sweating/weight-loss history as hyperthyroid symptom review"
+);
+assert.doesNotMatch(
+  routineThyroidHistoryLabels,
+  /pain location, trauma|pregnancy and ectopic|acral, soft-tissue/i,
+  "routine thyroid disease should not borrow MSK, pelvic/ectopic, or acromegaly history labels"
+);
 assert.match(
   [...(routineThyroidRow?.core || []), ...(routineThyroidRow?.conditional || [])].map((entry) => entry.label).join("; "),
   /Inspect skin for thyroid phenotype/i,
@@ -1974,6 +2380,18 @@ assert.ok(
     || iterationMarkdown.includes("details Clarify"),
   "clinical workup iteration report should expose concrete detail prompts for broad focused-history questions"
 );
+assert.ok(
+  /Focused history questions[\s\S]*options\s+[^.\n]*\/[^.\n]*/.test(iterationMarkdown),
+  "clinical workup iteration report should expose structured answer options for focused history questions"
+);
+assert.ok(
+  /Focused history questions[\s\S]*ask when\s+[^;\n]+[\s\S]*tags\s+[^;\n]+/.test(iterationMarkdown),
+  "clinical workup iteration report should expose when-to-ask and tags for focused history questions"
+);
+assert.ok(
+  /Core physical exam maneuvers[\s\S]*use when\s+[^;\n]+[\s\S]*technique\s+[^;\n]+[\s\S]*feasibility\s+[^;\n]+[\s\S]*limitations\s+[^;\n]+[\s\S]*tags\s+[^;\n]+/.test(iterationMarkdown),
+  "clinical workup iteration report should expose when-to-use, technique, feasibility, limitations, and tags for physical exam maneuvers"
+);
 assert.doesNotMatch(
   iterationMarkdown,
   /Suppressed\/not-recommended items[\s\S]*\(\)\s*-\s*suppressed/i,
@@ -1984,20 +2402,308 @@ assert.doesNotMatch(
   /Suppressed\/not-recommended items[\s\S]*\(no-id\)/i,
   "suppressed/not-recommended Markdown rows should not use no-id placeholders"
 );
+assert.ok(
+  /Suppressed\/not-recommended items[\s\S]*LR note:[\s\S]*tags\s+[^;\n]+[\s\S]*authorization\s+[^;\n]+/.test(iterationMarkdown),
+  "suppressed/not-recommended Markdown rows should expose LR interpretation, tags, and authorization"
+);
 
 iterationRun.results.forEach((result) => {
   assert.ok(Array.isArray(result.safety), `${result.intent_id}: report row should expose safety section`);
   assert.ok(Array.isArray(result.history), `${result.intent_id}: report row should expose history section`);
+  const visibleHistoryLabelCounts = new Map();
   result.history.forEach((entry) => {
+    const key = normalizedLabel(entry.label || "");
+    if (!key) return;
+    visibleHistoryLabelCounts.set(key, (visibleHistoryLabelCounts.get(key) || 0) + 1);
+  });
+  const duplicateVisibleHistoryLabels = Array.from(visibleHistoryLabelCounts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([label]) => label);
+  assert.deepEqual(
+    duplicateVisibleHistoryLabels,
+    [],
+    `${result.intent_id}: visible focused-history labels should be unique within the workup`
+  );
+  const visibleManagementChangeCounts = new Map();
+  (result.management_changes || []).forEach((entry) => {
+    const key = normalizedLabel(entry.management_change || entry.management_implication || "");
+    if (!key) return;
+    visibleManagementChangeCounts.set(key, (visibleManagementChangeCounts.get(key) || 0) + 1);
+  });
+  const duplicateVisibleManagementChanges = Array.from(visibleManagementChangeCounts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([managementChange]) => managementChange);
+  assert.deepEqual(
+    duplicateVisibleManagementChanges,
+    [],
+    `${result.intent_id}: management-changing findings should be unique by management implication, not repeated once per linked maneuver`
+  );
+  result.history.forEach((entry) => {
+    assert.ok(
+      String(entry.options || "").trim(),
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should preserve structured answer options in exported row data`
+    );
+    assert.doesNotMatch(
+      String(entry.options || "").trim(),
+      /^(?:Unknown\s*\/\s*)?Yes\s*\/\s*No(?:\s*\/\s*Other)?$|^Unknown\s*\/\s*Yes\s*\/\s*No(?:\s*\/\s*Other)?$/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not fall back to generic yes/no options`
+    );
+    assert.doesNotMatch(
+      String(entry.options || "").trim(),
+      /(?:^|\/)\s*(?:Or|And)\b/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not expose leading Or/And option fragments`
+    );
+    assert.doesNotMatch(
+      String(entry.options || "").trim(),
+      /(?:^|\/)\s*Other\s*(?:\/|$)/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should use Other ___ rather than a bare Other option`
+    );
+    assert.doesNotMatch(
+      String(entry.options || "").trim(),
+      /(?:Prior MI\s+\/\s+stent\s+\/\s+CABG|Iodine\s+\/\s+contrast|Renal\s+\/\s+osmolality|Dental\s+\/\s+skin|V\s+\/\s+Q)/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not split internal clinical slash phrases into separate options`
+    );
+    assert.doesNotMatch(
+      String(entry.options || "").trim(),
+      /(?:^|\/)\s*Which medications\b/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not turn a question stem into an answer option`
+    );
+    if (/cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid/i.test(`${entry.text || ""} ${entry.full_question || ""}`)) {
+      assert.doesNotMatch(
+        entry.label || "",
+        /bleeding source/i,
+        `${result.intent_id}: hypothyroid symptom history should not be mislabeled as bleeding-source history`
+      );
+    }
+    if (/bleeding source/i.test(entry.label || "")) {
+      const explicitBleedingContext = /bleeding_anemia|bleeding|hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|epistaxis|transfusion|heavy menses|pallor|anemia/i
+        .test(`${result.intent_id || ""} ${result.label || ""} ${entry.text || ""} ${entry.full_question || ""} ${entry.options || ""}`);
+      assert.ok(
+        explicitBleedingContext,
+        `${result.intent_id}: bleeding-source history label should require an actual bleeding/anemia/GI-bleed context`
+      );
+    }
+    if (result.intent_id === "chest_pain_acs_v1") {
+      assert.doesNotMatch(
+        entry.label || "",
+        /bleeding source/i,
+        "chest pain medication/thrombotic-risk history should not be mislabeled as bleeding-source history"
+      );
+    }
+    assert.ok(
+      String(entry.when_to_ask || "").trim(),
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should preserve when-to-ask metadata in exported row data`
+    );
+    assert.ok(
+      String(entry.tags || "").trim(),
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should preserve retrieval/clinical tags in exported row data`
+    );
+    assert.ok(
+      !historyQuestionLabelIsOverloaded(entry),
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should expose a concise bedside-facing label and preserve the long source text separately`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /\.\.\.| - (?:Ask about|Clarify|Review)\b/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not expose truncated detail-prompt suffixes in the bedside-facing label`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /^Ask (?:is it|did|what is|has a|have|are|do|does|was|were|can|could|has)\b|,\s*$/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should not expose clipped question fragments as bedside-facing labels`
+    );
+    if (normalizedLabel(entry.label || "") !== normalizedLabel(entry.full_question || "")) {
+      assert.ok(
+        String(entry.full_question || "").trim(),
+        `${result.intent_id}: ${entry.label || entry.exam_id} history row should preserve the full source-backed question for audit`
+      );
+    }
     if (historyQuestionNeedsDetailPrompts(entry)) {
       assert.ok(
         (entry.detail_prompts || []).length >= 2,
         `${result.intent_id}: broad history report row should carry concrete detail prompts`
       );
+      (entry.detail_prompts || []).forEach((prompt) => {
+        assert.ok(
+          historyDetailPromptHasBedsideAction(prompt),
+          `${result.intent_id}: broad history detail prompt should start with a bedside action verb: ${prompt}`
+        );
+        assert.ok(
+          !historyDetailPromptTooTerse(prompt),
+          `${result.intent_id}: broad history detail prompt should be clinically specific, not terse or generic: ${prompt}`
+        );
+      });
+      assert.ok(
+        String(entry.full_question || "").trim(),
+        `${result.intent_id}: broad history report row should preserve the full source-backed question for audit`
+      );
     }
   });
   assert.ok(Array.isArray(result.core), `${result.intent_id}: report row should expose core exam section`);
   assert.ok(Array.isArray(result.conditional), `${result.intent_id}: report row should expose conditional exam section`);
+  const conditionalStatus = result.conditional_exam_addon_status || result.section_statuses?.conditional_exam_addons;
+  assert.ok(conditionalStatus?.status, `${result.intent_id}: report row should expose conditional exam add-on status`);
+  assert.ok(conditionalStatus?.reason, `${result.intent_id}: conditional exam add-on status should explain active add-ons, inactive triggers, or staged gaps`);
+  if (!(result.conditional || []).length) {
+    assert.ok(
+      ["none_active_for_current_context", "staged_gaps_need_review", "audit_only_unvalidated_context"].includes(conditionalStatus.status),
+      `${result.intent_id}: empty conditional exam section should be explicitly explained, not silent`
+    );
+  }
+  const visibleSuppressedLabelCounts = new Map();
+  (result.suppressed || []).forEach((entry) => {
+    const label = entry.label || "";
+    assert.doesNotMatch(
+      `${label} ${entry.reason || ""}`,
+      /\b(?:setup|stethoscope cleaned|cleaned|draping|positioning|before patient contact|hygiene)\b/i,
+      `${result.intent_id}: clinician-facing suppressed list should not expose setup/process audit metadata`
+    );
+    const key = normalizedLabel(label);
+    if (!key) return;
+    visibleSuppressedLabelCounts.set(key, (visibleSuppressedLabelCounts.get(key) || 0) + 1);
+  });
+  const duplicateVisibleSuppressedLabels = Array.from(visibleSuppressedLabelCounts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([label]) => label);
+  assert.deepEqual(
+    duplicateVisibleSuppressedLabels,
+    [],
+    `${result.intent_id}: suppressed/not-recommended labels should be unique within the workup`
+  );
+  assertExportedFields(result, "physical exam", [...(result.core || []), ...(result.conditional || [])], [
+    ["options", "findings/options"],
+    ["technique", "exam technique"],
+    ["when_to_use", "when-to-use metadata"],
+    ["diagnostic_target", "diagnostic target"],
+    ["management_change", "management-changing implication"],
+    ["evidence", "source/evidence metadata"],
+    ["difficulty", "difficulty metadata"],
+    ["time_burden_minutes", "time-burden metadata"],
+    ["equipment_needed", "equipment metadata"],
+    ["patient_cooperation_required", "patient-cooperation metadata"],
+    ["limitations", "limitations/interpretation cautions"],
+    ["tags", "retrieval/clinical tags"]
+  ]);
+  [...(result.core || []), ...(result.conditional || [])].forEach((entry) => {
+    assert.ok(
+      !physicalExamTechniqueTooThin(entry.label || entry.exam_id || "", entry.technique || ""),
+      `${result.intent_id}: ${entry.label || entry.exam_id} exported physical exam technique should be concrete and bedside-instructive, not a terse placeholder`
+    );
+  });
+  assertExportedFields(result, "basic safety", result.safety || [], [
+    ["options", "measurement/options"],
+    ["reason", "rationale"],
+    ["management_change", "management-changing implication"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"],
+    ["difficulty", "difficulty metadata"],
+    ["time_burden_minutes", "time-burden metadata"],
+    ["equipment_needed", "equipment metadata"],
+    ["patient_cooperation_required", "patient-cooperation metadata"],
+    ["limitations", "limitations/interpretation cautions"],
+    ["tags", "retrieval/clinical tags"]
+  ]);
+  assertExportedFields(result, "test/reference", result.tests || [], [
+    ["reason", "diagnostic rationale"],
+    ["management_change", "management-changing implication"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"],
+    ["tags", "retrieval/clinical tags"]
+  ]);
+  assertExportedFields(result, "red flag", result.red_flags || [], [
+    ["reason", "danger rationale"],
+    ["management_change", "management-changing implication"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"],
+    ["tags", "retrieval/clinical tags"]
+  ]);
+  assertExportedFields(result, "management-changing finding", result.management_changes || [], [
+    ["reason", "diagnostic rationale"],
+    ["management_change", "management-changing implication"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"]
+  ]);
+  (result.management_changes || []).forEach((entry) => {
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /^Management implication - (?:management implication|linked workup item)$/i,
+      `${result.intent_id}: management-changing finding should expose the specific clinical action, not a generic placeholder`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /\.\.\.$/,
+      `${result.intent_id}: management-changing finding label should not be ellipsized; preserve the full action or a concise reviewed summary`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /[,:;]\s*$/,
+      `${result.intent_id}: management-changing finding label should not end with a dangling punctuation fragment`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /^Management implication - (?:Auscultate|Inspect|Palpate|Percuss|Observe|Test|Measure|Count|Use otoscope)\b/i,
+      `${result.intent_id}: management-changing finding label should describe the management-changing result, not repeat the exam maneuver`
+    );
+  });
+  assertExportedFields(result, "limitation", result.limitations || [], [
+    ["reason", "interpretation rationale"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"],
+    ["limitations", "limitations/interpretation cautions"]
+  ]);
+  const primaryVisibleLabels = new Set([
+    ...(result.safety || []),
+    ...(result.history || []),
+    ...(result.core || []),
+    ...(result.conditional || []),
+    ...(result.tests || []),
+    ...(result.red_flags || []),
+    ...(result.management_changes || [])
+  ].map((entry) => normalizedLabel(entry.label || "")).filter(Boolean));
+  const visibleLimitationLabelCounts = new Map();
+  (result.limitations || []).forEach((entry) => {
+    const key = normalizedLabel(entry.label || "");
+    if (!key) return;
+    visibleLimitationLabelCounts.set(key, (visibleLimitationLabelCounts.get(key) || 0) + 1);
+  });
+  const duplicateVisibleLimitationLabels = Array.from(visibleLimitationLabelCounts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([label]) => label);
+  assert.deepEqual(
+    duplicateVisibleLimitationLabels,
+    [],
+    `${result.intent_id}: limitation/interpretation-caution labels should be unique within the workup`
+  );
+  (result.limitations || []).forEach((entry) => {
+    const label = String(entry.label || "");
+    assert.match(
+      label,
+      /^Interpretation caution - /,
+      `${result.intent_id}: limitation rows should be labeled as interpretation cautions, not duplicate checklist items: ${label}`
+    );
+    assert.ok(
+      !genericLimitationBaseLabel(label),
+      `${result.intent_id}: limitation row should expose the specific clinical caution, not a generic placeholder: ${label}`
+    );
+    assert.ok(
+      !rawQuestionLikeLabel(label),
+      `${result.intent_id}: limitation row should not expose a raw overloaded question label: ${label}`
+    );
+    assert.ok(
+      !primaryVisibleLabels.has(normalizedLabel(label)),
+      `${result.intent_id}: limitation row label should not duplicate a primary recommendation label: ${label}`
+    );
+  });
+  assertExportedFields(result, "evidence metadata", result.evidence_metadata || [], [
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"]
+  ]);
+  assertExportedFields(result, "suppressed/not-recommended", result.suppressed || [], [
+    ["reason", "suppression reason"],
+    ["evidence", "source/evidence metadata"],
+    ["lr_note", "LR interpretation"],
+    ["tags", "retrieval/clinical tags"]
+  ]);
   assert.ok(Array.isArray(result.management_changes), `${result.intent_id}: report row should expose management-changing findings`);
   assert.ok(Array.isArray(result.limitations), `${result.intent_id}: report row should expose limitations and interpretation cautions`);
   assert.ok(Array.isArray(result.evidence_metadata), `${result.intent_id}: report row should expose evidence/LR metadata`);
@@ -2007,6 +2713,16 @@ iterationRun.results.forEach((result) => {
     `${result.intent_id}: validated workup export should include at least one suppressed/not-recommended item for auditability`
   );
   (result.suppressed || []).forEach((entry) => {
+    const suppressedLabel = String(entry.label || "");
+    assert.match(
+      suppressedLabel,
+      /^Not recommended - /,
+      `${result.intent_id}: suppressed row label should be explicitly marked as not recommended: ${suppressedLabel}`
+    );
+    assert.ok(
+      !primaryVisibleLabels.has(normalizedLabel(suppressedLabel)),
+      `${result.intent_id}: suppressed row label should not visually duplicate a primary recommendation label: ${suppressedLabel}`
+    );
     assert.ok(entry.exam_id, `${result.intent_id}: ${entry.label || "suppressed item"} suppressed row should expose a stable exam_id/item_id in report data`);
     assert.notEqual(entry.exam_id, "no-id", `${result.intent_id}: ${entry.label || "suppressed item"} suppressed row should not use a placeholder ID`);
     assert.ok(
@@ -2041,6 +2757,16 @@ iterationRun.results.forEach((result) => {
       (entry.traceability.source_ids || []).length,
       `${result.intent_id}: ${entry.label || entry.exam_id} traceability should include source IDs`
     );
+    (entry.traceability.source_ids || []).forEach((sourceId) => {
+      assert.ok(
+        registryStyleSourceId(sourceId),
+        `${result.intent_id}: ${entry.label || entry.exam_id} source ID should be a registry identifier, not citation prose or a URL: ${sourceId}`
+      );
+      assert.ok(
+        registeredSourceIds.has(sourceId),
+        `${result.intent_id}: ${entry.label || entry.exam_id} source ID should exist in the evidence or medical-knowledge source registry: ${sourceId}`
+      );
+    });
     assert.ok(
       !(entry.traceability.source_ids || []).some((sourceId) => /\[object Object\]/i.test(String(sourceId || ""))),
       `${result.intent_id}: ${entry.label || entry.exam_id} traceability should not stringify source objects`

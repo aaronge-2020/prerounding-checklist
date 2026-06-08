@@ -146,11 +146,11 @@
           "visual",
           "field",
           "deficit",
-          "severe",
           "headache",
           "apoplexy",
           "cranial",
-          "nerve"
+          "nerve",
+          "palsy"
         ],
         "when": {
           "termsAny": [
@@ -189,10 +189,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -232,11 +232,11 @@
           "pituitary",
           "apoplexy",
           "acute",
-          "severe",
           "headache",
           "visual",
           "field",
-          "deficit"
+          "deficit",
+          "cranial"
         ],
         "when": {
           "termsAny": [
@@ -337,7 +337,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "PITUITARY_PROLACTINOMA_2023",
@@ -371,9 +371,8 @@
         "tags": [
           "pituitary_gland_disorders",
           "prolactinoma",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -609,8 +608,7 @@
           "pituitary_gland_disorders",
           "prolactinoma",
           "headache",
-          "visual",
-          "symptoms"
+          "visual"
         ],
         "source_seed": "Headache/visual symptoms, dopamine antagonist/opioid/metoclopramide use, pregnancy/lactation."
       },
@@ -747,8 +745,7 @@
           "pituitary_gland_disorders",
           "prolactinoma",
           "growth",
-          "acral",
-          "changes"
+          "acral"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -793,8 +790,7 @@
           "pituitary_gland_disorders",
           "prolactinoma",
           "adrenal",
-          "thyroid",
-          "symptoms"
+          "thyroid"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -841,10 +837,8 @@
           "access",
           "water",
           "desmopressin",
-          "when",
           "diabetes",
-          "insipidus",
-          "possible"
+          "insipidus"
         ],
         "source_seed": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       }
@@ -936,7 +930,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess secondary sex characteristics",
+        "label": "Inspect secondary sex characteristics",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "PITUITARY_PROLACTINOMA_2023",
@@ -966,11 +960,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess secondary sex characteristics is supportive for Prolactinoma (Benign pituitary tumor), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect secondary sex characteristics is supportive for Prolactinoma (Benign pituitary tumor), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "prolactinoma",
-          "assess",
+          "inspect",
           "secondary",
           "characteristics"
         ]
@@ -979,7 +973,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "PITUITARY_PROLACTINOMA_2023",
@@ -1010,11 +1004,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Prolactinoma (Benign pituitary tumor), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Prolactinoma (Benign pituitary tumor), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "pituitary_gland_disorders",
           "prolactinoma",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ],
@@ -1174,8 +1168,7 @@
           "persistent",
           "unexplained",
           "elevation",
-          "mass",
-          "symptoms"
+          "mass"
         ]
       },
       {
@@ -1203,13 +1196,13 @@
           "pituitary_gland_disorders",
           "prolactinoma",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1239,10 +1232,10 @@
           "prolactin",
           "pituitary",
           "mass",
-          "safety",
           "tests",
           "repeat",
-          "fasting"
+          "fasting",
+          "macroprolactin"
         ]
       },
       {
@@ -1309,8 +1302,8 @@
           "evidence",
           "mass",
           "effect",
-          "symptoms",
-          "dynamic"
+          "dynamic",
+          "testing"
         ]
       },
       {
@@ -1445,8 +1438,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1478,7 +1471,6 @@
           "mass",
           "effect",
           "macroadenoma",
-          "changes",
           "urgency",
           "ophthalmology",
           "neurosurgery",
@@ -1511,12 +1503,12 @@
           "prolactinoma",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1545,12 +1537,12 @@
           "prolactinoma",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1617,8 +1609,8 @@
           "deficiency",
           "plus",
           "finding",
-          "changes",
-          "endocrine"
+          "neurosurgical",
+          "fertility"
         ]
       }
     ],

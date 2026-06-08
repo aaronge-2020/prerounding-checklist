@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { buildLocalChecklistFromWorkup } from "../checklist.js";
 import {
   complaintModules,
   complaintSourceRegistry,
@@ -8,7 +9,11 @@ import {
   selectComplaintModule,
   validateComplaintModules
 } from "../complaint-cds.js";
-import { getClinicalIntentById } from "../clinical-intents.js";
+import {
+  buildClinicalIntentRetrievalContext,
+  getClinicalIntentById,
+  selectedValidatedClinicalIntents
+} from "../clinical-intents.js";
 
 const audit = validateComplaintModules();
 assert.ok(audit.ok, audit.issues.join("\n"));
@@ -193,6 +198,61 @@ assert.equal(dkaModule?.id, "hyperglycemia_possible_dka_v1", "hyperglycemia text
 const feverModule = selectComplaintModule("fever with chills and possible pneumonia");
 assert.equal(feverModule?.id, "fever_infection_sepsis_v1", "fever text should route to fever/infection/sepsis module");
 
+const plainFever = evaluateComplaintCds("fever", {}, { module: feverModule });
+assert.equal(plainFever.matched, true, "plain fever should match the fever/infection/sepsis module");
+assert.equal(plainFever.module.id, "fever_infection_sepsis_v1");
+assertFeverWorkupMeetsGeneralClinicianFloor(plainFever);
+const plainFeverQuestions = [
+  ...(plainFever.requiredQuestions || []),
+  ...(plainFever.conditionalQuestions || [])
+];
+assert.ok(
+  !plainFeverQuestions.some((question) => question.id === "fever_source_localizing_symptoms"
+    || /what symptoms localize the fever source/i.test(`${question.label || ""} ${question.text || ""}`)),
+  "plain fever should atomize the broad source-localizing parent question before rendering recommendations"
+);
+[
+  "fever_source_localizing_symptoms__heent_oral",
+  "fever_source_localizing_symptoms__urinary_flank",
+  "fever_source_localizing_symptoms__abdominal_gi",
+  "fever_source_localizing_symptoms__skin_wound_line",
+  "fever_source_localizing_symptoms__cns_joint_spine"
+].forEach((childId) => {
+  const child = plainFeverQuestions.find((question) => question.id === childId);
+  assert.ok(child, `plain fever should include atomized source-domain question ${childId}`);
+  assert.equal(child.traceability?.parent_item_id, "fever_source_localizing_symptoms", `${childId} should trace to the parent source question`);
+  assert.equal(child.traceability?.atomized_from_history_question, true, `${childId} should preserve atomization traceability`);
+});
+assert.ok(
+  plainFeverQuestions.some((question) => question.id === "fever_severity_intake_perfusion_question"),
+  "plain fever atomization should not erase the separate severity, hydration, and perfusion history question"
+);
+assert.ok(
+  !plainFeverQuestions.some((question) => question.id === "fever_urinary_source_question"),
+  "plain fever should not duplicate the urinary/flank source row after atomizing the broad source question"
+);
+const plainFeverChecklist = buildLocalChecklistFromWorkup({ complaintResult: plainFever });
+assert.match(
+  plainFeverChecklist,
+  /Any respiratory source symptoms\?: No \/ Cough \/ Sputum \/ Shortness of breath \/ Pleuritic pain \/ Wheeze \/ New oxygen need \/ Other ___/i,
+  "plain fever checklist should visibly ask respiratory source questions without needing pneumonia keywords"
+);
+assert.doesNotMatch(
+  plainFeverChecklist,
+  /Any cough\?:|Any sputum\?:|Any shortness of breath\?:|Any pleuritic pain\?:/i,
+  "plain fever checklist should not duplicate the respiratory source-domain question with single-symptom rows"
+);
+assert.match(
+  plainFeverChecklist,
+  /Auscultate posterior lung fields: Clear \/ Crackles \/ Wheezes \/ Rhonchi \/ Diminished \/ Asymmetric \/ Unable to assess/i,
+  "plain fever checklist should visibly recommend lung auscultation with source-specific finding options"
+);
+assert.match(
+  plainFeverChecklist,
+  /Inspect skin for infection source: No focal skin source \/ Rash \/ Cellulitis \/ Abscess \/ Wound or drainage \/ Line-site inflammation \/ Petechiae or purpura \/ Unable to assess/i,
+  "plain fever checklist should visibly include skin, wound, and line-source inspection"
+);
+
 const unmatched = evaluateComplaintCds("ankle sprain after basketball");
 assert.equal(unmatched.matched, false, "unsupported complaint should return no-match response");
 assert.equal(unmatched.unsupported, true, "unsupported complaint should expose unsupported/gap state");
@@ -315,12 +375,13 @@ assert.equal(dka.module.id, "hyperglycemia_possible_dka_v1");
 assert.ok(dka.triggeredRedFlags.length >= 3, "severe DKA should trigger multiple red flags");
 assertHas(dka.requiredQuestions, /insulin|ketone|polyuria|infection|confusion/, "DKA should ask core crisis history");
 assertHas(dka.conditionalQuestions, /hyperosmolar|infection/, "DKA should ask conditional HHS/source history");
-assertHas(dka.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature/, "DKA should separate basic bedside safety checks from the exam");
-assertHas(dka.focusedExam, /inspect mucous membranes|observe kussmaul breathing|check mental status|check capillary refill|palpate abdomen|auscultate lungs/, "DKA should recommend atomic volume, respiratory, mental, abdominal, and source exam maneuvers");
+assertHas(dka.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature|assess mental status/, "DKA should separate basic bedside safety checks and mental status from the exam");
+assertHas(dka.focusedExam, /inspect mucous membranes|observe kussmaul breathing|test capillary refill|palpate distal extremity warmth|palpate abdomen|auscultate lungs/, "DKA should recommend atomic volume, respiratory, perfusion, abdominal, and source exam maneuvers");
+assert.doesNotMatch(labels(dka.focusedExam), /mental status/i, "DKA mental status should remain basic safety/acuity data, not a physical exam maneuver");
 assertNoVagueRenderedExamLabels("hyperglycemia_possible_dka_v1", dka.focusedExam);
 assert.ok(
-  dka.focusedExam.some((item) => item.original_label === "Assess Kussmaul breathing" && item.label === "Observe Kussmaul breathing"),
-  "DKA should preserve original labels for audit while rendering action-specific maneuver labels"
+  dka.focusedExam.some((item) => !item.original_label && item.label === "Observe Kussmaul breathing"),
+  "DKA source module should store action-specific Kussmaul breathing wording without requiring display-time label repair"
 );
 assert.ok(!/measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature|measure current weight/i.test(labels(dka.focusedExam)), "DKA focused exam should not contain vital signs or basic measurements");
 const dkaSkinTurgor = dka.focusedExam.find((item) => /skin turgor/i.test(item.label));
@@ -335,14 +396,21 @@ const fever = evaluateComplaintCds(
   "Adult clinic fever with chills, cough, sputum, possible pneumonia, dysuria, flank pain, rash, and no clear source yet",
   answerMap([
     ["fever_urinary_source_question", "yes"],
-    ["fever_abdominal_cns_skin_source_question", "yes"]
+    ["fever_abdominal_gi_source_question", "abdominal_pain"],
+    ["fever_cns_meningeal_source_question", "headache_neck"],
+    ["fever_skin_line_source_question", "wound_ulcer"]
   ]),
   { selectedIntents: [] }
 );
 assert.equal(fever.matched, true, "fever case should match");
 assert.equal(fever.module.id, "fever_infection_sepsis_v1");
 assertHas(fever.safetyChecks, /measure blood pressure|measure heart rate|measure respiratory rate|measure oxygen saturation|measure temperature/, "fever should separate basic bedside safety checks from the exam");
-assertHas(fever.requiredQuestions, /fever.*measured|symptoms localize|cough.*sputum.*shortness|immunosuppression.*pregnancy.*travel/, "fever should ask timeline, source, respiratory, and host/exposure questions");
+assertHas(fever.requiredQuestions, /fever.*measured/, "fever should ask timeline and measurement history");
+assertHas(fever.requiredQuestions, /throat.*ear.*sinus.*dental|dysuria.*flank|abdominal.*gi|skin.*wound.*line|cns.*joint.*spine|cough.*sputum.*shortness|immunosuppression.*pregnancy.*travel/, "fever should ask atomic source-domain and host/exposure questions");
+assert.ok(
+  ![...(fever.requiredQuestions || []), ...(fever.conditionalQuestions || [])].some((question) => /what symptoms localize the fever source/i.test(`${question.label || ""} ${question.text || ""}`)),
+  "fever case should not reintroduce the broad source-localizing history question"
+);
 assertHistoryDetailPrompts("fever_infection_sepsis_v1", fever.requiredQuestions);
 assertHas(
   [...fever.requiredQuestions, ...fever.conditionalQuestions],
@@ -358,6 +426,59 @@ assertHas(fever.dispositionRules, /escalate unstable fever|outpatient follow-up 
 assertHas(fever.differentialBuckets, /sepsis|respiratory source|urinary or flank source|skin.*heent.*cns.*abdominal/i, "fever differential should cover serious infection plus likely source categories");
 assert.ok((fever.limitationsAndInterpretationCautions || []).length >= 6, "fever should expose exam and source interpretation limitations");
 assertFeverWorkupMeetsGeneralClinicianFloor(fever);
+
+const feverIntentRows = selectedValidatedClinicalIntents(["fever_sepsis_v1"]);
+const feverIntentModule = complaintModules.find((module) => module.id === "fever_infection_sepsis_v1");
+const structuredUndifferentiatedFeverContext = buildClinicalIntentRetrievalContext(
+  feverIntentRows,
+  "undifferentiated fever in clinic",
+  "General medicine",
+  "Adult"
+);
+const structuredUndifferentiatedFever = evaluateComplaintCds(structuredUndifferentiatedFeverContext, {}, {
+  module: feverIntentModule,
+  selectedIntents: feverIntentRows
+});
+assertHas(
+  structuredUndifferentiatedFever.requiredExam,
+  /observe work of breathing|auscultate posterior lung fields|inspect skin for infection source|inspect oropharynx|palpate radial pulses/i,
+  "structured fever intent should keep the core source-screen floor"
+);
+assert.doesNotMatch(
+  labels(structuredUndifferentiatedFever.conditionalExam),
+  /palpate cva tenderness|palpate abdomen|percuss posterior lung fields/i,
+  "structured fever intent metadata tags should not activate urinary, abdominal, or lower-yield pulmonary add-on exams without patient modifiers"
+);
+const structuredUndifferentiatedFeverChecklist = buildLocalChecklistFromWorkup({
+  complaintResult: structuredUndifferentiatedFever,
+  recommendation: {
+    focusedHistoryQuestions: [],
+    basicSafetyChecks: [],
+    corePhysicalExamManeuvers: [],
+    conditionalPhysicalExamManeuvers: []
+  },
+  selectedIntents: feverIntentRows
+}, { includeSafetyInExamChecklist: true });
+assert.doesNotMatch(
+  structuredUndifferentiatedFeverChecklist,
+  /Palpate CVA tenderness|Palpate abdomen|Percuss posterior lung fields/i,
+  "local fever checklist should not reintroduce untriggered source add-ons from guideline-module metadata"
+);
+const structuredTriggeredFeverContext = buildClinicalIntentRetrievalContext(
+  feverIntentRows,
+  "fever with dysuria, flank pain, cough, focal crackles, and asymmetric diminished breath sounds",
+  "General medicine",
+  "Adult"
+);
+const structuredTriggeredFever = evaluateComplaintCds(structuredTriggeredFeverContext, {}, {
+  module: feverIntentModule,
+  selectedIntents: feverIntentRows
+});
+assertHas(
+  structuredTriggeredFever.conditionalExam,
+  /palpate cva tenderness|percuss posterior lung fields/i,
+  "structured fever patient modifiers should activate urinary and focal-pulmonary source add-on exams"
+);
 
 const euDka = evaluateComplaintCds(
   "Adult diabetes on SGLT2 inhibitor with vomiting, abdominal pain, ketones, and only moderately elevated glucose",

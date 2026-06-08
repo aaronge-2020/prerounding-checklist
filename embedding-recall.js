@@ -586,6 +586,8 @@ function containsPhiLikeContent(value) {
   return /\b\d{3}[-.\s]?\d{2}[-.\s]?\d{4}\b/.test(text)
     || /\b(?:MRN|DOB|SSN|medical record number)\b/i.test(text)
     || /\b(?:MRN|medical record number)\s*[:#]?\s*[A-Z0-9-]{4,}\b/i.test(text)
+    || /\b(?:room|rm|bed)\s*[:#-]?\s*[A-Za-z]?\d+[A-Za-z]?\b/i.test(text)
+    || /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/.test(text)
     || /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(text)
     || /\b(?:\+?1[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)\d{3}[-.\s]?\d{4}\b/.test(text)
     || /\b(?:patient|pt|name)\s*[:#-]?\s*[A-Z][a-z]+\s+[A-Z][a-z]+\b/.test(text)
@@ -593,7 +595,7 @@ function containsPhiLikeContent(value) {
     || /\b\d{1,5}\s+[A-Z][A-Za-z]+\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Lane|Ln)\b/.test(text);
 }
 
-const forbiddenKnowledgePackFieldPattern = /^(?:raw_)?(?:chart|patient|note|handoff|epic|mrn|dob|ssn|room|address|phone|email|identifier|identifiers)(?:_text|_context|_info|_name|_id|s)?$/i;
+const forbiddenKnowledgePackFieldPattern = /^(?:raw[\s_-]*)?(?:(?:chart|patient|notes?|handoff|epic|mrn|dob|ssn|room|bed|address|phone|email|identifiers?)(?:[\s_-]*(?:text|context|info|name|id|number|date|of[\s_-]*birth|birthdate)s?)?|date[\s_-]*of[\s_-]*birth|birthdate)$/i;
 const knowledgePackItemTypes = new Set([
   "history_question",
   "physical_exam_maneuver",
@@ -616,7 +618,9 @@ const legacyKnowledgePackKindToItemType = {
   red_flag: "red_flag",
   bundle_gap: "catalog_gap"
 };
-const knowledgePackBasicSafetyLabelPattern = /\b(?:blood pressure|heart rate|respiratory rate|oxygen saturation|spo2|pulse oximetry|bedside glucose|point-of-care glucose|fingerstick glucose|blood glucose|weight|body mass index|bmi|orthostatic|orthostasis|pain score|pregnancy status|mental status|level of consciousness|general appearance|acuity|safety check|ability to protect airway|airway protection)\b|\b(?:measure|check|document|record|obtain)\s+(?:temperature|temp)\b/i;
+const knowledgePackBasicSafetyLabelPattern = /\b(?:blood pressure|heart rate|respiratory rate|oxygen saturation|spo2|pulse oximetry|bedside glucose|point-of-care glucose|fingerstick glucose|blood glucose|weight|body mass index|bmi|orthostatic|orthostasis|pain score|pregnancy status|pregnancy possibility|mental status|level of consciousness|general appearance|acuity|safety check|ability to protect airway|airway protection)\b|\b(?:measure|check|document|record|obtain|verify)\s+(?:temperature|temp|pregnancy)\b/i;
+const knowledgePackActionSpecificSafetyLabelPattern = /^(?:measure|count|document|verify|clarify|calculate|review|screen|ask|obtain|observe)\b/i;
+const knowledgePackWeakSafetyCheckLabelPattern = /^(?:assess|check|evaluate)\b|^(?:mental status|general appearance|pregnancy possibility safety check|bedside glucose safety check)$/i;
 const knowledgePackBundledExamLabelPattern = /[,;:]|\/|\b(?:and|plus)\b.*\b(?:and|plus)\b|\b(?:focused exam|acuity screen|trigger exam|work-of-breathing|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
 const knowledgePackBundledExamTextPattern = /\b(?:focused physical exam|complete physical exam|comprehensive exam|trigger exam|screen for|assess for .*(?:,|;|\/).*(?:,|;|\/)|positive, negative, and unable-to-assess|positive negative and unable)\b/i;
 const knowledgePackPlaceholderTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
@@ -698,6 +702,21 @@ function safeKnowledgePackReviewNote(value, fallbackMessage = "Reviewer note omi
     return fallbackMessage;
   }
   return raw.slice(0, 1000);
+}
+
+function safeKnowledgePackIsoTimestamp(value, fallback = new Date().toISOString()) {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    return fallback;
+  }
+  if (containsPhiLikeContent(raw) || knowledgePackPlaceholderContentPattern.test(raw)) {
+    return fallback;
+  }
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) {
+    return fallback;
+  }
+  return parsed.toISOString();
 }
 
 function joinSafeKnowledgePackReviewerNotes(notes = []) {
@@ -1064,6 +1083,13 @@ function validateKnowledgePackSafetyCheckItem(item, label, issues) {
     "safety-check"
   );
   requireKnowledgePackLikelihoodRatioNote(issues, item, label, "safety-check");
+  const displayLabel = String(item.label || label || "").trim();
+  if (displayLabel && (!knowledgePackActionSpecificSafetyLabelPattern.test(displayLabel) || knowledgePackWeakSafetyCheckLabelPattern.test(displayLabel))) {
+    issues.push({
+      type: "safety-check-label",
+      message: `${label} safety_check label should name a specific bedside action such as Measure, Count, Document, Verify, Clarify, Review, Screen, Ask, Obtain, or Observe.`
+    });
+  }
   if (item.time_burden_minutes && !validPositiveNumberString(item.time_burden_minutes)) {
     issues.push({ type: "safety-check-time_burden_minutes-format", message: `${label} time_burden_minutes must be a non-negative numeric string.` });
   }
@@ -1250,6 +1276,14 @@ function validateKnowledgePackGoldCases(pack, issues, intentIds) {
     const acceptableLabels = splitKnowledgePackList(goldCase.acceptable_labels);
     const expectedSafetyLabels = splitKnowledgePackList(goldCase.expected_safety_labels);
     const acceptableSafetyLabels = splitKnowledgePackList(goldCase.acceptable_safety_labels);
+    const expectedHistoryLabels = splitKnowledgePackList(goldCase.expected_history_labels);
+    const acceptableHistoryLabels = splitKnowledgePackList(goldCase.acceptable_history_labels);
+    const expectedTestLabels = splitKnowledgePackList(goldCase.expected_test_labels);
+    const acceptableTestLabels = splitKnowledgePackList(goldCase.acceptable_test_labels);
+    const expectedRedFlagLabels = splitKnowledgePackList(goldCase.expected_red_flag_labels);
+    const acceptableRedFlagLabels = splitKnowledgePackList(goldCase.acceptable_red_flag_labels);
+    const expectedManagementChangeLabels = splitKnowledgePackList(goldCase.expected_management_change_labels);
+    const acceptableManagementChangeLabels = splitKnowledgePackList(goldCase.acceptable_management_change_labels);
     const avoidLabels = splitKnowledgePackList(goldCase.avoid_labels);
     if (!expectedLabels.length) {
       issues.push({ type: "gold-case-expected_core_labels", message: `${label} needs at least one concrete expected_core_labels entry.` });
@@ -1284,7 +1318,18 @@ function validateKnowledgePackGoldCases(pack, issues, intentIds) {
       issues.push({ type: "gold-case-avoid_labels", message: `${label} needs at least one concrete avoid_labels entry.` });
     }
     const avoidSet = new Set(avoidLabels.map(normalizedKnowledgePackLabel).filter(Boolean));
-    [...expectedLabels, ...acceptableLabels].forEach((candidateLabel) => {
+    [
+      ...expectedLabels,
+      ...acceptableLabels,
+      ...expectedHistoryLabels,
+      ...acceptableHistoryLabels,
+      ...expectedTestLabels,
+      ...acceptableTestLabels,
+      ...expectedRedFlagLabels,
+      ...acceptableRedFlagLabels,
+      ...expectedManagementChangeLabels,
+      ...acceptableManagementChangeLabels
+    ].forEach((candidateLabel) => {
       const normalized = normalizedKnowledgePackLabel(candidateLabel);
       if (normalized && avoidSet.has(normalized)) {
         issues.push({ type: "gold-case-conflict", message: `${label} lists ${candidateLabel} as both expected/acceptable and avoid.` });
@@ -1389,6 +1434,12 @@ function validateKnowledgePackIntentCoverage(pack, issues) {
         message: `${label} needs at least one linked physical_exam_maneuver item before reviewer activation can create an active validated workup.`
       });
     }
+    if (!hasType("safety_check")) {
+      issues.push({
+        type: "intent-safety_check-coverage",
+        message: `${label} needs at least one linked safety_check item so basic bedside data/acuity checks remain modeled separately from physical exam maneuvers.`
+      });
+    }
     if (!hasAny(["diagnostic_test", "reference_threshold"])) {
       issues.push({
         type: "intent-test-threshold-coverage",
@@ -1403,9 +1454,30 @@ function validateKnowledgePackIntentCoverage(pack, issues) {
     }
 
     const linkedPhysicalExamItems = typeMap.get("physical_exam_maneuver") || [];
+    const linkedSafetyItems = typeMap.get("safety_check") || [];
+    const linkedHistoryItems = typeMap.get("history_question") || [];
+    const linkedTestItems = [
+      ...(typeMap.get("diagnostic_test") || []),
+      ...(typeMap.get("reference_threshold") || [])
+    ];
+    const linkedRedFlagItems = typeMap.get("red_flag") || [];
+    const linkedManagementChangeItems = typeMap.get("management_change") || [];
     goldCases
       .filter((goldCase) => goldCase.intent_id === intentId)
       .forEach((goldCase) => {
+        const assertExpectedLabelsBacked = (fieldName, linkedItems, issueType, displayType) => {
+          splitKnowledgePackList(goldCase[fieldName]).forEach((expectedLabel) => {
+            if (!knowledgePackItemLabelMatches({ label: expectedLabel }, expectedLabel)) {
+              return;
+            }
+            if (!linkedItems.some((item) => knowledgePackItemLabelMatches(item, expectedLabel))) {
+              issues.push({
+                type: issueType,
+                message: `${goldCase.case_id || label} expects ${displayType} "${expectedLabel}", but no linked ${displayType} item in ${label} backs that gold label.`
+              });
+            }
+          });
+        };
         splitKnowledgePackList(goldCase.expected_core_labels).forEach((expectedLabel) => {
           if (!knowledgePackItemLabelMatches({ label: expectedLabel }, expectedLabel)) {
             return;
@@ -1417,6 +1489,38 @@ function validateKnowledgePackIntentCoverage(pack, issues) {
             });
           }
         });
+        splitKnowledgePackList(goldCase.expected_safety_labels).forEach((expectedLabel) => {
+          if (!linkedSafetyItems.some((item) => knowledgePackItemLabelMatches(item, expectedLabel))) {
+            issues.push({
+              type: "gold-case-expected_safety_label-unbacked",
+              message: `${goldCase.case_id || label} expects safety check "${expectedLabel}", but no linked safety_check item in ${label} backs that gold label.`
+            });
+          }
+        });
+        assertExpectedLabelsBacked(
+          "expected_history_labels",
+          linkedHistoryItems,
+          "gold-case-expected_history_label-unbacked",
+          "history_question"
+        );
+        assertExpectedLabelsBacked(
+          "expected_test_labels",
+          linkedTestItems,
+          "gold-case-expected_test_label-unbacked",
+          "diagnostic_test/reference_threshold"
+        );
+        assertExpectedLabelsBacked(
+          "expected_red_flag_labels",
+          linkedRedFlagItems,
+          "gold-case-expected_red_flag_label-unbacked",
+          "red_flag"
+        );
+        assertExpectedLabelsBacked(
+          "expected_management_change_labels",
+          linkedManagementChangeItems,
+          "gold-case-expected_management_change_label-unbacked",
+          "management_change"
+        );
       });
   });
 }
@@ -1669,7 +1773,7 @@ export function activateStagedClinicalKnowledgePack(state, packId, options = {})
   const reviewState = normalizeKnowledgePackReviewState(state);
   const reviewer = sanitizeKnowledgePackReviewerId(options.reviewer || "local_reviewer");
   const reviewerNote = safeKnowledgePackReviewNote(options.note || "");
-  const activatedAt = options.activatedAt || new Date().toISOString();
+  const activatedAt = safeKnowledgePackIsoTimestamp(options.activatedAt);
   const packs = reviewState.packs.map((stagedPack) => {
     if (stagedPack.pack_id !== packId) {
       return stagedPack;
@@ -1710,7 +1814,7 @@ export function activateStagedClinicalKnowledgePack(state, packId, options = {})
 
 export function rejectStagedClinicalKnowledgePack(state, packId, options = {}) {
   const reviewState = normalizeKnowledgePackReviewState(state);
-  const rejectedAt = options.rejectedAt || new Date().toISOString();
+  const rejectedAt = safeKnowledgePackIsoTimestamp(options.rejectedAt);
   const reviewer = sanitizeKnowledgePackReviewerId(options.reviewer || "local_reviewer");
   const reviewerNote = safeKnowledgePackReviewNote(options.note || "");
   const packs = reviewState.packs.map((stagedPack) => (
@@ -1788,6 +1892,14 @@ export function activeClinicalKnowledgePackGoldCases(state = {}) {
         acceptable_labels_list: splitKnowledgePackList(goldCase.acceptable_labels),
         expected_safety_labels_list: splitKnowledgePackList(goldCase.expected_safety_labels),
         acceptable_safety_labels_list: splitKnowledgePackList(goldCase.acceptable_safety_labels),
+        expected_history_labels_list: splitKnowledgePackList(goldCase.expected_history_labels),
+        acceptable_history_labels_list: splitKnowledgePackList(goldCase.acceptable_history_labels),
+        expected_test_labels_list: splitKnowledgePackList(goldCase.expected_test_labels),
+        acceptable_test_labels_list: splitKnowledgePackList(goldCase.acceptable_test_labels),
+        expected_red_flag_labels_list: splitKnowledgePackList(goldCase.expected_red_flag_labels),
+        acceptable_red_flag_labels_list: splitKnowledgePackList(goldCase.acceptable_red_flag_labels),
+        expected_management_change_labels_list: splitKnowledgePackList(goldCase.expected_management_change_labels),
+        acceptable_management_change_labels_list: splitKnowledgePackList(goldCase.acceptable_management_change_labels),
         avoid_labels_list: splitKnowledgePackList(goldCase.avoid_labels),
         required_rationale_terms_list: splitKnowledgePackList(goldCase.required_rationale_terms)
       }));

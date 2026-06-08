@@ -144,10 +144,10 @@
           "vomiting",
           "dehydration",
           "hypoglycemia",
-          "severe",
           "hyponatremia",
           "hyperkalemia",
-          "altered"
+          "altered",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -187,10 +187,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -230,10 +230,11 @@
           "adrenal",
           "crisis",
           "shock",
-          "severe",
           "vomiting",
           "dehydration",
-          "hypoglycemia"
+          "hypoglycemia",
+          "hyperkalemia",
+          "hyponatremia"
         ],
         "when": {
           "termsAny": [
@@ -375,7 +376,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -409,9 +410,8 @@
         "tags": [
           "adrenal_gland_disorders",
           "adrenal_insufficiency",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -692,8 +692,7 @@
         "tags": [
           "adrenal_gland_disorders",
           "adrenal_insufficiency",
-          "pituitary",
-          "disease"
+          "pituitary"
         ],
         "source_seed": "Steroid exposure/withdrawal, pituitary disease, autoimmune disease, orthostasis."
       },
@@ -743,7 +742,7 @@
       },
       {
         "id": "question_08",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -754,7 +753,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
             "value": "unknown",
@@ -774,20 +773,175 @@
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
-        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Adrenal Insufficiency therapy unsafe.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Adrenal Insufficiency.",
         "when_to_ask": "Ask when Adrenal Insufficiency is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Adrenal Insufficiency therapy unsafe.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Adrenal Insufficiency.",
         "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
         "tags": [
           "adrenal_gland_disorders",
           "adrenal_insufficiency",
-          "acute",
+          "fever",
+          "rigors"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_09",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Adrenal Insufficiency needs urgent evaluation today.",
+        "when_to_ask": "Ask when Adrenal Insufficiency is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Adrenal Insufficiency needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "adrenal_insufficiency",
+          "respiratory",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_10",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Adrenal Insufficiency pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Adrenal Insufficiency needs urgent evaluation today.",
+        "when_to_ask": "Ask when Adrenal Insufficiency is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Adrenal Insufficiency needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Adrenal Insufficiency pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "adrenal_insufficiency",
+          "urinary",
+          "flank",
           "infection"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Adrenal Insufficiency curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support diabetes technology or glucose-device use. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Adrenal Insufficiency therapy unsafe.",
+        "when_to_ask": "Ask when patient context includes diabetes technology or glucose-device use.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Adrenal Insufficiency therapy unsafe.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Adrenal Insufficiency.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "adrenal_insufficiency",
+          "skin",
+          "wound",
+          "line",
+          "procedure",
+          "site",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection.",
+        "when": {
+          "termsAny": [
+            "skin",
+            "wound",
+            "line",
+            "procedure",
+            "site",
+            "infection",
+            "redness",
+            "drainage",
+            "tenderness",
+            "indwelling"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
@@ -1083,13 +1237,13 @@
           "adrenal_gland_disorders",
           "adrenal_insufficiency",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1118,12 +1272,12 @@
           "adrenal_insufficiency",
           "adrenal",
           "insufficiency",
-          "safety",
           "labs",
           "check",
           "sodium",
           "potassium",
-          "glucose"
+          "glucose",
+          "bicarbonate"
         ]
       },
       {
@@ -1186,12 +1340,12 @@
           "adrenal_insufficiency",
           "cushing",
           "screening",
-          "with",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "hour"
+          "hour",
+          "after"
         ]
       },
       {
@@ -1322,8 +1476,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1388,12 +1542,12 @@
           "adrenal_insufficiency",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1422,12 +1576,12 @@
           "adrenal_insufficiency",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1459,9 +1613,9 @@
           "crisis",
           "treated",
           "immediately",
-          "with",
           "stress",
-          "dose"
+          "dose",
+          "steroids"
         ]
       },
       {
@@ -1493,9 +1647,9 @@
           "elevation",
           "suppressed",
           "renin",
-          "with",
           "high",
-          "aldosterone"
+          "aldosterone",
+          "confirmed"
         ]
       }
     ],

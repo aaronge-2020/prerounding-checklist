@@ -143,7 +143,6 @@
           "ketones",
           "vomiting",
           "dehydration",
-          "severe",
           "hyperglycemia"
         ],
         "when": {
@@ -179,8 +178,7 @@
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
           "hypertension",
-          "preeclampsia",
-          "features"
+          "preeclampsia"
         ],
         "when": {
           "termsAny": [
@@ -217,10 +215,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -260,11 +258,11 @@
           "ketones",
           "vomiting",
           "dehydration",
-          "severe",
           "hyperglycemia",
           "altered",
           "mental",
-          "status"
+          "hypertension",
+          "preeclampsia"
         ],
         "when": {
           "termsAny": [
@@ -397,7 +395,6 @@
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
           "measure",
-          "current",
           "weight"
         ]
       },
@@ -443,7 +440,7 @@
       },
       {
         "id": "safety_check_05",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -477,9 +474,8 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -581,7 +577,6 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
-          "prior",
           "macrosomia"
         ],
         "source_seed": "Gestational age, prior GDM/macrosomia."
@@ -631,8 +626,7 @@
           "risk",
           "fetal",
           "growth",
-          "polyhydramnios",
-          "known"
+          "polyhydramnios"
         ],
         "source_seed": "Preexisting diabetes risk and fetal growth/polyhydramnios if known."
       },
@@ -725,8 +719,7 @@
           "gestational_diabetes",
           "fetal",
           "growth",
-          "polyhydramnios",
-          "context"
+          "polyhydramnios"
         ],
         "source_seed": "Ask about gestational age, prior gestational diabetes or macrosomia, home glucose pattern if available, vomiting/dehydration, ketone symptoms, fetal growth/polyhydramnios context, and obstetric care plan."
       },
@@ -810,9 +803,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention nutrition, access, meal, timing, carbohydrate. A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
+        "action": "Ask when the history or modifiers support nutrition access, vomiting, or glucose-management barriers. A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: nutrition, access, meal, timing, carbohydrate, food, insecurity, nausea, vomiting, work.",
+        "when_to_ask": "Ask when patient context includes nutrition access, vomiting, or glucose-management barriers.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
         "management_implication": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
         "tags": [
@@ -833,7 +826,7 @@
             "insecurity",
             "nausea",
             "vomiting",
-            "work"
+            "schedule"
           ]
         }
       },
@@ -869,17 +862,16 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention hypertension, preeclampsia, headache, visual, right. A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
+        "action": "Ask when the history or modifiers support adrenergic spells, resistant hypertension, or hypokalemia. A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: hypertension, preeclampsia, headache, visual, right, upper, quadrant, pain, swelling, high.",
+        "when_to_ask": "Ask when patient context includes adrenergic spells, resistant hypertension, or hypokalemia.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
         "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
           "hypertension",
-          "preeclampsia",
-          "symptoms"
+          "preeclampsia"
         ],
         "source_seed": "Clarify preexisting diabetes risk, medications, nutrition access, steroid exposure, hypertension or preeclampsia symptoms, and postpartum follow-up barriers.",
         "when": {
@@ -944,7 +936,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess Kussmaul breathing",
+        "label": "Observe Kussmaul breathing",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -974,11 +966,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess Kussmaul breathing is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe Kussmaul breathing is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
-          "assess",
+          "observe",
           "kussmaul",
           "breathing"
         ],
@@ -1263,13 +1255,13 @@
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1298,7 +1290,6 @@
           "gestational_diabetes",
           "gestational",
           "diabetes",
-          "safety",
           "tests",
           "route",
           "local",
@@ -1557,9 +1548,7 @@
           "random",
           "plasma",
           "glucose",
-          "with",
           "classic",
-          "symptoms",
           "supports",
           "diabetes"
         ]
@@ -1594,8 +1583,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1627,11 +1616,9 @@
           "ogtt",
           "threshold",
           "crossing",
-          "changes",
           "maternal",
           "fetal",
-          "monitoring",
-          "therapy"
+          "monitoring"
         ]
       },
       {
@@ -1661,7 +1648,6 @@
           "postpartum",
           "abnormal",
           "ogtt",
-          "changes",
           "long",
           "term",
           "prevention"
@@ -1693,12 +1679,12 @@
           "gestational_diabetes",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1727,12 +1713,12 @@
           "gestational_diabetes",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1762,11 +1748,11 @@
           "ogtt",
           "threshold",
           "crossing",
-          "changes",
           "maternal",
           "fetal",
           "monitoring",
-          "nutrition"
+          "nutrition",
+          "glucose"
         ]
       },
       {
@@ -1796,11 +1782,11 @@
           "ketones",
           "vomiting",
           "dehydration",
-          "severe",
           "hyperglycemia",
           "altered",
           "mental",
-          "status"
+          "hypertensive",
+          "pregnancy"
         ]
       }
     ],

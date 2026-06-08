@@ -144,7 +144,6 @@
           "apoplexy",
           "visual",
           "loss",
-          "severe",
           "hyponatremia"
         ],
         "when": {
@@ -184,10 +183,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -227,11 +226,11 @@
           "pituitary",
           "apoplexy",
           "acute",
-          "severe",
           "headache",
           "visual",
           "field",
-          "deficit"
+          "deficit",
+          "cranial"
         ],
         "when": {
           "termsAny": [
@@ -332,7 +331,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
@@ -366,9 +365,8 @@
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -650,8 +648,7 @@
           "pituitary_gland_disorders",
           "hypopituitarism",
           "growth",
-          "acral",
-          "changes"
+          "acral"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -696,8 +693,7 @@
           "pituitary_gland_disorders",
           "hypopituitarism",
           "adrenal",
-          "thyroid",
-          "symptoms"
+          "thyroid"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -791,10 +787,8 @@
           "access",
           "water",
           "desmopressin",
-          "when",
           "diabetes",
-          "insipidus",
-          "possible"
+          "insipidus"
         ],
         "source_seed": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       }
@@ -845,7 +839,7 @@
       },
       {
         "id": "exam_02",
-        "label": "Assess secondary sex characteristics",
+        "label": "Inspect secondary sex characteristics",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
@@ -875,18 +869,18 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess secondary sex characteristics is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect secondary sex characteristics is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "assess",
+          "inspect",
           "secondary",
           "characteristics"
         ]
       },
       {
         "id": "exam_03",
-        "label": "Assess body hair distribution",
+        "label": "Inspect body hair distribution",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
@@ -916,11 +910,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess body hair distribution is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect body hair distribution is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "assess",
+          "inspect",
           "body",
           "hair",
           "distribution"
@@ -972,7 +966,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
@@ -1003,11 +997,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ],
@@ -1125,7 +1119,7 @@
       },
       {
         "id": "conditional_exam_04",
-        "label": "Assess pubertal stage",
+        "label": "Stage pubertal development",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
@@ -1155,13 +1149,13 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess pubertal stage is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Stage pubertal development is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "assess",
+          "stage",
           "pubertal",
-          "stage"
+          "development"
         ],
         "when": {
           "termsAny": [
@@ -1227,8 +1221,7 @@
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "free",
-          "with"
+          "free"
         ]
       },
       {
@@ -1255,7 +1248,6 @@
         "tags": [
           "pituitary_gland_disorders",
           "hypopituitarism",
-          "with",
           "testosterone",
           "estradiol"
         ]
@@ -1287,7 +1279,6 @@
           "prolactin",
           "dynamic",
           "testing",
-          "when",
           "indicated"
         ]
       },
@@ -1343,13 +1334,13 @@
           "pituitary_gland_disorders",
           "hypopituitarism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1377,13 +1368,13 @@
           "pituitary_gland_disorders",
           "hypopituitarism",
           "pituitary",
-          "safety",
           "tests",
           "check",
           "cortisol",
           "acth",
           "before",
-          "thyroid"
+          "thyroid",
+          "replacement"
         ]
       },
       {
@@ -1450,8 +1441,8 @@
           "evidence",
           "mass",
           "effect",
-          "symptoms",
-          "dynamic"
+          "dynamic",
+          "testing"
         ]
       },
       {
@@ -1582,8 +1573,7 @@
           "about",
           "local",
           "pregnancy",
-          "illness",
-          "context"
+          "illness"
         ]
       },
       {
@@ -1781,8 +1771,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1847,12 +1837,12 @@
           "hypopituitarism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1881,12 +1871,12 @@
           "hypopituitarism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1953,8 +1943,8 @@
           "deficiency",
           "plus",
           "finding",
-          "changes",
-          "endocrine"
+          "neurosurgical",
+          "fertility"
         ]
       }
     ],

@@ -284,7 +284,15 @@ const endocrineQuestionRows = endocrineModules.flatMap((module) =>
     moduleId: module.id,
     moduleLabel: module.label,
     id: item.id,
-    text: [item.label || "", item.text || "", item.action || "", item.management_implication || ""].join("\n")
+    tags: item.tags || [],
+    termsAny: item.when?.termsAny || [],
+    text: [
+      item.label || "",
+      item.text || "",
+      item.action || "",
+      item.when_to_ask || "",
+      item.management_implication || ""
+    ].join("\n")
   }))
 );
 function assertNoQuestionMatch(pattern, message) {
@@ -335,6 +343,44 @@ assertNoQuestionRowMatch(
   (row) => !/(?:diabetes|prediabetes|metabolic_syndrome)/i.test(row.moduleId)
     && /\b(?:same-day hyperglycemia|hyperglycemia, ketosis|insulin-delivery evaluation)\b/i.test(row.text),
   "non-diabetes endocrine questions should not leak hyperglycemic-crisis rationale"
+);
+assertNoQuestionRowMatch(
+  (row) => /\bAsk when the history or modifiers mention\b/i.test(row.text)
+    || /\bpatient context includes one of:\s*(?:[a-z0-9/+-]+,\s*){3,}/i.test(row.text),
+  "generated endocrine conditional-history metadata should summarize clinical context rather than dumping raw trigger tokens"
+);
+assertNoQuestionRowMatch(
+  (row) => !/(?:adrenal|addison|congenital_adrenal_hyperplasia|hyperaldosteronism|pheochromocytoma|cushing)/i.test(row.moduleId)
+    && /\badrenal-crisis\b/i.test(row.text),
+  "non-adrenal endocrine questions should not leak adrenal-crisis trigger summaries"
+);
+const triggerStopwordTokens = new Set([
+  "because",
+  "these",
+  "those",
+  "this",
+  "that",
+  "from",
+  "with",
+  "associated",
+  "change",
+  "changed",
+  "changes",
+  "changing",
+  "target",
+  "targets",
+  "therapy"
+]);
+const triggerTokenOffenders = endocrineQuestionRows
+  .flatMap((row) => [
+    ...(row.termsAny || []).map((term) => ({ ...row, field: "when.termsAny", term })),
+    ...(row.tags || []).map((term) => ({ ...row, field: "tags", term }))
+  ])
+  .filter((row) => triggerStopwordTokens.has(String(row.term || "").toLowerCase()));
+assert.deepEqual(
+  triggerTokenOffenders.map((row) => `${row.moduleId}.${row.id} ${row.field}: ${row.term}`).slice(0, 20),
+  [],
+  "generated endocrine question tags/triggers should not contain connective stopwords as clinical retrieval concepts"
 );
 assertNoQuestionRowMatch(
   (row) => !/hyperaldosteronism/i.test(row.moduleId)
@@ -481,6 +527,8 @@ assert.match(generatedReport, /Conditional exam add-ons/);
 assert.doesNotMatch(generatedReport, /Focused physical exam/i, "generated report should not expose raw bundled physical exam seed sections");
 assert.doesNotMatch(generatedReport, /Vitals and acuity screen/i, "basic vital-sign data should not be presented as a physical exam item");
 assert.doesNotMatch(generatedReport, /Proximal strength, bone tenderness, gait\/falls, hypocalcemia signs/i, "Vitamin D/Osteomalacia report should use atomic maneuvers, not bundled seed text");
+assert.doesNotMatch(generatedReport, /Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts\?/i, "generated report should split broad infection-source history into clinically localizing questions");
+assert.doesNotMatch(generatedReport, /localizing infectious symptoms/i, "generated report should not expose vague infectious-symptom fallback wording");
 assert.doesNotMatch(generatedReport, /Have you had (?:anticonvulsants|injections or creams or inhalers|diet or sun exposure|neck surgery|calcium or vitamin D(?: intake)?|CKD\/chronic kidney disease or liver disease)\?/i, "generated report should not expose chopped-up risk-factor questions");
 assert.doesNotMatch(generatedReport, /\bHave you had (?!heat intolerance,|cold intolerance,|new salt craving,)[^,?]{1,60}\?/i, "generated report should not expose bare seed-fragment history questions");
 assert.doesNotMatch(generatedReport, /\b(?:Have you had|Is there) (?:and|or)\b/i, "generated report should not expose dangling conjunction history questions");
@@ -493,5 +541,8 @@ assert.match(generatedReport, /(?:Assess|Test) proximal hip flexor strength/i, "
 assert.match(generatedReport, /Palpate focal bone tenderness/i, "Vitamin D/Osteomalacia report should include an atomic bone tenderness maneuver");
 assert.match(generatedReport, /(?:Assess|Observe) gait stability if safe/i, "Vitamin D/Osteomalacia report should include an atomic gait/falls maneuver when safe");
 assert.match(generatedReport, /Elicit Chvostek sign/i, "Vitamin D/Osteomalacia report should include an atomic hypocalcemia-sign maneuver");
+assert.match(generatedReport, /Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection\?/i, "infection-trigger workups should ask source-specific respiratory infection questions");
+assert.match(generatedReport, /Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis\?/i, "infection-trigger workups should ask source-specific urinary/flank infection questions");
+assert.match(generatedReport, /Any (?:foot ulcer, )?wound, skin redness, drainage, tenderness, indwelling line\/device, or procedure-site concern suggesting infection\?/i, "infection-trigger workups should ask source-specific skin/wound/line infection questions");
 
 console.log("Endocrine knowledge module tests passed.");

@@ -111,8 +111,8 @@
           "pregnancy",
           "hypothalamic",
           "pituitary",
-          "disease",
-          "thyroid"
+          "thyroid",
+          "hyperprolactinemia"
         ]
       }
     ],
@@ -141,14 +141,14 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "hypogonadism",
-          "severe",
           "headache",
           "vision",
           "loss",
           "very",
-          "with",
           "normal",
-          "testicular"
+          "testicular",
+          "mass",
+          "infertility"
         ],
         "when": {
           "termsAny": [
@@ -187,10 +187,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -229,12 +229,12 @@
           "hypogonadism",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "rapid",
           "virilization",
-          "tumor"
+          "tumor",
+          "range"
         ],
         "when": {
           "termsAny": [
@@ -376,7 +376,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
@@ -410,9 +410,8 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "hypogonadism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -514,8 +513,7 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "hypogonadism",
-          "puberty",
-          "history"
+          "puberty"
         ],
         "source_seed": "Puberty history, testicular injury, opioids/anabolic steroids, fertility plans."
       },
@@ -686,9 +684,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention puberty, timing, height, growth, velocity. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hypogonadism (Low Testosterone in Men).",
+        "action": "Ask when the history or modifiers support puberty, timing, height, growth. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hypogonadism (Low Testosterone in Men).",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypogonadism (Low Testosterone in Men).",
-        "when_to_ask": "Ask when patient context includes one of: puberty, timing, height, growth, velocity, changed, compared, with, measurements, family.",
+        "when_to_ask": "Ask when patient context includes puberty, timing, height, growth.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypogonadism (Low Testosterone in Men).",
         "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hypogonadism (Low Testosterone in Men).",
         "tags": [
@@ -705,11 +703,10 @@
             "height",
             "growth",
             "velocity",
-            "changed",
             "compared",
-            "with",
             "measurements",
-            "family"
+            "family",
+            "pattern"
           ]
         }
       },
@@ -745,9 +742,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypogonadism (Low Testosterone in Men).",
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypogonadism (Low Testosterone in Men).",
         "rationale": "Defines symptom severity, tempo, complications, and whether Hypogonadism (Low Testosterone in Men) needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypogonadism (Low Testosterone in Men) needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypogonadism (Low Testosterone in Men).",
         "tags": [
@@ -768,8 +765,8 @@
             "restriction",
             "intense",
             "psychosocial",
-            "change",
-            "energy"
+            "energy",
+            "balance"
           ]
         }
       },
@@ -805,9 +802,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention chemotherapy, radiation, surgery, pelvic, cranial. The answer changes the leading Hypogonadism (Low Testosterone in Men) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Hypogonadism (Low Testosterone in Men) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypogonadism (Low Testosterone in Men).",
-        "when_to_ask": "Ask when patient context includes one of: chemotherapy, radiation, surgery, pelvic, cranial, cancer, that, could, affect, function.",
+        "when_to_ask": "Ask when patient context includes chemotherapy, radiation, surgery, pelvic.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypogonadism (Low Testosterone in Men).",
         "management_implication": "The answer changes the leading Hypogonadism (Low Testosterone in Men) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "tags": [
@@ -826,7 +823,6 @@
             "pelvic",
             "cranial",
             "cancer",
-            "that",
             "could",
             "affect",
             "function"
@@ -920,7 +916,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess body hair distribution",
+        "label": "Inspect body hair distribution",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
@@ -950,11 +946,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess body hair distribution is supportive for Hypogonadism (Low Testosterone in Men), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect body hair distribution is supportive for Hypogonadism (Low Testosterone in Men), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "reproductive_and_gonadal_disorders",
           "hypogonadism",
-          "assess",
+          "inspect",
           "body",
           "hair",
           "distribution"
@@ -1186,7 +1182,6 @@
           "studies",
           "pituitary",
           "evaluation",
-          "when",
           "secondary"
         ]
       },
@@ -1215,13 +1210,13 @@
           "reproductive_and_gonadal_disorders",
           "hypogonadism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1250,12 +1245,12 @@
           "hypogonadism",
           "gonadal",
           "axis",
-          "safety",
           "tests",
           "pregnancy",
           "test",
-          "when",
-          "possible"
+          "prolactin",
+          "estradiol",
+          "repeated"
         ]
       },
       {
@@ -1285,10 +1280,10 @@
           "pregnancy",
           "test",
           "first",
-          "when",
           "amenorrhea",
-          "possible",
-          "prolactin"
+          "prolactin",
+          "gonadotropins",
+          "estradiol"
         ]
       },
       {
@@ -1317,12 +1312,12 @@
           "hypogonadism",
           "androgen",
           "testing",
-          "with",
-          "reliable",
           "assays",
           "hyperandrogenism",
           "metabolic",
-          "screening"
+          "screening",
+          "pcos",
+          "semen"
         ]
       },
       {
@@ -1457,8 +1452,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1489,12 +1484,12 @@
           "hypogonadism",
           "fertility",
           "plans",
-          "change",
           "away",
-          "from",
           "exogenous",
           "testosterone",
-          "pituitary"
+          "pituitary",
+          "signs",
+          "trigger"
         ]
       },
       {
@@ -1523,12 +1518,12 @@
           "hypogonadism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1557,12 +1552,12 @@
           "hypogonadism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1627,9 +1622,9 @@
           "hyperprolactinemia",
           "pcos",
           "thyroid",
-          "disease",
-          "changes",
-          "counseling"
+          "counseling",
+          "bone",
+          "cardiometabolic"
         ]
       }
     ],

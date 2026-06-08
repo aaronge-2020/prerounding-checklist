@@ -1,4 +1,4 @@
-import { complaintModules as installedComplaintModules } from "./medical-knowledge-db.js?v=20260608-workup-quality";
+import { complaintModules as installedComplaintModules } from "./medical-knowledge-db.js?v=20260608-fever-source-floor";
 
 export const clinicalIntentSchemaVersion = "clinical-intent-registry-v1";
 
@@ -745,13 +745,28 @@ export function resolveClinicalIntents(query, registry = clinicalIntentRegistry,
     .filter((intentRow) => intentRow.score >= minScore)
     .sort((a, b) => b.score - a.score || a.label.localeCompare(b.label))
     .slice(0, options.limit || 8);
+  const validatedMatches = matches.filter((intentRow) => intentRow.status === "validated");
+  const ambiguous = validatedMatches.length > 1;
+  const unsupported = validatedMatches.length === 0;
   return {
     query: String(query || ""),
     normalizedQuery: normalizeClinicalIntentText(query),
     matches,
-    validatedMatches: matches.filter((intentRow) => intentRow.status === "validated"),
-    requiresSelection: matches.some((intentRow) => intentRow.status === "validated"),
-    unsupported: !matches.some((intentRow) => intentRow.status === "validated")
+    validatedMatches,
+    validatedMatchCount: validatedMatches.length,
+    topValidatedMatch: validatedMatches[0] || null,
+    singleValidatedMatch: validatedMatches.length === 1 ? validatedMatches[0] : null,
+    ambiguous,
+    requiresSelection: validatedMatches.length > 0,
+    selectionStatus: unsupported
+      ? "unsupported_gap"
+      : (ambiguous ? "ambiguous_validated_intent" : "single_validated_intent"),
+    selectionReason: unsupported
+      ? "No validated clinical intent matched; recommendations are blocked until reviewed knowledge is added."
+      : (ambiguous
+        ? "Multiple validated clinical intents matched; the user must choose the intended workup before recommendations are authorized."
+        : "One validated clinical intent matched; explicit selection is still required before recommendations are authorized."),
+    unsupported
   };
 }
 
@@ -787,10 +802,24 @@ export function filterEvidenceCatalogForClinicalIntents(catalog = [], intents = 
     return [];
   }
   const allowedTags = new Set(clinicalIntentAllowedTags(validated));
+  const broadClinicalTags = new Set(["infection", "red_flag", "diagnostic_test", "management_change"]);
+  const routineSafetyTags = new Set(["vitals", "vital_signs", "routine_vitals", "blood_pressure", "heart_rate", "respiratory_rate", "temperature", "oxygenation"]);
+  const specificAllowedTags = new Set(
+    validated
+      .flatMap((intentRow) => intentRow.evidence_tags || [])
+      .filter((tag) => tag && !broadClinicalTags.has(tag))
+  );
   const allowedBundles = new Set(validated.flatMap((intentRow) => intentRow.clinical_bundle_ids || []));
+  const broadInfectionAuthorized = allowedBundles.has("infection_sepsis");
   return catalog.filter((candidate) => {
-    const tags = candidate.tags || [];
-    if (tags.some((tag) => allowedTags.has(tag))) {
+    const tags = Array.isArray(candidate.tags) ? candidate.tags : String(candidate.tags || "").split(/[;,|]/).map((tag) => tag.trim()).filter(Boolean);
+    if (tags.some((tag) => routineSafetyTags.has(tag) && allowedTags.has(tag))) {
+      return true;
+    }
+    if (tags.some((tag) => specificAllowedTags.has(tag))) {
+      return true;
+    }
+    if (broadInfectionAuthorized && tags.some((tag) => tag === "infection" || tag === "sepsis")) {
       return true;
     }
     const text = normalizeClinicalIntentText([

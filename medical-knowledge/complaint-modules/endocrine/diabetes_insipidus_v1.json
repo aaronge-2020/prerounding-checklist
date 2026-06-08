@@ -150,7 +150,7 @@
           "consciousness",
           "postoperative",
           "pituitary",
-          "patient"
+          "without"
         ],
         "when": {
           "termsAny": [
@@ -189,10 +189,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -232,11 +232,11 @@
           "pituitary",
           "apoplexy",
           "acute",
-          "severe",
           "headache",
           "visual",
           "field",
-          "deficit"
+          "deficit",
+          "cranial"
         ],
         "when": {
           "termsAny": [
@@ -378,7 +378,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
@@ -412,9 +412,8 @@
         "tags": [
           "pituitary_gland_disorders",
           "diabetes_insipidus",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ]
       }
     ],
@@ -780,7 +779,7 @@
       },
       {
         "id": "exam_02",
-        "label": "Check capillary refill",
+        "label": "Test capillary refill",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
@@ -810,18 +809,18 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Check capillary refill is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Test capillary refill is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "diabetes_insipidus",
-          "check",
+          "test",
           "capillary",
           "refill"
         ]
       },
       {
         "id": "exam_03",
-        "label": "Assess skin turgor",
+        "label": "Test skin turgor",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
@@ -850,11 +849,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess skin turgor is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Test skin turgor is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "diabetes_insipidus",
-          "assess",
+          "test",
           "skin",
           "turgor"
         ]
@@ -915,7 +914,7 @@
       },
       {
         "id": "conditional_exam_02",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
@@ -946,11 +945,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "pituitary_gland_disorders",
           "diabetes_insipidus",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ],
@@ -995,8 +994,7 @@
           "adult",
           "urine",
           "volume",
-          "often",
-          "with"
+          "often"
         ]
       },
       {
@@ -1120,13 +1118,13 @@
           "pituitary_gland_disorders",
           "diabetes_insipidus",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1155,12 +1153,12 @@
           "diabetes_insipidus",
           "diabetes",
           "insipidus",
-          "safety",
           "tests",
           "check",
           "serum",
           "sodium",
-          "osmolality"
+          "osmolality",
+          "urine"
         ]
       },
       {
@@ -1227,8 +1225,8 @@
           "evidence",
           "mass",
           "effect",
-          "symptoms",
-          "dynamic"
+          "dynamic",
+          "testing"
         ]
       },
       {
@@ -1328,8 +1326,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1362,10 +1360,10 @@
           "impaired",
           "water",
           "access",
-          "changes",
           "urgent",
           "monitored",
-          "fluid"
+          "fluid",
+          "desmopressin"
         ]
       },
       {
@@ -1394,12 +1392,12 @@
           "diabetes_insipidus",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1428,12 +1426,12 @@
           "diabetes_insipidus",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1500,8 +1498,8 @@
           "deficiency",
           "plus",
           "finding",
-          "changes",
-          "endocrine"
+          "neurosurgical",
+          "fertility"
         ]
       }
     ],

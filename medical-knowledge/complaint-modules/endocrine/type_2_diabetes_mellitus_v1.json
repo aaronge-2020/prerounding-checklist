@@ -141,12 +141,10 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "symptoms",
           "dehydration",
           "vomiting",
           "altered",
-          "mental",
-          "status"
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -183,9 +181,7 @@
           "type_2_diabetes_mellitus",
           "random",
           "glucose",
-          "with",
-          "classic",
-          "symptoms"
+          "classic"
         ],
         "when": {
           "termsAny": [
@@ -221,10 +217,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -263,12 +259,12 @@
           "type_2_diabetes_mellitus",
           "physiology",
           "recurrent",
-          "severe",
           "hypoglycemia",
           "vomiting",
           "dehydration",
           "altered",
-          "mental"
+          "mental",
+          "infected"
         ],
         "when": {
           "termsAny": [
@@ -401,13 +397,12 @@
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
           "measure",
-          "current",
           "weight"
         ]
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -441,9 +436,8 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -545,8 +539,7 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "weight",
-          "change"
+          "weight"
         ],
         "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
@@ -597,7 +590,7 @@
       },
       {
         "id": "question_04",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -608,7 +601,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
             "value": "unknown",
@@ -627,20 +620,160 @@
             "label": "Other"
           }
         ],
-        "action": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
-        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
         "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
-        "management_implication": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
+        "management_implication": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "infections"
+          "fever",
+          "rigors"
         ],
         "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
       {
         "id": "question_05",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "respiratory",
+          "infection"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
+      },
+      {
+        "id": "question_06",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Type 2 Diabetes Mellitus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Type 2 Diabetes Mellitus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "urinary",
+          "flank",
+          "infection"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
+      },
+      {
+        "id": "question_07",
+        "label": "Any foot ulcer, wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any foot ulcer, wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "skin",
+          "foot",
+          "wound",
+          "line",
+          "infection"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
+      },
+      {
+        "id": "question_08",
         "label": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
         "item_type": "history_question",
         "source": {
@@ -684,7 +817,7 @@
         "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
       },
       {
-        "id": "question_06",
+        "id": "question_09",
         "label": "Any numbness, tingling, burning pain, loss of protective sensation, falls, ulcers, or neuropathy diagnosis?",
         "item_type": "history_question",
         "source": {
@@ -728,7 +861,7 @@
         "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
       },
       {
-        "id": "question_07",
+        "id": "question_10",
         "label": "Any known retinopathy, vision changes, eye injections/laser, or overdue dilated eye examination?",
         "item_type": "history_question",
         "source": {
@@ -770,14 +903,16 @@
           "retinopathy"
         ],
         "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
-      },
+      }
+    ],
+    "conditionalQuestions": [
       {
-        "id": "question_08",
+        "id": "question_01",
         "label": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
         "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
@@ -803,9 +938,9 @@
             "label": "Other"
           }
         ],
-        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "action": "Ask when the history or modifiers support adrenergic spells, resistant hypertension, or hypokalemia. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
-        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "when_to_ask": "Ask when patient context includes adrenergic spells, resistant hypertension, or hypokalemia.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
         "tags": [
@@ -814,15 +949,29 @@
           "sleep",
           "apnea"
         ],
-        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure.",
+        "when": {
+          "termsAny": [
+            "sleep",
+            "apnea",
+            "loud",
+            "snoring",
+            "witnessed",
+            "apneas",
+            "morning",
+            "headaches",
+            "daytime",
+            "sleepiness"
+          ]
+        }
       },
       {
-        "id": "question_09",
+        "id": "question_02",
         "label": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
@@ -848,9 +997,9 @@
             "label": "Other"
           }
         ],
-        "action": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Type 2 Diabetes Mellitus.",
+        "action": "Ask when the history or modifiers support retinopathy, vision, or eye-care concerns. The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Type 2 Diabetes Mellitus.",
         "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
-        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "when_to_ask": "Ask when patient context includes retinopathy, vision, or eye-care concerns.",
         "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
         "management_implication": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Type 2 Diabetes Mellitus.",
         "tags": [
@@ -859,69 +1008,24 @@
           "steroid",
           "exposure"
         ],
-        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
-      }
-    ],
-    "conditionalQuestions": [
-      {
-        "id": "question_01",
-        "label": "Any current or prior foot ulcer, wound, infection, numbness, pain, or vascular symptoms?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "Any current or prior foot ulcer, wound, infection, numbness, pain, or vascular symptoms?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "Ask when the history or modifiers mention foot, ulcer, wound, infection, numbness. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: foot, ulcer, wound, infection, numbness, pain, vascular.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
-        "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
-        "tags": [
-          "diabetes_and_blood_sugar_disorders",
-          "type_2_diabetes_mellitus",
-          "foot",
-          "ulcer",
-          "wound"
-        ],
-        "source_seed": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure.",
         "when": {
           "termsAny": [
-            "foot",
-            "ulcer",
-            "wound",
-            "infection",
-            "numbness",
-            "pain",
-            "vascular"
+            "steroid",
+            "exposure",
+            "oral",
+            "injected",
+            "inhaled",
+            "topical",
+            "drop",
+            "joint",
+            "injection",
+            "supplement"
           ]
         }
       },
       {
-        "id": "question_02",
+        "id": "question_03",
         "label": "Do you use a CGM, insulin pump, smart pen, glucometer, or diabetes app, and are the data reliable enough to guide treatment changes?",
         "item_type": "history_question",
         "source": {
@@ -952,30 +1056,20 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention technology, because, these, change, targets. The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 2 Diabetes Mellitus.",
+        "action": "Ask when the history or modifiers support diabetes technology or glucose-device use. The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 2 Diabetes Mellitus.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
-        "when_to_ask": "Ask when patient context includes one of: technology, because, these, change, targets, therapy, insulin, pump, smart, glucometer.",
+        "when_to_ask": "Ask when patient context includes diabetes technology or glucose-device use.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
         "management_implication": "The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 2 Diabetes Mellitus.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "technology",
-          "because",
-          "these",
-          "change",
-          "targets",
-          "therapy"
+          "technology"
         ],
         "source_seed": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
         "when": {
           "termsAny": [
             "technology",
-            "because",
-            "these",
-            "change",
-            "targets",
-            "therapy",
             "insulin",
             "pump",
             "smart",
@@ -1114,7 +1208,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess Kussmaul breathing",
+        "label": "Observe Kussmaul breathing",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -1144,11 +1238,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess Kussmaul breathing is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe Kussmaul breathing is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
-          "assess",
+          "observe",
           "kussmaul",
           "breathing"
         ],
@@ -1464,8 +1558,7 @@
           "weight",
           "loss",
           "dehydration",
-          "acute",
-          "symptoms"
+          "acute"
         ]
       },
       {
@@ -1493,13 +1586,13 @@
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1527,13 +1620,13 @@
           "diabetes_and_blood_sugar_disorders",
           "type_2_diabetes_mellitus",
           "diabetes",
-          "safety",
           "tests",
           "review",
           "plasma",
           "glucose",
           "trend",
-          "with"
+          "potassium",
+          "bicarbonate"
         ]
       },
       {
@@ -1563,11 +1656,11 @@
           "plasma",
           "glucose",
           "criteria",
-          "diagnosis",
           "classification",
           "plus",
           "glucometer",
-          "pattern"
+          "pattern",
+          "available"
         ]
       },
       {
@@ -1723,9 +1816,7 @@
           "random",
           "plasma",
           "glucose",
-          "with",
           "classic",
-          "symptoms",
           "supports",
           "diabetes"
         ]
@@ -1791,8 +1882,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1824,9 +1915,6 @@
           "diabetes",
           "range",
           "ogtt",
-          "changes",
-          "diagnosis",
-          "treatment",
           "intensity"
         ]
       },
@@ -1857,10 +1945,8 @@
           "uacr",
           "reduced",
           "egfr",
-          "changes",
           "kidney",
-          "protective",
-          "therapy"
+          "protective"
         ]
       },
       {
@@ -1889,12 +1975,12 @@
           "type_2_diabetes_mellitus",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1923,12 +2009,12 @@
           "type_2_diabetes_mellitus",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1958,11 +2044,11 @@
           "ketosis",
           "acidosis",
           "osmolality",
-          "severe",
           "hypoglycemia",
           "triggers",
           "urgent",
-          "protocolized"
+          "protocolized",
+          "rather"
         ]
       },
       {

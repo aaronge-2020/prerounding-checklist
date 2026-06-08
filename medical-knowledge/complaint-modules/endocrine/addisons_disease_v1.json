@@ -45,8 +45,7 @@
         "tags": [
           "adrenal_gland_disorders",
           "addisons_disease",
-          "addison",
-          "disease"
+          "addison"
         ]
       },
       {
@@ -145,7 +144,6 @@
           "addisons_disease",
           "adrenal",
           "crisis",
-          "severe",
           "hyperkalemia",
           "shock",
           "infection"
@@ -187,10 +185,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -230,10 +228,11 @@
           "adrenal",
           "crisis",
           "shock",
-          "severe",
           "vomiting",
           "dehydration",
-          "hypoglycemia"
+          "hypoglycemia",
+          "hyperkalemia",
+          "hyponatremia"
         ],
         "when": {
           "termsAny": [
@@ -375,7 +374,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -409,9 +408,8 @@
         "tags": [
           "adrenal_gland_disorders",
           "addisons_disease",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -559,8 +557,7 @@
           "adrenal_gland_disorders",
           "addisons_disease",
           "weight",
-          "loss",
-          "symptoms"
+          "loss"
         ],
         "source_seed": "Salt craving, hyperpigmentation, autoimmune history, weight loss/GI symptoms, orthostasis."
       },
@@ -701,7 +698,7 @@
       },
       {
         "id": "question_07",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -712,7 +709,143 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Addison's Disease.",
+        "when_to_ask": "Ask when Addison's Disease is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Addison's Disease.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "addisons_disease",
+          "fever",
+          "rigors"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_08",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Addison's Disease curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Addison's Disease needs urgent evaluation today.",
+        "when_to_ask": "Ask when Addison's Disease is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Addison's Disease needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "addisons_disease",
+          "respiratory",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_09",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Addison's Disease curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Addison's Disease pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Addison's Disease needs urgent evaluation today.",
+        "when_to_ask": "Ask when Addison's Disease is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Addison's Disease needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Addison's Disease pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "addisons_disease",
+          "urinary",
+          "flank",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_10",
+        "label": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ADRENAL_INSUFFICIENCY_2016",
+          "source_section": "Addison's Disease curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
             "value": "unknown",
@@ -739,7 +872,11 @@
         "tags": [
           "adrenal_gland_disorders",
           "addisons_disease",
-          "acute",
+          "skin",
+          "wound",
+          "line",
+          "procedure",
+          "site",
           "infection"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
@@ -1064,13 +1201,13 @@
           "adrenal_gland_disorders",
           "addisons_disease",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1099,12 +1236,12 @@
           "addisons_disease",
           "adrenal",
           "insufficiency",
-          "safety",
           "labs",
           "check",
           "sodium",
           "potassium",
-          "glucose"
+          "glucose",
+          "bicarbonate"
         ]
       },
       {
@@ -1167,12 +1304,12 @@
           "addisons_disease",
           "cushing",
           "screening",
-          "with",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "hour"
+          "hour",
+          "after"
         ]
       },
       {
@@ -1303,8 +1440,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1369,12 +1506,12 @@
           "addisons_disease",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1403,12 +1540,12 @@
           "addisons_disease",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1440,9 +1577,9 @@
           "crisis",
           "treated",
           "immediately",
-          "with",
           "stress",
-          "dose"
+          "dose",
+          "steroids"
         ]
       },
       {
@@ -1474,9 +1611,9 @@
           "elevation",
           "suppressed",
           "renin",
-          "with",
           "high",
-          "aldosterone"
+          "aldosterone",
+          "confirmed"
         ]
       }
     ],

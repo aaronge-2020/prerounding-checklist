@@ -42,8 +42,7 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "graves",
-          "disease"
+          "graves"
         ]
       },
       {
@@ -77,7 +76,7 @@
           "local",
           "pregnancy",
           "illness",
-          "context"
+          "free"
         ]
       },
       {
@@ -108,10 +107,10 @@
           "mimics",
           "exclusions",
           "graves",
-          "disease",
           "toxic",
           "nodule",
-          "multinodular"
+          "multinodular",
+          "goiter"
         ]
       }
     ],
@@ -146,8 +145,8 @@
           "threatening",
           "orbitopathy",
           "pregnancy",
-          "with",
-          "uncontrolled"
+          "uncontrolled",
+          "hyperthyroidism"
         ],
         "when": {
           "termsAny": [
@@ -185,10 +184,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -333,7 +332,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -367,9 +366,8 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -476,8 +474,7 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "hyperthyroid",
-          "symptoms"
+          "hyperthyroid"
         ],
         "source_seed": "Hyperthyroid symptoms, eye irritation/diplopia/vision change."
       },
@@ -523,8 +520,7 @@
           "graves_disease",
           "irritation",
           "diplopia",
-          "vision",
-          "change"
+          "vision"
         ],
         "source_seed": "Hyperthyroid symptoms, eye irritation/diplopia/vision change."
       },
@@ -657,8 +653,7 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "weight",
-          "change"
+          "weight"
         ],
         "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
@@ -792,8 +787,7 @@
           "thyroid_disorders",
           "graves_disease",
           "menstrual",
-          "fertility",
-          "context"
+          "fertility"
         ],
         "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
@@ -837,8 +831,7 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "neck",
-          "symptoms"
+          "neck"
         ],
         "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
@@ -1019,7 +1012,7 @@
       },
       {
         "id": "exam_04",
-        "label": "Assess tremor with outstretched hands",
+        "label": "Observe outstretched-hands tremor",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1050,15 +1043,14 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess tremor with outstretched hands is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe outstretched-hands tremor is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "assess",
-          "tremor",
-          "with",
+          "observe",
           "outstretched",
-          "hands"
+          "hands",
+          "tremor"
         ]
       },
       {
@@ -1105,7 +1097,7 @@
       },
       {
         "id": "exam_06",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1136,11 +1128,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ]
@@ -1199,7 +1191,7 @@
       },
       {
         "id": "conditional_exam_02",
-        "label": "Assess voice quality",
+        "label": "Listen to voice quality",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1230,11 +1222,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess voice quality is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Listen to voice quality is supportive for Graves' Disease, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "assess",
+          "listen",
           "voice",
           "quality"
         ],
@@ -1413,13 +1405,13 @@
           "thyroid_disorders",
           "graves_disease",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1447,13 +1439,13 @@
           "thyroid_disorders",
           "graves_disease",
           "thyrotoxicosis",
-          "safety",
-          "data",
           "check",
           "free",
           "total",
           "trab",
-          "raiu"
+          "raiu",
+          "indicated",
+          "tachyarrhythmia"
         ]
       },
       {
@@ -1480,14 +1472,14 @@
         "tags": [
           "thyroid_disorders",
           "graves_disease",
-          "with",
           "free",
           "thyrotoxicosis",
           "autoimmune",
           "hypothyroidism",
           "trab",
           "graves",
-          "thyroid"
+          "thyroid",
+          "ultrasound"
         ]
       },
       {
@@ -1521,7 +1513,7 @@
           "before",
           "susceptible",
           "assays",
-          "when"
+          "feasible"
         ]
       },
       {
@@ -1554,8 +1546,7 @@
           "about",
           "local",
           "pregnancy",
-          "illness",
-          "context"
+          "illness"
         ]
       },
       {
@@ -1651,8 +1642,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1714,7 +1705,6 @@
           "thyroid_disorders",
           "graves_disease",
           "orbitopathy",
-          "changes",
           "radioactive",
           "iodine",
           "risk",
@@ -1748,12 +1738,12 @@
           "graves_disease",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1782,12 +1772,12 @@
           "graves_disease",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1815,13 +1805,13 @@
           "thyroid_disorders",
           "graves_disease",
           "suppressed",
-          "with",
           "elevated",
-          "changes",
           "thyrotoxicosis",
           "severity",
           "etiology",
-          "workup"
+          "normal",
+          "triggers",
+          "central"
         ]
       },
       {
@@ -1851,11 +1841,11 @@
           "suspicious",
           "nodule",
           "compressive",
-          "symptom",
           "abnormal",
           "node",
           "calcitonin",
-          "concern"
+          "concern",
+          "high"
         ]
       }
     ],

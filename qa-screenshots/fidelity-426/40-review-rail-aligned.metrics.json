@@ -1,0 +1,320 @@
+{
+  "setup": {
+    "screen": "outputScreen",
+    "answered": [
+      [
+        "Symptoms today",
+        true
+      ],
+      [
+        "Since yesterday",
+        true
+      ],
+      [
+        "Any chest pain",
+        true
+      ],
+      [
+        "Eating and drinking",
+        true
+      ],
+      [
+        "Any nausea",
+        true
+      ],
+      [
+        "Any dizziness",
+        true
+      ],
+      [
+        "Work of breathing",
+        true
+      ],
+      [
+        "Lung exam",
+        true
+      ],
+      [
+        "Heart rhythm",
+        true
+      ],
+      [
+        "Peripheral edema",
+        true
+      ],
+      [
+        "Oxygen",
+        true
+      ],
+      [
+        "Abdomen",
+        true
+      ],
+      [
+        "Bowel sounds",
+        true
+      ],
+      [
+        "Line sites",
+        true
+      ],
+      [
+        "Skin",
+        true
+      ]
+    ],
+    "qNote": true,
+    "lungNote": true,
+    "reviewText": "Case A - DKA consult 2 ⋮ Ready to update Everything reviewed Assessed13 Notes2 PHI safe Questions 6 Exam 9 Review Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Patient report Patient summary Feels better; Short of breath with stairs only Cardio Heart rhythm Regular rhythm Per"
+  },
+  "viewport": {
+    "w": 426,
+    "h": 922,
+    "dpr": 2
+  },
+  "screen": "outputScreen",
+  "topbar": {
+    "x": 0,
+    "y": 0,
+    "width": 426,
+    "height": 52,
+    "right": 426,
+    "bottom": 52,
+    "text": "Case A - DKA consult 2 ⋮"
+  },
+  "status": {
+    "x": 0,
+    "y": 52,
+    "width": 426,
+    "height": 62,
+    "right": 426,
+    "bottom": 114,
+    "text": "Ready to update Everything reviewed Assessed13 Notes2 PHI safe"
+  },
+  "body": {
+    "x": 0,
+    "y": 114,
+    "width": 426,
+    "height": 935.328125,
+    "right": 426,
+    "bottom": 1049.328125,
+    "text": "Questions 6 Exam 9 Review Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Patient report Patient summary Feels better;"
+  },
+  "railItems": [
+    {
+      "x": 0,
+      "y": 114,
+      "width": 74,
+      "height": 118,
+      "right": 74,
+      "bottom": 232,
+      "text": "Questions 6"
+    },
+    {
+      "x": 0,
+      "y": 232,
+      "width": 74,
+      "height": 118,
+      "right": 74,
+      "bottom": 350,
+      "text": "Exam 9"
+    },
+    {
+      "x": 0,
+      "y": 350,
+      "width": 74,
+      "height": 95,
+      "right": 74,
+      "bottom": 445,
+      "text": "Review"
+    }
+  ],
+  "main": {
+    "x": 75,
+    "y": 114,
+    "width": 351,
+    "height": 847.328125,
+    "right": 426,
+    "bottom": 961.328125,
+    "text": "Bedside findings Edit findings PHI safety passedThis update is safe to copy. No patient identifiers detected. Patient report Patient summary Feels better; Short of breath with stai"
+  },
+  "title": {
+    "x": 93,
+    "y": 134.46875,
+    "width": 187.75,
+    "height": 20.046875,
+    "right": 280.75,
+    "bottom": 154.515625,
+    "text": "Bedside findings"
+  },
+  "edit": {
+    "x": 292.75,
+    "y": 128,
+    "width": 115.25,
+    "height": 33,
+    "right": 408,
+    "bottom": 161,
+    "text": "Edit findings"
+  },
+  "phiCard": {
+    "x": 93,
+    "y": 173,
+    "width": 315,
+    "height": 80.078125,
+    "right": 408,
+    "bottom": 253.078125,
+    "text": "PHI safety passedThis update is safe to copy. No patient identifiers detected."
+  },
+  "groups": [
+    {
+      "x": 93,
+      "y": 274.078125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 298.078125,
+      "text": "Patient report"
+    },
+    {
+      "x": 93,
+      "y": 355.953125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 379.953125,
+      "text": "Cardio"
+    },
+    {
+      "x": 93,
+      "y": 474.828125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 498.828125,
+      "text": "Respiratory"
+    },
+    {
+      "x": 93,
+      "y": 635.578125,
+      "width": 315,
+      "height": 24,
+      "right": 408,
+      "bottom": 659.578125,
+      "text": "Abdomen / Skin"
+    }
+  ],
+  "rows": [
+    {
+      "x": 93,
+      "y": 304.078125,
+      "width": 315,
+      "height": 41.875,
+      "right": 408,
+      "bottom": 345.953125,
+      "text": "Patient summary Feels better; Short of breath with stairs only"
+    },
+    {
+      "x": 93,
+      "y": 385.953125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 425.390625,
+      "text": "Heart rhythm Regular rhythm"
+    },
+    {
+      "x": 93,
+      "y": 425.390625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 464.828125,
+      "text": "Peripheral edema No edema"
+    },
+    {
+      "x": 93,
+      "y": 504.828125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 544.265625,
+      "text": "Work of breathing Comfortable"
+    },
+    {
+      "x": 93,
+      "y": 544.265625,
+      "width": 315,
+      "height": 41.875,
+      "right": 408,
+      "bottom": 586.140625,
+      "text": "Lung exam Bibasilar crackles, improves after cough"
+    },
+    {
+      "x": 93,
+      "y": 586.140625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 625.578125,
+      "text": "Oxygen Room air"
+    },
+    {
+      "x": 93,
+      "y": 665.578125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 705.015625,
+      "text": "Abdomen No abdominal tenderness"
+    },
+    {
+      "x": 93,
+      "y": 705.015625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 744.453125,
+      "text": "Bowel sounds Present"
+    },
+    {
+      "x": 93,
+      "y": 744.453125,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 783.890625,
+      "text": "Line sites Line sites clean"
+    },
+    {
+      "x": 93,
+      "y": 783.890625,
+      "width": 315,
+      "height": 39.4375,
+      "right": 408,
+      "bottom": 823.328125,
+      "text": "Skin Warm, dry, intact"
+    }
+  ],
+  "noteTotal": {
+    "x": 93,
+    "y": 823.328125,
+    "width": 315,
+    "height": 30,
+    "right": 408,
+    "bottom": 853.328125,
+    "text": "Update includes 2 note(s) with additional detail."
+  },
+  "actions": {
+    "x": 0,
+    "y": 856,
+    "width": 426,
+    "height": 66,
+    "right": 426,
+    "bottom": 922,
+    "text": "Back to checklist Copy final update"
+  },
+  "footerClearance": 2.671875,
+  "symptomGrids": 0,
+  "openQuestionPanels": 0,
+  "screenshotPath": "C:\\Users\\Aaron Ge\\Documents\\GitHub\\prerounding-checklist\\qa-screenshots\\fidelity-426\\40-review-rail-aligned.png"
+}

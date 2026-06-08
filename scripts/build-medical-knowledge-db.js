@@ -8,8 +8,10 @@ const outputPath = path.join(repoRoot, "medical-knowledge-db.js");
 const databaseSchemaVersion = "medical_knowledge_database_v1";
 const placeholderExamTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
 const placeholderDiagnosticTargetPattern = /\bfocused bedside finding relevant to\b|^\s*$/i;
-const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
+const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
 const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
+const vagueExamActionPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
+const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
 const staleGeneratedProvenancePattern = /\bgenerated endocrine workup\b|Generated from guideline-backed endocrine workup automation/i;
 
 function readJson(relativeOrAbsolutePath) {
@@ -327,6 +329,9 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         if (bundledExamPattern.test(item.label || "")) {
           issues.push(`${module.id}.${group}.${item.id || "missing"} exam label appears bundled or vague: ${item.label}`);
         }
+        if (vagueExamActionPattern.test(item.label || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} exam label must name a concrete maneuver action: ${item.label}`);
+        }
         if (genericFindingsOptions(item.findings_options || item.findingsOptions || item.options)) {
           issues.push(`${module.id}.${group}.${item.id || "missing"} findings_options are generic; use maneuver-specific documentation choices`);
         }
@@ -349,6 +354,9 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
       }
       if (group === "safetyChecks") {
+        if (weakSafetyCheckLabelPattern.test(item.label || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} safety-check label should name a specific bedside action: ${item.label}`);
+        }
         requireItemFields(
           issues,
           module.id,

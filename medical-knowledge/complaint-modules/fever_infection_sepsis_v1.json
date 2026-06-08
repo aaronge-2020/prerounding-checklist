@@ -515,7 +515,7 @@
       },
       {
         "id": "fever_assess_mental_status",
-        "label": "Mental status",
+        "label": "Document mental status",
         "action": "Determine baseline versus new confusion, somnolence, agitation, or inability to participate.",
         "technique": "Speak with the patient and, when available, compare with collateral or chart baseline; document alertness, orientation, attention, and whether the patient can safely cooperate.",
         "findings_options": [
@@ -947,74 +947,270 @@
         "item_type": "history_question"
       },
       {
-        "id": "fever_abdominal_cns_skin_source_question",
-        "label": "Any abdominal, CNS, skin, line, joint, or spine source features?",
-        "text": "Any abdominal pain, vomiting, diarrhea, jaundice, severe headache, neck stiffness, photophobia, confusion, rash, wound, line pain, hot swollen joint, severe back pain, or rapidly spreading skin pain?",
+        "id": "fever_abdominal_gi_source_question",
+        "label": "Any abdominal or GI source features?",
+        "text": "Any abdominal pain, vomiting, diarrhea, jaundice, focal tenderness, recent intra-abdominal procedure, or concern for an abdominal infection source?",
         "options": [
           {
             "value": "none",
             "label": "None"
           },
           {
-            "value": "abdominal",
-            "label": "Abdominal pain, vomiting, diarrhea, or jaundice"
+            "value": "abdominal_pain",
+            "label": "Abdominal pain or focal tenderness"
           },
           {
-            "value": "cns",
-            "label": "Headache, neck stiffness, photophobia, or confusion"
+            "value": "vomiting_diarrhea",
+            "label": "Vomiting or diarrhea"
           },
           {
-            "value": "skin_line",
-            "label": "Rash, wound, line pain, or skin pain"
+            "value": "jaundice",
+            "label": "Jaundice or biliary concern"
           },
           {
-            "value": "joint",
-            "label": "Hot swollen joint"
+            "value": "recent_procedure",
+            "label": "Recent abdominal procedure"
           },
           {
-            "value": "spine",
-            "label": "Severe back pain or spine risk"
-          },
-          {
-            "value": "rapid_spread",
-            "label": "Rapidly spreading skin or soft-tissue concern"
+            "value": "other",
+            "label": "Other abdominal/GI source concern"
           }
         ],
         "when": {
-          "intentIdsAny": [
-            "fever_sepsis_v1"
-          ],
           "termsAny": [
             "abdominal",
+            "abdomen",
             "vomiting",
             "diarrhea",
             "jaundice",
-            "headache",
-            "neck stiffness",
-            "photophobia",
-            "confusion",
-            "rash",
-            "wound",
-            "line",
-            "joint",
-            "back pain",
-            "skin pain"
+            "biliary",
+            "intra-abdominal",
+            "guarding",
+            "focal tenderness"
           ]
         },
-        "when_to_ask": "Ask when fever has abdominal, CNS, skin, device, joint, spine, or unclear-source features.",
-        "diagnostic_purpose": "Localizes non-respiratory and non-urinary fever sources and dangerous mimics.",
-        "management_implication": "Changes abdominal imaging, stool testing, LP or CNS escalation, wound/line cultures, source control, joint aspiration, spinal imaging, and empiric therapy.",
+        "when_to_ask": "Ask when fever has abdominal pain, vomiting, diarrhea, jaundice, recent abdominal procedure, or unclear-source concern for intra-abdominal infection.",
+        "diagnostic_purpose": "Localizes abdominal, GI, hepatobiliary, or post-procedure fever sources.",
+        "management_implication": "Changes abdominal exam focus, stool testing, liver/pancreatic labs, abdominal imaging, source-control urgency, antimicrobial selection, and disposition.",
         "tags": [
           "fever",
           "abdominal_source",
-          "meningitis",
-          "skin_source",
-          "joint_source",
+          "gi_source",
+          "biliary_source",
           "history_question"
         ],
         "source": {
           "source_id": "MERCK_FEVER_ADULTS",
-          "source_section": "localizing fever symptoms and red flags",
+          "source_section": "localizing abdominal and gastrointestinal fever symptoms",
+          "evidence_strength": "clinical_reference",
+          "version_date": "current",
+          "last_reviewed": "2026-06-07",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "fever_cns_meningeal_source_question",
+        "label": "Any CNS or meningeal danger features?",
+        "text": "Any severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, purpura, or new neurologic change with the fever?",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "headache_neck",
+            "label": "Severe headache or neck stiffness"
+          },
+          {
+            "value": "photophobia",
+            "label": "Photophobia"
+          },
+          {
+            "value": "confusion_seizure",
+            "label": "Confusion, seizure, or neurologic change"
+          },
+          {
+            "value": "petechiae_purpura",
+            "label": "Petechiae or purpura"
+          },
+          {
+            "value": "other",
+            "label": "Other CNS/meningeal concern"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "headache",
+            "neck stiffness",
+            "meningitis",
+            "meningismus",
+            "photophobia",
+            "confusion",
+            "seizure",
+            "petechiae",
+            "purpura",
+            "altered mental status"
+          ]
+        },
+        "when_to_ask": "Ask when fever has severe headache, neck stiffness, photophobia, confusion, seizure, petechiae/purpura, or CNS infection concern.",
+        "diagnostic_purpose": "Identifies meningitis, encephalitis, meningococcemia, or other CNS danger patterns.",
+        "management_implication": "Changes ED escalation, isolation, empiric antimicrobial urgency, neuroimaging decision-making, lumbar puncture planning, and monitored-care threshold.",
+        "tags": [
+          "fever",
+          "meningitis",
+          "cns_infection",
+          "meningeal_source",
+          "history_question"
+        ],
+        "source": {
+          "source_id": "MERCK_FEVER_ADULTS",
+          "source_section": "neurologic and meningeal red flags in fever",
+          "evidence_strength": "clinical_reference",
+          "version_date": "current",
+          "last_reviewed": "2026-06-07",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "fever_skin_line_source_question",
+        "label": "Any skin, wound, or line-site source features?",
+        "text": "Any rash, wound, ulcer, drainage, line pain or redness, rapidly spreading skin pain, bite, recent procedure site, or soft-tissue infection concern?",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "rash",
+            "label": "Rash"
+          },
+          {
+            "value": "wound_ulcer",
+            "label": "Wound, ulcer, or drainage"
+          },
+          {
+            "value": "line_site",
+            "label": "Line pain or redness"
+          },
+          {
+            "value": "rapid_spread",
+            "label": "Rapidly spreading skin pain"
+          },
+          {
+            "value": "bite_procedure",
+            "label": "Bite or procedure site"
+          },
+          {
+            "value": "other",
+            "label": "Other skin/line source concern"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "rash",
+            "wound",
+            "line",
+            "cellulitis",
+            "ulcer",
+            "drainage",
+            "abscess",
+            "skin pain",
+            "bite",
+            "procedure site",
+            "soft tissue"
+          ]
+        },
+        "when_to_ask": "Ask when fever has rash, wound, indwelling line/device, recent procedure site, bite, soft-tissue pain, or unclear-source concern for skin/line infection.",
+        "diagnostic_purpose": "Localizes cellulitis, abscess, wound infection, line infection, bite-related infection, or necrotizing soft-tissue danger patterns.",
+        "management_implication": "Changes skin/source inspection, wound or line cultures, source control, line removal consideration, empiric coverage, imaging, and urgent escalation for rapidly progressive pain.",
+        "tags": [
+          "fever",
+          "skin_source",
+          "line_source",
+          "wound_source",
+          "soft_tissue_infection",
+          "history_question"
+        ],
+        "source": {
+          "source_id": "MERCK_FEVER_ADULTS",
+          "source_section": "skin, wound, device, and soft-tissue fever source symptoms",
+          "evidence_strength": "clinical_reference",
+          "version_date": "current",
+          "last_reviewed": "2026-06-07",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "fever_joint_spine_source_question",
+        "label": "Any hot joint, focal bone, or spine source features?",
+        "text": "Any hot swollen joint, severe focal bone pain, severe back pain, injection drug use, bacteremia risk, new weakness, bowel/bladder symptoms, or inability to move the painful area?",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "hot_joint",
+            "label": "Hot swollen joint"
+          },
+          {
+            "value": "bone_pain",
+            "label": "Focal bone pain"
+          },
+          {
+            "value": "severe_back",
+            "label": "Severe back pain"
+          },
+          {
+            "value": "idu_bacteremia",
+            "label": "Injection drug use or bacteremia risk"
+          },
+          {
+            "value": "neuro_bowel_bladder",
+            "label": "Weakness or bowel/bladder symptoms"
+          },
+          {
+            "value": "other",
+            "label": "Other joint/spine source concern"
+          }
+        ],
+        "when": {
+          "termsAny": [
+            "hot joint",
+            "joint swelling",
+            "joint pain",
+            "septic arthritis",
+            "bone pain",
+            "back pain",
+            "spine",
+            "epidural abscess",
+            "injection drug",
+            "bacteremia",
+            "new weakness",
+            "bowel",
+            "bladder"
+          ]
+        },
+        "when_to_ask": "Ask when fever has hot joint, focal bone pain, severe back pain, injection drug use, bacteremia risk, neurologic symptoms, or musculoskeletal source concern.",
+        "diagnostic_purpose": "Localizes septic arthritis, osteomyelitis, epidural abscess, discitis, or other musculoskeletal infection source.",
+        "management_implication": "Changes joint aspiration, blood cultures, spine or bone imaging, antimicrobial timing, orthopedic/spine escalation, and monitored-care threshold.",
+        "tags": [
+          "fever",
+          "joint_source",
+          "spine_infection",
+          "septic_arthritis",
+          "osteomyelitis",
+          "history_question"
+        ],
+        "source": {
+          "source_id": "MERCK_FEVER_ADULTS",
+          "source_section": "musculoskeletal fever source symptoms and red flags",
           "evidence_strength": "clinical_reference",
           "version_date": "current",
           "last_reviewed": "2026-06-07",
@@ -1346,7 +1542,7 @@
       },
       {
         "id": "fever_assess_neck_stiffness",
-        "label": "Assess neck stiffness",
+        "label": "Test neck stiffness",
         "action": "Assess for meningismus when fever has severe headache, photophobia, confusion, seizure, rash, or CNS infection concern.",
         "technique": "If safe and tolerated, ask about neck pain and gently assess passive neck flexion or obvious resistance; do not force movement when trauma, instability, or severe pain is present.",
         "findings_options": [

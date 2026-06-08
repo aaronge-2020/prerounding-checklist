@@ -55,7 +55,7 @@
   "$defs": {
     "safePropertyName": {
       "not": {
-        "pattern": "^(?:raw_)?(?:chart|patient|note|handoff|epic|mrn|dob|ssn|room|address|phone|email|identifier|identifiers)(?:_text|_context|_info|_name|_id|s)?$"
+        "pattern": "^(?:raw[\\s_-]*)?(?:(?:chart|patient|notes?|handoff|epic|mrn|dob|ssn|room|bed|address|phone|email|identifiers?)(?:[\\s_-]*(?:text|context|info|name|id|number|date|of[\\s_-]*birth|birthdate)s?)?|date[\\s_-]*of[\\s_-]*birth|birthdate)$"
       }
     },
     "source": {
@@ -249,6 +249,11 @@
             "required": ["item_type"]
           },
           "then": {
+            "properties": {
+              "label": {
+                "pattern": "^(?:Measure|Count|Document|Verify|Clarify|Calculate|Review|Screen|Ask|Obtain|Observe)\\b"
+              }
+            },
             "required": [
               "action",
               "rationale",
@@ -340,6 +345,14 @@
         "acceptable_labels": { "type": "string", "minLength": 1 },
         "expected_safety_labels": { "type": "string", "minLength": 1 },
         "acceptable_safety_labels": { "type": "string", "minLength": 1 },
+        "expected_history_labels": { "type": "string", "minLength": 1 },
+        "acceptable_history_labels": { "type": "string", "minLength": 1 },
+        "expected_test_labels": { "type": "string", "minLength": 1 },
+        "acceptable_test_labels": { "type": "string", "minLength": 1 },
+        "expected_red_flag_labels": { "type": "string", "minLength": 1 },
+        "acceptable_red_flag_labels": { "type": "string", "minLength": 1 },
+        "expected_management_change_labels": { "type": "string", "minLength": 1 },
+        "acceptable_management_change_labels": { "type": "string", "minLength": 1 },
         "avoid_labels": { "type": "string", "minLength": 1 },
         "required_rationale_terms": { "type": "string", "minLength": 1 }
       },

@@ -188,10 +188,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -231,10 +231,11 @@
           "adrenal",
           "crisis",
           "shock",
-          "severe",
           "vomiting",
           "dehydration",
-          "hypoglycemia"
+          "hypoglycemia",
+          "hyperkalemia",
+          "hyponatremia"
         ],
         "when": {
           "termsAny": [
@@ -376,7 +377,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_CAH_2018",
@@ -410,9 +411,8 @@
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -562,8 +562,7 @@
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "family",
-          "history"
+          "family"
         ],
         "source_seed": "Family history, glucocorticoid adherence, adrenal crisis history."
       },
@@ -608,8 +607,7 @@
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
           "adrenal",
-          "crisis",
-          "history"
+          "crisis"
         ],
         "source_seed": "Family history, glucocorticoid adherence, adrenal crisis history."
       },
@@ -704,7 +702,7 @@
       },
       {
         "id": "question_07",
-        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
@@ -715,7 +713,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
             "value": "unknown",
@@ -734,22 +732,22 @@
             "label": "Other"
           }
         ],
-        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
         "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
-        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "weight",
-          "loss"
+          "fever",
+          "rigors"
         ],
-        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       },
       {
         "id": "question_08",
-        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
@@ -760,7 +758,7 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "options": [
           {
             "value": "unknown",
@@ -787,14 +785,14 @@
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "abdominal",
-          "pain"
+          "respiratory",
+          "infection"
         ],
-        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       },
       {
         "id": "question_09",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
@@ -805,7 +803,53 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Congenital Adrenal Hyperplasia (CAH) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Congenital Adrenal Hyperplasia (CAH) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "urinary",
+          "flank",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_10",
+        "label": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
             "value": "unknown",
@@ -832,13 +876,132 @@
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "acute",
+          "skin",
+          "wound",
+          "line",
+          "procedure",
+          "site",
           "infection"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "weight",
+          "loss"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "when": {
+          "termsAny": [
+            "weight",
+            "loss",
+            "intentional",
+            "appetite",
+            "fluid",
+            "systemic"
+          ]
+        }
+      },
+      {
+        "id": "question_02",
+        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "abdominal",
+          "pain"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "when": {
+          "termsAny": [
+            "abdominal",
+            "pain",
+            "nausea",
+            "vomiting",
+            "poor",
+            "intake",
+            "salt",
+            "craving",
+            "orthostasis",
+            "weight"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
@@ -1011,7 +1174,7 @@
       },
       {
         "id": "exam_05",
-        "label": "Assess pubertal stage",
+        "label": "Stage pubertal development",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
@@ -1041,13 +1204,13 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess pubertal stage is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Stage pubertal development is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
-          "assess",
+          "stage",
           "pubertal",
-          "stage"
+          "development"
         ]
       }
     ],
@@ -1130,7 +1293,6 @@
           "congenital_adrenal_hyperplasia",
           "hydroxyprogesterone",
           "often",
-          "with",
           "cosyntropin",
           "stimulation"
         ]
@@ -1223,8 +1385,6 @@
           "cyp21a2",
           "genetic",
           "testing",
-          "when",
-          "diagnosis",
           "family",
           "planning",
           "unclear"
@@ -1255,13 +1415,13 @@
           "adrenal_gland_disorders",
           "congenital_adrenal_hyperplasia",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1290,12 +1450,12 @@
           "congenital_adrenal_hyperplasia",
           "adrenal",
           "insufficiency",
-          "safety",
           "labs",
           "check",
           "sodium",
           "potassium",
-          "glucose"
+          "glucose",
+          "bicarbonate"
         ]
       },
       {
@@ -1358,12 +1518,12 @@
           "congenital_adrenal_hyperplasia",
           "cushing",
           "screening",
-          "with",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "hour"
+          "hour",
+          "after"
         ]
       },
       {
@@ -1430,8 +1590,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1463,7 +1623,6 @@
           "electrolyte",
           "crisis",
           "vomiting",
-          "changes",
           "emergency",
           "steroid",
           "fluid",
@@ -1496,12 +1655,12 @@
           "congenital_adrenal_hyperplasia",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1530,12 +1689,12 @@
           "congenital_adrenal_hyperplasia",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1567,9 +1726,9 @@
           "crisis",
           "treated",
           "immediately",
-          "with",
           "stress",
-          "dose"
+          "dose",
+          "steroids"
         ]
       },
       {
@@ -1601,9 +1760,9 @@
           "elevation",
           "suppressed",
           "renin",
-          "with",
           "high",
-          "aldosterone"
+          "aldosterone",
+          "confirmed"
         ]
       }
     ],

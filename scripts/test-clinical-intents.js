@@ -40,6 +40,13 @@ assert.ok(
     && uiSource.includes("sourceRow.preferred_citation"),
   "app source registry should merge evidence-overlay source rows into the effective source registry for validated clinical-intent traceability"
 );
+assert.ok(
+  uiSource.includes("function clinicalIntentSelectionPrompt")
+    && uiSource.includes("result.ambiguous")
+    && uiSource.includes("Multiple validated clinical intents matched")
+    && uiSource.includes("Select the intended workup before building recommendations"),
+  "clinical workup UI should distinguish ambiguous validated intent matches from unsupported search gaps"
+);
 assert.ok(knownClinicalSourceIds.has("SSC_SEPSIS_2026"), "source registry should cite the current Surviving Sepsis Campaign adult guideline year");
 assert.ok(knownClinicalSourceIds.has("ATS_CAP_2025"), "source registry should cite the current adult CAP guideline update");
 assert.ok(knownClinicalSourceIds.has("IDSA_CAP_PATHWAY_2019"), "source registry should cite the CAP pathway used for fever/pneumonia bedside findings");
@@ -241,6 +248,9 @@ assert.equal(topIntent("Graves disease palpitations heat intolerance"), "graves_
 const routineGraves = resolveClinicalIntents("Graves disease palpitations heat intolerance");
 assert.equal(routineGraves.validatedMatches[0]?.intent_id, "graves_disease_intent_v1", "exact Graves disease should authorize the specific module-backed Graves intent");
 assert.equal(routineGraves.unsupported, false, "specific Graves disease should be an active validated intent");
+assert.equal(routineGraves.selectionStatus, "ambiguous_validated_intent", "specific Graves search should still expose broader thyroid alternatives as selectable, not auto-run them");
+assert.equal(routineGraves.ambiguous, true, "multiple validated thyroid matches should be explicitly marked ambiguous for UI messaging");
+assert.equal(routineGraves.topValidatedMatch?.intent_id, "graves_disease_intent_v1", "resolver should expose the highest scoring validated match for display/audit only");
 assert.ok(
   routineGraves.validatedMatches.some((intentRow) => intentRow.intent_id === "routine_thyroid_disease_v1"),
   "routine thyroid intent should remain available as a broader thyroid option"
@@ -270,6 +280,13 @@ assert.equal(
 const dkaSearch = resolveClinicalIntents("dka");
 assert.equal(dkaSearch.validatedMatches.length, 1, "DKA search should return one validated intent rather than duplicate module-backed concepts");
 assert.equal(dkaSearch.validatedMatches[0]?.intent_id, "dka_hhs_v1", "DKA search should select the curated DKA/HHS intent");
+assert.equal(dkaSearch.validatedMatchCount, 1, "resolver should expose validated match count for UI gating");
+assert.equal(dkaSearch.singleValidatedMatch?.intent_id, "dka_hhs_v1", "single-match resolver metadata should expose the validated intent without auto-selecting it");
+assert.equal(dkaSearch.topValidatedMatch?.intent_id, "dka_hhs_v1", "top validated match should be available for audit/display");
+assert.equal(dkaSearch.ambiguous, false, "single-match DKA search should not be marked ambiguous");
+assert.equal(dkaSearch.requiresSelection, true, "single-match DKA search still requires explicit user selection before recommendations");
+assert.equal(dkaSearch.selectionStatus, "single_validated_intent", "single-match resolver status should be explicit");
+assert.match(dkaSearch.selectionReason, /explicit selection is still required/i, "single-match resolver status should not imply auto-authorization");
 assert.equal(
   dkaSearch.validatedMatches[0]?.complaint_module_id,
   "hyperglycemia_possible_dka_v1",
@@ -279,6 +296,13 @@ assert.equal(
 const unsupported = resolveClinicalIntents("purple fingernails after eating mango while juggling");
 assert.equal(unsupported.unsupported, true, "unsupported free text should not authorize recommendations");
 assert.equal(unsupported.validatedMatches.length, 0, "unsupported free text should have no validated match");
+assert.equal(unsupported.validatedMatchCount, 0, "unsupported resolver result should expose zero validated matches");
+assert.equal(unsupported.requiresSelection, false, "unsupported resolver result should not enable validated-intent selection");
+assert.equal(unsupported.ambiguous, false, "unsupported resolver result should not masquerade as ambiguous");
+assert.equal(unsupported.singleValidatedMatch, null, "unsupported resolver result should not expose a single validated match");
+assert.equal(unsupported.topValidatedMatch, null, "unsupported resolver result should not expose a top validated match");
+assert.equal(unsupported.selectionStatus, "unsupported_gap", "unsupported resolver status should be explicit");
+assert.match(unsupported.selectionReason, /recommendations are blocked/i, "unsupported resolver reason should explain the block");
 
 const unvalidatedIntentsForGate = ["draft", "partial", "unsupported"].map((status) => ({
   ...clinicalIntentRegistry[0],
@@ -349,6 +373,11 @@ assert.match(JSON.stringify(stagedUnsupportedGap), /purple fingernails|severe it
 const ambiguous = resolveClinicalIntents("chest pain with dyspnea and unilateral leg swelling");
 assert.ok(ambiguous.validatedMatches.length >= 2, "ambiguous cardiopulmonary text should require picking from multiple intents");
 assert.equal(ambiguous.requiresSelection, true, "resolver should not auto-authorize ambiguous text");
+assert.equal(ambiguous.ambiguous, true, "resolver should explicitly label multiple cardiopulmonary matches as ambiguous");
+assert.equal(ambiguous.selectionStatus, "ambiguous_validated_intent", "ambiguous resolver status should be explicit");
+assert.equal(ambiguous.singleValidatedMatch, null, "ambiguous resolver result should not expose a single validated match");
+assert.ok(ambiguous.topValidatedMatch?.intent_id, "ambiguous resolver result should still expose a top match for display/audit only");
+assert.match(ambiguous.selectionReason, /Multiple validated clinical intents matched/i, "ambiguous resolver reason should explain that a user choice is required");
 
 const selected = selectedValidatedClinicalIntents(["dka_hhs_v1", "missing_intent"]);
 assert.equal(selected.length, 1);
@@ -487,7 +516,7 @@ const dkaFocalRecommendation = buildRecommendedExamChecklist(dkaFocalContext, dk
 });
 assert.match(
   dkaFocalRecommendation.conditionalItems.map((entry) => entry.label).join(" | "),
-  /Test pronator drift|Inspect facial symmetry|Check pupils/i,
+  /Test pronator drift|Inspect facial symmetry|Test pupillary light response/i,
   "explicit focal-neuro modifiers should override DKA avoid labels only as conditional safety add-ons"
 );
 
@@ -616,6 +645,6 @@ assert.match(routineThyroidCoreText, /Inspect and palpate thyroid|Thyroid exam/i
 assert.match(routineThyroidCoreText, /Auscultate heart sounds|Palpate radial pulses/i, "Graves with palpitations should include rhythm/perfusion exam");
 assert.doesNotMatch(routineThyroidCoreText, /Inspect jugular venous pressure|JVP|Palpate point of maximal impulse|PMI|Test vibration sense|Vibration sense|Percuss costovertebral angle tenderness|CVA tenderness/i, "routine Graves should not promote unrelated volume, neuro, or GU maneuvers");
 const routineThyroidConditionalText = routineThyroidRecommendation.conditionalItems.map((entry) => entry.label).join(" | ");
-assert.match(routineThyroidConditionalText, /Check pupils|Test extraocular movements|Test visual acuity|Test visual fields/i, "Graves with eye symptoms should include orbitopathy/vision add-ons");
+assert.match(routineThyroidConditionalText, /Test pupillary light response|Test extraocular movements|Test visual acuity|Test visual fields/i, "Graves with eye symptoms should include orbitopathy/vision add-ons");
 
 console.log("Clinical intent tests passed.");

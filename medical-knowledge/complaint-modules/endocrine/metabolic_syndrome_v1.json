@@ -42,8 +42,7 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "metabolic",
-          "syndrome"
+          "metabolic"
         ]
       },
       {
@@ -70,13 +69,13 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "diagnosis",
           "commonly",
           "requires",
           "more",
           "waist",
           "women",
-          "points"
+          "points",
+          "fasting"
         ]
       },
       {
@@ -142,10 +141,8 @@
           "diabetes",
           "range",
           "glycemia",
-          "severe",
           "hypertension",
-          "ascvd",
-          "symptoms"
+          "ascvd"
         ],
         "when": {
           "termsAny": [
@@ -183,10 +180,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -226,11 +223,11 @@
           "diabetes",
           "range",
           "glycemia",
-          "with",
           "classic",
-          "symptoms",
-          "severe",
-          "hypertension"
+          "hypertension",
+          "ascvd",
+          "pregnancy",
+          "hyperglycemia"
         ],
         "when": {
           "termsAny": [
@@ -362,7 +359,6 @@
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
           "measure",
-          "current",
           "weight"
         ]
       },
@@ -408,7 +404,7 @@
       },
       {
         "id": "safety_check_05",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
@@ -442,9 +438,8 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -772,8 +767,7 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "lipid",
-          "therapy"
+          "lipid"
         ],
         "source_seed": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
       },
@@ -862,7 +856,6 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "prior",
           "gestational",
           "diabetes"
         ],
@@ -902,9 +895,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention smoking, currently, smoke, recently, does. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
+        "action": "Ask when the history or modifiers support smoking, currently, smoke, recently. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
-        "when_to_ask": "Ask when patient context includes one of: smoking, currently, smoke, recently, does, tobacco, exposure, change, cardiovascular, bone.",
+        "when_to_ask": "Ask when patient context includes smoking, currently, smoke, recently.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
         "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
         "tags": [
@@ -922,9 +915,9 @@
             "does",
             "tobacco",
             "exposure",
-            "change",
             "cardiovascular",
-            "bone"
+            "bone",
+            "risk"
           ]
         }
       }
@@ -975,7 +968,7 @@
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess lower leg edema",
+        "label": "Inspect and press lower leg edema",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
@@ -1008,11 +1001,12 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess lower leg edema is supportive for Metabolic Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect and press lower leg edema is supportive for Metabolic Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "assess",
+          "inspect",
+          "press",
           "lower",
           "edema"
         ],
@@ -1194,13 +1188,13 @@
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1228,13 +1222,13 @@
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
           "cardiometabolic",
-          "safety",
-          "data",
           "confirm",
           "ogtt",
           "classification",
           "document",
-          "waist"
+          "waist",
+          "check",
+          "lipids"
         ]
       },
       {
@@ -1267,8 +1261,8 @@
           "prediabetes",
           "diabetes",
           "classification",
-          "with",
-          "repeat"
+          "repeat",
+          "confirmatory"
         ]
       },
       {
@@ -1301,8 +1295,8 @@
           "kidney",
           "function",
           "albuminuria",
-          "when",
-          "diabetes"
+          "diabetes",
+          "range"
         ]
       },
       {
@@ -1329,13 +1323,13 @@
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
-          "diagnosis",
           "commonly",
           "requires",
           "more",
           "waist",
           "women",
-          "points"
+          "points",
+          "fasting"
         ]
       },
       {
@@ -1368,8 +1362,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1432,9 +1426,7 @@
           "diabetes_and_blood_sugar_disorders",
           "metabolic_syndrome",
           "diabetes",
-          "thresholds",
-          "change",
-          "diagnosis"
+          "thresholds"
         ]
       },
       {
@@ -1464,11 +1456,11 @@
           "markedly",
           "abnormal",
           "glucose",
-          "severe",
           "hypertension",
           "pregnancy",
-          "context",
-          "concern"
+          "concern",
+          "cardiopulmonary",
+          "disposition"
         ]
       },
       {
@@ -1497,12 +1489,12 @@
           "metabolic_syndrome",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1531,12 +1523,12 @@
           "metabolic_syndrome",
           "prediabetes",
           "metabolic",
-          "syndrome",
           "thresholds",
-          "change",
           "prevention",
           "intensity",
-          "lifestyle"
+          "lifestyle",
+          "intervention",
+          "cardiometabolic"
         ]
       },
       {

@@ -1,0 +1,145 @@
+{
+  "screen": "censusScreen",
+  "vault": "unlocked",
+  "scrollY": 0,
+  "overflowX": false,
+  "doc": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "clientHeight": 1024,
+    "scrollHeight": 1024
+  },
+  "topbar": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 104,
+    "bottom": 104,
+    "display": "grid",
+    "hidden": false
+  },
+  "brand": {
+    "x": 26,
+    "y": 22,
+    "w": 330,
+    "h": 60,
+    "bottom": 82,
+    "display": "flex",
+    "hidden": false
+  },
+  "rail": {
+    "x": 446,
+    "y": 19,
+    "w": 450,
+    "h": 64,
+    "bottom": 83,
+    "display": "grid",
+    "hidden": false
+  },
+  "actions": {
+    "x": 1218,
+    "y": 18,
+    "w": 194,
+    "h": 66,
+    "bottom": 84,
+    "display": "flex",
+    "hidden": false
+  },
+  "summary": {
+    "x": 26,
+    "y": 118,
+    "w": 1388,
+    "h": 72,
+    "bottom": 190,
+    "display": "grid",
+    "hidden": false
+  },
+  "dashboard": {
+    "x": 26,
+    "y": 206,
+    "w": 954,
+    "h": 636,
+    "bottom": 842,
+    "display": "grid",
+    "hidden": false
+  },
+  "toolbar": {
+    "x": 27,
+    "y": 207,
+    "w": 952,
+    "h": 100,
+    "bottom": 307,
+    "display": "grid",
+    "hidden": false
+  },
+  "table": {
+    "x": 27,
+    "y": 307,
+    "w": 952,
+    "h": 481,
+    "bottom": 788,
+    "display": "grid",
+    "hidden": false
+  },
+  "editor": {
+    "x": 27,
+    "y": 788,
+    "w": 952,
+    "h": 53,
+    "bottom": 841,
+    "display": "block",
+    "hidden": false
+  },
+  "side": {
+    "x": 998,
+    "y": 206,
+    "w": 416,
+    "h": 710,
+    "bottom": 916,
+    "display": "grid",
+    "hidden": false
+  },
+  "queue": {
+    "x": 998,
+    "y": 206,
+    "w": 416,
+    "h": 266,
+    "bottom": 472,
+    "display": "grid",
+    "hidden": false
+  },
+  "batch": {
+    "x": 998,
+    "y": 482,
+    "w": 416,
+    "h": 204,
+    "bottom": 686,
+    "display": "grid",
+    "hidden": false
+  },
+  "exportPanel": {
+    "x": 998,
+    "y": 696,
+    "w": 416,
+    "h": 220,
+    "bottom": 916,
+    "display": "grid",
+    "hidden": false
+  },
+  "privacy": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0,
+    "bottom": 0,
+    "display": "none",
+    "hidden": false
+  },
+  "rows": [
+    "Case ASlot A HighDKA consultNot seen todayHigh priorityReviewedCompleteBedsidePendingChecklist readyOpenEditDischarge",
+    "Case BSlot BVolume statusSeen todayLowReviewedCompleteDoneUpdateBedside doneOpenEditDischarge",
+    "Case CSlot CDischarge teachingSeen todayLowReviewedCompleteDoneCompleteUpdate readyOpenEditDischarge"
+  ],
+  "transferCode": "TFJA-TCDE-48N3-WSSD",
+  "statusText": "Saved 3 de-identified case workspaces."
+}

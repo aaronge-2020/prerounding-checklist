@@ -114,8 +114,8 @@
           "pregnancy",
           "hypothalamic",
           "pituitary",
-          "disease",
-          "thyroid"
+          "thyroid",
+          "hyperprolactinemia"
         ]
       }
     ],
@@ -151,7 +151,7 @@
           "nipple",
           "discharge",
           "skin",
-          "changes"
+          "nodes"
         ],
         "when": {
           "termsAny": [
@@ -192,10 +192,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -234,12 +234,12 @@
           "gynecomastia",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "rapid",
           "virilization",
-          "tumor"
+          "tumor",
+          "range"
         ],
         "when": {
           "termsAny": [
@@ -381,7 +381,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
@@ -415,9 +415,8 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "gynecomastia",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -567,8 +566,7 @@
           "reproductive_and_gonadal_disorders",
           "gynecomastia",
           "libido",
-          "testicular",
-          "symptoms"
+          "testicular"
         ],
         "source_seed": "Medications, cannabis/alcohol, liver/kidney disease, libido/ED/testicular symptoms."
       },
@@ -651,9 +649,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gynecomastia (Enlarged male breast tissue).",
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gynecomastia (Enlarged male breast tissue).",
         "rationale": "Defines symptom severity, tempo, complications, and whether Gynecomastia (Enlarged male breast tissue) needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gynecomastia (Enlarged male breast tissue) needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gynecomastia (Enlarged male breast tissue).",
         "tags": [
@@ -674,8 +672,8 @@
             "restriction",
             "intense",
             "psychosocial",
-            "change",
-            "energy"
+            "energy",
+            "balance"
           ]
         }
       },
@@ -711,9 +709,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention chemotherapy, radiation, surgery, pelvic, cranial. The answer changes the leading Gynecomastia (Enlarged male breast tissue) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Gynecomastia (Enlarged male breast tissue) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gynecomastia (Enlarged male breast tissue).",
-        "when_to_ask": "Ask when patient context includes one of: chemotherapy, radiation, surgery, pelvic, cranial, cancer, that, could, affect, function.",
+        "when_to_ask": "Ask when patient context includes chemotherapy, radiation, surgery, pelvic.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gynecomastia (Enlarged male breast tissue).",
         "management_implication": "The answer changes the leading Gynecomastia (Enlarged male breast tissue) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "tags": [
@@ -732,7 +730,6 @@
             "pelvic",
             "cranial",
             "cancer",
-            "that",
             "could",
             "affect",
             "function"
@@ -826,7 +823,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess body hair distribution",
+        "label": "Inspect body hair distribution",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_TESTOSTERONE_2018",
@@ -856,11 +853,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess body hair distribution is supportive for Gynecomastia (Enlarged male breast tissue), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Inspect body hair distribution is supportive for Gynecomastia (Enlarged male breast tissue), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "reproductive_and_gonadal_disorders",
           "gynecomastia",
-          "assess",
+          "inspect",
           "body",
           "hair",
           "distribution"
@@ -1088,13 +1085,13 @@
           "reproductive_and_gonadal_disorders",
           "gynecomastia",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1121,13 +1118,13 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "gynecomastia",
-          "safety",
           "tests",
           "review",
           "medication",
           "substance",
           "causes",
-          "check"
+          "check",
+          "testosterone"
         ]
       },
       {
@@ -1157,10 +1154,10 @@
           "pregnancy",
           "test",
           "first",
-          "when",
           "amenorrhea",
-          "possible",
-          "prolactin"
+          "prolactin",
+          "gonadotropins",
+          "estradiol"
         ]
       },
       {
@@ -1189,12 +1186,12 @@
           "gynecomastia",
           "androgen",
           "testing",
-          "with",
-          "reliable",
           "assays",
           "hyperandrogenism",
           "metabolic",
-          "screening"
+          "screening",
+          "pcos",
+          "semen"
         ]
       },
       {
@@ -1329,8 +1326,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1362,11 +1359,11 @@
           "testicular",
           "mass",
           "elevation",
-          "changes",
           "urgent",
           "tumor",
           "pathway",
-          "hypogonadism"
+          "hypogonadism",
+          "pattern"
         ]
       },
       {
@@ -1395,12 +1392,12 @@
           "gynecomastia",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1429,12 +1426,12 @@
           "gynecomastia",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1500,9 +1497,9 @@
           "hyperprolactinemia",
           "pcos",
           "thyroid",
-          "disease",
-          "changes",
-          "counseling"
+          "counseling",
+          "bone",
+          "cardiometabolic"
         ]
       }
     ],

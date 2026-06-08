@@ -4,6 +4,7 @@ import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import {
   buildRecommendedExamChecklist,
+  historyQuestionDetailPrompts,
   joinEvidenceCatalog,
   mergeLegacyPhysicalExamOverlay,
   normalizeEvidenceLabel,
@@ -162,6 +163,27 @@ function entryLabel(entry) {
   return entry.label || candidate.examLabel || candidate.maneuver || candidate.exam_id || "";
 }
 
+function stripSuppressedReportPrefix(value = "") {
+  return String(value || "")
+    .replace(/^(?:not\s+recommended|suppressed(?:\/not-recommended)?|suppressed\s+or\s+lower-fit|lower-fit)\s*[-:]\s*/i, "")
+    .trim();
+}
+
+function suppressedReportLabel(entry = {}) {
+  const candidate = entry.candidate || entry;
+  const sourceLabel = stripSuppressedReportPrefix(
+    entry.original_label
+      || entry.sourceLabel
+      || entry.label
+      || candidate.examLabel
+      || candidate.maneuver
+      || candidate.exam_id
+      || entry.exam_id
+      || ""
+  ) || "suppressed item";
+  return `Not recommended - ${sourceLabel}`;
+}
+
 function entryText(entry) {
   const candidate = entry.candidate || entry;
   return normalizeEvidenceLabel([
@@ -258,6 +280,70 @@ function moduleReadinessFromIssues(issues = [], catalogGaps = []) {
       ...(highIssueCount ? [`${highIssueCount} high-severity quality issue(s) need review.`] : []),
       ...(catalogGaps.length ? [`${catalogGaps.length} staged catalog gap(s) need expert review before the workup can be called complete.`] : [])
     ]
+  };
+}
+
+function conditionalExamAddOnStatusForReport(intentRow = {}, conditional = [], catalogGaps = [], context = "") {
+  const traceability = {
+    intent_ids: [intentRow.intent_id].filter(Boolean),
+    intent_labels: [intentRow.label].filter(Boolean),
+    clinical_bundle_ids: intentRow.clinical_bundle_ids || [],
+    source_ids: intentRow.source_ids || [],
+    authorized_by: intentRow.status === "validated" ? "validated_clinical_intent" : "audit_only_unvalidated_context"
+  };
+  const count = conditional.length;
+  if (count) {
+    return {
+      status: "active_addons_present",
+      label: "Conditional add-ons active",
+      count,
+      reason: `${count} conditional physical exam add-on${count === 1 ? "" : "s"} activated from active modifiers or source-specific trigger logic.`,
+      traceability
+    };
+  }
+  const conditionalGaps = (catalogGaps || []).filter((gap) => {
+    const text = normalizeClinicalIntentText([
+      gap.label,
+      gap.gap_label,
+      gap.gapId,
+      gap.exam_id,
+      gap.role,
+      gap.gapType,
+      gap.gap_type,
+      gap.activation_condition,
+      gap.reason,
+      gap.management_change
+    ].filter(Boolean).join(" "));
+    return /\bconditional\b/.test(text) && /\b(?:exam|maneuver|physical)\b/.test(text);
+  });
+  if (conditionalGaps.length) {
+    return {
+      status: "staged_gaps_need_review",
+      label: "Conditional add-ons need review",
+      count: 0,
+      gap_count: conditionalGaps.length,
+      gap_ids: conditionalGaps.map((gap) => gap.exam_id || gap.gapId || gap.label).filter(Boolean),
+      reason: `${conditionalGaps.length} conditional physical exam add-on gap${conditionalGaps.length === 1 ? "" : "s"} need expert review before this section can be treated as complete.`,
+      traceability: { ...traceability, authorized_by: "staged_catalog_gap" }
+    };
+  }
+  if (intentRow.status !== "validated") {
+    return {
+      status: "audit_only_unvalidated_context",
+      label: "Validated intent required",
+      count: 0,
+      reason: "No validated clinical intent authorized conditional add-on recommendations.",
+      traceability
+    };
+  }
+  return {
+    status: "none_active_for_current_context",
+    label: "No conditional add-ons active",
+    count: 0,
+    reason: context
+      ? "No patient modifier, source-specific symptom, or complication trigger activated a reviewed conditional physical exam add-on for this selected validated intent. The core exam remains the validated minimum for the current context."
+      : "No patient modifier or source-specific trigger was supplied, so no reviewed conditional physical exam add-on is active. The core exam remains the validated minimum for the selected validated intent.",
+    traceability
   };
 }
 
@@ -401,11 +487,13 @@ function moduleItemOptionLabels(value) {
         return entry;
       })
       .map((entry) => String(entry || "").replace(/\s+/g, " ").trim())
+      .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
       .filter(Boolean);
   }
   return String(value || "")
-    .split(/[;|/]+/)
+    .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
     .map((entry) => entry.replace(/\s+/g, " ").trim())
+    .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
     .filter(Boolean);
 }
 
@@ -480,6 +568,18 @@ function moduleSourceForItem(item = {}) {
   return item.source?.source_id || item.source_id || "";
 }
 
+function firstReportText(...values) {
+  for (const value of values) {
+    if (Array.isArray(value)) {
+      const joined = value.map((entry) => String(entry || "").trim()).filter(Boolean).join("; ");
+      if (joined) return joined;
+    } else if (value !== undefined && value !== null && String(value).trim()) {
+      return String(value).trim();
+    }
+  }
+  return "";
+}
+
 function reportValueParts(value) {
   if (Array.isArray(value)) {
     return value.flatMap(reportValueParts);
@@ -506,18 +606,30 @@ function uniqueReportValues(values = []) {
     .filter((value) => value !== "[object Object]")));
 }
 
+function registryStyleReportSourceId(value = "") {
+  const text = String(value || "").trim();
+  return /^[A-Z][A-Z0-9_:-]{1,}$/.test(text)
+    && !/^https?:\/\//i.test(text)
+    && !/\s/.test(text)
+    && !/[.,()]/.test(text);
+}
+
+function uniqueReportSourceIds(values = []) {
+  return uniqueReportValues(values).filter(registryStyleReportSourceId);
+}
+
+function reportTagText(...values) {
+  return uniqueReportValues(values).join("; ");
+}
+
 function reportTraceabilityForEntry(entry = {}, fallback = {}) {
   const candidate = entry.candidate || entry;
   const traceability = entry.traceability || candidate.traceability || {};
   const evidence = entry.evidence || candidate.evidence || {};
-  const sourceIds = uniqueReportValues([
+  const sourceIds = uniqueReportSourceIds([
     traceability.source_ids,
     entry.source_ids,
-    entry.source,
-    entry.evidence?.source,
-    evidence.source,
     candidate.evidence_source_primary,
-    candidate.source_citation,
     candidate.source?.source_id,
     fallback.source_ids
   ]);
@@ -539,6 +651,7 @@ function reportTraceabilityForEntry(entry = {}, fallback = {}) {
       || "",
     routes: uniqueReportValues([
       traceability.retrieval_routes,
+      traceability.routes,
       entry.retrievalRoutes,
       entry.retrievalRoute,
       candidate.retrievalRoutes,
@@ -550,6 +663,30 @@ function reportTraceabilityForEntry(entry = {}, fallback = {}) {
   };
 }
 
+function withFlatTraceabilityFields(row = {}) {
+  const traceability = row.traceability || {};
+  const intentIds = uniqueReportValues(traceability.intent_ids);
+  const sourceIds = uniqueReportSourceIds(traceability.source_ids);
+  const routes = uniqueReportValues([
+    traceability.routes,
+    traceability.retrieval_routes,
+    row.routes,
+    row.retrievalRoute,
+    row.retrievalRoutes,
+    row.authorized_by || traceability.authorized_by,
+    row.role ? `${row.role}_export` : ""
+  ]);
+  return {
+    ...row,
+    intent_trace: intentIds.join("; "),
+    source_ids: sourceIds,
+    authorized_by: traceability.authorized_by || row.authorized_by || "",
+    trace_item_id: traceability.item_id || row.exam_id || "",
+    retrieval_routes: routes.join("; "),
+    catalog_gap: Boolean(traceability.catalog_gap || row.catalog_gap)
+  };
+}
+
 function reportTraceabilityForModuleItem(item = {}, intentRow = {}, role = "") {
   const sourceId = moduleSourceForItem(item);
   return {
@@ -557,7 +694,7 @@ function reportTraceabilityForModuleItem(item = {}, intentRow = {}, role = "") {
       moduleTraceIdsForItem(item),
       intentRow.intent_id
     ]),
-    source_ids: uniqueReportValues([
+    source_ids: uniqueReportSourceIds([
       sourceId,
       intentRow.source_ids || []
     ]),
@@ -681,71 +818,1029 @@ function moduleRequiredDomainSatisfied(domain, result = {}) {
 }
 
 function summarizeModuleItem(item, role = "", intentRow = {}) {
-  return {
+  const source = moduleSourceForItem(item);
+  const lrPlus = item.LR_plus || item.lr_plus || "n/a";
+  const lrMinus = item.LR_minus || item.lr_minus || "n/a";
+  const lrNote = item.likelihood_ratio_note || item.LR_note || item.lr_note || "Likelihood ratios are not available or not applicable for this installed guideline-module item; use the cited guideline/source context and management implication.";
+  const diagnosticPurpose = item.diagnostic_purpose || item.reason || item.rationale || item.diagnostic_target || "";
+  const managementImplication = item.management_implication || item.management_change || item.action || "";
+  const baseLabel = role === "management" ? moduleManagementDisplayLabel(item) : moduleItemLabel(item);
+  const displayLabel = role === "suppressed"
+    ? suppressedReportLabel({ label: baseLabel, original_label: baseLabel, exam_id: item.id || item.exam_id || "" })
+    : baseLabel;
+  return withFlatTraceabilityFields({
     exam_id: item.id || item.exam_id || item.traceability?.item_id || item.traceability?.evidence_row_id || "",
-    label: moduleItemLabel(item),
+    label: displayLabel,
+    original_label: role === "suppressed" ? stripSuppressedReportPrefix(baseLabel) : "",
     role,
     fit: "",
     score: item.score ?? "",
     reason: item.reason || item.suppressionReason || item.rationale || item.diagnostic_purpose || item.action || "",
-    diagnostic_target: item.diagnostic_target || item.diagnostic_purpose || "",
-    management_change: item.management_change || item.management_implication || item.action || "",
+    diagnostic_purpose: diagnosticPurpose,
+    diagnostic_target: item.diagnostic_target || item.diagnostic_purpose || diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: item.management_change || item.management_implication || item.action || managementImplication,
     options: moduleItemOptionText(moduleItemFindingsOptions(item)),
-    evidence: moduleSourceForItem(item),
-    lr_plus: item.LR_plus || "",
-    lr_minus: item.LR_minus || "",
-    lr_note: item.likelihood_ratio_note || item.LR_note || item.lr_note || "",
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
+    lr_plus: lrPlus,
+    lr_minus: lrMinus,
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
     difficulty: item.difficulty || "",
     time_burden_minutes: item.time_burden_minutes ?? "",
+    action: item.action || "",
+    technique: reportTechniqueForRole(role, moduleItemTechnique(item)),
+    when_to_use: firstReportText(item.when_to_perform, item.when_to_use, item.whenToUse, item.when_to_use_structured, item.when_to_review),
+    equipment_needed: item.equipment_needed || "",
+    patient_cooperation_required: item.patient_cooperation_required || "",
     limitations: item.limitations || item.interpretation_cautions || item.interpretationCautions || "",
+    tags: moduleItemTags(item),
     routes: ["installed_guideline_module"],
     traceability: reportTraceabilityForModuleExport(item, intentRow, role)
-  };
+  });
 }
 
 function summarizeQuestionItem(item, intentRow = {}) {
-  return {
+  const fullQuestion = item.text || item.label || "";
+  const source = moduleSourceForItem(item);
+  const lrPlus = item.LR_plus || item.lr_plus || "n/a";
+  const lrMinus = item.LR_minus || item.lr_minus || "n/a";
+  const lrNote = item.likelihood_ratio_note || item.LR_note || item.lr_note || "Question-level LR+/LR- is not available unless the cited evidence validates the exact response; use this answer to localize the source, assess severity, and guide management.";
+  const diagnosticPurpose = item.diagnostic_purpose || item.rationale || item.reason || "";
+  const managementImplication = item.management_implication || item.management_change || item.action || "";
+  return withFlatTraceabilityFields({
     exam_id: item.id || item.exam_id || item.traceability?.item_id || item.traceability?.evidence_row_id || "",
-    label: item.text || item.label || "",
+    label: conciseHistoryQuestionLabel({ ...item, text: fullQuestion }),
+    text: fullQuestion,
+    full_question: fullQuestion,
     role: "history",
-    reason: item.diagnostic_purpose || item.rationale || "",
-    management_change: item.management_implication || item.action || "",
-    evidence: moduleSourceForItem(item),
-    lr_plus: item.LR_plus || "",
-    lr_minus: item.LR_minus || "",
-    lr_note: item.likelihood_ratio_note || item.LR_note || item.lr_note || "",
-    detail_prompts: item.detail_prompts || [],
+    reason: diagnosticPurpose,
+    diagnostic_purpose: diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: managementImplication,
+    options: moduleItemOptionText(item.options || item.answer_options || item.answerOptions || item.bedsideQuestionOptions || item.bedside_question_options || ""),
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
+    lr_plus: lrPlus,
+    lr_minus: lrMinus,
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
+    when_to_ask: firstReportText(item.when_to_ask, item.whenToAsk, item.when_to_use, item.when_to_use_structured),
+    tags: moduleItemTags(item),
+    detail_prompts: historyQuestionDetailPrompts(fullQuestion, item.detail_prompts || []),
     traceability: reportTraceabilityForModuleExport(item, intentRow, "history")
-  };
+  });
 }
 
 function historyQuestionNeedsDetailPrompts(item = {}) {
-  const text = String(item.text || item.label || "");
+  const text = String(item.full_question || item.text || item.label || "");
   const commaCount = (text.match(/,/g) || []).length;
   const orCount = (text.match(/\bor\b/gi) || []).length;
   return text.length >= 150
     || commaCount >= 5
     || orCount >= 4
+    || (/^Any\b/i.test(text.trim()) && text.length >= 105)
     || (/^Any\b/i.test(text.trim()) && commaCount >= 3);
 }
 
+function conciseHistoryQuestionLabel(item = {}) {
+  const text = String(item.text || item.label || "").replace(/\s+/g, " ").trim();
+  const normalized = normalizeEvidenceLabel(text);
+  const tagText = normalizeEvidenceLabel(reportTagText(item.tags, item.retrievalTags, item.matchedTags));
+  const itemKeyText = normalizeEvidenceLabel([item.id, item.label, item.exam_id].filter(Boolean).join(" "));
+  const sourceSignalText = `${itemKeyText} ${tagText}`;
+  const allText = `${normalized} ${sourceSignalText}`;
+  const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(`${normalized} ${tagText}`);
+  if (earlyDkaContext && /known diabetes type|diabetes type|duration|insulin regimen|pump\/cgm|pump cgm|last insulin dose/.test(normalized)) {
+    return "Ask diabetes history, insulin regimen, and last insulin dose";
+  }
+  if (earlyDkaContext && /polyuria|polydipsia|weight loss|dehydration|very dry mouth/.test(normalized)) {
+    return "Ask hyperglycemia dehydration symptoms";
+  }
+  if (earlyDkaContext && /vomiting|abdominal pain|poor oral intake|inability to keep fluids/.test(normalized)) {
+    return "Ask DKA/HHS GI symptoms and oral intake";
+  }
+  if (earlyDkaContext && /fever|dysuria|cough|wound|line infection|dental\/skin infection|dental skin infection|chest pain|stroke symptoms|pancreatitis symptoms|other trigger/.test(normalized)) {
+    return "Ask DKA/HHS infectious, ischemic, and medication triggers";
+  }
+  if (earlyDkaContext && /what has already been given|fluids|insulin route|current monitoring level|potassium\/phosphate|dextrose|antibiotics/.test(normalized)) {
+    return "Review hyperglycemic-crisis treatments already started";
+  }
+  if (earlyDkaContext && /sglt2|fasting|low carb|alcohol|toxin/.test(normalized)) {
+    return "Ask euglycemic DKA and special-population risks";
+  }
+  if (earlyDkaContext && /heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses|electrolyte monitoring/.test(normalized)) {
+    return "Ask fluid-resuscitation and electrolyte-safety modifiers";
+  }
+  if (/how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
+    return "Ask fever timeline, measurement, and medication exposure";
+  }
+  const sourceSpecificInfectionContext = /\b(?:source[_ ]localizing[_ ]history|respiratory[_ ]source|urinary[_ ]source|skin[_ ]source|wound[_ ]source|line[_ ]source|host[_ ]risk|exposure[_ ]history|severity[_ ]history)\b/.test(sourceSignalText);
+  if (sourceSpecificInfectionContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/respiratory[_ ]source/.test(sourceSignalText) || /cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|hypoxemia|aspiration|respiratory contacts|pneumonia/.test(normalized))) {
+    return "Ask respiratory infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/urinary[_ ]source/.test(sourceSignalText) || /dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(normalized))) {
+    return "Ask urinary and flank infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/host[_ ]risk|exposure[_ ]history/.test(sourceSignalText) || /immunosuppression|immunocompromised|pregnancy|hospitalization|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication|chemotherapy|transplant|asplenia|frailty/.test(normalized))) {
+    return "Ask host-risk and exposure history";
+  }
+  if (sourceSpecificInfectionContext && (/skin[_ ]source|wound[_ ]source|line[_ ]source/.test(sourceSignalText) || /rash|wound|ulcer|drainage|line pain|line redness|line concern|line site|cellulitis|abscess|procedure-site|procedure site|skin infection|soft-tissue|soft tissue/.test(normalized))) {
+    return "Ask wound and line infection symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/severity[_ ]history/.test(sourceSignalText) || /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion|mottled|oxygen/.test(normalized))) {
+    return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  const dkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
+  const thyroidContext = /\b(?:thyroid|graves|hashimoto|thyrotoxicosis|hyperthyroid|hypothyroid|goiter|nodule|tsh|antithyroid|amiodarone|lithium|biotin)\b/.test(allText);
+  const infectionContext = /\b(?:fever|infection|sepsis|pneumonia|source-localizing|source localizing|source control|cellulitis|abscess|line infection)\b/.test(allText);
+  const guStiContext = /\b(?:\bsti\b|sexually transmitted|urethritis|genital discharge|penile discharge|vaginal discharge|new partners|syphilis|hiv|gonorrhea|chlamydia|testicular pain|scrotal pain)\b/.test(allText);
+  const boneMineralContext = /\b(?:bone_and_parathyroid|bone and parathyroid|vitamin_d|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|bone density|fragility fracture|kidney stones|nephrocalcinosis)\b/.test(allText);
+  const pelvicPregnancyContext = /\b(?:pelvic_pain|pelvic pain|menstrual|period|ectopic|pid|gynecology|pregnancy|pregnant|dyspareunia|purulent discharge|heavy bleeding)\b/.test(allText);
+  const chestPainContext = /\b(?:chest_pain|chest pain|angina|acs|acute coronary|cardiopulmonary|cardiovascular|myocardial|pleuritic)\b/.test(allText);
+  const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
+  const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
+  const reproductiveContext = /\b(?:reproductive_and_gonadal|reproductive and gonadal|amenorrhea|hypogonadism|menopause|premature ovarian insufficiency|infertility|gynecomastia|hirsutism|erectile dysfunction|libido|puberty|fertility|galactorrhea|vasomotor|genitourinary)\b/.test(allText);
+  const explicitFeverWorkupContext = /\b(?:fever sepsis|fever infection|infection sepsis|source localizing history|respiratory source|urinary source|skin source|host risk|exposure history|sepsis)\b/.test(allText)
+    && !diabetesContext
+    && !boneMineralContext
+    && !pituitaryAdrenalContext
+    && !thyroidContext;
+  const feverWorkupContext = infectionContext
+    && (explicitFeverWorkupContext || (!pelvicPregnancyContext && !diabetesContext && !boneMineralContext && !pituitaryAdrenalContext && !thyroidContext));
+  if (feverWorkupContext && /how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
+    return "Ask fever timeline, measurement, and medication exposure";
+  }
+  if (feverWorkupContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(allText)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (feverWorkupContext && /cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|aspiration|respiratory contacts|pneumonia/.test(allText)) {
+    return "Ask respiratory infection-source symptoms";
+  }
+  if (feverWorkupContext && /dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(allText)) {
+    return "Ask urinary and flank infection-source symptoms";
+  }
+  if (feverWorkupContext && /immunosuppression|immunocompromised|pregnancy|hospitalization|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication|chemotherapy|transplant|asplenia/.test(normalized)) {
+    return "Ask host-risk and exposure history";
+  }
+  if (feverWorkupContext && /rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure-site|skin infection/.test(allText)) {
+    return "Ask wound and line infection symptoms";
+  }
+  if (feverWorkupContext && /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion/.test(allText)) {
+    return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2|suspicious thyroid biopsy/.test(normalized)) {
+    return "Ask thyroid cancer radiation, biopsy, and MEN2 risk";
+  }
+  if (thyroidContext && /thyroid nodule|neck mass|neck swelling|grown rapidly|rapid growth|thyroid pain|thyroid tenderness|hoarseness|dysphagia|trouble swallowing|dyspnea|positional shortness|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule, pain, and compressive symptoms";
+  }
+  if (thyroidContext && /current pregnancy|pregnancy plans|pregnant|recent postpartum|postpartum|breastfeeding|infertility treatment|fertility goal/.test(normalized)) {
+    return "Ask pregnancy, postpartum, and fertility-related thyroid safety";
+  }
+  if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|insomnia|unintentional weight loss|weight loss|diarrhea|increased sweating|sweating|thyrotoxicosis|adrenergic/.test(normalized)) {
+    return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
+  }
+  if (thyroidContext && /cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid|hypothyroidism/.test(normalized)) {
+    return "Ask hypothyroid symptoms and menstrual pattern";
+  }
+  if (thyroidContext && /eye pain|redness|gritty|light sensitivity|bulging eyes|double vision|reduced vision|closing the eyelids|orbitopathy/.test(normalized)) {
+    return "Ask Graves orbitopathy eye symptoms";
+  }
+  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask GU/STI symptoms and exposure risk";
+  }
+  if (/\b(?:scrotal|testicular|torsion|epididymitis|acute_scrotum|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+    if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
+      return "Ask scrotal pain onset and torsion features";
+    }
+    return "Ask epididymitis/STI and urology-risk features";
+  }
+  if (/\b(?:dysuria|urinary|uti|pyelonephritis|renal_colic|renal colic|flank|hematuria|catheter|urologic|oliguria|low urine|aki|obstruction|stone)\b/.test(allText)
+    && !guStiContext
+    && !boneMineralContext
+    && !/what symptoms localize|localize the fever source|source:/.test(normalized)
+    && /are symptoms limited to dysuria|dysuria\/frequency\/urgency|dysuria|urinary frequency|urinary urgency|hematuria|flank pain|catheter\/procedure|urologic|pyelonephritis|stone history|obstruction|resistant urine culture|pregnancy possibility/.test(normalized)) {
+    if (/symptoms limited to dysuria|catheter\/procedure|prior resistant|immunocompromise|pregnancy possibility/.test(normalized)) {
+      return "Ask UTI symptoms and complicated-infection risk";
+    }
+    return "Ask urinary symptoms and renal warning features";
+  }
+  if (reproductiveContext && /last menstrual period|regular are cycles|bleeding changed|cycle irregularity|cycle change/.test(allText)) {
+    return "Ask menstrual timing and bleeding pattern";
+  }
+  if (reproductiveContext && /menstrual periods never start|previously present periods stop|primary amenorrhea|secondary amenorrhea/.test(allText)) {
+    return "Ask amenorrhea onset and menstrual pattern";
+  }
+  if (reproductiveContext && /pregnancy possible|planned soon|recently postpartum|pregnancy change medication|pregnancy change imaging/.test(allText)) {
+    return "Ask pregnancy possibility and reproductive plans";
+  }
+  if (reproductiveContext && /hot flashes|night sweats|sleep disruption|vaginal dryness|dyspareunia|urinary symptoms|sexual-function|vasomotor|genitourinary symptoms|mood change/.test(allText)) {
+    return "Ask vasomotor and genitourinary symptoms";
+  }
+  if (reproductiveContext && /change in libido|morning erections|erectile function|ejaculation|orgasm|testicular symptoms/.test(allText)) {
+    return "Ask sexual function and fertility goals";
+  }
+  if (reproductiveContext && /timing of puberty|sexual development|pubertal milestones|delayed.*pubert|incomplete.*pubert/.test(allText)) {
+    return "Ask pubertal timing and development";
+  }
+  if (reproductiveContext && /nipple discharge|breast tenderness|headaches|visual symptoms|medications that raise prolactin|galactorrhea|prolactin/.test(allText)) {
+    return "Ask prolactin symptoms and mass-effect risk";
+  }
+  if (reproductiveContext && /chemotherapy|radiation|pelvic\/cranial surgery|gonadal surgery|cancer treatment/.test(allText)) {
+    return "Ask gonadotoxic treatment history";
+  }
+  if (reproductiveContext && /autoimmune|family premature ovarian insufficiency|premature ovarian insufficiency risk/.test(allText)) {
+    return "Ask autoimmune and family reproductive history";
+  }
+  if (reproductiveContext && /breast tenderness|discrete mass|testicular pain|testicular mass|liver\/kidney disease|alcohol|cannabis|gynecomastia/.test(allText)) {
+    return "Ask breast/testicular symptoms and exposure risks";
+  }
+  if (reproductiveContext && /predictably ovulatory|lh-kit|luteal symptoms|cycle tracking|regular ovulation/.test(allText)) {
+    return "Ask ovulation pattern and cycle tracking";
+  }
+  if (reproductiveContext && /semen analysis|partner fertility evaluation|partner evaluation/.test(allText)) {
+    return "Ask partner semen analysis and fertility evaluation";
+  }
+  if (reproductiveContext && /palpitations|tremor|heat or cold intolerance|constipation or diarrhea|weight change|fatigue|neck swelling|eye symptoms/.test(allText)) {
+    return "Ask thyroid symptoms affecting reproductive function";
+  }
+  if (boneMineralContext && /height loss|new back pain|kyphosis|low-trauma fracture|low trauma fracture|fall|vertebral/.test(allText)) {
+    return "Ask fracture, fall, and vertebral-compression symptoms";
+  }
+  if ((boneMineralContext || pituitaryAdrenalContext) && /rising from a chair|climbing stairs|lifting overhead|getting up from the floor|proximal muscle weakness|proximal weakness/.test(allText)) {
+    return "Ask proximal muscle weakness symptoms";
+  }
+  if (boneMineralContext && /head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(normalized)) {
+    return "Ask neck radiation and parathyroid-risk history";
+  }
+  if (boneMineralContext && /prior neck|thyroid surgery|parathyroid surgery|postoperative calcium|post neck surgery|neck surgery/.test(normalized)) {
+    return "Ask neck surgery and postoperative calcium history";
+  }
+  if (boneMineralContext && /muscle cramps|perioral numbness|tingling|cramps|tetany|carpopedal|paresthesias|paralysis|seizure|laryngospasm|arrhythmia/.test(normalized)) {
+    return "Ask hypocalcemia neuromuscular symptoms";
+  }
+  if (boneMineralContext && /kidney stones|nephrocalcinosis|hematuria|flank|polyuria|polydipsia|dehydration|renal-function|reduced kidney/.test(allText)) {
+    return "Ask renal stone and calcium-complication symptoms";
+  }
+  if (boneMineralContext && /chronic kidney disease|liver disease|calcium|phosphorus|pth|vitamin d interpretation|mineral/.test(allText)) {
+    return "Ask renal, liver, and mineral-metabolism modifiers";
+  }
+  if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) {
+    return "Ask malabsorption and nutrient-absorption risks";
+  }
+  if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) {
+    return "Review antiseizure and vitamin D metabolism medications";
+  }
+  if (boneMineralContext && /aromatase inhibitor|androgen-deprivation|glucocorticoid|antiseizure medication|ppi|transplant medication|bone-active medication/.test(allText)) {
+    return "Review bone-active medication exposure";
+  }
+  if (boneMineralContext && /menopause|ovarian-insufficiency|ovarian insufficiency|fragility fracture|hormone-therapy|hormone therapy/.test(allText)) {
+    return "Ask menopause timing and fracture-risk modifiers";
+  }
+  if (boneMineralContext && /perioral numbness|tingling|cramps|tetany|carpopedal|seizure|laryngospasm|arrhythmia/.test(allText)) {
+    return "Ask hypocalcemia neuromuscular symptoms";
+  }
+  if (boneMineralContext && /prior neck|thyroid surgery|parathyroid surgery|postoperative calcium|post neck surgery|neck surgery/.test(allText)) {
+    return "Ask neck surgery and postoperative calcium history";
+  }
+  if (boneMineralContext && /head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(allText)) {
+    return "Ask neck radiation and parathyroid-risk history";
+  }
+  if (pelvicPregnancyContext && /could pregnancy be possible|could you be pregnant|missed period|positive pregnancy|ectopic|severe unilateral|one-sided pain|shoulder pain|syncope|heavy bleeding/.test(normalized)) {
+    return "Ask pregnancy and ectopic danger features";
+  }
+  if (pelvicPregnancyContext && /where is the pain|typical for your period|urinary|gi|bleeding|discharge|cycle/.test(allText)) {
+    return "Ask pelvic pain location, cycle timing, and GU/GI symptoms";
+  }
+  if (pelvicPregnancyContext && /pregnan|ectopic|missed period|positive pregnancy|severe unilateral|one-sided pain|shoulder pain|syncope|heavy bleeding/.test(allText)) {
+    return "Ask pregnancy and ectopic danger features";
+  }
+  if (pelvicPregnancyContext && /pid|purulent discharge|dyspareunia|fever|pelvic infection/.test(allText)) {
+    return "Ask PID and pelvic infection features";
+  }
+  if (diabetesContext && /weight changed|weight loss|weight gain|appetite|fluid status|systemic symptoms/.test(allText)) {
+    return "Ask weight trajectory and systemic symptoms";
+  }
+  if (diabetesContext && /prior gestational diabetes|history of prior gestational diabetes|macrosomia/.test(allText)) {
+    return "Ask prior gestational diabetes and macrosomia history";
+  }
+  if (diabetesContext && /current obstetric plan|gestational age|fetal surveillance|delivery timing|maternal-fetal medicine/.test(allText)) {
+    return "Ask obstetric plan and fetal surveillance";
+  }
+  if (diabetesContext && /vomiting|abdominal pain|labored breathing|missed insulin|pump failure|very high glucose|ketones|hyperglycemic crisis/.test(allText)) {
+    return "Ask hyperglycemic-crisis warning symptoms";
+  }
+  if (diabetesContext && /drinking and urinating|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(allText)) {
+    return "Ask hyperglycemia thirst, polyuria, and dehydration symptoms";
+  }
+  if (diabetesContext && /home glucose pattern|glucose pattern|changed from baseline/.test(allText)) {
+    return "Ask home glucose pattern and baseline change";
+  }
+  if (diabetesContext && /autoimmune disease|thyroid cancer\/men2|adrenal disease|inherited condition|family autoimmune/.test(allText)) {
+    return "Ask autoimmune and inherited endocrine history";
+  }
+  if (diabetesContext && /foot ulcer|foot wound|\bwounds?\b(?!-care)|skin redness|drainage|tenderness|indwelling line|procedure-site|skin infection|soft[- ]tissue infection|cellulitis|abscess/.test(allText)) {
+    return "Ask foot/wound infection symptoms";
+  }
+  if (diabetesContext && /foot ulcer|foot wound|protective sensation|prior amputation|offload|footwear|wound-care supplies|inability to inspect feet/.test(allText)) {
+    return "Ask diabetic foot wound, neuropathy, and self-care risk";
+  }
+  if (diabetesContext && /measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(allText)) {
+    return "Ask infection precipitant or mimic symptoms";
+  }
+  if (diabetesContext && /cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(allText)) {
+    return "Ask respiratory infection symptoms";
+  }
+  if (diabetesContext && /dysuria|urinary frequency|urinary urgency|suprapubic|hematuria|flank pain|uti|pyelonephritis/.test(allText)) {
+    return "Ask urinary infection symptoms";
+  }
+  if (diabetesContext && /foot ulcer|wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
+    return "Ask foot/wound infection symptoms";
+  }
+  if (diabetesContext && /ascvd|heart failure|stroke\/tia|peripheral arterial|claudication|vascular procedures/.test(allText)) {
+    return "Ask ASCVD, heart failure, and vascular disease history";
+  }
+  if (diabetesContext && /retinopathy|vision changes|eye injections|laser|dilated eye|eye examination|blurred vision/.test(allText)) {
+    return "Ask retinopathy and dilated-eye exam status";
+  }
+  if (/new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
+    return "Ask pituitary mass-effect and treatment history";
+  }
+  if (/new, worsening, resistant, or treatment-limiting hypertension or diabetes|treatment-limiting hypertension|treatment-limiting diabetes|complication screening|medication choice/.test(allText)) {
+    return "Ask treatment-limiting hypertension and diabetes complications";
+  }
+  if (/hirsutism|acne|scalp hair loss|deepening voice|clitoromegaly|rapid virilization|cycle irregularity|androgenic medication/.test(allText)) {
+    return "Ask hyperandrogenism and virilization features";
+  }
+  if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(allText)
+    && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant|oxygen need|full sentences)\b/.test(allText)) {
+    return "Ask PE severity, VTE risk factors, and bleeding risk";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)) {
+    return "Ask OSA symptoms, drowsy-driving risk, and CPAP context";
+  }
+  if (/\b(?:hypoglycemia|low glucose|neuroglycopenic|insulin|secretagogue|carbohydrate|jittery|shaky)\b/.test(allText)
+    && /\b(?:confusion|sleepiness|seizure|trouble thinking|eat\/drink|eat drink|carbohydrates|most recent glucose|last meal)\b/.test(allText)) {
+    return "Ask neuroglycopenic severity and carbohydrate response";
+  }
+  if (/\b(?:menopause|premature ovarian insufficiency|hypogonadism|reproductive endocrine|vasomotor|hot flashes|night sweats|genitourinary|fertility goal|cycle change)\b/.test(allText)) {
+    return "Ask reproductive endocrine symptoms";
+  }
+  if (pituitaryAdrenalContext && /easy bruising|wide purple stretch marks|facial rounding|new hypertension|new diabetes|recurrent infections|proximal muscle weakness/.test(allText)) {
+    return "Ask Cushing phenotype, metabolic complications, and infection risk";
+  }
+  if (pituitaryAdrenalContext && /episodes|cycles|symptom-free intervals|cyclic hormone excess|repeated abnormal labs/.test(allText)) {
+    return "Ask cyclic cortisol-excess pattern";
+  }
+  if (pituitaryAdrenalContext && /oral, injected, inhaled|topical|eye-drop|joint-injection|supplement steroid|steroid exposure|exogenous steroid/.test(allText)) {
+    return "Review exogenous steroid exposure";
+  }
+  if (pituitaryAdrenalContext && /new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
+    return "Ask pituitary mass-effect and treatment history";
+  }
+  if (pituitaryAdrenalContext && /nipple discharge|breast tenderness|prolactin/.test(allText)) {
+    return "Ask prolactin symptoms and medication causes";
+  }
+  if (/spontaneous or expressible nipple discharge|galactorrhea|nipple discharge|breast tenderness|medications that raise prolactin|raise prolactin|hyperprolactin|prolactin/.test(allText)
+    && /headaches|visual symptoms|visual field|pituitary|amenorrhea|infertility|erectile dysfunction|polycystic|reproductive|gonadal|cycle/.test(allText)) {
+    return "Ask prolactin symptoms, medication causes, and mass-effect symptoms";
+  }
+  if (pituitaryAdrenalContext && /polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst and polyuria safety";
+  }
+  if (pituitaryAdrenalContext && /thyroid symptoms|palpitations|tremor|heat\/cold intolerance|neck swelling/.test(allText)) {
+    return "Ask adrenal and thyroid-axis symptoms";
+  }
+  if (pituitaryAdrenalContext && /measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(allText)) {
+    return "Ask infection precipitant or mimic symptoms";
+  }
+  if (pituitaryAdrenalContext && /cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(allText)) {
+    return "Ask respiratory infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /dysuria|urinary frequency|suprapubic|hematuria|flank pain|uti|pyelonephritis/.test(allText)) {
+    return "Ask urinary infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
+    return "Ask wound and procedure-site infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /hypertension|diabetes|complication screening|medication choice/.test(allText)) {
+    return "Ask treatment-limiting hypertension and diabetes complications";
+  }
+  if (pituitaryAdrenalContext && /autoimmune thyroid|type 1 diabetes|celiac|pernicious anemia|polyglandular autoimmune/.test(allText)) {
+    return "Ask autoimmune polyglandular history";
+  }
+  if (/what has already been given|fluids|insulin route|current monitoring level|potassium\/phosphate|dextrose|antibiotics/.test(allText)) {
+    return "Review hyperglycemic-crisis treatments already started";
+  }
+  if (/recent glucose|beta hydroxybutyrate|anion gap|bicarbonate|osmolality|ketones/.test(allText)) {
+    return "Review hyperglycemic-crisis diagnostic and severity data";
+  }
+  if (/what does it feel like|radiate to arm|radiate.*jaw|radiate.*shoulder|chest pain quality|location radiation/.test(allText)) {
+    return "Ask chest pain quality, location, and radiation";
+  }
+  if (chestPainContext
+    && /exertional|relieved by rest|similar to prior angina|non-exertional|provoked by exertion/.test(allText)) {
+    return "Ask exertional pattern and response to rest";
+  }
+  if (/shortness of breath|pleuritic pain|hemoptysis|oxygen requirement|cough/.test(allText)
+    && /chest|cardiovascular|cardiopulmonary/.test(allText)) {
+    return "Ask cardiopulmonary associated symptoms";
+  }
+  if (/diaphoresis|nausea|vomiting|palpitations|marked weakness/.test(allText)
+    && /chest|cardiovascular|ischemic|arrhythmia/.test(allText)) {
+    return "Ask ischemic and arrhythmia-associated symptoms";
+  }
+  if (/syncope|presyncope|neurologic symptoms|sudden maximal pain/.test(allText)
+    && /chest|cardiovascular|high risk/.test(allText)) {
+    return "Ask high-risk chest pain warning features";
+  }
+  if (/known cad|prior mi|stent|cabg|smoking|hypertension|family history/.test(allText)
+    && /chest|cardiovascular|risk/.test(allText)) {
+    return "Ask cardiovascular risk history";
+  }
+  if (chestPainContext
+    && /cocaine|stimulant|anticoagulant|antiplatelet|estrogen|medication change|medication risk|vte risk|thrombotic/.test(allText)) {
+    return "Ask medication, stimulant, and thrombotic-risk modifiers";
+  }
+  if (!thyroidContext && /exact joint|body area|trauma|bear weight|swelling|redness|wound/.test(allText)
+    && /musculoskeletal|joint|site specific|pain/.test(allText)) {
+    return "Ask pain location, trauma, and inflammatory red flags";
+  }
+  if (/salt craving|dizziness on standing|low blood pressure|vomiting|abdominal pain|skin darkening/.test(allText)) {
+    return "Ask adrenal insufficiency and volume-depletion symptoms";
+  }
+  if ((pituitaryAdrenalContext || /\b(?:acromegaly|gigantism|growth hormone)\b/.test(allText))
+    && /ring size|shoe size|facial features|jaw spacing|sweating|sleep apnea|joint pain|headaches/.test(allText)) {
+    return "Ask acral, soft-tissue, sleep, and headache changes";
+  }
+  if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|unintentional weight loss|diarrhea|increased sweating/.test(allText)) {
+    return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
+  }
+  if (thyroidContext && /thyroid nodule|neck mass|grown rapidly|hoarseness|dysphagia|dyspnea|suspicious nodes/.test(allText)) {
+    return "Ask thyroid nodule growth, compressive, and node warnings";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2/.test(allText)) {
+    return "Ask thyroid cancer radiation and family-risk history";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if (/missed|reduced insulin|pump|reservoir|expired insulin|medication access/.test(allText)) {
+    return "Ask insulin delivery and access precipitants";
+  }
+  if (/fever|dysuria|cough|wound|line infection|dental|skin infection|chest pain|stroke symptoms|pancreatitis|trigger/.test(allText)
+    && /dka|hyperglycemia|infection trigger|hyperglycemic/.test(allText)) {
+    return "Ask DKA/HHS infectious, ischemic, and medication triggers";
+  }
+  if (dkaContext
+    && /confusion|sleepiness|seizure|severe weakness|participate in care/.test(allText)) {
+    return "Ask hyperglycemic-crisis neurologic severity symptoms";
+  }
+  if (dkaContext && /sglt2|pregnancy|postpartum|fasting|low carb|alcohol|toxin/.test(allText)) {
+    return "Ask euglycemic DKA and special-population risks";
+  }
+  if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses|electrolyte monitoring/.test(allText)) {
+    return "Ask fluid-resuscitation and electrolyte-safety modifiers";
+  }
+  if (/fluids|insulin route|potassium|phosphate|dextrose|bicarbonate|antibiotics|monitoring level/.test(allText)) {
+    return "Review treatments already started and monitoring level";
+  }
+  if (infectionContext && /localize|source|cough|sputum|dyspnea|dysuria|flank|rash|wound|neck stiffness|abdominal/.test(allText)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (infectionContext && /immunosuppression|pregnancy|hospitalization|procedure|indwelling|travel|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication/.test(allText)) {
+    return "Ask host-risk and exposure history";
+  }
+  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain)\b/.test(allText)) {
+    return "Ask GU/STI symptoms and exposure risk";
+  }
+  if (/scrotal|testicular|torsion|epididymitis|urology|mumps|solitary testis/.test(allText)) {
+    return "Ask scrotal pain source and urology-risk features";
+  }
+  if (/foot ulcer|foot wound|drainage|protective sensation|amputation|offload|footwear|wound care/.test(allText)) {
+    return "Ask diabetic foot wound, neuropathy, and self-care risk";
+  }
+  if (/rash|mucosal|tongue swelling|skin pain|blistering|purpura|new medication|urticaria|immunocompromise/.test(allText)) {
+    return "Ask rash danger features and exposure history";
+  }
+  if (/sick contacts|covid|flu|strep|ear|sinus|dental|muffled voice|trismus|swallow fluids|heent|throat/.test(allText)) {
+    return "Ask HEENT infection exposure and deep-space warning symptoms";
+  }
+  if ((thyroidContext || /hypothyroid|hypothyroidism/.test(allText))
+    && /cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid|hypothyroidism/.test(allText)) {
+    return "Ask hypothyroid symptoms and menstrual pattern";
+  }
+  if (/hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|transfusion|heavy menses|\b(?:bleeding_anemia|bleeding anemia|gi bleed|gastrointestinal bleeding|anemia|pallor|epistaxis)\b/.test(allText)
+    || (/\b(?:anticoagulant|antiplatelet)\b/.test(allText) && /\b(?:bleeding|bruising|hematemesis|melena|hematochezia|epistaxis|transfusion|anemia)\b/.test(allText))) {
+    return "Ask bleeding source, severity, and medication risk";
+  }
+  if (!boneMineralContext && /lithium|demeclocycline|amphotericin|diuretic|sglt2|glucocorticoid|desmopressin|fluid restriction/.test(allText)) {
+    return "Review medication and fluid-balance triggers";
+  }
+  if (/blood-pressure|blood pressure|lipid|kidney-protective|cardiometabolic medications|adherence|adverse-effect concerns/.test(allText)) {
+    return "Review cardiometabolic medications and adverse effects";
+  }
+  if (/usual physical activity level|physical activity level|treatment barriers|function/.test(allText)) {
+    return "Ask physical activity level and treatment barriers";
+  }
+  if (/current weight trajectory|weight trajectory|changed from baseline/.test(allText)) {
+    return "Ask weight trajectory and baseline change";
+  }
+  if (thyroidContext && /prior fna bethesda|bethesda category|fna result|thyroid biopsy/.test(allText)) {
+    return "Ask prior thyroid biopsy/FNA category and change";
+  }
+  if (/true weakness|numbness|back pain|dark urine|trouble walking|muscle cramps/.test(allText)) {
+    return "Ask cramp-associated weakness and rhabdo symptoms";
+  }
+  if (/\bpcos\b|polycystic ovary/.test(allText)) {
+    return "Ask PCOS and reproductive-metabolic history";
+  }
+  if (/^any\b/.test(normalized)) {
+    return "Ask focused source, severity, and safety features";
+  }
+  const commaCount = (text.match(/,/g) || []).length;
+  const orCount = (text.match(/\bor\b/gi) || []).length;
+  if (text.length <= 80 && commaCount <= 1 && orCount <= 1) {
+    return text;
+  }
+  const firstDetailPrompt = historyQuestionDetailPrompts(text, item.detail_prompts || [])
+    .map((prompt) => String(prompt || "")
+      .replace(/^(?:Ask specifically about|Ask|Clarify|Review|Confirm|Document|Screen|Localize|Check)\s+/i, "")
+      .replace(/[.?]+$/g, "")
+      .trim())
+    .find(Boolean);
+  if (firstDetailPrompt) {
+    const trimmed = firstDetailPrompt.length > 64 ? `${firstDetailPrompt.slice(0, 61).trim()}...` : firstDetailPrompt;
+    return /^(?:medication|treatment|steroid|anticoagulant|fluid|thyroid|insulin|glucose|calcium|bone|adrenal|pituitary|reproductive|bleeding|infection|respiratory|urinary|skin|wound|line|source|exposure|pregnancy|vision|pain|symptom|risk)/i.test(trimmed)
+      ? `Ask ${trimmed}`
+      : `Ask ${trimmed.charAt(0).toLowerCase()}${trimmed.slice(1)}`;
+  }
+  const firstClause = text
+    .replace(/\?+$/g, "")
+    .split(/[.;:]/)[0]
+    .replace(/\s+\b(?:and|or)\b\s+.*$/i, "")
+    .trim();
+  if (firstClause && firstClause.length <= 72) {
+    return /^(?:ask|review|clarify|confirm|document|screen|localize|check)\b/i.test(firstClause)
+      ? firstClause
+      : `Ask ${firstClause.charAt(0).toLowerCase()}${firstClause.slice(1)}`;
+  }
+  return `${text.slice(0, 76).trim()}...`;
+}
+
+function historyQuestionLabelSuffix(item = {}) {
+  const fullQuestion = normalizeEvidenceLabel(item.full_question || item.text || item.label || "");
+  const tagText = normalizeEvidenceLabel(reportTagText(item.tags, item.retrievalTags, item.matchedTags));
+  const allText = `${fullQuestion} ${tagText}`;
+  const detailText = normalizeEvidenceLabel((item.detail_prompts || []).join(" "));
+  const boneMineralContext = /\b(?:bone and parathyroid|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|kidney stones|nephrocalcinosis)\b/.test(allText);
+  if (boneMineralContext && /perioral numbness|tingling|tetany|carpopedal|laryngospasm|arrhythmia/.test(fullQuestion)) return "perioral/tetany symptoms";
+  if (boneMineralContext && /muscle cramps|paresthesias|paralysis|palpitations|neuromuscular/.test(fullQuestion)) return "cramps/neuromuscular symptoms";
+  if (boneMineralContext && /nephrocalcinosis|hematuria|flank pain|recurrent utis/.test(fullQuestion)) return "kidney stones";
+  if (boneMineralContext && /constipation|polyuria|polydipsia|bone pain|confusion|dehydration|reduced kidney/.test(fullQuestion)) return "calcium-symptom pattern";
+  if (boneMineralContext && /kidney stones/.test(fullQuestion)) return "kidney stones";
+  if (boneMineralContext && /prior neck|thyroid|parathyroid surgery|postoperative calcium/.test(fullQuestion)) return "neck surgery/calcium history";
+  if (/what has already been given|fluids|insulin route|current monitoring level/.test(fullQuestion)) return "treatments started";
+  if (/recent glucose|beta hydroxybutyrate|anion gap|bicarbonate|osmolality|ketones/.test(fullQuestion)) return "labs and severity";
+  if (/sglt2|fasting|low carb|alcohol|toxin/.test(fullQuestion)) return "SGLT2/fasting risks";
+  if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses/.test(fullQuestion)) return "fluid-risk comorbidities";
+  if (/childhood head|neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(fullQuestion)) return "radiation/family cancer risk";
+  if (/personal or family history of men|vhl|nf1|sdhx|medullary thyroid|pheochromocytoma|paraganglioma/.test(fullQuestion)) return "hereditary endocrine syndromes";
+  if (/measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(fullQuestion)) return "infection precipitant";
+  if (/cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(fullQuestion)) return "respiratory source";
+  if (/immunosuppression|transplant|chemotherapy|high-dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medication/.test(fullQuestion)) return "host/exposure risk";
+  if (/foot ulcer|wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(fullQuestion)) return "skin/line source";
+  if (/numbness|tingling|burning pain|loss of protective sensation|falls|ulcers|neuropathy/.test(fullQuestion)) return "neuropathy symptoms";
+  if (/immunosuppression|transplant|chemotherapy|high dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medications?/.test(detailText)) return "host/exposure risk";
+  if (/dysuria|frequency|urgency|hematuria|suprapubic|flank pain|catheter|prior resistant|reduced urine output|renal dysfunction/.test(detailText)) return "urinary/flank symptoms";
+  if (/pregnancy is possible|fertility goals?|postpartum|partner factors|medications change safety/.test(detailText)) return "pregnancy/fertility safety";
+  if (/urine volume|nocturia|urinary frequency|thirst intensity|access to water|dehydration|confusion/.test(detailText)) return "polyuria/thirst details";
+  if (!boneMineralContext && /fatigue|cold intolerance|constipation|dry skin|hoarse voice|slowed thinking|weight gain/.test(fullQuestion)) return "hypothyroid symptoms";
+  if (/thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast|biotin/.test(fullQuestion)) return "medications and assay interference";
+  if (/neck swelling|rapid growth|thyroid pain|hoarseness|trouble swallowing|positional shortness/.test(fullQuestion)) return "compressive symptoms";
+  if (/loud snoring|witnessed apneas|morning headaches|daytime sleepiness|cpap/.test(fullQuestion)) return "sleep apnea symptoms";
+  if (/nipple discharge|breast tenderness|prolactin/.test(fullQuestion)) return "prolactin symptoms/medications";
+  const detail = (item.detail_prompts || [])
+    .map((prompt) => String(prompt || "")
+      .replace(/^Ask specifically about\s+/i, "")
+      .replace(/^Review\s+/i, "")
+      .replace(/[.?]+$/g, "")
+      .trim())
+    .find(Boolean);
+  if (detail) {
+    return detail.length > 36 ? `${detail.slice(0, 33).trim()}...` : detail;
+  }
+  const firstWords = String(item.full_question || item.text || item.label || "")
+    .replace(/\?+$/g, "")
+    .split(/\s+/)
+    .slice(0, 5)
+    .join(" ");
+  return firstWords || "source question";
+}
+
+function uniquifyHistoryQuestionLabels(items = []) {
+  const buckets = new Map();
+  items.forEach((item) => {
+    const key = normalizeEvidenceLabel(item.label || item.text || item.full_question || "");
+    if (!key) return;
+    const bucket = buckets.get(key) || [];
+    bucket.push(item);
+    buckets.set(key, bucket);
+  });
+  const used = new Set();
+  return items.map((item) => {
+    const originalLabel = item.label || item.text || item.full_question || "";
+    const key = normalizeEvidenceLabel(originalLabel);
+    let label = originalLabel;
+    if (key && (buckets.get(key) || []).length > 1) {
+      label = `${originalLabel} - ${historyQuestionLabelSuffix(item)}`;
+    }
+    let uniqueLabel = label;
+    let counter = 2;
+    while (used.has(normalizeEvidenceLabel(uniqueLabel))) {
+      uniqueLabel = `${label} ${counter}`;
+      counter += 1;
+    }
+    used.add(normalizeEvidenceLabel(uniqueLabel));
+    return { ...item, label: uniqueLabel };
+  });
+}
+
+function historyQuestionText(item = {}) {
+  return String(item.full_question || item.text || item.label || item.displayBedsideQuestion || "").replace(/\s+/g, " ").trim();
+}
+
+function historyQuestionAtomicityIssues(item = {}) {
+  const text = historyQuestionText(item);
+  const normalized = normalizeEvidenceLabel(text);
+  if (!normalized) {
+    return [];
+  }
+  const issues = [];
+  if (/\bheat intolerance sweating cold intolerance dry skin constipation tremor slowed thinking\b/i.test(text)) {
+    issues.push({ severity: "high", type: "unpunctuated_history_symptom_chain", detail: text });
+  }
+  if (/\bneck mass growth\b[\s\S]*\b(?:pregnancy|postpartum|amiodarone|lithium|biotin|medication adherence)\b/i.test(text)
+    || /\bradiation exposure\b[\s\S]*\b(?:pregnancy|postpartum|amiodarone|lithium|biotin|medication adherence)\b/i.test(text)
+    || /\bfamily thyroid cancer\b[\s\S]*\b(?:pregnancy|postpartum|amiodarone|lithium|biotin|thyroid medication)\b/i.test(text)) {
+    issues.push({ severity: "high", type: "cross_domain_bundled_history_question", detail: text });
+  }
+  if (/abdominal,\s*CNS,\s*skin,\s*line,\s*joint,\s*or\s*spine source features/i.test(text)) {
+    issues.push({ severity: "high", type: "stale_bundled_infection_source_history", detail: text });
+  }
+  if (/vitals and acuity screen/i.test(text)
+    || /\bBP,\s*HR,\s*respiratory status,\s*temperature\b/i.test(text)) {
+    issues.push({ severity: "high", type: "safety_bundle_as_history_question", detail: text });
+  }
+  const generatedDetailPrompts = historyQuestionDetailPrompts(text, item.detail_prompts || []);
+  if (historyQuestionNeedsDetailPrompts(item) && !generatedDetailPrompts.length) {
+    issues.push({ severity: "high", type: "missing_history_detail_prompts", detail: text });
+  }
+  return issues;
+}
+
+function moduleLimitationBaseLabel(item = {}) {
+  const itemType = String([
+    item.item_type,
+    item.gap_type,
+    item.role,
+    item.id,
+    item.exam_id,
+    item.traceability?.item_group,
+    ...(item.tags || [])
+  ].filter(Boolean).join(" ")).toLowerCase();
+  const text = item.text || item.label || "";
+  const isHistory = itemType.includes("history") || itemType === "question" || /^REQ-.*history/i.test(String(item.id || item.exam_id || ""));
+  if (isHistory) {
+    return conciseHistoryQuestionLabel({ ...item, text });
+  }
+  const primaryLabel = compactLimitationBaseLabel(moduleItemLabel(item), itemType);
+  if (!genericLimitationBaseLabel(primaryLabel)) {
+    return primaryLabel;
+  }
+  const fallbackLabel = [
+    item.management_change,
+    item.management_implication,
+    item.action,
+    item.diagnostic_target,
+    item.rationale,
+    item.reason,
+    item.limitation,
+    item.interpretation_cautions,
+    item.limitations
+  ]
+    .map((candidate) => compactLimitationBaseLabel(candidate, ""))
+    .find((candidate) => candidate && !genericLimitationBaseLabel(candidate));
+  return fallbackLabel || primaryLabel;
+}
+
+function genericLimitationBaseLabel(label = "") {
+  const text = String(label || "").trim();
+  const normalized = normalizeEvidenceLabel(text);
+  return /^(?:diagnostic test\/reference interpretation|red-flag interpretation|management implication|focused history question|linked workup item|differential-frame interpretation)$/i
+    .test(text)
+    || /^(?:diagnostic test reference interpretation|red flag interpretation|management implication|focused history question|linked workup item|differential frame interpretation)$/i
+      .test(normalized);
+}
+
+function compactLimitationBaseLabel(label = "", itemType = "") {
+  const text = String(label || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  const typeText = String(itemType || "");
+  const commaCount = (text.match(/,/g) || []).length;
+  const orCount = (text.match(/\bor\b/gi) || []).length;
+  if (text.length <= 90 && commaCount < 2 && orCount < 3) {
+    return text;
+  }
+  const head = text
+    .replace(/\s*;\s*[\s\S]*$/g, "")
+    .replace(/\s*,\s*[\s\S]*$/g, "")
+    .replace(/\s+\b(?:with|when|if|for)\b\s+[\s\S]*$/i, "")
+    .trim();
+  if (head.length >= 12 && head.length <= 90) {
+    return head;
+  }
+  const firstComponent = text.split(/\s*,\s*|\s+\bor\b\s+/i)[0]?.trim() || "";
+  if ((commaCount >= 2 || orCount >= 3) && firstComponent.length >= 4 && firstComponent.length <= 90) {
+    return firstComponent;
+  }
+  if (/\b(?:diagnostic[_\s-]?test|reference[_\s-]?threshold|initialtests|initial[_\s-]?tests|test|tests|bmp|electrolyte|blood[_\s-]?gas|osmolality|ketone|glucose|ecg|troponin|culture|imaging|monitoring|labs?)\b/i.test(typeText)) {
+    return "diagnostic test/reference interpretation";
+  }
+  if (/\b(?:red[_\s-]?flag|escalation|warning|shock|danger|cue)\b/i.test(typeText)) {
+    return "red-flag interpretation";
+  }
+  if (/\b(?:management|disposition|rule|acuity|emergency|correction|transition|discharge|protocol|treatment|insulin[_\s-]?safety)\b/i.test(typeText)
+    || /^(?:for|do not|before|transition|suspected|icu\/|uncomplicated)\b/i.test(text)) {
+    return "management implication";
+  }
+  if (commaCount >= 2 || orCount >= 3) {
+    return "differential-frame interpretation";
+  }
+  if (/\b(?:diagnostic_test|reference_threshold|test)\b/i.test(itemType)) {
+    return "diagnostic test/reference interpretation";
+  }
+  if (/\bred_flag\b/i.test(itemType)) {
+    return "red-flag interpretation";
+  }
+  if (/\bmanagement\b/i.test(itemType)) {
+    return "management implication";
+  }
+  return text.length > 90 ? `${text.slice(0, 86).trim()}...` : text;
+}
+
+function compactManagementBaseLabel(label = "") {
+  const text = String(label || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  const commaCount = (text.match(/,/g) || []).length;
+  const orCount = (text.match(/\bor\b/gi) || []).length;
+  if (text.length <= 260 && commaCount < 10 && orCount < 7) {
+    return text;
+  }
+  const head = text
+    .replace(/\s*;\s*[\s\S]*$/g, "")
+    .trim();
+  if (head.length >= 12 && head.length <= 260) {
+    return head;
+  }
+  const contextLead = text.match(/^(?:for|before)\s+([^,]{2,50}),\s*([\s\S]+)$/i);
+  if (contextLead) {
+    const action = contextLead[2].replace(/\s*;\s*[\s\S]*$/g, "").trim();
+    if (action.length >= 12 && action.length <= 180) {
+      return `${action.charAt(0).toUpperCase()}${action.slice(1)}`;
+    }
+  }
+  const firstComponent = (text.split(/\s*;\s*|\s+\band\s+|\s+\bor\s+/i)[0] || "")
+    .replace(/[,:;]\s*$/g, "")
+    .trim();
+  if (firstComponent.length >= 12 && firstComponent.length <= 260) {
+    return firstComponent;
+  }
+  return text;
+}
+
+function managementBaseLabelLooksComplete(label = "") {
+  const text = String(label || "").replace(/\s+/g, " ").trim();
+  return Boolean(text)
+    && !/^management implication$/i.test(text)
+    && !/[,:;]\s*$/.test(text)
+    && !/\.\.\.$/.test(text);
+}
+
+const managementExamActionLabelPattern = /^(?:auscultate|inspect|palpate|percuss|observe|test|measure|count|use otoscope)\b/i;
+
+function managementLabelCandidatesForStructuredFinding(entry = {}, rawLabel = "") {
+  const strippedRawLabel = String(rawLabel || "").replace(/^management implication\s*-\s*/i, "");
+  const preferredResultLabels = [
+    entry.managementChange,
+    entry.management_change,
+    entry.managementImplication,
+    entry.management_implication,
+    entry.displayManagement
+  ];
+  const rawLabelCandidates = [
+    strippedRawLabel,
+    entry.action,
+    entry.reason,
+    entry.rationale,
+    entry.diagnosticTarget,
+    entry.diagnostic_target
+  ];
+  return managementExamActionLabelPattern.test(strippedRawLabel)
+    ? [...preferredResultLabels, ...rawLabelCandidates]
+    : [...rawLabelCandidates, ...preferredResultLabels];
+}
+
+function moduleLimitationDisplayLabel(item = {}) {
+  const baseLabel = moduleLimitationBaseLabel(item) || "linked workup item";
+  return /^interpretation caution\b/i.test(String(baseLabel || ""))
+    ? baseLabel
+    : `Interpretation caution - ${baseLabel}`;
+}
+
+function stripInterpretationCautionPrefix(label = "") {
+  return String(label || "")
+    .replace(/^interpretation caution\s*[-:]\s*/i, "")
+    .trim();
+}
+
+function limitationReportLabelKey(label = "") {
+  return normalizeEvidenceLabel(label)
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function limitationLabelLooksSpecific(label = "") {
+  const text = stripInterpretationCautionPrefix(label);
+  return Boolean(text)
+    && !genericLimitationBaseLabel(text)
+    && !/[,:;]\s*$/.test(text)
+    && !/\.\.\.$/.test(text);
+}
+
+function limitationSpecificLabelCandidates(entry = {}) {
+  return [
+    entry.diagnostic_purpose,
+    entry.diagnosticPurpose,
+    entry.diagnostic_target,
+    entry.diagnosticTarget,
+    entry.management_implication,
+    entry.managementImplication,
+    entry.management_change,
+    entry.managementChange,
+    entry.reason,
+    entry.limitation,
+    entry.interpretationCaution,
+    entry.interpretation_cautions,
+    entry.limitations,
+    entry.source,
+    entry.evidence,
+    entry.exam_id,
+    entry.trace_item_id,
+    entry.traceability?.item_id
+  ];
+}
+
+function specificLimitationBaseLabel(entry = {}, fallback = "") {
+  const rawBase = stripInterpretationCautionPrefix(entry.label || fallback || "");
+  if (limitationLabelLooksSpecific(rawBase)) {
+    return rawBase;
+  }
+  return limitationSpecificLabelCandidates(entry)
+    .map((candidate) => compactLimitationBaseLabel(candidate, entry.role || entry.item_type || ""))
+    .find((candidate) => limitationLabelLooksSpecific(candidate))
+    || rawBase
+    || "linked workup item";
+}
+
+function limitationLabelDifferentiator(entry = {}, baseLabel = "") {
+  const baseKey = limitationReportLabelKey(stripInterpretationCautionPrefix(baseLabel));
+  return limitationSpecificLabelCandidates(entry)
+    .map((candidate) => compactLimitationBaseLabel(candidate, entry.role || entry.item_type || ""))
+    .find((candidate) => {
+      const key = limitationReportLabelKey(candidate);
+      return limitationLabelLooksSpecific(candidate)
+        && key
+        && key !== baseKey
+        && !baseKey.includes(key)
+        && !key.includes(baseKey);
+    })
+    || compactLimitationBaseLabel(entry.exam_id || entry.trace_item_id || entry.traceability?.item_id || "", "")
+    || "";
+}
+
+function limitationStableSuffix(entry = {}) {
+  return compactLimitationBaseLabel(entry.exam_id || entry.trace_item_id || entry.traceability?.item_id || "", "")
+    || "linked item";
+}
+
+function uniquifyLimitationReportLabels(rows = []) {
+  const preparedRows = rows.map((row) => ({
+    row,
+    baseLabel: specificLimitationBaseLabel(row)
+  }));
+  const baseCounts = new Map();
+  preparedRows.forEach(({ baseLabel }) => {
+    const key = limitationReportLabelKey(baseLabel);
+    if (!key) return;
+    baseCounts.set(key, (baseCounts.get(key) || 0) + 1);
+  });
+  const emitted = new Map();
+  return preparedRows.map(({ row, baseLabel }) => {
+    const baseKey = limitationReportLabelKey(baseLabel);
+    let displayBase = baseLabel || "linked workup item";
+    if ((baseCounts.get(baseKey) || 0) > 1 || genericLimitationBaseLabel(displayBase)) {
+      const differentiator = limitationLabelDifferentiator(row, displayBase);
+      if (differentiator && limitationReportLabelKey(differentiator) !== baseKey) {
+        const differentiatedLabel = `Interpretation caution - ${displayBase} - ${differentiator}`;
+        displayBase = differentiatedLabel.length <= 140
+          ? `${displayBase} - ${differentiator}`
+          : `${displayBase} - ${limitationStableSuffix(row)}`;
+      } else {
+        displayBase = `${displayBase} - ${limitationStableSuffix(row)}`;
+      }
+    }
+    let label = /^interpretation caution\b/i.test(displayBase)
+      ? displayBase
+      : `Interpretation caution - ${displayBase}`;
+    let emittedKey = limitationReportLabelKey(label);
+    const priorCount = emitted.get(emittedKey) || 0;
+    if (priorCount) {
+      const stableSuffix = compactLimitationBaseLabel(row.exam_id || row.trace_item_id || row.traceability?.item_id || `item ${priorCount + 1}`, "");
+      label = `${label} - ${stableSuffix}`;
+      emittedKey = limitationReportLabelKey(label);
+    }
+    emitted.set(emittedKey, (emitted.get(emittedKey) || 0) + 1);
+    return { ...row, label };
+  });
+}
+
+function moduleManagementDisplayLabel(item = {}) {
+  const itemType = String([
+    item.item_type,
+    item.gap_type,
+    item.role,
+    item.id,
+    item.exam_id,
+    item.traceability?.item_group,
+    ...(item.tags || [])
+  ].filter(Boolean).join(" ")).toLowerCase();
+  const baseLabel = [
+    moduleItemLabel(item),
+    item.management_change,
+    item.action,
+    item.management_implication,
+    item.reason,
+    item.rationale
+  ]
+    .map((candidate) => compactManagementBaseLabel(candidate))
+    .find((candidate) => managementBaseLabelLooksComplete(candidate))
+    || "linked workup item";
+  return /^management implication\s+-\s+/i.test(String(baseLabel || ""))
+    ? baseLabel
+    : `Management implication - ${baseLabel}`;
+}
+
 function summarizeModuleLimitation(item, intentRow = {}) {
-  return {
+  const source = moduleSourceForItem(item);
+  const lrPlus = item.LR_plus || item.lr_plus || "n/a";
+  const lrMinus = item.LR_minus || item.lr_minus || "n/a";
+  const lrNote = item.likelihood_ratio_note || item.LR_note || item.lr_note || "Likelihood ratios are not available or not applicable for this installed guideline-module item; use the cited guideline/source context and management implication.";
+  const limitation = item.limitation || item.interpretation_cautions || item.limitations || "";
+  const diagnosticPurpose = item.diagnostic_purpose || item.diagnostic_target || limitation;
+  const managementImplication = item.management_implication || item.management_change || item.action || "";
+  return withFlatTraceabilityFields({
     exam_id: item.id || item.exam_id || item.traceability?.item_id || item.traceability?.evidence_row_id || "",
-    label: moduleItemLabel(item),
+    label: moduleLimitationDisplayLabel(item),
     role: "limitation",
-    reason: item.limitation || item.interpretation_cautions || item.limitations || "",
-    diagnostic_target: item.diagnostic_target || "",
-    management_change: item.management_change || item.action || "",
-    evidence: moduleSourceForItem(item),
-    lr_plus: item.LR_plus || "",
-    lr_minus: item.LR_minus || "",
-    lr_note: item.likelihood_ratio_note || item.LR_note || item.lr_note || "",
-    limitations: item.limitation || item.interpretation_cautions || item.limitations || "",
+    reason: limitation,
+    diagnostic_purpose: diagnosticPurpose,
+    diagnostic_target: item.diagnostic_target || diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: item.management_change || item.action || managementImplication,
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
+    lr_plus: lrPlus,
+    lr_minus: lrMinus,
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
+    limitations: limitation,
     tags: item.tags || [],
     routes: ["installed_guideline_module"],
     traceability: reportTraceabilityForModuleExport(item, intentRow, "limitation")
-  };
+  });
 }
 
 function moduleTraceIdsForItem(item = {}) {
@@ -756,13 +1851,20 @@ function moduleTraceIdsForItem(item = {}) {
 }
 
 function reportTraceabilityForModuleExport(item = {}, intentRow = {}, role = "") {
+  const moduleRoutes = uniqueReportValues([item.traceability?.routes, item.traceability?.retrieval_routes, "installed_guideline_module", role]);
   if (item.traceability) {
-    return reportTraceabilityForEntry(item, {
+    return reportTraceabilityForEntry({
+      ...item,
+      traceability: {
+        ...item.traceability,
+        routes: moduleRoutes
+      }
+    }, {
       intent_ids: [intentRow.intent_id],
       source_ids: [moduleSourceForItem(item), ...(intentRow.source_ids || [])],
       authorized_by: item.traceability.authorized_by || "validated_clinical_intent",
       item_id: item.id || "",
-      routes: ["installed_guideline_module", role]
+      routes: moduleRoutes
     });
   }
   return reportTraceabilityForModuleItem(item, intentRow, role);
@@ -928,6 +2030,7 @@ function evaluateModuleBackedIntent(intentRow, args) {
   });
   history.forEach((item) => {
     const label = moduleItemLabel(item);
+    historyQuestionAtomicityIssues(item).forEach((issue) => issues.push(issue));
     if (!item.text) {
       issues.push({ severity: "high", type: "missing_history_text", detail: label });
     }
@@ -943,9 +2046,6 @@ function evaluateModuleBackedIntent(intentRow, args) {
     if (!moduleItemTags(item)) {
       issues.push({ severity: "medium", type: "missing_history_tags", detail: label });
     }
-    if (historyQuestionNeedsDetailPrompts(item) && !(item.detail_prompts || []).length) {
-      issues.push({ severity: "high", type: "missing_history_detail_prompts", detail: label });
-    }
   });
   sourceChecked.forEach((item) => {
     if (!moduleTraceIdsForItem(item).includes(intentRow.intent_id)) {
@@ -955,6 +2055,8 @@ function evaluateModuleBackedIntent(intentRow, args) {
   const blockingIssues = issues.filter((issue) => issue.severity !== "review");
   const reviewNotes = issues.filter((issue) => issue.severity === "review");
   const readiness = moduleReadinessFromIssues(issues, catalogGaps);
+  const conditionalExamAddOnStatus = conditionalExamAddOnStatusForReport(intentRow, conditional, catalogGaps, context);
+  const historyRows = uniquifyHistoryQuestionLabels(history.map((entry) => summarizeQuestionItem(entry, intentRow)));
   return {
     intent_id: intentRow.intent_id,
     label: intentRow.label,
@@ -966,7 +2068,7 @@ function evaluateModuleBackedIntent(intentRow, args) {
     active_bundles: intentRow.clinical_bundle_ids || [],
     module_id: module.id,
     module_label: module.label,
-    source_ids: result.sourceIds || [],
+    source_ids: uniqueReportSourceIds([result.sourceIds, intentRow.source_ids]),
     counts: {
       safety: safety.length,
       history: history.length,
@@ -987,14 +2089,19 @@ function evaluateModuleBackedIntent(intentRow, args) {
     readiness_status: readiness.status,
     readiness_label: readiness.label,
     complete_validated_workup: readiness.completeValidatedWorkup,
+    section_statuses: {
+      conditional_exam_addons: conditionalExamAddOnStatus,
+      conditionalPhysicalExamManeuvers: conditionalExamAddOnStatus
+    },
+    conditional_exam_addon_status: conditionalExamAddOnStatus,
     safety: safety.map((entry) => summarizeModuleItem(entry, "safety", intentRow)),
-    history: history.map((entry) => summarizeQuestionItem(entry, intentRow)),
+    history: historyRows,
     core: core.map((entry) => summarizeModuleItem(entry, "core", intentRow)),
     conditional: conditional.map((entry) => summarizeModuleItem(entry, "conditional", intentRow)),
     tests: tests.map((entry) => summarizeModuleItem(entry, "test", intentRow)),
     red_flags: redFlags.map((entry) => summarizeModuleItem(entry, "red_flag", intentRow)),
     management_changes: managementChanges.map((entry) => summarizeModuleItem(entry, "management", intentRow)),
-    limitations: interpretationCautions.map((entry) => summarizeModuleLimitation(entry, intentRow)),
+    limitations: uniquifyLimitationReportLabels(interpretationCautions.map((entry) => summarizeModuleLimitation(entry, intentRow))),
     evidence_metadata: sourceChecked.map((entry) => summarizeModuleItem(entry, "evidence", intentRow)),
     catalog_gaps: catalogGaps.map(summarizeCatalogGap),
     differential: differential.map((entry) => summarizeModuleItem(entry, "differential", intentRow)),
@@ -1096,6 +2203,9 @@ function evaluateIntent(intentRow, fixtures, args) {
       detail: `${issue.section || "workup"}: ${issue.label || issue.exam_id || "item"} - ${issue.detail}`
     });
   });
+  history.forEach((entry) => {
+    historyQuestionAtomicityIssues(entry).forEach((issue) => issues.push(issue));
+  });
   safety.forEach((entry) => {
     const candidate = entry.candidate || entry;
     const options = entry.options || entry.findings_options || candidate.examOptions || candidate.findings_options || "";
@@ -1114,6 +2224,44 @@ function evaluateIntent(intentRow, fixtures, args) {
   const blockingIssues = issues.filter((issue) => issue.severity !== "review");
   const reviewNotes = issues.filter((issue) => issue.severity === "review");
   const readiness = fallbackReadinessFromRecommendation(recommendation, catalogGaps, qualityIssues);
+  const conditionalExamAddOnStatus = recommendation.conditionalExamAddOnStatus
+    || conditionalExamAddOnStatusForReport(intentRow, conditional, catalogGaps, context);
+  const historyRows = uniquifyHistoryQuestionLabels(history.map((entry) => {
+    const traceability = reportTraceabilityForEntry(entry);
+    const source = firstReportText(entry.source, entry.evidence?.source, entry.candidate?.source_citation, (traceability.source_ids || []).join("; "));
+    const lrPlus = entry.evidence?.LR_plus || entry.LR_plus || entry.lr_plus || "n/a";
+    const lrMinus = entry.evidence?.LR_minus || entry.LR_minus || entry.lr_minus || "n/a";
+    const lrNote = entry.evidence?.likelihood_ratio_note
+      || entry.likelihood_ratio_note
+      || entry.lr_note
+      || "Question-level LR+/LR- is not available unless the cited evidence validates the exact response; use this answer to localize the source, assess severity, and guide management.";
+    const diagnosticPurpose = entry.diagnosticPurpose || entry.diagnostic_purpose || entry.reason || "";
+    const managementImplication = entry.managementImplication || entry.management_implication || entry.management_change || "";
+    return withFlatTraceabilityFields({
+      exam_id: entry.exam_id || entry.candidate?.exam_id || "",
+      label: entry.displayLabel || entry.text || "",
+      text: entry.fullQuestion || entry.text || "",
+      full_question: entry.fullQuestion || entry.text || "",
+      role: "history",
+      reason: diagnosticPurpose,
+      diagnostic_purpose: diagnosticPurpose,
+      management_implication: managementImplication,
+      management_change: managementImplication,
+      options: entry.options || entry.answer_options || entry.answerOptions || entry.displayBedsideQuestionOptions || entry.candidate?.bedside_question_options || "",
+      evidence: source,
+      source,
+      LR_plus: lrPlus,
+      LR_minus: lrMinus,
+      lr_plus: lrPlus,
+      lr_minus: lrMinus,
+      likelihood_ratio_note: lrNote,
+      lr_note: lrNote,
+      when_to_ask: firstReportText(entry.whenToAsk, entry.when_to_ask, entry.candidate?.when_to_use_structured),
+      tags: reportTagText(entry.tags, entry.retrievalTags, entry.matchedTags, entry.candidate?.tags, entry.candidate?.retrieval_tags),
+      detail_prompts: entry.detail_prompts || [],
+      traceability
+    });
+  }));
   return {
     intent_id: intentRow.intent_id,
     label: intentRow.label,
@@ -1122,6 +2270,7 @@ function evaluateIntent(intentRow, fixtures, args) {
     avoid_labels: intentRow.avoid_labels || [],
     context,
     matched_tags: ranked.matchedTags.map((match) => match.tag),
+    source_ids: uniqueReportSourceIds([intentRow.source_ids]),
     active_bundles: (recommendation.activeProfiles || []).map((profile) => profile.id || profile.name),
     counts: {
       safety: safety.length,
@@ -1143,35 +2292,35 @@ function evaluateIntent(intentRow, fixtures, args) {
     readiness_status: readiness.status,
     readiness_label: readiness.label,
     complete_validated_workup: readiness.completeValidatedWorkup,
-    safety: safety.map((entry) => summarizeEntry(entry)),
-    history: history.map((entry) => ({
-      exam_id: entry.exam_id || entry.candidate?.exam_id || "",
-      label: entry.text || "",
-      role: "history",
-      reason: entry.diagnosticPurpose || "",
-      management_change: entry.managementImplication || "",
-      evidence: entry.source || "",
-      lr_plus: entry.evidence?.LR_plus || "",
-      lr_minus: entry.evidence?.LR_minus || "",
-      lr_note: entry.evidence?.likelihood_ratio_note || "",
-      detail_prompts: entry.detail_prompts || [],
-      traceability: reportTraceabilityForEntry(entry)
-    })),
-    core: core.map((entry) => summarizeEntry(entry)),
-    conditional: conditional.map((entry) => summarizeEntry(entry)),
-    tests: tests.map((entry) => summarizeEntry(entry)),
-    red_flags: redFlags.map((entry) => summarizeEntry(entry)),
+    section_statuses: {
+      ...(recommendation.sectionStatuses || {}),
+      conditional_exam_addons: conditionalExamAddOnStatus,
+      conditionalPhysicalExamManeuvers: conditionalExamAddOnStatus
+    },
+    conditional_exam_addon_status: conditionalExamAddOnStatus,
+    safety: safety.map((entry) => summarizeEntry(entry, "safety")),
+    history: historyRows,
+    core: core.map((entry) => summarizeEntry(entry, "core")),
+    conditional: conditional.map((entry) => summarizeEntry(entry, "conditional")),
+    tests: tests.map((entry) => summarizeEntry(entry, "test")),
+    red_flags: redFlags.map((entry) => summarizeEntry(entry, "red_flag")),
     management_changes: managementChanges.map(summarizeStructuredFinding),
-    limitations: interpretationCautions.map(summarizeStructuredFinding),
+    limitations: uniquifyLimitationReportLabels(interpretationCautions.map(summarizeStructuredFinding)),
     evidence_metadata: evidenceMetadata.map(summarizeEvidenceMetadata),
     catalog_gaps: catalogGaps.map(summarizeCatalogGap),
     top_retrieved: ranked.candidates.slice(0, 16).map((candidate) => summarizeEntry(candidate)),
     high_score_suppressed: highScoreSuppressed,
-    suppressed: (recommendation.suppressedItems || []).slice(0, 24).map((entry) => ({
-      ...summarizeEntry(entry),
-      score: Math.round(entry.candidate?.score || entry.score || 0),
-      reason: entry.reason || entry.suppressionReason || "Not selected for this validated intent."
-    })),
+    suppressed: (recommendation.suppressedItems || []).slice(0, 24).map((entry) => {
+      const summary = summarizeEntry(entry, "suppressed");
+      const originalLabel = stripSuppressedReportPrefix(entry.original_label || summary.original_label || entryLabel(entry) || summary.label || "");
+      return {
+        ...summary,
+        label: suppressedReportLabel({ ...entry, label: summary.label, original_label: originalLabel }),
+        original_label: originalLabel || stripSuppressedReportPrefix(summary.label || ""),
+        score: Math.round(entry.candidate?.score || entry.score || 0),
+        reason: entry.reason || entry.suppressionReason || "Not selected for this validated intent."
+      };
+    }),
     missing_required_domains: missingRequiredDomains,
     avoid_hits: avoidHits,
     duplicate_labels: duplicateLabels,
@@ -1183,38 +2332,90 @@ function evaluateIntent(intentRow, fixtures, args) {
   };
 }
 
-function summarizeEntry(entry) {
+function summarizeEntry(entry, fallbackRole = "") {
   const candidate = entry.candidate || entry;
   const label = entryLabel(entry);
-  const lrPlus = candidate.LR_plus || entry.LR_plus || entry.evidence?.LR_plus || "";
-  const lrMinus = candidate.LR_minus || entry.LR_minus || entry.evidence?.LR_minus || "";
+  const role = fallbackRole || entry.role || "";
+  const lrPlus = candidate.LR_plus || candidate.lr_plus || entry.LR_plus || entry.lr_plus || entry.evidence?.LR_plus || "n/a";
+  const lrMinus = candidate.LR_minus || candidate.lr_minus || entry.LR_minus || entry.lr_minus || entry.evidence?.LR_minus || "n/a";
   const traceability = reportTraceabilityForEntry(entry);
-  return {
+  const source = firstReportText(
+    candidate.evidence_source_primary,
+    candidate.source_citation,
+    entry.source,
+    typeof entry.evidence === "string" ? entry.evidence : "",
+    entry.evidence?.source,
+    candidate.source_id,
+    candidate.source?.source_id,
+    (traceability.source_ids || []).join("; ")
+  );
+  const lrNote = summaryLikelihoodRatioNote({
+    label,
+    role,
+    lr_plus: lrPlus,
+    lr_minus: lrMinus,
+    entry,
+    candidate
+  });
+  const diagnosticPurpose = firstReportText(
+    entry.diagnostic_purpose,
+    entry.displayDiagnosticTarget,
+    candidate.diagnostic_purpose,
+    candidate.diagnostic_target,
+    entry.reason
+  );
+  const managementImplication = firstReportText(
+    entry.management_implication,
+    entry.displayManagement,
+    candidate.result_changes_management,
+    candidate.management_link,
+    entry.management_change
+  );
+  return withFlatTraceabilityFields({
     exam_id: candidate.exam_id || entry.exam_id || "",
     label,
-    role: entry.role || "",
+    role,
     fit: entry.contextFitScore ?? "",
     score: Math.round(candidate.score || entry.score || 0),
     reason: entry.reason || "",
-    diagnostic_target: entry.displayDiagnosticTarget || candidate.diagnostic_target || "",
-    management_change: entry.displayManagement || candidate.result_changes_management || candidate.management_link || "",
+    diagnostic_purpose: diagnosticPurpose,
+    diagnostic_target: entry.displayDiagnosticTarget || candidate.diagnostic_target || diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: entry.displayManagement || candidate.result_changes_management || candidate.management_link || managementImplication,
     options: entry.options || entry.findings_options || candidate.examOptions || candidate.findings_options || "",
-    evidence: candidate.evidence_source_primary || candidate.source_citation || "",
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
     lr_plus: lrPlus,
     lr_minus: lrMinus,
-    lr_note: summaryLikelihoodRatioNote({
-      label,
-      role: entry.role || "",
-      lr_plus: lrPlus,
-      lr_minus: lrMinus,
-      entry,
-      candidate
-    }),
-    difficulty: candidate.difficulty || "",
-    time_burden_minutes: candidate.time_burden_minutes || "",
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
+    difficulty: entry.feasibility?.difficulty || entry.difficulty || candidate.difficulty || "",
+    time_burden_minutes: entry.feasibility?.time_burden_minutes || entry.time_burden_minutes || candidate.time_burden_minutes || "",
+    action: entry.action || candidate.action || "",
+    technique: reportTechniqueForRole(role, entry.technique || candidate.technique || candidate.maneuver || ""),
+    when_to_use: firstReportText(entry.whenToUse, entry.when_to_use, entry.when_to_use_structured, candidate.when_to_use_structured, candidate.whenToUse),
+    equipment_needed: entry.feasibility?.equipment_needed || entry.equipment_needed || candidate.equipment_needed || "",
+    patient_cooperation_required: entry.feasibility?.patient_cooperation_required || entry.patient_cooperation_required || candidate.patient_cooperation_required || "",
+    limitations: entry.limitations || entry.interpretationCautions || candidate.limitations || "",
+    tags: reportTagText(entry.tags, entry.matchedTags, entry.retrievalTags, candidate.tags, candidate.matchedTags, candidate.retrieval_tags),
     routes: candidate.retrievalRoutes || [],
     traceability
-  };
+  });
+}
+
+function reportTechniqueForRole(role = "", value = "") {
+  const technique = String(value || "").trim();
+  if (!technique) {
+    return "";
+  }
+  const normalizedRole = String(role || "").toLowerCase();
+  const isExamRole = normalizedRole === "core" || normalizedRole === "conditional";
+  if (!isExamRole) {
+    return "";
+  }
+  return technique;
 }
 
 function summaryLikelihoodRatioUnavailable(value) {
@@ -1242,45 +2443,84 @@ function summaryLikelihoodRatioNote({ label = "", role = "", lr_plus = "", lr_mi
 }
 
 function summarizeStructuredFinding(entry = {}) {
-  const lrPlus = entry.evidence?.LR_plus || entry.LR_plus || "";
-  const lrMinus = entry.evidence?.LR_minus || entry.LR_minus || "";
-  const label = entry.label || entry.id || "";
+  const lrPlus = entry.evidence?.LR_plus || entry.LR_plus || entry.lr_plus || "n/a";
+  const lrMinus = entry.evidence?.LR_minus || entry.LR_minus || entry.lr_minus || "n/a";
+  const rawLabel = entry.label || entry.id || "";
+  const isLimitation = entry.role === "limitation" || Boolean(entry.limitation || entry.interpretationCaution);
+  const isManagement = entry.role === "management" || Boolean(entry.managementChange || entry.management_change || entry.managementImplication || entry.management_implication);
+  const limitationBaseLabel = isLimitation
+    ? compactLimitationBaseLabel(
+      String(rawLabel || "").replace(/^interpretation caution\s*-\s*/i, ""),
+      entry.role || entry.item_type || entry.type || ""
+    )
+    : "";
+  const managementBaseLabel = isManagement
+    ? managementLabelCandidatesForStructuredFinding(entry, rawLabel)
+      .map((candidate) => compactManagementBaseLabel(candidate))
+      .find((candidate) => managementBaseLabelLooksComplete(candidate))
+    : "";
+  const label = isLimitation
+    ? `Interpretation caution - ${limitationBaseLabel || "linked workup item"}`
+    : isManagement
+      ? `Management implication - ${managementBaseLabel || "linked workup item"}`
+    : rawLabel;
   const traceability = reportTraceabilityForEntry(entry);
-  return {
+  const source = entry.source || entry.evidence?.source || (traceability.source_ids || []).join("; ");
+  const lrNote = summaryLikelihoodRatioNote({ label, role: entry.role || "", lr_plus: lrPlus, lr_minus: lrMinus, entry });
+  const diagnosticPurpose = entry.diagnosticPurpose || entry.diagnosticTarget || entry.limitation || entry.interpretationCaution || "";
+  const managementImplication = entry.managementImplication || entry.managementChange || "";
+  return withFlatTraceabilityFields({
     exam_id: entry.linkedExamId || entry.exam_id || entry.id || "",
     label,
     role: entry.role || "",
     reason: entry.diagnosticTarget || entry.limitation || entry.interpretationCaution || entry.managementChange || "",
-    diagnostic_target: entry.diagnosticTarget || "",
-    management_change: entry.managementChange || "",
-    evidence: entry.source || entry.evidence?.source || "",
+    diagnostic_purpose: diagnosticPurpose,
+    diagnostic_target: entry.diagnosticTarget || diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: entry.managementChange || managementImplication,
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
     lr_plus: lrPlus,
     lr_minus: lrMinus,
-    lr_note: summaryLikelihoodRatioNote({ label, role: entry.role || "", lr_plus: lrPlus, lr_minus: lrMinus, entry }),
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
+    limitations: entry.limitation || entry.interpretationCaution || entry.limitations || "",
     routes: entry.retrievalRoute ? [entry.retrievalRoute] : [],
     traceability
-  };
+  });
 }
 
 function summarizeEvidenceMetadata(entry = {}) {
-  const lrPlus = entry.evidence?.LR_plus || entry.LR_plus || "";
-  const lrMinus = entry.evidence?.LR_minus || entry.LR_minus || "";
+  const lrPlus = entry.evidence?.LR_plus || entry.LR_plus || entry.lr_plus || "n/a";
+  const lrMinus = entry.evidence?.LR_minus || entry.LR_minus || entry.lr_minus || "n/a";
   const label = entry.label || entry.id || "";
   const traceability = reportTraceabilityForEntry(entry);
-  return {
+  const source = entry.source || entry.evidence?.source || (traceability.source_ids || []).join("; ");
+  const lrNote = summaryLikelihoodRatioNote({ label, role: "evidence", lr_plus: lrPlus, lr_minus: lrMinus, entry });
+  const diagnosticPurpose = entry.diagnosticPurpose || entry.diagnosticTarget || "";
+  const managementImplication = entry.managementImplication || entry.managementChange || "";
+  return withFlatTraceabilityFields({
     exam_id: entry.linkedExamId || entry.id || "",
     label,
     role: "evidence",
     reason: entry.diagnosticTarget || "",
-    diagnostic_target: entry.diagnosticTarget || "",
-    management_change: "",
-    evidence: entry.source || entry.evidence?.source || "",
+    diagnostic_purpose: diagnosticPurpose,
+    diagnostic_target: entry.diagnosticTarget || diagnosticPurpose,
+    management_implication: managementImplication,
+    management_change: managementImplication,
+    evidence: source,
+    source,
+    LR_plus: lrPlus,
+    LR_minus: lrMinus,
     lr_plus: lrPlus,
     lr_minus: lrMinus,
-    lr_note: summaryLikelihoodRatioNote({ label, role: "evidence", lr_plus: lrPlus, lr_minus: lrMinus, entry }),
+    likelihood_ratio_note: lrNote,
+    lr_note: lrNote,
     routes: entry.retrievalRoute ? [entry.retrievalRoute] : [],
     traceability
-  };
+  });
 }
 
 function summarizeCatalogGap(gap = {}) {
@@ -1293,7 +2533,7 @@ function summarizeCatalogGap(gap = {}) {
     routes: ["staged_catalog_gap"],
     catalog_gap: true
   });
-  return {
+  return withFlatTraceabilityFields({
     exam_id: gapId,
     label: gap.label || gap.gap_label || gapId,
     role: gap.gapType || gap.gap_type || gap.item_type || "catalog_gap",
@@ -1309,7 +2549,7 @@ function summarizeCatalogGap(gap = {}) {
     activation_condition: gap.activationCondition || gap.activation_condition || gap.when_to_use || "",
     routes: ["staged_catalog_gap"],
     traceability
-  };
+  });
 }
 
 function appendReportSection(lines, title, entries = [], formatter = null) {
@@ -1327,8 +2567,19 @@ function appendReportSection(lines, title, entries = [], formatter = null) {
     const lr = entry.lr_plus || entry.lr_minus || entry.lr_note ? `; LR+ ${entry.lr_plus || "n/a"}, LR- ${entry.lr_minus || "n/a"}` : "";
     const lrNote = entry.lr_note ? `; LR note: ${entry.lr_note}` : "";
     const options = entry.options ? `; options ${entry.options}` : "";
+    const useWhen = entry.when_to_use || entry.when_to_ask ? `; use when ${entry.when_to_use || entry.when_to_ask}` : "";
+    const technique = entry.technique ? `; technique ${entry.technique}` : "";
+    const feasibility = [
+      entry.difficulty ? `difficulty ${entry.difficulty}` : "",
+      entry.time_burden_minutes !== "" && entry.time_burden_minutes !== undefined ? `time ${entry.time_burden_minutes} min` : "",
+      entry.equipment_needed ? `equipment ${entry.equipment_needed}` : "",
+      entry.patient_cooperation_required ? `cooperation ${entry.patient_cooperation_required}` : ""
+    ].filter(Boolean).join(", ");
+    const feasibilityText = feasibility ? `; feasibility ${feasibility}` : "";
+    const limitations = entry.limitations ? `; limitations ${entry.limitations}` : "";
+    const tags = entry.tags ? `; tags ${entry.tags}` : "";
     const reason = entry.reason || entry.management_change || "no rationale";
-    lines.push(`${index + 1}. ${entry.label || entry.exam_id || "unlabeled"} (${entry.exam_id || "no-id"}) - ${reason}${options}${evidence}${lr}${lrNote}`);
+    lines.push(`${index + 1}. ${entry.label || entry.exam_id || "unlabeled"} (${entry.exam_id || "no-id"}) - ${reason}${options}${useWhen}${technique}${feasibilityText}${limitations}${tags}${evidence}${lr}${lrNote}`);
   });
 }
 
@@ -1354,6 +2605,9 @@ export function formatMarkdown(run) {
     lines.push(`- ${status} ${result.intent_id}: ${result.label}`);
     lines.push(`  - readiness: ${result.readiness_label || result.readiness_status || "not recorded"}`);
     lines.push(`  - safety ${result.counts.safety}, history ${result.counts.history}, core exam ${result.counts.core}, conditional exam ${result.counts.conditional}, tests ${result.counts.tests || 0}, red flags ${result.counts.red_flags || 0}, management ${result.counts.management || 0}, evidence/LR ${result.counts.evidence_metadata || 0}, catalog gaps ${result.counts.catalog_gaps || 0}, retrieved ${result.counts.retrieved}, suppressed ${result.counts.suppressed}`);
+    if (result.conditional_exam_addon_status?.status) {
+      lines.push(`  - conditional add-ons status: ${result.conditional_exam_addon_status.label || result.conditional_exam_addon_status.status} (${result.conditional_exam_addon_status.status})`);
+    }
     if (result.module_id) {
       lines.push(`  - module: ${result.module_label} (${result.module_id}); sources: ${(result.source_ids || []).join("; ") || "n/a"}`);
     }
@@ -1383,11 +2637,18 @@ export function formatMarkdown(run) {
     appendReportSection(lines, "Basic bedside data / safety checks", result.safety || []);
     appendReportSection(lines, "Focused history questions", result.history || [], (entry, index) => {
       const evidence = entry.evidence ? `; source ${entry.evidence}` : "";
+      const options = entry.options ? `; options ${entry.options}` : "";
+      const useWhen = entry.when_to_ask ? `; ask when ${entry.when_to_ask}` : "";
+      const tags = entry.tags ? `; tags ${entry.tags}` : "";
+      const fullQuestion = entry.full_question && entry.full_question !== entry.label ? `; full question ${entry.full_question}` : "";
       const details = entry.detail_prompts?.length ? `; details ${entry.detail_prompts.join(" | ")}` : "";
-      return `${index + 1}. ${entry.label || "unlabeled question"} - ${entry.reason || entry.management_change || "no rationale"}${evidence}${details}`;
+      return `${index + 1}. ${entry.label || "unlabeled question"} - ${entry.reason || entry.management_change || "no rationale"}${options}${useWhen}${tags}${evidence}${fullQuestion}${details}`;
     });
     appendReportSection(lines, "Core physical exam maneuvers", result.core || []);
     appendReportSection(lines, "Conditional exam add-ons", result.conditional || []);
+    if (result.conditional_exam_addon_status?.reason) {
+      lines.push(`Conditional add-on status: ${result.conditional_exam_addon_status.label || result.conditional_exam_addon_status.status} (${result.conditional_exam_addon_status.status}) - ${result.conditional_exam_addon_status.reason}`);
+    }
     appendReportSection(lines, "Management-changing findings", result.management_changes || []);
     appendReportSection(lines, "Limitations and interpretation cautions", result.limitations || []);
     appendReportSection(lines, "Evidence / likelihood-ratio metadata", result.evidence_metadata || [], (entry, index) => {
@@ -1400,8 +2661,11 @@ export function formatMarkdown(run) {
     });
     appendReportSection(lines, "Suppressed/not-recommended items", result.suppressed || result.high_score_suppressed || [], (entry, index) => {
       const source = entry.evidence ? `; source ${entry.evidence}` : "";
+      const lr = entry.lr_plus || entry.lr_minus ? `; LR+ ${entry.lr_plus || "n/a"}, LR- ${entry.lr_minus || "n/a"}` : "";
+      const lrNote = entry.lr_note ? `; LR note: ${entry.lr_note}` : "";
+      const tags = entry.tags ? `; tags ${entry.tags}` : "";
       const authorization = entry.traceability?.authorized_by ? `; authorization ${entry.traceability.authorized_by}` : "";
-      return `${index + 1}. ${entry.label || "unlabeled"} (${entry.exam_id || entry.traceability?.item_id || "no-id"}) - ${entry.reason || "suppressed"}${source}${authorization}`;
+      return `${index + 1}. ${entry.label || "unlabeled"} (${entry.exam_id || entry.traceability?.item_id || "no-id"}) - ${entry.reason || "suppressed"}${source}${lr}${lrNote}${tags}${authorization}`;
     });
     lines.push("");
   });
@@ -1431,7 +2695,10 @@ export function formatMarkdown(run) {
       if (result.history.length) {
         lines.push("", "Focused history:");
         result.history.forEach((entry, index) => {
-          lines.push(`${index + 1}. ${entry.label} - ${entry.reason || entry.management_change || "no rationale"}`);
+          const options = entry.options ? `; options ${entry.options}` : "";
+          const useWhen = entry.when_to_ask ? `; ask when ${entry.when_to_ask}` : "";
+          const tags = entry.tags ? `; tags ${entry.tags}` : "";
+          lines.push(`${index + 1}. ${entry.label} - ${entry.reason || entry.management_change || "no rationale"}${options}${useWhen}${tags}`);
         });
       }
       lines.push("", "Core physical exam:");

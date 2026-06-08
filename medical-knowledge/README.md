@@ -55,6 +55,8 @@ Raw source documents, especially copyrighted clinical references, should not be 
 
 Knowledge-pack imports should keep workup content atomic by section. Use `history_question` for one askable question, `physical_exam_maneuver` for one bedside maneuver, `safety_check` for basic bedside data or safety prerequisites, `diagnostic_test` for a test to order, `reference_threshold` for guideline or local-lab thresholds used to interpret results, `red_flag` for escalation cues, and `management_change` for action rules. Do not bundle multiple unrelated exam maneuvers into one physical exam item.
 
+Gold cases can audit each section separately. Use `expected_history_labels`, `expected_core_labels`, `expected_safety_labels`, `expected_test_labels`, `expected_red_flag_labels`, and `expected_management_change_labels` when a case should prove that a pack contains a specific question, exam maneuver, safety check, test/threshold, escalation cue, or management-changing rule. Expected labels must be backed by linked items in the same staged intent before a pack can activate.
+
 ## Safety Rules
 
 - Do not include patient identifiers or raw chart text.

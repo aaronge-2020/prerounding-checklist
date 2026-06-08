@@ -783,6 +783,26 @@ if (renderWorkupHistoryQuestionStart < 0 || renderWorkupHistoryQuestionEnd <= re
 if (!/Detail prompts/.test(moduleScript.slice(renderWorkupHistoryQuestionStart, renderWorkupHistoryQuestionEnd))) {
   throw new Error("Focused history question cards should expose concrete detail prompts.");
 }
+if (!/renderHistoryOptionResponseControls/.test(moduleScript.slice(renderWorkupHistoryQuestionStart, renderWorkupHistoryQuestionEnd))
+  || !/Recorded responses/.test(moduleScript.slice(renderWorkupHistoryQuestionStart, renderWorkupHistoryQuestionEnd))) {
+  throw new Error("Focused history question cards should allow per-option positive/negative response marks and show recorded responses.");
+}
+if (!/data-history-option-response/.test(moduleScript) || !/clinicalHistoryOptionResponses/.test(moduleScript)) {
+  throw new Error("Focused history option response controls should be stateful and clickable.");
+}
+if (!/usesSymptomResponseAnswers/.test(moduleScript)
+  || !/finding-symptom-response-button/.test(html)
+  || !/Answer every component: left \(-\) denied, right \(\+\) endorsed\./.test(moduleScript)
+  || !/\(-\) Denied/.test(moduleScript)
+  || !/\(\+\) Endorsed/.test(moduleScript)) {
+  throw new Error("Checklist bedside symptom-list questions should render explicit per-component denied/endorsed controls.");
+}
+if (!/phone-concept-symptom-response-button/.test(html)
+  || !/phoneConceptSetSymptomResponse/.test(moduleScript)
+  || !/Use left \(-\) Deny and right \(\+\) Endorse/.test(moduleScript)
+  || !/data-phone-action="response-option"/.test(moduleScript)) {
+  throw new Error("Mobile bedside symptom-list questions should support explicit per-symptom -/+ response controls.");
+}
 if (/>No default<\/option>/.test(html)) {
   throw new Error("Prompt personalization default options should explain that the workflow default will be used.");
 }

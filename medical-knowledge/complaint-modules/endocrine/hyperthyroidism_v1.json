@@ -80,7 +80,7 @@
           "local",
           "pregnancy",
           "illness",
-          "context"
+          "free"
         ]
       },
       {
@@ -111,10 +111,10 @@
           "mimics",
           "exclusions",
           "graves",
-          "disease",
           "toxic",
           "nodule",
-          "multinodular"
+          "multinodular",
+          "goiter"
         ]
       }
     ],
@@ -146,11 +146,11 @@
           "thyroid",
           "storm",
           "fever",
-          "severe",
           "tachycardia",
           "heart",
           "failure",
-          "agitation"
+          "agitation",
+          "altered"
         ],
         "when": {
           "termsAny": [
@@ -191,10 +191,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -339,7 +339,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -373,9 +373,8 @@
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -660,8 +659,7 @@
         "management_implication": "The answer changes Graves orbitopathy severity assessment, urgent eye-protection steps, smoking counseling, and ophthalmology referral timing for Hyperthyroidism (Overactive Thyroid).",
         "tags": [
           "thyroid_disorders",
-          "hyperthyroidism",
-          "symptoms"
+          "hyperthyroidism"
         ],
         "source_seed": "Iodine/amiodarone, postpartum, neck pain, eye symptoms."
       },
@@ -750,8 +748,7 @@
           "thyroid_disorders",
           "hyperthyroidism",
           "menstrual",
-          "fertility",
-          "context"
+          "fertility"
         ],
         "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
@@ -795,8 +792,7 @@
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "neck",
-          "symptoms"
+          "neck"
         ],
         "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
@@ -977,7 +973,7 @@
       },
       {
         "id": "exam_04",
-        "label": "Assess tremor with outstretched hands",
+        "label": "Observe outstretched-hands tremor",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1008,15 +1004,14 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess tremor with outstretched hands is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe outstretched-hands tremor is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "assess",
-          "tremor",
-          "with",
+          "observe",
           "outstretched",
-          "hands"
+          "hands",
+          "tremor"
         ]
       },
       {
@@ -1063,7 +1058,7 @@
       },
       {
         "id": "exam_06",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1094,11 +1089,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ]
@@ -1158,7 +1153,7 @@
       },
       {
         "id": "conditional_exam_02",
-        "label": "Assess voice quality",
+        "label": "Listen to voice quality",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_HYPERTHYROIDISM_2016",
@@ -1189,11 +1184,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess voice quality is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Listen to voice quality is supportive for Hyperthyroidism (Overactive Thyroid), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "assess",
+          "listen",
           "voice",
           "quality"
         ],
@@ -1344,7 +1339,6 @@
           "raiu",
           "doppler",
           "ultrasound",
-          "when",
           "etiology",
           "unclear"
         ]
@@ -1374,13 +1368,13 @@
           "thyroid_disorders",
           "hyperthyroidism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1408,13 +1402,13 @@
           "thyroid_disorders",
           "hyperthyroidism",
           "thyrotoxicosis",
-          "safety",
-          "data",
           "check",
           "free",
           "total",
           "trab",
-          "raiu"
+          "raiu",
+          "indicated",
+          "tachyarrhythmia"
         ]
       },
       {
@@ -1441,14 +1435,14 @@
         "tags": [
           "thyroid_disorders",
           "hyperthyroidism",
-          "with",
           "free",
           "thyrotoxicosis",
           "autoimmune",
           "hypothyroidism",
           "trab",
           "graves",
-          "thyroid"
+          "thyroid",
+          "ultrasound"
         ]
       },
       {
@@ -1482,7 +1476,7 @@
           "before",
           "susceptible",
           "assays",
-          "when"
+          "feasible"
         ]
       },
       {
@@ -1515,8 +1509,7 @@
           "about",
           "local",
           "pregnancy",
-          "illness",
-          "context"
+          "illness"
         ]
       },
       {
@@ -1612,8 +1605,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1676,10 +1669,8 @@
           "trab",
           "uptake",
           "pattern",
-          "changes",
           "etiology",
-          "specific",
-          "treatment"
+          "specific"
         ]
       },
       {
@@ -1708,12 +1699,12 @@
           "hyperthyroidism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1742,12 +1733,12 @@
           "hyperthyroidism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1775,13 +1766,13 @@
           "thyroid_disorders",
           "hyperthyroidism",
           "suppressed",
-          "with",
           "elevated",
-          "changes",
           "thyrotoxicosis",
           "severity",
           "etiology",
-          "workup"
+          "normal",
+          "triggers",
+          "central"
         ]
       },
       {
@@ -1811,11 +1802,11 @@
           "suspicious",
           "nodule",
           "compressive",
-          "symptom",
           "abnormal",
           "node",
           "calcitonin",
-          "concern"
+          "concern",
+          "high"
         ]
       }
     ],

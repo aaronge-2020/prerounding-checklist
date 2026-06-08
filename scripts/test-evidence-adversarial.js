@@ -448,11 +448,11 @@ if (process.argv.includes("--report-only")) {
   const abdominalSafetyLabels = (abdominalWithNeuroModifier.basicSafetyChecks || []).map((entry) => entry.label).join(" | ");
   const abdominalCoreLabels = (abdominalWithNeuroModifier.corePhysicalExamManeuvers || abdominalWithNeuroModifier.coreItems).map((entry) => entry.label).join(" | ");
   const abdominalConditionalLabels = (abdominalWithNeuroModifier.conditionalPhysicalExamManeuvers || abdominalWithNeuroModifier.conditionalItems).map((entry) => entry.label).join(" | ");
-  assert.match(abdominalSafetyLabels, /Temperature/, "abdominal validated intent should include temperature as a safety check");
-  assert.doesNotMatch(abdominalCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature/, "vitals should not appear in core physical exam maneuvers");
+  assert.match(abdominalSafetyLabels, /Measure temperature/i, "abdominal validated intent should include temperature as an action-specific safety check");
+  assert.doesNotMatch(abdominalCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature|Measure blood pressure|Measure heart rate|Count respiratory rate|Measure temperature/i, "vitals should not appear in core physical exam maneuvers");
   assert.match(abdominalConditionalLabels, /Inspect facial symmetry/i, "focal weakness modifier should surface atomic neuro safety add-ons");
   assert.match(abdominalConditionalLabels, /Test pronator drift/i, "focal weakness modifier should surface pronator drift as conditional, not abdominal core");
-  assert.match(abdominalConditionalLabels, /Check pupils/i, "focal weakness modifier should surface pupils as conditional neuro safety check");
+  assert.match(abdominalConditionalLabels, /Test pupillary light response/i, "focal weakness modifier should surface pupils as conditional neuro safety check");
   assert.match(abdominalConditionalLabels, /Test rebound tenderness/i, "abdominal pain should surface peritoneal signs as conditional add-ons");
   assert.match(abdominalConditionalLabels, /Test Murphy sign/i, "abdominal pain should surface biliary/RUQ screening as a conditional add-on");
   assert.match(
@@ -460,7 +460,7 @@ if (process.argv.includes("--report-only")) {
     /Focal neurologic symptoms.*not a neuro intent/i,
     "focal neuro modifiers outside abdominal intent should warn that the current workup is incomplete"
   );
-  assert.doesNotMatch(abdominalCoreLabels, /Test pronator drift|Inspect facial symmetry|Check pupils|Pronator drift|Facial symmetry|Pupils/i, "cross-intent neuro items should not become abdominal core");
+  assert.doesNotMatch(abdominalCoreLabels, /Test pronator drift|Inspect facial symmetry|Test pupillary light response|Pronator drift|Facial symmetry|Pupils/i, "cross-intent neuro items should not become abdominal core");
   assert.doesNotMatch(abdominalCoreLabels, /Test Murphy sign|Test psoas sign|Test obturator sign|Test rebound tenderness|Murphy|Psoas|Obturator|Rebound/i, "advanced abdominal maneuvers should not become generic abdominal core items");
   assert.doesNotMatch(abdominalConditionalLabels, /Psoas|Obturator/, "appendicitis-specific signs should still require RLQ, appendicitis, or pelvic-irritation context");
 
@@ -472,11 +472,11 @@ if (process.argv.includes("--report-only")) {
   const plainCoreLabels = (plainAbdominal.corePhysicalExamManeuvers || plainAbdominal.coreItems).map((entry) => entry.label).join(" | ");
   const plainConditionalLabels = (plainAbdominal.conditionalPhysicalExamManeuvers || plainAbdominal.conditionalItems).map((entry) => entry.label).join(" | ");
   const plainLabels = [plainSafetyLabels, plainCoreLabels, plainConditionalLabels].join(" | ");
-  assert.match(plainSafetyLabels, /Temperature/, "plain abdominal cramps should include temperature as a safety check");
-  assert.doesNotMatch(plainCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature/, "plain abdominal physical exam should not contain vitals");
+  assert.match(plainSafetyLabels, /Measure temperature/i, "plain abdominal cramps should include temperature as an action-specific safety check");
+  assert.doesNotMatch(plainCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature|Measure blood pressure|Measure heart rate|Count respiratory rate|Measure temperature/i, "plain abdominal physical exam should not contain vitals");
   assert.match(plainConditionalLabels, /Test rebound tenderness/i, "plain abdominal cramps should show peritoneal signs as conditional add-ons");
   assert.match(plainConditionalLabels, /Test Murphy sign/i, "plain abdominal cramps should show biliary screening as a conditional add-on");
-  assert.doesNotMatch(plainLabels, /Test pronator drift|Inspect facial symmetry|Check pupils|Pronator drift|Facial symmetry|Pupils/i, "plain abdominal cramps should not include neuro safety add-ons");
+  assert.doesNotMatch(plainLabels, /Test pronator drift|Inspect facial symmetry|Test pupillary light response|Pronator drift|Facial symmetry|Pupils/i, "plain abdominal cramps should not include neuro safety add-ons");
   assert.doesNotMatch(plainCoreLabels, /Murphy|Rebound|Psoas|Obturator/, "plain abdominal cramps should keep advanced abdominal maneuvers conditional");
   assert.doesNotMatch(plainLabels, /Psoas|Obturator/, "plain abdominal cramps should not add appendicitis-specific signs without localization");
   assert.doesNotMatch(plainAbdominal.warnings.join(" "), /Focal neurologic symptoms/i, "plain abdominal cramps should not warn about focal neuro modifiers");

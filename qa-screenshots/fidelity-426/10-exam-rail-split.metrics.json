@@ -1,0 +1,98 @@
+{
+  "rail": [
+    {
+      "label": "Start",
+      "active": true,
+      "section": "",
+      "subsection": ""
+    },
+    {
+      "label": "Qs",
+      "active": false,
+      "section": "",
+      "subsection": ""
+    },
+    {
+      "label": "Exam 29",
+      "active": false,
+      "section": "",
+      "subsection": ""
+    },
+    {
+      "label": "Review",
+      "active": false,
+      "section": "",
+      "subsection": ""
+    },
+    {
+      "label": "Vitals 6",
+      "active": false,
+      "section": "VITALS",
+      "subsection": ""
+    },
+    {
+      "label": "Cardio",
+      "active": true,
+      "section": "CARDIO",
+      "subsection": ""
+    },
+    {
+      "label": "Abd 8",
+      "active": false,
+      "section": "ABDOMEN",
+      "subsection": ""
+    },
+    {
+      "label": "Neuro 6",
+      "active": false,
+      "section": "NEURO",
+      "subsection": ""
+    },
+    {
+      "label": "Skin 4",
+      "active": false,
+      "section": "SKIN / LINES",
+      "subsection": "skin"
+    },
+    {
+      "label": "Lines 3",
+      "active": false,
+      "section": "SKIN / LINES",
+      "subsection": "lines"
+    },
+    {
+      "label": "Other 2",
+      "active": false,
+      "section": "OTHER",
+      "subsection": ""
+    }
+  ],
+  "rows": [
+    "Work of breathing",
+    "Lung exam",
+    "Heart rhythm",
+    "Peripheral pulses",
+    "Peripheral edema",
+    "JVD",
+    "Heart rate",
+    "Heart sounds"
+  ],
+  "pulse": [
+    "2+",
+    "1+",
+    "Weak/Absent"
+  ],
+  "jvd": [
+    "None",
+    "< 6 cm",
+    "≥ 6 cm"
+  ],
+  "progressIcon": "rgb(0, 127, 121)",
+  "progressText": "Exam 8/37 29 remaining",
+  "activeTitle": "CARDIO",
+  "viewport": {
+    "w": 426,
+    "h": 922
+  },
+  "body": "checklistScreen"
+}

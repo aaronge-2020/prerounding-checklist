@@ -113,8 +113,8 @@
           "pregnancy",
           "hypothalamic",
           "pituitary",
-          "disease",
-          "thyroid"
+          "thyroid",
+          "hyperprolactinemia"
         ]
       }
     ],
@@ -189,10 +189,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -231,12 +231,12 @@
           "hirsutism",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "rapid",
           "virilization",
-          "tumor"
+          "tumor",
+          "range"
         ],
         "when": {
           "termsAny": [
@@ -378,7 +378,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
@@ -412,9 +412,8 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "hirsutism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -688,9 +687,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention puberty, timing, height, velocity, changed. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
+        "action": "Ask when the history or modifiers support puberty, timing, height, velocity. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
-        "when_to_ask": "Ask when patient context includes one of: puberty, timing, height, velocity, changed, compared, with, measurements, family, pattern.",
+        "when_to_ask": "Ask when patient context includes puberty, timing, height, velocity.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
         "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
         "tags": [
@@ -706,9 +705,7 @@
             "timing",
             "height",
             "velocity",
-            "changed",
             "compared",
-            "with",
             "measurements",
             "family",
             "pattern"
@@ -747,9 +744,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
         "rationale": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
         "tags": [
@@ -770,8 +767,8 @@
             "restriction",
             "intense",
             "psychosocial",
-            "change",
-            "energy"
+            "energy",
+            "balance"
           ]
         }
       },
@@ -807,9 +804,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention chemotherapy, radiation, surgery, pelvic, cranial. The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
-        "when_to_ask": "Ask when patient context includes one of: chemotherapy, radiation, surgery, pelvic, cranial, cancer, that, could, affect, function.",
+        "when_to_ask": "Ask when patient context includes chemotherapy, radiation, surgery, pelvic.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
         "management_implication": "The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
         "tags": [
@@ -828,7 +825,6 @@
             "pelvic",
             "cranial",
             "cancer",
-            "that",
             "could",
             "affect",
             "function"
@@ -1193,7 +1189,6 @@
           "total",
           "testosterone",
           "free",
-          "when",
           "indicated"
         ]
       },
@@ -1250,8 +1245,6 @@
           "reproductive_and_gonadal_disorders",
           "hirsutism",
           "dheas",
-          "when",
-          "severe",
           "rapid"
         ]
       },
@@ -1283,7 +1276,6 @@
           "metabolic",
           "pcos",
           "tests",
-          "when",
           "menstrual",
           "disturbance"
         ]
@@ -1313,13 +1305,13 @@
           "reproductive_and_gonadal_disorders",
           "hirsutism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1348,12 +1340,12 @@
           "hirsutism",
           "hyperandrogenism",
           "pcos",
-          "safety",
           "tests",
           "pregnancy",
           "test",
-          "when",
-          "relevant"
+          "total",
+          "free",
+          "testosterone"
         ]
       },
       {
@@ -1383,10 +1375,10 @@
           "pregnancy",
           "test",
           "first",
-          "when",
           "amenorrhea",
-          "possible",
-          "prolactin"
+          "prolactin",
+          "gonadotropins",
+          "estradiol"
         ]
       },
       {
@@ -1415,12 +1407,12 @@
           "hirsutism",
           "androgen",
           "testing",
-          "with",
-          "reliable",
           "assays",
           "hyperandrogenism",
           "metabolic",
-          "screening"
+          "screening",
+          "pcos",
+          "semen"
         ]
       },
       {
@@ -1555,8 +1547,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1589,10 +1581,9 @@
           "range",
           "androgens",
           "virilization",
-          "changes",
           "urgent",
           "imaging",
-          "endocrine"
+          "pathway"
         ]
       },
       {
@@ -1621,12 +1612,12 @@
           "hirsutism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1655,12 +1646,12 @@
           "hirsutism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1726,9 +1717,9 @@
           "hyperprolactinemia",
           "pcos",
           "thyroid",
-          "disease",
-          "changes",
-          "counseling"
+          "counseling",
+          "bone",
+          "cardiometabolic"
         ]
       }
     ],

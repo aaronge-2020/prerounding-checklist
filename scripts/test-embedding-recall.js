@@ -137,7 +137,22 @@ assert.equal(
   );
 });
 const forbiddenKnowledgePackPropertyPattern = new RegExp(knowledgePackSchema.$defs.safePropertyName.not.pattern, "i");
-["raw_chart_text", "patient_name", "mrn", "dob", "room", "address", "phone", "email", "identifier", "notes"].forEach((field) => {
+[
+  "raw_chart_text",
+  "rawChartText",
+  "patient_name",
+  "patientName",
+  "dateOfBirth",
+  "bedNumber",
+  "mrn",
+  "dob",
+  "room",
+  "address",
+  "phone",
+  "email",
+  "identifier",
+  "notes"
+].forEach((field) => {
   assert.ok(forbiddenKnowledgePackPropertyPattern.test(field), `knowledge-pack schema should flag unsafe field name ${field}`);
 });
 ["review_notes", "reviewer_notes", "review_owner", "patient_cooperation_required", "source_id", "intent_id"].forEach((field) => {
@@ -155,6 +170,10 @@ assert.deepEqual(
 assert.ok(knowledgePackSchema.$defs.goldCase.required.includes("intent_id"), "knowledge-pack gold cases should require intent_id");
 assert.ok(knowledgePackSchema.$defs.goldCase.properties.expected_safety_labels, "knowledge-pack gold cases should separate safety labels from physical exam core labels");
 assert.ok(knowledgePackSchema.$defs.goldCase.properties.acceptable_safety_labels, "knowledge-pack gold cases should separate acceptable safety labels from exam substitutes");
+assert.ok(knowledgePackSchema.$defs.goldCase.properties.expected_history_labels, "knowledge-pack gold cases should support expected focused-history labels");
+assert.ok(knowledgePackSchema.$defs.goldCase.properties.expected_test_labels, "knowledge-pack gold cases should support expected diagnostic-test/reference-threshold labels");
+assert.ok(knowledgePackSchema.$defs.goldCase.properties.expected_red_flag_labels, "knowledge-pack gold cases should support expected red-flag labels");
+assert.ok(knowledgePackSchema.$defs.goldCase.properties.expected_management_change_labels, "knowledge-pack gold cases should support expected management-change labels");
 assert.ok(knowledgePackSchema.$defs.suppressRule.required.includes("intent_ids"), "knowledge-pack suppress rules should require intent_ids");
 assert.equal(knowledgePackSchema.properties.suppress_rules.minItems, 1, "knowledge packs should require at least one suppress rule");
 const itemSchemaText = JSON.stringify(knowledgePackSchema.$defs.item);
@@ -185,6 +204,12 @@ assert.equal(knowledgePackSchema.$defs.item.properties.tags.items.minLength, 1, 
 assert.equal(knowledgePackSchema.$defs.item.properties.options.minLength, 1, "knowledge-pack schema should reject empty answer option strings");
 assert.equal(knowledgePackSchema.$defs.item.properties.rationale.minLength, 1, "knowledge-pack schema should reject empty rationale fields");
 assert.equal(knowledgePackSchema.$defs.item.properties.interpretation_cautions.minLength, 1, "knowledge-pack schema should reject empty interpretation cautions");
+const safetyCheckSchemaRule = knowledgePackSchema.$defs.item.allOf.find((rule) => rule.if?.properties?.item_type?.const === "safety_check");
+assert.match(
+  safetyCheckSchemaRule.then?.properties?.label?.pattern || "",
+  /Measure.*Document.*Verify/,
+  "knowledge-pack schema should require action-specific safety-check labels"
+);
 assert.equal(knowledgePackSchema.$defs.intent.properties.aliases.items.minLength, 1, "knowledge-pack schema should reject empty intent aliases");
 assert.equal(knowledgePackSchema.$defs.source.properties.preferred_citation.minLength, 1, "knowledge-pack schema should reject empty source citations");
 ["when_context_lacks", "when_context_has", "when_tags_include", "unless_tags_include", "suppress_labels"].forEach((field) => {
@@ -431,7 +456,7 @@ const validPack = {
     {
       item_id: "burning_pee_pregnancy_safety",
       item_type: "safety_check",
-      label: "Pregnancy possibility safety check",
+      label: "Verify pregnancy possibility",
       intent_ids: ["burning_pee_intent_v1"],
       action: "Ask or verify pregnancy possibility before choosing antibiotics, imaging, or disposition for dysuria with possible upper-tract infection.",
       rationale: "Pregnancy status is not a diagnostic maneuver but changes medication safety, imaging decisions, obstetric involvement, and admission threshold.",
@@ -564,8 +589,12 @@ const validPack = {
       intent_id: "burning_pee_intent_v1",
       presentation: "Burning pee with fever and flank pain",
       must_include_tags: "dysuria; flank_pain; fever",
+      expected_history_labels: "Ask about dysuria and flank pain",
       expected_core_labels: "CVA tenderness",
-      expected_safety_labels: "Blood pressure; Heart rate",
+      expected_safety_labels: "Verify pregnancy possibility",
+      expected_test_labels: "Urinalysis with urine culture when complicated infection features are present; Renal function threshold for antibiotic dosing and imaging contrast",
+      expected_red_flag_labels: "Fever or rigors with dysuria",
+      expected_management_change_labels: "Escalate dysuria workup when systemic or high-risk features are present",
       avoid_labels: "PMI; Vibration sense"
     }
   ],
@@ -585,10 +614,86 @@ const validPackDiagnosticTestItem = validPack.items.find((item) => item.item_typ
 const validPackReferenceThresholdItem = validPack.items.find((item) => item.item_type === "reference_threshold");
 const validPackManagementChangeItem = validPack.items.find((item) => item.item_type === "management_change");
 const validPackRedFlagItem = validPack.items.find((item) => item.item_type === "red_flag");
+const validPackSafetyCheckItem = validPack.items.find((item) => item.item_type === "safety_check");
 const validPackResult = validateClinicalKnowledgePack(validPack);
 assert.ok(validPackResult.ok, validPackResult.issues.map((issue) => issue.message).join("\n"));
 assert.equal(validPackResult.intentCount, 1, "valid packs may stage intent definitions");
 assert.equal(validPackResult.itemCount, 7, "valid packs may stage safety checks, questions, exams, tests, reference thresholds, management changes, and red flags as distinct item types");
+const missingSafetyCheckPackResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "missing_safety_check_pack_v1",
+  items: validPack.items.filter((item) => item.item_type !== "safety_check")
+});
+assert.ok(!missingSafetyCheckPackResult.ok, "knowledge packs should not activate an intent without a linked safety_check item");
+assert.ok(
+  missingSafetyCheckPackResult.issues.some((issue) => issue.type === "intent-safety_check-coverage"),
+  "missing safety-check coverage should be reported with an explicit issue type"
+);
+const unbackedSafetyGoldCaseResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "unbacked_safety_gold_pack_v1",
+  gold_cases: validPack.gold_cases.map((goldCase) => ({
+    ...goldCase,
+    expected_safety_labels: "Blood pressure; Heart rate"
+  }))
+});
+assert.ok(!unbackedSafetyGoldCaseResult.ok, "knowledge-pack gold cases should not list safety expectations without linked safety_check rows");
+assert.ok(
+  unbackedSafetyGoldCaseResult.issues.some((issue) => issue.type === "gold-case-expected_safety_label-unbacked"),
+  "unbacked safety gold labels should be reported with an explicit issue type"
+);
+const unbackedHistoryGoldCaseResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "unbacked_history_gold_pack_v1",
+  gold_cases: validPack.gold_cases.map((goldCase) => ({
+    ...goldCase,
+    expected_history_labels: "Ask about cough, sputum, dyspnea, urinary symptoms, skin wounds, and line infection"
+  }))
+});
+assert.ok(!unbackedHistoryGoldCaseResult.ok, "knowledge-pack gold cases should not list focused-history expectations without linked history_question rows");
+assert.ok(
+  unbackedHistoryGoldCaseResult.issues.some((issue) => issue.type === "gold-case-expected_history_label-unbacked"),
+  "unbacked focused-history gold labels should be reported with an explicit issue type"
+);
+const unbackedTestGoldCaseResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "unbacked_test_gold_pack_v1",
+  gold_cases: validPack.gold_cases.map((goldCase) => ({
+    ...goldCase,
+    expected_test_labels: "Chest radiograph when cough, dyspnea, hypoxemia, or focal lung findings suggest pneumonia"
+  }))
+});
+assert.ok(!unbackedTestGoldCaseResult.ok, "knowledge-pack gold cases should not list testing expectations without linked diagnostic_test or reference_threshold rows");
+assert.ok(
+  unbackedTestGoldCaseResult.issues.some((issue) => issue.type === "gold-case-expected_test_label-unbacked"),
+  "unbacked diagnostic-test/reference-threshold gold labels should be reported with an explicit issue type"
+);
+const unbackedRedFlagGoldCaseResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "unbacked_red_flag_gold_pack_v1",
+  gold_cases: validPack.gold_cases.map((goldCase) => ({
+    ...goldCase,
+    expected_red_flag_labels: "Hypotension or altered mentation with fever"
+  }))
+});
+assert.ok(!unbackedRedFlagGoldCaseResult.ok, "knowledge-pack gold cases should not list red-flag expectations without linked red_flag rows");
+assert.ok(
+  unbackedRedFlagGoldCaseResult.issues.some((issue) => issue.type === "gold-case-expected_red_flag_label-unbacked"),
+  "unbacked red-flag gold labels should be reported with an explicit issue type"
+);
+const unbackedManagementGoldCaseResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "unbacked_management_gold_pack_v1",
+  gold_cases: validPack.gold_cases.map((goldCase) => ({
+    ...goldCase,
+    expected_management_change_labels: "Escalate fever workup when sepsis physiology or high-risk host features are present"
+  }))
+});
+assert.ok(!unbackedManagementGoldCaseResult.ok, "knowledge-pack gold cases should not list management expectations without linked management_change rows");
+assert.ok(
+  unbackedManagementGoldCaseResult.issues.some((issue) => issue.type === "gold-case-expected_management_change_label-unbacked"),
+  "unbacked management-change gold labels should be reported with an explicit issue type"
+);
 const broadQuestionWithoutDetailsResult = validateClinicalKnowledgePack({
   ...validPack,
   pack_id: "broad_question_without_details",
@@ -671,6 +776,28 @@ assert.match(
   "activation should preserve an audit-safe omission notice when reviewer notes are unsafe"
 );
 
+const unsafeActivationTimestamp = activateStagedClinicalKnowledgePack(staged, "burning_pee_pack_v1", {
+  reviewer: "unit_test_reviewer",
+  activatedAt: "Patient John Smith MRN 12345 DOB 01/02/1980",
+  note: "Accepted by test reviewer."
+});
+assert.equal(unsafeActivationTimestamp.packs[0].status, "accepted", "unsafe activation timestamp metadata should not block otherwise valid activation");
+assert.doesNotMatch(
+  unsafeActivationTimestamp.packs[0].activatedAt,
+  /John Smith|MRN|12345|DOB|01\/02\/1980/i,
+  "activation should not persist PHI-like activatedAt metadata"
+);
+assert.match(
+  unsafeActivationTimestamp.packs[0].activatedAt,
+  /^\d{4}-\d{2}-\d{2}T/,
+  "activation should replace unsafe activatedAt metadata with a safe ISO timestamp"
+);
+assert.match(
+  unsafeActivationTimestamp.packs[0].pack.intents[0].last_reviewed,
+  /^\d{4}-\d{2}-\d{2}$/,
+  "activation should stamp intent last_reviewed from a safe date even when caller metadata is unsafe"
+);
+
 const tamperedWrapperNoteBeforeActivation = JSON.parse(JSON.stringify(staged));
 tamperedWrapperNoteBeforeActivation.packs[0].reviewerNotes = "Discussed patient John Smith MRN 12345 DOB 01/02/1980 before activation.";
 const activatedAfterTamperedWrapperNote = activateStagedClinicalKnowledgePack(tamperedWrapperNoteBeforeActivation, "burning_pee_pack_v1", {
@@ -742,8 +869,12 @@ assert.equal(activatedGoldCases.length, 1, "accepted packs should expose active 
 assert.equal(activatedGoldCases[0].knowledge_pack_id, "burning_pee_pack_v1", "active gold cases should trace to their source pack");
 assert.equal(activatedGoldCases[0].review_status, "accepted", "active gold cases should expose reviewer acceptance state");
 assert.ok(activatedGoldCases[0].expected_core_labels_list.includes("CVA tenderness"), "active gold cases should expose parsed expected labels");
-assert.ok(activatedGoldCases[0].expected_safety_labels_list.includes("Blood pressure"), "active gold cases should expose parsed expected safety labels");
-assert.ok(!activatedGoldCases[0].expected_core_labels_list.includes("Blood pressure"), "active gold cases should keep safety labels out of expected core exam labels");
+assert.ok(activatedGoldCases[0].expected_safety_labels_list.includes("Verify pregnancy possibility"), "active gold cases should expose parsed expected safety labels");
+assert.ok(!activatedGoldCases[0].expected_core_labels_list.includes("Verify pregnancy possibility"), "active gold cases should keep safety labels out of expected core exam labels");
+assert.ok(activatedGoldCases[0].expected_history_labels_list.includes("Ask about dysuria and flank pain"), "active gold cases should expose parsed focused-history labels");
+assert.ok(activatedGoldCases[0].expected_test_labels_list.includes("Urinalysis with urine culture when complicated infection features are present"), "active gold cases should expose parsed test/reference labels");
+assert.ok(activatedGoldCases[0].expected_red_flag_labels_list.includes("Fever or rigors with dysuria"), "active gold cases should expose parsed red-flag labels");
+assert.ok(activatedGoldCases[0].expected_management_change_labels_list.includes("Escalate dysuria workup when systemic or high-risk features are present"), "active gold cases should expose parsed management-change labels");
 assert.ok(activatedGoldCases[0].avoid_labels_list.includes("PMI"), "active gold cases should expose parsed avoid labels");
 assert.equal(activatedGoldCases[0].review_owner, "unit_test_reviewer", "active gold cases should carry activation reviewer metadata");
 const resolvedActivatedIntent = resolveClinicalIntents("burning pee", activatedIntents, { limit: 4 });
@@ -819,7 +950,7 @@ const activePackRecommendation = buildRecommendedExamChecklist(activePackContext
   maxConditionalItems: 8
 });
 assert.ok(
-  activePackRecommendation.basicSafetyChecks.some((entry) => /Pregnancy possibility safety check/i.test(entry.label)),
+  activePackRecommendation.basicSafetyChecks.some((entry) => /Verify pregnancy possibility/i.test(entry.label)),
   "accepted pack safety_check items should route to basic bedside data/safety checks"
 );
 assert.ok(
@@ -864,7 +995,7 @@ assert.ok(
   "accepted-pack recommendations should remain traceable to the selected validated intent and source pack"
 );
 const acceptedPackRecommendedEntries = [
-  activePackRecommendation.basicSafetyChecks.find((entry) => /Pregnancy possibility safety check/i.test(entry.label)),
+  activePackRecommendation.basicSafetyChecks.find((entry) => /Verify pregnancy possibility/i.test(entry.label)),
   activePackRecommendation.focusedHistoryQuestions.find((entry) => /flank pain|fever|rigors|pregnancy/i.test(`${entry.text} ${entry.options || ""}`)),
   activePackRecommendation.corePhysicalExamManeuvers.find((entry) => /Percuss costovertebral angle tenderness|CVA tenderness/i.test(entry.label)),
   activePackRecommendation.initialTestsAndReferenceThresholds.find((entry) => /Urinalysis with urine culture/i.test(entry.label)),
@@ -937,10 +1068,20 @@ assert.equal(activeClinicalKnowledgePackGoldCases(rejected).length, 0, "rejected
 
 const unsafeRejected = rejectStagedClinicalKnowledgePack(staged, "burning_pee_pack_v1", {
   reviewer: "replace_with_reviewer",
-  rejectedAt: "2026-06-07T00:00:00.000Z",
+  rejectedAt: "Patient Jane Smith MRN 12345 DOB 01/02/1980",
   note: "TODO: ask patient Jane Smith at jane@example.com for missing chart note."
 });
 assert.equal(unsafeRejected.packs[0].rejectionReviewer, "local_reviewer", "rejection should replace placeholder reviewer IDs with a safe local reviewer id");
+assert.doesNotMatch(
+  unsafeRejected.packs[0].rejectedAt,
+  /Jane Smith|MRN|12345|DOB|01\/02\/1980/i,
+  "rejection should not persist PHI-like rejectedAt metadata"
+);
+assert.match(
+  unsafeRejected.packs[0].rejectedAt,
+  /^\d{4}-\d{2}-\d{2}T/,
+  "rejection should replace unsafe rejectedAt metadata with a safe ISO timestamp"
+);
 assert.doesNotMatch(
   unsafeRejected.packs[0].reviewerNotes,
   /Jane Smith|jane@example\.com|TODO|replace_with/i,
@@ -1344,6 +1485,27 @@ const invalidTimeBurdenResult = validateClinicalKnowledgePack({
 assert.ok(!invalidTimeBurdenResult.ok, "knowledge-pack exam time burden should be numeric");
 assert.ok(invalidTimeBurdenResult.issues.some((issue) => issue.type === "exam-time_burden_minutes-format"));
 
+const weakSafetyLabelResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "weak_safety_label_pack",
+  items: [
+    {
+      ...validPackSafetyCheckItem,
+      item_id: "weak_mental_status_safety",
+      label: "Mental status",
+      diagnostic_target: "Mental status safety data",
+      result_changes_management: "Altered mental status changes urgency, monitoring, and disposition.",
+      tags: ["mental_status", "safety_check"],
+      retrieval_tags: "mental_status; safety_check"
+    }
+  ]
+});
+assert.ok(!weakSafetyLabelResult.ok, "knowledge-pack safety checks should use action-specific labels, not bare safety nouns");
+assert.ok(
+  weakSafetyLabelResult.issues.some((issue) => issue.type === "safety-check-label"),
+  "weak safety-check label failures should be explicit for collaborator cleanup"
+);
+
 const phiPackResult = validateClinicalKnowledgePack({
   ...validPack,
   pack_id: "phi_pack",
@@ -1367,6 +1529,14 @@ const contactPhiPackResult = validateClinicalKnowledgePack({
 });
 assert.ok(!contactPhiPackResult.ok, "knowledge packs should reject email, phone, and explicit patient-name PHI patterns");
 assert.ok(contactPhiPackResult.issues.some((issue) => issue.type === "phi"));
+
+const dateLocationPhiPackResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "date_location_phi_pack",
+  review_notes: "Reviewer copied a raw chart clue from room 412B on 01/02/1980."
+});
+assert.ok(!dateLocationPhiPackResult.ok, "knowledge packs should reject room/bed identifiers and slash-form chart dates in reviewer notes");
+assert.ok(dateLocationPhiPackResult.issues.some((issue) => issue.type === "phi"));
 
 const placeholderPackResult = validateClinicalKnowledgePack({
   ...validPack,
@@ -1422,6 +1592,14 @@ const rawChartFieldPackResult = validateClinicalKnowledgePack({
 assert.ok(!rawChartFieldPackResult.ok, "knowledge packs should reject raw chart text fields even when text lacks obvious PHI");
 assert.ok(rawChartFieldPackResult.issues.some((issue) => issue.type === "forbidden-field"));
 
+const camelCaseRawChartFieldPackResult = validateClinicalKnowledgePack({
+  ...validPack,
+  pack_id: "camel_case_raw_chart_field_pack",
+  rawChartText: "No obvious identifier, but camelCase raw chart fields are still not allowed."
+});
+assert.ok(!camelCaseRawChartFieldPackResult.ok, "knowledge packs should reject camelCase raw chart fields even when text lacks obvious PHI");
+assert.ok(camelCaseRawChartFieldPackResult.issues.some((issue) => issue.type === "forbidden-field"));
+
 const invalidJsonResult = validateClinicalKnowledgePack("{ nope");
 assert.ok(!invalidJsonResult.ok, "invalid JSON should fail without throwing");
 assert.ok(invalidJsonResult.issues.some((issue) => issue.type === "json"));
@@ -1459,13 +1637,13 @@ const extremityTemperaturePerfusionExamResult = validateClinicalKnowledgePack({
   pack_id: "extremity_temperature_perfusion_pack",
   gold_cases: validPack.gold_cases.map((goldCase) => ({
     ...goldCase,
-    expected_core_labels: "Assess extremity temperature"
+    expected_core_labels: "Palpate distal extremity warmth"
   })),
   items: validPack.items.map((item) => item.item_type === "physical_exam_maneuver"
     ? {
         ...validPackExamItem,
         item_id: "extremity_temperature_perfusion_exam",
-        label: "Assess extremity temperature",
+        label: "Palpate distal extremity warmth",
         technique: "Palpate distal extremities for warmth, coolness, mottling, and symmetry while comparing sides.",
         findings_options: ["Warm and symmetric", "Cool", "Mottled", "Asymmetric", "Unable to assess"],
         options: "Warm and symmetric / Cool / Mottled / Asymmetric / Unable",
@@ -1537,7 +1715,7 @@ const semanticMismatchExamResult = validateClinicalKnowledgePack({
     {
       ...validPackExamItem,
       item_id: "skin_turgor_wound_mismatch",
-      label: "Assess skin turgor",
+      label: "Test skin turgor",
       findings_options: "Wound / Drainage / Ulcer / Unable",
       diagnostic_target: "Soft tissue infection and wound drainage",
       result_changes_management: "Escalate wound care and inspect line sites.",

@@ -724,11 +724,12 @@ function evidenceMetadataWithLikelihoodRatioNote(evidence = {}, item = {}, itemT
   };
 }
 
-export function validateEvidenceSourceRows(rows = []) {
+export function validateEvidenceSourceRows(rows = [], options = {}) {
   const missingHeaders = sourceRegistryHeaders.filter((header) => !Object.prototype.hasOwnProperty.call(rows[0] || {}, header));
   const issues = [];
   const ids = new Set();
   const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+  const maxAccessDate = options.maxAccessDate || "";
   const validSourceTypes = new Set([
     "technique",
     "diagnostic_performance",
@@ -771,6 +772,16 @@ export function validateEvidenceSourceRows(rows = []) {
     }
     if (row.date_accessed && !isoDatePattern.test(row.date_accessed)) {
       issues.push({ type: "bad-date-accessed", message: `${label} needs date_accessed as YYYY-MM-DD.` });
+    }
+    if (row.date_accessed && isoDatePattern.test(row.date_accessed) && maxAccessDate && row.date_accessed > maxAccessDate) {
+      issues.push({ type: "future-date-accessed", message: `${label} has date_accessed ${row.date_accessed} after audit date ${maxAccessDate}.` });
+    }
+    const sourceYear = String(row.source_id || "").match(/(?:^|_)(20\d{2})(?:_|$)/)?.[1];
+    if (sourceYear && row.date_accessed && isoDatePattern.test(row.date_accessed)) {
+      const accessYear = row.date_accessed.slice(0, 4);
+      if (Number(sourceYear) > Number(accessYear)) {
+        issues.push({ type: "source-year-after-access", message: `${label} source_id claims ${sourceYear} but date_accessed is ${row.date_accessed}.` });
+      }
     }
     const provenanceText = [
       row.source_name,
@@ -1260,28 +1271,7 @@ const clinicalRecommendationProfiles = [
         management: "New focal lung findings can change infection workup, oxygen strategy, imaging, and escalation."
       }
     ],
-    requiredGaps: [
-      {
-        exam_id: "GAP-dka-hhs-mental-status",
-        item_type: "safety_check",
-        gap_type: "safety_check",
-        label: "Mental status",
-        options: "Alert and oriented / Confused / Somnolent / Obtunded / Unable",
-        domain: "Mental Status",
-        reason: "Checks cerebral perfusion, hyperosmolarity severity, and need for escalation in DKA/HHS.",
-        diagnosticTarget: "DKA/HHS severity: confusion, somnolence, obtundation, or inability to protect airway.",
-        management: "Altered mental status changes monitoring level, airway/ICU concern, osmolality assessment, and urgency of reassessment.",
-        bedsideQuestion: "Any confusion, unusual sleepiness, severe weakness, or trouble staying awake?",
-        bedsideQuestionOptions: "No / Confusion / Sleepy / Weak / Trouble staying awake / Other ___",
-        source: "ADA_HYPERGLYCEMIC_CRISES_2024",
-        evidenceTier: "Guideline",
-        difficulty: "easy",
-        time_burden_minutes: "0.5",
-        equipment_needed: "none",
-        matchedTags: ["DKA_HHS", "mental_status"],
-        satisfiedBy: /\b(?:mental status|alert|oriented|confusion|somnolent|obtunded)\b/
-      }
-    ],
+    requiredGaps: [],
     conditional: [
       { pattern: /\b(?:lower extremity edema)\b/, strength: 54, domain: "Volume Add-on", reason: "Adds edema assessment when DKA/HHS overlaps with renal disease, heart failure, leg swelling, or volume-overload concern.", when: /\b(?:edema|leg swelling|heart failure|chf|renal|aki|volume overload)\b/ },
       { pattern: /\b(?:dorsalis pedis|posterior tibial|extremity light touch|extremity pinprick|vibration sense|proprioception)\b/, strength: 58, domain: "Diabetes Foot/Neuro", reason: "Adds diabetes foot or neuropathy assessment when infection, wound, neuropathy, or discharge planning is relevant.", when: /\b(?:foot|ulcer|wound|infection|cellulitis|neuropathy|numbness|tingling|discharge|skin)\b/ },
@@ -2252,7 +2242,7 @@ const clinicalRecommendationProfiles = [
         exam_id: "GAP-pelvic-pregnancy-status",
         item_type: "safety_check",
         gap_type: "safety_check",
-        label: "Pregnancy possibility safety check",
+        label: "Verify pregnancy possibility",
         options: "Not possible / Possible / Known positive / Unknown / Unable",
         domain: "Pregnancy/Ectopic Safety",
         reason: "Makes pregnancy status an explicit safety check for pelvic, menstrual, or lower-abdominal pain rather than burying it inside a broad gynecologic warning.",
@@ -2267,7 +2257,7 @@ const clinicalRecommendationProfiles = [
         equipment_needed: "none",
         patient_cooperation_required: "low",
         matchedTags: ["pelvic_pain", "pregnancy", "ectopic_pregnancy"],
-        satisfiedBy: /\bpregnancy possibility safety check\b/
+        satisfiedBy: /\b(?:verify pregnancy possibility|pregnancy possibility safety check)\b/
       },
       {
         exam_id: "GAP-pelvic-pid-ectopic-red-flags",
@@ -2679,17 +2669,17 @@ const clinicalRecommendationProfiles = [
     context: /\b(?:fever|chills|rigors|night sweats|infection|sepsis|leukocytosis|pneumonia|pyelonephritis|sore throat|pharyngitis|lymphadenitis|wound)\b/,
     requiredItems: [
       {
-        exam_id: "REQ-infection-source-severity-history",
+        exam_id: "REQ-infection-respiratory-source-history",
         item_type: "history_question",
         gap_type: "history_question",
-        label: "Fever source-localizing and sepsis severity question",
-        options: "No localizing symptoms / Cough-dyspnea-sputum-pleuritic pain / Sore throat-ear-sinus-oral symptoms / Dysuria-frequency-flank pain / Abdominal pain-vomiting-diarrhea / Rash-wound-line concern / Headache-neck stiffness-confusion / Hot joint-back pain / Low urine output / Rapid worsening / Other ___",
-        domain: "Focused Infection History",
-        reason: "A validated fever workup must first localize the likely source and screen severity before narrowing the bedside exam or testing plan.",
-        diagnosticTarget: "Possible fever source and sepsis severity clues: respiratory, HEENT/dental, GU/flank, abdominal/GI, skin/wound/line, CNS/meningeal, joint/spine, oliguria, or rapid progression.",
-        management: "A localizing source or severity clue changes cultures, imaging, empiric antimicrobials, source control urgency, isolation, and monitoring level.",
-        bedsideQuestion: "What symptoms localize the fever source: cough, sputum, dyspnea, pleuritic pain, sore throat, ear/sinus/dental pain, dysuria, flank pain, abdominal pain, vomiting/diarrhea, rash, wound/line concern, headache/neck stiffness, hot joint/back pain, confusion, low urine output, fainting, or rapid worsening?",
-        bedsideQuestionOptions: "No localizing symptoms / Cough-dyspnea-sputum-pleuritic pain / Sore throat-ear-sinus-dental / Dysuria-frequency-flank pain / Abdominal pain-vomiting-diarrhea / Rash-wound-line / Headache-neck stiffness-confusion / Hot joint-back pain / Low urine output / Rapid worsening / Other ___",
+        label: "Respiratory infection-source question",
+        options: "No / Cough / Sputum / Shortness of breath / Pleuritic pain / Wheeze / New oxygen need / Aspiration risk / Sick respiratory contacts / Other ___",
+        domain: "Respiratory Source History",
+        reason: "Fever or sepsis workups need a distinct respiratory-source screen so pneumonia, aspiration, and hypoxemia are not hidden inside a broad symptom bundle.",
+        diagnosticTarget: "Respiratory infection clue: cough, sputum, dyspnea, pleuritic pain, wheeze, oxygen need, aspiration risk, or respiratory exposure.",
+        management: "Positive respiratory-source symptoms focus work of breathing and lung exam, chest imaging/testing, isolation, oxygen/bronchodilator strategy, antimicrobial framing, and escalation.",
+        bedsideQuestion: "Any cough, sputum, shortness of breath, pleuritic pain, wheeze, new oxygen need, aspiration risk, or sick respiratory contacts?",
+        bedsideQuestionOptions: "No / Cough / Sputum / Shortness of breath / Pleuritic pain / Wheeze / New oxygen need / Aspiration risk / Sick respiratory contacts / Other ___",
         source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
         source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
         evidenceTier: "Guideline",
@@ -2697,8 +2687,118 @@ const clinicalRecommendationProfiles = [
         time_burden_minutes: "1",
         equipment_needed: "none",
         patient_cooperation_required: "moderate",
-        matchedTags: ["infection", "sepsis", "source_control", "pneumonia", "UTI", "meningitis", "skin", "history_question", "diagnostic_safety"],
-        satisfiedBy: /\b(?:fever source-localizing|infection source and sepsis severity question|source-localizing infection history)\b/
+        matchedTags: ["infection", "sepsis", "respiratory_source", "pneumonia", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:respiratory infection-source question|respiratory source history|pneumonia source history)\b/
+      },
+      {
+        exam_id: "REQ-infection-heent-oral-source-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "HEENT, dental, and oral infection-source question",
+        options: "No / Sore throat / Ear pain / Sinus pain / Dental or oral pain / Neck swelling / Hoarseness / Trouble swallowing / Drooling / Other ___",
+        domain: "HEENT / Oral Source History",
+        reason: "Fever workups need a separate HEENT/oral source screen because throat, dental, sinus, and deep-neck patterns change the bedside exam and escalation threshold.",
+        diagnosticTarget: "HEENT/oral source clue: pharyngitis, otitis/sinusitis, dental or oral infection, neck swelling, hoarseness, dysphagia, or drooling.",
+        management: "Positive HEENT/oral symptoms focus oropharynx, neck, and airway assessment, testing, imaging threshold, antimicrobial framing, and ENT/dental escalation.",
+        bedsideQuestion: "Any sore throat, ear pain, sinus pain, dental or oral pain, neck swelling, hoarseness, trouble swallowing, or drooling with the fever?",
+        bedsideQuestionOptions: "No / Sore throat / Ear pain / Sinus pain / Dental or oral pain / Neck swelling / Hoarseness / Trouble swallowing / Drooling / Other ___",
+        source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
+        source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["infection", "sepsis", "heent_source", "dental_source", "oral_source", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:heent, dental, and oral infection-source question|heent source history|dental source history|oral source history)\b/
+      },
+      {
+        exam_id: "REQ-infection-urinary-flank-source-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "Urinary and flank infection-source question",
+        options: "No / Dysuria / Frequency or urgency / Hematuria / Suprapubic pain / Flank pain / Catheter or procedure / Pregnancy possible / Resistant organism history / Nausea or vomiting / Reduced urine output / Other ___",
+        domain: "Urinary / Flank Source History",
+        reason: "Fever workups need a separate urinary/flank source screen so cystitis, pyelonephritis, catheter/procedure infection, and infected obstruction are not missed.",
+        diagnosticTarget: "GU/flank source clue: dysuria, frequency/urgency, hematuria, suprapubic pain, flank pain, catheter/procedure, pregnancy, resistant organism history, vomiting, or renal/perfusion risk.",
+        management: "Positive urinary/flank symptoms change CVA/flank exam, urinalysis/culture, renal function review, imaging threshold, antimicrobial choice, pregnancy safety, and escalation threshold.",
+        bedsideQuestion: "Any dysuria, urinary frequency or urgency, hematuria, suprapubic pain, flank pain, catheter or urologic procedure, pregnancy possibility, prior resistant urine culture, nausea, vomiting, or reduced urine output?",
+        bedsideQuestionOptions: "No / Dysuria / Frequency or urgency / Hematuria / Suprapubic pain / Flank pain / Catheter or procedure / Pregnancy possible / Resistant organism history / Nausea or vomiting / Reduced urine output / Other ___",
+        source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
+        source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["infection", "sepsis", "urinary_source", "flank_pain", "pyelonephritis", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:urinary and flank infection-source question|urinary source history|flank source history|pyelonephritis source history)\b/
+      },
+      {
+        exam_id: "REQ-infection-abdominal-gi-source-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "Abdominal and GI infection-source question",
+        options: "No / Abdominal pain / Vomiting / Diarrhea / Jaundice / Focal tenderness / Recent abdominal procedure / Other ___",
+        domain: "Abdominal / GI Source History",
+        reason: "Fever workups need a distinct abdominal/GI source screen because biliary, intra-abdominal, diarrheal, and procedure-related sources change exam focus and imaging threshold.",
+        diagnosticTarget: "Abdominal/GI source clue: abdominal pain, vomiting, diarrhea, jaundice, focal tenderness, recent intra-abdominal procedure, or peritoneal/source-control concern.",
+        management: "Positive abdominal/GI symptoms focus abdominal exam, liver/biliary labs, stool or culture decisions, imaging threshold, antimicrobial framing, and surgical/GI escalation.",
+        bedsideQuestion: "Any abdominal pain, vomiting, diarrhea, jaundice, focal tenderness, recent intra-abdominal procedure, or concern for an abdominal infection source?",
+        bedsideQuestionOptions: "No / Abdominal pain / Vomiting / Diarrhea / Jaundice / Focal tenderness / Recent abdominal procedure / Other ___",
+        source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
+        source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["infection", "sepsis", "abdominal_source", "gi_source", "biliary_source", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:abdominal and gi infection-source question|abdominal source history|gi source history|biliary source history)\b/
+      },
+      {
+        exam_id: "REQ-infection-skin-wound-line-source-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "Skin, wound, and line-site infection-source question",
+        options: "No / Rash / Wound or ulcer / Drainage / Line pain or redness / Rapidly spreading skin pain / Bite / Procedure site / Other ___",
+        domain: "Skin / Wound / Line Source History",
+        reason: "Fever workups need a separate skin, wound, and line-source screen because these findings can require culture, source control, line management, or surgical escalation.",
+        diagnosticTarget: "Skin/device source clue: rash, wound/ulcer, drainage, line pain/redness, rapidly spreading pain, bite, or procedure-site infection.",
+        management: "Positive skin/wound/line symptoms focus inspection, culture/source-control decisions, antibiotic route and breadth, isolation, and surgical or line-management escalation.",
+        bedsideQuestion: "Any rash, wound, ulcer, drainage, line pain or redness, rapidly spreading skin pain, bite, recent procedure site, or soft-tissue infection concern?",
+        bedsideQuestionOptions: "No / Rash / Wound or ulcer / Drainage / Line pain or redness / Rapidly spreading skin pain / Bite / Procedure site / Other ___",
+        source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
+        source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["infection", "sepsis", "skin_source", "wound_source", "line_source", "soft_tissue_infection", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:skin, wound, and line-site infection-source question|skin source history|wound source history|line source history)\b/
+      },
+      {
+        exam_id: "REQ-infection-cns-joint-spine-danger-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "CNS, joint, spine, and rapid-worsening danger question",
+        options: "No / Severe headache / Neck stiffness / Photophobia / Confusion / Seizure / Petechiae or purpura / Hot swollen joint / Focal bone or back pain / New weakness / Bowel or bladder symptoms / Fainting / Low urine output / Rapid worsening / Other ___",
+        domain: "CNS / Joint / Spine Danger History",
+        reason: "Fever workups need a distinct danger screen for meningitis/encephalitis, septic arthritis, spine infection, bacteremia complications, and sepsis trajectory.",
+        diagnosticTarget: "Danger clue: severe headache, meningismus, photophobia, confusion, seizure, petechiae/purpura, hot swollen joint, focal bone/back pain, neurologic deficit, syncope/oliguria, or rapid worsening.",
+        management: "Positive CNS/joint/spine or rapid-worsening symptoms change neurologic/joint/spine exam, sepsis reassessment, lumbar puncture or imaging threshold, cultures, antimicrobial urgency, and ED/inpatient escalation.",
+        bedsideQuestion: "Any severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, purpura, hot swollen joint, severe focal bone or back pain, new weakness, bowel or bladder symptoms, fainting, low urine output, or rapid worsening?",
+        bedsideQuestionOptions: "No / Severe headache / Neck stiffness / Photophobia / Confusion / Seizure / Petechiae or purpura / Hot swollen joint / Focal bone or back pain / New weakness / Bowel or bladder symptoms / Fainting / Low urine output / Rapid worsening / Other ___",
+        source: "SSC_SEPSIS_2026; MERCK_FEVER_ADULTS; AHRQ_CALIBRATE_DX",
+        source_citation: "Surviving Sepsis Campaign adult guidelines 2026; Merck Manual Professional Fever; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["infection", "sepsis", "cns_infection", "meningitis", "joint_source", "spine_infection", "source_localizing_history", "history_question", "diagnostic_safety"],
+        satisfiedBy: /\b(?:cns, joint, spine, and rapid-worsening danger question|cns source history|joint source history|spine source history|meningitis source history)\b/
       },
       {
         exam_id: "REQ-infection-host-exposure-history",
@@ -2814,7 +2914,7 @@ const clinicalRecommendationProfiles = [
         exam_id: "REQ-infection-mental-status",
         item_type: "safety_check",
         gap_type: "safety_check",
-        label: "Mental status",
+        label: "Document mental status",
         options: "Baseline / Confused / Somnolent / Agitated / Unable to assess",
         domain: "Sepsis Severity Safety",
         reason: "Altered mentation is a severity clue in suspected infection and should be separated from organ-specific physical exam maneuvers.",
@@ -3175,7 +3275,7 @@ const clinicalRecommendationProfiles = [
         exam_id: "GAP-hypoglycemia-mental-status",
         item_type: "safety_check",
         gap_type: "safety_check",
-        label: "Mental status",
+        label: "Document mental status",
         options: "Baseline / Anxious-jittery / Confused / Somnolent / Seizing / Unable",
         domain: "Neuroglycopenia Safety",
         reason: "Separates neuroglycopenic severity from generic adrenergic symptoms in hypoglycemia-like presentations.",
@@ -3196,7 +3296,7 @@ const clinicalRecommendationProfiles = [
         exam_id: "GAP-hypoglycemia-bedside-glucose",
         item_type: "safety_check",
         gap_type: "safety_check",
-        label: "Bedside glucose safety check",
+        label: "Measure bedside glucose",
         options: "___ mg/dL / Low / Normal / High / Not available",
         domain: "Immediate Glucose Check",
         reason: "Makes the immediately management-changing bedside glucose value explicit rather than relying on nonspecific endocrine exam findings.",
@@ -3301,8 +3401,8 @@ const clinicalRecommendationProfiles = [
         reason: "Checks bradycardia, tachycardia, rhythm regularity, and BP patterns that change thyroid-disease severity framing.",
         diagnosticTarget: "Thyroid physiology at bedside: bradycardia, tachycardia, irregular pulse, systolic hypertension, hypotension, or unstable vital signs.",
         management: "Abnormal HR/BP can change ECG/telemetry urgency, beta-blocker consideration, crisis screening, or need for urgent endocrine/cardiac escalation.",
-        bedsideQuestion: "Any palpitations, heat or cold intolerance, weight change, tremor, constipation/diarrhea, neck swelling, eye symptoms, or trouble swallowing?",
-        bedsideQuestionOptions: "No / Palpitations / Heat intolerance / Cold intolerance / Weight change / Tremor / Neck swelling / Eye symptoms / Dysphagia or hoarseness / Other ___"
+        bedsideQuestion: "Any palpitations, tremor, heat intolerance, cold intolerance, or clear weight change?",
+        bedsideQuestionOptions: "No / Palpitations / Tremor / Heat intolerance / Cold intolerance / Weight change / Other ___"
       },
       {
         pattern: /\b(?:thyroid exam)\b/,
@@ -3311,8 +3411,8 @@ const clinicalRecommendationProfiles = [
         reason: "Directly evaluates goiter, nodules, tenderness, asymmetry, and compressive neck findings in thyroid disease.",
         diagnosticTarget: "Thyroid/neck finding: diffuse goiter, nodularity, tenderness, asymmetry, fixation, or compressive clue.",
         management: "Nodule, tenderness, asymmetry, goiter, or compressive findings can change ultrasound, antibody/uptake workup, FNA pathway, or airway/ENT urgency.",
-        bedsideQuestion: "Any neck swelling, pain, hoarseness, dysphagia, dyspnea when supine, radiation exposure, or family thyroid cancer/MEN2 history?",
-        bedsideQuestionOptions: "No / Neck swelling / Neck pain / Hoarseness / Dysphagia / Supine dyspnea / Radiation history / Family thyroid cancer or MEN2 / Other ___"
+        bedsideQuestion: "Any neck swelling, rapid growth, thyroid pain, hoarseness, dysphagia, or positional dyspnea?",
+        bedsideQuestionOptions: "No / Neck swelling / Rapid growth / Thyroid pain / Hoarseness / Dysphagia / Positional dyspnea / Other ___"
       },
       {
         pattern: /\b(?:heart sounds|radial pulses)\b/,
@@ -3364,8 +3464,8 @@ const clinicalRecommendationProfiles = [
         reason: "Adds an atomic skin inspection phenotype check not yet represented in the base catalog for hypo- or hyperthyroid presentations.",
         diagnosticTarget: "Thyroid phenotype clue: warm moist skin in thyrotoxicosis or dry coarse skin in hypothyroidism.",
         management: "Marked skin phenotype findings strengthen severity assessment and can change urgency of thyroid labs, crisis screen, or treatment discussion.",
-        bedsideQuestion: "Any heat intolerance, sweating, cold intolerance, dry skin, constipation, tremor, or slowed thinking?",
-        bedsideQuestionOptions: "No / Heat or sweating / Cold intolerance / Dry skin / Constipation / Tremor / Slowed thinking / Other ___",
+        bedsideQuestion: "Any heat intolerance, sweating, cold intolerance, or dry/coarse skin change?",
+        bedsideQuestionOptions: "No / Heat intolerance / Sweating / Cold intolerance / Dry or coarse skin / Other ___",
         source: "ATA_HYPERTHYROIDISM_2016; ATA_HYPOTHYROIDISM_2014",
         evidenceTier: "Guideline",
         difficulty: "easy",
@@ -3462,15 +3562,14 @@ const clinicalRecommendationProfiles = [
     requiredItems: [
       {
         exam_id: "SAFETY-thyroid-crisis-temperature",
-        label: "Temperature",
+        item_type: "safety_check",
+        label: "Measure temperature",
         options: "___ C/F / Hyperthermia / Hypothermia / Not available",
         domain: "Basic Safety",
         role: "core",
         reason: "Temperature is required in suspected thyroid storm or myxedema coma because fever or hypothermia changes crisis severity and escalation.",
         diagnosticTarget: "Thyroid emergency severity: hyperthermia, hypothermia, or unstable temperature trend.",
         management: "Marked fever supports thyroid-storm severity and infection search; hypothermia supports myxedema-coma severity and warming/ICU-level monitoring.",
-        bedsideQuestion: "Any fever, infection symptoms, cold exposure, hypothermia, heat intolerance, or recent antithyroid/thyroid hormone medication change?",
-        bedsideQuestionOptions: "No / Fever / Infection symptoms / Cold exposure / Heat intolerance / Medication change / Other ___",
         source: "ATA_HYPERTHYROIDISM_2016; JTA_JES_THYROID_STORM_2016; AHRQ_CALIBRATE_DX",
         evidenceTier: "Guideline",
         difficulty: "easy",
@@ -3506,7 +3605,7 @@ const clinicalRecommendationProfiles = [
         exam_id: "GAP-thyroid-crisis-mental-status",
         item_type: "safety_check",
         gap_type: "safety_check",
-        label: "Mental status",
+        label: "Document mental status",
         options: "Baseline / Agitated / Confused / Somnolent / Comatose / Unable",
         domain: "Mental Status",
         reason: "Checks thyroid-storm or myxedema-coma severity that changes escalation and treatment urgency.",
@@ -3612,15 +3711,14 @@ const clinicalRecommendationProfiles = [
     requiredItems: [
       {
         exam_id: "SAFETY-dermatology-temperature",
-        label: "Temperature",
+        item_type: "safety_check",
+        label: "Measure temperature",
         options: "___ C/F / Fever / Afebrile / Not available",
         domain: "Basic Safety",
         role: "core",
         reason: "Temperature screens for infection, drug reaction, systemic inflammatory disease, or anaphylaxis mimic in dermatologic presentations.",
         diagnosticTarget: "Dermatology safety context: fever, hypothermia, or systemic illness accompanying rash, wound, hives, or skin lesion.",
         management: "Fever or systemic toxicity can change infection workup, isolation, medication-stop decisions, ED escalation, and dermatology consultation urgency.",
-        bedsideQuestion: "Any fever, chills, rapid spread, skin pain, mucosal involvement, new medicine, breathing trouble, or lip/tongue swelling?",
-        bedsideQuestionOptions: "No / Fever / Chills / Rapid spread / Skin pain / Mucosal involvement / New medicine / Breathing trouble / Lip-tongue swelling / Other ___",
         source: "AHRQ_CALIBRATE_DX; MCGEE_EBPD",
         evidenceTier: "B",
         difficulty: "easy",
@@ -3632,7 +3730,8 @@ const clinicalRecommendationProfiles = [
       },
       {
         exam_id: "SAFETY-dermatology-blood-pressure",
-        label: "Blood pressure",
+        item_type: "safety_check",
+        label: "Measure blood pressure",
         options: "___ / Normal / Low / High / Not available",
         domain: "Basic Safety",
         role: "core",
@@ -3650,7 +3749,8 @@ const clinicalRecommendationProfiles = [
       },
       {
         exam_id: "SAFETY-dermatology-heart-rate",
-        label: "Heart rate",
+        item_type: "safety_check",
+        label: "Measure heart rate",
         options: "___ / Regular / Irregular / Tachycardic / Bradycardic / Not available",
         domain: "Basic Safety",
         role: "core",
@@ -3834,6 +3934,8 @@ function bundleFloorItem(config = {}) {
     item_type: itemType,
     gap_type: itemType,
     label: config.label,
+    maneuver: config.maneuver || config.label,
+    technique: config.technique || "",
     options: config.options || "",
     domain: config.domain || "Validated Workup Floor",
     role: config.role || "core",
@@ -3859,9 +3961,30 @@ function bundleFloorItem(config = {}) {
 const validatedBundleWorkupFloors = {
   dka_hhs: [
     bundleFloorItem({
+      exam_id: "REQ-dka-hhs-mental-status",
+      type: "safety_check",
+      label: "Document mental status",
+      options: "Baseline / Confused / Somnolent / Agitated / Obtunded / Seizing / Unable",
+      domain: "Basic Safety / Neurologic Acuity",
+      reason: "Mental status is management-changing safety data in DKA/HHS and must be modeled separately from physical exam maneuvers.",
+      diagnosticTarget: "Hyperglycemic-crisis severity clue: confusion, somnolence, agitation, seizure, obtundation, or inability to safely participate in care.",
+      management: "Altered mental status changes airway and aspiration risk, osmolality/severity assessment, monitoring level, ICU or stepdown threshold, and urgency of reassessment.",
+      bedsideQuestion: "Is this mental status baseline, and is there new confusion, unusual sleepiness, agitation, seizure, severe weakness, or trouble staying awake?",
+      bedsideQuestionOptions: "Baseline / Confusion / Sleepy / Agitated / Seizure / Severe weakness / Trouble staying awake / Other ___",
+      source: "ADA_HYPERGLYCEMIC_CRISES_2024; ADA_STANDARDS_HOSPITAL_2026; AHRQ_CALIBRATE_DX",
+      source_citation: "2024 hyperglycemic crises consensus report; ADA Standards of Care in Diabetes-2026, hospital section; AHRQ Calibrate Dx",
+      evidenceTier: "Guideline",
+      difficulty: "easy",
+      time_burden_minutes: "0.5",
+      equipment_needed: "none",
+      patient_cooperation_required: "low",
+      matchedTags: ["DKA_HHS", "mental_status", "hyperosmolarity", "diagnostic_safety"],
+      satisfiedBy: /\b(?:mental status|alert|oriented|confusion|somnolent|obtunded|agitated|seizure)\b/
+    }),
+    bundleFloorItem({
       exam_id: "REQ-dka-hhs-respiratory-pattern",
       type: "exam_maneuver",
-      label: "Kussmaul respiratory pattern observation",
+      label: "Observe Kussmaul respiratory pattern",
       options: "Normal / Tachypneic / Deep-labored Kussmaul pattern / Shallow or tiring / Unable",
       domain: "Respiratory Pattern",
       reason: "DKA/HHS bedside exam needs an atomic respiratory-pattern observation distinct from routine respiratory-rate measurement.",
@@ -3878,6 +4001,56 @@ const validatedBundleWorkupFloors = {
       patient_cooperation_required: "low",
       matchedTags: ["DKA_HHS", "respiratory_pattern", "kussmaul", "acidosis", "red_flag"],
       satisfiedBy: /\b(?:kussmaul|respiratory pattern|deep-labored|deep labored|work of breathing)\b/
+    }),
+    bundleFloorItem({
+      exam_id: "REQ-dka-hhs-diagnostic-thresholds",
+      type: "diagnostic_test",
+      label: "DKA/HHS diagnostic and severity thresholds",
+      options: "Glucose and diabetes context / Beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+ for DKA pattern / pH <7.3 and/or bicarbonate <18 mmol/L for acidosis / Anion gap and electrolytes including potassium / Creatinine-BUN and volume/AKI context / Effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg for HHS pattern / Assess mixed DKA-HHS and euglycemic DKA when SGLT2, pregnancy, fasting, or poor intake risk exists",
+      domain: "Tests / Hyperglycemic Crisis",
+      reason: "DKA/HHS cannot be classified safely from bedside findings alone; biochemical criteria and potassium/osmolality safety thresholds are required.",
+      diagnosticTarget: "DKA, HHS, mixed DKA-HHS, euglycemic DKA, severity, potassium risk, AKI, and osmolality-related neurologic risk.",
+      management: "Glucose, ketones, pH/bicarbonate, anion gap, potassium, renal function, and osmolality change insulin timing, fluid strategy, potassium replacement, monitoring level, and resolution/transition decisions.",
+      bedsideQuestion: "Any SGLT2 inhibitor use, pregnancy possibility, fasting/poor intake, missed insulin, pump failure, infection symptoms, chest pain, stroke symptoms, or medication access barrier?",
+      bedsideQuestionOptions: "No / SGLT2 / Pregnancy possible / Fasting-poor intake / Missed insulin / Pump failure / Infection / Chest pain / Stroke symptoms / Access barrier / Other ___",
+      source: "ADA_HYPERGLYCEMIC_CRISES_2024; ADA_STANDARDS_HOSPITAL_2026; AHRQ_CALIBRATE_DX",
+      source_citation: "2024 hyperglycemic crises consensus report; ADA Standards of Care in Diabetes-2026, hospital section; AHRQ Calibrate Dx",
+      evidenceTier: "Guideline",
+      equipment_needed: "lab and point-of-care glucose review",
+      matchedTags: ["DKA_HHS", "diagnostic_test", "ketones", "anion_gap", "bicarbonate", "pH", "potassium", "osmolality"]
+    }),
+    bundleFloorItem({
+      exam_id: "REQ-dka-hhs-precipitant-tests",
+      type: "diagnostic_test",
+      label: "DKA/HHS precipitant and safety testing",
+      options: "ECG and troponin when chest pain, ischemia, arrhythmia, potassium abnormality, or high-risk presentation / CBC, urinalysis, chest imaging, cultures, or viral testing when infection source is possible / Lipase or abdominal imaging only when persistent focal abdominal concern supports pancreatitis or surgical mimic / Medication, insulin access, pump/CGM, steroid, alcohol, and pregnancy review when relevant",
+      domain: "Tests / Precipitant Search",
+      reason: "Hyperglycemic crises are often triggered by infection, insulin omission/access problems, pump failure, ischemia, medications, pregnancy, or other stressors; the workup should show that search explicitly.",
+      diagnosticTarget: "Precipitating cause or mimic: infection, myocardial ischemia/arrhythmia, pancreatitis or surgical abdomen, medication effect, pregnancy-related risk, alcohol/starvation, insulin omission, or pump/device failure.",
+      management: "Finding the precipitant changes antibiotics/source control, ACS or stroke evaluation, device troubleshooting, medication holds, pregnancy safety, social discharge planning, and recurrence prevention.",
+      bedsideQuestion: "Any fever, cough, dysuria, wounds, chest pain, neurologic symptoms, severe focal abdominal pain, steroid use, alcohol/fasting, pregnancy possibility, insulin access issue, or pump/CGM problem?",
+      bedsideQuestionOptions: "No / Infection symptoms / Chest pain / Neuro symptoms / Focal abdominal pain / Steroid / Alcohol-fasting / Pregnancy possible / Insulin access / Pump-CGM issue / Other ___",
+      source: "ADA_HYPERGLYCEMIC_CRISES_2024; ADA_STANDARDS_HOSPITAL_2026; AHRQ_CALIBRATE_DX",
+      source_citation: "2024 hyperglycemic crises consensus report; ADA Standards of Care in Diabetes-2026, hospital section; AHRQ Calibrate Dx",
+      evidenceTier: "Guideline",
+      equipment_needed: "source-directed lab, ECG, imaging, and medication/device review",
+      matchedTags: ["DKA_HHS", "diagnostic_test", "precipitant", "infection", "ACS", "pregnancy", "insulin_access"]
+    }),
+    bundleFloorItem({
+      exam_id: "REQ-dka-hhs-escalation-cues",
+      type: "red_flag",
+      label: "DKA/HHS high-acuity escalation cues",
+      options: "Altered mental status, seizure, obtundation, or inability to protect airway / Hypotension, shock, poor perfusion, or severe dehydration / Severe acidosis, rising anion gap, severe hyperosmolality, or mixed DKA-HHS / Potassium <3.5 mmol/L or dangerous potassium/ECG concern / Severe hypoxemia, respiratory fatigue, or suspected sepsis / Pregnancy, pediatric/young adult high-risk context, severe comorbidity, or unreliable monitoring setting",
+      domain: "Red Flags / Hyperglycemic Crisis",
+      reason: "DKA/HHS workups must explicitly screen for neurologic, airway, shock, potassium, respiratory, sepsis, pregnancy, and monitoring-risk features that change disposition and treatment sequence.",
+      diagnosticTarget: "High-risk hyperglycemic crisis physiology: neurologic compromise, airway risk, shock, severe dehydration, severe acidosis/osmolality, potassium/arrhythmia risk, sepsis, respiratory failure, pregnancy, or unsafe monitoring context.",
+      management: "These cues change ICU/stepdown threshold, airway and respiratory support, fluid and insulin sequence, potassium replacement before insulin, sepsis/precipitant treatment, and urgency of endocrine/critical-care escalation.",
+      bedsideQuestion: "Any confusion, seizure, trouble protecting airway, syncope, very low urine, shock symptoms, severe shortness of breath, infection symptoms, pregnancy possibility, or known abnormal potassium/ECG?",
+      bedsideQuestionOptions: "No / Confusion-seizure / Airway concern / Syncope-shock / Oliguria / Severe dyspnea / Infection / Pregnancy possible / Potassium-ECG concern / Other ___",
+      source: "ADA_HYPERGLYCEMIC_CRISES_2024; ADA_STANDARDS_HOSPITAL_2026; AHRQ_CALIBRATE_DX",
+      source_citation: "2024 hyperglycemic crises consensus report; ADA Standards of Care in Diabetes-2026, hospital section; AHRQ Calibrate Dx",
+      evidenceTier: "Guideline",
+      matchedTags: ["DKA_HHS", "red_flag", "mental_status", "shock", "potassium", "sepsis", "respiratory_failure"]
     })
   ],
   sleep_apnea_airway: [
@@ -3932,7 +4105,7 @@ const validatedBundleWorkupFloors = {
     bundleFloorItem({
       exam_id: "REQ-pelvic-pregnancy-safety",
       type: "safety_check",
-      label: "Pregnancy possibility safety check",
+      label: "Verify pregnancy possibility",
       options: "Not possible / Possible / Positive test / Negative test / Unknown",
       domain: "Basic Safety / Pregnancy",
       reason: "Pregnancy possibility changes medication, imaging, ectopic-risk, and escalation decisions in pelvic or lower-abdominal pain.",
@@ -4051,7 +4224,7 @@ const validatedBundleWorkupFloors = {
     bundleFloorItem({
       exam_id: "REQ-hypoglycemia-mental-status",
       type: "safety_check",
-      label: "Mental status",
+      label: "Document mental status",
       options: "Baseline / Anxious-jittery / Confused / Somnolent / Seizing / Unable",
       domain: "Neuroglycopenia Safety",
       reason: "Mental status separates adrenergic symptoms from neuroglycopenic hypoglycemia that needs immediate treatment and monitoring.",
@@ -4065,7 +4238,7 @@ const validatedBundleWorkupFloors = {
     bundleFloorItem({
       exam_id: "REQ-hypoglycemia-bedside-glucose",
       type: "safety_check",
-      label: "Bedside glucose safety check",
+      label: "Measure bedside glucose",
       options: "___ mg/dL / <70 mg/dL / <54 mg/dL clinically significant / Normal / High / Not available",
       domain: "Immediate Glucose Check",
       reason: "Point-of-care glucose is immediately management-changing in hypoglycemia-like presentations.",
@@ -4132,7 +4305,7 @@ const validatedBundleWorkupFloors = {
     bundleFloorItem({
       exam_id: "REQ-thyroid-crisis-mental-status",
       type: "safety_check",
-      label: "Mental status",
+      label: "Document mental status",
       options: "Baseline / Agitated / Delirious / Somnolent / Comatose / Unable",
       domain: "Thyroid Crisis Severity",
       reason: "Mental status is a severity criterion in thyroid storm and myxedema coma and should be active safety data.",
@@ -4698,6 +4871,21 @@ function traceArray(value) {
   return splitEvidenceList(value || "");
 }
 
+function registryStyleSourceId(value = "") {
+  const text = String(value || "").trim();
+  return /^[A-Z][A-Z0-9_:-]{1,}$/.test(text)
+    && !/^https?:\/\//i.test(text)
+    && !/\s/.test(text)
+    && !/[.,()]/.test(text);
+}
+
+function traceSourceIdArray(...values) {
+  return unique(values
+    .flatMap((value) => traceArray(value))
+    .map((value) => String(value || "").trim())
+    .filter(registryStyleSourceId));
+}
+
 function recommendationTraceability(entry = {}, intentTrace = []) {
   const candidate = entry.candidate || entry;
   const prior = typeof entry.traceability === "object" && entry.traceability
@@ -4724,14 +4912,14 @@ function recommendationTraceability(entry = {}, intentTrace = []) {
     ...traceArray(candidatePrior.clinical_bundle_ids),
     ...intentTrace.flatMap((trace) => trace.clinical_bundle_ids || [])
   ]);
-  const sourceIds = unique([
-    ...traceArray(prior.source_ids),
-    ...traceArray(candidatePrior.source_ids),
+  const sourceIds = traceSourceIdArray(
+    prior.source_ids,
+    candidatePrior.source_ids,
     candidate.source?.source_id,
-    ...traceArray(candidate.evidence_source_primary),
-    ...traceArray(candidate.catalog_gap_source_ids),
-    ...intentTrace.flatMap((trace) => trace.source_ids || [])
-  ]);
+    candidate.evidence_source_primary,
+    candidate.catalog_gap_source_ids,
+    intentTrace.flatMap((trace) => trace.source_ids || [])
+  );
   const knowledgePackIds = unique([
     ...traceArray(prior.knowledge_pack_id),
     ...traceArray(candidatePrior.knowledge_pack_id),
@@ -4794,6 +4982,29 @@ function recognizedClinicalBundleIds(rawContext = "") {
 }
 
 const crossIntentSafetyProfileRules = [
+  {
+    profileId: "infection_sepsis",
+    trigger: /\b(?:fever|febrile|chills|rigors|infection|infectious|sepsis|pneumonia|leukocytosis|hypothermia|toxic appearance|cough|sputum|dyspnea|shortness of breath|pleuritic|hypoxemia|dysuria|urinary|flank|pyelonephritis|rash|wound|line|device|cellulitis|abscess|sore throat|neck stiffness)\b/,
+    includeSourceCoreAsConditional: false,
+    requiredItemRole: "conditional",
+    requiredItemIds: [
+      "REQ-infection-respiratory-source-history",
+      "REQ-infection-heent-oral-source-history",
+      "REQ-infection-urinary-flank-source-history",
+      "REQ-infection-abdominal-gi-source-history",
+      "REQ-infection-skin-wound-line-source-history",
+      "REQ-infection-cns-joint-spine-danger-history",
+      "REQ-infection-host-exposure-history",
+      "REQ-infection-sepsis-severity-labs",
+      "REQ-infection-source-directed-studies",
+      "REQ-infection-shock-escalation-cues",
+      "REQ-infection-cns-airway-purpura-cues",
+      "REQ-infection-work-of-breathing",
+      "REQ-infection-posterior-lung-sounds",
+      "REQ-infection-skin-source-inspection"
+    ],
+    warning: "Fever or infection symptoms were entered as modifiers outside the selected fever/sepsis intent. This adds source-localizing infection questions and conditional source exams, but select the validated fever/infection intent if infection is the primary problem."
+  },
   {
     profileId: "neuro_red_flags",
     trigger: /\b(?:stroke|tia|focal(?: neurologic| neuro)?(?: deficit| weakness)?|facial droop|facial weakness|face weakness|face droop|aphasia|hemiparesis|hemiplegia|new unilateral weakness|new weakness on one side|slurred speech|seizure|ataxia|diplopia)\b/,
@@ -4870,28 +5081,48 @@ function crossIntentSafetyProfiles(context, validatedBundleIds) {
   if (!validatedBundleIds.size) {
     return [];
   }
+  const modifierContext = normalizeEvidenceText(patientModifierContextText(context));
+  if (!modifierContext) {
+    return [];
+  }
   return crossIntentSafetyProfileRules
-    .filter((rule) => !validatedBundleIds.has(rule.profileId) && rule.trigger.test(context))
+    .filter((rule) => !validatedBundleIds.has(rule.profileId) && rule.trigger.test(modifierContext))
     .map((rule) => {
       const sourceProfile = clinicalRecommendationProfiles.find((profile) => profile.id === rule.profileId);
       if (!sourceProfile) {
         return null;
       }
-      const safetyAddOns = rule.requiredGaps || [];
+      const requiredItemIds = new Set(rule.requiredItemIds || []);
+      const sourceRequiredItems = (sourceProfile.requiredItems || [])
+        .filter((item) => !requiredItemIds.size || requiredItemIds.has(item.exam_id || item.id))
+        .map((item) => ({
+          ...item,
+          role: rule.requiredItemRole || item.role || "conditional",
+          domain: item.domain ? `${item.domain} Add-on` : "Modifier-triggered Add-on",
+          reason: `${item.reason || "Required source-backed item."} This is conditional because it was activated by a patient modifier outside the selected primary bundle.`,
+          matchedTags: unique([...(item.matchedTags || []), "cross_intent_modifier"])
+        }));
+      const safetyAddOns = [
+        ...sourceRequiredItems,
+        ...(rule.requiredGaps || [])
+      ];
+      const includeSourceCoreAsConditional = rule.includeSourceCoreAsConditional !== false;
       return {
         ...sourceProfile,
         id: `${sourceProfile.id}_cross_intent_safety`,
         name: `${sourceProfile.name} safety add-on`,
         core: [],
-        conditional: [
-          ...(sourceProfile.core || []),
-          ...(sourceProfile.conditional || [])
-        ].map((group) => ({
-          ...group,
-          domain: group.domain ? `${group.domain} Safety Add-on` : "Safety Add-on",
-          strength: Math.min(group.strength || 56, 66),
-          reason: `${group.reason} This is conditional because the selected validated intent is outside the neurologic bundle.`
-        })),
+        conditional: includeSourceCoreAsConditional
+          ? [
+              ...(sourceProfile.core || []),
+              ...(sourceProfile.conditional || [])
+            ].map((group) => ({
+              ...group,
+              domain: group.domain ? `${group.domain} Safety Add-on` : "Safety Add-on",
+              strength: Math.min(group.strength || 56, 66),
+              reason: `${group.reason} This is conditional because the selected validated intent is outside the ${sourceProfile.name} bundle.`
+            }))
+          : [],
         requiredItems: safetyAddOns.filter((item) => !isStagedCatalogGapDefinition(item)),
         requiredGaps: safetyAddOns.filter(isStagedCatalogGapDefinition),
         suppress: [],
@@ -5009,17 +5240,62 @@ function requiredProfileItemAlreadySatisfied(item, selectedEntries = []) {
     if (itemId && (candidate.exam_id === itemId || entry.exam_id === itemId)) {
       return true;
     }
-    const text = normalizeEvidenceText([
-      entry.label,
-      entry.domain,
+    const text = requiredProfileSatisfactionText(entry, itemType);
+    return pattern.test(text);
+  });
+}
+
+function requiredProfileSatisfactionText(entry = {}, itemType = "") {
+  const candidate = entry.candidate || entry;
+  const isSafety = itemType === "safety_check" || isBasicSafetyCheckEntry(entry);
+  const isHistory = itemType === "history_question" || itemType === "question" || isHistoryQuestionEntry(entry);
+  const isTest = itemType === "diagnostic_test" || itemType === "reference_threshold" || isDiagnosticTestEntry(entry);
+  const isRedFlag = itemType === "red_flag" || itemType === "escalation_cue" || isRedFlagEntry(entry);
+  const isManagement = itemType === "management_change" || isManagementChangeEntry(entry);
+  const sharedIdentity = [
+    entry.exam_id,
+    candidate.exam_id,
+    entry.label,
+    entry.originalLabel,
+    candidate.examLabel,
+    candidate.maneuver,
+    entry.options,
+    candidate.examOptions,
+    candidate.item_type,
+    candidate.gap_type
+  ];
+  if (isSafety) {
+    return normalizeEvidenceText(sharedIdentity.filter(Boolean).join(" "));
+  }
+  if (isHistory) {
+    return normalizeEvidenceText([
+      ...sharedIdentity,
+      entry.text,
+      entry.displayBedsideQuestion,
+      entry.displayBedsideQuestionOptions,
+      candidate.bedside_question_label,
+      candidate.bedside_question_options
+    ].filter(Boolean).join(" "));
+  }
+  if (isTest || isRedFlag || isManagement) {
+    return normalizeEvidenceText([
+      ...sharedIdentity,
+      entry.text,
       entry.reason,
       entry.displayDiagnosticTarget,
       entry.displayManagement,
-      candidate.examLabel,
-      candidate.maneuver
+      candidate.diagnostic_target,
+      candidate.result_changes_management,
+      candidate.management_link
     ].filter(Boolean).join(" "));
-    return pattern.test(text);
-  });
+  }
+  return normalizeEvidenceText([
+    ...sharedIdentity,
+    entry.technique,
+    candidate.technique,
+    candidate.base?.technique,
+    candidate.base?.checklist_label
+  ].filter(Boolean).join(" "));
 }
 
 function requiredProfileSectionTypesCompatible(itemType, entry = {}) {
@@ -5047,7 +5323,8 @@ function requiredProfileSectionTypesCompatible(itemType, entry = {}) {
 const validatedSafetyFloorDefinitions = [
   {
     exam_id: "SAFETY-validated-blood-pressure",
-    label: "Blood pressure",
+    item_type: "safety_check",
+    label: "Measure blood pressure",
     options: "___ / Low / Normal / High / Not available",
     diagnosticTarget: "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
     management: "Abnormal blood pressure can change acuity, fluids, antihypertensive decisions, endocrine-crisis treatment, monitoring, and escalation.",
@@ -5056,7 +5333,8 @@ const validatedSafetyFloorDefinitions = [
   },
   {
     exam_id: "SAFETY-validated-heart-rate",
-    label: "Heart rate",
+    item_type: "safety_check",
+    label: "Measure heart rate",
     options: "___ / Regular / Irregular / Tachycardic / Bradycardic / Not available",
     diagnosticTarget: "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
     management: "Abnormal heart rate can change ECG/telemetry urgency, volume or endocrine-crisis assessment, infection severity, medication review, and escalation.",
@@ -5065,7 +5343,8 @@ const validatedSafetyFloorDefinitions = [
   },
   {
     exam_id: "SAFETY-validated-respiratory-rate",
-    label: "Respiratory rate",
+    item_type: "safety_check",
+    label: "Count respiratory rate",
     options: "___ / Normal / Tachypneic / Bradypneic / Labored / Not available",
     diagnosticTarget: "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
     management: "Abnormal respiratory rate or labored breathing can change oxygen/ventilation assessment, acid-base urgency, monitoring level, and escalation.",
@@ -5074,7 +5353,8 @@ const validatedSafetyFloorDefinitions = [
   },
   {
     exam_id: "SAFETY-validated-oxygen-saturation",
-    label: "Oxygen saturation / support",
+    item_type: "safety_check",
+    label: "Measure oxygen saturation and support",
     options: "___% room air / ___% on oxygen ___ L/min / Hypoxemic / Not available",
     diagnosticTarget: "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
     management: "Abnormal oxygen saturation or rising oxygen requirement can change respiratory support, imaging urgency, pulmonary/infectious/cardiac framing, monitoring level, and escalation.",
@@ -5083,7 +5363,8 @@ const validatedSafetyFloorDefinitions = [
   },
   {
     exam_id: "SAFETY-validated-temperature",
-    label: "Temperature",
+    item_type: "safety_check",
+    label: "Measure temperature",
     options: "___ C/F / Fever / Hypothermia / Afebrile / Not available",
     diagnosticTarget: "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
     management: "Fever or hypothermia can change infection/endocrine-crisis workup, isolation, medication decisions, monitoring, and escalation.",
@@ -5362,14 +5643,64 @@ const supplementalValidatedIntentHistoryQuestionDefinitions = {
   ],
   routine_thyroid_disease_v1: [
     {
-      id: "thyroid-structural-medication-risk",
-      label: "Thyroid structural, medication, and risk-factor history",
-      text: "Any neck mass growth, dysphagia, dyspnea, hoarseness, radiation exposure, family thyroid cancer or MEN2, pregnancy or postpartum status, amiodarone, lithium or iodine exposure, biotin use, or thyroid medication adherence issue?",
-      options: "None / Neck mass growth / Dysphagia / Dyspnea / Hoarseness / Radiation exposure / Family thyroid cancer-MEN2 / Pregnancy-postpartum / Amiodarone / Lithium / Iodine exposure / Biotin / Medication adherence issue / Other ___",
+      id: "thyroid-compressive-symptoms",
+      label: "Thyroid neck and compressive-symptom history",
+      text: "Any neck swelling, rapid growth, thyroid pain, hoarseness, dysphagia, or positional shortness of breath?",
+      options: "None / Neck swelling / Rapid growth / Thyroid pain / Hoarseness / Dysphagia / Positional dyspnea / Other ___",
       whenToAsk: "Ask when routine thyroid disease, abnormal TSH, hyperthyroidism, hypothyroidism, goiter, nodule, thyroid mass, or thyroid cancer concern is selected.",
-      diagnosticTarget: "Structural thyroid danger symptoms, malignancy risk, orbit/cardiopulmonary risk context, medication or supplement confounding, and reproductive context.",
-      management: "The answer changes ultrasound or FNA urgency, cervical node exam priority, lab interpretation, medication adjustment, pregnancy-specific management, and endocrine or surgical referral threshold.",
-      tags: ["thyroid_disease", "thyroid_exam", "thyroid_nodule", "thyroid_cancer", "medication_safety", "history_question"]
+      diagnosticTarget: "Structural thyroid symptoms: goiter/nodule growth, thyroiditis pain, recurrent laryngeal nerve clue, dysphagia, or airway/compressive symptom.",
+      management: "The answer changes thyroid/neck exam focus, ultrasound or FNA urgency, thyroiditis workup, airway concern, and endocrine/ENT referral threshold.",
+      tags: ["thyroid_disease", "thyroid_exam", "thyroid_nodule", "compressive_symptoms", "history_question"]
+    },
+    {
+      id: "thyroid-cancer-risk-history",
+      label: "Thyroid cancer-risk history",
+      text: "Any childhood head or neck radiation, family thyroid cancer, MEN2, prior suspicious thyroid biopsy, or rapidly enlarging neck mass?",
+      options: "None / Childhood head-neck radiation / Family thyroid cancer / MEN2 / Suspicious prior biopsy / Rapidly enlarging mass / Other ___",
+      whenToAsk: "Ask when a thyroid nodule, goiter, neck mass, suspicious nodes, hoarseness, compressive symptoms, or thyroid cancer concern is selected.",
+      diagnosticTarget: "Thyroid malignancy risk context: radiation exposure, inherited medullary thyroid cancer risk, suspicious prior cytology, or aggressive growth.",
+      management: "The answer changes cervical-node exam priority, ultrasound/nodal mapping, FNA threshold, calcitonin or genetic-risk review when relevant, and endocrine/ENT referral urgency.",
+      tags: ["thyroid_disease", "thyroid_nodule", "thyroid_cancer", "radiation", "MEN2", "history_question"]
+    },
+    {
+      id: "thyroid-medication-assay-context",
+      label: "Thyroid medication, supplement, and assay-interference history",
+      text: "Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, high-dose biotin, thyroid supplement, missed dose, or recent dose change?",
+      options: "None / Thyroid hormone / Antithyroid drug / Amiodarone / Lithium / Iodine or contrast / High-dose biotin / Thyroid supplement / Missed dose / Recent dose change / Other ___",
+      whenToAsk: "Ask when thyroid lab interpretation, abnormal TSH, hyperthyroidism, hypothyroidism, goiter, thyroiditis, or thyroid medication adjustment is being considered.",
+      diagnosticTarget: "Medication or assay context that can cause thyroid dysfunction, distort thyroid tests, or make treatment adjustment unsafe.",
+      management: "The answer changes repeat-lab timing, biotin hold/retest planning, medication reconciliation, adverse-effect review, and whether abnormal thyroid tests represent true disease.",
+      tags: ["thyroid_disease", "medication_safety", "assay_interference", "biotin", "amiodarone", "lithium", "history_question"]
+    },
+    {
+      id: "thyroid-reproductive-context",
+      label: "Thyroid pregnancy, postpartum, and fertility-context history",
+      text: "Any current pregnancy, pregnancy plans, recent postpartum state, breastfeeding, infertility treatment, or fertility goal affected by thyroid status?",
+      options: "None / Pregnant / Pregnancy plans / Recent postpartum / Breastfeeding / Infertility treatment / Fertility goal / Other ___",
+      whenToAsk: "Ask when thyroid disease is evaluated in a patient for whom pregnancy, postpartum state, fertility goals, or medication safety could change targets or treatment choices.",
+      diagnosticTarget: "Reproductive context that changes TSH targets, medication safety, antibody interpretation, and postpartum thyroiditis likelihood.",
+      management: "The answer changes TSH target selection, levothyroxine dose planning, antithyroid-drug choice, imaging/radioiodine safety, and follow-up interval.",
+      tags: ["thyroid_disease", "pregnancy", "postpartum", "fertility", "medication_safety", "history_question"]
+    },
+    {
+      id: "thyroid-hyperthyroid-symptoms",
+      label: "Hyperthyroid symptom history",
+      text: "Any heat intolerance, palpitations, tremor, sweating, unintentional weight loss, diarrhea, anxiety, or insomnia?",
+      options: "None / Heat intolerance / Palpitations / Tremor / Sweating / Weight loss / Diarrhea / Anxiety-insomnia / Other ___",
+      whenToAsk: "Ask when abnormal TSH, suspected hyperthyroidism, Graves disease, thyrotoxicosis, tachycardia, tremor, or weight loss is selected.",
+      diagnosticTarget: "Thyroid hormone excess phenotype and adrenergic severity.",
+      management: "The answer changes urgency of TSH/free T4/T3 testing, ECG or beta-blocker consideration, Graves/thyroiditis framing, and thyroid-storm screen when severe.",
+      tags: ["thyroid_disease", "hyperthyroidism", "thyrotoxicosis", "adrenergic", "history_question"]
+    },
+    {
+      id: "thyroid-hypothyroid-symptoms",
+      label: "Hypothyroid symptom history",
+      text: "Any cold intolerance, fatigue, constipation, dry or coarse skin, hoarse voice, slowed thinking, weight gain, or heavy menses?",
+      options: "None / Cold intolerance / Fatigue / Constipation / Dry or coarse skin / Hoarse voice / Slowed thinking / Weight gain / Heavy menses / Other ___",
+      whenToAsk: "Ask when abnormal TSH, suspected hypothyroidism, Hashimoto disease, bradycardia, fatigue, constipation, or cold intolerance is selected.",
+      diagnosticTarget: "Thyroid hormone deficiency phenotype and myxedema-risk symptoms.",
+      management: "The answer changes TSH/free T4 interpretation, replacement planning, medication-adherence review, pregnancy target review when relevant, and myxedema screen when severe.",
+      tags: ["thyroid_disease", "hypothyroidism", "hashimoto", "myxedema", "history_question"]
     }
   ],
   diabetes_foot_neuropathy_v1: [
@@ -5603,13 +5934,21 @@ function bundleRequiredProfileEntries(activeProfiles, context, selectedEntries =
     .filter(({ item }) => conditionMatches(item.when, context) && !conditionBlocks(item.unless, context) && !requiredProfileItemAlreadySatisfied(item, selectedEntries))
     .map(({ profile, item }) => {
       const role = item.role || "core";
-      const technique = item.technique || item.maneuver || item.action || item.label || "";
       const whenToUse = item.whenToUse || item.when_to_use_structured || item.whenText || profile.name || "";
       const limitations = item.limitations
         || "Interpret in clinical context; abnormal bedside findings should be integrated with the full chart, patient trajectory, and measurement reliability.";
       const matchedTags = item.matchedTags || [];
       const source = item.source || item.evidence_source_primary || "";
       const itemType = item.item_type || item.gap_type || "exam_maneuver";
+      const rawTechnique = item.technique || item.maneuver || item.action || item.label || "";
+      const technique = itemType === "exam_maneuver"
+        ? standardizedBedsideTechnique({
+            ...item,
+            examLabel: item.label,
+            matchedTags,
+            tags: matchedTags
+          }, rawTechnique)
+        : rawTechnique;
       const candidate = {
         exam_id: item.exam_id || item.id,
         item_type: itemType,
@@ -5757,7 +6096,12 @@ function acceptedCatalogGapReplacementEntries(activeProfiles, context, entries =
         originalLabel: acceptedEntry.label || candidate.examLabel || gap.label,
         options: acceptedEntry.options || candidate.examOptions || gap.options || "",
         action: acceptedEntry.action || acceptedEntry.maneuver || candidate.maneuver || gap.action || "",
-        technique: acceptedEntry.technique || acceptedEntry.maneuver || candidate.maneuver || gap.technique || "",
+        technique: standardizedBedsideTechnique({
+          ...candidate,
+          examLabel: acceptedEntry.label || candidate.examLabel || gap.label,
+          matchedTags: retrievalTags,
+          tags: retrievalTags
+        }, acceptedEntry.technique || acceptedEntry.maneuver || candidate.technique || candidate.maneuver || gap.technique || ""),
         limitations: acceptedEntry.limitations || candidate.limitations || gap.limitations || "",
         domain,
         role,
@@ -6123,7 +6467,7 @@ function normalizedRecommendedEquipment(candidate = {}) {
 }
 
 function genericEvidenceExamOptions(value = "") {
-  const rawOptions = Array.isArray(value) ? value : String(value || "").split(/[;|/]+/);
+  const rawOptions = Array.isArray(value) ? value : String(value || "").split(/\s*(?:[;|]|\s+\/\s+)\s*/);
   const tokens = rawOptions
     .map((option) => normalizeEvidenceLabel(option))
     .filter(Boolean);
@@ -6180,6 +6524,122 @@ function displayOptionsForCandidate(candidate = {}) {
   return specificOptions ? specificOptions.join(" / ") : rawOptions;
 }
 
+function techniqueTooThinForCandidate(candidate = {}, rawTechnique = "") {
+  const technique = String(rawTechnique || "").replace(/\s+/g, " ").trim();
+  if (!technique) {
+    return true;
+  }
+  const label = normalizeEvidenceLabel([
+    candidate.examLabel,
+    candidate.label,
+    candidate.maneuver,
+    candidate.base?.suggested_checklist_label,
+    candidate.base?.maneuver_or_finding
+  ].filter(Boolean).join(" "));
+  const normalizedTechnique = normalizeEvidenceLabel(technique);
+  return technique.length < 28
+    || (label && normalizedTechnique === label)
+    || /^(?:exam|physical exam|thyroid exam|skin inspection|diaphoresis inspection|tremor observation|neck circumference|saddle sensation|rebound tenderness|murphy sign|test both legs|observe ability|observe gait|inspect abdomen|inspect posterior thorax|inspect sclerae and conjunctivae)$/i.test(technique);
+}
+
+function standardizedBedsideTechnique(candidate = {}, rawTechnique = "") {
+  const raw = String(rawTechnique || "").replace(/\s+/g, " ").trim();
+  if (!techniqueTooThinForCandidate(candidate, raw)) {
+    return raw;
+  }
+  const text = normalizeEvidenceLabel([
+    candidate.exam_id,
+    candidate.examLabel,
+    candidate.label,
+    candidate.maneuver,
+    candidate.technique,
+    candidate.base?.suggested_checklist_label,
+    candidate.base?.maneuver_or_finding,
+    candidate.base?.source_item,
+    candidate.section,
+    candidate.system,
+    candidate.diagnostic_target,
+    candidate.retrieval_tags,
+    Array.isArray(candidate.tags) ? candidate.tags.join(" ") : candidate.tags,
+    Array.isArray(candidate.matchedTags) ? candidate.matchedTags.join(" ") : candidate.matchedTags
+  ].filter(Boolean).join(" "));
+  const rules = [
+    {
+      pattern: /\bmurphy sign\b/,
+      technique: "Press under the right costal margin at the midclavicular line while the patient takes a deep breath; document inspiratory arrest or focal RUQ pain and stop if severe pain or instability occurs."
+    },
+    {
+      pattern: /\brebound tenderness\b|\bperitonitis\b|\bguarding\b/,
+      technique: "Palpate gently first, then press slowly away from maximal tenderness and release quickly; document pain worse on release, involuntary guarding, rigidity, or inability to tolerate the maneuver."
+    },
+    {
+      pattern: /\bthyroid\b|\bgoiter\b|\bnodule\b/,
+      technique: "Inspect the neck at rest and while swallowing, then palpate the isthmus and both thyroid lobes while the patient swallows; document enlargement, nodules, tenderness, asymmetry, fixation, or compressive concern."
+    },
+    {
+      pattern: /\bneck circumference\b|\bosa\b|\bsleep apnea\b/,
+      technique: "With the patient upright and head neutral, place a tape measure horizontally around the neck at the level just below the laryngeal prominence and record the circumference in centimeters."
+    },
+    {
+      pattern: /\bsaddle sensation\b|\bcauda equina\b|\bperineal sensory\b/,
+      technique: "Ask about numbness in the saddle/perineal area first; perform a consented, privacy-protected perineal sensory exam only when clinically appropriate and document deferred or unable-to-assess status."
+    },
+    {
+      pattern: /\bheel to shin\b|\bheel-to-shin\b/,
+      technique: "Ask the patient to place one heel on the opposite knee and slide it down the shin to the ankle, then repeat on the other side; compare smoothness, dysmetria, and ability to complete safely."
+    },
+    {
+      pattern: /\bpronator drift\b/,
+      technique: "Ask the patient to hold both arms extended forward, palms up, eyes closed if safe, for at least 10 seconds; document downward drift, pronation, asymmetry, or inability to participate."
+    },
+    {
+      pattern: /\btoe walking\b/,
+      technique: "Only if safe, ask the patient to walk several steps on the toes with support nearby; compare plantarflexion strength and asymmetry and stop for pain, imbalance, or fall risk."
+    },
+    {
+      pattern: /\bheel walking\b/,
+      technique: "Only if safe, ask the patient to walk several steps on the heels with support nearby; compare dorsiflexion strength and asymmetry and stop for pain, imbalance, or fall risk."
+    },
+    {
+      pattern: /\bgait\b/,
+      technique: "Only if safe, observe standing, gait initiation, stride, base, arm swing, turning, and need for assistance; document unable-to-walk or fall-risk limitations instead of forcing the maneuver."
+    },
+    {
+      pattern: /\bfacial symmetry\b|\bface droop\b|\bfacial droop\b/,
+      technique: "Observe the face at rest, then ask the patient to smile, raise eyebrows, close eyes tightly, and show teeth if able; compare upper and lower facial movement side to side."
+    },
+    {
+      pattern: /\bposterior thorax\b|\bthorax inspection\b/,
+      technique: "Expose the posterior chest as appropriate and inspect from behind for symmetry, deformity, accessory muscle use, retractions, and respiratory effort before auscultation or percussion."
+    },
+    {
+      pattern: /\babdominal inspection\b|\binspect abdomen\b/,
+      technique: "With the patient supine and the abdomen exposed appropriately, inspect contour, distension, scars, visible peristalsis, pulsations, lesions, and symmetry before palpation."
+    },
+    {
+      pattern: /\bfocused muscle tenderness\b|\bpainful site\b|\bmuscle tenderness\b/,
+      technique: "Inspect the symptomatic area first, then palpate the painful muscle or site for focal tenderness, swelling, warmth, firmness, fluctuance, and pain out of proportion while comparing with the opposite side when possible."
+    },
+    {
+      pattern: /\bdiaphoresis\b|\bclammy\b/,
+      technique: "Inspect exposed skin, forehead, and palms for visible sweating or clamminess while noting ambient temperature, fever, anxiety, pain, and recent treatment context."
+    },
+    {
+      pattern: /\btremor\b|\bshakiness\b/,
+      technique: "Observe at rest, then ask the patient to extend both arms with fingers spread if able; document fine versus coarse tremor, asymmetry, functional impact, and inability to participate."
+    },
+    {
+      pattern: /\bsclerae and conjunctivae\b|\bconjunctivae\b|\bsclerae\b/,
+      technique: "Inspect sclerae and gently pull down the lower lids to view conjunctivae in good light; document pallor, icterus, injection, discharge, or inability to assess."
+    },
+    {
+      pattern: /\bskin inspection\b|\binspect skin\b|\brash\b|\burticaria\b|\bwound\b/,
+      technique: "Inspect exposed and symptomatic skin in good light; document morphology, distribution, color, blanching, warmth, tenderness, excoriations, drainage, and mucosal involvement when relevant."
+    }
+  ];
+  return rules.find((rule) => rule.pattern.test(text))?.technique || raw;
+}
+
 function recommendationContextOverlap(candidateText, context) {
   const ignored = new Set([
     "exam",
@@ -6202,13 +6662,14 @@ function recommendationContextOverlap(candidateText, context) {
 }
 
 function displayTechniqueForCandidate(candidate = {}) {
-  return [
+  const rawTechnique = [
     candidate.technique,
     candidate.examiner_technique,
     candidate.base?.examiner_technique,
     candidate.maneuver,
     candidate.base?.maneuver_or_finding
   ].find((value) => String(value || "").trim()) || "";
+  return standardizedBedsideTechnique(candidate, rawTechnique);
 }
 
 function displayWhenToUseForCandidate(candidate = {}) {
@@ -6295,7 +6756,7 @@ function actionSpecificPhysicalExamLabel(candidate = {}, fallbackLabel = "") {
     { pattern: /\bpronator drift\b/, label: "Test pronator drift" },
     { pattern: /\bvisual fields?\b/, label: "Test visual fields" },
     { pattern: /\bvisual acuity\b/, label: "Test visual acuity" },
-    { pattern: /\bpupils?\b/, label: "Check pupils" },
+    { pattern: /\bpupils?\b/, label: "Test pupillary light response" },
     { pattern: /\bextraocular movements?\b/, label: "Test extraocular movements" },
     { pattern: /\bfacial symmetry\b/, label: "Inspect facial symmetry" },
     { pattern: /\beye closure strength\b/, label: "Test eye closure strength" },
@@ -6347,7 +6808,7 @@ function actionSpecificPhysicalExamLabel(candidate = {}, fallbackLabel = "") {
     { pattern: /\bfocused painful site palpation\b|\bfocused muscle tenderness\b/, label: "Palpate painful site" },
     { pattern: /\bfocused painful site range of motion\b|\brange of motion\b/, label: "Test painful-site range of motion" },
     { pattern: /\bbone tenderness\b/, label: "Palpate focal bone tenderness" },
-    { pattern: /\bdistal extremity warmth\b|\bextremity temperature\b/, label: "Check distal extremity warmth" },
+    { pattern: /\bdistal extremity warmth\b|\bextremity temperature\b/, label: "Palpate distal extremity warmth" },
     { pattern: /\bfemoral pulses?\b/, label: "Palpate femoral pulses" }
   ];
   const match = rules.find((rule) => rule.pattern.test(text));
@@ -6545,6 +7006,76 @@ function postSelectionSuppressedEntry(entry = {}, selectedEntries = [], context 
     rationale: reason,
     suppressionReason: reason
   };
+}
+
+function suppressedRecommendationLabel(entry = {}) {
+  const candidate = entry.candidate || entry;
+  return entry.original_label || entry.sourceLabel || entry.label || candidate.examLabel || candidate.maneuver || candidate.exam_id || "";
+}
+
+function stripSuppressedRecommendationPrefix(value = "") {
+  return String(value || "")
+    .replace(/^(?:not\s+recommended|suppressed(?:\/not-recommended)?|suppressed\s+or\s+lower-fit|lower-fit)\s*[-:]\s*/i, "")
+    .trim();
+}
+
+function suppressedRecommendationDisplayLabel(entry = {}) {
+  const sourceLabel = stripSuppressedRecommendationPrefix(suppressedRecommendationLabel(entry))
+    || entry.exam_id
+    || entry.candidate?.exam_id
+    || "suppressed item";
+  return `Not recommended - ${sourceLabel}`;
+}
+
+function withSuppressedRecommendationDisplayLabel(entry = {}) {
+  const originalLabel = stripSuppressedRecommendationPrefix(suppressedRecommendationLabel(entry))
+    || entry.exam_id
+    || entry.candidate?.exam_id
+    || "suppressed item";
+  return {
+    ...entry,
+    role: "suppressed",
+    original_label: entry.original_label || originalLabel,
+    label: suppressedRecommendationDisplayLabel({ ...entry, original_label: originalLabel })
+  };
+}
+
+function isSetupOrProcessSuppressedEntry(entry = {}) {
+  const candidate = entry.candidate || entry;
+  const text = normalizeEvidenceLabel([
+    suppressedRecommendationLabel(entry),
+    entry.reason,
+    entry.suppressionReason,
+    candidate.examLabel,
+    candidate.maneuver,
+    candidate.base?.checklist_label
+  ].filter(Boolean).join(" "));
+  return setupOrProcessPattern.test(text);
+}
+
+function suppressedRecommendationSortScore(entry = {}) {
+  return Number(entry.score || entry.candidate?.score || 0)
+    + Number(entry.contextFitScore || entry.candidate?.contextFitScore || 0) / 1000;
+}
+
+function curatedSuppressedRecommendationItems(items = [], maxItems = 36) {
+  const byLabel = new Map();
+  items
+    .filter((entry) => !isSetupOrProcessSuppressedEntry(entry))
+    .forEach((entry) => {
+      const key = normalizeEvidenceLabel(suppressedRecommendationLabel(entry));
+      if (!key) {
+        return;
+      }
+      const previous = byLabel.get(key);
+      if (!previous || suppressedRecommendationSortScore(entry) > suppressedRecommendationSortScore(previous)) {
+        byLabel.set(key, entry);
+      }
+    });
+  return Array.from(byLabel.values())
+    .sort((a, b) => b.score - a.score || b.contextFitScore - a.contextFitScore)
+    .slice(0, maxItems)
+    .map(withSuppressedRecommendationDisplayLabel);
 }
 
 function recommendationFamilyRedundancyKey(candidate, context = "") {
@@ -6782,6 +7313,16 @@ function splitHistoryDetailList(value = "") {
     .slice(0, 8);
 }
 
+function medicationHistoryDetailFragment(fragment = "") {
+  const normalized = normalizeEvidenceLabel(fragment);
+  if (normalized === "biotin") return "high-dose biotin or supplement use";
+  if (normalized === "missed doses") return "missed or delayed doses";
+  if (normalized === "supplements") return "over-the-counter supplements";
+  if (normalized === "hormone therapy") return "hormone therapy or androgen/estrogen exposure";
+  if (normalized === "recent treatment changes") return "recent dose or treatment changes";
+  return fragment;
+}
+
 function uniqueHistoryDetailPrompts(prompts = []) {
   const seen = new Set();
   return prompts
@@ -6798,6 +7339,49 @@ function uniqueHistoryDetailPrompts(prompts = []) {
     .slice(0, 8);
 }
 
+function infectionSourceDetailPrompts(normalized = "") {
+  if (!/\b(?:fever|infection|sepsis|source|pneumonia|respiratory|urinary|flank|wound|line)\b/.test(normalized)) {
+    return null;
+  }
+  if (/what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
+    return [
+      "Ask about respiratory source: cough, sputum, dyspnea, pleuritic pain, wheeze, hypoxia, aspiration risk, and sick respiratory contacts.",
+      "Ask about HEENT or dental source: sore throat, ear or sinus pain, oral lesions, dental pain, muffled voice, drooling, or trouble swallowing.",
+      "Ask about urinary or flank source: dysuria, frequency, urgency, hematuria, flank pain, catheter/procedure context, pregnancy possibility, and reduced urine output.",
+      "Ask about abdominal or GI source: abdominal pain, vomiting, diarrhea, jaundice, blood in stool, poor intake, or severe localized pain.",
+      "Ask about skin, wound, or line source: rash, cellulitis, abscess, ulcer, drainage, indwelling line/device, surgical site, or procedure-site tenderness.",
+      "Ask about CNS danger source: severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, or purpura.",
+      "Ask about joint, bone, or spine source: hot swollen joint, focal bone pain, severe back pain, injection drug use, or inability to bear weight.",
+      "Ask about host and exposure risks: immunosuppression, pregnancy, recent hospitalization/procedure, travel, outdoor bites, animals, food/water, sick contacts, sexual exposure, injection drug use, and new medications."
+    ];
+  }
+  if (/cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|aspiration|respiratory contacts|pneumonia/.test(normalized)) {
+    return [
+      "Ask about new cough, sputum color/amount, dyspnea, pleuritic pain, wheeze, aspiration risk, sick respiratory contacts, and oxygen requirement.",
+      "Ask whether symptoms are focal, worsening, associated with rigors, or severe enough to change chest imaging, testing, isolation, antibiotics, or disposition."
+    ];
+  }
+  if (/immunosuppression|immunocompromised|pregnancy|hospitalization|procedure|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication/.test(normalized)) {
+    return [
+      "Ask about immunosuppression, transplant/chemotherapy, high-dose steroids/biologics, asplenia, frailty, pregnancy, and recent healthcare exposure.",
+      "Ask about travel, outdoor or vector exposure, animal exposure, food/water exposure, sick contacts, sexual exposure risk, injection drug use, and new medications."
+    ];
+  }
+  if (/dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(normalized)) {
+    return [
+      "Ask about dysuria, frequency, urgency, hematuria, suprapubic pain, flank pain, catheter/procedure context, prior resistant organisms, pregnancy possibility, vomiting, and reduced urine output.",
+      "Ask whether urinary/flank symptoms are paired with rigors, hypotension, confusion, obstruction concern, renal dysfunction, or inability to tolerate oral intake."
+    ];
+  }
+  if (/rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure site|skin infection/.test(normalized)) {
+    return [
+      "Ask about rash, cellulitis, abscess, ulcer, drainage, pain out of proportion, rapidly spreading redness, indwelling line/device, surgical site, and procedure-site tenderness.",
+      "Ask whether skin or line findings require culture, source control, antibiotic route/breadth, or urgent escalation."
+    ];
+  }
+  return null;
+}
+
 function historyQuestionNeedsDetailPrompts(text = "") {
   const value = String(text || "");
   const commaCount = (value.match(/,/g) || []).length;
@@ -6805,10 +7389,11 @@ function historyQuestionNeedsDetailPrompts(text = "") {
   return value.length >= 150
     || commaCount >= 5
     || orCount >= 4
+    || (/^Any\b/i.test(value.trim()) && value.length >= 105)
     || (/^Any\b/i.test(value.trim()) && commaCount >= 3);
 }
 
-function historyQuestionDetailPrompts(text = "", explicitPrompts = []) {
+export function historyQuestionDetailPrompts(text = "", explicitPrompts = []) {
   const explicit = Array.isArray(explicitPrompts)
     ? explicitPrompts.map((prompt) => String(prompt || "").trim()).filter(Boolean)
     : [];
@@ -6823,10 +7408,14 @@ function historyQuestionDetailPrompts(text = "", explicitPrompts = []) {
   const normalized = normalizeEvidenceLabel(withoutQuestionMark);
   if (/^how high was the fever/.test(normalized)) {
     return [
-      "Record maximum temperature and how it was measured.",
+      "Document maximum temperature and how it was measured.",
       "Clarify fever onset and trajectory.",
       "Ask what antipyretics, antibiotics, steroids, or immunosuppressants were already taken."
     ];
+  }
+  const infectionSourcePrompts = infectionSourceDetailPrompts(normalized);
+  if (infectionSourcePrompts) {
+    return uniqueHistoryDetailPrompts(infectionSourcePrompts);
   }
   if (/^how has weight changed/.test(normalized)) {
     return [
@@ -6849,7 +7438,7 @@ function historyQuestionDetailPrompts(text = "", explicitPrompts = []) {
         .replace(/\s+could\s+alter[\s\S]*$/i, "")
         .replace(/\s+affecting[\s\S]*$/i, "")
     );
-    return uniqueHistoryDetailPrompts(list.map((fragment) => `Review ${fragment}.`));
+    return uniqueHistoryDetailPrompts(list.map((fragment) => `Review ${medicationHistoryDetailFragment(fragment)}.`));
   }
   if (/pregnancy|fertility/.test(normalized) && /partner|planned|postpartum|treatment|imaging|safety/.test(normalized)) {
     return uniqueHistoryDetailPrompts([
@@ -6867,6 +7456,487 @@ function historyQuestionDetailPrompts(text = "", explicitPrompts = []) {
     .replace(/\s+that\s+(?:change|changes|could|would)\s+[\s\S]*$/i, "");
   const list = splitHistoryDetailList(listSource);
   return uniqueHistoryDetailPrompts(list.map((fragment) => `Ask specifically about ${fragment}.`));
+}
+
+function historyQuestionDisplayLabel(text = "", tags = []) {
+  const raw = String(text || "").replace(/\s+/g, " ").trim();
+  const normalized = normalizeEvidenceLabel(raw);
+  const tagText = normalizeEvidenceLabel(Array.isArray(tags) ? tags.join(" ") : String(tags || ""));
+  const sourceSignalText = tagText;
+  const allText = `${normalized} ${sourceSignalText}`;
+  const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
+  if (earlyDkaContext && /known diabetes type|diabetes type|duration|insulin regimen|pump\/cgm|pump cgm|last insulin dose/.test(normalized)) {
+    return "Ask diabetes history, insulin regimen, and last insulin dose";
+  }
+  if (earlyDkaContext && /polyuria|polydipsia|weight loss|dehydration|very dry mouth/.test(normalized)) {
+    return "Ask hyperglycemia dehydration symptoms";
+  }
+  if (earlyDkaContext && /vomiting|abdominal pain|poor oral intake|inability to keep fluids/.test(normalized)) {
+    return "Ask DKA/HHS GI symptoms and oral intake";
+  }
+  if (earlyDkaContext && /fever|dysuria|cough|wound|line infection|dental\/skin infection|dental skin infection|chest pain|stroke symptoms|pancreatitis symptoms|other trigger/.test(normalized)) {
+    return "Ask DKA/HHS infectious, ischemic, and medication triggers";
+  }
+  if (earlyDkaContext && /what has already been given|fluids|insulin route|current monitoring level|potassium\/phosphate|dextrose|antibiotics/.test(normalized)) {
+    return "Review hyperglycemic-crisis treatments already started";
+  }
+  if (earlyDkaContext && /sglt2|fasting|low carb|alcohol|toxin/.test(normalized)) {
+    return "Ask euglycemic DKA and special-population risks";
+  }
+  if (earlyDkaContext && /heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses|electrolyte monitoring/.test(normalized)) {
+    return "Ask fluid-resuscitation and electrolyte-safety modifiers";
+  }
+  if (/how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
+    return "Ask fever timeline, measurement, and medication exposure";
+  }
+  const sourceSpecificInfectionContext = /\b(?:source[_ ]localizing[_ ]history|respiratory[_ ]source|heent[_ ]source|dental[_ ]source|oral[_ ]source|urinary[_ ]source|abdominal[_ ]source|gi[_ ]source|biliary[_ ]source|skin[_ ]source|wound[_ ]source|line[_ ]source|cns[_ ]infection|joint[_ ]source|spine[_ ]infection|host[_ ]risk|exposure[_ ]history|severity[_ ]history)\b/.test(sourceSignalText);
+  if (sourceSpecificInfectionContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/respiratory[_ ]source/.test(sourceSignalText) || /cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|hypoxemia|aspiration|respiratory contacts|pneumonia/.test(normalized))) {
+    return "Ask respiratory infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/urinary[_ ]source/.test(sourceSignalText) || /dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(normalized))) {
+    return "Ask urinary and flank infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/heent[_ ]source|dental[_ ]source|oral[_ ]source/.test(sourceSignalText) || /sore throat|ear pain|sinus pain|dental|oral pain|neck swelling|hoarseness|trouble swallowing|drooling/.test(normalized))) {
+    return "Ask throat, ear, sinus, dental, and oral source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/abdominal[_ ]source|gi[_ ]source|biliary[_ ]source/.test(sourceSignalText) || /abdominal pain|vomiting|diarrhea|jaundice|focal tenderness|intra-abdominal|abdominal infection/.test(normalized))) {
+    return "Ask abdominal and GI infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/host[_ ]risk|exposure[_ ]history/.test(sourceSignalText) || /immunosuppression|immunocompromised|pregnancy|hospitalization|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication|chemotherapy|transplant|asplenia|frailty/.test(normalized))) {
+    return "Ask host-risk and exposure history";
+  }
+  if (sourceSpecificInfectionContext && (/skin[_ ]source|wound[_ ]source|line[_ ]source/.test(sourceSignalText) || /rash|wound|ulcer|drainage|line pain|line redness|line concern|line site|cellulitis|abscess|procedure-site|procedure site|skin infection|soft-tissue|soft tissue/.test(normalized))) {
+    return "Ask skin, wound, and line-site infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/cns[_ ]infection|joint[_ ]source|spine[_ ]infection/.test(sourceSignalText) || /severe headache|neck stiffness|photophobia|seizure|petechiae|purpura|hot swollen joint|bone or back pain|focal bone|new weakness|bowel or bladder|meningitis|spine infection/.test(normalized))) {
+    return "Ask CNS, joint, spine, and rapid-worsening danger symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/severity[_ ]history/.test(sourceSignalText) || /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion|mottled|oxygen/.test(normalized))) {
+    return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  const dkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
+  const thyroidContext = /\b(?:thyroid|graves|hashimoto|thyrotoxicosis|hyperthyroid|hypothyroid|goiter|nodule|tsh|antithyroid|amiodarone|lithium|biotin)\b/.test(allText);
+  const infectionContext = /\b(?:fever|infection|sepsis|pneumonia|source-localizing|source localizing|source control|cellulitis|abscess|line infection)\b/.test(allText);
+  const feverSourceWorkupContext = /\b(?:fever|sepsis|pneumonia|source-localizing|source localizing|source control|respiratory source|urinary source|skin source|host risk|exposure history)\b/.test(allText);
+  const eyeVisionContext = /\b(?:eye_vision|eye vision|red_eye|red eye|vision_change|vision change|ocular|ophthalm|photophobia|contact lens|diplopia)\b/.test(allText);
+  const guStiContext = /\b(?:\bsti\b|sexually transmitted|urethritis|genital discharge|penile discharge|vaginal discharge|new partners|syphilis|hiv|gonorrhea|chlamydia|testicular pain|scrotal pain)\b/.test(allText);
+  const guRenalContext = /\b(?:dysuria|urinary|uti|pyelonephritis|renal_colic|renal colic|flank|hematuria|catheter|urologic|oliguria|low urine|aki|obstruction|stone)\b/.test(allText);
+  const dermRashContext = /\b(?:dermatology|rash|skin_ulcer|skin ulcer|wound|mucosal|drug_eruption|drug eruption|severe_rash|severe rash|diabetes_foot|diabetes foot|foot ulcer|skin_inspection|skin inspection|cellulitis|abscess)\b/.test(allText);
+  const boneMineralContext = /\b(?:bone_and_parathyroid|bone and parathyroid|vitamin_d|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|bone density|fragility fracture|kidney stones|nephrocalcinosis)\b/.test(allText);
+  const pelvicPregnancyContext = /\b(?:pelvic_pain|pelvic pain|menstrual|period|missed period|ectopic|pid|gynecology|dyspareunia|purulent discharge|heavy bleeding|shoulder pain)\b/.test(allText);
+  const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
+  const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
+  if (eyeVisionContext && /jaw claudication|scalp tenderness|halos|chemical exposure|shingles|inability to keep the eye open/.test(allText)) {
+    return "Ask ocular emergency and systemic red flags";
+  }
+  if (eyeVisionContext && /vision loss|eye pain|photophobia|trauma|contact lens|discharge|severe headache|diplopia|neurologic|immunocompromise/.test(allText)) {
+    return "Ask vision-threatening red-eye symptoms";
+  }
+  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask GU/STI symptoms and exposure risk";
+  }
+  if (/\b(?:scrotal|testicular|torsion|epididymitis|acute_scrotum|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+    if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
+      return "Ask scrotal pain onset and torsion features";
+    }
+    return "Ask epididymitis/STI and urology-risk features";
+  }
+  if (guRenalContext
+    && !boneMineralContext
+    && !/what symptoms localize|localize the fever source|source:/.test(normalized)
+    && /are symptoms limited to dysuria|dysuria\/frequency\/urgency|dysuria|urinary frequency|urinary urgency|hematuria|flank pain|catheter\/procedure|urologic|pyelonephritis|stone history|obstruction|resistant urine culture|pregnancy possibility/.test(normalized)) {
+    return "Ask UTI symptoms and complicated-infection risk";
+  }
+  const sourceLocalizingPrompt = /what symptoms localize|localize the fever source|source:/.test(normalized);
+  if (dermRashContext && !sourceLocalizingPrompt && /^(?:is there )?(?:drainage|spreading redness|odor|worsening pain)|black tissue|exposed bone|exposed tendon|reduced pulses|foot ulcer/.test(normalized)) {
+    return "Ask wound infection and limb-threat features";
+  }
+  if (dermRashContext && !sourceLocalizingPrompt && /^(?:any )?(?:mouth sores|eye pain|eye redness|genital sores|skin pain|blisters|purpura)|high-risk medication/.test(normalized)) {
+    return "Ask mucosal, ocular, and severe-rash warning features";
+  }
+  if (dermRashContext && !sourceLocalizingPrompt && /new medicine|fever|rapid spread|facial|lip|tongue swelling|wheeze|travel|bite|immunosuppression|rash/.test(normalized)) {
+    return "Ask rash danger features and exposure history";
+  }
+  const explicitFeverWorkupContext = /\b(?:fever sepsis|fever infection|infection sepsis|source localizing history|respiratory source|urinary source|skin source|host risk|exposure history|sepsis)\b/.test(allText)
+    && !diabetesContext
+    && !boneMineralContext
+    && !pituitaryAdrenalContext
+    && !thyroidContext;
+  const feverWorkupContext = feverSourceWorkupContext
+    && (explicitFeverWorkupContext || (!pelvicPregnancyContext && !diabetesContext && !boneMineralContext && !pituitaryAdrenalContext && !thyroidContext));
+  if (feverWorkupContext && /how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
+    return "Ask fever timeline, measurement, and medication exposure";
+  }
+  if (feverWorkupContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(allText)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (feverWorkupContext && /cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|aspiration|respiratory contacts|pneumonia/.test(allText)) {
+    return "Ask respiratory infection-source symptoms";
+  }
+  if (feverWorkupContext && /dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(allText)) {
+    return "Ask urinary and flank infection-source symptoms";
+  }
+  if (feverWorkupContext && /immunosuppression|immunocompromised|pregnancy|hospitalization|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication|chemotherapy|transplant|asplenia/.test(normalized)) {
+    return "Ask host-risk and exposure history";
+  }
+  if (feverWorkupContext && /rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure-site|skin infection/.test(allText)) {
+    return "Ask wound and line infection symptoms";
+  }
+  if (feverWorkupContext && /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion/.test(allText)) {
+    return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2|suspicious thyroid biopsy/.test(normalized)) {
+    return "Ask thyroid cancer radiation, biopsy, and MEN2 risk";
+  }
+  if (thyroidContext && /thyroid nodule|neck mass|neck swelling|grown rapidly|rapid growth|thyroid pain|thyroid tenderness|hoarseness|dysphagia|trouble swallowing|dyspnea|positional shortness|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule, pain, and compressive symptoms";
+  }
+  if (thyroidContext && /current pregnancy|pregnancy plans|pregnant|recent postpartum|postpartum|breastfeeding|infertility treatment|fertility goal/.test(normalized)) {
+    return "Ask pregnancy, postpartum, and fertility-related thyroid safety";
+  }
+  if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|insomnia|unintentional weight loss|weight loss|diarrhea|increased sweating|sweating|thyrotoxicosis|adrenergic/.test(normalized)) {
+    return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
+  }
+  if (thyroidContext && /cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid|hypothyroidism/.test(normalized)) {
+    return "Ask hypothyroid symptoms and menstrual pattern";
+  }
+  if (thyroidContext && /eye pain|redness|gritty|light sensitivity|bulging eyes|double vision|reduced vision|closing the eyelids|orbitopathy/.test(normalized)) {
+    return "Ask Graves orbitopathy eye symptoms";
+  }
+  if (boneMineralContext && /height loss|new back pain|kyphosis|low-trauma fracture|low trauma fracture|fall|vertebral/.test(allText)) {
+    return "Ask fracture, fall, and vertebral-compression symptoms";
+  }
+  if (boneMineralContext && /head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(normalized)) {
+    return "Ask neck radiation and parathyroid-risk history";
+  }
+  if (boneMineralContext && /prior neck|thyroid surgery|parathyroid surgery|postoperative calcium|post neck surgery|neck surgery/.test(normalized)) {
+    return "Ask neck surgery and postoperative calcium history";
+  }
+  if (boneMineralContext && /muscle cramps|perioral numbness|tingling|cramps|tetany|carpopedal|paresthesias|paralysis|seizure|laryngospasm|arrhythmia/.test(normalized)) {
+    return "Ask hypocalcemia neuromuscular symptoms";
+  }
+  if (boneMineralContext && /kidney stones|nephrocalcinosis|hematuria|flank|polyuria|polydipsia|dehydration|renal-function|reduced kidney/.test(allText)) {
+    return "Ask renal stone and calcium-complication symptoms";
+  }
+  if (boneMineralContext && /chronic kidney disease|liver disease|calcium|phosphorus|pth|vitamin d interpretation|mineral/.test(allText)) {
+    return "Ask renal, liver, and mineral-metabolism modifiers";
+  }
+  if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) {
+    return "Ask malabsorption and nutrient-absorption risks";
+  }
+  if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) {
+    return "Review antiseizure and vitamin D metabolism medications";
+  }
+  if (boneMineralContext && /aromatase inhibitor|androgen-deprivation|glucocorticoid|antiseizure medication|ppi|transplant medication|bone-active medication/.test(allText)) {
+    return "Review bone-active medication exposure";
+  }
+  if (boneMineralContext && /menopause|ovarian-insufficiency|ovarian insufficiency|fragility fracture|hormone-therapy|hormone therapy/.test(allText)) {
+    return "Ask menopause timing and fracture-risk modifiers";
+  }
+  if (pelvicPregnancyContext && /could pregnancy be possible|could you be pregnant|missed period|positive pregnancy|ectopic|severe unilateral|one-sided pain|shoulder pain|syncope|heavy bleeding/.test(normalized)) {
+    return "Ask pregnancy and ectopic danger features";
+  }
+  if (pelvicPregnancyContext && /where is the pain|typical for your period|urinary|gi|bleeding|discharge|cycle/.test(allText)) {
+    return "Ask pelvic pain location, cycle timing, and GU/GI symptoms";
+  }
+  if (pelvicPregnancyContext && /pregnan|ectopic|missed period|positive pregnancy|severe unilateral|one-sided pain|shoulder pain|syncope|heavy bleeding/.test(allText)) {
+    return "Ask pregnancy and ectopic danger features";
+  }
+  if (pelvicPregnancyContext && /pid|purulent discharge|dyspareunia|fever|pelvic infection/.test(allText)) {
+    return "Ask PID and pelvic infection features";
+  }
+  if (diabetesContext && /weight changed|weight loss|weight gain|appetite|fluid status|systemic symptoms/.test(allText)) {
+    return "Ask weight trajectory and systemic symptoms";
+  }
+  if (diabetesContext && /prior gestational diabetes|history of prior gestational diabetes|macrosomia/.test(allText)) {
+    return "Ask prior gestational diabetes and macrosomia history";
+  }
+  if (diabetesContext && /current obstetric plan|gestational age|fetal surveillance|delivery timing|maternal-fetal medicine/.test(allText)) {
+    return "Ask obstetric plan and fetal surveillance";
+  }
+  if (diabetesContext && /vomiting|abdominal pain|labored breathing|missed insulin|pump failure|very high glucose|ketones|hyperglycemic crisis/.test(allText)) {
+    return "Ask hyperglycemic-crisis warning symptoms";
+  }
+  if (diabetesContext && /drinking and urinating|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(allText)) {
+    return "Ask hyperglycemia thirst, polyuria, and dehydration symptoms";
+  }
+  if (diabetesContext && /autoimmune disease|thyroid cancer\/men2|adrenal disease|inherited condition|family autoimmune/.test(allText)) {
+    return "Ask autoimmune and inherited endocrine history";
+  }
+  if (diabetesContext && /foot ulcer|foot wound|\bwounds?\b(?!-care)|skin redness|drainage|tenderness|indwelling line|procedure-site|skin infection|soft[- ]tissue infection|cellulitis|abscess/.test(allText)) {
+    return "Ask foot/wound infection symptoms";
+  }
+  if (diabetesContext && /foot ulcer|foot wound|protective sensation|prior amputation|offload|footwear|wound-care supplies|inability to inspect feet/.test(allText)) {
+    return "Ask diabetic foot wound, neuropathy, and self-care risk";
+  }
+  if (diabetesContext && /measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(allText)) {
+    return "Ask infection precipitant or mimic symptoms";
+  }
+  if (diabetesContext && /cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(allText)) {
+    return "Ask respiratory infection symptoms";
+  }
+  if (diabetesContext && /dysuria|urinary frequency|urinary urgency|suprapubic|hematuria|flank pain|uti|pyelonephritis/.test(allText)) {
+    return "Ask urinary infection symptoms";
+  }
+  if (diabetesContext && /foot ulcer|wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
+    return "Ask foot/wound infection symptoms";
+  }
+  if (diabetesContext && /ascvd|heart failure|stroke\/tia|peripheral arterial|claudication|vascular procedures/.test(allText)) {
+    return "Ask ASCVD, heart failure, and vascular disease history";
+  }
+  if (diabetesContext && /retinopathy|vision changes|eye injections|laser|dilated eye|eye examination|blurred vision/.test(allText)) {
+    return "Ask retinopathy and dilated-eye exam status";
+  }
+  if (pituitaryAdrenalContext && /easy bruising|wide purple stretch marks|facial rounding|new hypertension|new diabetes|recurrent infections|proximal muscle weakness/.test(allText)) {
+    return "Ask Cushing phenotype, metabolic complications, and infection risk";
+  }
+  if (pituitaryAdrenalContext && /episodes|cycles|symptom-free intervals|cyclic hormone excess|repeated abnormal labs/.test(allText)) {
+    return "Ask cyclic cortisol-excess pattern";
+  }
+  if (pituitaryAdrenalContext && /oral, injected, inhaled|topical|eye-drop|joint-injection|supplement steroid|steroid exposure|exogenous steroid/.test(allText)) {
+    return "Review exogenous steroid exposure";
+  }
+  if (pituitaryAdrenalContext && /new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
+    return "Ask pituitary mass-effect and treatment history";
+  }
+  if (pituitaryAdrenalContext && /nipple discharge|breast tenderness|prolactin/.test(allText)) {
+    return "Ask prolactin symptoms and medication causes";
+  }
+  if (/spontaneous or expressible nipple discharge|galactorrhea|nipple discharge|breast tenderness|medications that raise prolactin|raise prolactin|hyperprolactin|prolactin/.test(allText)
+    && /headaches|visual symptoms|visual field|pituitary|amenorrhea|infertility|erectile dysfunction|polycystic|reproductive|gonadal|cycle/.test(allText)) {
+    return "Ask prolactin symptoms, medication causes, and mass-effect symptoms";
+  }
+  if (pituitaryAdrenalContext && /polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst and polyuria safety";
+  }
+  if (pituitaryAdrenalContext && /thyroid symptoms|palpitations|tremor|heat\/cold intolerance|neck swelling/.test(allText)) {
+    return "Ask adrenal and thyroid-axis symptoms";
+  }
+  if (pituitaryAdrenalContext && /measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(allText)) {
+    return "Ask infection precipitant or mimic symptoms";
+  }
+  if (pituitaryAdrenalContext && /cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(allText)) {
+    return "Ask respiratory infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /dysuria|urinary frequency|suprapubic|hematuria|flank pain|uti|pyelonephritis/.test(allText)) {
+    return "Ask urinary infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
+    return "Ask wound and procedure-site infection symptoms";
+  }
+  if (pituitaryAdrenalContext && /hypertension|diabetes|complication screening|medication choice/.test(allText)) {
+    return "Ask treatment-limiting hypertension and diabetes complications";
+  }
+  if (pituitaryAdrenalContext && /autoimmune thyroid|type 1 diabetes|celiac|pernicious anemia|polyglandular autoimmune/.test(allText)) {
+    return "Ask autoimmune polyglandular history";
+  }
+  if (/new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
+    return "Ask pituitary mass-effect and treatment history";
+  }
+  if (/new, worsening, resistant, or treatment-limiting hypertension or diabetes|treatment-limiting hypertension|treatment-limiting diabetes|complication screening|medication choice/.test(allText)) {
+    return "Ask treatment-limiting hypertension and diabetes complications";
+  }
+  if (/hirsutism|acne|scalp hair loss|deepening voice|clitoromegaly|rapid virilization|cycle irregularity|androgenic medication/.test(allText)) {
+    return "Ask hyperandrogenism and virilization features";
+  }
+  if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(allText)
+    && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant|oxygen need|full sentences)\b/.test(allText)) {
+    return "Ask PE severity, VTE risk factors, and bleeding risk";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)) {
+    return "Ask OSA symptoms, drowsy-driving risk, and CPAP context";
+  }
+  if (/\b(?:hypoglycemia|low glucose|neuroglycopenic|insulin|secretagogue|carbohydrate|jittery|shaky)\b/.test(allText)
+    && /\b(?:confusion|sleepiness|seizure|trouble thinking|eat\/drink|eat drink|carbohydrates|most recent glucose|last meal)\b/.test(allText)) {
+    return "Ask neuroglycopenic severity and carbohydrate response";
+  }
+  if (/\b(?:menopause|premature ovarian insufficiency|hypogonadism|reproductive endocrine|vasomotor|hot flashes|night sweats|genitourinary|fertility goal|cycle change)\b/.test(allText)) {
+    return "Ask reproductive endocrine symptoms";
+  }
+  if (/\b(?:reproductive_and_gonadal|reproductive and gonadal|infertility|ovulation|lh-kit|luteal symptoms|cycle tracking|regular ovulation)\b/.test(allText)
+    && /predictably ovulatory|lh-kit|luteal symptoms|cycle tracking|regular ovulation/.test(allText)) {
+    return "Ask ovulation pattern and cycle tracking";
+  }
+  if (/\b(?:reproductive_and_gonadal|reproductive and gonadal|infertility|amenorrhea|hypogonadism)\b/.test(allText)
+    && /palpitations|tremor|heat or cold intolerance|constipation or diarrhea|weight change|fatigue|neck swelling|eye symptoms/.test(allText)) {
+    return "Ask thyroid symptoms affecting reproductive function";
+  }
+  if (/what has already been given|fluids|insulin route|current monitoring level|potassium\/phosphate|dextrose|antibiotics/.test(allText)) {
+    return "Review hyperglycemic-crisis treatments already started";
+  }
+  if (/what does it feel like|radiate to arm|radiate.*jaw|radiate.*shoulder|chest pain quality|location radiation/.test(normalized)) {
+    return "Ask chest pain quality, location, and radiation";
+  }
+  if (/shortness of breath|pleuritic pain|hemoptysis|oxygen requirement|cough/.test(normalized)
+    && /chest|cardiovascular|cardiopulmonary/.test(`${normalized} ${tagText}`)) {
+    return "Ask cardiopulmonary associated symptoms";
+  }
+  if (/diaphoresis|nausea|vomiting|palpitations|marked weakness/.test(normalized)
+    && /chest|cardiovascular|ischemic|arrhythmia/.test(`${normalized} ${tagText}`)) {
+    return "Ask ischemic and arrhythmia-associated symptoms";
+  }
+  if (/syncope|presyncope|neurologic symptoms|sudden maximal pain/.test(normalized)
+    && /chest|cardiovascular|high risk/.test(`${normalized} ${tagText}`)) {
+    return "Ask high-risk chest pain warning features";
+  }
+  if (/known cad|prior mi|stent|cabg|smoking|hypertension|family history/.test(normalized)
+    && /chest|cardiovascular|risk/.test(`${normalized} ${tagText}`)) {
+    return "Ask cardiovascular risk history";
+  }
+  if (!thyroidContext && /exact joint|body area|trauma|bear weight|swelling|redness|wound/.test(normalized)
+    && /musculoskeletal|joint|site specific|pain/.test(`${normalized} ${tagText}`)) {
+    return "Ask pain location, trauma, and inflammatory red flags";
+  }
+  if (/salt craving|dizziness on standing|low blood pressure|vomiting|abdominal pain|skin darkening/.test(normalized)) {
+    return "Ask adrenal insufficiency and volume-depletion symptoms";
+  }
+  if ((pituitaryAdrenalContext || /\b(?:acromegaly|gigantism|growth hormone)\b/.test(allText))
+    && /ring size|shoe size|facial features|jaw spacing|sweating|sleep apnea|joint pain|headaches/.test(normalized)) {
+    return "Ask acral, soft-tissue, sleep, and headache changes";
+  }
+  if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|unintentional weight loss|diarrhea|increased sweating/.test(normalized)) {
+    return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
+  }
+  if (thyroidContext && /thyroid nodule|neck mass|grown rapidly|hoarseness|dysphagia|dyspnea|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule growth, compressive, and node warnings";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2/.test(allText)) {
+    return "Ask thyroid cancer radiation and family-risk history";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if ((thyroidContext || /hypothyroid|hypothyroidism/.test(allText))
+    && /cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid|hypothyroidism/.test(allText)) {
+    return "Ask hypothyroid symptoms and menstrual pattern";
+  }
+  if (infectionContext
+    && /\b(?:localize|localizing|source|cough|sputum|dyspnea|dysuria|flank|rash|wound|neck stiffness|abdominal)\b/.test(normalized)) {
+    return "Ask source-localizing infection symptoms";
+  }
+  if (/\b(?:immunosuppression|immunocompromised|pregnancy|hospitalization|procedure|indwelling line|device|travel|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication)\b/.test(normalized)
+    && infectionContext) {
+    return "Ask host-risk and exposure history";
+  }
+  if (/\b(?:dysuria|frequency|urgency|hematuria|flank|catheter|urologic|urine|urinary)\b/.test(normalized)
+    && /\b(?:fever|urinary|renal|pyelonephritis|uti|infection)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask urinary and renal-source symptoms";
+  }
+  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain)\b/.test(allText)) {
+    return "Ask GU/STI symptoms and exposure risk";
+  }
+  if (/\b(?:scrotal|testicular|torsion|epididymitis|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask scrotal pain source and urology-risk features";
+  }
+  if (/\b(?:foot ulcer|foot wound|drainage|protective sensation|prior amputation|offload|footwear|wound-care supplies)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask diabetic foot wound, neuropathy, and self-care risk";
+  }
+  if (/\b(?:rash|mucosal|tongue swelling|skin pain|blistering|purpura|new medicine|travel|tick|immunocompromise|urticaria)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask rash danger features and exposure history";
+  }
+  if (/\b(?:sick contacts|covid|flu|strep|ear|sinus|dental|muffled voice|trismus|swallow fluids|heent|throat)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask HEENT infection exposure and deep-space warning symptoms";
+  }
+  if (/\b(?:hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|anticoagulant|antiplatelet|transfusion|heavy menses)\b/.test(`${normalized} ${tagText}`)) {
+    return "Ask bleeding source, severity, and medication risk";
+  }
+  if (!boneMineralContext && /\b(?:lithium|demeclocycline|amphotericin|diuretic|sglt2|glucocorticoid|desmopressin|fluid restriction)\b/.test(allText)) {
+    return "Review medication and fluid-balance triggers";
+  }
+  if (/blood-pressure|blood pressure|lipid|kidney-protective|cardiometabolic medications|adherence|adverse-effect concerns/.test(allText)) {
+    return "Review cardiometabolic medications and adverse effects";
+  }
+  if (/true weakness|numbness|back pain|dark urine|trouble walking|muscle cramps/.test(allText)) {
+    return "Ask cramp-associated weakness and rhabdo symptoms";
+  }
+  if (/\bpcos\b|polycystic ovary/.test(allText)) {
+    return "Ask PCOS and reproductive-metabolic history";
+  }
+  if (/^any\b/.test(normalized)) {
+    return "Ask focused source, severity, and safety features";
+  }
+  return raw.length > 120 ? `${raw.slice(0, 116).trim()}...` : raw;
+}
+
+function historyQuestionDisplayLabelSuffix(question = {}) {
+  const fullQuestion = normalizeEvidenceLabel(question.fullQuestion || question.text || question.displayLabel || "");
+  const tagText = normalizeEvidenceLabel(Array.isArray(question.tags) ? question.tags.join(" ") : question.tags || "");
+  const allText = `${fullQuestion} ${tagText}`;
+  const detailText = normalizeEvidenceLabel((question.detail_prompts || question.detailPrompts || []).join(" "));
+  const boneMineralContext = /\b(?:bone and parathyroid|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|kidney stones|nephrocalcinosis)\b/.test(allText);
+  if (boneMineralContext && /perioral numbness|tingling|tetany|carpopedal|laryngospasm|arrhythmia/.test(fullQuestion)) return "perioral/tetany symptoms";
+  if (boneMineralContext && /muscle cramps|paresthesias|paralysis|palpitations|neuromuscular/.test(fullQuestion)) return "cramps/neuromuscular symptoms";
+  if (boneMineralContext && /nephrocalcinosis|hematuria|flank pain|recurrent utis/.test(fullQuestion)) return "kidney stones";
+  if (boneMineralContext && /constipation|polyuria|polydipsia|bone pain|confusion|dehydration|reduced kidney/.test(fullQuestion)) return "calcium-symptom pattern";
+  if (boneMineralContext && /kidney stones/.test(fullQuestion)) return "kidney stones";
+  if (boneMineralContext && /prior neck|thyroid|parathyroid surgery|postoperative calcium/.test(fullQuestion)) return "neck surgery/calcium history";
+  if (/what has already been given|fluids|insulin route|current monitoring level/.test(fullQuestion)) return "treatments started";
+  if (/recent glucose|beta hydroxybutyrate|anion gap|bicarbonate|osmolality|ketones/.test(fullQuestion)) return "labs and severity";
+  if (/sglt2|fasting|low carb|alcohol|toxin/.test(fullQuestion)) return "SGLT2/fasting risks";
+  if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses/.test(fullQuestion)) return "fluid-risk comorbidities";
+  if (/childhood head|neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(fullQuestion)) return "radiation/family cancer risk";
+  if (/personal or family history of men|vhl|nf1|sdhx|medullary thyroid|pheochromocytoma|paraganglioma/.test(fullQuestion)) return "hereditary endocrine syndromes";
+  if (/measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(fullQuestion)) return "infection precipitant";
+  if (/cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(fullQuestion)) return "respiratory source";
+  if (/immunosuppression|transplant|chemotherapy|high-dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medication/.test(fullQuestion)) return "host/exposure risk";
+  if (/foot ulcer|wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(fullQuestion)) return "skin/line source";
+  if (/numbness|tingling|burning pain|loss of protective sensation|falls|ulcers|neuropathy/.test(fullQuestion)) return "neuropathy symptoms";
+  if (/immunosuppression|transplant|chemotherapy|high dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medications?/.test(detailText)) return "host/exposure risk";
+  if (/dysuria|frequency|urgency|hematuria|suprapubic|flank pain|catheter|prior resistant|reduced urine output|renal dysfunction/.test(detailText)) return "urinary/flank symptoms";
+  if (/pregnancy is possible|fertility goals?|postpartum|partner factors|medications change safety/.test(detailText)) return "pregnancy/fertility safety";
+  if (/urine volume|nocturia|urinary frequency|thirst intensity|access to water|dehydration|confusion/.test(detailText)) return "polyuria/thirst details";
+  if (!boneMineralContext && /fatigue|cold intolerance|constipation|dry skin|hoarse voice|slowed thinking|weight gain/.test(fullQuestion)) return "hypothyroid symptoms";
+  if (/thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast|biotin/.test(fullQuestion)) return "medications and assay interference";
+  if (/neck swelling|rapid growth|thyroid pain|hoarseness|trouble swallowing|positional shortness/.test(fullQuestion)) return "compressive symptoms";
+  if (/loud snoring|witnessed apneas|morning headaches|daytime sleepiness|cpap/.test(fullQuestion)) return "sleep apnea symptoms";
+  if (/nipple discharge|breast tenderness|prolactin/.test(fullQuestion)) return "prolactin symptoms/medications";
+  const detail = (question.detail_prompts || [])
+    .map((prompt) => String(prompt || "")
+      .replace(/^Ask specifically about\s+/i, "")
+      .replace(/^Review\s+/i, "")
+      .replace(/[.?]+$/g, "")
+      .trim())
+    .find(Boolean);
+  if (detail) {
+    return detail.length > 36 ? `${detail.slice(0, 33).trim()}...` : detail;
+  }
+  const firstWords = String(question.fullQuestion || question.text || "")
+    .replace(/\?+$/g, "")
+    .split(/\s+/)
+    .slice(0, 5)
+    .join(" ");
+  return firstWords || "source question";
+}
+
+function uniquifyHistoryQuestionDisplayLabels(questions = []) {
+  const buckets = new Map();
+  questions.forEach((question) => {
+    const key = normalizeEvidenceLabel(question.displayLabel || question.text || "");
+    if (!key) return;
+    const bucket = buckets.get(key) || [];
+    bucket.push(question);
+    buckets.set(key, bucket);
+  });
+  const used = new Set();
+  return questions.map((question) => {
+    const baseLabel = question.displayLabel || question.text || "";
+    const key = normalizeEvidenceLabel(baseLabel);
+    let displayLabel = baseLabel;
+    if (key && (buckets.get(key) || []).length > 1) {
+      displayLabel = `${baseLabel} - ${historyQuestionDisplayLabelSuffix(question)}`;
+    }
+    let uniqueLabel = displayLabel;
+    let counter = 2;
+    while (used.has(normalizeEvidenceLabel(uniqueLabel))) {
+      uniqueLabel = `${displayLabel} ${counter}`;
+      counter += 1;
+    }
+    used.add(normalizeEvidenceLabel(uniqueLabel));
+    return { ...question, label: uniqueLabel, displayLabel: uniqueLabel };
+  });
 }
 
 function historyQuestionSemanticBucket(question = {}) {
@@ -6889,7 +7959,7 @@ function historyQuestionSemanticBucket(question = {}) {
     /\b(?:headache|neck stiffness|confusion|meningismus|photophobia|hot joint|back pain)\b/.test(questionText)
   ].filter(Boolean).length;
   if (feverSepsisHistoryContext
-    && (/\b(?:localize|localizing|source|most plausible)\b/.test(questionText) || infectionSourceDomainCount >= 3)) {
+    && (/\b(?:localize|localizing|most plausible)\b/.test(questionText) || infectionSourceDomainCount >= 3)) {
     return "infection-source-localization-history";
   }
   if (feverSepsisHistoryContext
@@ -6902,8 +7972,24 @@ function historyQuestionSemanticBucket(question = {}) {
     return "infection-respiratory-source-history";
   }
   if (feverSepsisHistoryContext
+    && /\b(?:sore throat|ear pain|sinus pain|dental|oral pain|neck swelling|hoarseness|trouble swallowing|drooling|heent)\b/.test(questionText)) {
+    return "infection-heent-oral-source-history";
+  }
+  if (feverSepsisHistoryContext
+    && /\b(?:dysuria|urinary frequency|frequency or urgency|urgency|hematuria|suprapubic|flank|catheter|urologic|resistant urine|pyelonephritis|reduced urine)\b/.test(questionText)) {
+    return "infection-urinary-flank-source-history";
+  }
+  if (feverSepsisHistoryContext
+    && /\b(?:abdominal pain|vomiting|diarrhea|jaundice|focal tenderness|intra-abdominal|abdominal infection|biliary|gi source)\b/.test(questionText)) {
+    return "infection-abdominal-gi-source-history";
+  }
+  if (feverSepsisHistoryContext
     && /\b(?:rash|painful skin|wound|drainage|line pain|line redness|line-site|recent procedure|bite|rapidly spreading|cellulitis|soft tissue)\b/.test(questionText)) {
     return "infection-skin-wound-source-history";
+  }
+  if (feverSepsisHistoryContext
+    && /\b(?:severe headache|neck stiffness|photophobia|seizure|petechiae|purpura|hot swollen joint|bone or back pain|focal bone|new weakness|bowel or bladder|meningitis|spine infection)\b/.test(questionText)) {
+    return "infection-cns-joint-spine-danger-history";
   }
   if (feverSepsisHistoryContext
     && /\b(?:fainting|confusion|very low urine|low urine|oliguria|mottled|cold extremities|severe weakness|rapid worsening|hypotension|shock|lactate)\b/.test(questionText)) {
@@ -6917,6 +8003,37 @@ function historyQuestionSemanticBucket(question = {}) {
     && /\b(?:how high was the fever|how was it measured|when did it start|antipyretics|antibiotics|steroids|immunosuppressants)\b/.test(questionText)) {
     return "fever-timeline-medication-history";
   }
+  const thyroidHistoryContext = /\b(?:thyroid|graves|hashimoto|thyrotoxicosis|hyperthyroid|hypothyroid|goiter|nodule|abnormal tsh|men2|biotin|amiodarone|lithium|antithyroid)\b/.test(text);
+  if (thyroidHistoryContext
+    && /\b(?:head or neck radiation|neck radiation|radiation exposure|family thyroid cancer|men2|suspicious thyroid biopsy|suspicious prior biopsy|medullary thyroid)\b/.test(questionText)) {
+    return "thyroid-cancer-risk-history";
+  }
+  if (thyroidHistoryContext
+    && /\b(?:neck swelling|neck mass|rapid growth|thyroid pain|hoarseness|dysphagia|trouble swallowing|positional shortness|positional dyspnea|dyspnea when supine|compressive)\b/.test(questionText)) {
+    return "thyroid-structural-compressive-history";
+  }
+  if (thyroidHistoryContext
+    && /\b(?:thyroid hormone|antithyroid|amiodarone|lithium|iodine|contrast|biotin|thyroid supplement|missed dose|dose change|medication adherence)\b/.test(questionText)) {
+    return "thyroid-medication-assay-history";
+  }
+  if (thyroidHistoryContext
+    && /\b(?:pregnancy|postpartum|breastfeeding|fertility|infertility)\b/.test(questionText)) {
+    return "thyroid-reproductive-context-history";
+  }
+  if (thyroidHistoryContext
+    && /\bheat intolerance\b/.test(questionText)
+    && /\bcold intolerance\b/.test(questionText)
+    && /\b(?:dry|coarse)\b/.test(questionText)) {
+    return "thyroid-phenotype-symptoms-history";
+  }
+  if (thyroidHistoryContext
+    && /\b(?:heat intolerance|palpitations|tremor|sweating|unintentional weight loss|weight loss|diarrhea|anxiety|insomnia|thyroid hormone excess|adrenergic)\b/.test(questionText)) {
+    return "thyroid-hyperthyroid-symptoms-history";
+  }
+  if (thyroidHistoryContext
+    && /\b(?:cold intolerance|fatigue|constipation|dry or coarse skin|dry skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid)\b/.test(questionText)) {
+    return "thyroid-hypothyroid-symptoms-history";
+  }
   if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(text)
     && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant)\b/.test(questionText)) {
     return "pe-vte-probability-history";
@@ -6927,6 +8044,16 @@ function historyQuestionSemanticBucket(question = {}) {
     return "abdominal-source-localization-history";
   }
   return "";
+}
+
+function historyQuestionSemanticConflictBuckets(bucket = "") {
+  if (bucket === "thyroid-phenotype-symptoms-history") {
+    return ["thyroid-hyperthyroid-symptoms-history", "thyroid-hypothyroid-symptoms-history"];
+  }
+  if (bucket === "thyroid-hyperthyroid-symptoms-history" || bucket === "thyroid-hypothyroid-symptoms-history") {
+    return ["thyroid-phenotype-symptoms-history"];
+  }
+  return [];
 }
 
 function historyQuestionFromRecommendationEntry(entry) {
@@ -6947,9 +8074,13 @@ function historyQuestionFromRecommendationEntry(entry) {
     ...(candidate.tags || []),
     ...splitEvidenceList(candidate.retrieval_tags)
   ]);
+  const displayLabel = historyQuestionDisplayLabel(text, tags);
   return {
     id: `${entry.exam_id || candidate.exam_id || "history"}-question`,
+    label: displayLabel,
     text,
+    displayLabel,
+    fullQuestion: text,
     detail_prompts: historyQuestionDetailPrompts(text, entry.detail_prompts || candidate.detail_prompts),
     options: entry.displayBedsideQuestionOptions || candidate.bedside_question_options || "",
     whenToAsk: candidate.when_to_use_structured || entry.domain || "",
@@ -6985,9 +8116,13 @@ function focusedHistoryQuestionsFromEntries(entries = []) {
       return;
     }
     const entryIsCuratedHistory = isHistoryQuestionEntry(entry);
+    const keepRequiredHistoryFloor = entryIsCuratedHistory
+      && (entry.candidate?.retrievalRoutes || []).includes("validated_bundle_required");
     const key = historyQuestionKey(question);
     const semanticBucket = historyQuestionSemanticBucket(question);
-    if (!key || seen.has(key) || (semanticBucket && seenSemanticBuckets.has(semanticBucket))) {
+    const semanticConflict = semanticBucket
+      && historyQuestionSemanticConflictBuckets(semanticBucket).some((bucket) => seenSemanticBuckets.has(bucket));
+    if (!key || seen.has(key) || (!keepRequiredHistoryFloor && semanticBucket && (seenSemanticBuckets.has(semanticBucket) || semanticConflict))) {
       return;
     }
     questions.push(question);
@@ -6996,15 +8131,49 @@ function focusedHistoryQuestionsFromEntries(entries = []) {
       seenSemanticBuckets.add(semanticBucket);
     }
   });
-  return questions;
+  return uniquifyHistoryQuestionDisplayLabels(questions);
 }
 
 function managementFindingKey(finding = {}) {
+  const managementKey = normalizeEvidenceLabel(
+    finding.managementChange
+      || finding.management_change
+      || finding.managementImplication
+      || finding.management_implication
+      || ""
+  );
+  if (managementKey) {
+    return `management:${managementKey}`;
+  }
   return normalizeEvidenceLabel([
     finding.label,
-    finding.managementChange,
     finding.linkedExamId
   ].filter(Boolean).join(" "));
+}
+
+function managementFindingDisplayLabel(entry = {}, candidate = {}) {
+  const itemType = [
+    entry.role,
+    entry.exam_id,
+    entry.id,
+    candidate.exam_id,
+    candidate.id,
+    candidate.item_type,
+    candidate.gap_type,
+    candidate.traceability?.item_group,
+    ...(entry.matchedTags || []),
+    ...(entry.retrievalTags || []),
+    ...(candidate.matchedTags || []),
+    ...(candidate.tags || []),
+    ...splitEvidenceList(candidate.retrieval_tags)
+  ].filter(Boolean).join(" ");
+  const baseLabel = isHistoryQuestionEntry(entry)
+    ? conciseLimitationCautionBaseLabel(entry, candidate)
+    : (entry.label || candidate.examLabel || candidate.maneuver || candidate.exam_id || "linked workup item");
+  const compactBaseLabel = compactManagementFindingLabel(baseLabel);
+  return /^management implication\s+-\s+/i.test(String(compactBaseLabel || ""))
+    ? compactBaseLabel
+    : `Management implication - ${compactBaseLabel}`;
 }
 
 function managementChangingFindingFromEntry(entry = {}) {
@@ -7027,9 +8196,7 @@ function managementChangingFindingFromEntry(entry = {}) {
     ...(candidate.tags || []),
     ...splitEvidenceList(candidate.retrieval_tags)
   ]);
-  const label = isHistoryQuestionEntry(entry)
-    ? (entry.displayBedsideQuestion || candidate.bedside_question_label || candidate.examLabel || candidate.exam_id)
-    : (entry.label || candidate.examLabel || candidate.maneuver || candidate.exam_id);
+  const label = managementFindingDisplayLabel(entry, candidate);
   return {
     id: `${entry.exam_id || candidate.exam_id || "management"}-management-change`,
     label,
@@ -7066,6 +8233,7 @@ function entryCanContributeManagementChangingFinding(entry = {}) {
 function managementChangingFindingsFromEntries(entries = []) {
   const findings = [];
   const seen = new Set();
+  const byKey = new Map();
   entries.forEach((entry) => {
     if (!entryCanContributeManagementChangingFinding(entry)) {
       return;
@@ -7076,12 +8244,56 @@ function managementChangingFindingsFromEntries(entries = []) {
     }
     const key = managementFindingKey(finding);
     if (!key || seen.has(key)) {
+      if (key && byKey.has(key)) {
+        mergeManagementFindingTraceability(byKey.get(key), finding);
+      }
       return;
     }
     findings.push(finding);
     seen.add(key);
+    byKey.set(key, finding);
   });
   return findings.slice(0, 32);
+}
+
+function mergeManagementFindingTraceability(target = {}, duplicate = {}) {
+  const targetTraceability = target.traceability || {};
+  const duplicateTraceability = duplicate.traceability || {};
+  const linkedExamIds = unique([
+    ...traceArray(target.linkedExamIds),
+    target.linkedExamId,
+    targetTraceability.evidence_row_id,
+    ...traceArray(duplicate.linkedExamIds),
+    duplicate.linkedExamId,
+    duplicateTraceability.evidence_row_id
+  ].filter(Boolean));
+  const sourceIds = traceSourceIdArray(
+    targetTraceability.source_ids,
+    duplicateTraceability.source_ids,
+    target.sourceIds,
+    duplicate.sourceIds
+  );
+  const intentIds = unique([
+    ...traceArray(target.validatedIntentIds),
+    ...traceArray(targetTraceability.intent_ids),
+    ...traceArray(duplicate.validatedIntentIds),
+    ...traceArray(duplicateTraceability.intent_ids)
+  ]);
+  target.linkedExamIds = linkedExamIds;
+  target.sourceIds = sourceIds;
+  target.validatedIntentIds = intentIds;
+  target.tags = unique([
+    ...traceArray(target.tags),
+    ...traceArray(duplicate.tags)
+  ]);
+  target.traceability = {
+    ...targetTraceability,
+    intent_ids: intentIds,
+    source_ids: sourceIds,
+    evidence_row_ids: linkedExamIds,
+    authorized_by: targetTraceability.authorized_by || duplicateTraceability.authorized_by || ""
+  };
+  return target;
 }
 
 function limitationCautionKey(caution = {}) {
@@ -7090,6 +8302,265 @@ function limitationCautionKey(caution = {}) {
     caution.limitation,
     caution.linkedExamId
   ].filter(Boolean).join(" "));
+}
+
+function conciseLimitationCautionBaseLabel(entry = {}, candidate = {}) {
+  const isHistory = isHistoryQuestionEntry(entry)
+    || candidate.item_type === "history_question"
+    || candidate.gap_type === "history_question";
+  const rawLabel = [
+    entry.label,
+    entry.displayLabel,
+    entry.displayBedsideQuestion,
+    candidate.examLabel,
+    candidate.maneuver,
+    candidate.bedside_question_label,
+    candidate.exam_id,
+    entry.exam_id
+  ].find((value) => String(value || "").trim()) || "linked workup item";
+  const normalizedRawLabel = normalizeEvidenceLabel(rawLabel);
+  if (!isHistory || !/^(?:any|what|how|when|could|are|do you|is there)\b/.test(normalizedRawLabel)) {
+    return rawLabel;
+  }
+  const tagText = normalizeEvidenceLabel([
+    ...(entry.matchedTags || []),
+    ...(entry.retrievalTags || []),
+    ...(candidate.matchedTags || []),
+    ...(candidate.tags || []),
+    ...splitEvidenceList(candidate.retrieval_tags)
+  ].join(" "));
+  if (/\b(?:pulmonary embolism|vte|dvt)\b/.test(tagText)) return "PE/VTE risk history";
+  if (/\b(?:abdominal pain|acute abdomen|biliary|appendicitis)\b/.test(tagText)) return "abdominal pain source/severity history";
+  if (/\b(?:dysuria|uti|pyelonephritis|flank pain|renal colic)\b/.test(tagText)) return "GU/renal source and severity history";
+  if (/\b(?:infection|fever|sepsis|pneumonia|source localizing|source_localizing)\b/.test(tagText)) return "infection source/severity history";
+  if (/\b(?:pelvic pain|pregnancy|ectopic|pid)\b/.test(tagText)) return "pelvic pain and pregnancy safety history";
+  if (/\b(?:sti|genital discharge|urethritis|cervicitis|epididymitis)\b/.test(tagText)) return "GU/STI source and exposure history";
+  if (/\b(?:sleep apnea|snoring|osa)\b/.test(tagText)) return "OSA risk and safety history";
+  if (/\b(?:thyroid|hyperthyroid|hypothyroid|thyroid storm|myxedema)\b/.test(tagText)) return "thyroid symptom and medication history";
+  if (/\b(?:diabetes|dka|hhs|hypoglycemia)\b/.test(tagText)) return "diabetes safety and trigger history";
+  return "focused history question";
+}
+
+function compactLimitationCautionLabel(label = "", itemType = "") {
+  const text = String(label || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  const typeText = String(itemType || "");
+  const commaCount = (text.match(/,/g) || []).length;
+  if (text.length <= 90 && commaCount < 2) {
+    return text;
+  }
+  const head = text
+    .replace(/\s*;\s*[\s\S]*$/g, "")
+    .replace(/\s*,\s*[\s\S]*$/g, "")
+    .replace(/\s+\b(?:with|when|if|for)\b\s+[\s\S]*$/i, "")
+    .trim();
+  if (head.length >= 12 && head.length <= 90) {
+    return head;
+  }
+  if (/\b(?:diagnostic[_\s-]?test|reference[_\s-]?threshold|initialtests|initial[_\s-]?tests|test|tests|bmp|electrolyte|blood[_\s-]?gas|osmolality|ketone|glucose|ecg|troponin|culture|imaging|monitoring|labs?)\b/i.test(typeText)) {
+    return "diagnostic test/reference interpretation";
+  }
+  if (/\b(?:red[_\s-]?flag|escalation|warning|shock|danger|cue)\b/i.test(typeText)) {
+    return "red-flag interpretation";
+  }
+  if (/\b(?:management|disposition|rule|acuity|emergency|correction|transition|discharge|protocol|treatment|insulin[_\s-]?safety)\b/i.test(typeText)
+    || /^(?:for|do not|before|transition|suspected|icu\/|uncomplicated)\b/i.test(text)) {
+    return "management implication";
+  }
+  if (/\b(?:diagnostic_test|reference_threshold|test)\b/i.test(itemType)) {
+    return "diagnostic test/reference interpretation";
+  }
+  if (/\bred_flag\b/i.test(itemType)) {
+    return "red-flag interpretation";
+  }
+  if (/\bmanagement\b/i.test(itemType)) {
+    return "management implication";
+  }
+  return text.length > 90 ? `${text.slice(0, 86).trim()}...` : text;
+}
+
+function compactManagementFindingLabel(label = "") {
+  const text = String(label || "").replace(/\s+/g, " ").trim();
+  if (!text) return "";
+  const commaCount = (text.match(/,/g) || []).length;
+  const orCount = (text.match(/\bor\b/gi) || []).length;
+  if (text.length <= 90 && commaCount < 2 && orCount < 3) {
+    return text;
+  }
+  const head = text
+    .replace(/\s*;\s*[\s\S]*$/g, "")
+    .replace(/\s*,\s*[\s\S]*$/g, "")
+    .replace(/\s+\b(?:with|when|if|for)\b\s+[\s\S]*$/i, "")
+    .trim();
+  if (head.length >= 12 && head.length <= 90) {
+    return head;
+  }
+  if (/^(?:for|do not|before|transition|suspected|icu\/|uncomplicated)\b/i.test(text)) {
+    return "management implication";
+  }
+  return text.length > 90 ? `${text.slice(0, 86).trim()}...` : text;
+}
+
+function limitationCautionDisplayLabel(entry = {}, candidate = {}) {
+  const itemType = [
+    entry.role,
+    entry.exam_id,
+    entry.id,
+    candidate.exam_id,
+    candidate.id,
+    candidate.item_type,
+    candidate.gap_type,
+    candidate.traceability?.item_group,
+    ...(entry.matchedTags || []),
+    ...(entry.retrievalTags || []),
+    ...(candidate.matchedTags || []),
+    ...(candidate.tags || []),
+    ...splitEvidenceList(candidate.retrieval_tags)
+  ].filter(Boolean).join(" ");
+  const primaryBaseLabel = compactLimitationCautionLabel(conciseLimitationCautionBaseLabel(entry, candidate), itemType);
+  const baseLabel = genericLimitationCautionBaseLabel(primaryBaseLabel)
+    ? ([
+        entry.displayManagement,
+        entry.managementRelevance,
+        candidate.result_changes_management,
+        candidate.management_link,
+        entry.displayDiagnosticTarget,
+        candidate.diagnostic_target,
+        entry.reason,
+        entry.rationale,
+        candidate.limitations,
+        candidate.interpretation_cautions
+      ]
+        .map((candidateLabel) => compactLimitationCautionLabel(candidateLabel, ""))
+        .find((candidateLabel) => candidateLabel && !genericLimitationCautionBaseLabel(candidateLabel)) || primaryBaseLabel)
+    : primaryBaseLabel;
+  return /^interpretation caution\b/i.test(String(baseLabel || ""))
+    ? baseLabel
+    : `Interpretation caution - ${baseLabel}`;
+}
+
+function genericLimitationCautionBaseLabel(label = "") {
+  const text = String(label || "").trim();
+  const normalized = normalizeEvidenceLabel(text);
+  return /^(?:diagnostic test\/reference interpretation|red-flag interpretation|management implication|focused history question|linked workup item|differential-frame interpretation)$/i
+    .test(text)
+    || /^(?:diagnostic test reference interpretation|red flag interpretation|management implication|focused history question|linked workup item|differential frame interpretation)$/i
+      .test(normalized);
+}
+
+function stripInterpretationCautionDisplayPrefix(label = "") {
+  return String(label || "")
+    .replace(/^interpretation caution\s*[-:]\s*/i, "")
+    .trim();
+}
+
+function limitationCautionLabelKey(label = "") {
+  return normalizeEvidenceLabel(label)
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function limitationCautionLabelLooksSpecific(label = "") {
+  const text = stripInterpretationCautionDisplayPrefix(label);
+  return Boolean(text)
+    && !genericLimitationCautionBaseLabel(text)
+    && !/[,:;]\s*$/.test(text)
+    && !/\.\.\.$/.test(text);
+}
+
+function limitationCautionSpecificCandidates(caution = {}) {
+  return [
+    caution.diagnosticTarget,
+    caution.diagnostic_target,
+    caution.managementImplication,
+    caution.management_implication,
+    caution.managementChange,
+    caution.management_change,
+    caution.reason,
+    caution.limitation,
+    caution.interpretationCaution,
+    caution.limitations,
+    caution.source,
+    caution.evidence?.source,
+    caution.linkedExamId,
+    caution.exam_id,
+    caution.traceability?.item_id
+  ];
+}
+
+function limitationCautionSpecificBaseLabel(caution = {}) {
+  const rawBase = stripInterpretationCautionDisplayPrefix(caution.label || "");
+  if (limitationCautionLabelLooksSpecific(rawBase)) {
+    return rawBase;
+  }
+  return limitationCautionSpecificCandidates(caution)
+    .map((candidate) => compactLimitationCautionLabel(candidate, caution.role || ""))
+    .find((candidate) => limitationCautionLabelLooksSpecific(candidate))
+    || rawBase
+    || "linked workup item";
+}
+
+function limitationCautionDifferentiator(caution = {}, baseLabel = "") {
+  const baseKey = limitationCautionLabelKey(stripInterpretationCautionDisplayPrefix(baseLabel));
+  return limitationCautionSpecificCandidates(caution)
+    .map((candidate) => compactLimitationCautionLabel(candidate, caution.role || ""))
+    .find((candidate) => {
+      const key = limitationCautionLabelKey(candidate);
+      return limitationCautionLabelLooksSpecific(candidate)
+        && key
+        && key !== baseKey
+        && !baseKey.includes(key)
+        && !key.includes(baseKey);
+    })
+    || compactLimitationCautionLabel(caution.linkedExamId || caution.exam_id || caution.traceability?.item_id || "", "")
+    || "";
+}
+
+function limitationCautionStableSuffix(caution = {}) {
+  return compactLimitationCautionLabel(caution.linkedExamId || caution.exam_id || caution.traceability?.item_id || "", "")
+    || "linked item";
+}
+
+function uniquifyLimitationCautionLabels(cautions = []) {
+  const prepared = cautions.map((caution) => ({
+    caution,
+    baseLabel: limitationCautionSpecificBaseLabel(caution)
+  }));
+  const baseCounts = new Map();
+  prepared.forEach(({ baseLabel }) => {
+    const key = limitationCautionLabelKey(baseLabel);
+    if (!key) return;
+    baseCounts.set(key, (baseCounts.get(key) || 0) + 1);
+  });
+  const emitted = new Map();
+  return prepared.map(({ caution, baseLabel }) => {
+    const baseKey = limitationCautionLabelKey(baseLabel);
+    let displayBase = baseLabel || "linked workup item";
+    if ((baseCounts.get(baseKey) || 0) > 1 || genericLimitationCautionBaseLabel(displayBase)) {
+      const differentiator = limitationCautionDifferentiator(caution, displayBase);
+      if (differentiator && limitationCautionLabelKey(differentiator) !== baseKey) {
+        const differentiatedLabel = `Interpretation caution - ${displayBase} - ${differentiator}`;
+        displayBase = differentiatedLabel.length <= 140
+          ? `${displayBase} - ${differentiator}`
+          : `${displayBase} - ${limitationCautionStableSuffix(caution)}`;
+      } else {
+        displayBase = `${displayBase} - ${limitationCautionStableSuffix(caution)}`;
+      }
+    }
+    let label = /^interpretation caution\b/i.test(displayBase)
+      ? displayBase
+      : `Interpretation caution - ${displayBase}`;
+    let emittedKey = limitationCautionLabelKey(label);
+    const priorCount = emitted.get(emittedKey) || 0;
+    if (priorCount) {
+      const stableSuffix = compactLimitationCautionLabel(caution.linkedExamId || caution.exam_id || caution.traceability?.item_id || `item ${priorCount + 1}`, "");
+      label = `${label} - ${stableSuffix}`;
+      emittedKey = limitationCautionLabelKey(label);
+    }
+    emitted.set(emittedKey, (emitted.get(emittedKey) || 0) + 1);
+    return { ...caution, label };
+  });
 }
 
 function limitationCautionFromEntry(entry = {}) {
@@ -7111,9 +8582,7 @@ function limitationCautionFromEntry(entry = {}) {
     ...(candidate.tags || []),
     ...splitEvidenceList(candidate.retrieval_tags)
   ]);
-  const label = isHistoryQuestionEntry(entry)
-    ? (entry.displayBedsideQuestion || candidate.bedside_question_label || candidate.examLabel || candidate.exam_id)
-    : (entry.label || candidate.examLabel || candidate.maneuver || candidate.exam_id);
+  const label = limitationCautionDisplayLabel(entry, candidate);
   return {
     id: `${entry.exam_id || candidate.exam_id || "limitation"}-interpretation-caution`,
     label,
@@ -7152,7 +8621,7 @@ function limitationsAndInterpretationCautionsFromEntries(entries = []) {
     cautions.push(caution);
     seen.add(key);
   });
-  return cautions.slice(0, 32);
+  return uniquifyLimitationCautionLabels(cautions).slice(0, 32);
 }
 
 function evidenceMetadataKey(metadata = {}) {
@@ -7185,11 +8654,11 @@ function evidenceMetadataFromEntry(entry = {}) {
     id: `${entry.exam_id || candidate.exam_id || "evidence"}-evidence-metadata`,
     label,
     source,
-    sourceIds: unique([
+    sourceIds: traceSourceIdArray(
       candidate.source?.source_id,
       candidate.evidence_source_primary,
-      ...(traceability.source_ids || [])
-    ].filter(Boolean)),
+      traceability.source_ids || []
+    ),
     citation: candidate.source_citation || candidate.source?.citation || "",
     diagnosticTarget: entry.displayDiagnosticTarget || candidate.diagnostic_target || "",
     LR_plus,
@@ -7439,8 +8908,17 @@ function lintHistoryQuestion(question, section = "focusedHistoryQuestions") {
   if (!text) {
     issues.push({ severity: "high", type: "missing_history_question", section, label: "", detail: "Focused history questions must include question text." });
   }
+  const answerOptions = Array.isArray(question.options)
+    ? question.options.filter((option) => String(option?.label || option?.value || option || "").trim())
+    : String(question.options || question.answer_options || question.answerOptions || "").split(/\s+\/\s+|[;|]/).filter((option) => option.trim());
+  if (!answerOptions.length) {
+    issues.push({ severity: "high", type: "missing_history_options", section, label: question.text || "", detail: "Focused history questions must include structured answer options so bedside responses are auditable." });
+  }
   if (!question.source || /source pending/i.test(question.source)) {
     issues.push({ severity: "high", type: "missing_history_source", section, label: question.text || "", detail: "Focused history questions must be traceable to an evidence source or validated catalog item." });
+  }
+  if (!question.evidence?.likelihood_ratio_note && !question.likelihood_ratio_note) {
+    issues.push({ severity: "medium", type: "missing_history_likelihood_ratio_note", section, label: question.text || "", detail: "Focused history questions must explain whether question-level LR values are available, unavailable, or not applicable." });
   }
   if (!question.diagnosticPurpose) {
     issues.push({ severity: "medium", type: "missing_history_diagnostic_purpose", section, label: question.text || "", detail: "Focused history questions should state their diagnostic purpose." });
@@ -7733,6 +9211,7 @@ function generatedWorkupCompletenessGap(trace = {}, definition = {}) {
       intent_labels: [trace.label].filter(Boolean),
       clinical_bundle_ids: trace.clinical_bundle_ids || [],
       source_ids: sourceIds,
+      knowledge_pack_id: trace.knowledge_pack_id || "",
       evidence_row_id: gapId,
       catalog_gap: true,
       gap_type: definition.gapType,
@@ -7741,6 +9220,24 @@ function generatedWorkupCompletenessGap(trace = {}, definition = {}) {
       generated_completeness_gap: true
     }
   };
+}
+
+function recommendationKnowledgePackIds(entry = {}) {
+  const candidate = entry.candidate || {};
+  const retrievalRoutes = [
+    ...traceArray(entry.retrievalRoutes),
+    ...traceArray(candidate.retrievalRoutes)
+  ];
+  const fingerprint = String(entry.base_row_fingerprint || candidate.base_row_fingerprint || "").trim();
+  if (!retrievalRoutes.includes("activated_knowledge_pack") && !/^knowledge-pack:/i.test(fingerprint)) {
+    return [];
+  }
+  return unique([
+    ...traceArray(entry.knowledge_pack_id),
+    ...traceArray(candidate.knowledge_pack_id),
+    ...traceArray(entry.traceability?.knowledge_pack_id),
+    ...traceArray(candidate.traceability?.knowledge_pack_id)
+  ]);
 }
 
 function workupSectionText(sectionedWorkup = {}, sectionNames = []) {
@@ -7920,7 +9417,15 @@ const workupCompletenessGapDefinitions = [
     gapType: "exam_maneuver",
     label: "Conditional physical exam add-ons need review",
     applies: (trace) => Boolean(trace.knowledge_pack_id),
-    isMissing: (sectionedWorkup) => !(sectionedWorkup.conditionalPhysicalExamManeuvers || []).length,
+    isMissing: (sectionedWorkup, trace) => {
+      const tracePackIds = traceArray(trace.knowledge_pack_id);
+      if (!tracePackIds.length) {
+        return !(sectionedWorkup.conditionalPhysicalExamManeuvers || []).length;
+      }
+      return !(sectionedWorkup.conditionalPhysicalExamManeuvers || []).some((entry) => (
+        recommendationKnowledgePackIds(entry).some((packId) => tracePackIds.includes(packId))
+      ));
+    },
     reason: (trace) => `The validated intent "${trace.label || trace.intent_id}" does not yet have reviewed conditional physical exam add-ons modeled in the local workup system. Do not imply that the core exam is exhaustive for every modifier or complication; stage source-backed add-ons for review.`,
     resolutionPlan: (trace) => `Add reviewed conditional exam add-ons with trigger conditions, technique, finding options, diagnostic target, LR fields or LR limitation note, management implications, feasibility, source IDs, and regression tests for ${trace.label || trace.intent_id}.`
   }
@@ -7936,7 +9441,7 @@ function generatedWorkupCompletenessGaps(validatedIntentTrace = [], sectionedWor
         if (definition.applies && !definition.applies(trace, sectionedWorkup)) {
           return;
         }
-        if (!definition.isMissing(sectionedWorkup)) {
+        if (!definition.isMissing(sectionedWorkup, trace)) {
           return;
         }
         const gapId = generatedCompletenessGapId(trace, definition.suffix);
@@ -7956,6 +9461,76 @@ function generatedWorkupCompletenessGaps(validatedIntentTrace = [], sectionedWor
     existingGapIds.add(gapId);
   });
   return generated;
+}
+
+function conditionalExamAddOnSectionStatus(validatedIntentTrace = [], sectionedWorkup = {}, catalogGapsNeedingReview = [], contextText = "") {
+  const conditionalCount = (sectionedWorkup.conditionalPhysicalExamManeuvers || []).length;
+  const traceIntentIds = unique(validatedIntentTrace.map((trace) => trace.intent_id).filter(Boolean));
+  const traceIntentLabels = unique(validatedIntentTrace.map((trace) => trace.label).filter(Boolean));
+  const traceBundleIds = unique(validatedIntentTrace.flatMap((trace) => trace.clinical_bundle_ids || []));
+  const traceSourceIds = unique(validatedIntentTrace.flatMap((trace) => trace.source_ids || []));
+  const baseTraceability = {
+    intent_ids: traceIntentIds,
+    intent_labels: traceIntentLabels,
+    clinical_bundle_ids: traceBundleIds,
+    source_ids: traceSourceIds,
+    authorized_by: traceIntentIds.length ? "validated_clinical_intent" : "audit_only_unvalidated_context"
+  };
+  if (conditionalCount > 0) {
+    return {
+      status: "active_addons_present",
+      label: "Conditional add-ons active",
+      count: conditionalCount,
+      reason: `${conditionalCount} conditional physical exam add-on${conditionalCount === 1 ? "" : "s"} activated from the selected validated intent, active modifiers, or source-specific trigger logic.`,
+      traceability: baseTraceability
+    };
+  }
+  const conditionalGapRows = (catalogGapsNeedingReview || []).filter((gap) => {
+    const text = normalizeEvidenceLabel([
+      gap.label,
+      gap.gapLabel,
+      gap.gapId,
+      gap.gapType,
+      gap.traceability?.gap_type,
+      gap.traceability?.evidence_row_id,
+      gap.resolutionPlan,
+      gap.rationale
+    ].filter(Boolean).join(" "));
+    return /\bconditional\b/.test(text) && /\b(?:exam|maneuver|physical)\b/.test(text);
+  });
+  if (conditionalGapRows.length) {
+    return {
+      status: "staged_gaps_need_review",
+      label: "Conditional add-ons need review",
+      count: 0,
+      gapCount: conditionalGapRows.length,
+      reason: `${conditionalGapRows.length} conditional physical exam add-on gap${conditionalGapRows.length === 1 ? "" : "s"} need expert review before this section can be treated as complete.`,
+      gapIds: conditionalGapRows.map((gap) => gap.gapId || gap.exam_id || gap.label).filter(Boolean),
+      traceability: {
+        ...baseTraceability,
+        authorized_by: "staged_catalog_gap"
+      }
+    };
+  }
+  if (!traceIntentIds.length) {
+    return {
+      status: "audit_only_unvalidated_context",
+      label: "Validated intent required",
+      count: 0,
+      reason: "No validated clinical intent selected; free text can support retrieval audit only and cannot authorize conditional add-on recommendations.",
+      traceability: baseTraceability
+    };
+  }
+  const modifierHint = normalizeEvidenceLabel(contextText).replace(/\s+/g, " ").trim();
+  return {
+    status: "none_active_for_current_context",
+    label: "No conditional add-ons active",
+    count: 0,
+    reason: modifierHint
+      ? "No patient modifier, source-specific symptom, or complication trigger activated a reviewed conditional physical exam add-on for this selected validated intent. The core exam remains the validated minimum for the current context."
+      : "No patient modifier or source-specific trigger was supplied, so no reviewed conditional physical exam add-on is active. The core exam remains the validated minimum for the selected validated intent.",
+    traceability: baseTraceability
+  };
 }
 
 function lintCatalogGapReview(gap, section = "catalogGapsNeedingReview") {
@@ -8001,16 +9576,12 @@ function gapAlreadySatisfied(gap, selectedEntries = []) {
   const normalizedGapLabel = normalizeEvidenceText(gap.label || "");
   const relaxedGapLabel = normalizeEvidenceLabel(gap.label || "");
   const requiresFullIdentity = /\b(?:exam|check|screen|assessment|inspection|palpation|auscultation|percussion|reflex)\b/i.test(gap.label || "");
+  const gapType = inferredCatalogGapItemType(gap);
   return selectedEntries.some((entry) => {
-    const text = normalizeEvidenceText([
-      entry.label,
-      entry.domain,
-      entry.reason,
-      entry.displayDiagnosticTarget,
-      entry.displayManagement,
-      entry.candidate?.examLabel,
-      entry.candidate?.maneuver
-    ].filter(Boolean).join(" "));
+    if (gapType && !requiredProfileSectionTypesCompatible(gapType, entry)) {
+      return false;
+    }
+    const text = requiredProfileSatisfactionText(entry, gapType);
     if (normalizedGapLabel && text.includes(normalizedGapLabel)) {
       return true;
     }
@@ -8019,6 +9590,34 @@ function gapAlreadySatisfied(gap, selectedEntries = []) {
     }
     return pattern.test(text);
   });
+}
+
+function inferredCatalogGapItemType(gap = {}) {
+  const explicitType = String(gap.gap_type || gap.item_type || "").toLowerCase();
+  if (explicitType) {
+    return explicitType;
+  }
+  const identityText = normalizeEvidenceLabel([gap.exam_id, gap.gap_id, gap.label].filter(Boolean).join(" "));
+  const text = normalizeEvidenceLabel([identityText, gap.domain].filter(Boolean).join(" "));
+  if (/\b(?:red[-\s]?flag|escalation|danger|cue|urgent|emergent)\b/.test(identityText)) {
+    return "red_flag";
+  }
+  if (/\b(?:test|testing|labs?|imaging|ultrasound|ct|mri|x-ray|threshold|reference|pathway)\b/.test(identityText)) {
+    return "diagnostic_test";
+  }
+  if (/\b(?:exam|inspection|inspect|palpation|palpate|auscultation|auscultate|percussion|percuss|reflex|sensation|stiffness|meningeal|nuchal|range of motion|rom|pulses?|nodes?|skin|mucosa|mucosal|scrotal|genital|thyroid|abdomen|abdominal|lung|heart sounds)\b/.test(identityText)) {
+    return "exam_maneuver";
+  }
+  if (/\b(?:vitals?|blood pressure|heart rate|respiratory rate|oxygen saturation|spo2|pulse oximetry|temperature|bedside glucose)\b/.test(identityText)) {
+    return "safety_check";
+  }
+  if (/\b(?:red[-\s]?flag|escalation|danger|cue|urgent|emergent)\b/.test(text)) {
+    return "red_flag";
+  }
+  if (/\b(?:exam|inspection|inspect|palpation|palpate|auscultation|auscultate|percussion|percuss|reflex|sensation|stiffness|meningeal|nuchal|range of motion|rom|pulses?|nodes?|skin|mucosa|mucosal|scrotal|genital|thyroid|abdomen|abdominal|lung|heart sounds)\b/.test(text)) {
+    return "exam_maneuver";
+  }
+  return "";
 }
 
 function bundleCatalogGapEntries(activeProfiles, context, selectedEntries = [], catalogGapRegistryRows = []) {
@@ -8031,14 +9630,23 @@ function bundleCatalogGapEntries(activeProfiles, context, selectedEntries = [], 
       const registrySourceIds = registryRow.source_ids || gap.source || "";
       const registryCitation = registryRow.source_citation || gap.source || "";
       const role = gap.role || "core";
-      const technique = gap.technique || gap.maneuver || gap.action || gap.label || "";
       const whenToUse = gap.whenToUse || gap.when_to_use_structured || gap.whenText || profile.name || "";
       const limitations = gap.limitations
         || "Catalog gap staged by a validated clinical bundle; technique and interpretation should be reviewed against the source before converting into a permanent catalog maneuver.";
       const matchedTags = gap.matchedTags || [];
+      const itemType = registryRow.gap_type || gap.item_type || gap.gap_type || "exam_maneuver";
+      const rawTechnique = gap.technique || gap.maneuver || gap.action || gap.label || "";
+      const technique = itemType === "exam_maneuver"
+        ? standardizedBedsideTechnique({
+            ...gap,
+            examLabel: gap.label,
+            matchedTags,
+            tags: matchedTags
+          }, rawTechnique)
+        : rawTechnique;
       const candidate = {
         exam_id: gap.exam_id,
-        item_type: registryRow.gap_type || gap.item_type || gap.gap_type || "exam_maneuver",
+        item_type: itemType,
         gap_type: registryRow.gap_type || gap.gap_type || gap.item_type || "exam_maneuver",
         examLabel: gap.label,
         maneuver: gap.maneuver || gap.label,
@@ -8224,16 +9832,15 @@ export function buildRecommendedExamChecklist(contextText = "", rankedCandidates
     : [];
   const selectedIds = new Set([...coreIds, ...coreItems.map((entry) => entry.exam_id), ...conditionalItems.map((entry) => entry.exam_id)]);
   const selectedRecommendationEntries = [...coreItems, ...conditionalItems];
-  const suppressedItems = [
+  const suppressedItemCandidates = [
     ...replacedRoutineVitalItems,
     ...duplicateCoreExamItems,
     ...entries
       .filter((entry) => !selectedIds.has(entry.exam_id) && !replacedRoutineVitalIds.has(entry.exam_id))
       .map((entry) => postSelectionSuppressedEntry(entry, selectedRecommendationEntries, context))
       .sort((a, b) => b.score - a.score || b.contextFitScore - a.contextFitScore)
-  ]
-    .sort((a, b) => b.score - a.score || b.contextFitScore - a.contextFitScore)
-    .slice(0, options.maxSuppressedItems || 36);
+  ];
+  const suppressedItems = curatedSuppressedRecommendationItems(suppressedItemCandidates, options.maxSuppressedItems || 36);
   const sectionedWorkup = sectionRecommendationEntries(coreItems, conditionalItems);
   const generatedCompletenessGaps = generatedWorkupCompletenessGaps(
     validatedIntentTrace,
@@ -8245,6 +9852,15 @@ export function buildRecommendedExamChecklist(contextText = "", rankedCandidates
     validatedIntentTrace
   );
   sectionedWorkup.catalogGapsNeedingReview = catalogGapsNeedingReview;
+  const conditionalExamAddOnStatus = conditionalExamAddOnSectionStatus(
+    validatedIntentTrace,
+    sectionedWorkup,
+    catalogGapsNeedingReview,
+    ruleContext
+  );
+  const sectionStatuses = {
+    conditionalPhysicalExamManeuvers: conditionalExamAddOnStatus
+  };
   const qualityIssues = lintRecommendedWorkupSections(sectionedWorkup);
   const totalCoreMinutes = coreItems.reduce((sum, entry) => sum + (numericValue(entry.feasibility.time_burden_minutes) || 0), 0);
   const totalCoreExamMinutes = sectionedWorkup.corePhysicalExamManeuvers.reduce((sum, entry) => sum + (numericValue(entry.feasibility.time_burden_minutes) || 0), 0);
@@ -8332,6 +9948,8 @@ export function buildRecommendedExamChecklist(contextText = "", rankedCandidates
     evidenceAndLikelihoodMetadata: sectionedWorkup.evidenceAndLikelihoodMetadata,
     evidenceMetadata: sectionedWorkup.evidenceAndLikelihoodMetadata,
     catalogGapsNeedingReview,
+    sectionStatuses,
+    conditionalExamAddOnStatus,
     corePhysicalExamManeuvers: sectionedWorkup.corePhysicalExamManeuvers,
     conditionalPhysicalExamManeuvers: sectionedWorkup.conditionalPhysicalExamManeuvers,
     coreItems: sectionedWorkup.corePhysicalExamManeuvers,

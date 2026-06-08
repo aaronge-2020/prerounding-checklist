@@ -1,0 +1,62 @@
+{
+  "symptomGrids": 0,
+  "rows": [
+    {
+      "title": "Symptoms today",
+      "options": [
+        "Yes",
+        "No",
+        "Other"
+      ]
+    },
+    {
+      "title": "Since yesterday, are you feeling better?",
+      "options": [
+        "Better",
+        "Same",
+        "Worse",
+        "Other"
+      ]
+    },
+    {
+      "title": "Any chest pain or trouble breathing now?",
+      "options": [
+        "No",
+        "Mild",
+        "Severe",
+        "Other"
+      ]
+    },
+    {
+      "title": "Eating and drinking?",
+      "options": [
+        "Yes",
+        "Some",
+        "No",
+        "Other"
+      ]
+    },
+    {
+      "title": "Any nausea or vomiting today?",
+      "options": [
+        "No",
+        "Mild",
+        "Severe",
+        "Other"
+      ]
+    },
+    {
+      "title": "Any dizziness or lightheadedness?",
+      "options": [
+        "No",
+        "Mild",
+        "Severe",
+        "Other"
+      ]
+    }
+  ],
+  "actionText": [
+    "Exam",
+    "Next 2"
+  ]
+}

@@ -141,14 +141,14 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "severe",
           "hypocalcemia",
-          "symptoms",
           "fracture",
           "profound",
           "weakness",
           "malabsorption",
-          "high"
+          "high",
+          "risk",
+          "state"
         ],
         "when": {
           "termsAny": [
@@ -187,10 +187,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -231,10 +231,10 @@
           "fracture",
           "cord",
           "neurologic",
-          "symptoms",
-          "with",
           "back",
-          "pain"
+          "pain",
+          "hypercalcemia",
+          "dehydration"
         ],
         "when": {
           "termsAny": [
@@ -331,7 +331,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ENDO_VITD_2024",
@@ -365,9 +365,8 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -516,8 +515,7 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "liver",
-          "disease"
+          "liver"
         ],
         "source_seed": "Malabsorption/bariatric surgery, CKD/liver disease, anticonvulsants, diet/sun exposure."
       },
@@ -564,13 +562,57 @@
           "anticonvulsants"
         ],
         "source_seed": "Malabsorption/bariatric surgery, CKD/liver disease, anticonvulsants, diet/sun exposure."
+      },
+      {
+        "id": "question_05",
+        "label": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ENDO_VITD_2024",
+          "source_section": "Vitamin D Deficiency / Osteomalacia curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Vitamin D Deficiency / Osteomalacia needs urgent evaluation today.",
+        "when_to_ask": "Ask when Vitamin D Deficiency / Osteomalacia is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Vitamin D Deficiency / Osteomalacia needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "vitamin_d_deficiency_osteomalacia",
+          "stones"
+        ],
+        "source_seed": "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Assess proximal hip flexor strength",
+        "label": "Test proximal hip flexor strength",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDO_VITD_2024",
@@ -600,11 +642,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess proximal hip flexor strength is supportive for Vitamin D Deficiency / Osteomalacia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Test proximal hip flexor strength is supportive for Vitamin D Deficiency / Osteomalacia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "assess",
+          "test",
           "proximal",
           "flexor",
           "strength"
@@ -654,7 +696,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess gait stability if safe",
+        "label": "Observe gait stability if safe",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDO_VITD_2024",
@@ -684,11 +726,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess gait stability if safe is supportive for Vitamin D Deficiency / Osteomalacia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe gait stability if safe is supportive for Vitamin D Deficiency / Osteomalacia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "assess",
+          "observe",
           "gait",
           "stability",
           "safe"
@@ -948,7 +990,6 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "when",
           "clinically",
           "indicated"
         ]
@@ -1010,13 +1051,13 @@
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1044,13 +1085,13 @@
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
           "thyroid",
-          "safety",
-          "data",
           "pair",
           "free",
-          "with",
-          "syndrome",
-          "specific"
+          "specific",
+          "such",
+          "antibodies",
+          "ultrasound",
+          "radionuclide"
         ]
       },
       {
@@ -1082,9 +1123,9 @@
           "fracture",
           "risk",
           "tool",
-          "when",
           "bone",
-          "density"
+          "density",
+          "scope"
         ]
       },
       {
@@ -1116,9 +1157,9 @@
           "calcium",
           "renal",
           "imaging",
-          "when",
           "primary",
-          "hyperparathyroidism"
+          "hyperparathyroidism",
+          "kidney"
         ]
       },
       {
@@ -1243,9 +1284,9 @@
           "many",
           "labs",
           "flag",
-          "severe",
           "deficiency",
-          "while"
+          "while",
+          "2024"
         ]
       },
       {
@@ -1312,8 +1353,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1342,14 +1383,12 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "vitamin_d_deficiency_osteomalacia",
-          "with",
-          "symptoms",
           "osteomalacia",
           "labs",
-          "changes",
-          "from",
           "prevention",
-          "advice"
+          "advice",
+          "etiology",
+          "evaluation"
         ]
       },
       {
@@ -1378,12 +1417,12 @@
           "vitamin_d_deficiency_osteomalacia",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1412,12 +1451,12 @@
           "vitamin_d_deficiency_osteomalacia",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1483,7 +1522,7 @@
           "involvement",
           "stones",
           "osteoporosis",
-          "severe"
+          "surgical"
         ]
       }
     ],

@@ -10,6 +10,7 @@ import {
 } from "../evidence.js";
 import {
   buildClinicalIntentRetrievalContext,
+  clinicalIntentRegistry,
   filterEvidenceCatalogForClinicalIntents,
   selectedValidatedClinicalIntents
 } from "../clinical-intents.js";
@@ -18,6 +19,11 @@ import {
   evaluateComplaintCds,
   isBasicBedsideDataItem
 } from "../complaint-cds.js";
+import {
+  formatConciseClinicalWorkupReport,
+  formatConciseExamRecommendationReport
+} from "../workup-report.js";
+import { buildRun, loadCatalog } from "./iterate-clinical-workups.js";
 
 const QUALITY_GOAL = "attending-level tiered bedside workup";
 
@@ -28,6 +34,7 @@ const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepte
 const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
 const gapRows = parseCsv(readFileSync("data/evidence/catalog_gap_registry.csv", "utf8"));
+const workupReportSource = readFileSync("workup-report.js", "utf8");
 const catalog = joinEvidenceCatalog(
   baseRows,
   mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyOverlayRows),
@@ -57,7 +64,8 @@ function labelsAndReasons(entries) {
     .join(" | ");
 }
 
-const routineSafetyLabels = /^(?:Blood pressure|Heart rate|Respiratory rate|Temperature|Oxygen saturation \/ support)$/i;
+const routineSafetyLabels = /^(?:Measure blood pressure|Measure heart rate|Count respiratory rate|Measure temperature|Measure oxygen saturation and support)$/i;
+const actionSpecificRoutineSafetyLabelPattern = /^(?:Measure|Count)\b/i;
 
 function recommendationForIntent(intentIds, modifiers = "", options = {}) {
   const selectedIntents = selectedValidatedClinicalIntents(intentIds);
@@ -95,6 +103,41 @@ function rankedCandidatesForIntent(intentIds, modifiers = "", options = {}) {
     specialty: options.specialty || "General medicine"
   }).candidates;
 }
+
+const missingHistoryOptionsRecommendation = buildRecommendedExamChecklist(
+  "synthetic DKA HHS hyperglycemia history metadata guard",
+  [{
+    exam_id: "TEST-history-missing-options",
+    item_type: "history_question",
+    examLabel: "Ask synthetic history guard",
+    maneuver: "Ask synthetic history guard",
+    bedside_question_label: "Any synthetic symptom cluster that should require structured answer options?",
+    bedside_question_options: "",
+    condition_or_syndrome: "DKA/HHS or hyperglycemic crisis",
+    diagnostic_target: "Synthetic history metadata quality",
+    result_changes_management: "A missing structured answer should be caught before UI rendering.",
+    evidence_source_primary: "TEST_SOURCE",
+    source_citation: "Synthetic test fixture",
+    evidence_tier: "test",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    difficulty: "easy",
+    time_burden_minutes: "1",
+    equipment_needed: "none",
+    patient_cooperation_required: "low",
+    retrieval_tags: "DKA_HHS; history_question; hyperglycemia",
+    matchedTags: ["DKA_HHS", "history_question"],
+    tags: ["DKA_HHS", "history_question"],
+    score: 95,
+    retrievalRoutes: ["test_fixture"],
+    review: { status: "accepted" }
+  }],
+  { maxCoreItems: 8, maxConditionalItems: 8 }
+);
+assert.ok(
+  (missingHistoryOptionsRecommendation.qualityIssues || []).some((issue) => issue.severity === "high" && issue.type === "missing_history_options"),
+  "Recommendation quality linter should flag focused history questions without structured answer options"
+);
 
 const qualityCases = [
   {
@@ -195,7 +238,7 @@ const qualityCases = [
       rx("Test Murphy sign"),
       rx("Inspect facial symmetry"),
       rx("Test pronator drift"),
-      rx("Check pupils")
+      rx("Test pupillary light response")
     ],
     avoidCore: [
       rx("Facial symmetry|Pronator drift|Pupils")
@@ -306,7 +349,7 @@ const qualityCases = [
       rx("Blood pressure"),
       rx("Heart rate"),
       rx("Respiratory rate"),
-      rx("Pregnancy possibility safety check")
+      rx("Verify pregnancy possibility")
     ],
     requireCore: [
       rx("Palpate abdomen")
@@ -418,7 +461,7 @@ const qualityCases = [
       rx("Blood pressure"),
       rx("Heart rate"),
       rx("Respiratory rate"),
-      rx("Bedside glucose safety check"),
+      rx("Measure bedside glucose"),
       rx("Mental status")
     ],
     requireCore: [
@@ -444,7 +487,7 @@ const qualityCases = [
       rx("Blood pressure"),
       rx("Heart rate"),
       rx("Respiratory rate"),
-      rx("Bedside glucose safety check"),
+      rx("Measure bedside glucose"),
       rx("Mental status")
     ],
     requireCore: [
@@ -458,6 +501,37 @@ const qualityCases = [
     ],
     avoidAll: [
       rx("PMI|Murphy sign|Vibration sense|Visual acuity")
+    ]
+  },
+  {
+    id: "thyroid_crisis_keeps_temperature_as_safety_not_exam",
+    intentIds: ["thyroid_crisis_v1"],
+    modifiers: "thyroid storm fever agitation atrial fibrillation infection",
+    requireSafety: [
+      rx("Temperature"),
+      rx("Mental status"),
+      rx("Blood pressure"),
+      rx("Heart rate"),
+      rx("Respiratory rate"),
+      rx("oxygen saturation")
+    ],
+    requireHistory: [
+      rx("antithyroid|levothyroxine|iodine|amiodarone|postpartum|steroid")
+    ],
+    requireCore: [
+      rx("Inspect and palpate thyroid"),
+      rx("Inspect skin for thyroid phenotype"),
+      rx("Auscultate heart sounds")
+    ],
+    requireRationale: [
+      rx("thyroid-storm|myxedema|crisis|ICU|escalation"),
+      rx("goiter|Graves|toxic nodular|subacute thyroiditis")
+    ],
+    avoidCore: [
+      rx("Temperature|Blood pressure|Heart rate|Respiratory rate|oxygen saturation|Mental status")
+    ],
+    avoidAll: [
+      rx("PMI|Murphy sign|Vibration sense|Visual acuity|Ophthalmoscopic")
     ]
   },
   {
@@ -480,7 +554,7 @@ const qualityCases = [
     requireCore: [
       rx("Inspect facial symmetry"),
       rx("Test pronator drift"),
-      rx("Check pupils|Test visual fields|Test extraocular")
+      rx("Test pupillary light response|Test visual fields|Test extraocular")
     ],
     avoidAll: [
       rx("SCM strength|Trapezius strength")
@@ -621,7 +695,7 @@ function assertLrInterpretationNotes(testId, recommendation) {
 
 const displayedExamLabelIssues = [];
 const broadDisplayedExamLabelPattern = /[,;:]|\band\s*\/\s*or\b|\b(?:vitals?|acuity screen|focused physical exam|trigger exam|screening exam|physical exam|perform and document|BP,|HR,|respiratory status|weight\/BMI|all findings|complications?)\b/i;
-const vagueDisplayedExamLabelPattern = /^(?:assess|evaluate|screen|review|document|perform)(?:\b|\.?$)/i;
+const vagueDisplayedExamLabelPattern = /^(?:check|assess|evaluate|screen|review|document|perform)(?:\b|\.?$)/i;
 for (const module of complaintModules) {
   const result = evaluateComplaintCds(module.label, {}, { module });
   for (const [group, list] of Object.entries({
@@ -643,6 +717,90 @@ for (const module of complaintModules) {
   }
 }
 assert.deepEqual(displayedExamLabelIssues, [], `Displayed exam labels should be atomic, specific, and not basic safety data:\n${displayedExamLabelIssues.slice(0, 20).join("\n")}`);
+
+const displayedHistoryQuestionIssues = [];
+const staleBundledInfectionQuestionPattern = /Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts\?/i;
+const vagueInfectionFallbackQuestionPattern = /localizing infectious symptoms/i;
+for (const module of complaintModules) {
+  const result = evaluateComplaintCds(module.label, {}, { module });
+  for (const [group, list] of Object.entries({
+    requiredQuestions: result.requiredQuestions || [],
+    conditionalQuestions: result.conditionalQuestions || []
+  })) {
+    for (const item of list) {
+      const text = item.text || item.label || "";
+      if (staleBundledInfectionQuestionPattern.test(text)) {
+        displayedHistoryQuestionIssues.push(`${module.id}.${group}.${item.id}: stale bundled infection question "${text}"`);
+      }
+      if (vagueInfectionFallbackQuestionPattern.test(text)) {
+        displayedHistoryQuestionIssues.push(`${module.id}.${group}.${item.id}: vague infection fallback question "${text}"`);
+      }
+    }
+  }
+}
+assert.deepEqual(displayedHistoryQuestionIssues, [], `Displayed history questions should avoid stale bundled source-localization wording:\n${displayedHistoryQuestionIssues.slice(0, 20).join("\n")}`);
+
+const promotedEvidenceExamLabelIssues = [];
+const vaguePromotedEvidenceExamLabelPattern = /^(?:check|assess|evaluate|screen|review|document|perform)(?:\b|\.?$)/i;
+for (const intentRow of clinicalIntentRegistry.filter((row) => row.status === "validated")) {
+  const recommendation = recommendationForIntent([intentRow.intent_id], intentRow.label, {
+    maxCoreItems: 28,
+    maxConditionalItems: 44
+  });
+  for (const [group, list] of Object.entries({
+    corePhysicalExamManeuvers: recommendation.corePhysicalExamManeuvers || [],
+    conditionalExamAddOns: recommendation.conditionalExamAddOns || []
+  })) {
+    for (const item of list) {
+      const label = item.label || "";
+      if (broadDisplayedExamLabelPattern.test(label)) {
+        promotedEvidenceExamLabelIssues.push(`${intentRow.intent_id}.${group}: broad or bundled promoted exam label "${label}"`);
+      }
+      if (vaguePromotedEvidenceExamLabelPattern.test(label)) {
+        promotedEvidenceExamLabelIssues.push(`${intentRow.intent_id}.${group}: vague promoted exam label "${label}"`);
+      }
+    }
+  }
+}
+assert.deepEqual(
+  promotedEvidenceExamLabelIssues,
+  [],
+  `Promoted evidence recommendations should use atomic, action-specific physical exam labels:\n${promotedEvidenceExamLabelIssues.slice(0, 20).join("\n")}`
+);
+
+const promotedHistoryQuestionMetadataIssues = [];
+for (const intentRow of clinicalIntentRegistry.filter((row) => row.status === "validated")) {
+  const recommendation = recommendationForIntent([intentRow.intent_id], intentRow.label, {
+    maxCoreItems: 28,
+    maxConditionalItems: 44
+  });
+  for (const question of recommendation.focusedHistoryQuestions || []) {
+    const questionName = `${intentRow.intent_id}.${question.id || question.text || "focused-history-question"}`;
+    if (!question.label || !question.displayLabel) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: missing stable label/displayLabel`);
+    }
+    if (question.label !== question.displayLabel) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: label "${question.label}" does not match displayLabel "${question.displayLabel}"`);
+    }
+    if (!question.text || !question.fullQuestion) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: missing question text/fullQuestion`);
+    }
+    if (!question.source || !question.evidence?.source) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: missing source metadata`);
+    }
+    if (!question.evidence?.likelihood_ratio_note) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: missing LR interpretation note`);
+    }
+    if (!(question.traceability?.intent_ids || []).includes(intentRow.intent_id)) {
+      promotedHistoryQuestionMetadataIssues.push(`${questionName}: missing traceability to selected validated intent`);
+    }
+  }
+}
+assert.deepEqual(
+  promotedHistoryQuestionMetadataIssues,
+  [],
+  `Promoted focused history questions should be labeled, sourced, LR-noted, and traceable:\n${promotedHistoryQuestionMetadataIssues.slice(0, 25).join("\n")}`
+);
 
 for (const testCase of qualityCases) {
   const recommendation = recommendationForIntent(testCase.intentIds, testCase.modifiers, testCase);
@@ -684,11 +842,31 @@ for (const testCase of qualityCases) {
   const severeQualityIssues = (recommendation.qualityIssues || []).filter((issue) => issue.severity === "high");
   assert.deepEqual(severeQualityIssues, [], `${testCase.id}: severe recommendation quality issues should be absent`);
   assertLrInterpretationNotes(testCase.id, recommendation);
+  const managementChangeCounts = new Map();
+  (recommendation.managementChangingFindings || []).forEach((finding) => {
+    const key = String(finding.managementChange || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (!key) return;
+    managementChangeCounts.set(key, (managementChangeCounts.get(key) || 0) + 1);
+  });
+  const duplicateManagementChanges = Array.from(managementChangeCounts.entries())
+    .filter(([, count]) => count > 1)
+    .map(([managementChange]) => managementChange);
+  assert.deepEqual(
+    duplicateManagementChanges,
+    [],
+    `${testCase.id}: management-changing findings should not repeat the same management implication once per linked exam maneuver`
+  );
   for (const safetyEntry of routineSafetyChecks) {
     const candidate = safetyEntry.candidate || {};
+    assert.match(
+      safetyEntry.label || "",
+      actionSpecificRoutineSafetyLabelPattern,
+      `${testCase.id}: routine safety ${safetyEntry.label} should name the bedside action, not just the vital-sign noun`
+    );
     assert.match(candidate.exam_id || "", /^SAFETY-/, `${testCase.id}: routine safety ${safetyEntry.label} should come from modeled safety data, not raw exam catalog or staged vital gaps`);
     assert.ok(
-      (candidate.retrievalRoutes || []).includes("validated_intent_safety_floor"),
+      (candidate.retrievalRoutes || []).includes("validated_intent_safety_floor")
+        || (candidate.retrievalRoutes || []).includes("validated_bundle_required"),
       `${testCase.id}: routine safety ${safetyEntry.label} should not be a promoted raw catalog vital row`
     );
     assert.equal(
@@ -698,7 +876,7 @@ for (const testCase of qualityCases) {
     );
   }
   assertNoPatterns(testCase.id, coreText, [rx("Blood pressure|Heart rate|Respiratory rate|Temperature|Bedside glucose|SpO2|oxygen saturation|weight|orthostatic|pain score")], "core physical exam maneuvers");
-  assertNoPatterns(testCase.id, coreText, [rx("Pregnancy possibility safety check|PID/ectopic red-flag review|red-flag review|safety check")], "core physical exam maneuvers");
+  assertNoPatterns(testCase.id, coreText, [rx("Pregnancy possibility safety check|Bedside glucose safety check|PID/ectopic red-flag review|red-flag review|safety check")], "core physical exam maneuvers");
   assertPatterns(testCase.id, safetyText, testCase.requireSafety, "basic safety checks");
   assertPatterns(testCase.id, historyText, testCase.requireHistory, "focused history");
   assertPatterns(testCase.id, coreText, testCase.requireCore, "core");
@@ -715,6 +893,21 @@ for (const testCase of qualityCases) {
     assert.match(recommendation.warnings.join(" "), testCase.requireWarning, `${testCase.id}: expected warning ${testCase.requireWarning.source}`);
   }
 }
+
+const dyspneaDedupeRecommendation = recommendationForIntent(
+  ["dyspnea_hf_v1"],
+  "dyspnea orthopnea PND crackles bilateral leg edema rising creatinine"
+);
+const sharedCongestionManagementFinding = (dyspneaDedupeRecommendation.managementChangingFindings || [])
+  .find((finding) => /congestion or poor perfusion findings can change/i.test(finding.managementChange || ""));
+assert.ok(
+  sharedCongestionManagementFinding,
+  "Dyspnea/HF should retain a management-changing congestion/perfusion implication after dedupe"
+);
+assert.ok(
+  (sharedCongestionManagementFinding.linkedExamIds || []).length >= 3,
+  "Deduped dyspnea/HF congestion/perfusion management row should preserve multiple linked exam IDs for auditability"
+);
 
 const historyQualityCases = [
   {
@@ -858,7 +1051,9 @@ const remediatedFocusedHistoryCases = [
   {
     intentId: "eye_redness_vision_v1",
     modifiers: "red painful eye photophobia contact lens use severe headache",
-    requireHistory: rx("jaw claudication|scalp tenderness|halos|chemical exposure|shingles")
+    requireHistory: rx("jaw claudication|scalp tenderness|halos|chemical exposure|shingles"),
+    requireHistoryLabel: rx("vision-threatening red-eye|ocular emergency"),
+    avoidHistoryLabel: rx("infection-source|rash danger|urinary and flank")
   },
   {
     intentId: "bleeding_anemia_v1",
@@ -878,6 +1073,9 @@ for (const testCase of remediatedFocusedHistoryCases) {
   const historyText = questions
     .map((question) => [question.text, question.options, question.diagnosticPurpose, question.managementImplication].filter(Boolean).join(" "))
     .join(" | ");
+  const historyLabelText = questions
+    .map((question) => [question.label, question.displayLabel].filter(Boolean).join(" "))
+    .join(" | ");
   const coreText = labels(recommendation.corePhysicalExamManeuvers || recommendation.coreItems || []);
   const conditionalText = labels(recommendation.conditionalPhysicalExamManeuvers || recommendation.conditionalItems || []);
   const examText = [coreText, conditionalText].filter(Boolean).join(" | ");
@@ -886,6 +1084,20 @@ for (const testCase of remediatedFocusedHistoryCases) {
     `${testCase.intentId}: validated workup should have at least two focused history questions, not one overloaded prompt`
   );
   assert.match(historyText, testCase.requireHistory, `${testCase.intentId}: supplemental focused history should address the source-specific risk domain`);
+  if (testCase.requireHistoryLabel) {
+    assert.match(
+      historyLabelText,
+      testCase.requireHistoryLabel,
+      `${testCase.intentId}: focused history labels should be clinically specific, not generic`
+    );
+  }
+  if (testCase.avoidHistoryLabel) {
+    assert.doesNotMatch(
+      historyLabelText,
+      testCase.avoidHistoryLabel,
+      `${testCase.intentId}: focused history labels should not leak unrelated clinical domains`
+    );
+  }
   if (testCase.requireCore) {
     assert.match(coreText, testCase.requireCore, `${testCase.intentId}: core exam should include the clinically required maneuver`);
   }
@@ -920,6 +1132,51 @@ for (const testCase of remediatedFocusedHistoryCases) {
   });
 }
 
+const routineThyroidRecommendation = recommendationForIntent(
+  ["routine_thyroid_disease_v1"],
+  "routine thyroid disease evaluation abnormal TSH thyroid nodule hoarseness palpitations cold intolerance pregnancy planning biotin"
+);
+const routineThyroidHistoryText = (routineThyroidRecommendation.focusedHistoryQuestions || [])
+  .map((question) => [question.text, question.options, question.diagnosticPurpose, question.managementImplication].filter(Boolean).join(" "))
+  .join(" | ");
+[
+  /neck swelling|rapid growth|thyroid pain|hoarseness|dysphagia|positional shortness/i,
+  /childhood head|neck radiation|family thyroid cancer|MEN2|suspicious prior biopsy/i,
+  /thyroid hormone|antithyroid|amiodarone|lithium|biotin|iodine|contrast/i,
+  /pregnancy|postpartum|breastfeeding|fertility/i,
+  /heat intolerance|palpitations|tremor|sweating|weight loss|diarrhea/i,
+  /cold intolerance|fatigue|constipation|dry or coarse skin|hoarse voice|slowed thinking/i
+].forEach((pattern) => {
+  assert.match(
+    routineThyroidHistoryText,
+    pattern,
+    `routine thyroid workup should include an atomic history domain matching ${pattern.source}`
+  );
+});
+const routineThyroidHistoryItems = (routineThyroidRecommendation.focusedHistoryQuestions || [])
+  .map((question) => [question.text, question.options, question.diagnosticPurpose, question.managementImplication].filter(Boolean).join(" "));
+[
+  /neck mass growth[\s\S]*pregnancy[\s\S]*amiodarone/i,
+  /radiation exposure[\s\S]*biotin/i,
+  /family thyroid cancer[\s\S]*thyroid medication/i,
+  /heat intolerance sweating cold intolerance dry skin constipation tremor slowed thinking/i
+].forEach((pattern) => {
+  routineThyroidHistoryItems.forEach((itemText) => {
+    assert.doesNotMatch(
+      itemText,
+      pattern,
+      `routine thyroid workup should not use the old bundled history wording ${pattern.source}`
+    );
+  });
+});
+const acceptedThyroidSkinRow = acceptedCatalogAdditionRows.find((row) => row.exam_id === "EXAM-ENDO-THYROID-SKIN-PHENOTYPE");
+assert.ok(acceptedThyroidSkinRow, "accepted catalog should include thyroid skin phenotype row");
+assert.doesNotMatch(
+  acceptedThyroidSkinRow.bedside_question_label || "",
+  /heat intolerance sweating cold intolerance dry skin constipation tremor slowed thinking/i,
+  "accepted thyroid skin phenotype row should not use the old unpunctuated symptom chain"
+);
+
 const feverSourceRecommendation = recommendationForIntent(
   ["fever_sepsis_v1"],
   "fever with no source yet, possible pneumonia or urinary source"
@@ -944,23 +1201,72 @@ assert.equal(
   1,
   "fever/sepsis workup should include one non-duplicative respiratory-source history question"
 );
-const feverBroadSourceQuestionCount = (feverSourceRecommendation.focusedHistoryQuestions || [])
-  .filter((question) => /localize|source/i.test(question.text || ""))
-  .filter((question) => /cough/i.test(question.text || "") && /dysuria|flank/i.test(question.text || "") && /rash|wound|neck stiffness|abdominal/i.test(question.text || ""))
-  .length;
-assert.equal(
-  feverBroadSourceQuestionCount,
-  1,
-  "fever/sepsis workup should include one broad source-localizing history question"
+const feverFocusedHistoryText = (feverSourceRecommendation.focusedHistoryQuestions || [])
+  .map((question) => `${question.label || question.displayLabel || ""} ${question.text || ""} ${question.options || ""}`)
+  .join(" | ");
+assert.doesNotMatch(
+  feverFocusedHistoryText,
+  /what symptoms localize the fever source/i,
+  "fever/sepsis workup should not expose one overloaded source-localizing history question"
 );
+[
+  /Ask respiratory infection-source symptoms[\s\S]*cough[\s\S]*sputum[\s\S]*shortness/i,
+  /Ask throat, ear, sinus, dental, and oral source symptoms[\s\S]*sore throat[\s\S]*dental/i,
+  /Ask urinary and flank infection-source symptoms[\s\S]*dysuria[\s\S]*flank/i,
+  /Ask abdominal and GI infection-source symptoms[\s\S]*abdominal pain[\s\S]*vomiting[\s\S]*diarrhea/i,
+  /Ask skin, wound, and line-site infection-source symptoms[\s\S]*rash[\s\S]*wound[\s\S]*line/i,
+  /Ask CNS, joint, spine, and rapid-worsening danger symptoms[\s\S]*headache[\s\S]*neck stiffness[\s\S]*hot swollen joint/i,
+  /Ask host-risk and exposure history[\s\S]*immunosuppression[\s\S]*travel[\s\S]*sick contacts/i
+].forEach((pattern) => {
+  assert.match(
+    feverFocusedHistoryText,
+    pattern,
+    `fever/sepsis focused history should expose atomic source-domain row ${pattern.source}`
+  );
+});
 const feverHostExposureQuestionCount = (feverSourceRecommendation.focusedHistoryQuestions || [])
-  .filter((question) => /immunosuppression|immunocompromised|pregnancy|hospitalization|procedure|travel|animal|food|water|sick contacts|new medication/i.test(question.text || ""))
+  .filter((question) => /host-risk and exposure history/i.test(question.displayLabel || question.label || ""))
   .length;
 assert.equal(
   feverHostExposureQuestionCount,
   1,
   "fever/sepsis workup should include one non-duplicative host/exposure history question"
 );
+const feverHostExposureQuestion = (feverSourceRecommendation.focusedHistoryQuestions || [])
+  .find((question) => /host-risk and exposure history/i.test(question.displayLabel || question.label || ""));
+assert.equal(
+  feverHostExposureQuestion?.displayLabel,
+  "Ask host-risk and exposure history",
+  "fever/sepsis host-risk and exposure question should not be mislabeled as a skin/wound source question"
+);
+const feverMultiSourceModuleResult = evaluateComplaintCds(
+  "fever abdominal pain vomiting diarrhea jaundice severe headache neck stiffness photophobia seizure purpura rash wound line drainage soft-tissue infection hot swollen joint bone pain severe back pain spine infection",
+  {},
+  { module: complaintModules.find((module) => module.id === "fever_infection_sepsis_v1") }
+);
+const feverHistoryQuestionText = [
+  ...(feverMultiSourceModuleResult.requiredQuestions || []),
+  ...(feverMultiSourceModuleResult.conditionalQuestions || [])
+]
+  .map((question) => `${question.text || ""} ${question.label || ""}`)
+  .join(" | ");
+assert.doesNotMatch(
+  feverHistoryQuestionText,
+  /abdominal,\s*CNS,\s*skin,\s*line,\s*joint,\s*or\s*spine source features/i,
+  "fever/sepsis should not collapse abdominal, CNS, skin/line, and joint/spine source history into one bundled question"
+);
+[
+  /abdominal pain|vomiting|diarrhea|jaundice/i,
+  /headache|neck stiffness|photophobia|seizure|purpura/i,
+  /rash|wound|line|drainage|soft-tissue/i,
+  /hot swollen joint|bone pain|severe back pain|spine/i
+].forEach((pattern) => {
+  assert.match(
+    feverHistoryQuestionText,
+    pattern,
+    `fever/sepsis should preserve separate source-domain history coverage for ${pattern.source}`
+  );
+});
 const feverDomainCoverageIssues = auditRecommendedWorkupDomainCoverage(
   selectedValidatedClinicalIntents(["fever_sepsis_v1"]),
   feverSourceRecommendation
@@ -987,6 +1293,30 @@ assert.doesNotMatch(
   /Tactile fremitus|Percuss posterior lung|Percuss anterior lung/i,
   "fever with possible pneumonia alone should not add lower-yield percussion/fremitus unless focal/asymmetric findings are present"
 );
+const feverConciseReport = formatConciseExamRecommendationReport(feverSourceRecommendation);
+const feverStartHereIndex = feverConciseReport.indexOf("Start here / minimum bedside workup");
+assert.ok(
+  feverStartHereIndex > 0,
+  "concise workup copy should include a start-here section that summarizes the minimum bedside workup"
+);
+assert.ok(
+  feverStartHereIndex < feverConciseReport.indexOf("Basic bedside data / safety checks"),
+  "start-here summary should appear before routine safety metadata in copied workups"
+);
+const feverStartHereExcerpt = feverConciseReport.slice(feverStartHereIndex, feverStartHereIndex + 4200);
+[
+  /ask: Ask respiratory infection-source symptoms/i,
+  /ask: Ask throat, ear, sinus, dental, and oral source symptoms/i,
+  /examine: Observe work of breathing/i,
+  /examine: Auscultate posterior lung fields/i,
+  /examine: Inspect skin for infection source/i
+].forEach((pattern) => {
+  assert.match(
+    feverStartHereExcerpt,
+    pattern,
+    `start-here fever summary should visibly include ${pattern.source}`
+  );
+});
 const thinFeverDomainCoverageIssues = auditRecommendedWorkupDomainCoverage(
   selectedValidatedClinicalIntents(["fever_sepsis_v1"]),
   {
@@ -1021,6 +1351,127 @@ assert.deepEqual(
   dkaDomainCoverageIssues.map((issue) => issue.label),
   [],
   `DKA/HHS recommendation should satisfy crisis-domain checks: ${dkaDomainCoverageIssues.map((issue) => issue.label).join("; ")}`
+);
+const dkaStandaloneRecommendation = recommendationForIntent(
+  ["dka_hhs_v1"],
+  "vomiting poor intake dehydration abdominal pain kussmaul concern"
+);
+assert.equal(
+  dkaStandaloneRecommendation.workupReadiness?.status,
+  "complete_validated",
+  "standalone DKA/HHS evidence recommendation should be complete without relying on a separate guideline-module dump"
+);
+assert.match(
+  labels(dkaStandaloneRecommendation.corePhysicalExamManeuvers || []),
+  /Observe Kussmaul respiratory pattern/i,
+  "DKA/HHS should keep respiratory-pattern assessment as an atomic action-style physical exam maneuver"
+);
+assert.match(
+  labels(dkaStandaloneRecommendation.initialTestsAndReferenceThresholds || []),
+  /DKA\/HHS diagnostic and severity thresholds/i,
+  "DKA/HHS should include diagnostic criteria, ketone/acidosis, potassium, renal, and osmolality thresholds in the evidence recommendation"
+);
+assert.match(
+  labels(dkaStandaloneRecommendation.initialTestsAndReferenceThresholds || []),
+  /DKA\/HHS precipitant and safety testing/i,
+  "DKA/HHS should include precipitant and treatment-safety testing in the evidence recommendation"
+);
+assert.match(
+  labels(dkaStandaloneRecommendation.redFlagsAndEscalationCues || []),
+  /DKA\/HHS high-acuity escalation cues/i,
+  "DKA/HHS should include high-acuity escalation cues in the evidence recommendation"
+);
+assert.deepEqual(
+  (dkaStandaloneRecommendation.catalogGapsNeedingReview || []).map((gap) => gap.label),
+  [],
+  "standalone DKA/HHS evidence recommendation should not stage already-modeled safety, test, or red-flag rows as catalog gaps"
+);
+const dkaInfectionModifierRecommendation = recommendationForIntent(
+  ["hyperglycemia_possible_dka_v1"],
+  "fever cough dysuria wound poor intake"
+);
+const dkaInfectionHistoryLabels = (dkaInfectionModifierRecommendation.focusedHistoryQuestions || [])
+  .map((question) => question.label || question.displayLabel || "")
+  .join(" | ");
+[
+  /UTI symptoms and complicated-infection risk/i,
+  /respiratory infection-source symptoms/i,
+  /throat, ear, sinus, dental, and oral source symptoms/i,
+  /urinary and flank infection-source symptoms/i,
+  /abdominal and GI infection-source symptoms/i,
+  /skin, wound, and line-site infection-source symptoms/i,
+  /CNS, joint, spine, and rapid-worsening danger symptoms/i,
+  /host-risk and exposure history/i,
+  /sepsis severity, hydration, and perfusion symptoms/i,
+  /rash danger features and exposure history/i,
+  /wound infection and limb-threat features/i,
+  /mucosal, ocular, and severe-rash warning features/i
+].forEach((pattern) => {
+  assert.match(
+    dkaInfectionHistoryLabels,
+    pattern,
+    `DKA with infectious modifiers should preserve clinically specific history label ${pattern.source}`
+  );
+});
+assert.doesNotMatch(
+  dkaInfectionHistoryLabels,
+  /pregnancy and ectopic|infection-source symptoms - .*mouth|rash danger features.*new cough|urinary symptoms.*respiratory source/i,
+  "DKA with infectious modifiers should not leak pelvic, respiratory, urinary, or rash labels across unrelated source questions"
+);
+const type2DiabetesInfectionRecommendation = recommendationForIntent(
+  ["type_2_diabetes_mellitus_intent_v1"],
+  "fever cough pneumonia wound line skin redness drainage"
+);
+const type2DiabetesInfectionHistoryLabels = labels(type2DiabetesInfectionRecommendation.focusedHistoryQuestions || []);
+[
+  /respiratory infection-source symptoms/i,
+  /skin, wound, and line-site infection-source symptoms/i,
+  /wound infection and limb-threat features/i,
+  /host-risk and exposure history/i
+].forEach((pattern) => {
+  assert.match(
+    type2DiabetesInfectionHistoryLabels,
+    pattern,
+    `type 2 diabetes with infection modifiers should preserve distinct clinical history label ${pattern.source}`
+  );
+});
+assert.doesNotMatch(
+  type2DiabetesInfectionHistoryLabels,
+  /foot\/wound infection symptoms - (?:infection precipitant|respiratory source|neuropathy symptoms)/i,
+  "type 2 diabetes infection modifiers should not relabel fever, respiratory-source, or neuropathy questions as foot/wound infection history"
+);
+const type2DiabetesExportRun = buildRun(loadCatalog(), {
+  diagnosis: "",
+  intentIds: ["type_2_diabetes_mellitus_intent_v1"],
+  allMatches: false,
+  modifiers: "fever cough pneumonia wound line skin redness drainage",
+  setting: "General medicine",
+  population: "Adult",
+  maxCandidates: 80,
+  maxCoreItems: 24,
+  maxConditionalItems: 36,
+  limit: 0
+});
+const type2DiabetesExportHistoryLabels = (type2DiabetesExportRun.results[0]?.history || [])
+  .map((entry) => entry.label || "")
+  .join(" | ");
+[
+  /infection precipitant or mimic symptoms/i,
+  /respiratory infection symptoms/i,
+  /foot\/wound infection symptoms/i,
+  /diabetic foot wound, neuropathy, and self-care risk/i,
+  /host-risk and exposure history/i
+].forEach((pattern) => {
+  assert.match(
+    type2DiabetesExportHistoryLabels,
+    pattern,
+    `type 2 diabetes installed workup export should preserve distinct clinical history label ${pattern.source}`
+  );
+});
+assert.doesNotMatch(
+  type2DiabetesExportHistoryLabels,
+  /foot\/wound infection symptoms - (?:infection precipitant|respiratory source|neuropathy symptoms)/i,
+  "type 2 diabetes installed workup export should not relabel fever, respiratory-source, or neuropathy questions as foot/wound infection history"
 );
 const peDomainCoverageIssues = auditRecommendedWorkupDomainCoverage(
   selectedValidatedClinicalIntents(["suspected_pe_v1"]),
@@ -1123,6 +1574,127 @@ suppressedAuditSample.slice(0, 6).forEach((entry) => {
   );
 });
 
+const feverConciseExamReport = formatConciseExamRecommendationReport(feverSourceRecommendation);
+const feverConciseClinicalReport = formatConciseClinicalWorkupReport({
+  input: "fever with possible pneumonia or urinary source",
+  guidelineSetting: "Clinician support",
+  examSetting: "General medicine",
+  builtAt: "2026-06-08T00:00:00.000Z",
+  selectedIntents: selectedValidatedClinicalIntents(["fever_sepsis_v1"]),
+  recommendation: feverSourceRecommendation,
+  complaintMatched: true
+});
+[
+  "Unified Clinical Workup",
+  "Validated Bedside Workup",
+  "Basic bedside data / safety checks",
+  "Focused history questions",
+  "Core physical exam maneuvers",
+  "Conditional exam add-ons",
+  "Initial tests and reference thresholds",
+  "Red flags and escalation cues",
+  "Management-changing findings",
+  "Evidence/LR metadata",
+  "Limitations and interpretation cautions",
+  "Suppressed/not-recommended items",
+  "Catalog gaps needing review",
+  "Ask respiratory infection-source symptoms",
+  "Ask skin, wound, and line-site infection-source symptoms",
+  "Auscultate posterior lung fields",
+  "Observe work of breathing",
+  "Technique:",
+  "Use when:",
+  "Management change:",
+  "Evidence/LR:",
+  "LR interpretation:",
+  "Feasibility:",
+  "Limitations:",
+  "Tags:",
+  "Citation:",
+  "Intent trace:",
+  "Reviewer audit: use Copy review audit"
+].forEach((requiredText) => {
+  assert.ok(
+    feverConciseClinicalReport.includes(requiredText),
+    `Concise fever workup copy should include clinically useful section/detail: ${requiredText}`
+  );
+});
+assert.ok(
+  feverConciseExamReport.includes("Raw retrieval candidates, score/debug detail, and supporting module dumps are available only in Copy review audit"),
+  "Concise exam recommendation report should explicitly separate user-facing recommendations from reviewer-only retrieval/debug detail"
+);
+assert.doesNotMatch(
+  feverConciseClinicalReport,
+  /<validated_clinical_intents>|<retrieved_evidence_candidates>|<student_exam_reference>|Guideline Complaint CDS|Top Retrieved Evidence Candidates|retrievedCandidates|state\.examTesterCandidates/i,
+  "Concise fever workup copy should not include prompt XML blocks, full guideline-module dumps, or raw retrieval/debug state"
+);
+assert.ok(
+  feverConciseClinicalReport.length > 4000 && feverConciseClinicalReport.length < 90000,
+  `Concise fever workup copy should be detailed but not a raw audit dump; saw ${feverConciseClinicalReport.length} chars`
+);
+
+const unsupportedConciseClinicalReport = formatConciseClinicalWorkupReport({
+  input: "unsupported concern without validated intent",
+  selectedIntents: [],
+  recommendation: feverSourceRecommendation
+});
+assert.match(
+  unsupportedConciseClinicalReport,
+  /Unsupported Clinical Workup Gap[\s\S]*Recommendations: none/i,
+  "Concise copied workup should block recommendations when no validated intent is selected"
+);
+assert.doesNotMatch(
+  unsupportedConciseClinicalReport,
+  /Auscultate posterior lung fields|Focused history questions|Core physical exam maneuvers/i,
+  "Unsupported copied workup should not leak previously built recommendations"
+);
+
+const bloatedMergedRecommendation = {
+  ...feverSourceRecommendation,
+  managementChangingFindings: Array.from({ length: 30 }, (_, index) => ({
+    label: `Source-control management row ${index + 1}`,
+    action: "Use the finding to decide cultures, imaging, antimicrobial timing, source control, monitoring level, or disposition.",
+    managementChange: "Changes immediate fever/sepsis management.",
+    source: "SSC_SEPSIS_2026",
+    evidence: { tier: "Guideline" },
+    tags: ["infection", "sepsis"]
+  })),
+  limitationsAndInterpretationCautions: Array.from({ length: 45 }, (_, index) => ({
+    label: `Interpretation caution row ${index + 1}`,
+    limitation: "Interpret bedside findings with immune status, baseline function, medications, device accuracy, and trajectory.",
+    source: "AHRQ_CALIBRATE_DX",
+    evidence: { tier: "Diagnostic safety" },
+    tags: ["diagnostic_safety"]
+  }))
+};
+const bloatedConciseClinicalReport = formatConciseClinicalWorkupReport({
+  input: "fever",
+  guidelineSetting: "Clinician support",
+  examSetting: "General medicine",
+  selectedIntents: selectedValidatedClinicalIntents(["fever_sepsis_v1"]),
+  recommendation: bloatedMergedRecommendation,
+  complaintMatched: true
+});
+assert.match(
+  bloatedConciseClinicalReport,
+  /Management-changing findings[\s\S]*30 rows available; showing the 12 highest-priority rows/i,
+  "Concise copied workup should summarize oversized management-finding sections"
+);
+assert.match(
+  bloatedConciseClinicalReport,
+  /Limitations and interpretation cautions[\s\S]*45 rows available; showing the 10 highest-priority rows/i,
+  "Concise copied workup should summarize oversized limitation sections"
+);
+assert.ok(
+  bloatedConciseClinicalReport.length < 90000,
+  `Concise copied workup should stay bounded even after guideline-module merge; saw ${bloatedConciseClinicalReport.length} chars`
+);
+assert.doesNotMatch(
+  bloatedConciseClinicalReport,
+  /Interpretation caution row 45|Source-control management row 30/i,
+  "Concise copied workup should keep overflow guideline rows in the review audit rather than normal copy"
+);
+
 const peRecommendation = recommendationForIntent(
   ["suspected_pe_v1"],
   "suspected PE with pleuritic chest pain dyspnea hypoxia and unilateral leg swelling"
@@ -1149,6 +1721,43 @@ assert.ok(
 assert.ok(
   uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("Detail prompts"),
   "UI should expose concrete detail prompts inside focused history question cards"
+);
+assert.ok(
+  uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("renderHistoryOptionResponseControls")
+    && uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("Recorded responses"),
+  "UI should let broad focused-history questions capture per-option endorsed/denied response marks"
+);
+assert.ok(
+  uiSource.includes("data-history-option-response")
+    && uiSource.includes("clinicalHistoryOptionResponses")
+    && uiSource.includes("Recorded responses:"),
+  "Focused history response marks should be stateful and included in copied workup text"
+);
+assert.ok(
+  uiSource.includes("function usesSymptomResponseAnswers")
+    && uiSource.includes("Answer every component: left (-) denied, right (+) endorsed.")
+    && uiSource.includes("(-) Denied")
+    && uiSource.includes("(+) Endorsed")
+    && uiSource.includes("finding-symptom-response-button")
+    && uiSource.includes("setSymptomResponse(item, component, \"endorsed\")"),
+  "Checklist bedside symptom-list questions should render explicit per-symptom -/+ endorsed/denied controls"
+);
+assert.ok(
+  uiSource.includes("phone-concept-symptom-response-button")
+    && uiSource.includes("function phoneConceptSetSymptomResponse")
+    && uiSource.includes("Use left (-) Deny and right (+) Endorse")
+    && uiSource.includes('data-phone-action="response-option"'),
+  "Mobile bedside symptom-list questions should use the same endorsed/denied control model"
+);
+assert.ok(
+  uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("question.displayLabel || question.text")
+    && uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("Full source question"),
+  "UI should use concise history display labels while preserving full source questions for audit"
+);
+assert.ok(
+  uiSource.includes("function uniquifyClinicalHistoryDisplayLabels")
+    && uiSource.includes("recommendation.focusedHistoryQuestions = uniquifyClinicalHistoryDisplayLabels(recommendation.focusedHistoryQuestions)"),
+  "Unified workup UI should make focused-history display labels unique after merging evidence and installed-module history"
 );
 const evidenceSummaryStart = uiSource.indexOf("function renderUnifiedEvidenceSummary");
 const evidenceSummaryEnd = uiSource.indexOf("function renderComplaintCdsResult");
@@ -1177,6 +1786,12 @@ assert.ok(
 assert.ok(
   evidenceSummarySource.indexOf('"Core physical exam maneuvers"') < evidenceSummarySource.indexOf("Basic bedside data / safety checks"),
   "UI should not let basic bedside data bury the core physical exam maneuvers"
+);
+assert.ok(
+  evidenceSummarySource.includes('"Start here / minimum bedside workup"')
+    && evidenceSummarySource.includes("workupStartHereHighlights(recommendation)")
+    && evidenceSummarySource.indexOf('"Start here / minimum bedside workup"') < evidenceSummarySource.indexOf('"Focused history questions"'),
+  "UI should surface a start-here minimum bedside workup before detailed history/exam sections"
 );
 assert.ok(
   evidenceSummarySource.includes("Basic bedside data / safety checks ("),
@@ -1324,6 +1939,16 @@ assert.ok(
 assert.ok(
   !historySemanticKeySource.includes("abdominal_pain_cramping|abdominal pain|acute abdomen"),
   "Unified history dedupe should not classify endocrine/adrenal crisis questions as abdominal-pain workups merely because they mention abdominal pain"
+);
+assert.ok(
+  historySemanticKeySource.indexOf("history:sepsis-shock-perfusion")
+    < historySemanticKeySource.indexOf("history:infection-cns-meningeal-source"),
+  "Unified history dedupe should classify sepsis severity/perfusion prompts before CNS-source prompts so confusion/oliguria do not hide severity history"
+);
+assert.ok(
+  historySemanticKeySource.indexOf("history:infection-host-exposure")
+    < historySemanticKeySource.indexOf("history:infection-skin-wound-source"),
+  "Unified history dedupe should classify host/exposure prompts before skin/line-source prompts so line/device history does not hide source inspection history"
 );
 assert.ok(
   uiSource.includes("function emptyValidatedModuleWorkupFallback")
@@ -1539,10 +2164,23 @@ const guardedUnifiedReportEnd = uiSource.indexOf("function sanitizeClinicalAudit
 assert.ok(guardedUnifiedReportStart > 0 && guardedUnifiedReportEnd > guardedUnifiedReportStart, "UI source should include unified workup report formatter");
 const guardedUnifiedReportSource = uiSource.slice(guardedUnifiedReportStart, guardedUnifiedReportEnd);
 assert.ok(
-  guardedUnifiedReportSource.includes("Unsupported Clinical Workup Gap")
-    && guardedUnifiedReportSource.includes("Status: blocked - no validated clinical intent selected.")
-    && guardedUnifiedReportSource.includes("Free text and retrieval/audit matches do not authorize bedside workup recommendations."),
+  workupReportSource.includes("Unsupported Clinical Workup Gap")
+    && workupReportSource.includes("Status: blocked - no validated clinical intent selected.")
+    && workupReportSource.includes("Free text and retrieval/audit matches do not authorize bedside workup recommendations."),
   "Unified report formatter should be safe even if invoked without a validated clinical intent"
+);
+assert.ok(
+  workupReportSource.includes("Reviewer audit: use Copy review audit for raw retrieval candidates"),
+  "Unified copied workup should explicitly separate concise validated recommendations from reviewer-only raw retrieval/audit detail"
+);
+assert.ok(
+  guardedUnifiedReportSource.includes("formatConciseClinicalWorkupReport({"),
+  "Unified copied workup should use the shared concise validated bedside workup formatter"
+);
+assert.ok(
+  !guardedUnifiedReportSource.includes("validatedIntentPromptBlock")
+    && !guardedUnifiedReportSource.includes("formatComplaintCdsReport(state.complaintCdsResult).trim()"),
+  "Unified copied workup should not include OpenEvidence prompt blocks or full guideline module dumps"
 );
 
 const auditSanitizerStart = uiSource.indexOf("function sanitizeClinicalAuditReport");
@@ -1623,6 +2261,26 @@ const formatReportSource = uiSource.slice(formatReportStart, formatReportEnd);
     `Copied workup report should include LR interpretation notes: ${requiredText}`
   );
 });
+const promotedExamFormatterStart = formatReportSource.indexOf("const appendRecommendationEntry");
+const promotedExamFormatterEnd = formatReportSource.indexOf("if (historyQuestions.length)", promotedExamFormatterStart);
+assert.ok(
+  promotedExamFormatterStart > 0 && promotedExamFormatterEnd > promotedExamFormatterStart,
+  "Copied workup report should include the promoted exam row formatter"
+);
+const promotedExamFormatterSource = formatReportSource.slice(promotedExamFormatterStart, promotedExamFormatterEnd);
+[
+  "Technique:",
+  "Use when:",
+  "Limitations:",
+  "Tags:",
+  "Citation:",
+  "entry.options || entry.findings_options"
+].forEach((requiredText) => {
+  assert.ok(
+    promotedExamFormatterSource.includes(requiredText),
+    `Promoted core/conditional exam rows should preserve ${requiredText}`
+  );
+});
 assert.ok(
   formatReportSource.indexOf('"Focused history questions"') < formatReportSource.indexOf('"Basic bedside data / safety checks"'),
   "Copied workup report should put focused history before basic bedside data"
@@ -1632,13 +2290,44 @@ assert.ok(
   "Copied workup report should put core exam maneuvers before basic bedside data"
 );
 
+const conciseReportSource = workupReportSource;
+[
+  "Basic bedside data / safety checks",
+  "Focused history questions",
+  "Core physical exam maneuvers",
+  "Conditional exam add-ons",
+  "Management-changing findings",
+  "Evidence/LR metadata",
+  "Limitations and interpretation cautions",
+  "Suppressed/not-recommended items",
+  "Catalog gaps needing review",
+  "Raw retrieval candidates, score/debug detail, and supporting module dumps are available only in Copy review audit"
+].forEach((requiredText) => {
+  assert.ok(
+    conciseReportSource.includes(requiredText),
+    `Shared concise copied workup formatter should preserve required section or separation text: ${requiredText}`
+  );
+});
+assert.ok(
+  conciseReportSource.includes("appendEvidenceLine")
+    && conciseReportSource.includes("candidateFeasibility")
+    && conciseReportSource.includes("intentTraceLabelForEntry"),
+  "Shared concise copied workup should preserve evidence/LR, feasibility, and validated-intent traceability"
+);
+assert.doesNotMatch(
+  conciseReportSource,
+  /state\.examTesterCandidates|Top Retrieved Evidence Candidates|retrievedCandidates/i,
+  "Concise copied workup should not expose raw retrieved candidates"
+);
+
 const unifiedReportStart = uiSource.indexOf("function formatUnifiedClinicalWorkupReport");
 const unifiedReportEnd = uiSource.indexOf("function sanitizeClinicalAuditText");
 assert.ok(unifiedReportStart > 0 && unifiedReportEnd > unifiedReportStart, "UI source should include unified copied workup formatter");
 const unifiedReportSource = uiSource.slice(unifiedReportStart, unifiedReportEnd);
 assert.ok(
-  unifiedReportSource.indexOf("formatExamTesterReport().trim()") < unifiedReportSource.indexOf("formatComplaintCdsReport(state.complaintCdsResult).trim()"),
-  "Copied unified workup should put the curated validated bedside workup before supporting guideline-module detail"
+  unifiedReportSource.includes("formatConciseClinicalWorkupReport({")
+    && !unifiedReportSource.includes("formatComplaintCdsReport(state.complaintCdsResult).trim()"),
+  "Copied unified workup should copy concise validated recommendations while keeping full guideline-module detail in the review audit"
 );
 
 console.log(`Clinical workup quality tests passed for ${qualityCases.length} tiered recommendation cases, ${historyQualityCases.length} history-source cases, and ${remediatedFocusedHistoryCases.length} remediated focused-history cases.`);

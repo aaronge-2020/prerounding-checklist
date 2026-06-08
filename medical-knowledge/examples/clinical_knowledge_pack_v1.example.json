@@ -97,7 +97,7 @@
     {
       "item_id": "example_dysuria_pregnancy_safety",
       "item_type": "safety_check",
-      "label": "Pregnancy possibility safety check",
+      "label": "Verify pregnancy possibility",
       "intent_ids": [
         "example_dysuria_validated_v1"
       ],
@@ -287,8 +287,12 @@
       "intent_id": "example_dysuria_validated_v1",
       "presentation": "Burning pee with fever and flank pain",
       "must_include_tags": "dysuria; flank_pain; fever",
+      "expected_history_labels": "Ask about flank pain and fever",
       "expected_core_labels": "CVA tenderness",
-      "expected_safety_labels": "Blood pressure; Heart rate",
+      "expected_safety_labels": "Verify pregnancy possibility",
+      "expected_test_labels": "Urinalysis with urine culture when complicated infection features are present; Renal function threshold for antibiotic dosing and imaging safety",
+      "expected_red_flag_labels": "Urosepsis or obstructed infected stone escalation cues",
+      "expected_management_change_labels": "Escalate dysuria workup when systemic or high-risk features are present",
       "avoid_labels": "PMI; Vibration sense"
     }
   ],

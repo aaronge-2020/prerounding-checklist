@@ -47,7 +47,6 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "cushing",
-          "disease",
           "pituitary",
           "dependent"
         ]
@@ -146,14 +145,13 @@
         "tags": [
           "pituitary_gland_disorders",
           "cushings_disease",
-          "severe",
           "hypercortisolism",
-          "with",
           "infection",
           "hypokalemia",
           "psychosis",
           "uncontrolled",
-          "hypertension"
+          "hypertension",
+          "diabetes"
         ],
         "when": {
           "termsAny": [
@@ -192,10 +190,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -235,11 +233,11 @@
           "pituitary",
           "apoplexy",
           "acute",
-          "severe",
           "headache",
           "visual",
           "field",
-          "deficit"
+          "deficit",
+          "cranial"
         ],
         "when": {
           "termsAny": [
@@ -340,7 +338,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_CUSHING_DX_2008",
@@ -374,9 +372,8 @@
         "tags": [
           "pituitary_gland_disorders",
           "cushings_disease",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -480,8 +477,7 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "headache",
-          "vision",
-          "symptoms"
+          "vision"
         ],
         "source_seed": "Cushing phenotype plus headache/vision symptoms."
       },
@@ -525,8 +521,7 @@
         "tags": [
           "pituitary_gland_disorders",
           "cushings_disease",
-          "cyclic",
-          "symptoms"
+          "cyclic"
         ],
         "source_seed": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
       },
@@ -617,8 +612,7 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "menstrual",
-          "hypogonadal",
-          "symptoms"
+          "hypogonadal"
         ],
         "source_seed": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
       },
@@ -752,8 +746,7 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "growth",
-          "acral",
-          "changes"
+          "acral"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -798,8 +791,7 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "adrenal",
-          "thyroid",
-          "symptoms"
+          "thyroid"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
@@ -846,10 +838,8 @@
           "access",
           "water",
           "desmopressin",
-          "when",
           "diabetes",
-          "insipidus",
-          "possible"
+          "insipidus"
         ],
         "source_seed": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       }
@@ -1037,7 +1027,7 @@
       },
       {
         "id": "conditional_exam_02",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CUSHING_DX_2008",
@@ -1068,11 +1058,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Cushing's Disease (Pituitary-dependent Cushing's), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Cushing's Disease (Pituitary-dependent Cushing's), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "pituitary_gland_disorders",
           "cushings_disease",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ],
@@ -1168,10 +1158,10 @@
           "confirm",
           "endogenous",
           "cushing",
-          "with",
           "late",
           "night",
-          "salivary"
+          "salivary",
+          "cortisol"
         ]
       },
       {
@@ -1202,8 +1192,7 @@
           "normal",
           "high",
           "supports",
-          "dependent",
-          "disease"
+          "dependent"
         ]
       },
       {
@@ -1261,7 +1250,6 @@
           "petrosal",
           "sinus",
           "sampling",
-          "when",
           "equivocal",
           "discordant"
         ]
@@ -1291,13 +1279,13 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1325,13 +1313,13 @@
           "pituitary_gland_disorders",
           "cushings_disease",
           "cushing",
-          "safety",
           "tests",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "dexamethasone"
+          "dexamethasone",
+          "suppression"
         ]
       },
       {
@@ -1398,8 +1386,8 @@
           "evidence",
           "mass",
           "effect",
-          "symptoms",
-          "dynamic"
+          "dynamic",
+          "testing"
         ]
       },
       {
@@ -1466,8 +1454,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1502,8 +1490,7 @@
           "cushing",
           "plus",
           "pituitary",
-          "localization",
-          "changes"
+          "localization"
         ]
       },
       {
@@ -1532,12 +1519,12 @@
           "cushings_disease",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1566,12 +1553,12 @@
           "cushings_disease",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1638,8 +1625,8 @@
           "deficiency",
           "plus",
           "finding",
-          "changes",
-          "endocrine"
+          "neurosurgical",
+          "fertility"
         ]
       }
     ],

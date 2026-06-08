@@ -181,10 +181,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -225,10 +225,10 @@
           "fracture",
           "cord",
           "neurologic",
-          "symptoms",
-          "with",
           "back",
-          "pain"
+          "pain",
+          "hypercalcemia",
+          "dehydration"
         ],
         "when": {
           "termsAny": [
@@ -325,7 +325,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ENDO_OSTEOPOROSIS_2020",
@@ -359,9 +359,8 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "osteopenia",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -471,6 +470,50 @@
       },
       {
         "id": "question_03",
+        "label": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ENDO_OSTEOPOROSIS_2020",
+          "source_section": "Osteopenia curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Osteopenia.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Osteopenia needs urgent evaluation today.",
+        "when_to_ask": "Ask when Osteopenia is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Osteopenia needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Osteopenia.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "osteopenia",
+          "stones"
+        ],
+        "source_seed": "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes."
+      },
+      {
+        "id": "question_04",
         "label": "Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?",
         "item_type": "history_question",
         "source": {
@@ -514,7 +557,7 @@
         "source_seed": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       },
       {
-        "id": "question_04",
+        "id": "question_05",
         "label": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
         "item_type": "history_question",
         "source": {
@@ -553,7 +596,6 @@
         "tags": [
           "bone_and_parathyroid_disorders",
           "osteopenia",
-          "symptoms",
           "hypo",
           "hypercalcemia"
         ],
@@ -564,7 +606,7 @@
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Assess proximal hip flexor strength",
+        "label": "Test proximal hip flexor strength",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDO_OSTEOPOROSIS_2020",
@@ -594,11 +636,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess proximal hip flexor strength is supportive for Osteopenia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Test proximal hip flexor strength is supportive for Osteopenia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "osteopenia",
-          "assess",
+          "test",
           "proximal",
           "flexor",
           "strength"
@@ -648,7 +690,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess gait stability if safe",
+        "label": "Observe gait stability if safe",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDO_OSTEOPOROSIS_2020",
@@ -678,11 +720,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess gait stability if safe is supportive for Osteopenia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe gait stability if safe is supportive for Osteopenia, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "bone_and_parathyroid_disorders",
           "osteopenia",
-          "assess",
+          "observe",
           "gait",
           "stability",
           "safe"
@@ -1025,7 +1067,6 @@
           "secondary",
           "cause",
           "labs",
-          "when",
           "indicated"
         ]
       },
@@ -1054,13 +1095,13 @@
           "bone_and_parathyroid_disorders",
           "osteopenia",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1088,13 +1129,13 @@
           "bone_and_parathyroid_disorders",
           "osteopenia",
           "thyroid",
-          "safety",
-          "data",
           "pair",
           "free",
-          "with",
-          "syndrome",
-          "specific"
+          "specific",
+          "such",
+          "antibodies",
+          "ultrasound",
+          "radionuclide"
         ]
       },
       {
@@ -1126,9 +1167,9 @@
           "fracture",
           "risk",
           "tool",
-          "when",
           "bone",
-          "density"
+          "density",
+          "scope"
         ]
       },
       {
@@ -1160,9 +1201,9 @@
           "calcium",
           "renal",
           "imaging",
-          "when",
           "primary",
-          "hyperparathyroidism"
+          "hyperparathyroidism",
+          "kidney"
         ]
       },
       {
@@ -1286,9 +1327,9 @@
           "many",
           "labs",
           "flag",
-          "severe",
           "deficiency",
-          "while"
+          "while",
+          "2024"
         ]
       },
       {
@@ -1321,8 +1362,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1385,12 +1426,12 @@
           "osteopenia",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1419,12 +1460,12 @@
           "osteopenia",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1490,7 +1531,7 @@
           "involvement",
           "stones",
           "osteoporosis",
-          "severe"
+          "surgical"
         ]
       }
     ],

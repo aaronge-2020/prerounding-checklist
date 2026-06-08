@@ -138,6 +138,43 @@ function withEvaluation(item, contextText, answers, extra = {}) {
   };
 }
 
+function patientFactContextForConditionalItems(contextText = "", options = {}) {
+  const raw = String(contextText || "");
+  const explicitModifiers = [
+    options.patientModifiers,
+    options.modifiers,
+    options.modifierText
+  ].filter(Boolean);
+  const patientModifierLines = Array.from(raw.matchAll(/^patient modifiers:\s*(.+)$/gim))
+    .map((match) => match[1])
+    .filter(Boolean);
+
+  if (!/validated clinical intent workup/i.test(raw) && !patientModifierLines.length && !explicitModifiers.length) {
+    return raw;
+  }
+
+  const nonMetadataLines = raw
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => {
+      if (/^(?:intent|intent_id|intent tags|clinical bundles|required domains|avoid labels)\s*:/i.test(line)) {
+        return false;
+      }
+      if (/^validated clinical intent workup$/i.test(line)) {
+        return false;
+      }
+      return /^patient modifiers:/i.test(line);
+    })
+    .map((line) => line.replace(/^patient modifiers:\s*/i, ""));
+
+  return [
+    ...explicitModifiers,
+    ...patientModifierLines,
+    ...nonMetadataLines
+  ].join(" ").trim();
+}
+
 function expectedItemTypeForGroup(group = "") {
   if (group === "safetyChecks") return "safety_check";
   if (group === "requiredQuestions" || group === "conditionalQuestions") return "history_question";
@@ -221,7 +258,7 @@ function complaintTraceContext(inputText = "", module = {}, options = {}) {
   };
 }
 
-const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
+const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
 
 export function isBasicBedsideDataItem(item = {}) {
   const text = `${item.id || ""} ${item.label || ""} ${item.action || ""}`;
@@ -315,6 +352,16 @@ function splitHistoryPromptList(value = "") {
     .slice(0, 8);
 }
 
+function medicationHistoryPromptFragment(fragment = "") {
+  const normalized = normalizeComplaintText(fragment);
+  if (normalized === "biotin") return "high-dose biotin or supplement use";
+  if (normalized === "missed doses") return "missed or delayed doses";
+  if (normalized === "supplements") return "over-the-counter supplements";
+  if (normalized === "hormone therapy") return "hormone therapy or androgen/estrogen exposure";
+  if (normalized === "recent treatment changes") return "recent dose or treatment changes";
+  return fragment;
+}
+
 function uniqueHistoryPromptDetails(prompts = []) {
   const seen = new Set();
   return prompts
@@ -329,6 +376,49 @@ function uniqueHistoryPromptDetails(prompts = []) {
       return true;
     })
     .slice(0, 8);
+}
+
+function infectionSourceDetailPrompts(normalized = "") {
+  if (!/\b(?:fever|infection|sepsis|source|pneumonia|respiratory|urinary|flank|wound|line)\b/.test(normalized)) {
+    return null;
+  }
+  if (/what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
+    return [
+      "Ask about respiratory source: cough, sputum, dyspnea, pleuritic pain, wheeze, hypoxia, aspiration risk, and sick respiratory contacts.",
+      "Ask about HEENT or dental source: sore throat, ear or sinus pain, oral lesions, dental pain, muffled voice, drooling, or trouble swallowing.",
+      "Ask about urinary or flank source: dysuria, frequency, urgency, hematuria, flank pain, catheter/procedure context, pregnancy possibility, and reduced urine output.",
+      "Ask about abdominal or GI source: abdominal pain, vomiting, diarrhea, jaundice, blood in stool, poor intake, or severe localized pain.",
+      "Ask about skin, wound, or line source: rash, cellulitis, abscess, ulcer, drainage, indwelling line/device, surgical site, or procedure-site tenderness.",
+      "Ask about CNS danger source: severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, or purpura.",
+      "Ask about joint, bone, or spine source: hot swollen joint, focal bone pain, severe back pain, injection drug use, or inability to bear weight.",
+      "Ask about host and exposure risks: immunosuppression, pregnancy, recent hospitalization/procedure, travel, outdoor bites, animals, food/water, sick contacts, sexual exposure, injection drug use, and new medications."
+    ];
+  }
+  if (/cough|sputum|shortness of breath|dyspnea|pleuritic|wheeze|hypoxia|aspiration|respiratory contacts|pneumonia/.test(normalized)) {
+    return [
+      "Ask about new cough, sputum color/amount, dyspnea, pleuritic pain, wheeze, aspiration risk, sick respiratory contacts, and oxygen requirement.",
+      "Ask whether symptoms are focal, worsening, associated with rigors, or severe enough to change chest imaging, testing, isolation, antibiotics, or disposition."
+    ];
+  }
+  if (/immunosuppression|immunocompromised|pregnancy|hospitalization|procedure|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication/.test(normalized)) {
+    return [
+      "Ask about immunosuppression, transplant/chemotherapy, high-dose steroids/biologics, asplenia, frailty, pregnancy, and recent healthcare exposure.",
+      "Ask about travel, outdoor or vector exposure, animal exposure, food/water exposure, sick contacts, sexual exposure risk, injection drug use, and new medications."
+    ];
+  }
+  if (/dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(normalized)) {
+    return [
+      "Ask about dysuria, frequency, urgency, hematuria, suprapubic pain, flank pain, catheter/procedure context, prior resistant organisms, pregnancy possibility, vomiting, and reduced urine output.",
+      "Ask whether urinary/flank symptoms are paired with rigors, hypotension, confusion, obstruction concern, renal dysfunction, or inability to tolerate oral intake."
+    ];
+  }
+  if (/rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure site|skin infection/.test(normalized)) {
+    return [
+      "Ask about rash, cellulitis, abscess, ulcer, drainage, pain out of proportion, rapidly spreading redness, indwelling line/device, surgical site, and procedure-site tenderness.",
+      "Ask whether skin or line findings require culture, source control, antibiotic route/breadth, or urgent escalation."
+    ];
+  }
+  return null;
 }
 
 function historyQuestionNeedsDetailPrompts(text = "") {
@@ -353,10 +443,14 @@ function historyQuestionDetailPrompts(item = {}) {
   const normalized = normalizeComplaintText(withoutQuestionMark);
   if (/^how high was the fever/.test(normalized)) {
     return [
-      "Record maximum temperature and how it was measured.",
+      "Document maximum temperature and how it was measured.",
       "Clarify fever onset and trajectory.",
       "Ask what antipyretics, antibiotics, steroids, or immunosuppressants were already taken."
     ];
+  }
+  const infectionSourcePrompts = infectionSourceDetailPrompts(normalized);
+  if (infectionSourcePrompts) {
+    return uniqueHistoryPromptDetails(infectionSourcePrompts);
   }
   if (/^how has weight changed/.test(normalized)) {
     return [
@@ -379,7 +473,7 @@ function historyQuestionDetailPrompts(item = {}) {
         .replace(/\s+could\s+alter[\s\S]*$/i, "")
         .replace(/\s+affecting[\s\S]*$/i, "")
     );
-    return uniqueHistoryPromptDetails(list.map((fragment) => `Review ${fragment}.`));
+    return uniqueHistoryPromptDetails(list.map((fragment) => `Review ${medicationHistoryPromptFragment(fragment)}.`));
   }
   if (/pregnancy|fertility/.test(normalized) && /partner|planned|postpartum|treatment|imaging|safety/.test(normalized)) {
     return uniqueHistoryPromptDetails([
@@ -404,13 +498,33 @@ function titleCaseFirst(value = "") {
   return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
 }
 
+function escapeRegExp(value = "") {
+  return String(value || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeOriginalLabelReferences(value = "", originalLabel = "", displayLabel = "") {
+  const text = String(value || "");
+  if (!text || !originalLabel || !displayLabel || originalLabel === displayLabel) {
+    return text;
+  }
+  return text.replace(new RegExp(escapeRegExp(originalLabel), "gi"), displayLabel);
+}
+
+function normalizedBedsideTags(item = {}, fallbackTags = []) {
+  const rawTags = item.tags?.length ? item.tags : fallbackTags;
+  return rawTags
+    .map((tag) => String(tag || "").trim())
+    .filter(Boolean)
+    .filter((tag) => !/^(?:check|assess|evaluate|screen|review|document|perform)$/i.test(tag));
+}
+
 function clinicalExamActionLabel(item = {}, group = "") {
   const label = String(item.label || "").trim();
   if (group !== "requiredExam" && group !== "conditionalExam") {
     return label;
   }
-  const actionLabelPattern = /^(?:inspect|palpate|auscultate|percuss|observe|test|check|compare|measure|listen|use|press|stage|estimate|elicit)\b/i;
-  const match = label.match(/^(?:assess|evaluate|screen for)\s+(.+)$/i);
+  const actionLabelPattern = /^(?:inspect|palpate|auscultate|percuss|observe|test|compare|measure|listen|use|press|stage|estimate|elicit)\b/i;
+  const match = label.match(/^(?:assess|evaluate|screen for|check)\s+(.+)$/i);
   if (!match && actionLabelPattern.test(label)) {
     return label;
   }
@@ -443,10 +557,13 @@ function clinicalExamActionLabel(item = {}, group = "") {
     return "Inspect and palpate extremity perfusion";
   }
   if (/\bextremity temperature\b/.test(normalizedSubject)) {
-    return "Check distal extremity warmth";
+    return "Palpate distal extremity warmth";
   }
   if (/\bskin turgor\b/.test(normalizedSubject)) {
-    return "Check skin turgor";
+    return "Test skin turgor";
+  }
+  if (/\bcapillary refill\b/.test(normalizedSubject)) {
+    return "Test capillary refill";
   }
   if (/\babdominal guarding\b/.test(normalizedSubject)) {
     return "Palpate for abdominal guarding";
@@ -476,7 +593,7 @@ function clinicalExamActionLabel(item = {}, group = "") {
     return "Test proximal hip flexor strength";
   }
   if (/\bneck stiffness\b/.test(normalizedSubject)) {
-    return "Check neck stiffness";
+    return "Test neck stiffness";
   }
   if (/\bmouth exam\b|\boral mucosa\b/.test(normalizedSubject)) {
     return "Inspect oral mucosa";
@@ -515,7 +632,7 @@ function clinicalExamActionLabel(item = {}, group = "") {
 }
 
 function genericFindingsOptions(value) {
-  const list = Array.isArray(value) ? value : String(value || "").split(/[;|/]+/);
+  const list = Array.isArray(value) ? value : String(value || "").split(/\s*(?:[;|]|\s+\/\s+)\s*/);
   const tokens = list
     .map((entry) => normalizeComplaintText(entry))
     .filter(Boolean);
@@ -748,8 +865,8 @@ function normalizeEvaluatedBedsideItem(item, group = "") {
     original_label: label !== originalLabel ? originalLabel : item.original_label,
     technique: item.technique || "Perform the named bedside item directly and document positive, negative, and unable-to-assess findings.",
     findings_options: findingsOptions || item.findings_options || item.findingsOptions || ["Normal/absent", "Abnormal/present", "Unable to assess"],
-    diagnostic_target: item.diagnostic_target || item.diagnosticTarget || item.label || "",
-    management_change: item.management_change || item.managementImplication || item.action || "",
+    diagnostic_target: normalizeOriginalLabelReferences(item.diagnostic_target || item.diagnosticTarget || item.label || "", originalLabel, label),
+    management_change: normalizeOriginalLabelReferences(item.management_change || item.managementImplication || item.action || "", originalLabel, label),
     LR_plus,
     LR_minus,
     likelihood_ratio_note: likelihoodRatioNoteForItem(item, group, LR_plus, LR_minus),
@@ -760,10 +877,10 @@ function normalizeEvaluatedBedsideItem(item, group = "") {
       : (item.equipment_needed || equipmentForBedsideItem(item)),
     patient_cooperation_required: item.patient_cooperation_required || "low",
     when_to_perform: item.when_to_perform || item.when_to_use || item.when_to_use_structured || "When this validated workup is selected and the bedside assessment is clinically safe to perform.",
-    limitations: item.limitations
+    limitations: normalizeOriginalLabelReferences(item.limitations
       || item.interpretation_cautions
-      || "Interpret with the full clinical context; bedside findings support but do not replace indicated diagnostic testing, guideline thresholds, or local protocols.",
-    tags: item.tags?.length ? item.tags : fallbackTags
+      || "Interpret with the full clinical context; bedside findings support but do not replace indicated diagnostic testing, guideline thresholds, or local protocols.", originalLabel, label),
+    tags: normalizedBedsideTags(item, fallbackTags)
   };
 }
 
@@ -777,11 +894,147 @@ function tagsForQuestionItem(item = {}) {
     .slice(0, 10);
 }
 
+function questionOptionLabels(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => {
+        if (entry && typeof entry === "object") {
+          return entry.label || entry.value || entry.text || "";
+        }
+        return entry;
+      })
+      .map((entry) => String(entry || "").replace(/\s+/g, " ").trim())
+      .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+      .filter(Boolean);
+  }
+  return String(value || "")
+    .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
+    .map((entry) => entry.replace(/\s+/g, " ").trim())
+    .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+    .filter(Boolean);
+}
+
+function genericQuestionOptions(value) {
+  const labels = questionOptionLabels(value).map((entry) => entry.toLowerCase());
+  if (!labels.length) {
+    return true;
+  }
+  return labels.length <= 4
+    && labels.every((entry) => /^(?:unknown|yes|no|other|other ___|not sure|unable)$/.test(entry))
+    && labels.some((entry) => entry === "yes")
+    && labels.some((entry) => entry === "no");
+}
+
+function titleCaseOptionFragment(fragment = "") {
+  const cleaned = String(fragment || "")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!cleaned) {
+    return "";
+  }
+  const acronym = cleaned.match(/^(?:cad|mi|cabg|ckd|cgm|sglt2|cgms?|dka|hhs|uti|cva|bp|hr|rr|ecg|ekg)$/i);
+  if (acronym) {
+    return cleaned.toUpperCase();
+  }
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function splitQuestionOptionFragments(text = "") {
+  return String(text || "")
+    .replace(/\?+$/g, "")
+    .replace(/^Any\s+/i, "")
+    .replace(/^Known\s+/i, "")
+    .replace(/^Recent\s+/i, "")
+    .replace(/^What has already been given:\s*/i, "")
+    .replace(/^What symptoms localize[^:]*:\s*/i, "")
+    .replace(/\band\s+what\s+/gi, ", ")
+    .replace(/\band\s+has\s+/gi, ", ")
+    .replace(/\band\s+is\s+/gi, ", ")
+    .split(/\s*,\s*|\s+\/\s+|\s+\bor\b\s+|\s+\band\b\s+/i)
+    .map((fragment) => fragment
+      .replace(/^(?:or|and)\s+/i, "")
+      .replace(/\b(if|when)\s+known\b/gi, "")
+      .replace(/\bif\s+.+$/i, "")
+      .replace(/\b(?:have you taken|use|known)\b$/i, "")
+      .replace(/\s+/g, " ")
+      .trim())
+    .filter((fragment) => fragment.length >= 3)
+    .filter((fragment) => !/^(?:and|or|if|when|any|known|recent|other)$/i.test(fragment));
+}
+
+function inferredQuestionOptions(item = {}, text = "", existingOptions = "") {
+  if (!genericQuestionOptions(existingOptions)) {
+    return questionOptionLabels(existingOptions);
+  }
+  const normalized = normalizeComplaintText([
+    text,
+    item.label,
+    item.id,
+    Array.isArray(item.tags) ? item.tags.join(" ") : item.tags,
+    item.source?.source_section
+  ].filter(Boolean).join(" "));
+  const patternOptions = [
+    {
+      pattern: /\bchest\b.*\b(?:start|onset|ongoing|duration)\b|\b(?:start|onset|ongoing|duration)\b.*\bchest\b/,
+      values: ["Onset time documented", "Ongoing now", "Resolved", "Recurrent/intermittent", "Unknown"]
+    },
+    {
+      pattern: /\b(?:chest|discomfort)\b.*\b(?:feel|quality|radiate|radiation|arm|jaw|back|shoulder)\b|\b(?:radiate|radiation)\b.*\b(?:arm|jaw|back|shoulder)\b/,
+      values: ["Pressure/heaviness", "Sharp or pleuritic", "Burning/reflux-like", "Reproducible with palpation/movement", "Radiates to arm/jaw/back/shoulder", "Other ___"]
+    },
+    {
+      pattern: /\b(?:exertional|relieved by rest|prior angina)\b/,
+      values: ["Exertional", "Relieved by rest", "Similar to prior angina", "Non-exertional", "Not sure"]
+    },
+    {
+      pattern: /\b(?:diabetes type|insulin regimen|pump|cgm|last insulin)\b/,
+      values: ["Diabetes type known", "Insulin regimen known", "Pump/CGM use", "Last insulin dose known", "Unknown", "Other ___"]
+    },
+    {
+      pattern: /\b(?:what has already been given|fluids|insulin route|potassium\/phosphate|dextrose|antibiotics|monitoring level)\b/,
+      values: ["None yet", "Fluids given", "Insulin started", "Potassium/phosphate addressed", "Dextrose or bicarbonate used", "Antibiotics given", "Monitoring level documented", "Other ___"]
+    },
+    {
+      pattern: /\b(?:glucose|beta hydroxybutyrate|ketones|anion gap|bicarbonate|ph|potassium|creatinine|osmolality)\b/,
+      values: ["Known/reviewed", "Hyperglycemia", "Ketones elevated", "Acidosis or anion gap", "Potassium abnormal", "Renal/osmolality concern", "Not available"]
+    },
+    {
+      pattern: /\b(?:which medications|medications supplements|supplements missed doses|missed doses|biotin|iodine contrast|hormone therapy|recent treatment changes|assay interference)\b/,
+      values: ["No relevant exposure", "Medication change", "Supplement use", "Missed doses", "Biotin", "Iodine/contrast exposure", "Hormone therapy", "Recent treatment change", "Other ___"]
+    },
+    {
+      pattern: /\b(?:pregnan|postpartum|fertility|gestational)\b/,
+      values: ["Not possible", "Possible", "Known pregnant/postpartum", "Timing/dating known", "Unknown", "Other ___"]
+    }
+  ];
+  const matched = patternOptions.find((entry) => entry.pattern.test(normalized));
+  if (matched) {
+    return matched.values;
+  }
+  const fragments = splitQuestionOptionFragments(text)
+    .map(titleCaseOptionFragment)
+    .filter(Boolean);
+  const uniqueFragments = [];
+  fragments.forEach((fragment) => {
+    const key = fragment.toLowerCase();
+    if (!uniqueFragments.some((existing) => existing.toLowerCase() === key)) {
+      uniqueFragments.push(fragment);
+    }
+  });
+  if (uniqueFragments.length >= 2) {
+    const prefix = /^any\b/i.test(String(text || "").trim()) ? ["No"] : [];
+    return [...prefix, ...uniqueFragments.slice(0, 8), "Other ___"];
+  }
+  return ["No", "Present/yes", "Absent/no", "Unknown", "Other ___"];
+}
+
 function normalizeEvaluatedQuestionItem(item, group = "") {
   if (group !== "requiredQuestions" && group !== "conditionalQuestions") {
     return item;
   }
   const text = item.text || item.label || "";
+  const existingOptions = item.options || item.answer_options || item.answerOptions || item.bedsideQuestionOptions || item.bedside_question_options || "";
   const diagnosticPurpose = item.diagnostic_purpose
     || item.diagnosticPurpose
     || item.rationale
@@ -794,6 +1047,7 @@ function normalizeEvaluatedQuestionItem(item, group = "") {
   return {
     ...item,
     text,
+    options: inferredQuestionOptions(item, text, existingOptions),
     detail_prompts: detailPrompts,
     when_to_ask: item.when_to_ask || item.whenToAsk || "Ask when this validated workup is selected or when the answer changes clinical interpretation.",
     diagnostic_purpose: diagnosticPurpose,
@@ -801,6 +1055,166 @@ function normalizeEvaluatedQuestionItem(item, group = "") {
     likelihood_ratio_note: likelihoodRatioNoteForQuestionItem(item),
     tags: tagsForQuestionItem(item)
   };
+}
+
+const feverSourceHistoryAtomDefinitions = [
+  {
+    suffix: "heent_oral",
+    label: "Ask throat, ear, sinus, dental, and oral source symptoms",
+    text: "Any sore throat, ear pain, sinus pain, dental or oral pain, neck swelling, hoarseness, trouble swallowing, or drooling with the fever?",
+    options: "No / Sore throat / Ear pain / Sinus pain / Dental or oral pain / Neck swelling / Hoarseness / Trouble swallowing / Drooling / Other ___",
+    diagnostic_purpose: "Screens for HEENT, dental, oral, or deep-neck infection sources.",
+    management_implication: "Positive answers focus HEENT/oral exam, airway-risk assessment, source-directed testing, antimicrobial framing, imaging threshold, and ENT/dental escalation.",
+    tags: ["fever", "heent_source", "dental_source", "oral_source", "source_localizing_history"]
+  },
+  {
+    suffix: "urinary_flank",
+    label: "Ask urinary and flank infection-source symptoms",
+    text: "Any dysuria, urinary frequency or urgency, hematuria, suprapubic pain, flank pain, catheter or urologic procedure, pregnancy possibility, prior resistant urine culture, nausea, vomiting, or reduced urine output?",
+    options: "No / Dysuria / Frequency or urgency / Hematuria / Suprapubic pain / Flank pain / Catheter or procedure / Pregnancy possible / Resistant organism history / Nausea or vomiting / Reduced urine output / Other ___",
+    diagnostic_purpose: "Screens for cystitis, pyelonephritis, obstructing urinary infection, catheter/procedure-associated infection, and renal/perfusion risk.",
+    management_implication: "Positive answers change CVA/flank exam, urinalysis/culture, renal function review, imaging threshold, antimicrobial choice, pregnancy safety, and escalation threshold.",
+    tags: ["fever", "urinary_source", "flank_pain", "pyelonephritis", "source_localizing_history"]
+  },
+  {
+    suffix: "abdominal_gi",
+    label: "Ask abdominal and GI infection-source symptoms",
+    text: "Any abdominal pain, vomiting, diarrhea, jaundice, focal tenderness, recent intra-abdominal procedure, or concern for an abdominal infection source?",
+    options: "No / Abdominal pain / Vomiting / Diarrhea / Jaundice / Focal tenderness / Recent abdominal procedure / Other ___",
+    diagnostic_purpose: "Screens for intra-abdominal, biliary, GI, procedure-related, or peritoneal infection sources.",
+    management_implication: "Positive answers focus abdominal exam, liver/biliary labs, stool or culture decisions, abdominal imaging threshold, antimicrobial framing, and surgical/GI escalation.",
+    tags: ["fever", "abdominal_source", "gi_source", "biliary_source", "source_localizing_history"]
+  },
+  {
+    suffix: "skin_wound_line",
+    label: "Ask skin, wound, and line-site infection-source symptoms",
+    text: "Any rash, wound, ulcer, drainage, line pain or redness, rapidly spreading skin pain, bite, recent procedure site, or soft-tissue infection concern?",
+    options: "No / Rash / Wound or ulcer / Drainage / Line pain or redness / Rapidly spreading skin pain / Bite / Procedure site / Other ___",
+    diagnostic_purpose: "Screens for cellulitis, abscess, wound infection, line/device infection, bite-related infection, and soft-tissue source-control needs.",
+    management_implication: "Positive answers focus skin/wound/line inspection, culture/source-control decisions, antibiotic route and breadth, isolation, and surgical or line-management escalation.",
+    tags: ["fever", "skin_source", "wound_source", "line_source", "soft_tissue_infection", "source_localizing_history"]
+  },
+  {
+    suffix: "cns_joint_spine",
+    label: "Ask CNS, joint, spine, and rapid-worsening danger symptoms",
+    text: "Any severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, purpura, hot swollen joint, severe focal bone or back pain, new weakness, bowel or bladder symptoms, fainting, low urine output, or rapid worsening?",
+    options: "No / Severe headache / Neck stiffness / Photophobia / Confusion / Seizure / Petechiae or purpura / Hot swollen joint / Focal bone or back pain / New weakness / Bowel or bladder symptoms / Fainting / Low urine output / Rapid worsening / Other ___",
+    diagnostic_purpose: "Screens for meningitis/encephalitis, septic arthritis, spine infection, osteomyelitis, bacteremia complications, sepsis severity, and dangerous trajectory.",
+    management_implication: "Positive answers change neurologic/joint/spine exam, sepsis reassessment, lumbar puncture or imaging threshold, cultures, antimicrobial urgency, and ED/inpatient escalation.",
+    tags: ["fever", "cns_infection", "meningitis", "joint_source", "spine_infection", "sepsis", "source_localizing_history"]
+  }
+];
+
+function isBroadFeverSourceHistoryQuestion(item = {}) {
+  const text = normalizeComplaintText([
+    item.id,
+    item.label,
+    item.text,
+    item.diagnostic_purpose,
+    item.management_implication,
+    ...(item.tags || [])
+  ].filter(Boolean).join(" "));
+  const sourceDomainCount = [
+    /\b(?:cough|sputum|dyspnea|pleuritic|respiratory|pneumonia)\b/.test(text),
+    /\b(?:sore throat|ear|sinus|dental|oral|heent)\b/.test(text),
+    /\b(?:dysuria|urinary|flank|hematuria|uti|pyelonephritis)\b/.test(text),
+    /\b(?:abdominal|vomiting|diarrhea|gi|jaundice)\b/.test(text),
+    /\b(?:rash|wound|line|skin|cellulitis)\b/.test(text),
+    /\b(?:headache|neck stiffness|confusion|hot joint|back pain|low urine|fainting|rapid worsening)\b/.test(text)
+  ].filter(Boolean).length;
+  return /\bfever_source_localizing_symptoms\b/.test(text)
+    || (/\b(?:what symptoms localize|localize the fever source|source localizing symptoms|source_localizing_history)\b/.test(text) && sourceDomainCount >= 4);
+}
+
+function atomizedHistoryTraceability(parent = {}, childId = "") {
+  const parentTrace = parent.traceability || {};
+  return {
+    ...parentTrace,
+    item_id: childId,
+    parent_item_id: parentTrace.item_id || parent.id || "",
+    parent_item_group: parentTrace.item_group || "",
+    atomized_from_history_question: true
+  };
+}
+
+function atomizedFeverSourceHistoryQuestion(parent = {}, definition = {}, group = "requiredQuestions") {
+  const childId = `${parent.id || parent.traceability?.item_id || "source_history"}__${definition.suffix}`;
+  const child = normalizeEvaluatedQuestionItem({
+    ...parent,
+    id: childId,
+    label: definition.label,
+    text: definition.text,
+    options: definition.options,
+    answer_options: definition.options,
+    detail_prompts: [],
+    diagnostic_purpose: definition.diagnostic_purpose,
+    diagnostic_target: definition.diagnostic_purpose,
+    management_implication: definition.management_implication,
+    management_change: definition.management_implication,
+    likelihood_ratio_note: parent.likelihood_ratio_note || "Question-level LR+/LR- is not available for this source-localizing history item; interpret it with vitals, exam, laboratory testing, imaging, and clinical trajectory.",
+    tags: definition.tags,
+    atomized_from_history_question: true,
+    parent_question_id: parent.id || parent.traceability?.item_id || ""
+  }, group);
+  return {
+    ...child,
+    source: parent.source,
+    traceability: atomizedHistoryTraceability(parent, childId)
+  };
+}
+
+function infectionHistoryDomainKey(question = {}) {
+  const text = normalizeComplaintText([
+    question.id,
+    question.label,
+    question.text,
+    question.diagnostic_purpose,
+    ...(question.tags || [])
+  ].filter(Boolean).join(" "));
+  const explicitSourceHistory = /\b(?:source localizing history|infection modifier|urinary source|respiratory source|skin source|wound source|line source|abdominal source|gi source|heent source|dental source|cns infection|meningeal source|joint source|spine infection)\b/.test(text);
+  if (!explicitSourceHistory) {
+    return "";
+  }
+  if (/\b(?:fever severity intake perfusion question|severity history)\b/.test(text)) {
+    return "";
+  }
+  if (!/\b(?:fever|infection|source|pneumonia|pyelonephritis|meningitis|sepsis|wound|line|abdominal|urinary|heent)\b/.test(text)) {
+    return "";
+  }
+  if (/\b(?:respiratory source|pneumonia|cough|sputum|dyspnea|pleuritic)\b/.test(text)) return "infection_source:respiratory";
+  if (/\b(?:heent source|dental source|oral source|sore throat|sinus|dental|oral|ear pain)\b/.test(text)) return "infection_source:heent_oral";
+  if (/\b(?:urinary source|flank|pyelonephritis|dysuria|urinary frequency|urinary urgency|hematuria|urosepsis)\b/.test(text)) return "infection_source:urinary_flank";
+  if (/\b(?:abdominal source|gi source|biliary source|abdominal pain|vomiting|diarrhea|jaundice)\b/.test(text)) return "infection_source:abdominal_gi";
+  if (/\b(?:skin source|wound source|line source|soft tissue|rash|wound|line pain|drainage|cellulitis|abscess)\b/.test(text)) return "infection_source:skin_wound_line";
+  if (/\b(?:cns infection|meningitis|meningeal|joint source|spine infection|hot joint|neck stiffness|photophobia|seizure|purpura|severe back pain)\b/.test(text)) return "infection_source:cns_joint_spine";
+  return "";
+}
+
+function atomizeBroadHistoryQuestions(questions = [], group = "requiredQuestions") {
+  return (questions || []).flatMap((question) => {
+    if (isBroadFeverSourceHistoryQuestion(question)) {
+      return feverSourceHistoryAtomDefinitions.map((definition) => atomizedFeverSourceHistoryQuestion(question, definition, group));
+    }
+    return [question];
+  });
+}
+
+function dedupeHistoryQuestionsByDomain(requiredQuestions = [], conditionalQuestions = []) {
+  const seenDomains = new Set();
+  const dedupe = (question) => {
+    const key = infectionHistoryDomainKey(question);
+    if (!key) {
+      return true;
+    }
+    if (seenDomains.has(key)) {
+      return false;
+    }
+    seenDomains.add(key);
+    return true;
+  };
+  const required = (requiredQuestions || []).filter(dedupe);
+  const conditional = (conditionalQuestions || []).filter(dedupe);
+  return { requiredQuestions: required, conditionalQuestions: conditional };
 }
 
 function includeItems(items = [], contextText, answers, group = "", traceContext = {}) {
@@ -1146,6 +1560,212 @@ function moduleExamScopeCautions(module = {}, requiredExam = [], conditionalExam
   ];
 }
 
+const infectionModifierTriggerPattern = /\b(?:fever|febrile|chills|rigors|infection|infectious|sepsis|pneumonia|leukocytosis|hypothermia|toxic appearance|cough|sputum|dyspnea|shortness of breath|pleuritic|hypoxemia|dysuria|urinary|flank|pyelonephritis|rash|wound|line|device|cellulitis|abscess|sore throat|neck stiffness|photophobia)\b/i;
+const negatedStandaloneInfectionModifierPattern = /^\s*(?:no|none|denies|denied|without)\s+(?:fever|febrile symptoms|chills|rigors|infection|infectious symptoms|cough|urinary symptoms|dysuria|rash|wound|line concern)\s*$/i;
+
+const infectionModifierHistoryFloorDefinitions = [
+  {
+    id_suffix: "infection_modifier_respiratory_source",
+    label: "Ask respiratory infection-source symptoms",
+    text: "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, wheeze, aspiration risk, or sick respiratory contacts suggesting pneumonia or respiratory infection?",
+    answer_options: "No / Cough / Sputum / Pleuritic pain / Dyspnea / Hypoxemia / Wheeze / Aspiration risk / Sick contacts / Other ___",
+    options: "No / Cough / Sputum / Pleuritic pain / Dyspnea / Hypoxemia / Wheeze / Aspiration risk / Sick contacts / Other ___",
+    when_to_ask: "Ask when fever, infection, pneumonia, respiratory symptoms, or sepsis concern is entered as a modifier to another validated workup.",
+    diagnostic_purpose: "Screens for pneumonia, viral respiratory infection, aspiration, obstructive lung disease with infection, or respiratory failure as a source or precipitant.",
+    management_implication: "Positive respiratory-source symptoms change lung exam priority, chest imaging/testing, isolation, antimicrobial framing, respiratory support, and disposition.",
+    tags: ["infection", "fever", "pneumonia", "respiratory_source", "source_localizing_history"],
+    source: {
+      source_id: "ATS_CAP_2025",
+      source_section: "adult community-acquired pneumonia diagnostic and severity evaluation",
+      evidence_strength: "guideline/consensus",
+      version_date: "2025",
+      last_reviewed: "2026-06-08",
+      clinical_owner: "clinical_content_lead",
+      implementation_notes: "Modifier-triggered source question; does not replace selecting the fever/sepsis intent when infection is the primary problem."
+    },
+    diagnostic_target: "Respiratory infectious source or precipitant: pneumonia, respiratory viral infection, aspiration, or hypoxemic respiratory failure.",
+    management_change: "Positive respiratory-source symptoms should activate lung auscultation, oxygenation review, chest imaging/testing, isolation, antimicrobial framing, and escalation decisions.",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Question-level LR+/LR- is not available for this broad source-localizing prompt; use it to route exam and testing rather than diagnose pneumonia by history alone."
+  },
+  {
+    id_suffix: "infection_modifier_urinary_flank_source",
+    label: "Ask UTI symptoms and complicated-infection risk",
+    text: "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, flank pain, catheter/procedure context, vomiting, pregnancy possibility, or reduced urine output suggesting UTI, pyelonephritis, or urosepsis?",
+    answer_options: "No / Dysuria / Frequency-urgency / Suprapubic pain / Hematuria / Flank pain / Catheter-procedure / Vomiting / Pregnancy possible / Low urine output / Other ___",
+    options: "No / Dysuria / Frequency-urgency / Suprapubic pain / Hematuria / Flank pain / Catheter-procedure / Vomiting / Pregnancy possible / Low urine output / Other ___",
+    when_to_ask: "Ask when fever, infection, urinary symptoms, flank symptoms, AKI, or sepsis concern is entered as a modifier to another validated workup.",
+    diagnostic_purpose: "Distinguishes lower UTI, pyelonephritis, infected obstruction, catheter-associated infection, renal-source sepsis, and dehydration or renal dysfunction clues.",
+    management_implication: "Positive urinary/flank symptoms change CVA/suprapubic exam priority, urinalysis/culture, renal function review, imaging threshold, antimicrobial choice, renal dosing, and escalation.",
+    tags: ["infection", "fever", "urinary_source", "flank_pain", "pyelonephritis", "source_localizing_history"],
+    source: {
+      source_id: "MERCK_FEVER_ADULTS",
+      source_section: "fever history and localizing urinary/flank symptoms",
+      evidence_strength: "clinical_reference",
+      version_date: "current",
+      last_reviewed: "2026-06-08",
+      clinical_owner: "clinical_content_lead",
+      implementation_notes: "Modifier-triggered source question; tie exam/testing to symptoms and selected primary workup."
+    },
+    diagnostic_target: "Urinary or renal infectious source: cystitis, pyelonephritis, infected obstruction, catheter-associated infection, or urosepsis.",
+    management_change: "Positive urinary/flank symptoms should activate CVA/suprapubic exam, urinalysis/culture, renal-function review, renal imaging when obstruction is possible, and escalation decisions.",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Question-level LR+/LR- is not available for this broad source-localizing prompt; interpret with urinalysis, culture, fever trajectory, renal function, and exam findings."
+  },
+  {
+    id_suffix: "infection_modifier_skin_line_source",
+    label: "Ask wound and line infection symptoms",
+    text: "Any rash, cellulitis, abscess, ulcer, drainage, painful skin, rapidly spreading redness, indwelling line/device, surgical site, procedure-site tenderness, bite, petechiae, or purpura suggesting a skin, line, or soft-tissue infection source?",
+    answer_options: "No / Rash / Cellulitis / Abscess / Wound-ulcer / Drainage / Painful skin / Rapid spread / Line-device / Procedure site / Bite / Petechiae-purpura / Other ___",
+    options: "No / Rash / Cellulitis / Abscess / Wound-ulcer / Drainage / Painful skin / Rapid spread / Line-device / Procedure site / Bite / Petechiae-purpura / Other ___",
+    when_to_ask: "Ask when fever, infection, wound, line/device, rash, soft-tissue symptoms, or sepsis concern is entered as a modifier to another validated workup.",
+    diagnostic_purpose: "Screens visible source-control targets, soft-tissue infection, device-associated infection, necrotizing infection clues, and high-risk rash patterns.",
+    management_implication: "Positive skin/line symptoms change inspection priority, culture targets, source control, wound care, antimicrobial coverage, isolation, and urgent escalation.",
+    tags: ["infection", "fever", "skin_source", "wound", "line", "source_localizing_history"],
+    source: {
+      source_id: "MERCK_FEVER_ADULTS",
+      source_section: "evaluation of fever and source-directed history and physical examination",
+      evidence_strength: "clinical_reference",
+      version_date: "current",
+      last_reviewed: "2026-06-08",
+      clinical_owner: "clinical_content_lead",
+      implementation_notes: "Modifier-triggered source question; source control and escalation depend on local exam findings."
+    },
+    diagnostic_target: "Skin, wound, line/device, rash, or soft-tissue infectious source.",
+    management_change: "Positive skin/wound/line symptoms should activate focused skin/line inspection, wound or line culture when appropriate, source control, antimicrobial coverage, and escalation decisions.",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Question-level LR+/LR- is not available for this broad source-localizing prompt; interpret with inspection, severity, host risk, and trajectory."
+  },
+  {
+    id_suffix: "infection_modifier_host_exposure",
+    label: "Ask host-risk and exposure history",
+    text: "Any immunosuppression, pregnancy possibility, transplant/chemotherapy, high-dose steroids or biologics, asplenia, frailty, recent hospitalization/procedure, indwelling device, travel or outdoor bites, animal/food/water exposure, sick contacts, sexual exposure risk, injection drug use, or new medication?",
+    answer_options: "No / Immunocompromised / Pregnancy possible / Transplant-chemo / Steroids-biologics / Asplenia-frailty / Recent healthcare exposure / Device-line / Travel-bites / Animal-food-water / Sick contacts / Sexual exposure / Injection drug use / New medication / Other ___",
+    options: "No / Immunocompromised / Pregnancy possible / Transplant-chemo / Steroids-biologics / Asplenia-frailty / Recent healthcare exposure / Device-line / Travel-bites / Animal-food-water / Sick contacts / Sexual exposure / Injection drug use / New medication / Other ___",
+    when_to_ask: "Ask when fever, infection, sepsis concern, unexplained systemic symptoms, or high-risk host context is entered as a modifier to another validated workup.",
+    diagnostic_purpose: "Identifies host-risk, healthcare-associated, travel/vector, zoonotic, food/water, STI, injection-related, drug-fever, and exposure contexts.",
+    management_implication: "Positive host/exposure features lower escalation and testing thresholds, change isolation and empiric coverage, and can trigger specialty consultation or public-health considerations.",
+    tags: ["infection", "fever", "host_risk", "exposure_history", "source_localizing_history"],
+    source: {
+      source_id: "MERCK_FEVER_ADULTS",
+      source_section: "host risk, exposures, hospitalization, procedures, and immunocompromise",
+      evidence_strength: "clinical_reference",
+      version_date: "current",
+      last_reviewed: "2026-06-08",
+      clinical_owner: "clinical_content_lead",
+      implementation_notes: "Modifier-triggered host-risk question; use with the selected primary validated workup."
+    },
+    diagnostic_target: "High-risk host or exposure clue that changes the meaning of fever or infection symptoms.",
+    management_change: "Positive host/exposure features can change cultures, imaging, empiric therapy breadth, isolation, ID consultation, ED/inpatient threshold, and safety-netting.",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Likelihood ratios are not applicable to broad host/exposure screening; use it for risk stratification and source routing."
+  },
+  {
+    id_suffix: "infection_modifier_sepsis_severity",
+    label: "Ask sepsis severity, hydration, and perfusion symptoms",
+    text: "Any poor intake, inability to keep fluids down, dehydration, dizziness, fainting, confusion, unusual sleepiness, low urine output, severe weakness, increasing oxygen need, cold or mottled extremities, or rapid worsening with the fever or infection concern?",
+    answer_options: "No / Poor intake / Cannot keep fluids down / Dehydration / Dizziness-fainting / Confusion-sleepiness / Low urine output / Severe weakness / More oxygen / Cold-mottled extremities / Rapid worsening / Other ___",
+    options: "No / Poor intake / Cannot keep fluids down / Dehydration / Dizziness-fainting / Confusion-sleepiness / Low urine output / Severe weakness / More oxygen / Cold-mottled extremities / Rapid worsening / Other ___",
+    when_to_ask: "Ask when fever, infection, sepsis concern, poor intake, hypovolemia, or systemic illness is entered as a modifier to another validated workup.",
+    diagnostic_purpose: "Screens for sepsis physiology, dehydration, hypoperfusion, encephalopathy, respiratory deterioration, and inability to maintain safe oral intake.",
+    management_implication: "Positive severity symptoms change urgency, vital-sign reassessment, cultures/lactate/organ-dysfunction labs, fluids, antimicrobials, ED/inpatient escalation, and safety-netting.",
+    tags: ["infection", "sepsis", "perfusion", "hypovolemia", "severity_history"],
+    source: {
+      source_id: "SSC_SEPSIS_2026",
+      source_section: "sepsis severity, hypoperfusion, altered mentation, and escalation assessment",
+      evidence_strength: "guideline/consensus",
+      version_date: "2026",
+      last_reviewed: "2026-06-08",
+      clinical_owner: "clinical_content_lead",
+      implementation_notes: "Modifier-triggered severity question; do not delay urgent sepsis treatment when unstable."
+    },
+    diagnostic_target: "Sepsis severity, hypoperfusion, dehydration, encephalopathy, or respiratory deterioration.",
+    management_change: "Positive severity symptoms should trigger urgent reassessment, sepsis labs/cultures when appropriate, fluids or respiratory support evaluation, antimicrobial timing, and escalation decisions.",
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Question-level LR+/LR- is not available for this severity screen; use it as an acuity trigger interpreted with vitals, exam, labs, and trajectory."
+  }
+];
+
+function infectionModifierHistoryFloorActive(contextText = "", module = {}) {
+  if (module?.id === "fever_infection_sepsis_v1") {
+    return false;
+  }
+  const normalized = normalizeComplaintText(contextText);
+  if (!normalized || negatedStandaloneInfectionModifierPattern.test(normalized)) {
+    return false;
+  }
+  return infectionModifierTriggerPattern.test(normalized);
+}
+
+function sourceQuestionAlreadyRepresented(questions = [], definition = {}) {
+  const definitionTags = new Set((definition.tags || []).map(normalizeComplaintText));
+  const definitionText = normalizeComplaintText([
+    definition.label,
+    definition.text,
+    definition.diagnostic_target
+  ].filter(Boolean).join(" "));
+  return questions.some((question) => {
+    const labelText = normalizeComplaintText([question.id, question.label, question.text].filter(Boolean).join(" "));
+    if (/\b(?:trigger|precipitant|mimic|source-localizing|source localizing|most likely|what source|which source)\b/.test(labelText)) {
+      return false;
+    }
+    const questionTags = new Set((question.tags || []).map(normalizeComplaintText));
+    if (Array.from(definitionTags).some((tag) => tag && questionTags.has(tag) && tag !== "infection" && tag !== "fever")) {
+      return true;
+    }
+    const text = normalizeComplaintText([
+      labelText,
+      question.diagnostic_purpose,
+      question.diagnostic_target,
+      question.management_implication,
+    ].filter(Boolean).join(" "));
+    if (!text) {
+      return false;
+    }
+    const questionInfectionContext = /\b(?:infection|infectious|fever|sepsis|pneumonia|source|pyelonephritis|urosepsis|cellulitis|abscess|wound|line)\b/.test(text);
+    if (!questionInfectionContext) {
+      return false;
+    }
+    if (/respiratory_source|pneumonia|cough|sputum|dyspnea/.test(definitionText)) {
+      return /\b(?:respiratory|pneumonia|cough|sputum|dyspnea|pleuritic)\b/.test(text);
+    }
+    if (/urinary_source|flank|pyelonephritis/.test(definitionText)) {
+      return /\b(?:urinary frequency|urinary urgency|dysuria|frequency|urgency|flank|pyelonephritis|hematuria|catheter|suprapubic|cva|urosepsis)\b/.test(text);
+    }
+    if (/skin_source|wound|line/.test(definitionText)) {
+      return /\b(?:skin|wound|line|cellulitis|abscess|drainage)\b/.test(text);
+    }
+    if (/host_risk|exposure_history/.test(definitionText)) {
+      return /\b(?:immunosuppression|immunocompromised|pregnancy|hospitalization|procedure|travel|animal|food|water|sick contact|new medication|injection drug)\b/.test(text);
+    }
+    if (/severity_history|sepsis/.test(definitionText)) {
+      return /\b(?:poor intake|dehydration|fainting|confusion|low urine|hypotension|perfusion|rapid worsening|oxygen)\b/.test(text);
+    }
+    return false;
+  });
+}
+
+function infectionModifierHistoryFloorQuestions(module = {}, existingQuestions = [], conditionalContext = "", traceContext = {}) {
+  if (!infectionModifierHistoryFloorActive(conditionalContext, module)) {
+    return [];
+  }
+  return infectionModifierHistoryFloorDefinitions
+    .filter((definition) => !sourceQuestionAlreadyRepresented(existingQuestions, definition))
+    .map((definition) => {
+      const normalizedQuestion = normalizeEvaluatedQuestionItem({
+        ...definition,
+        id: `${module.id || "module"}_${definition.id_suffix}`,
+        item_type: "history_question"
+      }, "conditionalQuestions");
+      return traceComplaintCdsItem(normalizedQuestion, module, "conditionalQuestions", traceContext.intentTrace, traceContext.authorizedBy);
+    });
+}
+
 export function evaluateComplaintCds(inputText = "", answers = {}, options = {}) {
   const module = options.module || selectComplaintModule(inputText, options.modules || complaintModules);
   const sources = options.sources || complaintSourceRegistry;
@@ -1178,24 +1798,36 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
   }
 
   const traceContext = complaintTraceContext(inputText, module, options);
-  const includedRequiredQuestions = includeItems(module.requiredQuestions, inputText, answers, "requiredQuestions", traceContext);
-  const includedConditionalQuestions = includeItems(module.conditionalQuestions, inputText, answers, "conditionalQuestions", traceContext);
+  const conditionalContext = patientFactContextForConditionalItems(inputText, options);
+  const includedRequiredQuestions = includeItems(module.requiredQuestions, conditionalContext, answers, "requiredQuestions", traceContext);
+  const includedConditionalQuestions = includeItems(module.conditionalQuestions, conditionalContext, answers, "conditionalQuestions", traceContext);
   const promotedQuestions = promoteIntentActivatedConditionalQuestions(includedRequiredQuestions, includedConditionalQuestions, traceContext);
-  const requiredQuestions = promotedQuestions.requiredQuestions;
-  const conditionalQuestions = promotedQuestions.conditionalQuestions;
-  const explicitSafetyChecks = includeItems(module.safetyChecks, inputText, answers, "safetyChecks", traceContext);
+  const atomizedRequiredQuestionCandidates = atomizeBroadHistoryQuestions(promotedQuestions.requiredQuestions, "requiredQuestions");
+  const atomizedConditionalQuestionCandidates = atomizeBroadHistoryQuestions([
+    ...promotedQuestions.conditionalQuestions,
+    ...infectionModifierHistoryFloorQuestions(
+      module,
+      [...atomizedRequiredQuestionCandidates, ...promotedQuestions.conditionalQuestions],
+      conditionalContext,
+      traceContext
+    )
+  ], "conditionalQuestions");
+  const dedupedQuestions = dedupeHistoryQuestionsByDomain(atomizedRequiredQuestionCandidates, atomizedConditionalQuestionCandidates);
+  const requiredQuestions = dedupedQuestions.requiredQuestions;
+  const conditionalQuestions = dedupedQuestions.conditionalQuestions;
+  const explicitSafetyChecks = includeItems(module.safetyChecks, conditionalContext, answers, "safetyChecks", traceContext);
   const explicitSafetyGroups = partitionExplicitSafetyChecks(explicitSafetyChecks);
-  const includedRequiredExam = includeItems(module.requiredExam, inputText, answers, "requiredExam", traceContext);
-  const includedConditionalExam = includeItems(module.conditionalExam, inputText, answers, "conditionalExam", traceContext);
+  const includedRequiredExam = includeItems(module.requiredExam, conditionalContext, answers, "requiredExam", traceContext);
+  const includedConditionalExam = includeItems(module.conditionalExam, conditionalContext, answers, "conditionalExam", traceContext);
   const requiredExamGroups = partitionBedsideExamItems(includedRequiredExam);
   const conditionalExamGroups = partitionBedsideExamItems(includedConditionalExam);
   const requiredSafetyChecks = [...explicitSafetyGroups.requiredSafetyChecks, ...requiredExamGroups.safetyChecks];
   const conditionalSafetyChecks = [...explicitSafetyGroups.conditionalSafetyChecks, ...conditionalExamGroups.safetyChecks];
   const requiredExam = requiredExamGroups.examManeuvers;
   const conditionalExam = conditionalExamGroups.examManeuvers;
-  const initialTests = includeItems(module.initialTests, inputText, answers, "initialTests", traceContext);
-  const dispositionRules = includeItems(module.dispositionRules, inputText, answers, "dispositionRules", traceContext);
-  const redFlags = evaluateRedFlags(module.redFlags, inputText, answers)
+  const initialTests = includeItems(module.initialTests, conditionalContext, answers, "initialTests", traceContext);
+  const dispositionRules = includeItems(module.dispositionRules, conditionalContext, answers, "dispositionRules", traceContext);
+  const redFlags = evaluateRedFlags(module.redFlags, conditionalContext, answers)
     .map((item) => traceComplaintCdsItem(item, module, "redFlags", traceContext.intentTrace, traceContext.authorizedBy));
   const triggeredRedFlags = redFlags.filter((item) => item.triggered);
   const differentialBuckets = (module.differentialBuckets || [])
@@ -1414,6 +2046,8 @@ export function validateComplaintModules(modules = complaintModules, sources = c
   const sourceIds = new Set(sources.map((row) => row.id));
   const itemGroups = ["redFlags", "safetyChecks", "requiredQuestions", "conditionalQuestions", "requiredExam", "conditionalExam", "initialTests", "dispositionRules", "differentialBuckets"];
   const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
+  const vagueExamActionPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
+  const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
   const placeholderExamTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
   const placeholderDiagnosticTargetPattern = /\bfocused bedside finding relevant to\b|^\s*$/i;
   const genericHistoryQuestionPattern = /\bAny .+\brelevant to\b/i;
@@ -1460,6 +2094,9 @@ export function validateComplaintModules(modules = complaintModules, sources = c
           }
           if (bundledExamPattern.test(item.label || "")) {
             issues.push(`${module.id}.${group}.${item.id} exam label appears bundled or vague: ${item.label}`);
+          }
+          if (vagueExamActionPattern.test(item.label || "")) {
+            issues.push(`${module.id}.${group}.${item.id} exam label must name a concrete maneuver action: ${item.label}`);
           }
           if (group === "conditionalExam" && !(item.when?.termsAny?.length || item.when?.answersAny?.length || item.when?.termsAll?.length || item.when?.answersAll?.length || item.when?.intentIdsAny?.length || item.when?.intentIdsAll?.length)) {
             issues.push(`${module.id}.${group}.${item.id} conditional exam needs structured activation triggers`);
@@ -1508,6 +2145,9 @@ export function validateComplaintModules(modules = complaintModules, sources = c
           requireComplaintItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
         }
         if (group === "safetyChecks") {
+          if (weakSafetyCheckLabelPattern.test(item.label || "")) {
+            issues.push(`${module.id}.${group}.${item.id} safety-check label should name a specific bedside action: ${item.label}`);
+          }
           requireComplaintItemFields(
             issues,
             module.id,

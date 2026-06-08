@@ -139,13 +139,12 @@
           "pituitary_gland_disorders",
           "gigantism",
           "visual",
-          "symptoms",
-          "severe",
           "headache",
           "rapid",
           "growth",
           "acceleration",
-          "pituitary"
+          "pituitary",
+          "apoplexy"
         ],
         "when": {
           "termsAny": [
@@ -184,10 +183,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -227,11 +226,11 @@
           "pituitary",
           "apoplexy",
           "acute",
-          "severe",
           "headache",
           "visual",
           "field",
-          "deficit"
+          "deficit",
+          "cranial"
         ],
         "when": {
           "termsAny": [
@@ -332,7 +331,7 @@
       },
       {
         "id": "safety_check_03",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_ACROMEGALY_2014",
@@ -366,9 +365,8 @@
         "tags": [
           "pituitary_gland_disorders",
           "gigantism",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -562,14 +560,14 @@
         "tags": [
           "pituitary_gland_disorders",
           "gigantism",
-          "which",
           "medications",
           "supplements",
           "missed",
           "doses",
           "recent",
           "procedures",
-          "acute"
+          "acute",
+          "illnesses"
         ],
         "source_seed": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?"
       },
@@ -659,8 +657,7 @@
           "gigantism",
           "libido",
           "fertility",
-          "cycle",
-          "changes"
+          "cycle"
         ],
         "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       }
@@ -794,7 +791,7 @@
       },
       {
         "id": "exam_04",
-        "label": "Assess pubertal stage",
+        "label": "Stage pubertal development",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_ACROMEGALY_2014",
@@ -824,20 +821,20 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess pubertal stage is supportive for Gigantism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Stage pubertal development is supportive for Gigantism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "pituitary_gland_disorders",
           "gigantism",
-          "assess",
+          "stage",
           "pubertal",
-          "stage"
+          "development"
         ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "Assess extraocular movements",
+        "label": "Test extraocular movements",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_ACROMEGALY_2014",
@@ -868,11 +865,11 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess extraocular movements is supportive for Gigantism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "limitations": "Test extraocular movements is supportive for Gigantism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
         "tags": [
           "pituitary_gland_disorders",
           "gigantism",
-          "assess",
+          "test",
           "extraocular",
           "movements"
         ],
@@ -1082,13 +1079,13 @@
           "pituitary_gland_disorders",
           "gigantism",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1116,13 +1113,13 @@
           "pituitary_gland_disorders",
           "gigantism",
           "excess",
-          "safety",
           "tests",
           "check",
           "adjusted",
           "oral",
           "glucose",
-          "suppression"
+          "suppression",
+          "needed"
         ]
       },
       {
@@ -1189,8 +1186,8 @@
           "evidence",
           "mass",
           "effect",
-          "symptoms",
-          "dynamic"
+          "dynamic",
+          "testing"
         ]
       },
       {
@@ -1257,8 +1254,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1292,9 +1289,9 @@
           "before",
           "epiphyseal",
           "closure",
-          "changes",
           "urgency",
-          "pediatric"
+          "pediatric",
+          "pituitary"
         ]
       },
       {
@@ -1323,12 +1320,12 @@
           "gigantism",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1357,12 +1354,12 @@
           "gigantism",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1429,8 +1426,8 @@
           "deficiency",
           "plus",
           "finding",
-          "changes",
-          "endocrine"
+          "neurosurgical",
+          "fertility"
         ]
       }
     ],

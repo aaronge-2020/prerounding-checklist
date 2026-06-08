@@ -116,8 +116,8 @@
           "pregnancy",
           "hypothalamic",
           "pituitary",
-          "disease",
-          "thyroid"
+          "thyroid",
+          "hyperprolactinemia"
         ]
       }
     ],
@@ -151,9 +151,9 @@
           "bleeding",
           "pelvic",
           "mass",
-          "symptoms",
           "needing",
-          "bone"
+          "bone",
+          "cardiovascular"
         ],
         "when": {
           "termsAny": [
@@ -192,10 +192,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -234,12 +234,12 @@
           "menopause_premature_ovarian_insufficiency",
           "positive",
           "pregnancy",
-          "with",
           "pain",
           "bleeding",
           "rapid",
           "virilization",
-          "tumor"
+          "tumor",
+          "range"
         ],
         "when": {
           "termsAny": [
@@ -381,7 +381,7 @@
       },
       {
         "id": "safety_check_04",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ESHRE_POI_2024",
@@ -415,9 +415,8 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "menopause_premature_ovarian_insufficiency",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -524,8 +523,7 @@
           "vasomotor",
           "sleep",
           "mood",
-          "genitourinary",
-          "symptoms"
+          "genitourinary"
         ],
         "source_seed": "Age, last menstrual period, vasomotor/sleep/mood/genitourinary symptoms."
       },
@@ -878,9 +876,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention puberty, timing, height, growth, velocity. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Menopause / Premature Ovarian Insufficiency.",
+        "action": "Ask when the history or modifiers support puberty, timing, height, growth. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Menopause / Premature Ovarian Insufficiency.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Menopause / Premature Ovarian Insufficiency.",
-        "when_to_ask": "Ask when patient context includes one of: puberty, timing, height, growth, velocity, changed, compared, with, measurements, family.",
+        "when_to_ask": "Ask when patient context includes puberty, timing, height, growth.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Menopause / Premature Ovarian Insufficiency.",
         "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Menopause / Premature Ovarian Insufficiency.",
         "tags": [
@@ -897,11 +895,10 @@
             "height",
             "growth",
             "velocity",
-            "changed",
             "compared",
-            "with",
             "measurements",
-            "family"
+            "family",
+            "pattern"
           ]
         }
       },
@@ -937,9 +934,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Menopause / Premature Ovarian Insufficiency needs urgent evaluation today.",
-        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Menopause / Premature Ovarian Insufficiency needs urgent evaluation today.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
         "tags": [
@@ -960,8 +957,8 @@
             "restriction",
             "intense",
             "psychosocial",
-            "change",
-            "energy"
+            "energy",
+            "balance"
           ]
         }
       },
@@ -997,9 +994,9 @@
             "label": "Other"
           }
         ],
-        "action": "Ask when the history or modifiers mention family, pcos, history, that, changes. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
+        "action": "Ask when the history or modifiers support family, pcos, risk, test. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
         "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Menopause / Premature Ovarian Insufficiency.",
-        "when_to_ask": "Ask when patient context includes one of: family, pcos, history, that, changes, risk, test.",
+        "when_to_ask": "Ask when patient context includes family, pcos, risk, test.",
         "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Menopause / Premature Ovarian Insufficiency.",
         "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Menopause / Premature Ovarian Insufficiency.",
         "tags": [
@@ -1013,9 +1010,6 @@
           "termsAny": [
             "family",
             "pcos",
-            "history",
-            "that",
-            "changes",
             "risk",
             "test"
           ]
@@ -1401,7 +1395,6 @@
           "menopause_premature_ovarian_insufficiency",
           "estradiol",
           "commonly",
-          "context",
           "repeat",
           "uncertainty"
         ]
@@ -1492,13 +1485,13 @@
           "reproductive_and_gonadal_disorders",
           "menopause_premature_ovarian_insufficiency",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1526,13 +1519,13 @@
           "reproductive_and_gonadal_disorders",
           "menopause_premature_ovarian_insufficiency",
           "menopause",
-          "safety",
           "tests",
           "pregnancy",
           "test",
-          "when",
           "uncertain",
-          "estradiol"
+          "estradiol",
+          "confirmation",
+          "prolactin"
         ]
       },
       {
@@ -1562,10 +1555,10 @@
           "pregnancy",
           "test",
           "first",
-          "when",
           "amenorrhea",
-          "possible",
-          "prolactin"
+          "prolactin",
+          "gonadotropins",
+          "estradiol"
         ]
       },
       {
@@ -1594,12 +1587,12 @@
           "menopause_premature_ovarian_insufficiency",
           "androgen",
           "testing",
-          "with",
-          "reliable",
           "assays",
           "hyperandrogenism",
           "metabolic",
-          "screening"
+          "screening",
+          "pcos",
+          "semen"
         ]
       },
       {
@@ -1734,8 +1727,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1764,13 +1757,13 @@
         "tags": [
           "reproductive_and_gonadal_disorders",
           "menopause_premature_ovarian_insufficiency",
-          "changes",
           "routine",
           "menopause",
           "counseling",
           "etiologic",
           "evaluation",
-          "fertility"
+          "fertility",
+          "bone"
         ]
       },
       {
@@ -1799,12 +1792,12 @@
           "menopause_premature_ovarian_insufficiency",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1833,12 +1826,12 @@
           "menopause_premature_ovarian_insufficiency",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1904,9 +1897,9 @@
           "hyperprolactinemia",
           "pcos",
           "thyroid",
-          "disease",
-          "changes",
-          "counseling"
+          "counseling",
+          "bone",
+          "cardiometabolic"
         ]
       }
     ],

@@ -1,0 +1,112 @@
+{
+  "screen": "pasteScreen",
+  "sourceMode": "prior",
+  "laptopHandoffReady": "true",
+  "scrollY": 0,
+  "overflowX": false,
+  "doc": {
+    "clientWidth": 1440,
+    "scrollWidth": 1440,
+    "clientHeight": 1024,
+    "scrollHeight": 1024
+  },
+  "topbar": {
+    "x": 0,
+    "y": 0,
+    "w": 1440,
+    "h": 80,
+    "bottom": 80,
+    "display": "grid",
+    "hidden": false
+  },
+  "sidebar": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0,
+    "bottom": 0,
+    "display": "none",
+    "hidden": false
+  },
+  "rail": {
+    "x": 198,
+    "y": 80,
+    "w": 1226,
+    "h": 82,
+    "bottom": 162,
+    "display": "grid",
+    "hidden": false
+  },
+  "card": {
+    "x": 214,
+    "y": 182,
+    "w": 1210,
+    "h": 758,
+    "bottom": 940,
+    "display": "grid",
+    "hidden": false
+  },
+  "hero": {
+    "x": 214,
+    "y": 182,
+    "w": 884,
+    "h": 126,
+    "bottom": 308,
+    "display": "grid",
+    "hidden": false
+  },
+  "steps": {
+    "x": 214,
+    "y": 324,
+    "w": 326,
+    "h": 376,
+    "bottom": 700,
+    "display": "grid",
+    "hidden": false
+  },
+  "preview": {
+    "x": 554,
+    "y": 324,
+    "w": 544,
+    "h": 617,
+    "bottom": 940,
+    "display": "grid",
+    "hidden": false
+  },
+  "actions": {
+    "x": 1112,
+    "y": 182,
+    "w": 312,
+    "h": 758,
+    "bottom": 940,
+    "display": "grid",
+    "hidden": false
+  },
+  "transfer": {
+    "x": 1118,
+    "y": 302,
+    "w": 284,
+    "h": 168,
+    "bottom": 470,
+    "display": "grid",
+    "hidden": false
+  },
+  "sourceWorkflow": {
+    "x": 591,
+    "y": 954,
+    "w": 456,
+    "h": 0,
+    "bottom": 954,
+    "display": "grid",
+    "hidden": false
+  },
+  "transferCode": "RWUL-FAAY-DVH9-QDJT",
+  "sections": [
+    "Identity & Situation 2 items",
+    "Symptoms & History 6 items",
+    "DKA-specific Assessment 7 items",
+    "Medical History & Risks 5 items",
+    "Physical Exam 4 items",
+    "Labs & Monitoring 4 items"
+  ]
+}

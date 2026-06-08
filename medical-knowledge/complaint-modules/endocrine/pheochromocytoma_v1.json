@@ -142,10 +142,10 @@
           "crisis",
           "arrhythmia",
           "stroke",
-          "symptoms",
           "planned",
           "surgery",
-          "without"
+          "without",
+          "alpha"
         ],
         "when": {
           "termsAny": [
@@ -184,10 +184,10 @@
           "instability",
           "altered",
           "mental",
-          "status",
-          "severe",
           "electrolyte",
-          "glucose"
+          "glucose",
+          "abnormality",
+          "arrhythmia"
         ],
         "when": {
           "termsAny": [
@@ -227,10 +227,11 @@
           "adrenal",
           "crisis",
           "shock",
-          "severe",
           "vomiting",
           "dehydration",
-          "hypoglycemia"
+          "hypoglycemia",
+          "hyperkalemia",
+          "hyponatremia"
         ],
         "when": {
           "termsAny": [
@@ -413,7 +414,7 @@
       },
       {
         "id": "safety_check_05",
-        "label": "Assess mental status",
+        "label": "Document mental status",
         "item_type": "safety_check",
         "source": {
           "source_id": "ES_PHEO_PPGL_2014",
@@ -447,9 +448,8 @@
         "tags": [
           "adrenal_gland_disorders",
           "pheochromocytoma",
-          "assess",
-          "mental",
-          "status"
+          "document",
+          "mental"
         ],
         "when": {
           "termsAny": [
@@ -691,96 +691,6 @@
       },
       {
         "id": "question_06",
-        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ES_PHEO_PPGL_2014",
-          "source_section": "Pheochromocytoma curated endocrine workup: required clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2014",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Pheochromocytoma.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
-        "when_to_ask": "Ask when Pheochromocytoma is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
-        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Pheochromocytoma.",
-        "tags": [
-          "adrenal_gland_disorders",
-          "pheochromocytoma",
-          "weight",
-          "loss"
-        ],
-        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
-      },
-      {
-        "id": "question_07",
-        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ES_PHEO_PPGL_2014",
-          "source_section": "Pheochromocytoma curated endocrine workup: required clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2014",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
-        "when_to_ask": "Ask when Pheochromocytoma is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
-        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
-        "tags": [
-          "adrenal_gland_disorders",
-          "pheochromocytoma",
-          "abdominal",
-          "pain"
-        ],
-        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
-      },
-      {
-        "id": "question_08",
         "label": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "item_type": "history_question",
         "source": {
@@ -825,8 +735,8 @@
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       },
       {
-        "id": "question_09",
-        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "id": "question_07",
+        "label": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_PHEO_PPGL_2014",
@@ -837,7 +747,143 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Pheochromocytoma.",
+        "when_to_ask": "Ask when Pheochromocytoma is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Pheochromocytoma.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "pheochromocytoma",
+          "fever",
+          "rigors"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_08",
+        "label": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_PHEO_PPGL_2014",
+          "source_section": "Pheochromocytoma curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "when_to_ask": "Ask when Pheochromocytoma is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "pheochromocytoma",
+          "respiratory",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_09",
+        "label": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_PHEO_PPGL_2014",
+          "source_section": "Pheochromocytoma curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Pheochromocytoma pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "when_to_ask": "Ask when Pheochromocytoma is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Pheochromocytoma pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "pheochromocytoma",
+          "urinary",
+          "flank",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
+      },
+      {
+        "id": "question_10",
+        "label": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_PHEO_PPGL_2014",
+          "source_section": "Pheochromocytoma curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
             "value": "unknown",
@@ -864,13 +910,132 @@
         "tags": [
           "adrenal_gland_disorders",
           "pheochromocytoma",
-          "acute",
+          "skin",
+          "wound",
+          "line",
+          "procedure",
+          "site",
           "infection"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_PHEO_PPGL_2014",
+          "source_section": "Pheochromocytoma curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Pheochromocytoma.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Pheochromocytoma.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "pheochromocytoma",
+          "weight",
+          "loss"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "when": {
+          "termsAny": [
+            "weight",
+            "loss",
+            "intentional",
+            "appetite",
+            "fluid",
+            "systemic"
+          ]
+        }
+      },
+      {
+        "id": "question_02",
+        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_PHEO_PPGL_2014",
+          "source_section": "Pheochromocytoma curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Pheochromocytoma needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Pheochromocytoma.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "pheochromocytoma",
+          "abdominal",
+          "pain"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "when": {
+          "termsAny": [
+            "abdominal",
+            "pain",
+            "nausea",
+            "vomiting",
+            "poor",
+            "intake",
+            "salt",
+            "craving",
+            "orthostasis",
+            "weight"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
@@ -956,7 +1121,7 @@
       },
       {
         "id": "exam_03",
-        "label": "Assess tremor with outstretched hands",
+        "label": "Observe outstretched-hands tremor",
         "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_PHEO_PPGL_2014",
@@ -987,15 +1152,14 @@
         "time_burden_minutes": 1,
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
-        "limitations": "Assess tremor with outstretched hands is supportive for Pheochromocytoma, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "limitations": "Observe outstretched-hands tremor is supportive for Pheochromocytoma, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
         "tags": [
           "adrenal_gland_disorders",
           "pheochromocytoma",
-          "assess",
-          "tremor",
-          "with",
+          "observe",
           "outstretched",
-          "hands"
+          "hands",
+          "tremor"
         ]
       }
     ],
@@ -1162,12 +1326,9 @@
           "pheochromocytoma",
           "proper",
           "sampling",
-          "conditions",
           "supine",
           "rest",
-          "plasma",
-          "when",
-          "possible"
+          "plasma"
         ]
       },
       {
@@ -1225,13 +1386,13 @@
           "adrenal_gland_disorders",
           "pheochromocytoma",
           "compare",
-          "with",
-          "prior",
           "results",
           "repeat",
           "discordant",
           "nonurgent",
-          "endocrine"
+          "tests",
+          "using",
+          "correct"
         ]
       },
       {
@@ -1259,13 +1420,13 @@
           "adrenal_gland_disorders",
           "pheochromocytoma",
           "ppgl",
-          "safety",
           "tests",
           "obtain",
           "plasma",
           "free",
           "urine",
-          "fractionated"
+          "fractionated",
+          "metanephrines"
         ]
       },
       {
@@ -1328,12 +1489,12 @@
           "pheochromocytoma",
           "cushing",
           "screening",
-          "with",
           "late",
           "night",
           "salivary",
           "cortisol",
-          "hour"
+          "hour",
+          "after"
         ]
       },
       {
@@ -1399,8 +1560,8 @@
           "assay",
           "specific",
           "cutoffs",
-          "endocrine",
-          "immunoassays"
+          "immunoassays",
+          "affected"
         ]
       }
     ],
@@ -1430,7 +1591,6 @@
           "adrenal_gland_disorders",
           "pheochromocytoma",
           "metanephrines",
-          "changes",
           "localization",
           "genetic",
           "preoperative",
@@ -1465,12 +1625,12 @@
           "pheochromocytoma",
           "unstable",
           "physiology",
-          "endocrine",
           "crisis",
           "pregnancy",
           "critical",
           "medication",
-          "issue"
+          "issue",
+          "dangerous"
         ]
       },
       {
@@ -1499,12 +1659,12 @@
           "pheochromocytoma",
           "discordant",
           "borderline",
-          "endocrine",
           "tests",
           "should",
           "confirmed",
           "interpreted",
-          "with"
+          "timing",
+          "assay"
         ]
       },
       {
@@ -1536,9 +1696,9 @@
           "crisis",
           "treated",
           "immediately",
-          "with",
           "stress",
-          "dose"
+          "dose",
+          "steroids"
         ]
       },
       {
@@ -1570,9 +1730,9 @@
           "elevation",
           "suppressed",
           "renin",
-          "with",
           "high",
-          "aldosterone"
+          "aldosterone",
+          "confirmed"
         ]
       }
     ],

@@ -21,6 +21,11 @@ assert.equal(medicalKnowledgeDbManifest.schema_version, "medical_knowledge_datab
 const medicalKnowledgeSchema = JSON.parse(readFileSync("medical-knowledge/schema/medical-knowledge-database-v1.schema.json", "utf8"));
 const moduleItemSchema = medicalKnowledgeSchema.$defs.moduleItem;
 assert.ok(Array.isArray(moduleItemSchema.allOf), "module item schema should include item-type-specific requirements");
+
+const stalePhysicalExamLabelPattern = /\b(?:Check capillary refill|Check skin turgor|Check distal extremity warmth|Check neck stiffness|Assess Kussmaul breathing|Assess extremity temperature|Assess skin turgor)\b/i;
+const vaguePhysicalExamLabelPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
+const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
+
 function requiredFieldsForSchemaItemType(itemType) {
   return moduleItemSchema.allOf
     .find((rule) => rule.if?.properties?.item_type?.const === itemType)
@@ -64,6 +69,23 @@ complaintModules.forEach((module) => {
   });
   ["requiredExam", "conditionalExam"].forEach((group) => {
     (module[group] || []).forEach((item) => {
+      const sourceText = [
+        item.label,
+        item.limitations,
+        item.diagnostic_target,
+        item.management_change,
+        ...(item.tags || [])
+      ].filter(Boolean).join(" ");
+      assert.doesNotMatch(
+        sourceText,
+        stalePhysicalExamLabelPattern,
+        `${module.id}.${group}.${item.id} should store current action-specific maneuver wording at the source-data layer`
+      );
+      assert.doesNotMatch(
+        String(item.label || ""),
+        vaguePhysicalExamLabelPattern,
+        `${module.id}.${group}.${item.id} physical exam source label should name the maneuver action, not a vague task verb`
+      );
       assert.ok(item.likelihood_ratio_note, `${module.id}.${group}.${item.id} source exam should include LR interpretation note`);
       if (/^n\/?a$|^unavailable$|^not available$/i.test(String(item.LR_plus || "")) && /^n\/?a$|^unavailable$|^not available$/i.test(String(item.LR_minus || ""))) {
         assert.match(
@@ -75,6 +97,11 @@ complaintModules.forEach((module) => {
     });
   });
   (module.safetyChecks || []).forEach((item) => {
+    assert.doesNotMatch(
+      String(item.label || ""),
+      weakSafetyCheckLabelPattern,
+      `${module.id}.${item.id} source safety-check label should name a specific bedside action`
+    );
     [
       "action",
       "rationale",
@@ -128,6 +155,33 @@ assert.match(
   atsCapSource.citation,
   /Am J Respir Crit Care Med\. 2026;212\(1\):24-44/i,
   "ATS_CAP_2025 citation should distinguish the 2025-approved ATS update from the older ATS/IDSA 2019 guideline"
+);
+const sourceAuditDate = "2026-06-08";
+complaintSourceRegistry.forEach((source) => {
+  assert.match(source.date_accessed || "", /^\d{4}-\d{2}-\d{2}$/, `${source.id}: source access date should use YYYY-MM-DD`);
+  assert.ok(
+    source.date_accessed <= sourceAuditDate,
+    `${source.id}: source access date ${source.date_accessed} should not be later than audit date ${sourceAuditDate}`
+  );
+  const sourceYear = String(source.id || "").match(/(?:^|_)(20\d{2})(?:_|$)/)?.[1];
+  if (sourceYear) {
+    assert.ok(
+      Number(sourceYear) <= Number(String(source.date_accessed || "").slice(0, 4)),
+      `${source.id}: source ID claims ${sourceYear} but source was accessed on ${source.date_accessed}`
+    );
+  }
+});
+const sepsisSource = complaintSourceRegistry.find((source) => source.id === "SSC_SEPSIS_2026");
+assert.ok(sepsisSource, "medical knowledge source registry should include the manually verified 2026 Surviving Sepsis Campaign adult guideline");
+assert.equal(
+  sepsisSource.url,
+  "https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+  "SSC_SEPSIS_2026 should retain the canonical SCCM guideline page"
+);
+assert.match(
+  sepsisSource.citation,
+  /Sepsis and Septic Shock 2026/i,
+  "SSC_SEPSIS_2026 citation should preserve the verified 2026 guideline year"
 );
 assert.ok(
   complaintSourceRegistry.some((source) => source.id === "IDSA_CAP_PATHWAY_2019"),
@@ -250,6 +304,26 @@ const badBuildValidation = validateMedicalKnowledgeDatabase({
           limitations: "Absence does not exclude renal infection or stone.",
           tags: ["flank_pain", "pyelonephritis"],
           source: sourceReference
+        },
+        {
+          id: "synthetic_vague_exam_label",
+          label: "Assess strength",
+          item_type: "physical_exam_maneuver",
+          technique: "Test shoulder abduction strength against resistance bilaterally.",
+          findings_options: ["Normal", "Weak", "Asymmetric", "Unable"],
+          when_to_perform: "When focal weakness or myopathy is clinically relevant.",
+          diagnostic_target: "Motor weakness localization.",
+          LR_plus: "n/a",
+          LR_minus: "n/a",
+          likelihood_ratio_note: "No maneuver-specific LR+/LR- is available in the local validated source metadata; interpret with context.",
+          management_change: "Weakness changes localization and escalation.",
+          difficulty: "easy",
+          time_burden_minutes: 1,
+          equipment_needed: "none",
+          patient_cooperation_required: "moderate",
+          limitations: "Pain, effort, baseline deficits, and cooperation can limit reliability.",
+          tags: ["weakness"],
+          source: sourceReference
         }
       ],
       redFlags: [
@@ -275,6 +349,7 @@ assert.equal(badBuildValidation.ok, false, "build validation should reject bad t
 assert.match(badBuildValidation.issues.join("\n"), /item_type must be red_flag/, "build validation should enforce item_type by source section");
 assert.match(badBuildValidation.issues.join("\n"), /basic bedside data\/safety item belongs in safetyChecks/, "build validation should reject vitals inside exam sections");
 assert.match(badBuildValidation.issues.join("\n"), /exam label appears bundled or vague/, "build validation should reject bundled exam labels");
+assert.match(badBuildValidation.issues.join("\n"), /exam label must name a concrete maneuver action/, "build validation should reject vague physical exam action verbs");
 assert.match(badBuildValidation.issues.join("\n"), /invalid LR_plus/, "build validation should reject invalid LR metadata");
 assert.match(badBuildValidation.issues.join("\n"), /invalid time_burden_minutes/, "build validation should reject invalid time burden metadata");
 assert.match(badBuildValidation.issues.join("\n"), /invalid difficulty/, "build validation should reject invalid difficulty metadata");
