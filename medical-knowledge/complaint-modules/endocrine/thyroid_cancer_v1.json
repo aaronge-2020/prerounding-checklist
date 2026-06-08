@@ -28,64 +28,137 @@
       {
         "id": "differential_01",
         "label": "Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic frame",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Neck ultrasound and nodal mapping. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use this frame to decide whether Neck ultrasound and nodal mapping. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "thyroid",
+          "cancer",
+          "papillary",
+          "follicular",
+          "medullary"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "typical",
+          "adult",
+          "range",
+          "about",
+          "local",
+          "pregnancy",
+          "illness",
+          "context"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: mimics and exclusions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Thyroid Cancer (Papillary, Follicular, Medullary) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Thyroid Cancer (Papillary, Follicular, Medullary) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "important",
+          "mimics",
+          "exclusions",
+          "graves",
+          "disease",
+          "toxic",
+          "nodule",
+          "multinodular"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: red flags",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Thyroid Cancer (Papillary, Follicular, Medullary) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.: danger pattern, severity marker, or complication that changes urgency for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "airway",
+          "compromise",
+          "vocal",
+          "cord",
+          "paralysis",
+          "bulky",
+          "nodes",
+          "rapidly"
+        ],
         "when": {
           "termsAny": [
             "Airway compromise",
@@ -99,17 +172,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: red flags",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Thyroid Cancer (Papillary, Follicular, Medullary) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -124,17 +216,36 @@
       {
         "id": "red_flag_03",
         "label": "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: red flags",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Thyroid Cancer (Papillary, Follicular, Medullary) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.: danger pattern, severity marker, or complication that changes urgency for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "thyroid",
+          "storm",
+          "myxedema",
+          "coma",
+          "atrial",
+          "fibrillation",
+          "heart",
+          "failure"
+        ],
         "when": {
           "termsAny": [
             "Thyroid storm",
@@ -149,19 +260,208 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Measure temperature",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Fever or hypothermia changes emergency endocrine triage.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_perform": "When thyroid storm, infection, or myxedema physiology is possible",
+        "findings_options": [
+          "___ C/F",
+          "Fever",
+          "Hypothermia",
+          "Afebrile",
+          "Not available"
+        ],
+        "diagnostic_target": "fever, hypothermia, inflammatory illness, infection, or endocrine-crisis physiology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Fever or hypothermia changes emergency endocrine triage.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "thermometer",
+        "patient_cooperation_required": "low",
+        "limitations": "Temperature depends on measurement site, antipyretics, timing, immune status, and device accuracy; absence of fever does not exclude serious infection or endocrine crisis.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "measure",
+          "temperature"
+        ],
+        "when": {
+          "termsAny": [
+            "thyroid storm",
+            "fever",
+            "hypothermia",
+            "myxedema",
+            "severe"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2.",
+        "label": "Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?",
         "options": [
           {
             "value": "unknown",
@@ -180,21 +480,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today."
+        "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "compressive",
+          "symptoms"
+        ],
+        "source_seed": "Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2."
       },
       {
         "id": "question_02",
-        "label": "Diarrhea/flushing if medullary disease possible.",
+        "label": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
         "options": [
           {
             "value": "unknown",
@@ -213,21 +525,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Thyroid Cancer (Papillary, Follicular, Medullary) workup."
+        "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_implication": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "radiation",
+          "history"
+        ],
+        "source_seed": "Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2."
       },
       {
         "id": "question_03",
-        "label": "Prior FNA Bethesda category.",
+        "label": "Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?",
         "options": [
           {
             "value": "unknown",
@@ -246,21 +570,35 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Thyroid Cancer (Papillary, Follicular, Medullary) workup."
+        "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_implication": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "family",
+          "thyroid",
+          "cancer",
+          "men2"
+        ],
+        "source_seed": "Compressive symptoms, hoarseness, radiation history, family thyroid cancer/MEN2."
       },
       {
         "id": "question_04",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "What is the current prior FNA Bethesda category, and how has it changed from baseline?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the current prior FNA Bethesda category, and how has it changed from baseline?",
         "options": [
           {
             "value": "unknown",
@@ -279,21 +617,34 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Thyroid Cancer (Papillary, Follicular, Medullary) workup."
+        "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_implication": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "prior",
+          "bethesda",
+          "category"
+        ],
+        "source_seed": "Prior FNA Bethesda category."
       },
       {
         "id": "question_05",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?",
         "options": [
           {
             "value": "unknown",
@@ -312,21 +663,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "A positive answer raises concern for thyroid hormone excess or thyroid storm and changes beta-blocker need, thyroid testing urgency, trigger search, and emergency endocrine escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "A positive answer raises concern for thyroid hormone excess or thyroid storm and changes beta-blocker need, thyroid testing urgency, trigger search, and emergency endocrine escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "palpitations"
+        ],
+        "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
       {
         "id": "question_06",
-        "label": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
+        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
             "value": "unknown",
@@ -345,21 +707,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "weight",
+          "change"
+        ],
+        "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
       },
       {
         "id": "question_07",
-        "label": "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2.",
+        "label": "Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: clinical questions",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?",
         "options": [
           {
             "value": "unknown",
@@ -378,221 +752,565 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "A positive answer raises concern for thyroid hormone deficiency or myxedema physiology and changes TSH/free T4 interpretation, replacement planning, and emergency-risk screening for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "A positive answer raises concern for thyroid hormone deficiency or myxedema physiology and changes TSH/free T4 interpretation, replacement planning, and emergency-risk screening for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "fatigue"
+        ],
+        "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
+      },
+      {
+        "id": "question_08",
+        "label": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes the leading Thyroid Cancer (Papillary, Follicular, Medullary) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "The answer changes the leading Thyroid Cancer (Papillary, Follicular, Medullary) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "menstrual",
+          "fertility",
+          "context"
+        ],
+        "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
+      },
+      {
+        "id": "question_09",
+        "label": "Any neck swelling, thyroid pain or tenderness, pressure, hoarseness, trouble swallowing, positional shortness of breath, or rapidly enlarging neck mass?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any neck swelling, thyroid pain or tenderness, pressure, hoarseness, trouble swallowing, positional shortness of breath, or rapidly enlarging neck mass?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Thyroid Cancer (Papillary, Follicular, Medullary) needs urgent evaluation today.",
+        "management_implication": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "neck",
+          "symptoms"
+        ],
+        "source_seed": "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms."
+      },
+      {
+        "id": "question_10",
+        "label": "Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, biotin, supplement use, missed dose, or recent dose change affecting thyroid interpretation?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ATA_THYROID_CANCER_2025",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, biotin, supplement use, missed dose, or recent dose change affecting thyroid interpretation?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Positive exposure changes whether to hold interfering agents, repeat testing, adjust treatment, or use a safer Thyroid Cancer (Papillary, Follicular, Medullary) pathway.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Thyroid Cancer (Papillary, Follicular, Medullary) therapy unsafe.",
+        "when_to_ask": "Ask when Thyroid Cancer (Papillary, Follicular, Medullary) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Thyroid Cancer (Papillary, Follicular, Medullary) therapy unsafe.",
+        "management_implication": "Positive exposure changes whether to hold interfering agents, repeat testing, adjust treatment, or use a safer Thyroid Cancer (Papillary, Follicular, Medullary) pathway.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "amiodarone"
+        ],
+        "source_seed": "Ask about amiodarone, lithium, iodine/contrast, immune checkpoint inhibitors, thyroid hormone or antithyroid drugs, biotin, pregnancy/postpartum status, radiation, and family thyroid cancer/MEN2."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Thyroid mass and cervical nodal mapping by exam.",
+        "label": "Palpate thyroid gland",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate thyroid structural disease, compressive features, or thyroid inflammatory/autoimmune pattern. Goiter, tenderness, asymmetry, or a dominant nodule changes etiology and imaging decisions.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Inspect and palpate the thyroid from in front or behind while the patient swallows, noting size, tenderness, asymmetry, nodules, fixation, or bruit if auscultated.",
+        "findings_options": [
+          "Normal size",
+          "Goiter",
+          "Nodule/asymmetry",
+          "Tender",
+          "Fixed/hard",
+          "Unable to assess"
+        ],
+        "when_to_perform": "During thyroid hormone or thyroid structural evaluation",
+        "diagnostic_target": "thyroid structural disease, compressive features, or thyroid inflammatory/autoimmune pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Goiter, tenderness, asymmetry, or a dominant nodule changes etiology and imaging decisions.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate thyroid gland is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "palpate",
+          "thyroid",
+          "gland"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Voice/airway; hyper/hypothyroid signs.",
+        "label": "Palpate cervical lymph nodes",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate regional nodal disease or thyroid malignancy risk. Suspicious lymph nodes change ultrasound mapping, biopsy planning, and urgency.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Palpate cervical and supraclavicular nodal chains systematically, noting size, tenderness, mobility, firmness, and laterality.",
+        "findings_options": [
+          "No concerning nodes",
+          "Tender/mobile nodes",
+          "Firm/fixed nodes",
+          "Supraclavicular node",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When thyroid nodule, thyroid cancer, goiter, neck symptoms, or autoimmune thyroid disease is relevant",
+        "diagnostic_target": "regional nodal disease or thyroid malignancy risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Suspicious lymph nodes change ultrasound mapping, biopsy planning, and urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate cervical lymph nodes is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "palpate",
+          "cervical",
+          "lymph",
+          "nodes"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Auscultate heart rhythm",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate thyroid-related tachycardia, atrial fibrillation, bradycardia, or heart-failure complication. Irregular rhythm changes ECG need, beta-blocker consideration, and escalation.",
+        "rationale": "Targets thyroid-related tachycardia, atrial fibrillation, bradycardia, or heart-failure complication; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Auscultate the precordium with diaphragm and bell as appropriate, noting rate regularity, extra sounds, murmurs, rubs, or gallop.",
+        "findings_options": [
+          "Regular",
+          "Irregular",
+          "Tachycardic",
+          "Bradycardic",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When thyroid dysfunction could affect cardiac rhythm",
+        "diagnostic_target": "thyroid-related tachycardia, atrial fibrillation, bradycardia, or heart-failure complication",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Irregular rhythm changes ECG need, beta-blocker consideration, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Auscultate heart rhythm is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "auscultate",
+          "heart",
+          "rhythm"
+        ]
       },
       {
         "id": "exam_04",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Assess tremor with outstretched hands",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate thyrotoxicosis adrenergic signs, medication effect, or endocrine-related neuromuscular irritability. Fine tremor supports adrenergic thyrotoxicosis and changes symptom-control decisions.",
+        "rationale": "Targets thyrotoxicosis adrenergic signs, medication effect, or endocrine-related neuromuscular irritability; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Ask the patient to extend both arms and spread fingers; observe for fine tremor and functional impact.",
+        "findings_options": [
+          "No tremor",
+          "Fine tremor",
+          "Coarse tremor",
+          "Functionally limiting tremor",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When hyperthyroidism or thyrotoxicosis is possible",
+        "diagnostic_target": "thyrotoxicosis adrenergic signs, medication effect, or endocrine-related neuromuscular irritability",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Fine tremor supports adrenergic thyrotoxicosis and changes symptom-control decisions.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess tremor with outstretched hands is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "assess",
+          "tremor",
+          "with",
+          "outstretched",
+          "hands"
+        ]
       },
       {
         "id": "exam_05",
-        "label": "Thyroid/neck exam for goiter, nodules, tenderness, asymmetry, bruit, fixation, compressive symptoms, and cervical/supraclavicular nodes when structural concern exists.",
+        "label": "Assess voice quality",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate thyroid structural disease, compressive features, or thyroid inflammatory/autoimmune pattern. Hoarseness changes concern for recurrent laryngeal nerve involvement and surgical urgency.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Listen to voice quality during normal speech and ask about new hoarseness, weak voice, or compressive symptoms.",
+        "findings_options": [
+          "Normal voice",
+          "Hoarse",
+          "Weak/breathy",
+          "Stridor/airway concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When thyroid nodule, thyroid cancer, goiter, or compressive symptoms are present",
+        "diagnostic_target": "thyroid structural disease, compressive features, or thyroid inflammatory/autoimmune pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Hoarseness changes concern for recurrent laryngeal nerve involvement and surgical urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess voice quality is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "assess",
+          "voice",
+          "quality"
+        ]
       },
       {
         "id": "exam_06",
-        "label": "Cardiac rhythm/perfusion, tremor, reflex relaxation, skin/hair, edema, and eye/orbitopathy screen when hypo- or hyperthyroid features are present.",
+        "label": "Inspect neck for airway narrowing",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: focused physical exam",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "action": "Use this maneuver to evaluate encephalopathy, crisis severity, or airway-protection risk. Airway concern changes urgency and imaging or procedural planning.",
+        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Inspect neck contour and observe breathing/stridor; ask about positional dyspnea while avoiding provocative maneuvers in unstable patients.",
+        "findings_options": [
+          "No visible narrowing",
+          "Large goiter/mass effect",
+          "Stridor/positional dyspnea",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When goiter, neck mass, dyspnea, or compressive symptoms are present",
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Airway concern changes urgency and imaging or procedural planning.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect neck for airway narrowing is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "inspect",
+          "neck",
+          "airway",
+          "narrowing"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If palpitations, tachycardia, dyspnea, chest discomfort, tremor, or severe hyperthyroid symptoms are present: add rhythm regularity, heart failure/perfusion signs, tremor/hyperreflexia, and temperature.",
+        "label": "Inspect eyelid retraction",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "action": "Add when graves, eye, orbitopathy, hyperthyroid, thyrotoxicosis is present; this evaluates thyrotoxicosis adrenergic signs or Graves orbitopathy severity. Lid retraction supports Graves or adrenergic thyroid physiology and changes etiology assessment.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Inspect eyes and eyelids from the front and side for lid lag/retraction, proptosis, conjunctival injection, or exposure signs.",
+        "findings_options": [
+          "Absent",
+          "Present",
+          "Asymmetric",
+          "Exposure concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When Graves disease or thyrotoxicosis is possible",
+        "diagnostic_target": "thyrotoxicosis adrenergic signs or Graves orbitopathy severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Lid retraction supports Graves or adrenergic thyroid physiology and changes etiology assessment.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect eyelid retraction is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "inspect",
+          "eyelid",
+          "retraction"
+        ],
         "when": {
           "termsAny": [
-            "palpitations",
-            "tachycardia",
-            "atrial fibrillation",
-            "dyspnea",
-            "chest pain",
-            "tremor",
-            "thyroid storm",
-            "heat intolerance",
-            "fever"
+            "graves",
+            "eye",
+            "orbitopathy",
+            "hyperthyroid",
+            "thyrotoxicosis"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If eye, neck mass, hoarseness, dysphagia, dyspnea, radiation exposure, or nodule concern is present: add orbitopathy/EOM screen, thyroid palpation, cervical nodes, voice, airway, and compressive-symptom assessment.",
+        "label": "Assess extraocular movements",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "action": "Add when diplopia, eye pain, proptosis, orbitopathy is present; this evaluates Graves orbitopathy, diplopia, ocular motility restriction, or vision-threatening thyroid eye disease. Restriction changes orbitopathy severity and eye-care urgency.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Ask the patient to follow a target through cardinal gaze positions and observe for limitation, pain, diplopia, or nystagmus.",
+        "findings_options": [
+          "Full",
+          "Restricted",
+          "Diplopia",
+          "Painful",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When diplopia, eye pain, proptosis, or Graves orbitopathy is possible",
+        "diagnostic_target": "Graves orbitopathy, diplopia, ocular motility restriction, or vision-threatening thyroid eye disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Restriction changes orbitopathy severity and eye-care urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess extraocular movements is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "assess",
+          "extraocular",
+          "movements"
+        ],
         "when": {
           "termsAny": [
-            "eye",
-            "orbitopathy",
             "diplopia",
+            "eye pain",
             "proptosis",
-            "neck mass",
-            "nodule",
-            "hoarseness",
-            "dysphagia",
-            "dyspnea",
-            "radiation",
-            "cervical nodes"
+            "orbitopathy"
           ]
         }
       },
       {
         "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Thyroid Cancer (Papillary, Follicular, Medullary), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
         "when": {
           "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
             "vomiting",
             "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
-        "source": {
-          "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2025",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Thyroid Cancer (Papillary, Follicular, Medullary).",
-        "when": {
-          "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "poor intake",
+            "polyuria",
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       }
@@ -601,289 +1319,625 @@
       {
         "id": "test_01",
         "label": "Neck ultrasound and nodal mapping.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Neck ultrasound and nodal mapping.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "neck",
+          "ultrasound",
+          "nodal",
+          "mapping"
+        ]
       },
       {
         "id": "test_02",
         "label": "FNA cytology with Bethesda category.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "FNA cytology with Bethesda category.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "cytology",
+          "with",
+          "bethesda",
+          "category"
+        ]
       },
       {
         "id": "test_03",
         "label": "TSH/free T4.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "TSH/free T4.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "free"
+        ]
       },
       {
         "id": "test_04",
         "label": "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "calcitonin",
+          "when",
+          "medullary",
+          "thyroid",
+          "cancer",
+          "suspected",
+          "confirmed"
+        ]
       },
       {
         "id": "test_05",
         "label": "RET testing for medullary thyroid cancer.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "RET testing for medullary thyroid cancer.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "testing",
+          "medullary",
+          "thyroid",
+          "cancer"
+        ]
       },
       {
         "id": "test_06",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_07",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "structural",
+          "thyroid",
+          "safety",
+          "workup",
+          "route",
+          "radionuclide",
+          "scan",
+          "versus"
+        ]
       },
       {
         "id": "test_08",
         "label": "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "TSH with free T4; add T3 for thyrotoxicosis, TPO Ab for autoimmune hypothyroidism, TRAb/TSI for Graves, and thyroid ultrasound/FNA pathway for nodules.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "with",
+          "free",
+          "thyrotoxicosis",
+          "autoimmune",
+          "hypothyroidism",
+          "trab",
+          "graves",
+          "thyroid"
+        ]
       },
       {
         "id": "test_09",
         "label": "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: diagnostic workup",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Hold high-dose biotin before susceptible assays when feasible and interpret thyroid labs with pregnancy, acute illness, and central hypothyroidism context.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "hold",
+          "high",
+          "dose",
+          "biotin",
+          "before",
+          "susceptible",
+          "assays",
+          "when"
+        ]
       },
       {
         "id": "reference_01",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "typical",
+          "adult",
+          "range",
+          "about",
+          "local",
+          "pregnancy",
+          "illness",
+          "context"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "free",
+          "typical",
+          "adult",
+          "range",
+          "about",
+          "local",
+          "assay"
+        ]
       },
       {
         "id": "reference_03",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "trab",
+          "thyroglobulin",
+          "assay",
+          "specific"
+        ]
       },
       {
         "id": "reference_04",
         "label": "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Calcitonin/CEA thresholds are assay-specific; RET positivity changes family screening and surgical planning.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "calcitonin",
+          "thresholds",
+          "assay",
+          "specific",
+          "positivity",
+          "changes",
+          "family",
+          "screening"
+        ]
       },
       {
         "id": "reference_05",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Thyroid Cancer (Papillary, Follicular, Medullary) test or threshold.",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: results that change management",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "bethesda",
+          "suspicious",
+          "nodes",
+          "calcitonin",
+          "elevation",
+          "positivity",
+          "changes",
+          "surgical"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: results that change management",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ETA_THYROID_NODULE_2023",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: results that change management",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ATA_THYROID_CANCER_2025",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: results that change management",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2025",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Suppressed TSH with elevated T4/T3 changes to thyrotoxicosis severity and etiology workup; low FT4 with low/normal TSH triggers central hypothyroidism evaluation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "suppressed",
+          "with",
+          "elevated",
+          "changes",
+          "thyrotoxicosis",
+          "severity",
+          "etiology",
+          "workup"
+        ]
       },
       {
         "id": "management_05",
         "label": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ATA_THYROID_NODULE_DTC_2015",
-          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) generated endocrine workup: results that change management",
+          "source_section": "Thyroid Cancer (Papillary, Follicular, Medullary) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2015",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "diagnostic_target": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "management_change": "Suspicious nodule, compressive symptom, abnormal node, calcitonin/RET concern, or high-risk ultrasound feature changes imaging/FNA/surgical referral pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Thyroid Cancer (Papillary, Follicular, Medullary).",
+        "tags": [
+          "thyroid_disorders",
+          "thyroid_cancer",
+          "suspicious",
+          "nodule",
+          "compressive",
+          "symptom",
+          "abnormal",
+          "node",
+          "calcitonin",
+          "concern"
+        ]
       }
     ],
     "endocrine_metadata": {

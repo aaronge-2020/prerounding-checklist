@@ -7,16 +7,23 @@ import {
   parseCsv,
   rankEvidenceCandidates
 } from "../evidence.js";
+import {
+  buildClinicalIntentRetrievalContext,
+  filterEvidenceCatalogForClinicalIntents,
+  selectedValidatedClinicalIntents
+} from "../clinical-intents.js";
 
 const baseRows = parseCsv(readFileSync("data/evidence/exam_technique_base.csv", "utf8"));
 const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.csv", "utf8"));
 const legacyOverlayRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
+const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepted_exam_catalog_additions.csv", "utf8"));
 const tagRows = parseCsv(readFileSync("data/evidence/retrieval_tag_dictionary.csv", "utf8"));
 const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
 const catalog = joinEvidenceCatalog(
   baseRows,
   mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyOverlayRows),
-  sourceRows
+  sourceRows,
+  acceptedCatalogAdditionRows
 );
 
 function rx(pattern) {
@@ -165,7 +172,7 @@ const adversarialCases = [
   {
     id: "adv_24_thunderclap_meningitis",
     context: "Worst headache of life with fever, neck stiffness, photophobia, confusion, and meningitis or SAH concern.",
-    require: [rx("blood pressure|heart rate|respiratory rate"), rx("pupils"), rx("extraocular|visual acuity|visual fields"), rx("pronator drift|gait|babinski")],
+    require: [rx("blood pressure|heart rate|respiratory rate"), rx("pupils"), rx("neck stiffness"), rx("pronator drift|gait|babinski")],
     avoid: [rx("murphy|rebound|cva tenderness"), rx("pmi|lower extremity edema")]
   },
   {
@@ -207,7 +214,7 @@ const adversarialCases = [
   {
     id: "adv_31_neck_fever_photophobia",
     context: "Neck pain with fever, photophobia, confusion, and concern for meningitis.",
-    require: [rx("blood pressure|heart rate|respiratory rate"), rx("pupils"), rx("extraocular|visual acuity"), rx("oropharynx|mouth exam")],
+    require: [rx("blood pressure|heart rate|respiratory rate"), rx("pupils"), rx("neck stiffness"), rx("oropharynx|mouth exam")],
     avoid: [rx("murphy|rebound|cva tenderness"), rx("pmi|lower extremity edema")]
   },
   {
@@ -339,7 +346,35 @@ function recommendedFor(context) {
   return {
     ranked,
     recommendation,
-    entries: [...recommendation.coreItems, ...recommendation.conditionalItems]
+    entries: [
+      ...(recommendation.basicSafetyChecks || []),
+      ...(recommendation.corePhysicalExamManeuvers || recommendation.coreItems),
+      ...(recommendation.conditionalPhysicalExamManeuvers || recommendation.conditionalItems)
+    ]
+  };
+}
+
+function recommendedForValidatedIntent(intentIds, modifiers) {
+  const selectedIntents = selectedValidatedClinicalIntents(intentIds);
+  const filteredCatalog = filterEvidenceCatalogForClinicalIntents(catalog, selectedIntents);
+  const context = buildClinicalIntentRetrievalContext(selectedIntents, modifiers, "General clinic", "Adult");
+  const ranked = rankEvidenceCandidates(filteredCatalog, context, tagRows, {
+    maxCandidates: 80,
+    specialty: "General medicine"
+  });
+  const recommendation = buildRecommendedExamChecklist(context, ranked, {
+    specialty: "General medicine",
+    maxCoreItems: 28,
+    maxConditionalItems: 42
+  });
+  return {
+    ranked,
+    recommendation,
+    entries: [
+      ...(recommendation.basicSafetyChecks || []),
+      ...(recommendation.corePhysicalExamManeuvers || recommendation.coreItems),
+      ...(recommendation.conditionalPhysicalExamManeuvers || recommendation.conditionalItems)
+    ]
   };
 }
 
@@ -359,7 +394,7 @@ function entryText(entry) {
 function evaluateCase(testCase) {
   const result = recommendedFor(testCase.context);
   const recommendedText = result.entries.map(entryText).join(" | ");
-  const coreText = result.recommendation.coreItems.map(entryText).join(" | ");
+  const coreText = (result.recommendation.corePhysicalExamManeuvers || result.recommendation.coreItems).map(entryText).join(" | ");
   const missing = (testCase.require || []).filter((pattern) => !pattern.test(recommendedText));
   const missingCore = (testCase.requireCore || []).filter((pattern) => !pattern.test(coreText));
   const avoidHits = (testCase.avoid || []).filter((pattern) => pattern.test(recommendedText));
@@ -371,8 +406,9 @@ function evaluateCase(testCase) {
     missing: missing.map((pattern) => pattern.source),
     missingCore: missingCore.map((pattern) => pattern.source),
     avoidHits: avoidHits.map((pattern) => pattern.source),
-    core: result.recommendation.coreItems.map((entry) => entry.label),
-    conditional: result.recommendation.conditionalItems.map((entry) => entry.label),
+    safety: (result.recommendation.basicSafetyChecks || []).map((entry) => entry.label),
+    core: (result.recommendation.corePhysicalExamManeuvers || result.recommendation.coreItems).map((entry) => entry.label),
+    conditional: (result.recommendation.conditionalPhysicalExamManeuvers || result.recommendation.conditionalItems).map((entry) => entry.label),
     matchedTags: result.ranked.matchedTags.map((match) => match.tag)
   };
 }
@@ -397,11 +433,53 @@ if (process.argv.includes("--report-only")) {
       failure.missing.length ? `missing ${failure.missing.join(", ")}` : "",
       failure.missingCore.length ? `missing core ${failure.missingCore.join(", ")}` : "",
       failure.avoidHits.length ? `avoid hits ${failure.avoidHits.join(", ")}` : "",
+      `safety [${(failure.safety || []).join("; ")}]`,
       `core [${failure.core.join("; ")}]`,
       `conditional [${failure.conditional.slice(0, 12).join("; ")}]`,
       `tags [${failure.matchedTags.join("; ")}]`
     ].filter(Boolean).join(" ")
     ).join("\n")
   );
+
+  const abdominalWithNeuroModifier = recommendedForValidatedIntent(
+    ["abdominal_pain_cramping_v1"],
+    "stomach cramps with focal weakness"
+  ).recommendation;
+  const abdominalSafetyLabels = (abdominalWithNeuroModifier.basicSafetyChecks || []).map((entry) => entry.label).join(" | ");
+  const abdominalCoreLabels = (abdominalWithNeuroModifier.corePhysicalExamManeuvers || abdominalWithNeuroModifier.coreItems).map((entry) => entry.label).join(" | ");
+  const abdominalConditionalLabels = (abdominalWithNeuroModifier.conditionalPhysicalExamManeuvers || abdominalWithNeuroModifier.conditionalItems).map((entry) => entry.label).join(" | ");
+  assert.match(abdominalSafetyLabels, /Temperature/, "abdominal validated intent should include temperature as a safety check");
+  assert.doesNotMatch(abdominalCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature/, "vitals should not appear in core physical exam maneuvers");
+  assert.match(abdominalConditionalLabels, /Inspect facial symmetry/i, "focal weakness modifier should surface atomic neuro safety add-ons");
+  assert.match(abdominalConditionalLabels, /Test pronator drift/i, "focal weakness modifier should surface pronator drift as conditional, not abdominal core");
+  assert.match(abdominalConditionalLabels, /Check pupils/i, "focal weakness modifier should surface pupils as conditional neuro safety check");
+  assert.match(abdominalConditionalLabels, /Test rebound tenderness/i, "abdominal pain should surface peritoneal signs as conditional add-ons");
+  assert.match(abdominalConditionalLabels, /Test Murphy sign/i, "abdominal pain should surface biliary/RUQ screening as a conditional add-on");
+  assert.match(
+    abdominalWithNeuroModifier.warnings.join(" "),
+    /Focal neurologic symptoms.*not a neuro intent/i,
+    "focal neuro modifiers outside abdominal intent should warn that the current workup is incomplete"
+  );
+  assert.doesNotMatch(abdominalCoreLabels, /Test pronator drift|Inspect facial symmetry|Check pupils|Pronator drift|Facial symmetry|Pupils/i, "cross-intent neuro items should not become abdominal core");
+  assert.doesNotMatch(abdominalCoreLabels, /Test Murphy sign|Test psoas sign|Test obturator sign|Test rebound tenderness|Murphy|Psoas|Obturator|Rebound/i, "advanced abdominal maneuvers should not become generic abdominal core items");
+  assert.doesNotMatch(abdominalConditionalLabels, /Psoas|Obturator/, "appendicitis-specific signs should still require RLQ, appendicitis, or pelvic-irritation context");
+
+  const plainAbdominal = recommendedForValidatedIntent(
+    ["abdominal_pain_cramping_v1"],
+    "stomach cramps"
+  ).recommendation;
+  const plainSafetyLabels = (plainAbdominal.basicSafetyChecks || []).map((entry) => entry.label).join(" | ");
+  const plainCoreLabels = (plainAbdominal.corePhysicalExamManeuvers || plainAbdominal.coreItems).map((entry) => entry.label).join(" | ");
+  const plainConditionalLabels = (plainAbdominal.conditionalPhysicalExamManeuvers || plainAbdominal.conditionalItems).map((entry) => entry.label).join(" | ");
+  const plainLabels = [plainSafetyLabels, plainCoreLabels, plainConditionalLabels].join(" | ");
+  assert.match(plainSafetyLabels, /Temperature/, "plain abdominal cramps should include temperature as a safety check");
+  assert.doesNotMatch(plainCoreLabels, /Blood pressure|Heart rate|Respiratory rate|Temperature/, "plain abdominal physical exam should not contain vitals");
+  assert.match(plainConditionalLabels, /Test rebound tenderness/i, "plain abdominal cramps should show peritoneal signs as conditional add-ons");
+  assert.match(plainConditionalLabels, /Test Murphy sign/i, "plain abdominal cramps should show biliary screening as a conditional add-on");
+  assert.doesNotMatch(plainLabels, /Test pronator drift|Inspect facial symmetry|Check pupils|Pronator drift|Facial symmetry|Pupils/i, "plain abdominal cramps should not include neuro safety add-ons");
+  assert.doesNotMatch(plainCoreLabels, /Murphy|Rebound|Psoas|Obturator/, "plain abdominal cramps should keep advanced abdominal maneuvers conditional");
+  assert.doesNotMatch(plainLabels, /Psoas|Obturator/, "plain abdominal cramps should not add appendicitis-specific signs without localization");
+  assert.doesNotMatch(plainAbdominal.warnings.join(" "), /Focal neurologic symptoms/i, "plain abdominal cramps should not warn about focal neuro modifiers");
+
   console.log("Adversarial evidence tests passed for 50 difficult examples.");
 }

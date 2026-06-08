@@ -146,7 +146,11 @@ function parseCsv(csvText) {
   return { headers, rows };
 }
 
-function stringifyCsv(headers, rows) {
+function newlineStyleFor(csvText) {
+  return String(csvText || "").includes("\r\n") ? "\r\n" : "\n";
+}
+
+function stringifyCsv(headers, rows, newline = "\n") {
   const escapeField = (value) => {
     const text = String(value ?? "");
     if (/[",\r\n]/.test(text)) {
@@ -154,7 +158,7 @@ function stringifyCsv(headers, rows) {
     }
     return text;
   };
-  return `${headers.map(escapeField).join(",")}\n${rows.map((row) => headers.map((header) => escapeField(row[header])).join(",")).join("\n")}\n`;
+  return `${headers.map(escapeField).join(",")}${newline}${rows.map((row) => headers.map((header) => escapeField(row[header])).join(",")).join(newline)}${newline}`;
 }
 
 function slugify(value) {
@@ -301,33 +305,42 @@ function inferDiagnosticTarget(row) {
   if (/heart rate|respiratory rate|blood pressure/.test(text)) return "bedside vital-sign instability and trend";
   if (/jvp/.test(text)) return "elevated right-sided filling pressure or venous congestion";
   if (/edema/.test(text)) return "peripheral edema pattern and volume overload clue";
-  if (/pulse|carotid|femoral|dorsalis|posterior tibial/.test(text)) return "perfusion deficit, vascular disease, or limb ischemia clue";
-  if (/lung|thorax|fremitus|pulmonary/.test(text)) return "focal consolidation, effusion, wheeze, work of breathing, or ventilation abnormality";
-  if (/heart sound|auscult|aortic|pulmonic|tricuspid|mitral/.test(text)) return "murmur, abnormal heart sound, or S3/S4 clue";
+  if (/\b(?:pulse|pulses|carotid|femoral pulses|dorsalis|posterior tibial)\b/.test(text)) return "perfusion deficit, vascular disease, or limb ischemia clue";
   if (/pmi|apical impulse|precordium/.test(text)) return "cardiomegaly or displaced/hyperdynamic precordial impulse";
   if (/murphy/.test(text)) return "acute cholecystitis or biliary inflammation";
   if (/psoas|obturator/.test(text)) return "appendiceal irritation pattern";
   if (/rebound|peritoneal/.test(text)) return "peritoneal irritation or acute abdomen";
   if (/cva/.test(text)) return "renal colic or pyelonephritis-associated renal tenderness";
   if (/abdomen|bowel|liver|spleen/.test(text)) return "tenderness pattern, bowel activity, organomegaly, or ascites clue";
+  if (/reflex|babinski/.test(text)) return "upper versus lower motor neuron localization";
+  if (/ballottement|knee effusion/.test(text)) return "knee effusion or intra-articular swelling clue";
+  if (/patellar(?! reflex)|clarke|patellofemoral|anterior knee pain/.test(text)) return "patellofemoral pain provocation clue";
+  if (/straight leg|radicular|sciatica/.test(text)) return "lumbar radiculopathy or sciatic nerve tension clue";
+  if (/tinel|phalen|carpal tunnel/.test(text)) return "median nerve compression or carpal tunnel clue";
+  if (/finkelstein|de quervain/.test(text)) return "De Quervain tenosynovitis pain provocation clue";
+  if (/\b(?:range of motion|shoulder|elbow|wrist|hand|hip|knee|ankle|foot pain|msk exam|sprain|tenderness)\b/.test(text)) return "joint, soft-tissue, tenderness, range-of-motion, or functional limitation clue";
+  if (/heart sound|auscultate heart|cardiac auscultation|aortic area|pulmonic area|tricuspid area|mitral area|\bmurmur\b/.test(text)) return "murmur, abnormal heart sound, rhythm irregularity, or S3/S4 clue";
+  if (/\blung\b|thorax|fremitus|\bpulmonary\b|auscultate (?:posterior|anterior|lateral) lung|wheeze|crackle/.test(text)) return "focal consolidation, effusion, wheeze, work of breathing, or ventilation abnormality";
   if (/visual field|visual acuity|pupill|extraocular/.test(text)) return "cranial nerve II/III/IV/VI deficit or neuro-ophthalmic localization";
   if (/facial|masseter|palate|tongue/.test(text)) return "cranial nerve motor or sensory asymmetry";
   if (/pronator|strength|motor/.test(text)) return "focal motor weakness or upper motor neuron pattern";
   if (/light touch|sharp|vibration|proprioception|sensation/.test(text)) return "sensory deficit, neuropathy, posterior column, or localization clue";
-  if (/reflex|babinski/.test(text)) return "upper versus lower motor neuron localization";
   if (/finger-to-nose|rapid alternating|heel-to-shin|gait|romberg/.test(text)) return "coordination, gait safety, cerebellar, vestibular, or proprioceptive pattern";
   return row.function_or_clinical_use || "bedside finding characterization";
 }
 
 function inferManagementImpact(row) {
-  const text = normalizedText(`${row.include_when} ${row.maneuver_or_finding} ${row.diagnostic_target}`);
+  const text = normalizedText(`${row.include_when} ${row.maneuver_or_finding} ${inferDiagnosticTarget(row)}`);
   if (/heart failure|volume overload|jvp|edema|pmi/.test(text)) return "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.";
   if (/shock|sepsis|blood pressure|heart rate|respiratory rate/.test(text)) return "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.";
-  if (/pneumonia|effusion|dyspnea|lung|pulmonary/.test(text)) return "New focal pulmonary findings can prompt oxygen/support reassessment, imaging review, antibiotics/bronchodilator consideration, or escalation.";
+  if (/heart sound|auscultate heart|cardiac|murmur|aortic|pulmonic|tricuspid|mitral|arrhythmia|chest pain/.test(text)) return "New rhythm, murmur, displaced impulse, or extra sound can change telemetry, ECG/echo need, volume strategy, or escalation.";
+  if (/\b(?:pneumonia|pleural effusion|dyspnea|lung|pulmonary|respiratory|wheeze|crackle|hypoxia)\b/.test(text)) return "New focal pulmonary findings can prompt oxygen/support reassessment, imaging review, antibiotics/bronchodilator consideration, or escalation.";
   if (/appendicitis|cholecystitis|acute abdomen|rebound|murphy|psoas|obturator/.test(text)) return "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.";
+  if (/\b(?:abdominal|abdomen|bowel|organomegaly|ascites|ileus)\b/.test(text) || /\b(?:bowel|abdominal)\b.*\bobstruction\b/.test(text)) return "Abnormal abdominal findings can change pain localization, obstruction/ileus concern, imaging threshold, surgical consultation, or need for serial abdominal exams.";
   if (/pyelonephritis|renal colic|aki|cva/.test(text)) return "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.";
   if (/stroke|weakness|neuro|cranial|reflex|babinski|gait|romberg|ataxia/.test(text)) return "New focal neurologic findings can prompt urgent localization, stroke/neuro escalation, fall precautions, imaging review, or therapy planning.";
   if (/vascular|pulse|limb ischemia|diabetes foot/.test(text)) return "Pulse or foot abnormalities can prompt vascular/wound evaluation, limb-risk documentation, or perfusion imaging consideration.";
+  if (/\b(?:joint|soft tissue|range of motion|shoulder|elbow|wrist|hand|hip|knee|ankle|foot pain|msk|sprain|tenderness|radiculopathy|carpal tunnel|tenosynovitis)\b/.test(text)) return "Focal musculoskeletal findings can change imaging threshold, immobilization, activity restriction, infection/inflammatory concern, specialist referral, or follow-up urgency.";
   return "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.";
 }
 
@@ -347,12 +360,15 @@ function inferManagementLink(row) {
 function inferContraindications(row) {
   const text = normalizedText(`${row.maneuver_or_finding} ${row.examiner_technique} ${row.include_when}`);
   if (/romberg|gait|toe walking|heel walking|tandem/.test(text)) return "Guard closely; avoid unsupported testing when fall risk, severe weakness, or unsafe standing.";
-  if (/psoas|obturator|rebound|murphy|palpation|mtp squeeze|straight leg|patellar grind/.test(text)) return "Use gentle technique; stop if severe pain, guarding, instability, or patient preference limits exam.";
   if (/blood pressure/.test(text)) return "Use appropriate cuff size and avoid affected limbs when contraindicated by lines, injury, fistula, or surgical precautions.";
   if (/carotid/.test(text)) return "Do not palpate both carotids at once; use caution with syncope, bruits, or known vascular disease.";
-  if (/ophthalmoscope|pupill|light/.test(text)) return "Limit bright light if severe photophobia or ocular injury; interpret cautiously after eye drops or ocular procedures.";
   if (/sensory|sharp|cotton/.test(text)) return "Use clean disposable stimulus; avoid skin breakdown or open wounds.";
+  if (/mouth|oropharynx|gingivae|dentition|tongue blade|pharynx|tonsil/.test(text)) return "Use a clean light and tongue blade when needed; stop if gagging, trismus, airway concern, severe pain, or patient preference limits the exam.";
+  if (/sinus|scalp|thyroid|goiter|neck mass/.test(text)) return "Palpate gently; stop if marked pain, airway concern, skin breakdown, trauma concern, or patient preference limits the exam.";
+  if (/ophthalmoscope|pupill|visual field|extraocular|conjunctiv|sclerae|eye complaint|ocular/.test(text)) return "Limit bright light if severe photophobia or ocular injury; interpret cautiously after eye drops or ocular procedures.";
   if (/stethoscope|auscult/.test(text)) return "Clean equipment before patient contact and interpret cautiously in noisy rooms.";
+  if (/psoas|obturator|rebound|murphy|abdominal palpation|light and deep palpation|palpate liver|palpate spleen/.test(text)) return "Use gentle technique; stop if severe pain, guarding, instability, or patient preference limits exam.";
+  if (/mtp squeeze|straight leg|patellar grind|palpation/.test(text)) return "Use gentle technique; stop if severe pain, instability, skin breakdown, or patient preference limits exam.";
   return "Interpret in clinical context; patient cooperation, pain, body habitus, positioning, and examiner skill may limit reliability.";
 }
 
@@ -460,7 +476,8 @@ function shouldCurate(row) {
   return row.exam_system === "Neuro" && highYieldNeuroSourceItems.has(row.source_item);
 }
 
-const parsed = parseCsv(readFileSync(basePath, "utf8"));
+const baseCsvText = readFileSync(basePath, "utf8");
+const parsed = parseCsv(baseCsvText);
 const missingBaseColumns = baseColumns.filter((column) => !parsed.headers.includes(column));
 if (missingBaseColumns.length) {
   throw new Error(`${basePath} missing expected columns: ${missingBaseColumns.join(", ")}`);
@@ -469,7 +486,7 @@ if (missingBaseColumns.length) {
 const examIds = buildExamIds(parsed.rows);
 const rowsWithIds = parsed.rows.map((row, index) => ({ ...row, exam_id: examIds[index] }));
 const baseHeadersWithId = parsed.headers.includes("exam_id") ? parsed.headers : [...parsed.headers, "exam_id"];
-writeFileSync(basePath, stringifyCsv(baseHeadersWithId, rowsWithIds), "utf8");
+writeFileSync(basePath, stringifyCsv(baseHeadersWithId, rowsWithIds, newlineStyleFor(baseCsvText)), "utf8");
 
 const overlayRows = rowsWithIds.map((row) => {
   const overlay = baseOverlay(row);
@@ -481,6 +498,6 @@ if (curatedCount !== 75) {
   throw new Error(`Expected exactly 75 evidence-populated rows, got ${curatedCount}`);
 }
 
-writeFileSync(overlayPath, stringifyCsv(overlayColumns, overlayRows), "utf8");
+writeFileSync(overlayPath, stringifyCsv(overlayColumns, overlayRows, newlineStyleFor(baseCsvText)), "utf8");
 
 console.log(`Wrote ${rowsWithIds.length} base rows with exam_id and ${overlayRows.length} overlay rows (${curatedCount} evidence-populated).`);

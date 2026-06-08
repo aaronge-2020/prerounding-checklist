@@ -6,6 +6,11 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 const manifestPath = path.join(repoRoot, "medical-knowledge", "manifest.json");
 const outputPath = path.join(repoRoot, "medical-knowledge-db.js");
 const databaseSchemaVersion = "medical_knowledge_database_v1";
+const placeholderExamTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
+const placeholderDiagnosticTargetPattern = /\bfocused bedside finding relevant to\b|^\s*$/i;
+const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
+const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
+const staleGeneratedProvenancePattern = /\bgenerated endocrine workup\b|Generated from guideline-backed endocrine workup automation/i;
 
 function readJson(relativeOrAbsolutePath) {
   const absolutePath = path.isAbsolute(relativeOrAbsolutePath)
@@ -39,6 +44,7 @@ function itemSourceId(item) {
 function collectModuleItems(module) {
   return [
     "redFlags",
+    "safetyChecks",
     "requiredQuestions",
     "conditionalQuestions",
     "requiredExam",
@@ -49,6 +55,172 @@ function collectModuleItems(module) {
   ].flatMap((group) => (module[group] || []).map((item) => ({ group, item })));
 }
 
+function mapModuleItemGroups(module, mapper) {
+  const groups = [
+    "redFlags",
+    "safetyChecks",
+    "requiredQuestions",
+    "conditionalQuestions",
+    "requiredExam",
+    "conditionalExam",
+    "initialTests",
+    "dispositionRules",
+    "differentialBuckets"
+  ];
+  return groups.reduce((nextModule, group) => {
+    if (!Array.isArray(nextModule[group])) {
+      return nextModule;
+    }
+    return {
+      ...nextModule,
+      [group]: nextModule[group].map((item) => mapper(item, group, nextModule))
+    };
+  }, module);
+}
+
+function isQuestionGroup(group) {
+  return group === "requiredQuestions" || group === "conditionalQuestions";
+}
+
+function isExamGroup(group) {
+  return group === "requiredExam" || group === "conditionalExam";
+}
+
+function hasClinicalValue(value) {
+  if (Array.isArray(value)) {
+    return value.some((entry) => hasClinicalValue(entry));
+  }
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+  return Boolean(value);
+}
+
+function normalizeClinicalBuildText(value = "") {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function genericFindingsOptions(value = "") {
+  const rawOptions = Array.isArray(value) ? value : String(value || "").split(/[;|/]+/);
+  const tokens = rawOptions
+    .map((option) => normalizeClinicalBuildText(option))
+    .filter(Boolean);
+  const genericTokens = tokens.filter((option) => /^(?:normal|abnormal|present|absent|normal absent|abnormal present|unable|unable to assess|not assessed)$/.test(option));
+  if (tokens.length < 3 || genericTokens.length !== tokens.length) {
+    return false;
+  }
+  const joined = tokens.join(" ");
+  return /\b(?:unable|unable to assess|not assessed)\b/.test(joined)
+    && ((/\bnormal\b/.test(joined) && /\babnormal\b/.test(joined))
+      || (/\bpresent\b/.test(joined) && /\babsent\b/.test(joined)));
+}
+
+function requireItemFields(issues, moduleId, group, item, fields, label = "") {
+  for (const field of fields) {
+    if (!hasClinicalValue(item[field])) {
+      issues.push(`${moduleId}.${group}.${item.id || "missing"} missing ${label || field}${label ? ` (${field})` : ""}`);
+    }
+  }
+}
+
+const validLrPattern = /^(?:n\/a|na|not available|not studied|pending|unavailable|[<>]?\s*\d+(?:\.\d+)?(?:\s*-\s*[<>]?\s*\d+(?:\.\d+)?)?)$/i;
+const validDifficultyValues = new Set(["easy", "moderate", "hard", "difficult"]);
+const validCooperationValues = new Set(["low", "moderate", "high", "n/a"]);
+
+function validateItemMetadataValues(issues, moduleId, group, item = {}) {
+  ["LR_plus", "LR_minus"].forEach((field) => {
+    const value = item[field];
+    if (hasClinicalValue(value) && !validLrPattern.test(String(value).trim())) {
+      issues.push(`${moduleId}.${group}.${item.id || "missing"} invalid ${field}: ${value}`);
+    }
+  });
+
+  if (group === "safetyChecks" || isExamGroup(group)) {
+    const minutes = Number(item.time_burden_minutes);
+    if (!Number.isFinite(minutes) || minutes < 0 || minutes > 30) {
+      issues.push(`${moduleId}.${group}.${item.id || "missing"} invalid time_burden_minutes: ${item.time_burden_minutes}`);
+    }
+    const difficulty = String(item.difficulty || "").trim().toLowerCase();
+    if (difficulty && !validDifficultyValues.has(difficulty)) {
+      issues.push(`${moduleId}.${group}.${item.id || "missing"} invalid difficulty: ${item.difficulty}`);
+    }
+    const cooperation = String(item.patient_cooperation_required || "").trim().toLowerCase();
+    if (cooperation && !validCooperationValues.has(cooperation)) {
+      issues.push(`${moduleId}.${group}.${item.id || "missing"} invalid patient_cooperation_required: ${item.patient_cooperation_required}`);
+    }
+  }
+}
+
+function expectedItemTypeForGroup(group = "") {
+  if (group === "safetyChecks") return "safety_check";
+  if (isQuestionGroup(group)) return "history_question";
+  if (isExamGroup(group)) return "physical_exam_maneuver";
+  if (group === "redFlags") return "red_flag";
+  if (group === "initialTests") return "diagnostic_test";
+  if (group === "dispositionRules") return "management_change";
+  if (group === "differentialBuckets") return "diagnostic_frame";
+  return "";
+}
+
+function isBasicBedsideDataItem(item = {}) {
+  const text = `${item.id || ""} ${item.label || ""} ${item.action || ""}`;
+  return basicBedsideDataPattern.test(text)
+    || /(?:_measure_bp|_measure_hr|_measure_rr|_measure_spo2|_measure_temperature|_measure_weight|orthostatic|bedside_glucose|fingerstick|pain_score|mental_status|assess_mental_status|airway_protection)/i.test(text);
+}
+
+function expectedBasicBedsideEquipment(item = {}) {
+  const text = `${item.id || ""} ${item.label || ""}`.toLowerCase();
+  if (/\bblood pressure|\bbp\b|orthostatic|standing blood pressure/.test(text)) return "blood pressure cuff";
+  if (/\bheart rate\b|\bhr\b|pulse rate/.test(text)) return "watch/timer or bedside monitor";
+  if (/\brespiratory rate\b|\brr\b/.test(text)) return "watch/timer or bedside monitor";
+  if (/oxygen saturation|spo2|pulse oximetry/.test(text)) return "pulse oximeter";
+  if (/temperature|temp/.test(text)) return "thermometer";
+  if (/waist circumference/.test(text)) return "tape measure";
+  if (/body mass index|bmi/.test(text)) return "scale and height measurement";
+  if (/current weight|\bweight\b/.test(text)) return "scale";
+  if (/glucose|fingerstick/.test(text)) return "glucometer";
+  if (/general appearance|mental status|pain score/.test(text)) return "none";
+  return "";
+}
+
+function safetyEquipmentIssue(item = {}) {
+  const expected = expectedBasicBedsideEquipment(item);
+  if (!expected) return "";
+  const actual = String(item.equipment_needed || "").trim().toLowerCase();
+  const normalizedExpected = expected.toLowerCase();
+  if (!actual) return `expected ${expected}`;
+  if (normalizedExpected === "none") {
+    return actual === "none" ? "" : `expected ${expected}, got ${item.equipment_needed}`;
+  }
+  const expectedAny = normalizedExpected.split(/\s+or\s+|,\s*/).map((value) => value.trim()).filter(Boolean);
+  const matches = expectedAny.some((option) => actual.includes(option)) || actual.includes(normalizedExpected);
+  return matches ? "" : `expected ${expected}, got ${item.equipment_needed}`;
+}
+
+function questionLikelihoodRatioNote(item = {}) {
+  const existing = item.likelihood_ratio_note || item.LR_note || item.lr_note || item.likelihoodRatioNote;
+  if (String(existing || "").trim()) {
+    return existing;
+  }
+  return "Question-level LR+/LR- is not available unless the cited evidence validates the exact response; use this answer to localize the source, assess severity, and guide management.";
+}
+
+function normalizeMedicalKnowledgeModuleForBuild(module = {}) {
+  return mapModuleItemGroups(module, (item, group) => {
+    if (!isQuestionGroup(group)) {
+      return item;
+    }
+    return {
+      ...item,
+      likelihood_ratio_note: questionLikelihoodRatioNote(item)
+    };
+  });
+}
+
 export function loadMedicalKnowledgeDatabase() {
   if (!existsSync(manifestPath)) {
     throw new Error("medical-knowledge/manifest.json is missing.");
@@ -57,7 +229,7 @@ export function loadMedicalKnowledgeDatabase() {
   const sourceRegistry = readJson(manifest.source_registry || "medical-knowledge/source-registry.json");
   const complaintModules = (manifest.complaint_modules || []).map((modulePath) => {
     const envelope = readJson(modulePath);
-    return envelope.module || envelope;
+    return normalizeMedicalKnowledgeModuleForBuild(envelope.module || envelope);
   });
 
   return { manifest, sourceRegistry, complaintModules };
@@ -116,6 +288,10 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
       if (!item.id || !item.label) {
         issues.push(`${module.id}.${group} has an item missing id or label`);
       }
+      const expectedItemType = expectedItemTypeForGroup(group);
+      if (expectedItemType && item.item_type !== expectedItemType) {
+        issues.push(`${module.id}.${group}.${item.id || "missing"} item_type must be ${expectedItemType}, got ${item.item_type || "missing"}`);
+      }
       const sourceId = itemSourceId(item);
       if (!sourceId || !sourceIds.has(sourceId)) {
         issues.push(`${module.id}.${group}.${item.id || "missing"} references invalid source ${sourceId || "missing"}`);
@@ -124,6 +300,86 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         if (!item.source?.[field]) {
           issues.push(`${module.id}.${group}.${item.id || "missing"} source missing ${field}`);
         }
+      }
+      if (staleGeneratedProvenancePattern.test(`${item.source?.source_section || ""} ${item.source?.implementation_notes || ""}`)) {
+        issues.push(`${module.id}.${group}.${item.id || "missing"} source provenance uses stale generated-workup wording`);
+      }
+      validateItemMetadataValues(issues, module.id, group, item);
+      if (isQuestionGroup(group)) {
+        requireItemFields(issues, module.id, group, item, ["text", "when_to_ask", "diagnostic_purpose", "management_implication", "likelihood_ratio_note"]);
+        if (!item.options?.length) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} missing answer options`);
+        }
+        if (!item.tags?.length) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} missing tags`);
+        }
+        if (!/\?$/.test(String(item.text || item.label || "").trim())) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} must be phrased as an askable question`);
+        }
+        if (/\bAny .+\brelevant to\b/i.test(`${item.text || ""} ${item.label || ""}`)) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} uses generic relevance boilerplate instead of a clinically specific question`);
+        }
+      }
+      if (isExamGroup(group)) {
+        if (isBasicBedsideDataItem(item)) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} basic bedside data/safety item belongs in safetyChecks, not physical exam: ${item.label}`);
+        }
+        if (bundledExamPattern.test(item.label || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} exam label appears bundled or vague: ${item.label}`);
+        }
+        if (genericFindingsOptions(item.findings_options || item.findingsOptions || item.options)) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} findings_options are generic; use maneuver-specific documentation choices`);
+        }
+        for (const field of ["technique", "findings_options", "when_to_perform", "diagnostic_target", "LR_plus", "LR_minus", "likelihood_ratio_note", "management_change", "difficulty", "time_burden_minutes", "equipment_needed", "patient_cooperation_required", "limitations", "tags"]) {
+          if (!hasClinicalValue(item[field])) {
+            issues.push(`${module.id}.${group}.${item.id || "missing"} missing ${field}`);
+          }
+        }
+        if (placeholderExamTechniquePattern.test(item.technique || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} has placeholder technique`);
+        }
+        if (placeholderDiagnosticTargetPattern.test(item.diagnostic_target || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} has generic diagnostic_target`);
+        }
+        if (/\bDocuments focused endocrine signs and complications that help distinguish severity, mimics, and management priorities\b/i.test(item.rationale || "")) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} has generic exam rationale`);
+        }
+      }
+      if (group === "redFlags") {
+        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
+      }
+      if (group === "safetyChecks") {
+        requireItemFields(
+          issues,
+          module.id,
+          group,
+          item,
+          [
+            "action",
+            "rationale",
+            "management_change",
+            "difficulty",
+            "time_burden_minutes",
+            "equipment_needed",
+            "patient_cooperation_required",
+            "limitations",
+            "likelihood_ratio_note",
+            "tags"
+          ]
+        );
+        const equipmentIssue = safetyEquipmentIssue(item);
+        if (equipmentIssue) {
+          issues.push(`${module.id}.${group}.${item.id || "missing"} safety-check equipment mismatch: ${equipmentIssue}`);
+        }
+      }
+      if (group === "initialTests") {
+        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
+      }
+      if (group === "dispositionRules") {
+        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
+      }
+      if (group === "differentialBuckets") {
+        requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
       }
     }
   }

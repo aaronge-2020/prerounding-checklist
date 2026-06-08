@@ -1,0 +1,1487 @@
+{
+  "generated_at": "2026-06-07T13:48:29.844Z",
+  "setting": "General medicine",
+  "population": "Adult",
+  "modifiers": "",
+  "diagnosis_query": "",
+  "intent_ids": [
+    "abdominal_pain_cramping_v1"
+  ],
+  "results": [
+    {
+      "intent_id": "abdominal_pain_cramping_v1",
+      "label": "Abdominal pain or cramping",
+      "status": "validated",
+      "required_domains": [
+        "vitals",
+        "abdominal inspection",
+        "bowel sounds",
+        "palpation/peritoneal signs when indicated",
+        "abdominal pain initial tests",
+        "acute abdomen red flags"
+      ],
+      "avoid_labels": [
+        "PMI",
+        "Visual acuity",
+        "Vibration sense",
+        "Pronator drift"
+      ],
+      "context": "General medicine\nAdult\nvalidated clinical intent workup\nintent: Abdominal pain or cramping\nintent_id: abdominal_pain_cramping_v1\nintent tags: abdominal_pain; abdomen; abdominal_exam; gi_gu_exam; vitals; vital_signs; infection; hypovolemia; peritonitis; acute_abdomen; appendicitis; biliary_disease; pancreatitis; obstruction; gi_bleed; pregnancy; ectopic; urinary; flank_pain; diagnostic_test; red_flag\nclinical bundles: abdominal_gi\nrequired domains: vitals; abdominal inspection; bowel sounds; palpation/peritoneal signs when indicated; abdominal pain initial tests; acute abdomen red flags\navoid labels: PMI; Visual acuity; Vibration sense; Pronator drift",
+      "matched_tags": [
+        "abdominal_pain",
+        "diagnostic_safety",
+        "gi_bleed",
+        "hypovolemia",
+        "infection"
+      ],
+      "active_bundles": [
+        "abdominal_gi"
+      ],
+      "counts": {
+        "safety": 5,
+        "history": 1,
+        "core": 4,
+        "conditional": 2,
+        "tests": 2,
+        "red_flags": 2,
+        "management": 16,
+        "limitations": 16,
+        "evidence_metadata": 16,
+        "catalog_gaps": 0,
+        "retrieved": 32,
+        "suppressed": 26,
+        "issues": 0,
+        "review_notes": 8
+      },
+      "safety": [
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "Abnormal blood pressure can change acuity, fluids, antihypertensive decisions, endocrine-crisis treatment, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "Abnormal heart rate can change ECG/telemetry urgency, volume or endocrine-crisis assessment, infection severity, medication review, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal respiratory rate or labored breathing can change oxygen/ventilation assessment, acid-base urgency, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal oxygen saturation or rising oxygen requirement can change respiratory support, imaging urgency, pulmonary/infectious/cardiac framing, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "Fever or hypothermia can change infection/endocrine-crisis workup, isolation, medication decisions, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        }
+      ],
+      "history": [
+        {
+          "label": "Where is the pain worst, what changed over time, and are there fever, persistent vomiting, blood or black stool, jaundice, urinary/flank symptoms, pregnancy possibility, syncope, severe/worsening focal pain, or inability to pass stool/gas?",
+          "role": "history",
+          "reason": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "management_change": "The answer changes whether to prioritize peritoneal signs, Murphy sign, CVA tenderness, pregnancy testing, CBC/CMP/LFT/lipase/UA, CT, RUQ ultrasound, pelvic imaging, stool studies, surgical/ED escalation, or serial reassessment.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": ""
+        }
+      ],
+      "core": [
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "fit": 100,
+          "score": 258,
+          "reason": "Defines tenderness pattern, distension, bowel activity, and peritoneal concern.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "fit": 100,
+          "score": 258,
+          "reason": "Defines tenderness pattern, distension, bowel activity, and peritoneal concern.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "core",
+          "fit": 100,
+          "score": 225,
+          "reason": "Defines tenderness pattern, distension, bowel activity, and peritoneal concern.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "core",
+          "fit": 100,
+          "score": 135,
+          "reason": "Defines tenderness pattern, distension, bowel activity, and peritoneal concern.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        }
+      ],
+      "conditional": [
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "conditional",
+          "fit": 100,
+          "score": 100,
+          "reason": "Makes peritoneal irritation explicit as a conditional abdominal-pain maneuver instead of hiding it until the user supplies perfect localization terms.",
+          "diagnostic_target": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "management_change": "A positive peritoneal sign can change imaging urgency, surgical consultation, NPO/analgesia planning, antibiotics, disposition, and need for serial abdominal exams.",
+          "evidence": "MCGEE_EBPD; SM25; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "conditional",
+          "fit": 100,
+          "score": 100,
+          "reason": "Keeps biliary disease on the abdominal-pain bedside differential; perform when pain localizes to RUQ/epigastrium or biliary features are present.",
+          "diagnostic_target": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "management_change": "A positive Murphy sign can change ultrasound threshold, antibiotics/surgical consultation, NPO planning, analgesia strategy, and urgency of reassessment.",
+          "evidence": "MCGEE_EBPD; SM25; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "exam_id": "REQ-abdominal-initial-tests",
+          "label": "Abdominal pain initial tests and localization pathway",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Abdominal pain needs tests selected by localization and danger features; a generic abdominal exam alone can miss pregnancy-related, hepatobiliary, pancreatic, urinary, bleeding, septic, obstructive, or ischemic disease.",
+          "diagnostic_target": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "management_change": "Abnormal CBC, creatinine/electrolytes, bilirubin/LFTs, lipase, urinalysis, pregnancy test, stool testing, or lactate changes imaging choice, fluids, antibiotics, surgical/OB/GU consultation, ED disposition, and serial exam urgency.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; ACOG_ECTOPIC_FAQ; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-imaging-pathway",
+          "label": "Abdominal imaging pathway by location and risk",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Imaging should follow clinical localization and risk rather than a one-size-fits-all abdominal-pain checklist.",
+          "diagnostic_target": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "management_change": "Appropriate imaging can change surgical/IR/OB/GU consultation, antibiotics, NPO status, analgesia, disposition, and need for serial abdominal exams; contrast/pregnancy/renal constraints change modality.",
+          "evidence": "ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AAFP_ACUTE_ABD_PAIN_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "red_flags": [
+        {
+          "exam_id": "REQ-abdominal-acute-abdomen-red-flags",
+          "label": "Acute abdomen and surgical escalation cues",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "A clinically safe abdominal-pain workup must explicitly separate benign cramps from acute abdomen, obstruction, bleeding, ischemia, and sepsis patterns.",
+          "diagnostic_target": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "management_change": "These cues change ED/surgical escalation, imaging urgency, NPO/IV access/analgesia/antiemetic strategy, fluids, antibiotics, type-screen or transfusion planning, and frequency of serial abdominal exams.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-pregnancy-vascular-mimic-red-flags",
+          "label": "Pregnancy, vascular, and extra-abdominal danger cues",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Some dangerous abdominal-pain presentations are missed when the checklist stays inside the abdomen; pregnancy, vascular, GU, cardiopulmonary, hepatobiliary, and metabolic mimics need an explicit screen.",
+          "diagnostic_target": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "management_change": "These cues change pregnancy testing and pelvic imaging, vascular/CT pathway, GU exam/ultrasound, ECG/chest evaluation, antibiotics/source control, specialty consultation, and ED escalation.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACOG_ECTOPIC_FAQ; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "management_changes": [
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "Focal, progressive, peritoneal, obstructive, or distended findings can change imaging urgency, surgical consultation, fluid strategy, and serial abdominal exam needs.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-source-severity-history",
+          "label": "Where is the pain worst, what changed over time, and are there fever, persistent vomiting, blood or black stool, jaundice, urinary/flank symptoms, pregnancy possibility, syncope, severe/worsening focal pain, or inability to pass stool/gas?",
+          "role": "core",
+          "reason": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "diagnostic_target": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "management_change": "The answer changes whether to prioritize peritoneal signs, Murphy sign, CVA tenderness, pregnancy testing, CBC/CMP/LFT/lipase/UA, CT, RUQ ultrasound, pelvic imaging, stool studies, surgical/ED escalation, or serial reassessment.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-initial-tests",
+          "label": "Abdominal pain initial tests and localization pathway",
+          "role": "core",
+          "reason": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "diagnostic_target": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "management_change": "Abnormal CBC, creatinine/electrolytes, bilirubin/LFTs, lipase, urinalysis, pregnancy test, stool testing, or lactate changes imaging choice, fluids, antibiotics, surgical/OB/GU consultation, ED disposition, and serial exam urgency.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; ACOG_ECTOPIC_FAQ; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-imaging-pathway",
+          "label": "Abdominal imaging pathway by location and risk",
+          "role": "core",
+          "reason": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "diagnostic_target": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "management_change": "Appropriate imaging can change surgical/IR/OB/GU consultation, antibiotics, NPO status, analgesia, disposition, and need for serial abdominal exams; contrast/pregnancy/renal constraints change modality.",
+          "evidence": "ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AAFP_ACUTE_ABD_PAIN_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-acute-abdomen-red-flags",
+          "label": "Acute abdomen and surgical escalation cues",
+          "role": "core",
+          "reason": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "diagnostic_target": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "management_change": "These cues change ED/surgical escalation, imaging urgency, NPO/IV access/analgesia/antiemetic strategy, fluids, antibiotics, type-screen or transfusion planning, and frequency of serial abdominal exams.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-pregnancy-vascular-mimic-red-flags",
+          "label": "Pregnancy, vascular, and extra-abdominal danger cues",
+          "role": "core",
+          "reason": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "diagnostic_target": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "management_change": "These cues change pregnancy testing and pelvic imaging, vascular/CT pathway, GU exam/ultrasound, ECG/chest evaluation, antibiotics/source control, specialty consultation, and ED escalation.",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACOG_ECTOPIC_FAQ; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "Abnormal blood pressure can change acuity, fluids, antihypertensive decisions, endocrine-crisis treatment, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "Abnormal heart rate can change ECG/telemetry urgency, volume or endocrine-crisis assessment, infection severity, medication review, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal respiratory rate or labored breathing can change oxygen/ventilation assessment, acid-base urgency, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal oxygen saturation or rising oxygen requirement can change respiratory support, imaging urgency, pulmonary/infectious/cardiac framing, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "Fever or hypothermia can change infection/endocrine-crisis workup, isolation, medication decisions, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "conditional",
+          "reason": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "diagnostic_target": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "management_change": "A positive peritoneal sign can change imaging urgency, surgical consultation, NPO/analgesia planning, antibiotics, disposition, and need for serial abdominal exams.",
+          "evidence": "MCGEE_EBPD; SM25; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "conditional",
+          "reason": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "diagnostic_target": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "management_change": "A positive Murphy sign can change ultrasound threshold, antibiotics/surgical consultation, NPO planning, analgesia strategy, and urgency of reassessment.",
+          "evidence": "MCGEE_EBPD; SM25; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "routes": []
+        }
+      ],
+      "limitations": [
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "core",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-source-severity-history",
+          "label": "Where is the pain worst, what changed over time, and are there fever, persistent vomiting, blood or black stool, jaundice, urinary/flank symptoms, pregnancy possibility, syncope, severe/worsening focal pain, or inability to pass stool/gas?",
+          "role": "core",
+          "reason": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "diagnostic_target": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-initial-tests",
+          "label": "Abdominal pain initial tests and localization pathway",
+          "role": "core",
+          "reason": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "diagnostic_target": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; ACOG_ECTOPIC_FAQ; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-imaging-pathway",
+          "label": "Abdominal imaging pathway by location and risk",
+          "role": "core",
+          "reason": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "diagnostic_target": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "management_change": "",
+          "evidence": "ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AAFP_ACUTE_ABD_PAIN_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-acute-abdomen-red-flags",
+          "label": "Acute abdomen and surgical escalation cues",
+          "role": "core",
+          "reason": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "diagnostic_target": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-abdominal-pregnancy-vascular-mimic-red-flags",
+          "label": "Pregnancy, vascular, and extra-abdominal danger cues",
+          "role": "core",
+          "reason": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "diagnostic_target": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACOG_ECTOPIC_FAQ; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "conditional",
+          "reason": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "diagnostic_target": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "management_change": "",
+          "evidence": "MCGEE_EBPD; SM25; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "conditional",
+          "reason": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "diagnostic_target": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "management_change": "",
+          "evidence": "MCGEE_EBPD; SM25; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "routes": []
+        }
+      ],
+      "evidence_metadata": [
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "evidence",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "evidence",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "evidence",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "evidence",
+          "reason": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "diagnostic_target": "Abdominal pattern: focal tenderness, guarding, rebound/peritoneal irritation, distension, altered bowel sounds, mass, or ascites clue.",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-source-severity-history",
+          "label": "Where is the pain worst, what changed over time, and are there fever, persistent vomiting, blood or black stool, jaundice, urinary/flank symptoms, pregnancy possibility, syncope, severe/worsening focal pain, or inability to pass stool/gas?",
+          "role": "evidence",
+          "reason": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "diagnostic_target": "Abdominal source and acuity: biliary, appendiceal, pancreatic, obstruction/ileus, GI bleed, GU/renal, pelvic/pregnancy-related, infectious/inflammatory, ischemic, or nonspecific self-limited pattern.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-initial-tests",
+          "label": "Abdominal pain initial tests and localization pathway",
+          "role": "evidence",
+          "reason": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "diagnostic_target": "Initial abdominal-pain diagnostic data: infection/anemia, renal/electrolyte status, hepatobiliary obstruction/injury, pancreatitis, urinary/stone/pyelonephritis, pregnancy/ectopic risk, inflammatory diarrhea, sepsis, or ischemia.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; ACOG_ECTOPIC_FAQ; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-imaging-pathway",
+          "label": "Abdominal imaging pathway by location and risk",
+          "role": "evidence",
+          "reason": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "diagnostic_target": "Imaging target: appendicitis, diverticulitis, cholecystitis/biliary obstruction, bowel obstruction/perforation, abscess, ischemia, renal colic, pelvic/ectopic disease, or low-risk non-imaging trajectory.",
+          "management_change": "",
+          "evidence": "ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AAFP_ACUTE_ABD_PAIN_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-acute-abdomen-red-flags",
+          "label": "Acute abdomen and surgical escalation cues",
+          "role": "evidence",
+          "reason": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "diagnostic_target": "High-risk abdominal process: peritonitis, obstruction, perforation, ischemia, significant GI bleed, sepsis, or high-risk host with subtle signs.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-abdominal-pregnancy-vascular-mimic-red-flags",
+          "label": "Pregnancy, vascular, and extra-abdominal danger cues",
+          "role": "evidence",
+          "reason": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "diagnostic_target": "Dangerous mimic or adjacent source: ectopic pregnancy, AAA/dissection/mesenteric ischemia, torsion, ACS/PE/lower-lobe pneumonia, cholangitis, obstructed infected stone, or metabolic crisis.",
+          "management_change": "",
+          "evidence": "AAFP_ACUTE_ABD_PAIN_2023; ACOG_ECTOPIC_FAQ; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "evidence",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "evidence",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "evidence",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "evidence",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "evidence",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; AAFP_ACUTE_ABD_PAIN_2023; ACR_RLQ_PAIN_2022; ACR_RUQ_PAIN_2022; JAMA_RCE; MCGEE_EBPD",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "evidence",
+          "reason": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "diagnostic_target": "Peritoneal irritation or acute abdomen: pain worse on release, guarding pattern, or worsening localized tenderness.",
+          "management_change": "",
+          "evidence": "MCGEE_EBPD; SM25; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "evidence",
+          "reason": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "diagnostic_target": "Biliary or gallbladder inflammation: inspiratory arrest or focal RUQ tenderness during gallbladder palpation.",
+          "management_change": "",
+          "evidence": "MCGEE_EBPD; SM25; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "catalog_gaps": [],
+      "top_retrieved": [
+        {
+          "exam_id": "EXAM-088-blood-pressure",
+          "label": "Blood pressure",
+          "role": "",
+          "fit": "",
+          "score": 274,
+          "reason": "",
+          "diagnostic_target": "bedside vital-sign instability and trend",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "Stanford Medicine 25 blood pressure measurement techniques; Surviving Sepsis Campaign guideline",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-086-heart-rate",
+          "label": "Heart rate",
+          "role": "",
+          "fit": "",
+          "score": 268,
+          "reason": "",
+          "diagnostic_target": "bedside vital-sign instability and trend",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "Surviving Sepsis Campaign guideline; vital-sign trend interpreted in clinical context",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "",
+          "fit": "",
+          "score": 258,
+          "reason": "",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "",
+          "fit": "",
+          "score": 258,
+          "reason": "",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "",
+          "fit": "",
+          "score": 226,
+          "reason": "",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "",
+          "fit": "",
+          "score": 225,
+          "reason": "",
+          "diagnostic_target": "tenderness pattern, bowel activity, organomegaly, or ascites clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-061-oropharynx",
+          "label": "Oropharynx",
+          "role": "",
+          "fit": "",
+          "score": 223,
+          "reason": "",
+          "diagnostic_target": "Screens pharyngeal/tonsillar pathology",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "",
+          "fit": "",
+          "score": 204,
+          "reason": "",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-087-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "",
+          "fit": "",
+          "score": 185,
+          "reason": "",
+          "diagnostic_target": "bedside vital-sign instability and trend",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "Surviving Sepsis Campaign guideline; vital-sign trend interpreted in clinical context",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "",
+          "fit": "",
+          "score": 178,
+          "reason": "",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-082-psoas-sign",
+          "label": "Psoas sign",
+          "role": "",
+          "fit": "",
+          "score": 174,
+          "reason": "",
+          "diagnostic_target": "appendiceal irritation pattern",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "AAFP appendicitis review citing clinical likelihood ratios; JAMA Rational Clinical Examination PubMed record",
+          "lr_plus": "2.38",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-083-obturator-sign",
+          "label": "Obturator sign",
+          "role": "",
+          "fit": "",
+          "score": 171,
+          "reason": "",
+          "diagnostic_target": "appendiceal irritation pattern",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "JAMA Rational Clinical Examination appendicitis PubMed record; open acute-abdomen review",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-054-sclerae-and-conjunctivae",
+          "label": "Sclerae and conjunctivae",
+          "role": "",
+          "fit": "",
+          "score": 164,
+          "reason": "",
+          "diagnostic_target": "Screens anemia, jaundice, conjunctivitis",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "",
+          "fit": "",
+          "score": 147,
+          "reason": "",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "difficulty": "moderate",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "",
+          "fit": "",
+          "score": 135,
+          "reason": "",
+          "diagnostic_target": "tenderness pattern, bowel activity, organomegaly, or ascites clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "",
+          "fit": "",
+          "score": 134,
+          "reason": "",
+          "diagnostic_target": "acute cholecystitis or biliary inflammation",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "Open review of abdominal eponyms; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        }
+      ],
+      "high_score_suppressed": [
+        {
+          "label": "Blood pressure",
+          "score": 274,
+          "reason": "Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Heart rate",
+          "score": 268,
+          "reason": "Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Mouth exam",
+          "score": 226,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Oropharynx",
+          "score": 223,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "CVA tenderness",
+          "score": 204,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Respiratory rate",
+          "score": 185,
+          "reason": "Replaced by the validated respiratory rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Psoas sign",
+          "score": 174,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "label": "Obturator sign",
+          "score": 171,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        }
+      ],
+      "suppressed": [
+        {
+          "label": "Blood pressure",
+          "score": 274,
+          "reason": "Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Heart rate",
+          "score": 268,
+          "reason": "Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Mouth exam",
+          "score": 226,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Oropharynx",
+          "score": 223,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "CVA tenderness",
+          "score": 204,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Respiratory rate",
+          "score": 185,
+          "reason": "Replaced by the validated respiratory rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Psoas sign",
+          "score": 174,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "label": "Obturator sign",
+          "score": 171,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "label": "Sclerae and conjunctivae",
+          "score": 164,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "JVP",
+          "score": 147,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Spleen palpation",
+          "score": 131,
+          "reason": "Spleen palpation needs splenomegaly, hematologic, malignancy, or systemic lymphadenopathy context."
+        },
+        {
+          "label": "Radial pulses",
+          "score": 115,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Lower extremity edema",
+          "score": 112,
+          "reason": "Edema exam needs volume, heart-failure, renal, liver/ascites, leg swelling, DVT, or endocrine-crisis context."
+        },
+        {
+          "label": "Liver edge",
+          "score": 109,
+          "reason": "Liver edge/span needs hepatobiliary, hepatomegaly, cirrhosis, ascites, or jaundice context."
+        },
+        {
+          "label": "Liver span",
+          "score": 104,
+          "reason": "Liver edge/span needs hepatobiliary, hepatomegaly, cirrhosis, ascites, or jaundice context."
+        },
+        {
+          "label": "Posterior tibial pulses",
+          "score": 91,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Dorsalis pedis pulses",
+          "score": 91,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Femoral pulses",
+          "score": 88,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Otoscope exam",
+          "score": 86,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Abdominal exam setup",
+          "score": 81,
+          "reason": "Technique/setup rows are audit metadata, not a patient-specific recommended exam item."
+        },
+        {
+          "label": "Occipital nodes",
+          "score": 79,
+          "reason": "Lymph-node survey needs lymphadenopathy, infection, malignancy, or neck-mass context."
+        },
+        {
+          "label": "Stethoscope cleaned",
+          "score": 79,
+          "reason": "Technique/setup rows are audit metadata, not a patient-specific recommended exam item."
+        },
+        {
+          "label": "Posterior lung sounds",
+          "score": 78,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Tactile fremitus",
+          "score": 78,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        }
+      ],
+      "missing_required_domains": [],
+      "avoid_hits": [],
+      "duplicate_labels": [],
+      "missing_evidence": [],
+      "quality_issues": [],
+      "issues": [],
+      "review_notes": [
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Blood pressure (274): Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Heart rate (268): Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Mouth exam (226): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Oropharynx (223): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "CVA tenderness (204): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Respiratory rate (185): Replaced by the validated respiratory rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Psoas sign (174): Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Obturator sign (171): Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        }
+      ],
+      "pass": true
+    }
+  ]
+}

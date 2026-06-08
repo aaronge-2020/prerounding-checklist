@@ -23,6 +23,7 @@ hypoxia,hypoxia;desaturation;oxygen requirement;nasal cannula;HFNC;BiPAP;ventila
 diagnostic_safety,diagnostic uncertainty;missed diagnosis;red flag;change in trajectory;does not fit;unexpected worsening,safety,favor high-actionability confirmation findings
 syncope,syncope;presyncope;near syncope;fainting;fainted;lightheadedness;orthostasis;orthostatic,syndrome,vitals perfusion cardiac and focused neurologic findings
 chest_pain,chest pain;ACS;acute coronary syndrome;angina;pericarditis;pleuritic chest pain;pulmonary embolism;PE;pneumothorax,syndrome,cardiopulmonary vascular and respiratory findings
+dvt,DVT;deep vein thrombosis;venous thromboembolism;unilateral leg swelling;one calf;calf swelling;swollen calf;one leg swollen;leg swelling after surgery,syndrome,DVT probability lower-extremity edema and PE risk-stratification findings
 vision_change,vision change;blurry vision;visual loss;diplopia;eye redness;eye discharge;red eye;photophobia;eye pain,syndrome,visual acuity pupils extraocular conjunctival and visual field findings
 lymphadenopathy,lymphadenopathy;swollen glands;lymph nodes;neck mass;night sweats;malignancy;cancer,syndrome,regional node stations spleen and infection/malignancy findings
 back_spine,back pain;radiculopathy;sciatica;myelopathy;cord compression;saddle anesthesia;spine;spinal,syndrome,lower extremity motor sensory reflex gait and spine findings

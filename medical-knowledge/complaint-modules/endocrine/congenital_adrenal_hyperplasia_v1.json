@@ -23,64 +23,134 @@
       {
         "id": "differential_01",
         "label": "Congenital Adrenal Hyperplasia (CAH): diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic frame",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether 17-hydroxyprogesterone, often with cosyntropin stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Congenital Adrenal Hyperplasia (CAH): diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Use this frame to decide whether 17-hydroxyprogesterone, often with cosyntropin stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "congenital",
+          "adrenal",
+          "hyperplasia"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: thresholds",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Key thresholds and interpretation caveats: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "thresholds",
+          "vary",
+          "gestational",
+          "assay",
+          "cycle",
+          "phase",
+          "timing",
+          "morning"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: mimics and exclusions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Congenital Adrenal Hyperplasia (CAH) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Congenital Adrenal Hyperplasia (CAH) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "important",
+          "mimics",
+          "exclusions",
+          "exogenous",
+          "glucocorticoid",
+          "exposure",
+          "withdrawal",
+          "primary"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: red flags",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Congenital Adrenal Hyperplasia (CAH) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Salt-wasting crisis, vomiting/dehydration, shock, hypoglycemia.: danger pattern, severity marker, or complication that changes urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "salt",
+          "wasting",
+          "crisis",
+          "vomiting",
+          "dehydration",
+          "shock",
+          "hypoglycemia"
+        ],
         "when": {
           "termsAny": [
             "Salt-wasting crisis",
@@ -93,17 +163,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: red flags",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Congenital Adrenal Hyperplasia (CAH) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -118,17 +207,35 @@
       {
         "id": "red_flag_03",
         "label": "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: red flags",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Congenital Adrenal Hyperplasia (CAH) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.: danger pattern, severity marker, or complication that changes urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "adrenal",
+          "crisis",
+          "shock",
+          "severe",
+          "vomiting",
+          "dehydration",
+          "hypoglycemia"
+        ],
         "when": {
           "termsAny": [
             "Adrenal crisis",
@@ -143,19 +250,200 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure orthostatic blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Orthostasis changes crisis concern, fluid strategy, and hormone replacement urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_perform": "When adrenal insufficiency, mineralocorticoid disorder, volume depletion, or catecholamine spells are possible",
+        "findings_options": [
+          "No orthostatic drop",
+          "Orthostatic hypotension",
+          "Symptomatic dizziness/presyncope",
+          "Unable/unsafe to assess"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Orthostasis changes crisis concern, fluid strategy, and hormone replacement urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "measure",
+          "orthostatic",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Neonatal ambiguous genitalia/salt wasting, early pubarche, hirsutism/acne, infertility.",
+        "label": "Any neonatal ambiguous genitalia, salt-wasting episode, early pubarche, rapid growth, virilization, menstrual/fertility issue, or family CAH history?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any neonatal ambiguous genitalia, salt-wasting episode, early pubarche, rapid growth, virilization, menstrual/fertility issue, or family CAH history?",
         "options": [
           {
             "value": "unknown",
@@ -174,21 +462,36 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "neonatal",
+          "ambiguous",
+          "genitalia",
+          "salt",
+          "wasting"
+        ],
+        "source_seed": "Neonatal ambiguous genitalia/salt wasting, early pubarche, hirsutism/acne, infertility."
       },
       {
         "id": "question_02",
-        "label": "Family history, glucocorticoid adherence, adrenal crisis history.",
+        "label": "How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?",
         "options": [
           {
             "value": "unknown",
@@ -207,21 +510,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Congenital Adrenal Hyperplasia (CAH) workup."
+        "action": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "infertility"
+        ],
+        "source_seed": "Neonatal ambiguous genitalia/salt wasting, early pubarche, hirsutism/acne, infertility."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
         "options": [
           {
             "value": "unknown",
@@ -240,21 +554,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Congenital Adrenal Hyperplasia (CAH) workup."
+        "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
+        "management_implication": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "family",
+          "history"
+        ],
+        "source_seed": "Family history, glucocorticoid adherence, adrenal crisis history."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?",
         "options": [
           {
             "value": "unknown",
@@ -273,21 +599,34 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "adrenal",
+          "crisis",
+          "history"
+        ],
+        "source_seed": "Family history, glucocorticoid adherence, adrenal crisis history."
       },
       {
         "id": "question_05",
-        "label": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma.",
+        "label": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
         "options": [
           {
             "value": "unknown",
@@ -306,21 +645,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Congenital Adrenal Hyperplasia (CAH).",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "orthostasis"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
       },
       {
         "id": "question_06",
-        "label": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection.",
+        "label": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: clinical questions",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
         "options": [
           {
             "value": "unknown",
@@ -339,205 +689,416 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Congenital Adrenal Hyperplasia (CAH).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "salt",
+          "craving"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
+      },
+      {
+        "id": "question_07",
+        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "weight",
+          "loss"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
+      },
+      {
+        "id": "question_08",
+        "label": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Congenital Adrenal Hyperplasia (CAH) needs urgent evaluation today.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "abdominal",
+          "pain"
+        ],
+        "source_seed": "Ask about orthostasis, salt craving, weight loss, nausea/vomiting, abdominal pain, headaches/sweats/palpitations, resistant hypertension, hypokalemia, steroid exposure, and adrenal incidentaloma."
+      },
+      {
+        "id": "question_09",
+        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CAH_2018",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "when_to_ask": "Ask when Congenital Adrenal Hyperplasia (CAH) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Congenital Adrenal Hyperplasia (CAH) therapy unsafe.",
+        "management_implication": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "acute",
+          "infection"
+        ],
+        "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "BP/volume, virilization/genital exam by appropriate specialist, growth/puberty, hyperpigmentation.",
+        "label": "Inspect oral mucosa for hyperpigmentation",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: focused physical exam",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "Use this maneuver to evaluate primary adrenal insufficiency, ACTH excess pattern, or congenital adrenal hyperplasia clue. Hyperpigmentation supports primary adrenal insufficiency or ACTH excess and changes ACTH, antibody, renin/aldosterone, or steroid-replacement interpretation.",
+        "rationale": "Targets primary adrenal insufficiency, ACTH excess pattern, or congenital adrenal hyperplasia clue; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Inspect oral mucosa, palmar creases, scars, and sun-protected skin for diffuse or patchy hyperpigmentation.",
+        "findings_options": [
+          "Absent",
+          "Oral/palmar hyperpigmentation",
+          "Diffuse or scar hyperpigmentation",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When primary adrenal insufficiency, Addison disease, ACTH excess, or congenital adrenal hyperplasia is possible",
+        "diagnostic_target": "primary adrenal insufficiency, ACTH excess pattern, or congenital adrenal hyperplasia clue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Hyperpigmentation supports primary adrenal insufficiency or ACTH excess and changes ACTH, antibody, renin/aldosterone, or steroid-replacement interpretation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect oral mucosa for hyperpigmentation is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "inspect",
+          "oral",
+          "mucosa",
+          "hyperpigmentation"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: focused physical exam",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "Use this maneuver to evaluate volume status, dehydration severity, or peripheral perfusion. Dry mucous membranes change adrenal-crisis severity assessment, fluid urgency, and stress-dose steroid planning.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When adrenal insufficiency, salt-wasting, vomiting, or poor intake is possible",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dry mucous membranes change adrenal-crisis severity assessment, fluid urgency, and stress-dose steroid planning.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Test chair-rise strength",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: focused physical exam",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "Use this maneuver to evaluate clinically important weakness, adrenal-crisis severity, or functional impairment. Clinically important weakness changes crisis severity, fall risk, and monitored-care threshold.",
+        "rationale": "Targets clinically important weakness, adrenal-crisis severity, or functional impairment; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Ask the patient to rise from a chair without using arms if safe, observing proximal strength and need for assistance.",
+        "findings_options": [
+          "Normal strength",
+          "Mild weakness",
+          "Needs arms/assistance",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When adrenal insufficiency, salt-wasting illness, or functional weakness is possible",
+        "diagnostic_target": "clinically important weakness, adrenal-crisis severity, or functional impairment",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Clinically important weakness changes crisis severity, fall risk, and monitored-care threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Test chair-rise strength is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "test",
+          "chair",
+          "rise",
+          "strength"
+        ]
       },
       {
         "id": "exam_04",
-        "label": "BP including orthostatics when safe, volume/perfusion, hyperpigmentation or Cushing phenotype, proximal strength, edema, and mental status when crisis is possible.",
+        "label": "Inspect terminal hair distribution",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: focused physical exam",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "Use this maneuver to evaluate gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Terminal hair pattern changes androgen-excess severity and testing priority.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.",
+        "findings_options": [
+          "Expected distribution",
+          "Mild excess",
+          "Marked excess",
+          "Virilization concern",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When androgen excess, virilization, or nonclassic CAH is possible",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Terminal hair pattern changes androgen-excess severity and testing priority.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect terminal hair distribution is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "inspect",
+          "terminal",
+          "hair",
+          "distribution"
+        ]
       },
       {
         "id": "exam_05",
-        "label": "Assess arrhythmia/tachycardia, hypertensive crisis signs, hypokalemic weakness, and infection trigger when adrenal emergency is possible.",
+        "label": "Assess pubertal stage",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: focused physical exam",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Congenital Adrenal Hyperplasia (CAH)."
+        "action": "Use this maneuver to evaluate pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype. Pubertal stage changes interpretation of adrenal androgen excess and gonadal-axis testing.",
+        "rationale": "Targets pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Assess Tanner stage or secondary sex characteristics only when clinically appropriate and with consent/chaperone practices.",
+        "findings_options": [
+          "Age-appropriate",
+          "Delayed/underdeveloped",
+          "Advanced/virilized",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When pubertal timing, growth, fertility, or classic CAH phenotype is relevant",
+        "diagnostic_target": "pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Pubertal stage changes interpretation of adrenal androgen excess and gonadal-axis testing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess pubertal stage is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "assess",
+          "pubertal",
+          "stage"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If adrenal crisis, steroid withdrawal, vomiting, infection, hypotension, or electrolyte emergency is possible: add orthostatic vitals, volume/perfusion, mental status, abdominal exam, and hyperpigmentation/skin assessment.",
+        "label": "Palpate abdomen for tenderness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
+        "action": "Add when adrenal crisis, vomiting, abdominal pain, shock is present; this evaluates abdominal complication, endocrine crisis mimic, or precipitating illness. Tenderness changes adrenal crisis severity and mimic evaluation.",
+        "rationale": "Targets abdominal complication, endocrine crisis mimic, or precipitating illness; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Congenital Adrenal Hyperplasia (CAH).",
+        "technique": "Inspect and palpate the abdomen gently, localizing tenderness and stopping if guarding, rebound, or severe pain occurs.",
+        "findings_options": [
+          "Nontender",
+          "Tender",
+          "Guarding",
+          "Rebound/peritoneal concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When adrenal crisis, vomiting, or abdominal pain is possible",
+        "diagnostic_target": "abdominal complication, endocrine crisis mimic, or precipitating illness",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Tenderness changes adrenal crisis severity and mimic evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate abdomen for tenderness is supportive for Congenital Adrenal Hyperplasia (CAH), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "palpate",
+          "abdomen",
+          "tenderness"
+        ],
         "when": {
           "termsAny": [
             "adrenal crisis",
-            "steroid withdrawal",
             "vomiting",
-            "infection",
-            "fever",
-            "hypotension",
-            "hyponatremia",
-            "hyperkalemia",
+            "abdominal pain",
             "shock"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_02",
-        "label": "If catecholamine spells, severe hypertension, hypokalemia, or Cushing phenotype is present: add seated/standing BP, pulse rhythm, edema/weakness, proximal strength, bruising/striae, and cardiopulmonary stress signs.",
-        "source": {
-          "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
-        "when": {
-          "termsAny": [
-            "pheochromocytoma",
-            "palpitations",
-            "sweating",
-            "severe hypertension",
-            "hypokalemia",
-            "cushing",
-            "bruising",
-            "striae",
-            "proximal weakness",
-            "edema"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
-        "source": {
-          "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Congenital Adrenal Hyperplasia (CAH).",
-        "when": {
-          "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
-        "source": {
-          "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Congenital Adrenal Hyperplasia (CAH).",
-        "when": {
-          "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
           ]
         }
       }
@@ -546,229 +1107,504 @@
       {
         "id": "test_01",
         "label": "17-hydroxyprogesterone, often with cosyntropin stimulation.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "17-hydroxyprogesterone, often with cosyntropin stimulation.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "hydroxyprogesterone",
+          "often",
+          "with",
+          "cosyntropin",
+          "stimulation"
+        ]
       },
       {
         "id": "test_02",
         "label": "Electrolytes, glucose, renin/aldosterone.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Electrolytes, glucose, renin/aldosterone.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "electrolytes",
+          "glucose",
+          "renin",
+          "aldosterone"
+        ]
       },
       {
         "id": "test_03",
         "label": "Androgens: testosterone, androstenedione, DHEAS as indicated.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Androgens: testosterone, androstenedione, DHEAS as indicated.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "androgens",
+          "testosterone",
+          "androstenedione",
+          "dheas",
+          "indicated"
+        ]
       },
       {
         "id": "test_04",
         "label": "CYP21A2 genetic testing when diagnosis/family planning unclear.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "CYP21A2 genetic testing when diagnosis/family planning unclear.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "cyp21a2",
+          "genetic",
+          "testing",
+          "when",
+          "diagnosis",
+          "family",
+          "planning",
+          "unclear"
+        ]
       },
       {
         "id": "test_05",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_06",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "adrenal",
+          "insufficiency",
+          "safety",
+          "labs",
+          "check",
+          "sodium",
+          "potassium",
+          "glucose"
+        ]
       },
       {
         "id": "test_07",
         "label": "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Morning cortisol/ACTH or cosyntropin for adrenal insufficiency; aldosterone-renin ratio with potassium correction for primary aldosteronism; metanephrines for PPGL.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "morning",
+          "cortisol",
+          "acth",
+          "cosyntropin",
+          "adrenal",
+          "insufficiency",
+          "aldosterone",
+          "renin"
+        ]
       },
       {
         "id": "test_08",
         "label": "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: diagnostic workup",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Cushing screening with 1-mg DST, late-night salivary cortisol, or 24-hour UFC after excluding exogenous steroids; adrenal imaging follows biochemical framing except emergency/known incidentaloma context.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "cushing",
+          "screening",
+          "with",
+          "late",
+          "night",
+          "salivary",
+          "cortisol",
+          "hour"
+        ]
       },
       {
         "id": "reference_01",
         "label": "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "17-OHP thresholds vary by age, gestational age, assay, cycle phase, and timing; morning follicular sampling improves adult NCCAH screening.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "thresholds",
+          "vary",
+          "gestational",
+          "assay",
+          "cycle",
+          "phase",
+          "timing",
+          "morning"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Congenital Adrenal Hyperplasia (CAH) test or threshold.",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: results that change management",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Electrolyte crisis or vomiting changes to emergency steroid/fluid pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "electrolyte",
+          "crisis",
+          "vomiting",
+          "changes",
+          "emergency",
+          "steroid",
+          "fluid",
+          "pathway"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: results that change management",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: results that change management",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: results that change management",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Suspected adrenal crisis is treated immediately with stress-dose steroids and fluids; testing must not delay treatment when unstable.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "suspected",
+          "adrenal",
+          "crisis",
+          "treated",
+          "immediately",
+          "with",
+          "stress",
+          "dose"
+        ]
       },
       {
         "id": "management_05",
         "label": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_CAH_2018",
-          "source_section": "Congenital Adrenal Hyperplasia (CAH) generated endocrine workup: results that change management",
+          "source_section": "Congenital Adrenal Hyperplasia (CAH) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Congenital Adrenal Hyperplasia (CAH).",
+        "diagnostic_target": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Congenital Adrenal Hyperplasia (CAH).",
+        "management_change": "Marked metanephrine elevation, suppressed renin with high aldosterone, or confirmed hypercortisolism changes to specialty localization/subtyping and perioperative planning.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Congenital Adrenal Hyperplasia (CAH).",
+        "tags": [
+          "adrenal_gland_disorders",
+          "congenital_adrenal_hyperplasia",
+          "marked",
+          "metanephrine",
+          "elevation",
+          "suppressed",
+          "renin",
+          "with",
+          "high",
+          "aldosterone"
+        ]
       }
     ],
     "endocrine_metadata": {

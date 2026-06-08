@@ -13,8 +13,9 @@ npm run test:medical-knowledge
 
 - `manifest.json`: database manifest and list of included knowledge files.
 - `source-registry.json`: bibliographic/provenance records for guideline sources.
+- `schema/clinical-knowledge-pack-v1.schema.json`: collaborator knowledge-pack contract for staged imports.
 - `complaint-modules/*.json`: complaint or diagnosis modules used by `evaluateComplaintCds`.
-- `complaint-modules/endocrine/*.json`: generated endocrine workup modules with active `mvp` status.
+- `complaint-modules/endocrine/*.json`: curated endocrine workup modules with active `mvp` status.
 - `examples/clinical_knowledge_pack_v1.example.json`: importable example for staged knowledge-pack review.
 - `templates/complaint-module.template.json`: starter file for a new reviewed module.
 - `templates/guideline-extraction-prompt.md`: prompt contract for transforming pasted guideline text into a draft module.
@@ -51,6 +52,8 @@ The intended workflow is:
 5. Accepted modules are stored as JSON and bundled into `medical-knowledge-db.js`.
 
 Raw source documents, especially copyrighted clinical references, should not be committed here unless the license allows it. Store compact extracted recommendations, source IDs, citations, reviewed dates, and section references instead.
+
+Knowledge-pack imports should keep workup content atomic by section. Use `history_question` for one askable question, `physical_exam_maneuver` for one bedside maneuver, `safety_check` for basic bedside data or safety prerequisites, `diagnostic_test` for a test to order, `reference_threshold` for guideline or local-lab thresholds used to interpret results, `red_flag` for escalation cues, and `management_change` for action rules. Do not bundle multiple unrelated exam maneuvers into one physical exam item.
 
 ## Safety Rules
 

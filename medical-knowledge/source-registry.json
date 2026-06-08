@@ -85,6 +85,15 @@
       "citation": "2021 AHA/ACC multisociety chest pain guideline"
     },
     {
+      "id": "AHRQ_CALIBRATE_DX",
+      "title": "Calibrate Dx Diagnostic Safety Tool",
+      "source": "Agency for Healthcare Research and Quality",
+      "version": "current",
+      "url": "https://www.ahrq.gov/diagnostic-safety/tools/calibrate-dx.html",
+      "date_accessed": "2026-06-07",
+      "citation": "AHRQ Calibrate Dx Diagnostic Safety Tool"
+    },
+    {
       "id": "AHRQ_CDS_IMPLEMENTATION",
       "title": "Clinical Decision Support",
       "source": "Agency for Healthcare Research and Quality",
@@ -137,6 +146,15 @@
       "url": "https://www.thyroid.org/professionals/ata-professional-guidelines/",
       "date_accessed": "2026-06-06",
       "citation": "Haugen BR et al. 2015 ATA Management Guidelines for Adult Patients with Thyroid Nodules and Differentiated Thyroid Cancer. Thyroid. 2016."
+    },
+    {
+      "id": "ATS_CAP_2025",
+      "title": "Diagnosis and Management of Community-Acquired Pneumonia in Adults",
+      "source": "American Thoracic Society",
+      "version": "2025",
+      "url": "https://academic.oup.com/ajrccm/article/212/1/24/8435770",
+      "date_accessed": "2026-06-08",
+      "citation": "Jones BE et al. Diagnosis and Management of Community-Acquired Pneumonia. An Official American Thoracic Society Clinical Practice Guideline. Am J Respir Crit Care Med. 2026;212(1):24-44."
     },
     {
       "id": "AUA_ED_2018",
@@ -319,6 +337,15 @@
       "citation": "2022 International Task Force Hypoparathyroidism Guidelines"
     },
     {
+      "id": "IDSA_CAP_PATHWAY_2019",
+      "title": "Community-Acquired Pneumonia Clinical Pathway",
+      "source": "Infectious Diseases Society of America",
+      "version": "2019",
+      "url": "https://www.idsociety.org/globalassets/idsa/practice-guidelines/community-acquired-pneumonia-in-adults/cap-clinical-pathway-final-online.pdf",
+      "date_accessed": "2026-06-07",
+      "citation": "IDSA Community-Acquired Pneumonia Clinical Pathway"
+    },
+    {
       "id": "IMS_MENOPAUSE_2026",
       "title": "International Menopause Society Recommendations and Key Messages on Women's Midlife Health and Menopause",
       "source": "International Menopause Society",
@@ -335,6 +362,15 @@
       "url": "https://www.menopause.org/publications/clinical-practice-materials/the-2022-hormone-therapy-position-statement-of-the-north-american-menopause-society",
       "date_accessed": "2026-06-06",
       "citation": "The Menopause Society Hormone Therapy Position Statement"
+    },
+    {
+      "id": "MERCK_FEVER_ADULTS",
+      "title": "Fever in Adults",
+      "source": "Merck Manual Professional Edition",
+      "version": "current",
+      "url": "https://www.merckmanuals.com/professional/infectious-diseases/biology-of-infectious-disease/fever",
+      "date_accessed": "2026-06-07",
+      "citation": "Merck Manual Professional Edition. Fever in Adults"
     },
     {
       "id": "NHLBI_METABOLIC_SYNDROME",
@@ -398,6 +434,24 @@
       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6013691/",
       "date_accessed": "2026-06-06",
       "citation": "Society for Endocrinology Inpatient Cranial Diabetes Insipidus Guidance"
+    },
+    {
+      "id": "SM25",
+      "title": "Stanford Medicine 25 Exam Guides",
+      "source": "Stanford Medicine",
+      "version": "current",
+      "url": "https://med.stanford.edu/stanfordmedicine25/exam-guides-.html",
+      "date_accessed": "2026-06-07",
+      "citation": "Stanford Medicine 25 Exam Guides"
+    },
+    {
+      "id": "SSC_SEPSIS_2026",
+      "title": "Surviving Sepsis Campaign Adult Guidelines",
+      "source": "Society of Critical Care Medicine / European Society of Intensive Care Medicine",
+      "version": "2026",
+      "url": "https://www.sccm.org/survivingsepsiscampaign/guidelines-and-resources/surviving-sepsis-campaign-adult-guidelines",
+      "date_accessed": "2026-06-07",
+      "citation": "Surviving Sepsis Campaign International Guidelines for Management of Sepsis and Septic Shock"
     }
   ]
 }

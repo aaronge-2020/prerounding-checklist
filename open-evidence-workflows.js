@@ -6,6 +6,8 @@ Do not invent diagnoses, medications, lab values, imaging, exam findings, treatm
 Separate objective facts from interpretation, preserve uncertainty, and use cautious verification language for possible safety issues.
 Do not provide patient-specific orders as if you are the treating clinician; frame recommendations as items to consider or verify with the treating team.
 Do not include names, exact dates, medical record numbers, locations, room numbers, phone numbers, or other identifiers.
+The local app, validated clinical intents, and reviewed evidence catalog remain the source of truth for bedside questions and physical exam maneuvers.
+Do not write, rewrite, or silently expand the final bedside checklist. If a missing bedside question or exam seems clinically important, label it as an UNVALIDATED GAP SUGGESTION for reviewer follow-up rather than a recommendation to perform.
 </clinical_safety_rules>`;
 
 const abbreviationRules = `<abbreviation_rules>
@@ -34,16 +36,6 @@ function guidelineContextBlock(context) {
   return [
     block("local_guideline_pathway", context.complaintCdsReport),
     block("evidence_retrieval_summary", context.evidenceSummary)
-  ].filter(Boolean).join("\n\n");
-}
-
-function checklistContextBlock(context) {
-  return [
-    block("current_checklist", context.currentChecklist),
-    block("checklist_audit_issues", context.checklistAuditSummary),
-    block("checklist_refinement_goals", context.refinementNotes),
-    block("retrieved_evidence_candidates", context.evidenceSummary),
-    block("local_guideline_pathway", context.complaintCdsReport)
   ].filter(Boolean).join("\n\n");
 }
 
@@ -77,21 +69,6 @@ function buildSameConversationPrompt(context, taskInstructions, finalInstruction
     guidelineContextBlock(context),
     finalInstruction
   ].filter(Boolean).join("\n\n");
-}
-
-function outputFormatForChecklist() {
-  return `<output_format>
-Return plain text only.
-Return exactly two parent checklists in this order:
-BEDSIDE QUESTION CHECKLIST
-TARGETED PHYSICAL EXAM CHECKLIST
-
-Parent checklist titles must be all caps with no colon.
-Every item must be one line in the exact format: Label: Option A / Option B / Option C
-Bedside labels must be patient questions ending in a question mark before the colon.
-Exam labels must be concise clinician-observed findings.
-Do not include explanations, citations, markdown bullets, or text outside the two checklists.
-</output_format>`;
 }
 
 function parseTaskResult(task, text, context = {}) {
@@ -143,35 +120,6 @@ SAFETY OR ESCALATION ITEMS
 TASKS BEFORE ROUNDS
 Use only prior conversation context and the new bedside findings.
 </output_format>`
-  ].filter(Boolean).join("\n\n");
-}
-
-function checklistPrompt(context) {
-  return [
-    `<role>
-You are an attending physician and clerkship coach creating a focused pre-rounding bedside checklist.
-</role>`,
-    commonClinicalRules,
-    context.sameConversationReady && !context.sourceContext
-      ? block("same_conversation_context", "Use the patient context already provided earlier in this same OpenEvidence conversation.")
-      : sourceContextBlock(context),
-    guidelineContextBlock(context),
-    outputFormatForChecklist(),
-    "Now create the final concise bedside checklist only."
-  ].filter(Boolean).join("\n\n");
-}
-
-function refineChecklistPrompt(context) {
-  return [
-    `<role>
-You are an attending physician and checklist editor improving a bedside pre-rounding checklist.
-</role>`,
-    commonClinicalRules,
-    abbreviationRules,
-    sourceContextBlock(context),
-    checklistContextBlock(context),
-    outputFormatForChecklist(),
-    "Rewrite the checklist to address the refinement goals and audit issues while keeping it concise, patient-specific, and parseable."
   ].filter(Boolean).join("\n\n");
 }
 
@@ -332,17 +280,50 @@ LOW-YIELD DISTRACTIONS TO IGNORE
   );
 }
 
+function checklistImprovementPrompt(context) {
+  return [
+    `<role>
+You are an attending physician helping a clinician pressure-test a locally generated bedside prerounding checklist.
+</role>
+
+<task>
+Review the current checklist against the compact de-identified context below. Identify omissions, overly broad items, unclear wording, unsafe assumptions, and places where the checklist may not match the selected local diagnosis/workup.
+</task>`,
+    commonClinicalRules,
+    abbreviationRules,
+    context.userContext || "",
+    block("deidentified_patient_context", context.checklistPatientSummary),
+    block("local_guideline_pathway", context.complaintCdsReport),
+    block("evidence_retrieval_summary", context.evidenceSummary),
+    block("current_checklist", context.currentChecklist),
+    block("local_checklist_audit", context.checklistAuditSummary),
+    block("clinician_refinement_notes", context.refinementNotes),
+    `<privacy_boundary>
+The original chart note, raw HPI, names, exact dates, room numbers, medical record numbers, and other identifiers were intentionally withheld. Do not ask for the full HPI or source note. Work only from the compact de-identified context and current checklist above.
+</privacy_boundary>
+
+<output_format>
+Use exactly these sections:
+CHECKLIST FIT
+MISSING OR WEAKLY COVERED DOMAINS
+WORDING OR OPTION IMPROVEMENTS
+UNVALIDATED CHECKLIST IMPROVEMENT SUGGESTIONS
+WHAT TO VERIFY LOCALLY BEFORE CHANGING THE CHECKLIST
+Do not output a replacement final checklist. Do not provide a copy-ready checklist. Label every suggested added or changed bedside question/exam item as an unvalidated suggestion for local review.
+</output_format>`
+  ].filter(Boolean).join("\n\n");
+}
+
 export const openEvidenceTasks = [
   { id: "initial_rounds_report", label: "Concise rounds report", category: "Rounds", requiredContext: "source", outputKind: "rounds_report", promptBuilder: initialRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Initial rounds report prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "final_rounds_update", label: "Final rounds update", category: "Rounds", requiredContext: "findings", outputKind: "rounds_update", promptBuilder: finalRoundsPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Final rounds update prompt copied. Paste it into OpenEvidence.", requiresSameConversation: true },
-  { id: "generate_checklist", label: "Generate checklist", category: "Checklist", requiredContext: "source", outputKind: "checklist", promptBuilder: checklistPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "refine_checklist", label: "Refine checklist", category: "Checklist", requiredContext: "current_checklist", outputKind: "checklist", promptBuilder: refineChecklistPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist refinement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "checklist_improvement_review", label: "Checklist improvement review", category: "Checklist", requiredContext: "checklist_refinement", outputKind: "checklist_improvement_review", promptBuilder: checklistImprovementPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Checklist improvement prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "medication_safety", label: "Medication safety", category: "Safety", requiredContext: "medication_context", outputKind: "medication_safety", promptBuilder: medicationSafetyPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Medication safety prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "confirm_guideline", label: "Confirm guideline", category: "Guidelines", requiredContext: "guideline_or_source", outputKind: "guideline_confirmation", promptBuilder: guidelinePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Guideline confirmation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "find_exception", label: "Find exception", category: "Guidelines", requiredContext: "source", outputKind: "guideline_exceptions", promptBuilder: exceptionPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Exception-finding prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "attending_plan", label: "Attending-level plan", category: "Reasoning", requiredContext: "source", outputKind: "attending_plan", promptBuilder: attendingPlanPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Attending-level plan prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "teaching_explanation", label: "Teaching explanation", category: "Teaching", requiredContext: "source", outputKind: "teaching", promptBuilder: teachingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Teaching explanation prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
-  { id: "discharge_checklist", label: "Discharge checklist", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge checklist prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
+  { id: "discharge_checklist", label: "Discharge readiness review", category: "Discharge", requiredContext: "source", outputKind: "discharge_checklist", promptBuilder: dischargePrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Discharge readiness prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false },
   { id: "what_am_i_missing", label: "What am I missing?", category: "Safety", requiredContext: "source", outputKind: "missing_items", promptBuilder: missingPrompt, pasteBackParser: parseTaskResult, copySuccessMessage: "Blind-spot prompt copied. Paste it into OpenEvidence.", requiresSameConversation: false }
 ];
 
@@ -356,11 +337,16 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
     throw new Error(`Unknown OpenEvidence task: ${taskId}`);
   }
   const prompt = task.promptBuilder(context);
-  const sourceIncluded = /<source_context>|<current_checklist>|<new_bedside_findings>/.test(prompt);
+  const promptIncludesSource = /<source_context>/i.test(prompt);
+  const promptIncludesChecklist = /<current_checklist>/i.test(prompt);
+  const promptIncludesPatientContext = /<deidentified_patient_context>/i.test(prompt);
+  const promptIncludesFindings = /<new_bedside_findings>/i.test(prompt);
+  const sourceIncluded = promptIncludesSource || promptIncludesChecklist || promptIncludesPatientContext || promptIncludesFindings;
   const reviewText = [
-    context.sourceContext,
-    context.currentChecklist,
-    context.compiledFindings,
+    promptIncludesSource ? context.sourceContext : "",
+    promptIncludesPatientContext ? context.checklistPatientSummary : "",
+    promptIncludesChecklist ? context.currentChecklist : "",
+    promptIncludesFindings ? context.compiledFindings : "",
     context.complaintCdsReport
   ].filter((value) => clean(value)).join("\n\n");
   return {
@@ -370,7 +356,7 @@ export function buildOpenEvidencePrompt(taskId, context = {}) {
     requiredContext: task.requiredContext,
     outputKind: task.outputKind,
     prompt,
-    contextText: context.sourceContext || context.currentChecklist || context.compiledFindings || "",
+    contextText: context.sourceContext || context.checklistPatientSummary || context.currentChecklist || context.compiledFindings || "",
     reviewScope: sourceIncluded ? "custom" : "source-free",
     reviewText: sourceIncluded ? reviewText : "",
     copySuccessMessage: task.copySuccessMessage,

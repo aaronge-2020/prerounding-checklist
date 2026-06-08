@@ -4,6 +4,7 @@ import {
   CONTINUITY_STORAGE_KEY,
   appendOrUpdateContinuityDay,
   buildSmartUpdateReview,
+  buildContinuityChecklistContext,
   buildContinuityChecklistPrompt,
   buildContinuityUpdatePrompt,
   classifySmartUpdateSections,
@@ -108,6 +109,23 @@ assert.ok(smartReview.rows.some((row) => row.type === "subjective" && row.status
 assert.ok(smartReview.rows.find((row) => row.type === "labs").details.some((detail) => /parsed lab row/i.test(detail)));
 assert.ok(smartReview.rows.find((row) => row.type === "mar").details.some((detail) => /MAR line/i.test(detail)));
 
+const mixedSmartSections = classifySmartUpdateSections(`Overnight events: N/V overnight, better after antiemetic.
+Subjective: Less thirsty, still fatigued.
+Today labs: K still low. Mg normal.
+Updated MAR: Insulin drip 3u/hr. KCl IV given.
+Plan: Continue insulin drip, recheck K.`);
+assert.deepEqual(
+  mixedSmartSections.map((section) => section.type),
+  ["handoff", "subjective", "labs", "mar", "note"],
+  "single mixed continuity paste should split section headings into bedside-review buckets"
+);
+const mixedSmartInputs = smartSectionsToDailyInputs(mixedSmartSections);
+assert.ok(mixedSmartInputs.overnightEvents.includes("N/V overnight"));
+assert.ok(mixedSmartInputs.subjectiveChange.includes("Less thirsty"));
+assert.ok(mixedSmartInputs.todayLabs.includes("K still low"));
+assert.ok(mixedSmartInputs.updatedMar.includes("Insulin drip"));
+assert.ok(mixedSmartInputs.todayNote.includes("Continue insulin drip"));
+
 const dayWithSmartReview = appendOrUpdateContinuityDay(dayOne, {
   date: "2026-06-06",
   smartUpdateReview: smartReview.rows,
@@ -133,8 +151,10 @@ const checklistPrompt = buildContinuityChecklistPrompt({
   patientCase: dayTwo,
   todayInputs: dailyInputs
 });
-assert.ok(checklistPrompt.includes("Do not ask me to paste yesterday's report or resend prior days."));
-assert.ok(checklistPrompt.includes("Now produce today's bedside checklist only."));
+assert.equal(checklistPrompt, buildContinuityChecklistContext({ patientCase: dayTwo, todayInputs: dailyInputs }), "legacy continuity checklist export should return the local context");
+assert.ok(checklistPrompt.includes("Use this de-identified local continuity context to build today's bedside checklist inside the app."));
+assert.ok(checklistPrompt.includes("Do not ask OpenEvidence to generate the checklist."));
+assert.doesNotMatch(checklistPrompt, /same OpenEvidence conversation|Now produce today's bedside checklist only/i);
 assert.ok(checklistPrompt.includes("Today labs:\nK 3.4, glucose 180"));
 
 console.log("Continuity tests passed.");

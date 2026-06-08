@@ -9,13 +9,12 @@ import {
   parseOpenEvidenceResult
 } from "../open-evidence-results.js";
 
-assert.equal(openEvidenceTasks.length, 11, "all planned OpenEvidence tasks should be registered");
+assert.equal(openEvidenceTasks.length, 10, "OpenEvidence tasks should include higher-reasoning tasks plus optional checklist improvement review");
 const ids = new Set(openEvidenceTasks.map((task) => task.id));
 [
   "initial_rounds_report",
   "final_rounds_update",
-  "generate_checklist",
-  "refine_checklist",
+  "checklist_improvement_review",
   "medication_safety",
   "confirm_guideline",
   "find_exception",
@@ -24,6 +23,10 @@ const ids = new Set(openEvidenceTasks.map((task) => task.id));
   "discharge_checklist",
   "what_am_i_missing"
 ].forEach((id) => assert.ok(ids.has(id), `missing OpenEvidence task ${id}`));
+[
+  "generate_checklist",
+  "refine_checklist"
+].forEach((id) => assert.ok(!ids.has(id), `bedside checklist task should stay local, not OpenEvidence: ${id}`));
 
 const baseContext = {
   sourceMode: "prior",
@@ -33,6 +36,12 @@ const baseContext = {
   userContext: "<user_context>\nService: Endocrinology consult\n</user_context>",
   complaintCdsReport: "Hyperglycemia / possible DKA or HHS v1.1.0\nPotassium rule present.",
   evidenceSummary: "- Respiratory pattern: Kussmaul / normal / distressed",
+  checklistPatientSummary: [
+    "This is a compact de-identified checklist-review context. Raw source note text and the full HPI are intentionally excluded.",
+    "Selected local workup: Hyperglycemia / possible DKA or HHS",
+    "Setting: Endocrinology consult / General medicine",
+    "Modifier text, sanitized: discharge supply barrier"
+  ].join("\n"),
   currentChecklist: "BEDSIDE QUESTION CHECKLIST\nHow is your nausea today?: Better / Same / Worse\n\nTARGETED PHYSICAL EXAM CHECKLIST\nMental status: Alert / Confused",
   checklistAuditSummary: "Bedside checklist has only 1 patient question.",
   refinementNotes: "Too short and missing discharge readiness.",
@@ -47,8 +56,44 @@ openEvidenceTasks.forEach((task) => {
   assert.ok(task.outputKind, `${task.id} should declare output kind`);
   const built = buildOpenEvidencePrompt(task.id, baseContext);
   assert.ok(built.prompt.includes("<clinical_safety_rules>"), `${task.id} prompt should include safety rules`);
+  assert.ok(
+    built.prompt.includes("validated clinical intents, and reviewed evidence catalog remain the source of truth for bedside questions and physical exam maneuvers"),
+    `${task.id} prompt should preserve the local validated-intent authority boundary`
+  );
+  assert.ok(
+    built.prompt.includes("UNVALIDATED GAP SUGGESTION"),
+    `${task.id} prompt should label missing bedside question/exam ideas as unvalidated gap suggestions`
+  );
+  assert.ok(
+    built.prompt.includes("Do not write, rewrite, or silently expand the final bedside checklist"),
+    `${task.id} prompt should prevent OpenEvidence from creating bedside checklist rows`
+  );
   assert.ok(built.copySuccessMessage, `${task.id} should include copy success message`);
 });
+
+const missingItemsPrompt = buildOpenEvidencePrompt("what_am_i_missing", baseContext);
+assert.ok(missingItemsPrompt.prompt.includes("CHECKLIST GAPS"), "blind-spot prompt should keep a checklist-gap section");
+assert.ok(
+  missingItemsPrompt.prompt.indexOf("UNVALIDATED GAP SUGGESTION") < missingItemsPrompt.prompt.indexOf("CHECKLIST GAPS"),
+  "blind-spot checklist gaps should be governed by the unvalidated-gap instruction before the output format"
+);
+
+const checklistImprovementPrompt = buildOpenEvidencePrompt("checklist_improvement_review", {
+  ...baseContext,
+  sourceContext: "Raw HPI from John Smith with room 123 should never be included in this prompt."
+});
+assert.equal(checklistImprovementPrompt.requiredContext, "checklist_refinement", "checklist improvement should require the local checklist plus compact context");
+assert.equal(checklistImprovementPrompt.outputKind, "checklist_improvement_review", "checklist improvement should not parse as a replacement checklist");
+assert.ok(checklistImprovementPrompt.prompt.includes("<current_checklist>"), "checklist improvement prompt should include the current checklist");
+assert.ok(checklistImprovementPrompt.prompt.includes("<deidentified_patient_context>"), "checklist improvement prompt should include compact de-identified context");
+assert.ok(!checklistImprovementPrompt.prompt.includes("<source_context>"), "checklist improvement prompt must not include the full source context");
+assert.ok(!checklistImprovementPrompt.prompt.includes("John Smith"), "checklist improvement prompt must not leak raw source text");
+assert.ok(checklistImprovementPrompt.prompt.includes("full HPI are intentionally excluded"), "checklist improvement prompt should state the HPI boundary");
+assert.ok(checklistImprovementPrompt.prompt.includes("UNVALIDATED CHECKLIST IMPROVEMENT SUGGESTIONS"), "checklist improvement prompt should ask for review suggestions");
+assert.ok(checklistImprovementPrompt.prompt.includes("Do not output a replacement final checklist"), "checklist improvement prompt should not create a replacement checklist");
+assert.ok(checklistImprovementPrompt.reviewText.includes("Selected local workup"), "PHI review text should include the compact patient summary");
+assert.ok(checklistImprovementPrompt.reviewText.includes("How is your nausea today?"), "PHI review text should include the current checklist");
+assert.ok(!checklistImprovementPrompt.reviewText.includes("John Smith"), "PHI review text should not scan or expose withheld raw source text for checklist improvement");
 
 const medicationSameConversation = buildOpenEvidencePrompt("medication_safety", {
   ...baseContext,
@@ -63,19 +108,6 @@ const medicationFallback = buildOpenEvidencePrompt("medication_safety", {
 });
 assert.equal(medicationFallback.reviewScope, "custom", "context-included medication fallback should scan patient-originated context");
 assert.ok(medicationFallback.prompt.includes("<source_context>"), "medication fallback should include de-identified source context");
-
-const checklistResult = parseOpenEvidenceResult({
-  taskId: "generate_checklist",
-  outputKind: "checklist",
-  text: `BEDSIDE QUESTION CHECKLIST
-SYMPTOMS
-How is your breathing today?: Better / Same / Worse
-
-TARGETED PHYSICAL EXAM CHECKLIST
-VITALS
-Respiratory rate: ___`
-});
-assert.ok(checklistResult.checklistText.includes("TARGETED PHYSICAL EXAM CHECKLIST"), "checklist paste-back should extract checklist text");
 
 const medicationResult = medicationFallback.pasteBackParser(`HIGH PRIORITY VERIFY BEFORE ROUNDS
 - Insulin glargine: verify basal insulin was not held because omission matters in type 1 diabetes.

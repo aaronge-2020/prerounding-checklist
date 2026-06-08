@@ -62,8 +62,15 @@ function isLikelyClinicalProblemPhrase(value = "") {
   return /\b(?:diabetes|dka|hhs|cushing|graves|hashimoto|addison|hodgkin|parkinson|alzheimer|crohn|disease|syndrome|failure|cancer|carcinoma|asthma|copd|pneumonia|sepsis|stroke|thyroid|adrenal|pituitary|osteoporosis|osteopenia|hyper|hypo|consult|rounds?|care)\b/i.test(value);
 }
 
+function isSyntheticWorkspaceLabel(value = "") {
+  return /^(?:case|slot)\s+[a-z0-9-]{1,8}$/i.test(cleanText(value));
+}
+
 function isBlockingPersistedMetadataWarning(warning, field, value) {
   const type = warningType(warning);
+  if ((field === "alias" || field === "roomBed") && isSyntheticWorkspaceLabel(value)) {
+    return false;
+  }
   if (field === "serviceProblem" && type === "possible full name" && isLikelyClinicalProblemPhrase(value)) {
     return false;
   }
@@ -351,7 +358,7 @@ export function nextPromptForPatient(patient) {
   ) {
     return {
       kind: "checklist",
-      label: "Checklist prompt",
+      label: "Build checklist",
       patientId: normalized.id,
       patientAlias: normalized.alias,
       queueLabel: `${normalized.alias}: checklist`

@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prerounding.local/schemas/clinical-knowledge-pack-v1.schema.json",
+  "title": "Clinical Knowledge Pack v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "pack_id",
+    "title",
+    "version",
+    "review_notes",
+    "source_registry",
+    "intents",
+    "items",
+    "gold_cases",
+    "suppress_rules"
+  ],
+  "properties": {
+    "schema_version": { "const": "clinical_knowledge_pack_v1" },
+    "pack_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "review_notes": { "type": "string", "minLength": 1 },
+    "complaint_aliases": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "source_registry": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "intents": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/intent" }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "gold_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/goldCase" }
+    },
+    "suppress_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/suppressRule" }
+    }
+  },
+  "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+  "$defs": {
+    "safePropertyName": {
+      "not": {
+        "pattern": "^(?:raw_)?(?:chart|patient|note|handoff|epic|mrn|dob|ssn|room|address|phone|email|identifier|identifiers)(?:_text|_context|_info|_name|_id|s)?$"
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "source_type",
+        "url_or_doi",
+        "date_accessed",
+        "license_or_access_notes"
+      ],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "source_type": { "type": "string", "minLength": 1 },
+        "url_or_doi": {
+          "type": "string",
+          "pattern": "^(?:https?://\\S+|doi:\\s*10\\.\\d{4,9}/\\S+|10\\.\\d{4,9}/\\S+)$"
+        },
+        "date_accessed": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "license_or_access_notes": { "type": "string", "minLength": 1 },
+        "preferred_citation": { "type": "string", "minLength": 1 },
+        "citation": { "type": "string", "minLength": 1 }
+      },
+      "anyOf": [
+        { "required": ["preferred_citation"] },
+        { "required": ["citation"] }
+      ],
+      "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+      "additionalProperties": true
+    },
+    "intent": {
+      "type": "object",
+      "required": [
+        "intent_id",
+        "label",
+        "status",
+        "aliases",
+        "intent_type",
+        "source_ids",
+        "evidence_tags",
+        "clinical_bundle_ids",
+        "required_domains",
+        "avoid_labels",
+        "gold_case_ids",
+        "last_reviewed",
+        "review_owner"
+      ],
+      "properties": {
+        "intent_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["draft", "partial", "unsupported"] },
+        "aliases": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "intent_type": { "enum": ["complaint", "diagnosis", "syndrome", "management_scenario"] },
+        "source_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "evidence_tags": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "complaint_module_id": { "type": "string", "minLength": 1 },
+        "clinical_bundle_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "required_domains": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "avoid_labels": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "suppress_rules": { "type": "array", "items": { "$ref": "#/$defs/suppressRule" } },
+        "gold_case_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "last_reviewed": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "review_owner": { "type": "string", "minLength": 1 }
+      },
+      "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+      "additionalProperties": true
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "item_type",
+        "label",
+        "intent_ids",
+        "condition_or_syndrome",
+        "diagnostic_target",
+        "when_to_use_structured",
+        "result_changes_management",
+        "evidence_source_primary",
+        "likelihood_ratio_note",
+        "retrieval_tags",
+        "reviewer_notes"
+      ],
+      "properties": {
+        "item_id": { "type": "string", "minLength": 1 },
+        "exam_id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["question", "exam", "red_flag", "bundle_gap"] },
+        "item_type": {
+          "enum": [
+            "history_question",
+            "physical_exam_maneuver",
+            "red_flag",
+            "catalog_gap",
+            "diagnostic_test",
+            "reference_threshold",
+            "management_change",
+            "safety_check"
+          ]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "intent_id": { "type": "string", "minLength": 1 },
+        "intent_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "text": { "type": "string", "minLength": 1 },
+        "options": { "type": "string", "minLength": 1 },
+        "detail_prompts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "findings_options": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "technique": { "type": "string", "minLength": 1 },
+        "maneuver": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "condition_or_syndrome": { "type": "string", "minLength": 1 },
+        "diagnostic_target": { "type": "string", "minLength": 1 },
+        "when_to_use_structured": { "type": "string", "minLength": 1 },
+        "result_changes_management": { "type": "string", "minLength": 1 },
+        "management_change": { "type": "string", "minLength": 1 },
+        "evidence_source_primary": { "type": "string", "minLength": 1 },
+        "LR_plus": { "type": "string", "pattern": "^(?:n/a|na|not available|not studied|pending|[<>]?\\s*\\d+(?:\\.\\d+)?(?:\\s*-\\s*[<>]?\\s*\\d+(?:\\.\\d+)?)?)$" },
+        "LR_minus": { "type": "string", "pattern": "^(?:n/a|na|not available|not studied|pending|[<>]?\\s*\\d+(?:\\.\\d+)?(?:\\s*-\\s*[<>]?\\s*\\d+(?:\\.\\d+)?)?)$" },
+        "likelihood_ratio_note": { "type": "string", "minLength": 1 },
+        "LR_note": { "type": "string", "minLength": 1 },
+        "lr_note": { "type": "string", "minLength": 1 },
+        "evidence_tier": { "type": "string", "minLength": 1 },
+        "when_to_ask": { "type": "string", "minLength": 1 },
+        "diagnostic_purpose": { "type": "string", "minLength": 1 },
+        "management_implication": { "type": "string", "minLength": 1 },
+        "difficulty": { "type": "string", "minLength": 1 },
+        "time_burden_minutes": { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" },
+        "equipment_needed": { "type": "string", "minLength": 1 },
+        "patient_cooperation_required": { "type": "string", "minLength": 1 },
+        "limitations": { "type": "string", "minLength": 1 },
+        "reference_range": { "type": "string", "minLength": 1 },
+        "reference_ranges": { "type": "string", "minLength": 1 },
+        "diagnostic_threshold": { "type": "string", "minLength": 1 },
+        "diagnostic_thresholds": { "type": "string", "minLength": 1 },
+        "thresholds": { "type": "string", "minLength": 1 },
+        "interpretation": { "type": "string", "minLength": 1 },
+        "interpretation_cautions": { "type": "string", "minLength": 1 },
+        "specimen": { "type": "string", "minLength": 1 },
+        "urgency": { "type": "string", "minLength": 1 },
+        "escalation_criteria": { "type": "string", "minLength": 1 },
+        "tags": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "retrieval_tags": { "type": "string", "minLength": 1 },
+        "reviewer_notes": { "type": "string", "minLength": 1 }
+      },
+      "anyOf": [
+        { "required": ["item_id"] },
+        { "required": ["exam_id"] }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": { "item_type": { "const": "history_question" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["text", "options", "when_to_ask", "diagnostic_purpose", "management_implication", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "physical_exam_maneuver" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": [
+              "technique",
+              "when_to_use_structured",
+              "diagnostic_target",
+              "LR_plus",
+              "LR_minus",
+              "likelihood_ratio_note",
+              "result_changes_management",
+              "difficulty",
+              "time_burden_minutes",
+              "equipment_needed",
+              "patient_cooperation_required",
+              "limitations",
+              "tags"
+            ],
+            "anyOf": [
+              { "required": ["findings_options"] },
+              { "required": ["options"] }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "safety_check" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": [
+              "action",
+              "rationale",
+              "result_changes_management",
+              "difficulty",
+              "time_burden_minutes",
+              "equipment_needed",
+              "patient_cooperation_required",
+              "limitations",
+              "likelihood_ratio_note",
+              "tags"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "diagnostic_test" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "LR_plus", "LR_minus", "likelihood_ratio_note", "interpretation_cautions", "tags"],
+            "anyOf": [
+              { "required": ["reference_range"] },
+              { "required": ["reference_ranges"] },
+              { "required": ["diagnostic_threshold"] },
+              { "required": ["diagnostic_thresholds"] },
+              { "required": ["thresholds"] },
+              { "required": ["interpretation"] }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "reference_threshold" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "LR_plus", "LR_minus", "likelihood_ratio_note", "interpretation_cautions", "tags"],
+            "anyOf": [
+              { "required": ["reference_range"] },
+              { "required": ["reference_ranges"] },
+              { "required": ["diagnostic_threshold"] },
+              { "required": ["diagnostic_thresholds"] },
+              { "required": ["thresholds"] },
+              { "required": ["interpretation"] }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "management_change" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "red_flag" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "catalog_gap" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["result_changes_management", "retrieval_tags", "reviewer_notes"]
+          }
+        }
+      ],
+      "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+      "additionalProperties": true
+    },
+    "goldCase": {
+      "type": "object",
+      "required": ["case_id", "intent_id", "presentation", "expected_core_labels", "avoid_labels"],
+      "properties": {
+        "case_id": { "type": "string", "minLength": 1 },
+        "intent_id": { "type": "string", "minLength": 1 },
+        "presentation": { "type": "string", "minLength": 1 },
+        "must_include_tags": { "type": "string", "minLength": 1 },
+        "expected_core_labels": { "type": "string", "minLength": 1 },
+        "acceptable_labels": { "type": "string", "minLength": 1 },
+        "expected_safety_labels": { "type": "string", "minLength": 1 },
+        "acceptable_safety_labels": { "type": "string", "minLength": 1 },
+        "avoid_labels": { "type": "string", "minLength": 1 },
+        "required_rationale_terms": { "type": "string", "minLength": 1 }
+      },
+      "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+      "additionalProperties": true
+    },
+    "suppressRule": {
+      "type": "object",
+      "required": ["rule_id", "intent_ids", "suppress_labels", "reason"],
+      "properties": {
+        "rule_id": { "type": "string", "minLength": 1 },
+        "intent_id": { "type": "string", "minLength": 1 },
+        "intent_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "when_context_lacks": { "$ref": "#/$defs/stringOrStringArray" },
+        "when_context_has": { "$ref": "#/$defs/stringOrStringArray" },
+        "when_tags_include": { "$ref": "#/$defs/stringOrStringArray" },
+        "unless_tags_include": { "$ref": "#/$defs/stringOrStringArray" },
+        "suppress_labels": { "$ref": "#/$defs/stringOrStringArray" },
+        "reason": { "type": "string", "minLength": 1 }
+      },
+      "anyOf": [
+        { "required": ["when_context_lacks"] },
+        { "required": ["when_context_has"] },
+        { "required": ["when_tags_include"] },
+        { "required": ["unless_tags_include"] }
+      ],
+      "propertyNames": { "$ref": "#/$defs/safePropertyName" },
+      "additionalProperties": true
+    },
+    "stringOrStringArray": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      ]
+    }
+  },
+  "additionalProperties": true
+}

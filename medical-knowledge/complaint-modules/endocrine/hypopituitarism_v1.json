@@ -21,64 +21,132 @@
       {
         "id": "differential_01",
         "label": "Hypopituitarism: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic frame",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether 8 AM cortisol +/- ACTH stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Hypopituitarism: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypopituitarism.",
+        "management_change": "Use this frame to decide whether 8 AM cortisol +/- ACTH stimulation. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypopituitarism.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "cortisol",
+          "strongly",
+          "suggests",
+          "adrenal",
+          "insufficiency",
+          "often",
+          "makes",
+          "unlikely"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: mimics and exclusions",
+          "source_section": "Hypopituitarism curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Hypopituitarism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Hypopituitarism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypopituitarism.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "important",
+          "mimics",
+          "exclusions",
+          "medication",
+          "effects",
+          "pregnancy",
+          "lactation",
+          "renal"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Adrenal crisis, pituitary apoplexy, visual loss, severe hyponatremia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: red flags",
+          "source_section": "Hypopituitarism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypopituitarism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Adrenal crisis, pituitary apoplexy, visual loss, severe hyponatremia.: danger pattern, severity marker, or complication that changes urgency for Hypopituitarism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "adrenal",
+          "crisis",
+          "pituitary",
+          "apoplexy",
+          "visual",
+          "loss",
+          "severe",
+          "hyponatremia"
+        ],
         "when": {
           "termsAny": [
             "Adrenal crisis",
@@ -91,17 +159,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: red flags",
+          "source_section": "Hypopituitarism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypopituitarism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Hypopituitarism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -116,17 +203,36 @@
       {
         "id": "red_flag_03",
         "label": "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: red flags",
+          "source_section": "Hypopituitarism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypopituitarism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.: danger pattern, severity marker, or complication that changes urgency for Hypopituitarism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "pituitary",
+          "apoplexy",
+          "acute",
+          "severe",
+          "headache",
+          "visual",
+          "field",
+          "deficit"
+        ],
         "when": {
           "termsAny": [
             "Pituitary apoplexy",
@@ -141,19 +247,159 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism.",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Pituitary surgery/radiation/tumor/apoplexy/head trauma.",
+        "label": "Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?",
         "options": [
           {
             "value": "unknown",
@@ -172,21 +418,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hypopituitarism workup."
+        "action": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "fatigue"
+        ],
+        "source_seed": "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."
       },
       {
         "id": "question_02",
-        "label": "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision.",
+        "label": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
             "value": "unknown",
@@ -205,21 +462,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today."
+        "action": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "amenorrhea",
+          "libido"
+        ],
+        "source_seed": "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
             "value": "unknown",
@@ -238,21 +507,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hypopituitarism workup."
+        "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "polyuria",
+          "polydipsia"
+        ],
+        "source_seed": "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "options": [
           {
             "value": "unknown",
@@ -271,21 +552,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypopituitarism."
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "headache",
+          "vision"
+        ],
+        "source_seed": "Fatigue, hypotension, cold intolerance, amenorrhea/ED/low libido, polyuria/polydipsia, headache/vision."
       },
       {
         "id": "question_05",
-        "label": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "label": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "options": [
           {
             "value": "unknown",
@@ -304,21 +597,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypopituitarism."
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Hypopituitarism.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypopituitarism therapy unsafe.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypopituitarism therapy unsafe.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "galactorrhea"
+        ],
+        "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
       {
         "id": "question_06",
-        "label": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible.",
+        "label": "Have ring size, shoe size, facial features, jaw spacing, sweating, sleep apnea, joint pain, or headaches changed over time?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: clinical questions",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Have ring size, shoe size, facial features, jaw spacing, sweating, sleep apnea, joint pain, or headaches changed over time?",
         "options": [
           {
             "value": "unknown",
@@ -337,206 +641,534 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypopituitarism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypopituitarism."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "growth",
+          "acral",
+          "changes"
+        ],
+        "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
+      },
+      {
+        "id": "question_07",
+        "label": "Any adrenal symptoms such as orthostasis, salt craving, hyperpigmentation, unexplained weight loss, or thyroid symptoms such as palpitations, tremor, heat/cold intolerance, bowel change, or neck swelling?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any adrenal symptoms such as orthostasis, salt craving, hyperpigmentation, unexplained weight loss, or thyroid symptoms such as palpitations, tremor, heat/cold intolerance, bowel change, or neck swelling?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "adrenal",
+          "thyroid",
+          "symptoms"
+        ],
+        "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
+      },
+      {
+        "id": "question_08",
+        "label": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hypopituitarism interpretation or safety?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hypopituitarism interpretation or safety?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Positive exposure changes whether to hold interfering agents, repeat testing, adjust treatment, or use a safer Hypopituitarism pathway.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypopituitarism therapy unsafe.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypopituitarism therapy unsafe.",
+        "management_implication": "Positive exposure changes whether to hold interfering agents, repeat testing, adjust treatment, or use a safer Hypopituitarism pathway.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "medication",
+          "causes",
+          "prolactin",
+          "elevation"
+        ],
+        "source_seed": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
+      },
+      {
+        "id": "question_09",
+        "label": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HYPOPITUITARISM_2016",
+          "source_section": "Hypopituitarism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2016",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Hypopituitarism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypopituitarism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypopituitarism needs urgent evaluation today.",
+        "management_implication": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "access",
+          "water",
+          "desmopressin",
+          "when",
+          "diabetes",
+          "insipidus",
+          "possible"
+        ],
+        "source_seed": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Orthostatic vitals, visual fields, secondary sex characteristics, thyroid/skin signs, volume status.",
+        "label": "Test confrontation visual fields",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: focused physical exam",
+          "source_section": "Hypopituitarism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism."
+        "action": "Use this maneuver to evaluate pituitary/sellar mass effect or cranial nerve involvement. Visual field loss changes urgency of MRI review, ophthalmology, and neurosurgical escalation.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Hypopituitarism.",
+        "technique": "Test each eye separately by confrontation, comparing peripheral fields with the examiner's field while the patient fixes on a central target.",
+        "findings_options": [
+          "Full",
+          "Bitemporal deficit",
+          "Other field deficit",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When pituitary mass, macroadenoma, headache, or visual symptoms are relevant",
+        "diagnostic_target": "pituitary/sellar mass effect or cranial nerve involvement",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Visual field loss changes urgency of MRI review, ophthalmology, and neurosurgical escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Test confrontation visual fields is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "test",
+          "confrontation",
+          "visual",
+          "fields"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Assess secondary sex characteristics",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: focused physical exam",
+          "source_section": "Hypopituitarism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism."
+        "action": "Use this maneuver to evaluate pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype. Abnormal secondary sex characteristics change pituitary-gonadal axis testing and counseling.",
+        "rationale": "Targets pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "technique": "Assess Tanner stage or secondary sex characteristics only when clinically appropriate and with consent/chaperone practices.",
+        "findings_options": [
+          "Age-appropriate",
+          "Delayed/underdeveloped",
+          "Advanced/virilized",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When hypopituitarism, prolactinoma, gonadal dysfunction, puberty, or growth concern is relevant",
+        "diagnostic_target": "pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Abnormal secondary sex characteristics change pituitary-gonadal axis testing and counseling.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess secondary sex characteristics is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "assess",
+          "secondary",
+          "characteristics"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Assess body hair distribution",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: focused physical exam",
+          "source_section": "Hypopituitarism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism."
+        "action": "Use this maneuver to evaluate hypopituitary phenotype, central adrenal/thyroid/gonadal deficiency clues, or chronic hormone-deficiency severity. Reduced androgen-dependent hair changes pituitary-gonadal axis testing and counseling.",
+        "rationale": "Targets hypopituitary phenotype, central adrenal/thyroid/gonadal deficiency clues, or chronic hormone-deficiency severity; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "technique": "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.",
+        "findings_options": [
+          "Expected distribution",
+          "Reduced androgen-dependent hair",
+          "Excess/virilizing pattern",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When hypopituitarism or gonadal-axis deficiency is possible",
+        "diagnostic_target": "hypopituitary phenotype, central adrenal/thyroid/gonadal deficiency clues, or chronic hormone-deficiency severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Reduced androgen-dependent hair changes pituitary-gonadal axis testing and counseling.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess body hair distribution is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "assess",
+          "body",
+          "hair",
+          "distribution"
+        ]
       },
       {
         "id": "exam_04",
-        "label": "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
+        "label": "Inspect skin for pallor or dryness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: focused physical exam",
+          "source_section": "Hypopituitarism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism."
-      },
-      {
-        "id": "exam_05",
-        "label": "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy.",
-        "source": {
-          "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2016",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hypopituitarism."
+        "action": "Use this maneuver to evaluate hypopituitary phenotype, central adrenal/thyroid/gonadal deficiency clues, or chronic hormone-deficiency severity. Pallor, dryness, or coarse skin changes central adrenal/thyroid/gonadal deficiency framing and urgency.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Hypopituitarism.",
+        "technique": "Inspect exposed skin, palms, and mucosa for pallor, dryness, texture change, bruising, and baseline differences relevant to hormone deficiency.",
+        "findings_options": [
+          "No concerning change",
+          "Pallor",
+          "Dry/coarse skin",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When hypopituitarism could involve central adrenal or thyroid deficiency",
+        "diagnostic_target": "hypopituitary phenotype, central adrenal/thyroid/gonadal deficiency clues, or chronic hormone-deficiency severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Pallor, dryness, or coarse skin changes central adrenal/thyroid/gonadal deficiency framing and urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect skin for pallor or dryness is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "inspect",
+          "skin",
+          "pallor",
+          "dryness"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If headache, visual symptoms, pituitary mass, apoplexy concern, cranial nerve symptoms, or very high pituitary hormone levels are present: add confrontation visual fields, extraocular movements, cranial nerves, mental status, and optic-chiasm mass-effect screen.",
+        "label": "Assess extraocular movements",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypopituitarism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism.",
+        "action": "Add when diplopia, apoplexy, cranial nerve, cavernous is present; this evaluates pituitary/sellar mass effect, cavernous sinus involvement, or cranial nerve III/IV/VI dysfunction. Ophthalmoplegia changes emergency evaluation and neurosurgical urgency.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Hypopituitarism.",
+        "technique": "Ask the patient to follow a target through cardinal gaze positions and observe for limitation, pain, diplopia, or nystagmus.",
+        "findings_options": [
+          "Full",
+          "Restricted",
+          "Diplopia",
+          "Painful",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When diplopia, apoplexy, cavernous sinus involvement, or cranial nerve symptoms are present",
+        "diagnostic_target": "pituitary/sellar mass effect, cavernous sinus involvement, or cranial nerve III/IV/VI dysfunction",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Ophthalmoplegia changes emergency evaluation and neurosurgical urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess extraocular movements is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "assess",
+          "extraocular",
+          "movements"
+        ],
         "when": {
           "termsAny": [
-            "headache",
-            "vision",
-            "visual field",
             "diplopia",
-            "pituitary mass",
             "apoplexy",
             "cranial nerve",
-            "macroadenoma",
-            "very high prolactin",
-            "mass effect"
+            "cavernous"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If hormone deficiency or water-balance disorder is possible: add orthostatic/volume exam, mucous membranes, secondary sex characteristics, thyroid/skin signs, pubertal or growth assessment when relevant, and neurologic safety screen.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypopituitarism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism.",
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
         "when": {
           "termsAny": [
-            "hypopituitarism",
+            "vomiting",
+            "dehydration",
+            "poor intake",
             "polyuria",
-            "polydipsia",
-            "diabetes insipidus",
-            "hypernatremia",
-            "amenorrhea",
-            "low libido",
-            "growth",
-            "puberty",
-            "fatigue"
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       },
       {
         "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "label": "Inspect for galactorrhea",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypopituitarism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypopituitarism.",
+        "action": "Add when galactorrhea, breast symptoms, amenorrhea, infertility, prolactin is present; this evaluates gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Galactorrhea changes prolactin interpretation and pituitary workup priority.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "technique": "Inspect for spontaneous discharge and, only when clinically appropriate, gently express from the areola toward the nipple while preserving privacy and consent.",
+        "findings_options": [
+          "Absent",
+          "Spontaneous discharge",
+          "Expressible discharge",
+          "Bloody/unilateral discharge",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When breast symptoms, amenorrhea, infertility, or prolactin excess is present",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Galactorrhea changes prolactin interpretation and pituitary workup priority.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect for galactorrhea is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "inspect",
+          "galactorrhea"
+        ],
         "when": {
           "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
+            "galactorrhea",
+            "breast symptoms",
+            "amenorrhea",
+            "infertility",
+            "prolactin"
           ]
         }
       },
       {
         "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "label": "Assess pubertal stage",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypopituitarism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hypopituitarism.",
+        "action": "Add when growth, puberty, delayed puberty, pediatric is present; this evaluates pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype. Pubertal stage changes interpretation of growth and gonadal labs.",
+        "rationale": "Targets pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypopituitarism.",
+        "technique": "Assess Tanner stage or secondary sex characteristics only when clinically appropriate and with consent/chaperone practices.",
+        "findings_options": [
+          "Age-appropriate",
+          "Delayed/underdeveloped",
+          "Advanced/virilized",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When gigantism, delayed puberty, hypopituitarism, or pediatric growth concern is relevant",
+        "diagnostic_target": "pubertal development, delayed/precocious puberty pattern, or hypogonadal phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Pubertal stage changes interpretation of growth and gonadal labs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess pubertal stage is supportive for Hypopituitarism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "assess",
+          "pubertal",
+          "stage"
+        ],
         "when": {
           "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "growth",
+            "puberty",
+            "delayed puberty",
+            "pediatric"
           ]
         }
       }
@@ -545,364 +1177,785 @@
       {
         "id": "test_01",
         "label": "8 AM cortisol +/- ACTH stimulation.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "8 AM cortisol +/- ACTH stimulation.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "cortisol",
+          "acth",
+          "stimulation"
+        ]
       },
       {
         "id": "test_02",
         "label": "Free T4 with TSH.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Free T4 with TSH.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "free",
+          "with"
+        ]
       },
       {
         "id": "test_03",
         "label": "LH/FSH with testosterone or estradiol.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism.",
+        "diagnostic_target": "LH/FSH with testosterone or estradiol.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "with",
+          "testosterone",
+          "estradiol"
+        ]
       },
       {
         "id": "test_04",
         "label": "Prolactin, IGF-1 and dynamic GH testing when indicated.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Prolactin, IGF-1 and dynamic GH testing when indicated.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "prolactin",
+          "dynamic",
+          "testing",
+          "when",
+          "indicated"
+        ]
       },
       {
         "id": "test_05",
         "label": "Pituitary MRI.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism.",
+        "diagnostic_target": "Pituitary MRI.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "pituitary"
+        ]
       },
       {
         "id": "test_06",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_07",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Pituitary safety tests: check 8 AM cortisol/ACTH before thyroid replacement decisions, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, sodium/osmolality, and MRI/visual-field pathway when mass effect is possible.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Pituitary safety tests: check 8 AM cortisol/ACTH before thyroid replacement decisions, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, sodium/osmolality, and MRI/visual-field pathway when mass effect is possible.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "pituitary",
+          "safety",
+          "tests",
+          "check",
+          "cortisol",
+          "acth",
+          "before",
+          "thyroid"
+        ]
       },
       {
         "id": "test_08",
         "label": "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "pituitary",
+          "axis",
+          "panel",
+          "guided",
+          "presentation",
+          "cortisol",
+          "acth",
+          "free"
+        ]
       },
       {
         "id": "test_09",
         "label": "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypopituitarism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypopituitarism.",
+        "diagnostic_target": "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL. Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L. TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay. T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific. Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "pituitary",
+          "after",
+          "biochemical",
+          "evidence",
+          "mass",
+          "effect",
+          "symptoms",
+          "dynamic"
+        ]
       },
       {
         "id": "reference_01",
         "label": "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "cortisol",
+          "strongly",
+          "suggests",
+          "adrenal",
+          "insufficiency",
+          "often",
+          "makes",
+          "unlikely"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "cosyntropin",
+          "peak",
+          "cortisol",
+          "traditional",
+          "abnormal",
+          "cutoff",
+          "modern",
+          "assays"
+        ]
       },
       {
         "id": "reference_03",
         "label": "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Sodium about 135-145 mmol/L; potassium about 3.5-5.0 mmol/L.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "sodium",
+          "about",
+          "mmol",
+          "potassium"
+        ]
       },
       {
         "id": "reference_04",
         "label": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "typical",
+          "adult",
+          "range",
+          "about",
+          "local",
+          "pregnancy",
+          "illness",
+          "context"
+        ]
       },
       {
         "id": "reference_05",
         "label": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "free",
+          "typical",
+          "adult",
+          "range",
+          "about",
+          "local",
+          "assay"
+        ]
       },
       {
         "id": "reference_06",
         "label": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "T3, TRAb/TSI, TPO Ab, and thyroglobulin Ab are assay-specific.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "trab",
+          "thyroglobulin",
+          "assay",
+          "specific"
+        ]
       },
       {
         "id": "reference_07",
         "label": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "prolactin",
+          "upper",
+          "limit",
+          "often",
+          "about",
+          "women",
+          "pregnancy",
+          "lactation"
+        ]
       },
       {
         "id": "reference_08",
         "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "male",
+          "total",
+          "testosterone",
+          "should",
+          "early",
+          "morning",
+          "repeated",
+          "lower"
+        ]
       },
       {
         "id": "reference_09",
         "label": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "estradiol",
+          "pediatric",
+          "growth",
+          "labs",
+          "require",
+          "puberty",
+          "specific",
+          "ranges"
+        ]
       },
       {
         "id": "reference_10",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypopituitarism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypopituitarism.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypopituitarism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypopituitarism test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Central adrenal insufficiency must be addressed before thyroid hormone escalation.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: results that change management",
+          "source_section": "Hypopituitarism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Central adrenal insufficiency must be addressed before thyroid hormone escalation.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism.",
+        "diagnostic_target": "Central adrenal insufficiency must be addressed before thyroid hormone escalation.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypopituitarism.",
+        "management_change": "Central adrenal insufficiency must be addressed before thyroid hormone escalation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "central",
+          "adrenal",
+          "insufficiency",
+          "must",
+          "addressed",
+          "before",
+          "thyroid",
+          "hormone"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: results that change management",
+          "source_section": "Hypopituitarism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism.",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypopituitarism.",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: results that change management",
+          "source_section": "Hypopituitarism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypopituitarism.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: results that change management",
+          "source_section": "Hypopituitarism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism.",
+        "diagnostic_target": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypopituitarism.",
+        "management_change": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "central",
+          "adrenal",
+          "insufficiency",
+          "must",
+          "addressed",
+          "before",
+          "thyroid",
+          "hormone"
+        ]
       },
       {
         "id": "management_05",
         "label": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HYPOPITUITARISM_2016",
-          "source_section": "Hypopituitarism generated endocrine workup: results that change management",
+          "source_section": "Hypopituitarism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2016",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypopituitarism.",
+        "diagnostic_target": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypopituitarism.",
+        "management_change": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypopituitarism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "hypopituitarism",
+          "confirmed",
+          "hormone",
+          "excess",
+          "deficiency",
+          "plus",
+          "finding",
+          "changes",
+          "endocrine"
+        ]
       }
     ],
     "endocrine_metadata": {

@@ -4,6 +4,7 @@ import {
   complaintModules,
   complaintSourceRegistry,
   evaluateComplaintCds,
+  isBasicBedsideDataItem,
   selectComplaintModule,
   validateComplaintModules
 } from "../complaint-cds.js";
@@ -42,6 +43,31 @@ requiredSources.forEach((sourceId) => {
   assert.ok(sourceIds.has(sourceId), `source registry should include ${sourceId}`);
 });
 
+const endocrineInstallerSource = readFileSync("scripts/install-endocrine-workups.js", "utf8");
+const requiredExamTemplateStart = endocrineInstallerSource.indexOf("function requiredExamTemplates");
+const requiredExamTemplateEnd = endocrineInstallerSource.indexOf("function conditionalExamTemplates", requiredExamTemplateStart);
+const conditionalExamTemplateEnd = endocrineInstallerSource.indexOf("function moduleFromWorkup", requiredExamTemplateEnd);
+assert.ok(
+  requiredExamTemplateStart > 0 && requiredExamTemplateEnd > requiredExamTemplateStart && conditionalExamTemplateEnd > requiredExamTemplateEnd,
+  "endocrine installer should expose exam template functions for static safety checks"
+);
+const examTemplateSource = endocrineInstallerSource.slice(requiredExamTemplateStart, conditionalExamTemplateEnd);
+assert.doesNotMatch(
+  examTemplateSource,
+  /\b(?:Measure blood pressure|Measure heart rate|Measure respiratory rate|Measure oxygen saturation|Measure temperature|Measure current weight|Measure body mass index|Measure waist circumference|Calculate body mass index|Measure orthostatic blood pressure|Measure standing blood pressure|Check bedside glucose|Measure bedside glucose|Bedside glucose|Assess general appearance)\b/i,
+  "endocrine exam templates must not mint basic bedside data/safety checks"
+);
+assert.match(
+  endocrineInstallerSource,
+  /function requiredSafetyTemplates[\s\S]*function conditionalSafetyTemplates[\s\S]*const requiredSafetyAtoms = requiredSafetyTemplates\(row\)/,
+  "endocrine safety checks should be first-class templates, not filtered out of exam templates"
+);
+assert.doesNotMatch(
+  endocrineInstallerSource,
+  /requiredExamAtoms\.filter\(isSafetyCheckAtom\)|conditionalExamAtoms\.filter\(isSafetyCheckAtom\)/,
+  "endocrine builder must not rely on filtering safety checks out of physical exam atoms"
+);
+
 function flattenModuleText(module) {
   return [
     module.label,
@@ -58,6 +84,7 @@ function flattenModuleText(module) {
 
 const auditedItemGroups = [
   "redFlags",
+  "safetyChecks",
   "requiredQuestions",
   "conditionalQuestions",
   "requiredExam",
@@ -76,12 +103,54 @@ function assertMeaningfulItem(module, group, item) {
   assert.doesNotMatch(item.rationale, /\b(?:generic|template|todo|tbd)\b/i, `${module.id}.${group}.${item.id} should not have placeholder rationale`);
 }
 
+function assertAtomicExamItem(module, group, item) {
+  assert.ok(
+    item.label && item.label.trim().length >= 3,
+    `${module.id}.${group}.${item.id} should have a concise maneuver label`
+  );
+  assert.doesNotMatch(item.label, /[,;:]/, `${module.id}.${group}.${item.id} should not be a comma/semicolon/colon bundled exam cluster`);
+  assert.doesNotMatch(item.label, /\//, `${module.id}.${group}.${item.id} should not be a slash-bundled exam cluster`);
+  assert.doesNotMatch(item.label, /\band\s*\/\s*or\b/i, `${module.id}.${group}.${item.id} should not contain and/or clusters`);
+  assert.doesNotMatch(item.label, /\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment)\b/i, `${module.id}.${group}.${item.id} should be an atomic maneuver rather than a broad exam bundle`);
+  assert.ok(item.when_to_perform && item.when_to_perform.length >= 20, `${module.id}.${group}.${item.id} should state when to perform the maneuver`);
+  assert.ok(item.technique && item.technique.length >= 20, `${module.id}.${group}.${item.id} should include bedside technique`);
+  assert.doesNotMatch(item.technique, /\bperform the named (?:bedside item|maneuver) directly\b/i, `${module.id}.${group}.${item.id} should not use placeholder technique`);
+  assert.ok(item.findings_options?.length >= 3, `${module.id}.${group}.${item.id} should include findings/options`);
+  assert.ok(item.diagnostic_target && item.diagnostic_target.length >= 10, `${module.id}.${group}.${item.id} should include diagnostic target`);
+  assert.doesNotMatch(item.diagnostic_target, /\bfocused bedside finding relevant to\b/i, `${module.id}.${group}.${item.id} should not use a generic diagnostic target`);
+  assert.ok(Object.prototype.hasOwnProperty.call(item, "LR_plus"), `${module.id}.${group}.${item.id} should include LR_plus`);
+  assert.ok(Object.prototype.hasOwnProperty.call(item, "LR_minus"), `${module.id}.${group}.${item.id} should include LR_minus`);
+  assert.ok(item.management_change && item.management_change.length >= 20, `${module.id}.${group}.${item.id} should state what result changes management`);
+  assert.ok(item.difficulty, `${module.id}.${group}.${item.id} should include difficulty metadata`);
+  assert.ok(Number(item.time_burden_minutes) > 0, `${module.id}.${group}.${item.id} should include time burden metadata`);
+  assert.ok(item.equipment_needed, `${module.id}.${group}.${item.id} should include equipment metadata`);
+  assert.ok(item.patient_cooperation_required, `${module.id}.${group}.${item.id} should include cooperation metadata`);
+  assert.ok(item.limitations && item.limitations.length >= 20, `${module.id}.${group}.${item.id} should include limitations`);
+  assert.ok(item.tags?.length, `${module.id}.${group}.${item.id} should include tags`);
+}
+
 for (const module of endocrineModules) {
+  const lowExamCardiometabolicWorkup = /\b(?:prediabetes|metabolic syndrome|gestational diabetes)\b/i.test(module.label || "");
   assert.equal(module.status, "mvp", `${module.id} should be active mvp`);
   assert.ok(module.triggers.length >= 2, `${module.id} should have searchable triggers`);
+  assert.ok(module.safetyChecks.length >= 2, `${module.id} should include first-class basic bedside data/safety checks`);
   assert.ok(module.requiredQuestions.length >= 4, `${module.id} should include a deployment-grade question set`);
-  assert.ok(module.requiredExam.length >= 3, `${module.id} should include focused exam plus severity/complication checks`);
-  assert.ok(module.conditionalExam.length >= 2, `${module.id} should include modifier-triggered conditional exam add-ons`);
+  assert.ok(module.requiredQuestions.length <= 10, `${module.id} should keep required bedside history focused instead of turning every guideline cue into a required question`);
+  assert.ok(module.conditionalQuestions.every((item) => item.when?.termsAny?.length || item.when?.answersAny?.length || item.when?.termsAll?.length || item.when?.answersAll?.length), `${module.id} conditional history add-ons should have structured modifier triggers`);
+  assert.ok(
+    module.requiredExam.length >= (lowExamCardiometabolicWorkup ? 1 : 3),
+    `${module.id} should include clinically meaningful required exam maneuvers without padding basic measurements into the exam section`
+  );
+  const conditionalSafetyChecks = module.safetyChecks.filter((item) => (
+    item.when?.termsAny?.length
+    || item.when?.answersAny?.length
+    || item.when?.termsAll?.length
+    || item.when?.answersAll?.length
+  ));
+  assert.ok(
+    module.conditionalExam.length + conditionalSafetyChecks.length >= (lowExamCardiometabolicWorkup ? 0 : 2),
+    `${module.id} should include modifier-triggered conditional bedside add-ons while keeping acuity checks in safetyChecks`
+  );
   assert.ok(module.initialTests.length >= 6, `${module.id} should include tests and reference anchors`);
   assert.ok(module.redFlags.length >= 2, `${module.id} should include red flags and escalation cues`);
   assert.ok(module.dispositionRules.length >= 3, `${module.id} should include management-changing results`);
@@ -92,12 +161,106 @@ for (const module of endocrineModules) {
   assert.doesNotMatch(flattenModuleText(module), /\b(?:MRN|DOB|John Smith|Room 412B|Riverside General)\b/i, `${module.id} should not include PHI fixture text`);
   assert.equal(selectComplaintModule(module.label)?.id, module.id, `${module.id} should be searchable/selectable by exact diagnosis label`);
   assert.ok(module.conditionalExam.every((item) => item.when?.termsAny?.length), `${module.id} conditional exam add-ons should have structured modifier triggers`);
-  const modifierResult = evaluateComplaintCds(`${module.label} unstable vomiting fever pregnancy headache visual symptoms medication discordant`, {}, { module });
-  assert.ok(modifierResult.conditionalExam.length >= 1, `${module.id} should activate conditional exam add-ons when key modifiers are present`);
+  const examLabels = [...module.requiredExam, ...module.conditionalExam].map((item) => item.label.toLowerCase());
+  assert.equal(new Set(examLabels).size, examLabels.length, `${module.id} should not duplicate exam labels across required and conditional items`);
+  [...module.requiredExam, ...module.conditionalExam].forEach((item) => {
+    assert.ok(!isBasicBedsideDataItem(item), `${module.id}.${item.id} should keep basic bedside data out of physical exam sections`);
+  });
+  module.safetyChecks.forEach((item) => {
+    assert.ok(isBasicBedsideDataItem(item), `${module.id}.${item.id} should be recognizable as basic bedside data/safety check`);
+    const findingsText = (item.findings_options || []).join(" ");
+    if (/current weight|\bweight\b/i.test(item.label || "")) {
+      assert.match(findingsText, /kg\/lb|weight gain|weight loss/i, `${module.id}.${item.id} weight safety check should use weight-specific documentation choices`);
+      assert.doesNotMatch(findingsText, /tachypneic|bradypneic|normal effort/i, `${module.id}.${item.id} weight safety check should not inherit respiratory-rate options`);
+    }
+    if (/body mass index|bmi/i.test(item.label || "")) {
+      assert.match(findingsText, /kg\/m2|underweight|overweight|obesity/i, `${module.id}.${item.id} BMI safety check should use BMI-specific documentation choices`);
+    }
+    if (/waist circumference/i.test(item.label || "")) {
+      assert.match(findingsText, /cm\/in|risk threshold/i, `${module.id}.${item.id} waist safety check should use waist-specific documentation choices`);
+    }
+  });
+  const noModifierResult = evaluateComplaintCds(module.label, {}, { module });
+  assert.ok(
+    noModifierResult.requiredQuestions.length + noModifierResult.conditionalQuestions.length <= 14,
+    `${module.id} should not overload the no-modifier bedside history set`
+  );
+  assert.equal(
+    noModifierResult.conditionalQuestions.length,
+    0,
+    `${module.id} should not activate conditional history add-ons from the diagnosis label alone`
+  );
+  assert.equal(
+    noModifierResult.conditionalExam.length,
+    0,
+    `${module.id} should not activate conditional exam add-ons from the diagnosis label alone`
+  );
+  assert.equal(
+    noModifierResult.conditionalSafetyChecks.length,
+    0,
+    `${module.id} should not activate conditional safety add-ons from the diagnosis label alone`
+  );
+  if (module.conditionalQuestions.length) {
+    const triggerText = module.conditionalQuestions[0].when?.termsAny?.slice(0, 3).join(" ");
+    const conditionalHistoryResult = evaluateComplaintCds(`${module.label} ${triggerText}`, {}, { module });
+    assert.ok(
+      conditionalHistoryResult.conditionalQuestions.length >= 1,
+      `${module.id} should activate conditional history add-ons when their structured modifier terms are present`
+    );
+  }
+  if (module.conditionalExam.length) {
+    const triggerText = module.conditionalExam[0].when?.termsAny?.slice(0, 3).join(" ");
+    const conditionalExamResult = evaluateComplaintCds(`${module.label} ${triggerText}`, {}, { module });
+    assert.ok(
+      conditionalExamResult.conditionalExam.length >= 1,
+      `${module.id} should activate conditional exam add-ons when their structured modifier terms are present`
+    );
+  }
+  if (conditionalSafetyChecks.length) {
+    const triggerText = conditionalSafetyChecks[0].when?.termsAny?.slice(0, 3).join(" ");
+    const conditionalSafetyResult = evaluateComplaintCds(`${module.label} ${triggerText}`, {}, { module });
+    assert.ok(
+      conditionalSafetyResult.conditionalSafetyChecks.length >= 1,
+      `${module.id} should activate conditional safety add-ons when their structured modifier terms are present`
+    );
+  }
   auditedItemGroups.forEach((group) => {
     (module[group] || []).forEach((item) => assertMeaningfulItem(module, group, item));
   });
-  module.requiredQuestions.forEach((item) => {
+  ["requiredExam", "conditionalExam"].forEach((group) => {
+    (module[group] || []).forEach((item) => assertAtomicExamItem(module, group, item));
+  });
+  [...module.requiredExam, ...module.conditionalExam, ...module.safetyChecks].forEach((item) => {
+    const label = item.label || "";
+    const rationale = item.rationale || "";
+    if (/acanthosis/i.test(label)) {
+      assert.match(
+        rationale,
+        /insulin-resistance|cardiometabolic/i,
+        `${module.id}.${item.id} acanthosis rationale should stay in insulin-resistance/cardiometabolic domain`
+      );
+      assert.doesNotMatch(
+        rationale,
+        /mass-effect|imaging|procedure planning/i,
+        `${module.id}.${item.id} acanthosis rationale should not inherit neck-mass/imaging wording`
+      );
+    }
+    if (/body mass index|current weight|waist circumference/i.test(label)) {
+      assert.doesNotMatch(
+        rationale,
+        /mass-effect|procedure planning/i,
+        `${module.id}.${item.id} anthropometric rationale should not inherit mass-effect wording`
+      );
+    }
+  });
+  [...module.requiredQuestions, ...module.conditionalQuestions].forEach((item) => {
+    assert.ok(item.text && /\?$/.test(item.text.trim()), `${module.id}.${item.id} should be phrased as an askable bedside question`);
+    assert.doesNotMatch(item.label, /\.$/, `${module.id}.${item.id} should not be a list-fragment statement`);
+    assert.doesNotMatch(item.label, /^(Ask about|Clarify)\b/i, `${module.id}.${item.id} should not expose source extraction instructions`);
+    assert.ok(item.when_to_ask, `${module.id}.${item.id} should include when-to-ask metadata`);
+    assert.ok(item.diagnostic_purpose, `${module.id}.${item.id} should include diagnostic purpose metadata`);
+    assert.ok(item.management_implication, `${module.id}.${item.id} should include management implication metadata`);
+    assert.ok(item.tags?.length, `${module.id}.${item.id} should include retrieval/clinical tags`);
     assert.ok(item.options?.some((option) => option.value === "yes"), `${module.id}.${item.id} should be answerable`);
     assert.ok(item.options?.some((option) => option.value === "no"), `${module.id}.${item.id} should be answerable`);
   });
@@ -107,6 +270,104 @@ for (const module of endocrineModules) {
     assert.match(source?.url || "", /^https:\/\//, `${module.id} source ${sourceId} should have HTTPS provenance`);
   });
 }
+
+const endocrineModuleText = endocrineModules.map(flattenModuleText).join("\n");
+const endocrineQuestionText = endocrineModules
+  .flatMap((module) => [...module.requiredQuestions, ...module.conditionalQuestions])
+  .map((item) => `${item.label || ""}\n${item.text || ""}`)
+  .join("\n");
+const endocrineQuestionStrings = endocrineModules.flatMap((module) =>
+  [...module.requiredQuestions, ...module.conditionalQuestions].flatMap((item) => [item.label || "", item.text || ""])
+);
+const endocrineQuestionRows = endocrineModules.flatMap((module) =>
+  [...module.requiredQuestions, ...module.conditionalQuestions].map((item) => ({
+    moduleId: module.id,
+    moduleLabel: module.label,
+    id: item.id,
+    text: [item.label || "", item.text || "", item.action || "", item.management_implication || ""].join("\n")
+  }))
+);
+function assertNoQuestionMatch(pattern, message) {
+  const offenders = endocrineQuestionStrings.filter((text) => pattern.test(text));
+  assert.deepEqual(offenders, [], `${message}: ${offenders.slice(0, 5).join(" | ")}`);
+}
+function assertNoQuestionRowMatch(predicate, message) {
+  const offenders = endocrineQuestionRows
+    .filter(predicate)
+    .map((row) => `${row.moduleId}.${row.id}: ${row.text.replace(/\s+/g, " ").slice(0, 220)}`);
+  assert.deepEqual(offenders, [], `${message}: ${offenders.slice(0, 5).join(" | ")}`);
+}
+assertNoQuestionMatch(
+  /Have you had (?:anticonvulsants|injections or creams or inhalers|diet or sun exposure|neck surgery|calcium or vitamin D(?: intake)?|CKD\/chronic kidney disease or liver disease)\?/i,
+  "generated endocrine history questions should not expose chopped-up risk-factor fragments"
+);
+assertNoQuestionMatch(
+  /\bHave you had (?!heat intolerance,|cold intolerance,|new salt craving,)[^,?]{1,60}\?/i,
+  "generated endocrine history questions should not expose bare seed-fragment phrasing"
+);
+assertNoQuestionMatch(
+  /\b(?:Have you had|Is there) (?:and|or)\b/i,
+  "generated endocrine history questions should not preserve dangling conjunctions from source fragments"
+);
+assertNoQuestionMatch(
+  /\bIs there [^?]+\?/i,
+  "generated endocrine history questions should avoid bare 'Is there ...?' source fragments"
+);
+assertNoQuestionMatch(
+  /Any history of [^?]+because these change/i,
+  "generated endocrine history questions should not expose source-rationale fragments as history text"
+);
+assertNoQuestionMatch(
+  /The answer changes diagnostic framing, urgency, test interpretation, treatment safety, or follow-up planning/i,
+  "generated endocrine history questions should not use generic management-implication filler"
+);
+assertNoQuestionRowMatch(
+  (row) => /gestational_diabetes/.test(row.moduleId)
+    && /\b(?:pregnancy possible now|planned soon|would pregnancy change|aldosterone-renin ratio|\bARR\b|adrenal incidentaloma)\b/i.test(row.text),
+  "gestational diabetes history should not ask redundant pregnancy-possibility or adrenal-hypertension questions"
+);
+assertNoQuestionRowMatch(
+  (row) => !/(?:thyroid|graves|hashimoto|thyrotoxicosis)/i.test(row.moduleId)
+    && /\b(?:Graves orbitopathy|thyroid ultrasound|thyroid FNA|thyroid cancer-risk|compressive-symptom)\b/i.test(row.text),
+  "non-thyroid endocrine questions should not leak thyroid-specific rationale"
+);
+assertNoQuestionRowMatch(
+  (row) => !/(?:diabetes|prediabetes|metabolic_syndrome)/i.test(row.moduleId)
+    && /\b(?:same-day hyperglycemia|hyperglycemia, ketosis|insulin-delivery evaluation)\b/i.test(row.text),
+  "non-diabetes endocrine questions should not leak hyperglycemic-crisis rationale"
+);
+assertNoQuestionRowMatch(
+  (row) => !/hyperaldosteronism/i.test(row.moduleId)
+    && /\b(?:aldosterone-renin ratio|\bARR\b|adrenal incidentaloma)\b/i.test(row.text),
+  "non-hyperaldosteronism questions should not leak aldosterone-renin workup prompts"
+);
+assertNoQuestionMatch(
+  /Any current or recent (?:adrenal or thyroid symptoms|heat or cold intolerance|bowel change|mood or cognition|neck symptoms|eye symptoms|cyclic symptoms|ovulation symptoms|thyroid symptoms|vasomotor or sleep or mood or genitourinary symptoms|neurocognitive symptoms|pain or tenderness),/i,
+  "generated endocrine history questions should expand broad symptom clusters into concrete bedside questions"
+);
+assertNoQuestionMatch(
+  /\bAny current or recent\b/i,
+  "generated endocrine history questions should not use the weak current-or-recent fallback template"
+);
+assertNoQuestionMatch(
+  /\bAny [a-z][^?]{0,80} that could change reproductive counseling, test timing, or treatment safety\?/i,
+  "generated endocrine reproductive questions should ask concrete reproductive context rather than expose a generic fallback"
+);
+assert.match(
+  endocrineQuestionText,
+  /Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure\?/i,
+  "steroid-route fragments should map to a clinically usable medication-exposure question"
+);
+assert.match(
+  endocrineQuestionText,
+  /What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure\?/i,
+  "calcium/vitamin D fragments should map to an intake and sun-exposure question"
+);
+assert.match(
+  endocrineQuestionText,
+  /Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation\?/i,
+  "anticonvulsant fragments should map to a clinically usable bone-health medication question"
+);
 
 function labels(items) {
   return items.map((item) => `${item.label} ${item.action || ""}`).join(" | ").toLowerCase();
@@ -131,11 +392,49 @@ const pcos = evaluateComplaintCds("PCOS irregular periods hirsutism infertility 
 assert.equal(pcos.module.id, "polycystic_ovary_syndrome_v1");
 assertHas(pcos.requiredQuestions, /cycle|hirsutism|rapid virilization/, "PCOS should ask cycle and androgen history");
 assertHas(pcos.initialTests, /pregnancy|testosterone|17-ohp|rotterdam/i, "PCOS should include exclusion and criteria anchors");
+assert.doesNotMatch(labels(pcos.requiredQuestions), /morning erections|testicular symptoms|hot flashes|night sweats|vaginal dryness/i, "PCOS should not inherit male hypogonadism or menopause history questions");
+assert.doesNotMatch(labels([...(pcos.requiredExam || []), ...(pcos.conditionalExam || []), ...(pcos.focusedExam || [])]), /testicular volume/i, "PCOS should not recommend testicular volume exam");
+
+const prediabetes = evaluateComplaintCds("Prediabetes metabolic risk activity family history");
+assert.equal(prediabetes.module.id, "prediabetes_v1");
+assertHas(prediabetes.requiredQuestions, /family history of type 2 diabetes|cardiometabolic risk/i, "Prediabetes should ask diabetes/cardiometabolic family history, not generic endocrine pedigree");
+assert.doesNotMatch(labels(prediabetes.requiredQuestions), /fever|infection symptoms|recent illness|wound|urinary symptoms|cough|ketone|kussmaul/i, "Prediabetes should not inherit acute infection or DKA-style trigger questions");
+assertHas(prediabetes.focusedExam, /acanthosis/i, "Prediabetes should include insulin-resistance phenotype exam");
+assert.doesNotMatch(labels(prediabetes.focusedExam), /monofilament|feet for ulcers|pedal pulses/i, "Prediabetes should not promote established-diabetes foot complication exams as core");
+assertHas(prediabetes.module.conditionalExam, /lower leg edema|xanthomas|xanthelasma/i, "Prediabetes source module should include cardiometabolic conditional exam add-ons without foot-complication padding");
+const prediabetesTriggeredExam = evaluateComplaintCds("Prediabetes metabolic risk with edema hypertriglyceridemia xanthoma");
+assertHas(prediabetesTriggeredExam.conditionalExam, /lower leg edema|xanthomas|xanthelasma/i, "Prediabetes should activate cardiometabolic conditional exam add-ons when modifiers are present");
+assertHas(prediabetes.dispositionRules, /prevention|surveillance|cardiometabolic/i, "Prediabetes disposition should focus on prevention intensity and surveillance");
+assert.doesNotMatch(labels(prediabetes.dispositionRules), /ketosis|acidosis|HHS|severe hypoglycemia|foot infection|insulin access/i, "Prediabetes should not inherit crisis, foot-infection, or insulin-access management rules");
+
+const metabolicSyndrome = evaluateComplaintCds("Metabolic syndrome waist triglycerides hdl hypertension insulin resistance");
+assert.equal(metabolicSyndrome.module.id, "metabolic_syndrome_v1");
+assertHas(metabolicSyndrome.requiredQuestions, /waist|sleep apnea|fatty liver|cardiometabolic/i, "Metabolic syndrome should ask cardiometabolic risk history");
+assertHas(metabolicSyndrome.focusedExam, /acanthosis|waist circumference/i, "Metabolic syndrome should include insulin-resistance or anthropometric phenotype exam");
+assertHas(metabolicSyndrome.module.conditionalExam, /lower leg edema|xanthomas|xanthelasma/i, "Metabolic syndrome source module should include cardiometabolic conditional exam add-ons");
+const metabolicSyndromeTriggeredExam = evaluateComplaintCds("Metabolic syndrome with dyspnea edema heart failure and severe hypertriglyceridemia xanthelasma");
+assertHas(metabolicSyndromeTriggeredExam.conditionalExam, /lower leg edema|xanthomas|xanthelasma/i, "Metabolic syndrome should activate cardiometabolic conditional exam add-ons when modifiers are present");
+assertHas(metabolicSyndrome.dispositionRules, /cardiometabolic|risk reduction|surveillance|criteria/i, "Metabolic syndrome management should focus on criteria and risk reduction");
+assert.doesNotMatch(labels(metabolicSyndrome.dispositionRules), /ketosis|acidosis|HHS|severe hypoglycemia|foot infection|insulin access/i, "Metabolic syndrome should not inherit diabetes-crisis or established-complication management rules");
+
+const gestational = evaluateComplaintCds("Gestational diabetes 28 weeks OGTT vomiting ketones hypertension fetal growth");
+assert.equal(gestational.module.id, "gestational_diabetes_v1");
+assertHas(gestational.requiredQuestions, /gestational age|prior gestational diabetes|fetal growth/i, "Gestational diabetes should ask pregnancy-specific diabetes context");
+assertHas(gestational.dispositionRules, /maternal|fetal|postpartum|obstetric|ketones/i, "Gestational diabetes management should focus on maternal-fetal monitoring and urgent pregnancy-context risks");
+assert.doesNotMatch(labels(gestational.dispositionRules), /HHS osmolality|foot infection|insulin access barriers/i, "Gestational diabetes should not inherit nonpregnancy outpatient diabetes boilerplate");
 
 const diabetesInsipidus = evaluateComplaintCds("diabetes insipidus polyuria polydipsia hypernatremia pituitary surgery");
 assert.equal(diabetesInsipidus.module.id, "diabetes_insipidus_v1");
 assertHas(diabetesInsipidus.requiredQuestions, /24-hour urine|thirst|lithium|pituitary/, "DI should ask polyuria and cause context");
+assertHas(diabetesInsipidus.focusedExam, /mucous membranes|capillary refill|skin turgor/i, "DI should focus the physical exam on dehydration and perfusion maneuvers");
+assertHas(diabetesInsipidus.safetyChecks, /mental status/i, "DI should keep hypernatremia mental-status acuity assessment in safety checks");
+assert.doesNotMatch(labels(diabetesInsipidus.focusedExam), /mental status/i, "DI should not model mental status as a physical exam maneuver");
+assert.doesNotMatch(labels(diabetesInsipidus.focusedExam), /galactorrhea|secondary sex|acral|tongue|pubertal|testicular|breast tissue/i, "DI should not inherit unrelated pituitary/gonadal phenotype exams");
+assert.doesNotMatch(labels(diabetesInsipidus.focusedExam), /visual field|extraocular/i, "DI should not promote mass-effect eye exams without headache, vision, diplopia, macroadenoma, or apoplexy triggers");
 assertHas(diabetesInsipidus.initialTests, /urine volume|urine osmolality|serum sodium|146-149|>160/, "DI should include urine and hypernatremia thresholds");
+
+const diabetesInsipidusMassEffect = evaluateComplaintCds("diabetes insipidus polyuria polydipsia hypernatremia headache peripheral vision loss diplopia pituitary surgery");
+assertHas(diabetesInsipidusMassEffect.conditionalExam, /visual fields|extraocular/i, "DI should add sellar mass-effect exams when headache, visual loss, or diplopia modifiers are present");
 
 const prolactinoma = selectComplaintModule("prolactinoma galactorrhea amenorrhea visual field headache");
 assert.equal(prolactinoma.id, "prolactinoma_v1", "prolactinoma query should route to prolactinoma module");
@@ -155,8 +454,44 @@ assert.equal(thyroidCancer.module.id, "thyroid_cancer_v1");
 assertHas(thyroidCancer.focusedExam, /thyroid mass|cervical nodal|voice|airway/i, "Thyroid cancer should include mass, nodal, voice, and airway assessment");
 assertHas(thyroidCancer.initialTests, /ultrasound|fna|bethesda|calcitonin|ret/i, "Thyroid cancer should include nodal mapping/FNA and medullary cancer markers when relevant");
 
+const vitaminD = evaluateComplaintCds("Vitamin D Deficiency / Osteomalacia bone pain proximal weakness falls");
+const vitaminDBoneTenderness = vitaminD.focusedExam.find((item) => /bone tenderness/i.test(item.label));
+assert.ok(vitaminDBoneTenderness, "Vitamin D/Osteomalacia should include bone tenderness exam");
+assert.match(vitaminDBoneTenderness.diagnostic_target, /osteomalacia|fracture|fall|hypocalcemia/i, "bone tenderness target should stay in bone/mineral domain");
+assert.doesNotMatch(vitaminDBoneTenderness.diagnostic_target, /abdominal/i, "bone tenderness should not inherit abdominal-tenderness target");
+const vitaminDSpinePosture = vitaminD.focusedExam.find((item) => /spine posture|kyphosis/i.test(item.label));
+assert.ok(vitaminDSpinePosture, "Vitamin D/Osteomalacia should include spine posture exam");
+assert.match(vitaminDSpinePosture.technique, /Inspect standing posture|spinal curvature/i, "spine posture technique should be inspection, not palpation");
+
+const cushing = evaluateComplaintCds("Cushing's Syndrome purple striae bruising proximal weakness");
+const purpleStriae = cushing.focusedExam.find((item) => /purple striae/i.test(item.label));
+assert.ok(purpleStriae, "Cushing syndrome should include purple striae exam");
+assert.match(purpleStriae.diagnostic_target, /glucocorticoid|Cushing|adrenal/i, "purple striae target should stay in Cushing/adrenal phenotype domain");
+assert.doesNotMatch(purpleStriae.diagnostic_target, /abdominal complication/i, "purple striae should not inherit generic abdominal-tenderness target");
+assert.equal(selectComplaintModule("Cushing syndrome purple striae")?.id, "cushings_syndrome_v1", "non-possessive Cushing syndrome should resolve");
+
 const report = readFileSync("reports/endocrine-workup-completion-2026-06-06.md", "utf8");
 assert.match(report, /Completed modules: 37/);
 assert.match(report, /37\. Cushing's Disease/);
+
+const generatedReport = readFileSync("reports/endocrine-workups-2026-06-06.md", "utf8");
+assert.match(generatedReport, /Basic bedside data \/ safety checks/);
+assert.match(generatedReport, /Core physical exam maneuvers/);
+assert.match(generatedReport, /Conditional exam add-ons/);
+assert.doesNotMatch(generatedReport, /Focused physical exam/i, "generated report should not expose raw bundled physical exam seed sections");
+assert.doesNotMatch(generatedReport, /Vitals and acuity screen/i, "basic vital-sign data should not be presented as a physical exam item");
+assert.doesNotMatch(generatedReport, /Proximal strength, bone tenderness, gait\/falls, hypocalcemia signs/i, "Vitamin D/Osteomalacia report should use atomic maneuvers, not bundled seed text");
+assert.doesNotMatch(generatedReport, /Have you had (?:anticonvulsants|injections or creams or inhalers|diet or sun exposure|neck surgery|calcium or vitamin D(?: intake)?|CKD\/chronic kidney disease or liver disease)\?/i, "generated report should not expose chopped-up risk-factor questions");
+assert.doesNotMatch(generatedReport, /\bHave you had (?!heat intolerance,|cold intolerance,|new salt craving,)[^,?]{1,60}\?/i, "generated report should not expose bare seed-fragment history questions");
+assert.doesNotMatch(generatedReport, /\b(?:Have you had|Is there) (?:and|or)\b/i, "generated report should not expose dangling conjunction history questions");
+assert.doesNotMatch(generatedReport, /\bIs there [^?]+\?/i, "generated report should avoid bare 'Is there ...?' source fragments");
+assert.doesNotMatch(generatedReport, /Any history of [^?]+because these change/i, "generated report should not expose source-rationale fragments as history text");
+assert.doesNotMatch(generatedReport, /Any current or recent (?:adrenal or thyroid symptoms|heat or cold intolerance|bowel change|mood or cognition|neck symptoms|eye symptoms|cyclic symptoms|ovulation symptoms|thyroid symptoms|vasomotor or sleep or mood or genitourinary symptoms|neurocognitive symptoms|pain or tenderness),/i, "generated report should expand broad symptom clusters into concrete bedside questions");
+assert.doesNotMatch(generatedReport, /\bAny current or recent\b/i, "generated report should not use the weak current-or-recent fallback template");
+assert.doesNotMatch(generatedReport, /\bAny [a-z][^?]{0,80} that could change reproductive counseling, test timing, or treatment safety\?/i, "generated report should ask concrete reproductive context instead of generic reproductive fallback");
+assert.match(generatedReport, /(?:Assess|Test) proximal hip flexor strength/i, "Vitamin D/Osteomalacia report should include an atomic proximal strength maneuver");
+assert.match(generatedReport, /Palpate focal bone tenderness/i, "Vitamin D/Osteomalacia report should include an atomic bone tenderness maneuver");
+assert.match(generatedReport, /(?:Assess|Observe) gait stability if safe/i, "Vitamin D/Osteomalacia report should include an atomic gait/falls maneuver when safe");
+assert.match(generatedReport, /Elicit Chvostek sign/i, "Vitamin D/Osteomalacia report should include an atomic hypocalcemia-sign maneuver");
 
 console.log("Endocrine knowledge module tests passed.");

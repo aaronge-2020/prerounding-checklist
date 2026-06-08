@@ -20,6 +20,41 @@ assert.ok(suite.retrievalPassRate >= 0.98, `full retrieved-set recall too low: $
 assert.ok(suite.recommendedCoreLabelCoverageRate >= 0.75, `recommended core label coverage too low: ${suite.recommendedCoreLabelCoverageRate}`);
 assert.equal(suite.recommendationAvoidHitCases, 0, "recommended checklists should have zero avoid-list hits");
 assert.ok(suite.failures.length === 0, formatEvaluationReport(suite));
+const safetyLabelPattern = /\b(?:blood pressure|heart rate|respiratory rate|temperature|bedside glucose|pregnancy|oxygen saturation|spo2|weight|bmi|orthostatic)\b/i;
+suite.results.forEach((result) => {
+  assert.ok(
+    result.recommendedCore.every((entry) => !safetyLabelPattern.test(entry.label || "")),
+    `${result.caseId}: physical-exam core recommendations should not contain safety/basic bedside data`
+  );
+  assert.ok(
+    result.recommendedConditional.every((entry) => !safetyLabelPattern.test(entry.label || "")),
+    `${result.caseId}: conditional physical-exam recommendations should not contain safety/basic bedside data`
+  );
+});
+assert.ok(
+  suite.results
+    .filter((result) => result.coverageGap)
+    .every((result) => result.expectedInValidatedGaps.length > 0 || result.coreOrAcceptableInRecommended.length > 0),
+  "coverage-gap cases should be visibly covered by validated gap items or recommended acceptable substitutes"
+);
+assert.equal(
+  suite.registeredGapCoveredCases,
+  suite.coverageGapCases,
+  "every active catalog coverage-gap case should have registered staged gap metadata"
+);
+assert.ok(
+  suite.results
+    .filter((result) => result.coverageGap)
+    .every((result) => result.unregisteredCatalogGaps.length === 0),
+  "active catalog gap recommendations must be registered for reviewer audit"
+);
+assert.ok(
+  suite.results
+    .filter((result) => result.coverageGap)
+    .flatMap((result) => result.registeredCatalogGaps)
+    .every((gap) => gap.review_status && gap.review_owner && gap.last_reviewed && gap.planned_resolution),
+  "registered catalog gaps should expose review status owner date and planned resolution"
+);
 
 const requiredCases = [
   "dx_dka_hhs",
@@ -49,6 +84,18 @@ assert.equal(dkaResult.avoidHitsRecommended.length, 0, "DKA recommendation shoul
 const peResult = suite.results.find((result) => result.caseId === "dx_suspected_pe");
 assert.ok(peResult.coreInRecommended.some((label) => /respiratory rate|posterior lung sounds|heart sounds|jvp|edema|blood pressure/i.test(label)), "suspected PE case should recommend cardiopulmonary and DVT-relevant findings");
 assert.equal(peResult.avoidHitsRecommended.length, 0, "suspected PE should avoid irrelevant abdominal/neuro maneuvers in the recommendation");
+
+const tremorResult = suite.results.find((result) => result.caseId === "neuro_tremors");
+assert.ok(tremorResult.selectedIntentIds.includes("hypoglycemia_jittery_v1"), "tremor/palpitations should route to the adrenergic thyroid-aware intent, not generic stroke");
+assert.ok(tremorResult.coreOrAcceptableInRecommended.length > 0, "tremor workup should include structured adrenergic/thyroid or focused neuro safety matches");
+
+const eyeRednessResult = suite.results.find((result) => result.caseId === "id_eye_redness");
+assert.ok(eyeRednessResult.selectedIntentIds.includes("eye_redness_vision_v1"), "eye redness should resolve to the focused eye/vision intent");
+assert.ok(eyeRednessResult.coreOrAcceptableInRecommendedPhysicalExam.some((label) => /sclerae|visual acuity|pupils/i.test(label)), "eye redness should recommend focused eye exam maneuvers");
+
+const incontinenceResult = suite.results.find((result) => result.caseId === "gu_incontinence");
+assert.ok(incontinenceResult.selectedIntentIds.includes("spine_cord_compression_v1"), "incontinence with back pain/neuro symptoms should route to the spine/cord red-flag intent");
+assert.ok(incontinenceResult.coreOrAcceptableInRecommendedPhysicalExam.some((label) => /saddle sensation|extremity light touch|patellar reflex|babinski/i.test(label)), "incontinence with neuro symptoms should include cord/neuro exam coverage");
 
 const dkaChecklist = `BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY

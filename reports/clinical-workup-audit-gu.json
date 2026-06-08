@@ -1,0 +1,1519 @@
+{
+  "generated_at": "2026-06-07T13:53:18.031Z",
+  "setting": "General medicine",
+  "population": "Adult",
+  "modifiers": "",
+  "diagnosis_query": "",
+  "intent_ids": [
+    "gu_renal_dysuria_v1"
+  ],
+  "results": [
+    {
+      "intent_id": "gu_renal_dysuria_v1",
+      "label": "Dysuria, flank pain, pyelonephritis, or AKI/hypovolemia",
+      "status": "validated",
+      "required_domains": [
+        "vitals",
+        "volume/perfusion",
+        "CVA/flank exam",
+        "abdominal add-on when indicated",
+        "urine and renal tests",
+        "urosepsis or obstruction red flags"
+      ],
+      "avoid_labels": [
+        "PMI",
+        "Vibration sense",
+        "Visual acuity"
+      ],
+      "context": "General medicine\nAdult\nvalidated clinical intent workup\nintent: Dysuria, flank pain, pyelonephritis, or AKI/hypovolemia\nintent_id: gu_renal_dysuria_v1\nintent tags: dysuria; UTI; pyelonephritis; flank_pain; AKI; hypovolemia; renal_colic; vitals; vital_signs; abdominal_pain; cva_tenderness; urinalysis; urine_culture; pregnancy; urosepsis; obstruction; renal_function; diagnostic_test; red_flag\nclinical bundles: gu_renal\nrequired domains: vitals; volume/perfusion; CVA/flank exam; abdominal add-on when indicated; urine and renal tests; urosepsis or obstruction red flags\navoid labels: PMI; Vibration sense; Visual acuity",
+      "matched_tags": [
+        "AKI",
+        "abdominal_pain",
+        "diagnostic_safety",
+        "hypovolemia",
+        "infection"
+      ],
+      "active_bundles": [
+        "gu_renal"
+      ],
+      "counts": {
+        "safety": 5,
+        "history": 1,
+        "core": 7,
+        "conditional": 0,
+        "tests": 2,
+        "red_flags": 2,
+        "management": 17,
+        "limitations": 17,
+        "evidence_metadata": 17,
+        "catalog_gaps": 0,
+        "retrieved": 26,
+        "suppressed": 19,
+        "issues": 0,
+        "review_notes": 8
+      },
+      "safety": [
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "Abnormal blood pressure can change acuity, fluids, antihypertensive decisions, endocrine-crisis treatment, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "Abnormal heart rate can change ECG/telemetry urgency, volume or endocrine-crisis assessment, infection severity, medication review, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal respiratory rate or labored breathing can change oxygen/ventilation assessment, acid-base urgency, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal oxygen saturation or rising oxygen requirement can change respiratory support, imaging urgency, pulmonary/infectious/cardiac framing, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Basic bedside safety data required for every validated clinical workup; not a physical exam maneuver.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "Fever or hypothermia can change infection/endocrine-crisis workup, isolation, medication decisions, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        }
+      ],
+      "history": [
+        {
+          "label": "Are symptoms limited to dysuria/frequency/urgency, or are there fever/chills, flank pain, nausea/vomiting, hematuria, low urine output, stone history, pregnancy possibility, catheter/procedure, immunocompromise, or prior resistant urine culture?",
+          "role": "history",
+          "reason": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "management_change": "The answer changes whether to obtain urine culture, renal function/electrolytes, pregnancy testing, blood cultures/lactate, renal imaging, empiric antibiotic breadth, fluids, urology/OB escalation, or ED/inpatient monitoring.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": ""
+        }
+      ],
+      "core": [
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "core",
+          "fit": 100,
+          "score": 181,
+          "reason": "Assesses volume status and perfusion before fluid or diuresis decisions.",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "fit": 100,
+          "score": 166,
+          "reason": "Adds abdominal/GU source assessment when abdominal pain, vomiting, or urinary symptoms coexist.",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "fit": 100,
+          "score": 166,
+          "reason": "Adds abdominal/GU source assessment when abdominal pain, vomiting, or urinary symptoms coexist.",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "core",
+          "fit": 100,
+          "score": 160,
+          "reason": "Looks for pyelonephritis or renal colic when flank or urinary symptoms are present.",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "core",
+          "fit": 100,
+          "score": 159,
+          "reason": "Assesses volume status and perfusion before fluid or diuresis decisions.",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "difficulty": "moderate",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-100-radial-pulses",
+          "label": "Radial pulses",
+          "role": "core",
+          "fit": 100,
+          "score": 124,
+          "reason": "Assesses volume status and perfusion before fluid or diuresis decisions.",
+          "diagnostic_target": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-104-lower-extremity-edema",
+          "label": "Lower extremity edema",
+          "role": "core",
+          "fit": 100,
+          "score": 117,
+          "reason": "Assesses volume status and perfusion before fluid or diuresis decisions.",
+          "diagnostic_target": "peripheral edema pattern and volume overload clue",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        }
+      ],
+      "conditional": [],
+      "tests": [
+        {
+          "exam_id": "REQ-gu-renal-urine-renal-tests",
+          "label": "Urine and renal-function tests",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "GU/renal symptoms need objective urine and renal-function data; exam alone cannot separate cystitis, pyelonephritis, stone, obstruction, AKI, pregnancy-related UTI, and urosepsis.",
+          "diagnostic_target": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "management_change": "UA/culture, pregnancy status, creatinine/electrolytes, CBC, lactate, or blood-culture findings change antibiotic selection, renal dosing, fluid strategy, imaging, source-control/urology need, pregnancy pathway, and disposition.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-imaging-pathway",
+          "label": "Renal obstruction and stone imaging pathway",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Flank pain, hematuria, AKI, or systemic UTI can require imaging when obstruction, stone, abscess, hydronephrosis, or alternate diagnosis would change urgent management.",
+          "diagnostic_target": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "management_change": "Obstruction, infected stone, abscess, solitary kidney risk, or worsening renal function changes urology consultation, decompression/source control, antibiotics, analgesia, fluids, admission, and imaging follow-up.",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "red_flags": [
+        {
+          "exam_id": "REQ-gu-renal-urosepsis-red-flags",
+          "label": "Urosepsis and pyelonephritis escalation cues",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "A GU workup must distinguish uncomplicated cystitis from pyelonephritis, systemic UTI, and urosepsis because management and disposition change immediately.",
+          "diagnostic_target": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "management_change": "These cues change urine culture and blood culture/lactate threshold, empiric antibiotic route/breadth, fluids, renal dosing, imaging/source-control urgency, OB/urology involvement, and ED/inpatient escalation.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-obstruction-red-flags",
+          "label": "Obstruction, stone, and AKI danger cues",
+          "role": "core",
+          "fit": 100,
+          "score": 100,
+          "reason": "Stone/obstruction and AKI red flags should not be hidden inside CVA tenderness or volume-status exams.",
+          "diagnostic_target": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "management_change": "These cues change imaging urgency, urology/nephrology consultation, decompression/source control, analgesia/antiemetic route, fluid strategy, electrolyte correction, and ED/inpatient disposition.",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "0.5",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        }
+      ],
+      "management_changes": [
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "core",
+          "reason": "Screens oral cavity",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "reason": "murmur, abnormal heart sound, or S3/S4 clue",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "reason": "peritoneal irritation or acute abdomen",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "core",
+          "reason": "renal colic or pyelonephritis-associated renal tenderness",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "core",
+          "reason": "elevated right-sided filling pressure or venous congestion",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-100-radial-pulses",
+          "label": "Radial pulses",
+          "role": "core",
+          "reason": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "diagnostic_target": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-104-lower-extremity-edema",
+          "label": "Lower extremity edema",
+          "role": "core",
+          "reason": "peripheral edema pattern and volume overload clue",
+          "diagnostic_target": "peripheral edema pattern and volume overload clue",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-source-severity-history",
+          "label": "Are symptoms limited to dysuria/frequency/urgency, or are there fever/chills, flank pain, nausea/vomiting, hematuria, low urine output, stone history, pregnancy possibility, catheter/procedure, immunocompromise, or prior resistant urine culture?",
+          "role": "core",
+          "reason": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "diagnostic_target": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "management_change": "The answer changes whether to obtain urine culture, renal function/electrolytes, pregnancy testing, blood cultures/lactate, renal imaging, empiric antibiotic breadth, fluids, urology/OB escalation, or ED/inpatient monitoring.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-urine-renal-tests",
+          "label": "Urine and renal-function tests",
+          "role": "core",
+          "reason": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "diagnostic_target": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "management_change": "UA/culture, pregnancy status, creatinine/electrolytes, CBC, lactate, or blood-culture findings change antibiotic selection, renal dosing, fluid strategy, imaging, source-control/urology need, pregnancy pathway, and disposition.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-imaging-pathway",
+          "label": "Renal obstruction and stone imaging pathway",
+          "role": "core",
+          "reason": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "diagnostic_target": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "management_change": "Obstruction, infected stone, abscess, solitary kidney risk, or worsening renal function changes urology consultation, decompression/source control, antibiotics, analgesia, fluids, admission, and imaging follow-up.",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-urosepsis-red-flags",
+          "label": "Urosepsis and pyelonephritis escalation cues",
+          "role": "core",
+          "reason": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "diagnostic_target": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "management_change": "These cues change urine culture and blood culture/lactate threshold, empiric antibiotic route/breadth, fluids, renal dosing, imaging/source-control urgency, OB/urology involvement, and ED/inpatient escalation.",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-obstruction-red-flags",
+          "label": "Obstruction, stone, and AKI danger cues",
+          "role": "core",
+          "reason": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "diagnostic_target": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "management_change": "These cues change imaging urgency, urology/nephrology consultation, decompression/source control, analgesia/antiemetic route, fluid strategy, electrolyte correction, and ED/inpatient disposition.",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "Abnormal blood pressure can change acuity, fluids, antihypertensive decisions, endocrine-crisis treatment, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "Abnormal heart rate can change ECG/telemetry urgency, volume or endocrine-crisis assessment, infection severity, medication review, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal respiratory rate or labored breathing can change oxygen/ventilation assessment, acid-base urgency, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "Abnormal oxygen saturation or rising oxygen requirement can change respiratory support, imaging urgency, pulmonary/infectious/cardiac framing, monitoring level, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "Fever or hypothermia can change infection/endocrine-crisis workup, isolation, medication decisions, monitoring, and escalation.",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        }
+      ],
+      "limitations": [
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "core",
+          "reason": "Screens oral cavity",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "core",
+          "reason": "murmur, abnormal heart sound, or S3/S4 clue",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "core",
+          "reason": "peritoneal irritation or acute abdomen",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "core",
+          "reason": "renal colic or pyelonephritis-associated renal tenderness",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "core",
+          "reason": "elevated right-sided filling pressure or venous congestion",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-100-radial-pulses",
+          "label": "Radial pulses",
+          "role": "core",
+          "reason": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "diagnostic_target": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "management_change": "",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "EXAM-104-lower-extremity-edema",
+          "label": "Lower extremity edema",
+          "role": "core",
+          "reason": "peripheral edema pattern and volume overload clue",
+          "diagnostic_target": "peripheral edema pattern and volume overload clue",
+          "management_change": "",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-source-severity-history",
+          "label": "Are symptoms limited to dysuria/frequency/urgency, or are there fever/chills, flank pain, nausea/vomiting, hematuria, low urine output, stone history, pregnancy possibility, catheter/procedure, immunocompromise, or prior resistant urine culture?",
+          "role": "core",
+          "reason": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "diagnostic_target": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-urine-renal-tests",
+          "label": "Urine and renal-function tests",
+          "role": "core",
+          "reason": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "diagnostic_target": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-imaging-pathway",
+          "label": "Renal obstruction and stone imaging pathway",
+          "role": "core",
+          "reason": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "diagnostic_target": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "management_change": "",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-urosepsis-red-flags",
+          "label": "Urosepsis and pyelonephritis escalation cues",
+          "role": "core",
+          "reason": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "diagnostic_target": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "REQ-gu-renal-obstruction-red-flags",
+          "label": "Obstruction, stone, and AKI danger cues",
+          "role": "core",
+          "reason": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "diagnostic_target": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "management_change": "",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "core",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "core",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "core",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "core",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "core",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": []
+        }
+      ],
+      "evidence_metadata": [
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "evidence",
+          "reason": "Screens oral cavity",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "evidence",
+          "reason": "murmur, abnormal heart sound, or S3/S4 clue",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "evidence",
+          "reason": "peritoneal irritation or acute abdomen",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "evidence",
+          "reason": "renal colic or pyelonephritis-associated renal tenderness",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "evidence",
+          "reason": "elevated right-sided filling pressure or venous congestion",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-100-radial-pulses",
+          "label": "Radial pulses",
+          "role": "evidence",
+          "reason": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "diagnostic_target": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "management_change": "",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-104-lower-extremity-edema",
+          "label": "Lower extremity edema",
+          "role": "evidence",
+          "reason": "peripheral edema pattern and volume overload clue",
+          "diagnostic_target": "peripheral edema pattern and volume overload clue",
+          "management_change": "",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "tag+lexical"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-source-severity-history",
+          "label": "Are symptoms limited to dysuria/frequency/urgency, or are there fever/chills, flank pain, nausea/vomiting, hematuria, low urine output, stone history, pregnancy possibility, catheter/procedure, immunocompromise, or prior resistant urine culture?",
+          "role": "evidence",
+          "reason": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "diagnostic_target": "GU/renal source and severity: cystitis, pyelonephritis/systemic UTI, obstructed infected stone, renal colic, AKI/hypovolemia, catheter/procedure-associated infection, pregnancy, or resistant pathogen risk.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-urine-renal-tests",
+          "label": "Urine and renal-function tests",
+          "role": "evidence",
+          "reason": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "diagnostic_target": "Urine/renal diagnostic data: pyuria/bacteriuria/hematuria, culture/susceptibility, creatinine or electrolyte abnormality, pregnancy status, systemic infection, sepsis physiology, or medication-safety constraint.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-imaging-pathway",
+          "label": "Renal obstruction and stone imaging pathway",
+          "role": "evidence",
+          "reason": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "diagnostic_target": "Imaging target: hydronephrosis/obstruction, ureteral stone, infected obstructed system, renal abscess, urinary retention, or alternate abdominal/pelvic pathology.",
+          "management_change": "",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-urosepsis-red-flags",
+          "label": "Urosepsis and pyelonephritis escalation cues",
+          "role": "evidence",
+          "reason": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "diagnostic_target": "Systemic urinary infection clue: fever/rigors, flank/CVA symptoms, sepsis physiology, altered mentation, vomiting, pregnancy, immunocompromise, catheter/procedure association, resistance risk, or renal dysfunction.",
+          "management_change": "",
+          "evidence": "IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "REQ-gu-renal-obstruction-red-flags",
+          "label": "Obstruction, stone, and AKI danger cues",
+          "role": "evidence",
+          "reason": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "diagnostic_target": "High-risk renal process: obstructed infected system, urinary retention, severe renal colic, solitary/transplant kidney risk, gross hematuria, worsening AKI, or dangerous electrolyte abnormality.",
+          "management_change": "",
+          "evidence": "NICE_RENAL_STONES; EAU_URO_INFECTIONS; IDSA_CUTI_2025; AHRQ_CALIBRATE_DX",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_bundle_required"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-blood-pressure",
+          "label": "Blood pressure",
+          "role": "evidence",
+          "reason": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "diagnostic_target": "Basic bedside safety: hypotension, hypertension, shock physiology, pain response, medication effect, or disposition-changing instability.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-heart-rate",
+          "label": "Heart rate",
+          "role": "evidence",
+          "reason": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "diagnostic_target": "Basic bedside safety: tachycardia, bradycardia, irregular rhythm, shock physiology, adrenergic state, infection, pain, or medication effect.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-respiratory-rate",
+          "label": "Respiratory rate",
+          "role": "evidence",
+          "reason": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: respiratory distress, compensation, shock physiology, acid-base stress, sedation, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-oxygen-saturation",
+          "label": "Oxygen saturation / support",
+          "role": "evidence",
+          "reason": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "diagnostic_target": "Basic bedside safety: hypoxemia, escalating oxygen need, respiratory failure risk, shock physiology, pulmonary disease, or cardiopulmonary deterioration.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        },
+        {
+          "exam_id": "SAFETY-validated-temperature",
+          "label": "Temperature",
+          "role": "evidence",
+          "reason": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "diagnostic_target": "Basic bedside safety: fever, hypothermia, infection, drug reaction, endocrine crisis, inflammatory disease, or systemic illness.",
+          "management_change": "",
+          "evidence": "AHRQ_CALIBRATE_DX; IDSA_CUTI_2025; EAU_URO_INFECTIONS; ACOG_UTI_PREGNANCY_2023; NICE_RENAL_STONES; JAMA_RCE",
+          "lr_plus": "",
+          "lr_minus": "",
+          "routes": [
+            "validated_intent_safety_floor"
+          ]
+        }
+      ],
+      "catalog_gaps": [],
+      "top_retrieved": [
+        {
+          "exam_id": "EXAM-088-blood-pressure",
+          "label": "Blood pressure",
+          "role": "",
+          "fit": "",
+          "score": 198,
+          "reason": "",
+          "diagnostic_target": "bedside vital-sign instability and trend",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "Stanford Medicine 25 blood pressure measurement techniques; Surviving Sepsis Campaign guideline",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-086-heart-rate",
+          "label": "Heart rate",
+          "role": "",
+          "fit": "",
+          "score": 186,
+          "reason": "",
+          "diagnostic_target": "bedside vital-sign instability and trend",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "Surviving Sepsis Campaign guideline; vital-sign trend interpreted in clinical context",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-060-mouth-exam",
+          "label": "Mouth exam",
+          "role": "",
+          "fit": "",
+          "score": 181,
+          "reason": "",
+          "diagnostic_target": "Screens oral cavity",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-061-oropharynx",
+          "label": "Oropharynx",
+          "role": "",
+          "fit": "",
+          "score": 181,
+          "reason": "",
+          "diagnostic_target": "Screens pharyngeal/tonsillar pathology",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "SM25",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-074-bowel-sounds",
+          "label": "Bowel sounds",
+          "role": "",
+          "fit": "",
+          "score": 166,
+          "reason": "",
+          "diagnostic_target": "murmur, abnormal heart sound, or S3/S4 clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-076-abdominal-palpation",
+          "label": "Abdominal palpation",
+          "role": "",
+          "fit": "",
+          "score": 166,
+          "reason": "",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-084-cva-tenderness",
+          "label": "CVA tenderness",
+          "role": "",
+          "fit": "",
+          "score": 160,
+          "reason": "",
+          "diagnostic_target": "renal colic or pyelonephritis-associated renal tenderness",
+          "management_change": "Renal tenderness or flank findings can support urine testing, imaging consideration, antimicrobial review, obstruction concern, or serial reassessment.",
+          "evidence": "PubMed study of CVA tenderness in suspected ureteral stone; NCBI acute pyelonephritis review",
+          "lr_plus": "1.3",
+          "lr_minus": "0.7",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-098-jvp",
+          "label": "JVP",
+          "role": "",
+          "fit": "",
+          "score": 159,
+          "reason": "",
+          "diagnostic_target": "elevated right-sided filling pressure or venous congestion",
+          "management_change": "Abnormal congestion findings can support diuresis decisions, escalation of respiratory support assessment, daily volume trending, or need for cardiac evaluation in context.",
+          "evidence": "Stanford Medicine 25 neck vein exam; physical examination systematic review for pulmonary hypertension",
+          "lr_plus": "2.47",
+          "lr_minus": "0.42",
+          "difficulty": "moderate",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-075-abdominal-percussion",
+          "label": "Abdominal percussion",
+          "role": "",
+          "fit": "",
+          "score": 137,
+          "reason": "",
+          "diagnostic_target": "tenderness pattern, bowel activity, organomegaly, or ascites clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-077-spleen-palpation",
+          "label": "Spleen palpation",
+          "role": "",
+          "fit": "",
+          "score": 136,
+          "reason": "",
+          "diagnostic_target": "tenderness pattern, bowel activity, organomegaly, or ascites clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-073-abdominal-inspection",
+          "label": "Abdominal inspection",
+          "role": "",
+          "fit": "",
+          "score": 133,
+          "reason": "",
+          "diagnostic_target": "tenderness pattern, bowel activity, organomegaly, or ascites clue",
+          "management_change": "Abnormal or changed findings improve focused bedside documentation and can prompt targeted reassessment, diagnostics, or escalation in context.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-080-murphy-sign",
+          "label": "Murphy sign",
+          "role": "",
+          "fit": "",
+          "score": 126,
+          "reason": "",
+          "diagnostic_target": "acute cholecystitis or biliary inflammation",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "Open review of abdominal eponyms; WSES acute calculous cholecystitis guideline",
+          "lr_plus": "2.8",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-081-rebound-tenderness",
+          "label": "Rebound tenderness",
+          "role": "",
+          "fit": "",
+          "score": 126,
+          "reason": "",
+          "diagnostic_target": "peritoneal irritation or acute abdomen",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "Open acute abdominal pain review and guideline-style public references",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-082-psoas-sign",
+          "label": "Psoas sign",
+          "role": "",
+          "fit": "",
+          "score": 125,
+          "reason": "",
+          "diagnostic_target": "appendiceal irritation pattern",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "AAFP appendicitis review citing clinical likelihood ratios; JAMA Rational Clinical Examination PubMed record",
+          "lr_plus": "2.38",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-100-radial-pulses",
+          "label": "Radial pulses",
+          "role": "",
+          "fit": "",
+          "score": 124,
+          "reason": "",
+          "diagnostic_target": "perfusion deficit, vascular disease, or limb ischemia clue",
+          "management_change": "Abnormal vitals or perfusion findings can trigger urgent reassessment, resuscitation, sepsis/shock pathway review, or escalation.",
+          "evidence": "2022 AHA/ACC/HFSA heart failure guideline and public vascular/edema review sources",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "easy",
+          "time_burden_minutes": "1.5",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        },
+        {
+          "exam_id": "EXAM-083-obturator-sign",
+          "label": "Obturator sign",
+          "role": "",
+          "fit": "",
+          "score": 122,
+          "reason": "",
+          "diagnostic_target": "appendiceal irritation pattern",
+          "management_change": "Positive acute-abdomen signs can prompt senior review, imaging, surgical consultation, NPO/analgesia planning, or serial abdominal exams.",
+          "evidence": "JAMA Rational Clinical Examination appendicitis PubMed record; open acute-abdomen review",
+          "lr_plus": "",
+          "lr_minus": "",
+          "difficulty": "moderate",
+          "time_burden_minutes": "2",
+          "routes": [
+            "tag",
+            "lexical"
+          ]
+        }
+      ],
+      "high_score_suppressed": [
+        {
+          "label": "Blood pressure",
+          "score": 198,
+          "reason": "Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Heart rate",
+          "score": 186,
+          "reason": "Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Oropharynx",
+          "score": 181,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Abdominal percussion",
+          "score": 137,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Spleen palpation",
+          "score": 136,
+          "reason": "Spleen palpation needs splenomegaly, hematologic, malignancy, or systemic lymphadenopathy context."
+        },
+        {
+          "label": "Abdominal inspection",
+          "score": 133,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Murphy sign",
+          "score": 126,
+          "reason": "Murphy sign needs RUQ, biliary, gallbladder, or jaundice context."
+        },
+        {
+          "label": "Rebound tenderness",
+          "score": 126,
+          "reason": "Advanced abdominal maneuvers need localized abdominal, hepatobiliary, or peritoneal concern."
+        }
+      ],
+      "suppressed": [
+        {
+          "label": "Blood pressure",
+          "score": 198,
+          "reason": "Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Heart rate",
+          "score": 186,
+          "reason": "Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Oropharynx",
+          "score": 181,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Abdominal percussion",
+          "score": 137,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Spleen palpation",
+          "score": 136,
+          "reason": "Spleen palpation needs splenomegaly, hematologic, malignancy, or systemic lymphadenopathy context."
+        },
+        {
+          "label": "Abdominal inspection",
+          "score": 133,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Murphy sign",
+          "score": 126,
+          "reason": "Murphy sign needs RUQ, biliary, gallbladder, or jaundice context."
+        },
+        {
+          "label": "Rebound tenderness",
+          "score": 126,
+          "reason": "Advanced abdominal maneuvers need localized abdominal, hepatobiliary, or peritoneal concern."
+        },
+        {
+          "label": "Psoas sign",
+          "score": 125,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "label": "Obturator sign",
+          "score": 122,
+          "reason": "Psoas/obturator signs need RLQ, appendicitis, or pelvic-irritation concern."
+        },
+        {
+          "label": "Sclerae and conjunctivae",
+          "score": 119,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Liver edge",
+          "score": 110,
+          "reason": "Liver edge/span needs hepatobiliary, hepatomegaly, cirrhosis, ascites, or jaundice context."
+        },
+        {
+          "label": "Liver span",
+          "score": 105,
+          "reason": "Liver edge/span needs hepatobiliary, hepatomegaly, cirrhosis, ascites, or jaundice context."
+        },
+        {
+          "label": "Posterior tibial pulses",
+          "score": 100,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Dorsalis pedis pulses",
+          "score": 100,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Respiratory rate",
+          "score": 100,
+          "reason": "Replaced by the validated respiratory rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "label": "Femoral pulses",
+          "score": 99,
+          "reason": "Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "label": "Abdominal exam setup",
+          "score": 76,
+          "reason": "Technique/setup rows are audit metadata, not a patient-specific recommended exam item."
+        },
+        {
+          "label": "Apical impulse inspection",
+          "score": 75,
+          "reason": "PMI/apical impulse is reserved for cardiac, heart-failure, or volume-overload contexts."
+        }
+      ],
+      "missing_required_domains": [],
+      "avoid_hits": [],
+      "duplicate_labels": [],
+      "missing_evidence": [],
+      "quality_issues": [],
+      "issues": [],
+      "review_notes": [
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Blood pressure (198): Replaced by the validated blood pressure safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Heart rate (186): Replaced by the validated heart rate safety-floor item so basic bedside data stays separate from physical exam maneuvers."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Oropharynx (181): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Abdominal percussion (137): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Spleen palpation (136): Spleen palpation needs splenomegaly, hematologic, malignancy, or systemic lymphadenopathy context."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Abdominal inspection (133): Not promoted because the selected validated clinical intent did not define this as a core or conditional bedside item."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Murphy sign (126): Murphy sign needs RUQ, biliary, gallbladder, or jaundice context."
+        },
+        {
+          "severity": "review",
+          "type": "high_score_suppressed",
+          "detail": "Rebound tenderness (126): Advanced abdominal maneuvers need localized abdominal, hepatobiliary, or peritoneal concern."
+        }
+      ],
+      "pass": true
+    }
+  ]
+}

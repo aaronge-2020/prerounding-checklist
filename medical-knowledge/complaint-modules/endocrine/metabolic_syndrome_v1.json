@@ -21,64 +21,132 @@
       {
         "id": "differential_01",
         "label": "Metabolic Syndrome: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic frame",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Waist circumference. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome.",
+        "diagnostic_target": "Metabolic Syndrome: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Metabolic Syndrome.",
+        "management_change": "Use this frame to decide whether Waist circumference. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "metabolic",
+          "syndrome"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: thresholds",
+          "source_section": "Metabolic Syndrome curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Metabolic Syndrome.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diagnosis",
+          "commonly",
+          "requires",
+          "more",
+          "waist",
+          "women",
+          "points"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: mimics and exclusions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Metabolic Syndrome diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Metabolic Syndrome diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Metabolic Syndrome.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "important",
+          "mimics",
+          "exclusions",
+          "stress",
+          "steroid",
+          "hyperglycemia",
+          "type",
+          "lada"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Diabetes-range glycemia, severe hypertension, ASCVD symptoms.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: red flags",
+          "source_section": "Metabolic Syndrome curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Diabetes-range glycemia, severe hypertension, ASCVD symptoms.: danger pattern, severity marker, or complication that changes urgency for Metabolic Syndrome.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diabetes",
+          "range",
+          "glycemia",
+          "severe",
+          "hypertension",
+          "ascvd",
+          "symptoms"
+        ],
         "when": {
           "termsAny": [
             "Diabetes-range glycemia",
@@ -90,17 +158,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: red flags",
+          "source_section": "Metabolic Syndrome curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Metabolic Syndrome.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -114,26 +201,262 @@
       },
       {
         "id": "red_flag_03",
-        "label": "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.",
+        "label": "Diabetes-range glycemia with classic symptoms, severe hypertension, ASCVD symptoms, pregnancy-context hyperglycemia, or dehydration requires escalation beyond routine prevention care.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: red flags",
+          "source_section": "Metabolic Syndrome curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Metabolic Syndrome presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Diabetes-range glycemia with classic symptoms, severe hypertension, ASCVD symptoms, pregnancy-context hyperglycemia, or dehydration requires escalation beyond routine prevention care.: danger pattern, severity marker, or complication that changes urgency for Metabolic Syndrome.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diabetes",
+          "range",
+          "glycemia",
+          "with",
+          "classic",
+          "symptoms",
+          "severe",
+          "hypertension"
+        ],
         "when": {
           "termsAny": [
-            "DKA/HHS physiology",
-            "recurrent severe hypoglycemia",
-            "vomiting/dehydration",
+            "Diabetes-range glycemia with classic symptoms",
+            "severe hypertension",
+            "ASCVD symptoms",
+            "pregnancy-context hyperglycemia",
+            "dehydration requires escalation beyond routine prevention care."
+          ]
+        }
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Metabolic Syndrome.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure current weight",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Metabolic Syndrome.",
+        "when_to_perform": "During diabetes or metabolic risk assessment",
+        "findings_options": [
+          "___ kg/lb",
+          "Recent weight gain",
+          "Recent weight loss",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "measure",
+          "current",
+          "weight"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Measure waist circumference",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Central adiposity changes metabolic syndrome criteria and cardiometabolic risk framing.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Metabolic Syndrome.",
+        "when_to_perform": "When cardiometabolic risk or metabolic syndrome is being assessed",
+        "findings_options": [
+          "___ cm/in",
+          "Above risk threshold",
+          "Not above risk threshold",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Central adiposity changes metabolic syndrome criteria and cardiometabolic risk framing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "tape measure",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "measure",
+          "waist",
+          "circumference"
+        ]
+      },
+      {
+        "id": "safety_check_05",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
             "altered mental status",
-            "infected foot wound",
-            "pregnancy with hyperglycemia."
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
           ]
         }
       }
@@ -141,16 +464,18 @@
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Weight/waist trajectory, sleep apnea, activity.",
+        "label": "How have weight and waist circumference changed over time, and is the change intentional?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How have weight and waist circumference changed over time, and is the change intentional?",
         "options": [
           {
             "value": "unknown",
@@ -169,21 +494,34 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "weight",
+          "waist",
+          "trajectory"
+        ],
+        "source_seed": "Weight/waist trajectory, sleep apnea, activity."
       },
       {
         "id": "question_02",
-        "label": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy.",
+        "label": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
         "options": [
           {
             "value": "unknown",
@@ -202,21 +540,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Metabolic Syndrome workup."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "sleep",
+          "apnea"
+        ],
+        "source_seed": "Weight/waist trajectory, sleep apnea, activity."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "What is the usual physical activity level, and has it changed recently because of symptoms, function, or treatment barriers?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the usual physical activity level, and has it changed recently because of symptoms, function, or treatment barriers?",
         "options": [
           {
             "value": "unknown",
@@ -235,21 +585,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Metabolic Syndrome workup."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "activity"
+        ],
+        "source_seed": "Weight/waist trajectory, sleep apnea, activity."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
         "options": [
           {
             "value": "unknown",
@@ -268,21 +629,34 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Metabolic Syndrome therapy unsafe.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Metabolic Syndrome therapy unsafe.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "family",
+          "ascvd",
+          "diabetes"
+        ],
+        "source_seed": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
       },
       {
         "id": "question_05",
-        "label": "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "label": "Any history of PCOS that changes Metabolic Syndrome risk, test interpretation, or treatment safety?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any history of PCOS that changes Metabolic Syndrome risk, test interpretation, or treatment safety?",
         "options": [
           {
             "value": "unknown",
@@ -301,21 +675,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "pcos"
+        ],
+        "source_seed": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
       },
       {
         "id": "question_06",
-        "label": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "label": "Any known fatty liver disease, elevated liver enzymes, central adiposity, dyslipidemia, hypertension, insulin resistance, alcohol use, or cardiometabolic treatment history?",
+        "item_type": "history_question",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: clinical questions",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any known fatty liver disease, elevated liver enzymes, central adiposity, dyslipidemia, hypertension, insulin resistance, alcohol use, or cardiometabolic treatment history?",
         "options": [
           {
             "value": "unknown",
@@ -334,221 +719,364 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Metabolic Syndrome.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Metabolic Syndrome."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "fatty",
+          "liver"
+        ],
+        "source_seed": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
+      },
+      {
+        "id": "question_07",
+        "label": "What blood-pressure, lipid, kidney-protective, or cardiometabolic medications are being used, and are there adherence or adverse-effect concerns?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "What blood-pressure, lipid, kidney-protective, or cardiometabolic medications are being used, and are there adherence or adverse-effect concerns?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Metabolic Syndrome therapy unsafe.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Metabolic Syndrome therapy unsafe.",
+        "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "lipid",
+          "therapy"
+        ],
+        "source_seed": "Family ASCVD/diabetes, PCOS, fatty liver, BP/lipid therapy."
+      },
+      {
+        "id": "question_08",
+        "label": "What is the current weight trajectory, and how has it changed from baseline?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "What is the current weight trajectory, and how has it changed from baseline?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Metabolic Syndrome needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "weight",
+          "trajectory"
+        ],
+        "source_seed": "Ask about weight trajectory, activity, nutrition, sleep apnea, fatty liver, PCOS, prior gestational diabetes, family diabetes/ASCVD history, steroid exposure, and cardiometabolic medications."
+      },
+      {
+        "id": "question_09",
+        "label": "Any history of prior gestational diabetes that changes Metabolic Syndrome risk, test interpretation, or treatment safety?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any history of prior gestational diabetes that changes Metabolic Syndrome risk, test interpretation, or treatment safety?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "when_to_ask": "Ask when Metabolic Syndrome is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "prior",
+          "gestational",
+          "diabetes"
+        ],
+        "source_seed": "Ask about weight trajectory, activity, nutrition, sleep apnea, fatty liver, PCOS, prior gestational diabetes, family diabetes/ASCVD history, steroid exposure, and cardiometabolic medications."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "Do you currently smoke or recently smoke, and does tobacco exposure change cardiovascular, metabolic, bone, or treatment-safety risk?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "NHLBI_METABOLIC_SYNDROME",
+          "source_section": "Metabolic Syndrome curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "current",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Do you currently smoke or recently smoke, and does tobacco exposure change cardiovascular, metabolic, bone, or treatment-safety risk?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention smoking, currently, smoke, recently, does. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "when_to_ask": "Ask when patient context includes one of: smoking, currently, smoke, recently, does, tobacco, exposure, change, cardiovascular, bone.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Metabolic Syndrome.",
+        "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "smoking"
+        ],
+        "source_seed": "Clarify hypertension, dyslipidemia, ASCVD/HF/CKD risk, smoking, pregnancy possibility, and barriers to prevention because these change cardiometabolic risk reduction.",
+        "when": {
+          "termsAny": [
+            "smoking",
+            "currently",
+            "smoke",
+            "recently",
+            "does",
+            "tobacco",
+            "exposure",
+            "change",
+            "cardiovascular",
+            "bone"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Waist circumference, BP, BMI.",
+        "label": "Inspect neck for acanthosis",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
+          "source_section": "Metabolic Syndrome curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
-      },
-      {
-        "id": "exam_02",
-        "label": "Acanthosis and cardiovascular risk exam.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome."
-      },
-      {
-        "id": "exam_03",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
-      },
-      {
-        "id": "exam_04",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
-      },
-      {
-        "id": "exam_05",
-        "label": "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome."
-      },
-      {
-        "id": "exam_06",
-        "label": "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome."
+        "action": "Use this maneuver to evaluate insulin resistance or cardiometabolic risk phenotype. Acanthosis supports insulin resistance and prompts metabolic risk counseling.",
+        "rationale": "Assesses insulin-resistance phenotype and cardiometabolic risk so a positive finding can support diabetes/metabolic screening, counseling intensity, and risk-factor management for Metabolic Syndrome.",
+        "technique": "Inspect the named area directly, comparing sides when relevant and documenting presence, absence, severity, and inability to assess.",
+        "findings_options": [
+          "Absent",
+          "Mild neck folds",
+          "Marked neck/axillary involvement",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When insulin resistance or metabolic syndrome is suspected",
+        "diagnostic_target": "insulin resistance or cardiometabolic risk phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Acanthosis supports insulin resistance and prompts metabolic risk counseling.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect neck for acanthosis is supportive for Metabolic Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "inspect",
+          "neck",
+          "acanthosis"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If hyperglycemic crisis, vomiting, infection, foot wound, or insulin-access concern is present: add Kussmaul/work-of-breathing assessment, mucous membranes, capillary refill/pulses, abdomen, skin/line/wound exam, and diabetes foot check.",
+        "label": "Assess lower leg edema",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Metabolic Syndrome curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome.",
+        "action": "Add when edema, dyspnea, heart failure, kidney disease, albuminuria is present; this evaluates volume overload, venous disease, or medication/renal-cardiac complication. Edema changes cardiometabolic complication framing, medication safety, renal/cardiac evaluation, and follow-up urgency.",
+        "rationale": "Targets volume overload, venous disease, or medication/renal-cardiac complication; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Metabolic Syndrome.",
+        "technique": "Inspect and press over both lower legs or dependent areas for pitting, symmetry, tenderness, and proximal extent.",
+        "findings_options": [
+          "None",
+          "Trace",
+          "1+",
+          "2+",
+          "3+",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When dyspnea, kidney disease, heart failure, medication effect, or volume overload symptoms are present",
+        "diagnostic_target": "volume overload, venous disease, or medication/renal-cardiac complication",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Edema changes cardiometabolic complication framing, medication safety, renal/cardiac evaluation, and follow-up urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess lower leg edema is supportive for Metabolic Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "assess",
+          "lower",
+          "edema"
+        ],
         "when": {
           "termsAny": [
-            "dka",
-            "hhs",
-            "hyperglycemic crisis",
-            "vomiting",
-            "infection",
-            "fever",
-            "foot wound",
-            "ulcer",
-            "missed insulin",
-            "dehydration"
+            "edema",
+            "dyspnea",
+            "heart failure",
+            "kidney disease",
+            "albuminuria",
+            "volume overload"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If recurrent hypoglycemia, neuropathy, falls, kidney disease, or vascular symptoms are present: add mental status, focused neuro/monofilament or vibration screen, foot pulses/skin, and orthostatic vitals.",
+        "label": "Inspect skin for xanthomas or xanthelasma",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Metabolic Syndrome curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
+        "action": "Add when severe dyslipidemia, hypertriglyceridemia, pancreatitis, familial lipid disorder, xanthoma is present; this evaluates dyslipidemia phenotype, familial lipid disorder clue, or severe hypertriglyceridemia complication risk. Xanthomas or xanthelasma change lipid disorder severity assessment, familial-risk framing, and urgency of lipid-focused management.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Metabolic Syndrome.",
+        "technique": "Inspect eyelids, extensor surfaces, Achilles tendons, elbows, knees, and pressure areas for xanthelasma, tendon xanthomas, or eruptive xanthomas.",
+        "findings_options": [
+          "Absent",
+          "Xanthelasma",
+          "Tendon xanthomas",
+          "Eruptive xanthomas",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When severe dyslipidemia, hypertriglyceridemia, pancreatitis risk, or familial lipid disorder is possible",
+        "diagnostic_target": "dyslipidemia phenotype, familial lipid disorder clue, or severe hypertriglyceridemia complication risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Xanthomas or xanthelasma change lipid disorder severity assessment, familial-risk framing, and urgency of lipid-focused management.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect skin for xanthomas or xanthelasma is supportive for Metabolic Syndrome, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "inspect",
+          "skin",
+          "xanthomas",
+          "xanthelasma"
+        ],
         "when": {
           "termsAny": [
-            "hypoglycemia",
-            "neuropathy",
-            "fall",
-            "falls",
-            "kidney disease",
-            "ckd",
-            "claudication",
-            "vascular",
-            "dizziness",
-            "orthostasis"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Metabolic Syndrome.",
-        "when": {
-          "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
-        "source": {
-          "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "current",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Metabolic Syndrome.",
-        "when": {
-          "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "severe dyslipidemia",
+            "hypertriglyceridemia",
+            "pancreatitis",
+            "familial lipid disorder",
+            "xanthoma",
+            "xanthelasma"
           ]
         }
       }
@@ -557,229 +1085,493 @@
       {
         "id": "test_01",
         "label": "Waist circumference.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome.",
+        "diagnostic_target": "Waist circumference.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "waist",
+          "circumference"
+        ]
       },
       {
         "id": "test_02",
         "label": "Fasting triglycerides, HDL, fasting glucose/A1c.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Fasting triglycerides, HDL, fasting glucose/A1c.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "fasting",
+          "triglycerides",
+          "glucose"
+        ]
       },
       {
         "id": "test_03",
         "label": "Blood pressure and medication review.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome.",
+        "diagnostic_target": "Blood pressure and medication review.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "blood",
+          "pressure",
+          "medication",
+          "review"
+        ]
       },
       {
         "id": "test_04",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_05",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "cardiometabolic",
+          "safety",
+          "data",
+          "confirm",
+          "ogtt",
+          "classification",
+          "document",
+          "waist"
+        ]
       },
       {
         "id": "test_06",
-        "label": "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "label": "A1c or plasma glucose criteria for prediabetes/diabetes classification, with repeat confirmatory testing when asymptomatic or discordant.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "A1c or plasma glucose criteria for prediabetes/diabetes classification, with repeat confirmatory testing when asymptomatic or discordant.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "plasma",
+          "glucose",
+          "criteria",
+          "prediabetes",
+          "diabetes",
+          "classification",
+          "with",
+          "repeat"
+        ]
       },
       {
         "id": "test_07",
-        "label": "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible.",
+        "label": "Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: diagnostic workup",
+          "source_section": "Metabolic Syndrome curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "lipids",
+          "blood",
+          "pressure",
+          "kidney",
+          "function",
+          "albuminuria",
+          "when",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_01",
         "label": "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Metabolic Syndrome curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diagnosis",
+          "commonly",
+          "requires",
+          "more",
+          "waist",
+          "women",
+          "points"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Metabolic Syndrome curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Metabolic Syndrome.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Metabolic Syndrome.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Metabolic Syndrome test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
+        "item_type": "management_change",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "3 or more criteria shifts to intensive cardiometabolic risk reduction.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "more",
+          "criteria",
+          "shifts",
+          "intensive",
+          "cardiometabolic",
+          "risk",
+          "reduction"
+        ]
       },
       {
         "id": "management_02",
         "label": "Diabetes thresholds change diagnosis.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diabetes thresholds change diagnosis.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "Diabetes thresholds change diagnosis.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "Diabetes thresholds change diagnosis.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diabetes",
+          "thresholds",
+          "change",
+          "diagnosis"
+        ]
       },
       {
         "id": "management_03",
-        "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "label": "Markedly abnormal glucose, severe hypertension, pregnancy-context concern, or cardiopulmonary symptoms changes disposition from prevention visit to urgent evaluation.",
+        "item_type": "management_change",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "action": "Markedly abnormal glucose, severe hypertension, pregnancy-context concern, or cardiopulmonary symptoms changes disposition from prevention visit to urgent evaluation.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "Markedly abnormal glucose, severe hypertension, pregnancy-context concern, or cardiopulmonary symptoms changes disposition from prevention visit to urgent evaluation.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "Markedly abnormal glucose, severe hypertension, pregnancy-context concern, or cardiopulmonary symptoms changes disposition from prevention visit to urgent evaluation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "markedly",
+          "abnormal",
+          "glucose",
+          "severe",
+          "hypertension",
+          "pregnancy",
+          "context",
+          "concern"
+        ]
       },
       {
         "id": "management_04",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_05",
-        "label": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "label": "Prediabetes or metabolic syndrome thresholds change prevention intensity, lifestyle intervention, cardiometabolic risk-factor treatment, and surveillance interval.",
+        "item_type": "management_change",
         "source": {
           "source_id": "NHLBI_METABOLIC_SYNDROME",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "current",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "action": "Prediabetes or metabolic syndrome thresholds change prevention intensity, lifestyle intervention, cardiometabolic risk-factor treatment, and surveillance interval.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "Prediabetes or metabolic syndrome thresholds change prevention intensity, lifestyle intervention, cardiometabolic risk-factor treatment, and surveillance interval.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "Prediabetes or metabolic syndrome thresholds change prevention intensity, lifestyle intervention, cardiometabolic risk-factor treatment, and surveillance interval.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "prediabetes",
+          "metabolic",
+          "syndrome",
+          "thresholds",
+          "change",
+          "prevention",
+          "intensity",
+          "lifestyle"
+        ]
       },
       {
         "id": "management_06",
-        "label": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "label": "Diabetes-range glycemia, ASCVD/HF/CKD risk, fatty liver, obstructive sleep apnea, PCOS, or pregnancy context changes diagnostic classification, treatment safety, and referral or follow-up urgency.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Metabolic Syndrome generated endocrine workup: results that change management",
+          "source_section": "Metabolic Syndrome curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome."
+        "action": "Diabetes-range glycemia, ASCVD/HF/CKD risk, fatty liver, obstructive sleep apnea, PCOS, or pregnancy context changes diagnostic classification, treatment safety, and referral or follow-up urgency.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Metabolic Syndrome.",
+        "diagnostic_target": "Diabetes-range glycemia, ASCVD/HF/CKD risk, fatty liver, obstructive sleep apnea, PCOS, or pregnancy context changes diagnostic classification, treatment safety, and referral or follow-up urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Metabolic Syndrome.",
+        "management_change": "Diabetes-range glycemia, ASCVD/HF/CKD risk, fatty liver, obstructive sleep apnea, PCOS, or pregnancy context changes diagnostic classification, treatment safety, and referral or follow-up urgency.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Metabolic Syndrome.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "metabolic_syndrome",
+          "diabetes",
+          "range",
+          "glycemia",
+          "ascvd",
+          "risk",
+          "fatty",
+          "liver",
+          "obstructive"
+        ]
       }
     ],
     "endocrine_metadata": {

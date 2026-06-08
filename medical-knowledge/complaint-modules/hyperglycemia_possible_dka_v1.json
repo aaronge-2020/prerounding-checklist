@@ -32,6 +32,8 @@
       {
         "id": "dka",
         "label": "DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake",
+        "action": "Check glucose, beta-hydroxybutyrate or ketones, anion gap, bicarbonate, pH, potassium, creatinine, and precipitating causes before classifying severity or treatment safety.",
+        "rationale": "DKA diagnostic criteria and euglycemic presentations determine insulin, fluid, potassium, monitoring, and disposition urgency.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "DKA diagnostic criteria and euglycemic presentations",
@@ -40,11 +42,35 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Check glucose, beta-hydroxybutyrate or ketones, anion gap, bicarbonate, pH, potassium, creatinine, and precipitating causes before classifying severity or treatment safety.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hyperglycemia / possible DKA or HHS.",
+        "tags": [
+          "hyperglycemia",
+          "high_blood_sugar",
+          "dka",
+          "diabetes",
+          "prior",
+          "glucose",
+          "beta",
+          "hydroxybutyrate",
+          "mmol",
+          "urine",
+          "ketones",
+          "bicarbonate",
+          "euglycemic"
+        ]
       },
       {
         "id": "hhs",
         "label": "HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS",
+        "action": "Calculate effective or total osmolality and assess ketones/acidosis so mixed DKA/HHS is not missed.",
+        "rationale": "HHS and mixed DKA/HHS change fluid deficit assumptions, osmolality monitoring, neurologic risk, and high-acuity disposition.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "HHS diagnostic criteria and mixed DKA/HHS",
@@ -53,11 +79,34 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Calculate effective or total osmolality and assess ketones/acidosis so mixed DKA/HHS is not missed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hyperglycemia / possible DKA or HHS.",
+        "tags": [
+          "hyperglycemia",
+          "high_blood_sugar",
+          "dka",
+          "glucose",
+          "effective",
+          "osmolality",
+          "mosm",
+          "total",
+          "absent",
+          "significant",
+          "ketonemia",
+          "acidosis"
+        ]
       },
       {
         "id": "trigger",
         "label": "Precipitating illness or barrier: infection, insulin omission/access issue, pump failure, MI/stroke, pancreatitis, glucocorticoids/other medications, pregnancy, alcohol, or other physiologic stress",
+        "action": "Ask targeted precipitant questions and order source-directed tests based on symptoms, devices, medication access, pregnancy possibility, and cardiopulmonary or neurologic clues.",
+        "rationale": "Treating the precipitant prevents missed infection, ischemia, medication barrier, pregnancy-related risk, or recurrent DKA/HHS after the acute crisis improves.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "precipitating causes and recurrence prevention",
@@ -66,11 +115,37 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Precipitating illness or barrier: infection, insulin omission/access issue, pump failure, MI/stroke, pancreatitis, glucocorticoids/other medications, pregnancy, alcohol, or other physiologic stress: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Ask targeted precipitant questions and order source-directed tests based on symptoms, devices, medication access, pregnancy possibility, and cardiopulmonary or neurologic clues.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hyperglycemia / possible DKA or HHS.",
+        "tags": [
+          "hyperglycemia",
+          "high_blood_sugar",
+          "dka",
+          "precipitating",
+          "illness",
+          "barrier",
+          "infection",
+          "insulin",
+          "omission",
+          "access",
+          "issue",
+          "pump",
+          "failure",
+          "stroke",
+          "pancreatitis"
+        ]
       },
       {
         "id": "noncrisis",
         "label": "Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol",
+        "action": "If crisis criteria are absent, shift to inpatient hyperglycemia management, medication reconciliation, nutrition/insulin matching, and outpatient follow-up planning.",
+        "rationale": "Distinguishing non-crisis hyperglycemia prevents unnecessary DKA/HHS treatment while still addressing persistent inpatient glucose above treatment thresholds.",
         "source": {
           "source_id": "ADA_STANDARDS_HOSPITAL_2026",
           "source_section": "inpatient hyperglycemia treatment thresholds",
@@ -79,7 +154,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "If crisis criteria are absent, shift to inpatient hyperglycemia management, medication reconciliation, nutrition/insulin matching, and outpatient follow-up planning.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hyperglycemia / possible DKA or HHS.",
+        "tags": [
+          "hyperglycemia",
+          "high_blood_sugar",
+          "dka",
+          "without",
+          "crisis",
+          "persistent",
+          "inpatient",
+          "glucose",
+          "generally",
+          "needs",
+          "insulin",
+          "initiation",
+          "intensification",
+          "while"
+        ]
       }
     ],
     "redFlags": [
@@ -87,6 +185,13 @@
         "id": "dka_mental_status",
         "label": "Altered mental status, confusion, obtundation, seizure, or coma",
         "action": "Urgent escalation; assess airway, perfusion, osmolality, acidosis, and high-acuity disposition.",
+        "rationale": "Altered mental status changes DKA/HHS severity, airway and neurologic safety assessment, osmolality concern, and monitored-care level.",
+        "tags": [
+          "DKA_HHS",
+          "altered_mental_status",
+          "osmolality",
+          "high_acuity"
+        ],
         "when": {
           "termsAny": [
             "altered mental status",
@@ -105,12 +210,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Altered mental status, confusion, obtundation, seizure, or coma: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Urgent escalation; assess airway, perfusion, osmolality, acidosis, and high-acuity disposition.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_shock_dehydration",
         "label": "Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO",
         "action": "Urgent volume/perfusion assessment and monitored treatment setting.",
+        "rationale": "Shock or severe dehydration changes fluid urgency, perfusion monitoring, precipitant evaluation, and disposition for hyperglycemic crisis.",
+        "tags": [
+          "DKA_HHS",
+          "shock",
+          "dehydration",
+          "perfusion"
+        ],
         "when": {
           "termsAny": [
             "hypotension",
@@ -131,12 +250,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Urgent volume/perfusion assessment and monitored treatment setting.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_kussmaul_resp",
         "label": "Kussmaul respirations, respiratory distress, or severe acidosis concern",
         "action": "Assess respiratory compensation and acidosis severity urgently.",
+        "rationale": "Kussmaul respirations or distress changes acidosis severity assessment, blood gas urgency, respiratory support concern, and treatment acuity.",
+        "tags": [
+          "DKA_HHS",
+          "kussmaul",
+          "acidosis",
+          "respiratory_distress"
+        ],
         "when": {
           "termsAny": [
             "kussmaul",
@@ -153,12 +286,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Kussmaul respirations, respiratory distress, or severe acidosis concern: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Assess respiratory compensation and acidosis severity urgently.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_euglycemic_risk",
         "label": "SGLT2 inhibitor, pregnancy, fasting, or lower glucose with ketotic symptoms",
         "action": "Do not exclude DKA based only on glucose; check ketones and acidosis.",
+        "rationale": "Euglycemic-risk context changes diagnostic interpretation because clinically important DKA may occur with lower glucose, especially with SGLT2 inhibitors, pregnancy, or fasting.",
+        "tags": [
+          "DKA_HHS",
+          "euglycemic_DKA",
+          "SGLT2",
+          "pregnancy"
+        ],
         "when": {
           "termsAny": [
             "sglt2",
@@ -178,12 +325,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "SGLT2 inhibitor, pregnancy, fasting, or lower glucose with ketotic symptoms: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Do not exclude DKA based only on glucose; check ketones and acidosis.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_potassium_danger",
         "label": "Hypokalemia, marked hyperkalemia, ECG changes, severe AKI/ESKD, or inability to monitor electrolytes safely",
         "action": "Use monitored protocol care; potassium replacement and ECG monitoring drive timing of insulin, and insulin infusion should be delayed when potassium is <3.5 mmol/L until corrected.",
+        "rationale": "Potassium danger changes insulin timing, replacement urgency, ECG monitoring, renal-risk planning, and need for protocolized monitored care.",
+        "tags": [
+          "DKA_HHS",
+          "potassium",
+          "ECG",
+          "renal_failure"
+        ],
         "when": {
           "termsAny": [
             "hypokalemia",
@@ -208,12 +369,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Hypokalemia, marked hyperkalemia, ECG changes, severe AKI/ESKD, or inability to monitor electrolytes safely: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Use monitored protocol care; potassium replacement and ECG monitoring drive timing of insulin, and insulin infusion should be delayed when potassium is <3.5 mmol/L until corrected.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_special_population",
         "label": "Pregnancy, frailty/older adult, heart failure, advanced kidney disease, or major comorbidity affecting fluids/insulin",
         "action": "Escalate early to senior endocrinology and the appropriate specialty team; fluid and insulin plans need individualized monitoring.",
+        "rationale": "Special populations change fluid tolerance, insulin safety, fetal or comorbidity risk, monitoring intensity, and threshold for specialty involvement.",
+        "tags": [
+          "DKA_HHS",
+          "pregnancy",
+          "heart_failure",
+          "kidney_disease"
+        ],
         "when": {
           "termsAny": [
             "pregnant",
@@ -237,7 +412,14 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Pregnancy, frailty/older adult, heart failure, advanced kidney disease, or major comorbidity affecting fluids/insulin: danger pattern, severity marker, or complication that changes urgency for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Escalate early to senior endocrinology and the appropriate specialty team; fluid and insulin plans need individualized monitoring.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hyperglycemia / possible DKA or HHS."
       }
     ],
     "requiredQuestions": [
@@ -266,7 +448,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Known diabetes type, duration, insulin regimen, pump/CGM use, and last insulin dose?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies diabetes context, hyperglycemic-crisis probability, severity, and treatment safety for DKA/HHS.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "diabetes",
+          "type",
+          "known",
+          "duration",
+          "insulin",
+          "regimen",
+          "pump",
+          "last"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_recent_glucose",
@@ -293,7 +496,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Recent glucose values, beta-hydroxybutyrate/urine ketones, anion gap, bicarbonate, pH, potassium, creatinine, and osmolality if known?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies DKA/HHS diagnostic criteria, crisis severity, electrolyte safety, and whether current treatment matches guideline-based monitoring needs.",
+        "management_implication": "The answer changes crisis classification, insulin/fluid/electrolyte safety, monitoring level, and immediate lab review.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "recent",
+          "glucose",
+          "values",
+          "beta",
+          "hydroxybutyrate",
+          "urine",
+          "ketones",
+          "anion"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_missed_insulin",
@@ -320,7 +544,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Missed or reduced insulin, pump/infusion-set failure, empty reservoir, expired insulin, medication access issue, or recent dose change?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies the precipitant or recurrence risk that changes acute correction, infection search, education, and discharge safety planning.",
+        "management_implication": "The answer changes precipitant correction, antimicrobial/source evaluation, recurrence prevention, and discharge safety planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "missed",
+          "insulin",
+          "reduced",
+          "pump",
+          "infusion",
+          "failure",
+          "empty",
+          "reservoir"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_polyuria_polydipsia",
@@ -347,7 +592,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Polyuria, polydipsia, weight loss, dehydration, or very dry mouth?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "polyuria",
+          "polydipsia",
+          "weight",
+          "loss",
+          "dehydration",
+          "very",
+          "mouth",
+          "clinical"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_vomit_abdomen",
@@ -374,7 +640,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Vomiting, abdominal pain, poor oral intake, or inability to keep fluids down?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "vomit",
+          "abdomen",
+          "vomiting",
+          "abdominal",
+          "pain",
+          "poor",
+          "oral",
+          "intake",
+          "inability",
+          "keep"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_infection_trigger",
@@ -401,7 +690,29 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Fever, dysuria, cough, wound, line infection, dental/skin infection, chest pain, stroke symptoms, pancreatitis symptoms, steroids, or other trigger?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies the precipitant or recurrence risk that changes acute correction, infection search, education, and discharge safety planning.",
+        "management_implication": "The answer changes precipitant correction, antimicrobial/source evaluation, recurrence prevention, and discharge safety planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "infection",
+          "trigger",
+          "fever",
+          "dysuria",
+          "cough",
+          "wound",
+          "line",
+          "dental",
+          "skin"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_mental_status_question",
@@ -428,7 +739,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Any confusion, sleepiness, seizure, severe weakness, or inability to participate in care?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "mental",
+          "status",
+          "question",
+          "confusion",
+          "sleepiness",
+          "seizure",
+          "severe",
+          "weakness",
+          "inability",
+          "participate"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_sglt2_pregnancy",
@@ -455,7 +789,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "SGLT2 inhibitor use, pregnancy/postpartum state, fasting/low-carb intake, alcohol, toxin exposure, or recent surgery?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "A positive answer changes medication safety, euglycemic DKA risk, fluid strategy, pregnancy-specific escalation, or monitoring intensity.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "sglt2",
+          "pregnancy",
+          "inhibitor",
+          "postpartum",
+          "state",
+          "fasting",
+          "carb",
+          "intake"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_comorbidity_fluid_risk",
@@ -482,7 +837,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Heart failure, CKD/ESKD, frailty, cirrhosis, pregnancy, or other reason to use smaller fluid boluses and closer electrolyte monitoring?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "A positive answer changes medication safety, euglycemic DKA risk, fluid strategy, pregnancy-specific escalation, or monitoring intensity.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "comorbidity",
+          "fluid",
+          "risk",
+          "heart",
+          "failure",
+          "eskd",
+          "frailty",
+          "cirrhosis",
+          "pregnancy",
+          "other"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_treatment_started",
@@ -509,7 +887,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "What has already been given: fluids, insulin route/rate, potassium/phosphate, dextrose, bicarbonate, antibiotics, and current monitoring level?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies DKA/HHS diagnostic criteria, crisis severity, electrolyte safety, and whether current treatment matches guideline-based monitoring needs.",
+        "management_implication": "The answer changes crisis classification, insulin/fluid/electrolyte safety, monitoring level, and immediate lab review.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "treatment",
+          "started",
+          "what",
+          "already",
+          "been",
+          "given",
+          "fluids",
+          "insulin",
+          "route",
+          "rate"
+        ],
+        "item_type": "history_question"
       }
     ],
     "conditionalQuestions": [
@@ -532,7 +933,6 @@
         ],
         "when": {
           "termsAny": [
-            "hhs",
             "hyperosmolar",
             "hyperosmolarity",
             "very high glucose",
@@ -550,7 +950,30 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Older adult, glucose near/above 600 mg/dL, profound dehydration, neurologic symptoms, high effective/total osmolality, or suspected mixed DKA/HHS?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for hyperglycemic-crisis severity, euglycemic DKA risk, dehydration, HHS features, and special-population safety constraints.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "features",
+          "older",
+          "adult",
+          "glucose",
+          "near",
+          "above",
+          "profound",
+          "dehydration",
+          "neurologic",
+          "symptoms"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_infection_source_detail",
@@ -595,7 +1018,27 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "If infection or ischemia is possible, what source is most likely: urinary, pulmonary, skin/foot, line, abdomen, dental, MI, stroke, pancreatitis, or other?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies diabetes context, hyperglycemic-crisis probability, severity, and treatment safety for DKA/HHS.",
+        "management_implication": "The answer changes diagnostic testing, DKA/HHS severity assessment, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "infection",
+          "source",
+          "detail",
+          "ischemia",
+          "what",
+          "most",
+          "likely"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "dka_discharge_barriers",
@@ -638,26 +1081,36 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Before discharge planning: insulin/supply access, ketone strips, glucagon, sick-day plan, mental health/substance use, food/housing insecurity, and follow-up arranged?",
+        "when_to_ask": "Ask when Hyperglycemia / possible DKA or HHS is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies the precipitant or recurrence risk that changes acute correction, infection search, education, and discharge safety planning.",
+        "management_implication": "The answer changes precipitant correction, antimicrobial/source evaluation, recurrence prevention, and discharge safety planning.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "discharge",
+          "barriers",
+          "before",
+          "planning",
+          "insulin",
+          "supply",
+          "access",
+          "ketone",
+          "strips"
+        ],
+        "item_type": "history_question"
       }
     ],
     "requiredExam": [
       {
-        "id": "dka_vitals",
-        "label": "Vital signs including BP, HR, RR, oxygen saturation, temperature, and weight if available",
-        "source": {
-          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
-          "source_section": "clinical assessment",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2024",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "clinical_content_lead",
-          "implementation_notes": ""
-        }
-      },
-      {
-        "id": "dka_hydration",
-        "label": "Hydration and volume status: mucous membranes, JVP, skin turgor, edema, urine output context",
+        "id": "dka_inspect_mucous_membranes",
+        "label": "Inspect mucous membranes for dehydration",
+        "action": "Document dry mucous membranes because this changes fluid deficit assessment and monitoring urgency.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "fluid losses and clinical presentation",
@@ -666,11 +1119,89 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document dry mucous membranes because this changes fluid deficit assessment and monitoring urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration",
+          "fluid"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "dka_resp_pattern",
-        "label": "Respiratory pattern and work of breathing, including Kussmaul pattern",
+        "id": "dka_assess_skin_turgor",
+        "label": "Assess skin turgor",
+        "action": "Document poor skin turgor because this supports clinically important volume depletion and fluid replacement urgency.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "fluid losses and clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Gently pinch skin over a clinically appropriate site and observe recoil, interpreting cautiously in older adults or chronic skin changes.",
+        "findings_options": [
+          "Normal recoil",
+          "Reduced recoil",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document poor skin turgor because this supports clinically important volume depletion and fluid replacement urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "skin",
+          "turgor",
+          "fluid",
+          "losses"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_assess_kussmaul_breathing",
+        "label": "Assess Kussmaul breathing",
+        "action": "Document deep labored respirations because this changes acidosis severity assessment and urgency of crisis management.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "clinical presentation",
@@ -679,24 +1210,44 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Observe respiratory rate, depth, accessory muscle use, speech tolerance, and breathing pattern at rest.",
+        "findings_options": [
+          "Normal effort",
+          "Increased work",
+          "Kussmaul/deep respirations",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "respiratory distress, acidosis compensation, pulmonary infection, obstruction, congestion, or pneumothorax pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document deep labored respirations because this changes acidosis severity assessment and urgency of crisis management.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "kussmaul",
+          "breathing",
+          "clinical",
+          "presentation"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "dka_mental_status_exam",
-        "label": "Mental status and ability to protect airway/participate in care",
-        "source": {
-          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
-          "source_section": "severity assessment",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2024",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "clinical_content_lead",
-          "implementation_notes": ""
-        }
-      },
-      {
-        "id": "dka_perfusion",
-        "label": "Perfusion: capillary refill, peripheral pulses, extremity temperature, signs of shock",
+        "id": "dka_check_capillary_refill",
+        "label": "Check capillary refill",
+        "action": "Document delayed refill because this changes shock assessment, fluid urgency, and monitored-care level.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "clinical assessment",
@@ -705,11 +1256,137 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Apply brief pressure to a fingertip or toe and record return of color while considering temperature, perfusion, and vascular disease.",
+        "findings_options": [
+          "Normal/warm",
+          "Delayed/cool",
+          "Mottled/poor perfusion",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document delayed refill because this changes shock assessment, fluid urgency, and monitored-care level.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "check",
+          "capillary",
+          "refill",
+          "clinical",
+          "assessment"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "dka_abdomen",
-        "label": "Abdominal exam for tenderness, guarding, ileus, or alternate trigger",
+        "id": "dka_palpate_peripheral_pulses",
+        "label": "Palpate peripheral pulses",
+        "action": "Document weak pulses because this changes perfusion assessment and shock concern.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Palpate bilateral pulses at the named sites, comparing amplitude, symmetry, rhythm, and perfusion.",
+        "findings_options": [
+          "Symmetric/normal",
+          "Diminished",
+          "Absent",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document weak pulses because this changes perfusion assessment and shock concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "palpate",
+          "peripheral",
+          "pulses",
+          "clinical",
+          "assessment"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_assess_extremity_temperature",
+        "label": "Assess extremity temperature",
+        "action": "Document cool extremities because this changes shock assessment and perfusion monitoring.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect and palpate distal extremities for warmth, color, capillary refill, mottling, and symmetry.",
+        "findings_options": [
+          "Normal/warm",
+          "Delayed/cool",
+          "Mottled/poor perfusion",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document cool extremities because this changes shock assessment and perfusion monitoring.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "extremity",
+          "temperature",
+          "clinical",
+          "assessment"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_palpate_abdomen",
+        "label": "Palpate abdomen for tenderness",
+        "action": "Document focal tenderness because this changes concern for pancreatitis, surgical abdomen, infection, or alternate precipitant.",
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "clinical presentation",
@@ -718,13 +1395,211 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Inspect and palpate the abdomen gently, localizing tenderness and stopping if guarding, rebound, or severe pain occurs.",
+        "findings_options": [
+          "Nontender",
+          "Tender",
+          "Guarding",
+          "Rebound/peritoneal concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "abdominal trigger, pancreatitis/surgical mimic, or hyperglycemic-crisis severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document focal tenderness because this changes concern for pancreatitis, surgical abdomen, infection, or alternate precipitant.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "palpate",
+          "abdomen",
+          "tenderness",
+          "clinical",
+          "presentation"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_assess_abdominal_guarding",
+        "label": "Assess abdominal guarding",
+        "action": "Document guarding because this changes surgical mimic concern and escalation pathway.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect and palpate the abdomen gently, localizing tenderness and stopping if guarding, rebound, or severe pain occurs.",
+        "findings_options": [
+          "Nontender",
+          "Tender",
+          "Guarding",
+          "Rebound/peritoneal concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "abdominal trigger, pancreatitis/surgical mimic, or hyperglycemic-crisis severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document guarding because this changes surgical mimic concern and escalation pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "abdominal",
+          "guarding",
+          "clinical",
+          "presentation"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       }
     ],
     "conditionalExam": [
       {
-        "id": "dka_infection_exam",
-        "label": "Focused infection source exam: lungs, CVA tenderness, skin/feet/wounds/lines, oropharynx as indicated",
+        "id": "dka_assess_jvp",
+        "label": "Assess jugular venous pressure",
+        "action": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because elevated JVP changes fluid safety.",
+        "when": {
+          "termsAny": [
+            "heart failure",
+            "volume overload",
+            "kidney disease",
+            "ckd",
+            "dialysis",
+            "edema"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "fluid replacement and comorbidity assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Position the patient at 30 to 45 degrees when possible and inspect the internal jugular venous pulsation, estimating height and waveform in context.",
+        "findings_options": [
+          "JVP not elevated",
+          "JVP elevated above expected level",
+          "Waveform difficult or positioning limited",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when heart failure, volume overload, kidney disease, ckd, dialysis, edema or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "venous congestion, right-heart strain, or volume-sensitive cardiopulmonary disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because elevated JVP changes fluid safety.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "jugular",
+          "venous",
+          "pressure",
+          "fluid",
+          "replacement",
+          "comorbidity"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_assess_peripheral_edema",
+        "label": "Assess peripheral edema",
+        "action": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because edema changes fluid safety and monitoring.",
+        "when": {
+          "termsAny": [
+            "heart failure",
+            "volume overload",
+            "kidney disease",
+            "ckd",
+            "dialysis",
+            "edema"
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "fluid replacement and comorbidity assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect and press over the lower legs or dependent areas for pitting, symmetry, tenderness, and extent.",
+        "findings_options": [
+          "None",
+          "Trace",
+          "1+",
+          "2+",
+          "3+",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when heart failure, volume overload, kidney disease, ckd, dialysis, edema or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "volume overload, DVT signs, or asymmetric lower-extremity pathology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when kidney disease, heart failure, or fluid tolerance concern is present because edema changes fluid safety and monitoring.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "peripheral",
+          "edema",
+          "fluid",
+          "replacement"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_auscultate_lungs",
+        "label": "Auscultate lungs for infection source",
+        "action": "Add this when fever, cough, or infection concern is present because lung findings change precipitant workup and antibiotics.",
         "when": {
           "termsAny": [
             "infection",
@@ -748,11 +1623,292 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Auscultate symmetric anterior, lateral, and posterior lung fields as feasible, comparing sides for crackles, wheeze, diminished sounds, or asymmetry.",
+        "findings_options": [
+          "Clear",
+          "Crackles",
+          "Wheeze",
+          "Diminished/asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when infection, fever, wound, dysuria, cough or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "respiratory distress, acidosis compensation, pulmonary infection, obstruction, congestion, or pneumothorax pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when fever, cough, or infection concern is present because lung findings change precipitant workup and antibiotics.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "auscultate",
+          "lungs",
+          "infection",
+          "source",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "dka_diabetes_foot",
-        "label": "Diabetes foot/skin exam when wound, neuropathy, ulcer, infection, or discharge planning is relevant",
+        "id": "dka_assess_cva_tenderness",
+        "label": "Assess costovertebral angle tenderness",
+        "action": "Add this when dysuria, flank pain, fever, or infection concern is present because CVA tenderness changes pyelonephritis concern.",
+        "when": {
+          "termsAny": [
+            "infection",
+            "fever",
+            "dysuria",
+            "flank pain",
+            "pyelonephritis"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Percuss or palpate gently over each costovertebral angle and compare sides for reproducible flank pain, stopping if severe pain or instability limits the exam.",
+        "findings_options": [
+          "No CVA tenderness",
+          "Unilateral tenderness",
+          "Bilateral tenderness",
+          "Severe pain/guarding",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when infection, fever, dysuria, flank pain, pyelonephritis or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "upper urinary tract infection, pyelonephritis, renal colic mimic, or infectious precipitant of hyperglycemic crisis",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when dysuria, flank pain, fever, or infection concern is present because CVA tenderness changes pyelonephritis concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "CVA tenderness is neither required nor sufficient for pyelonephritis; interpret with fever, urinary symptoms, urinalysis/culture, imaging indications, analgesia response, body habitus, and patient tolerance.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "tenderness",
+          "costovertebral",
+          "angle",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_inspect_skin_wounds",
+        "label": "Inspect skin wounds",
+        "action": "Add this when fever, wound, ulcer, or infection concern is present because skin infection changes antibiotics and source control.",
+        "when": {
+          "termsAny": [
+            "infection",
+            "fever",
+            "wound",
+            "ulcer",
+            "cellulitis"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect the relevant skin, foot, or device site for erythema, warmth, drainage, ulceration, fluctuance, tenderness, or breakdown.",
+        "findings_options": [
+          "No infection/wound",
+          "Erythema/warmth",
+          "Drainage/ulcer",
+          "Fluctuance/necrosis concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when infection, fever, wound, ulcer, cellulitis or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "infectious trigger, diabetic complication, or discharge-safety issue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when fever, wound, ulcer, or infection concern is present because skin infection changes antibiotics and source control.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "inspect",
+          "skin",
+          "wounds",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_inspect_line_sites",
+        "label": "Inspect line sites",
+        "action": "Add this when line infection is possible because an infected line changes source control and antibiotic decisions.",
+        "when": {
+          "termsAny": [
+            "line",
+            "catheter",
+            "infection",
+            "fever"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect the relevant skin, foot, or device site for erythema, warmth, drainage, ulceration, fluctuance, tenderness, or breakdown.",
+        "findings_options": [
+          "No infection/wound",
+          "Erythema/warmth",
+          "Drainage/ulcer",
+          "Fluctuance/necrosis concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when line, catheter, infection, fever or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "infectious trigger, diabetic complication, or discharge-safety issue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when line infection is possible because an infected line changes source control and antibiotic decisions.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "inspect",
+          "line",
+          "sites",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_inspect_oropharynx",
+        "label": "Inspect oropharynx",
+        "action": "Add this when upper respiratory or oral infection symptoms are present because findings change precipitant evaluation.",
+        "when": {
+          "termsAny": [
+            "sore throat",
+            "oropharynx",
+            "dental",
+            "infection",
+            "fever"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect the mouth and oropharynx with light when available, noting erythema, exudate, dental infection, lesions, or dehydration.",
+        "findings_options": [
+          "No focal source",
+          "Erythema/exudate",
+          "Dental/lesion concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when sore throat, oropharynx, dental, infection, fever or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "infectious trigger, diabetic complication, or discharge-safety issue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when upper respiratory or oral infection symptoms are present because findings change precipitant evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 2,
+        "equipment_needed": "light source optional",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "inspect",
+          "oropharynx",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_inspect_feet_for_ulcers",
+        "label": "Inspect feet for ulcers",
+        "action": "Add this when foot wound, neuropathy, infection, or discharge planning is relevant because ulcers change antibiotics, offloading, and follow-up.",
         "when": {
           "termsAny": [
             "foot",
@@ -776,17 +1932,111 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Inspect the relevant skin, foot, or device site for erythema, warmth, drainage, ulceration, fluctuance, tenderness, or breakdown.",
+        "findings_options": [
+          "No infection/wound",
+          "Erythema/warmth",
+          "Drainage/ulcer",
+          "Fluctuance/necrosis concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when foot, ulcer, wound, neuropathy, cellulitis or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "infectious trigger, diabetic complication, or discharge-safety issue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when foot wound, neuropathy, infection, or discharge planning is relevant because ulcers change antibiotics, offloading, and follow-up.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "inspect",
+          "feet",
+          "ulcers",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "dka_neuro_screen",
-        "label": "Focused neurologic exam when confusion, seizure, focal symptoms, or hyperosmolarity is present",
+        "id": "dka_test_monofilament_sensation",
+        "label": "Test monofilament sensation",
+        "action": "Add this when neuropathy, wound risk, or discharge planning is relevant because loss of protective sensation changes prevention and follow-up.",
+        "when": {
+          "termsAny": [
+            "foot",
+            "ulcer",
+            "wound",
+            "neuropathy",
+            "discharge"
+          ],
+          "answersAny": [
+            {
+              "id": "dka_infection_trigger",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "precipitating causes and recurrence prevention",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Apply a 10-g monofilament perpendicular to standard plantar sites until it bends, with eyes closed, documenting sites felt or missed.",
+        "findings_options": [
+          "Protective sensation intact",
+          "Reduced",
+          "Absent",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when foot, ulcer, wound, neuropathy, discharge or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "loss of protective sensation and diabetic foot-ulcer risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when neuropathy, wound risk, or discharge planning is relevant because loss of protective sensation changes prevention and follow-up.",
+        "difficulty": "easy",
+        "time_burden_minutes": 3,
+        "equipment_needed": "10-g monofilament",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "test",
+          "monofilament",
+          "sensation",
+          "precipitating",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "dka_assess_focal_neurologic_deficits",
+        "label": "Assess focal neurologic deficits",
+        "action": "Add this when confusion, seizure, focal symptoms, or hyperosmolarity is present because focal findings change neuroimaging and alternate-diagnosis urgency.",
         "when": {
           "termsAny": [
             "confusion",
             "seizure",
             "focal",
-            "hhs",
             "hyperosmolar"
           ],
           "answersAny": [
@@ -804,13 +2054,51 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Perform a focused screen for facial symmetry, speech, pronator drift, limb strength, sensation, and coordination as clinically safe.",
+        "findings_options": [
+          "No focal deficit",
+          "Focal deficit present",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when confusion, seizure, focal, hhs, hyperosmolar or related patient-specific modifiers are present in the selected Hyperglycemia / possible DKA or HHS workup.",
+        "diagnostic_target": "stroke or focal neurologic mimic requiring urgent escalation",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when confusion, seizure, focal symptoms, or hyperosmolarity is present because focal findings change neuroimaging and alternate-diagnosis urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 3,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "focal",
+          "neurologic",
+          "deficits"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       }
     ],
     "initialTests": [
       {
         "id": "dka_poc_glucose",
         "label": "Point-of-care glucose now",
+        "action": "Check point-of-care glucose immediately and confirm with laboratory glucose as part of the hyperglycemic crisis workup.",
+        "rationale": "Immediate glucose measurement establishes current severity, guides urgent insulin/fluid decisions, and helps identify euglycemic DKA when glucose is not markedly elevated.",
+        "tags": [
+          "DKA_HHS",
+          "glucose",
+          "point_of_care",
+          "diagnosis"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "diagnostic criteria",
@@ -819,11 +2107,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Point-of-care glucose now: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Check point-of-care glucose immediately and confirm with laboratory glucose as part of the hyperglycemic crisis workup.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_beta_hydroxybutyrate",
         "label": "Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable",
+        "action": "Measure blood beta-hydroxybutyrate when possible; use urine ketones only if blood ketone testing is unavailable.",
+        "rationale": "Ketone testing distinguishes DKA from other hyperglycemic states, supports euglycemic DKA recognition, and tracks biochemical response to treatment.",
+        "tags": [
+          "DKA_HHS",
+          "beta_hydroxybutyrate",
+          "ketones",
+          "euglycemic_DKA"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "ketosis criterion and monitoring",
@@ -832,11 +2135,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Measure blood beta-hydroxybutyrate when possible; use urine ketones only if blood ketone testing is unavailable.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_bmp_gap",
         "label": "Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium",
+        "action": "Obtain electrolytes, bicarbonate, renal function, glucose, anion gap, and corrected sodium at baseline and follow serially during treatment.",
+        "rationale": "Electrolytes and renal function determine DKA/HHS severity, potassium-safe insulin timing, fluid strategy, corrected sodium interpretation, and biochemical resolution.",
+        "tags": [
+          "DKA_HHS",
+          "electrolytes",
+          "anion_gap",
+          "corrected_sodium"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "diagnosis and monitoring",
@@ -845,11 +2163,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Obtain electrolytes, bicarbonate, renal function, glucose, anion gap, and corrected sodium at baseline and follow serially during treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_blood_gas",
         "label": "Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or local protocol requires it",
+        "action": "Use venous pH/blood gas to assess acidosis severity; reserve arterial gas for oxygenation or ventilation concerns or local protocol.",
+        "rationale": "pH and bicarbonate severity change DKA classification, monitoring level, treatment urgency, and evaluation for mixed acid-base or respiratory problems.",
+        "tags": [
+          "DKA_HHS",
+          "venous_pH",
+          "blood_gas",
+          "acidosis"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "acidosis criterion",
@@ -858,11 +2191,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or local protocol requires it: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Use venous pH/blood gas to assess acidosis severity; reserve arterial gas for oxygenation or ventilation concerns or local protocol.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_osmolality",
         "label": "Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible",
+        "action": "Calculate effective osmolality and measure serum osmolality when HHS, mixed crisis, severe dehydration, altered mental status, or very high glucose is possible.",
+        "rationale": "Osmolality changes HHS diagnosis, neurologic-risk assessment, correction-rate monitoring, fluid strategy, and disposition.",
+        "tags": [
+          "DKA_HHS",
+          "HHS",
+          "osmolality",
+          "altered_mental_status"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "HHS diagnosis and osmolality monitoring",
@@ -871,11 +2219,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Calculate effective osmolality and measure serum osmolality when HHS, mixed crisis, severe dehydration, altered mental status, or very high glucose is possible.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_ecg_potassium",
         "label": "ECG and potassium-focused monitoring if potassium abnormality, weakness, renal failure, or insulin therapy is expected",
+        "action": "Obtain ECG and potassium-focused monitoring when potassium is abnormal, weakness/arrhythmia is present, renal failure exists, or insulin therapy is expected.",
+        "rationale": "ECG and potassium monitoring change insulin timing, potassium replacement, telemetry need, and safety response to hypo- or hyperkalemia.",
+        "tags": [
+          "DKA_HHS",
+          "potassium",
+          "ECG",
+          "telemetry"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "potassium and treatment monitoring",
@@ -884,11 +2247,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "ECG and potassium-focused monitoring if potassium abnormality, weakness, renal failure, or insulin therapy is expected: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Obtain ECG and potassium-focused monitoring when potassium is abnormal, weakness/arrhythmia is present, renal failure exists, or insulin therapy is expected.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_cbc_phos_mg",
         "label": "CBC with differential plus magnesium and phosphate when crisis is suspected or insulin therapy is expected",
+        "action": "Check CBC with differential plus magnesium and phosphate when DKA/HHS or insulin therapy is expected.",
+        "rationale": "CBC can support precipitant assessment, while magnesium and phosphate abnormalities affect electrolyte replacement, arrhythmia risk, weakness, and monitoring.",
+        "tags": [
+          "DKA_HHS",
+          "CBC",
+          "magnesium",
+          "phosphate"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "initial evaluation and electrolyte monitoring",
@@ -897,11 +2275,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "CBC with differential plus magnesium and phosphate when crisis is suspected or insulin therapy is expected: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Check CBC with differential plus magnesium and phosphate when DKA/HHS or insulin therapy is expected.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_trigger_tests",
         "label": "Precipitant workup guided by presentation: urinalysis/culture, blood cultures, chest imaging, viral testing, pregnancy test, lipase, troponin/ECG, neuroimaging, or other source evaluation",
+        "action": "Choose precipitant testing based on symptoms, exam, and risk: infection, pregnancy, pancreatitis, ACS, stroke, medication omission, pump failure, or other source evaluation.",
+        "rationale": "Identifying the precipitant changes antibiotics/source control, obstetric or cardiac evaluation, imaging, insulin-delivery repair, and recurrence prevention.",
+        "tags": [
+          "DKA_HHS",
+          "precipitant",
+          "infection",
+          "pregnancy"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "precipitating causes",
@@ -910,11 +2303,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Precipitant workup guided by presentation: urinalysis/culture, blood cultures, chest imaging, viral testing, pregnancy test, lipase, troponin/ECG, neuroimaging, or other source evaluation: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Choose precipitant testing based on symptoms, exam, and risk: infection, pregnancy, pancreatitis, ACS, stroke, medication omission, pump failure, or other source evaluation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_a1c",
         "label": "Hemoglobin A1c if no reliable result in the prior 3 months or if baseline control is unclear",
+        "action": "Check hemoglobin A1c when no reliable result is available in the prior 3 months or baseline glycemic control is unclear.",
+        "rationale": "A1c helps distinguish chronic control from acute stress hyperglycemia and informs discharge insulin plan, education, and follow-up intensity.",
+        "tags": [
+          "DKA_HHS",
+          "A1c",
+          "baseline_control",
+          "discharge_planning"
+        ],
         "source": {
           "source_id": "ADA_STANDARDS_HOSPITAL_2026",
           "source_section": "A1c testing in hospitalized patients with diabetes or hyperglycemia",
@@ -923,11 +2331,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Hemoglobin A1c if no reliable result in the prior 3 months or if baseline control is unclear: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Check hemoglobin A1c when no reliable result is available in the prior 3 months or baseline glycemic control is unclear.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       },
       {
         "id": "dka_serial_monitoring",
         "label": "If treating DKA/HHS: glucose every 1-2 h; electrolytes, creatinine, phosphate, beta-hydroxybutyrate, and venous pH about every 4 h until DKA resolves; osmolality every 4 h in HHS",
+        "action": "Use protocolized serial monitoring during treatment: frequent glucose checks, serial electrolytes/renal function/ketones/pH, and osmolality monitoring for HHS.",
+        "rationale": "Serial monitoring detects treatment response, hypoglycemia, potassium shifts, renal/electrolyte complications, HHS correction risk, and readiness for transition.",
+        "tags": [
+          "DKA_HHS",
+          "serial_monitoring",
+          "electrolytes",
+          "treatment_response"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "treatment monitoring",
@@ -936,13 +2359,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "If treating DKA/HHS: glucose every 1-2 h; electrolytes, creatinine, phosphate, beta-hydroxybutyrate, and venous pH about every 4 h until DKA resolves; osmolality every 4 h in HHS: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Use protocolized serial monitoring during treatment: frequent glucose checks, serial electrolytes/renal function/ketones/pH, and osmolality monitoring for HHS.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hyperglycemia / possible DKA or HHS test or threshold."
       }
     ],
     "dispositionRules": [
       {
         "id": "dka_emergency",
         "label": "Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.",
+        "action": "Treat suspected DKA/HHS as urgent hyperglycemic crisis evaluation requiring protocolized fluids, insulin, electrolyte replacement, monitoring, and precipitant treatment.",
+        "rationale": "This distinction changes disposition and timing because DKA/HHS management depends on serial labs, potassium-safe insulin, fluid resuscitation, and precipitant control.",
+        "tags": [
+          "DKA_HHS",
+          "urgent_evaluation",
+          "protocolized_treatment",
+          "disposition"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "treatment setting and severity",
@@ -951,11 +2389,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Treat suspected DKA/HHS as urgent hyperglycemic crisis evaluation requiring protocolized fluids, insulin, electrolyte replacement, monitoring, and precipitant treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_high_acuity",
         "label": "ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.",
+        "action": "Use ICU or high-acuity monitored care when severe DKA, HHS, shock, altered mental status, critical illness, severe electrolyte disturbance, or unsafe monitoring is present.",
+        "rationale": "These features change level of care because deterioration, electrolyte shifts, neurologic risk, and treatment intensity require close nursing and serial reassessment.",
+        "tags": [
+          "DKA_HHS",
+          "ICU",
+          "high_acuity",
+          "monitoring"
+        ],
         "when": {
           "termsAny": [
             "hhs",
@@ -986,11 +2439,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Use ICU or high-acuity monitored care when severe DKA, HHS, shock, altered mental status, critical illness, severe electrolyte disturbance, or unsafe monitoring is present.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_mild_moderate_dka",
         "label": "Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.",
+        "action": "Consider ED observation or step-down only for uncomplicated mild/moderate DKA with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin capability.",
+        "rationale": "Severity and monitoring capacity change whether treatment can be safely delivered outside ICU versus needing high-acuity care.",
+        "tags": [
+          "DKA_HHS",
+          "mild_DKA",
+          "step_down",
+          "subcutaneous_insulin"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "level of care and subcutaneous insulin option",
@@ -999,11 +2467,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Consider ED observation or step-down only for uncomplicated mild/moderate DKA with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin capability.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_potassium_rule",
         "label": "Do not start or continue insulin infusion without potassium-aware protocol monitoring; if K <3.5 mmol/L, replace potassium and delay insulin until K is >3.5 mmol/L.",
+        "action": "Apply potassium-aware insulin protocol; if K is below the safe threshold, replace potassium and delay insulin until corrected per protocol.",
+        "rationale": "Potassium status changes immediate insulin safety because insulin can worsen hypokalemia and precipitate dangerous arrhythmias.",
+        "tags": [
+          "DKA_HHS",
+          "potassium",
+          "insulin_safety",
+          "arrhythmia"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "potassium replacement and insulin timing",
@@ -1012,11 +2495,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Do not start or continue insulin infusion without potassium-aware protocol monitoring; if K <3.5 mmol/L, replace potassium and delay insulin until K is >3.5 mmol/L.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Apply potassium-aware insulin protocol; if K is below the safe threshold, replace potassium and delay insulin until corrected per protocol.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_euglycemic",
         "label": "If SGLT2/pregnancy/fasting risk exists, evaluate ketones/acidosis even if glucose is <200 mg/dL; stop SGLT2 inhibitor on admission and generally do not restart after DKA without a specialist risk-benefit decision.",
+        "action": "Evaluate ketones and acidosis despite lower glucose when SGLT2 inhibitor use, pregnancy, fasting, or euglycemic DKA risk exists; hold SGLT2 inhibitor during admission.",
+        "rationale": "Euglycemic-risk context changes diagnosis and medication safety because glucose level alone can miss DKA and SGLT2 restart needs specialist risk-benefit review.",
+        "tags": [
+          "DKA_HHS",
+          "euglycemic_DKA",
+          "SGLT2",
+          "pregnancy"
+        ],
         "when": {
           "answersAny": [
             {
@@ -1033,11 +2531,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "If SGLT2/pregnancy/fasting risk exists, evaluate ketones/acidosis even if glucose is <200 mg/dL; stop SGLT2 inhibitor on admission and generally do not restart after DKA without a specialist risk-benefit decision.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Evaluate ketones and acidosis despite lower glucose when SGLT2 inhibitor use, pregnancy, fasting, or euglycemic DKA risk exists; hold SGLT2 inhibitor during admission.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_hhs_correction",
         "label": "For HHS, avoid overly rapid glucose, sodium, or osmolality correction; monitor neurologic status and osmolality closely.",
+        "action": "For HHS, monitor neurologic status and osmolality while avoiding overly rapid glucose, sodium, or osmolality correction.",
+        "rationale": "Correction rate changes neurologic safety and fluid/insulin strategy in HHS, especially when mental status or hyperosmolarity is prominent.",
+        "tags": [
+          "DKA_HHS",
+          "HHS",
+          "osmolality",
+          "neurologic_monitoring"
+        ],
         "when": {
           "termsAny": [
             "hhs",
@@ -1060,11 +2573,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "For HHS, avoid overly rapid glucose, sodium, or osmolality correction; monitor neurologic status and osmolality closely.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "For HHS, monitor neurologic status and osmolality while avoiding overly rapid glucose, sodium, or osmolality correction.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_resolution_transition",
         "label": "Transition off IV insulin only after biochemical resolution and clinical stability; use basal-bolus insulin with basal overlap 1-2 h before stopping IV insulin, and do not use anion gap alone as the resolution criterion.",
+        "action": "Transition from IV insulin only after biochemical resolution and clinical stability; give basal insulin overlap before stopping infusion and avoid relying on anion gap alone.",
+        "rationale": "Resolution criteria and basal overlap change recurrence risk, hypoglycemia risk, and safe transfer/discharge readiness.",
+        "tags": [
+          "DKA_HHS",
+          "resolution",
+          "transition",
+          "basal_overlap"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "resolution criteria and transition to subcutaneous insulin",
@@ -1073,11 +2601,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Transition off IV insulin only after biochemical resolution and clinical stability; use basal-bolus insulin with basal overlap 1-2 h before stopping IV insulin, and do not use anion gap alone as the resolution criterion.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Transition from IV insulin only after biochemical resolution and clinical stability; give basal insulin overlap before stopping infusion and avoid relying on anion gap alone.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
       },
       {
         "id": "dka_discharge_prevention",
         "label": "Before discharge, confirm insulin and diabetes supplies, ketone testing plan, sick-day rules, glucagon when indicated, medication affordability, education, and close follow-up; address recurrent DKA or social/mental-health barriers.",
+        "action": "Before discharge, verify insulin/supplies, sick-day and ketone testing plan, glucagon when indicated, affordability, education, follow-up, and recurrent-DKA barriers.",
+        "rationale": "Discharge readiness changes recurrence prevention, medication safety, and follow-up urgency after hyperglycemic crisis.",
+        "tags": [
+          "DKA_HHS",
+          "discharge_planning",
+          "sick_day_rules",
+          "recurrence_prevention"
+        ],
         "source": {
           "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
           "source_section": "prevention, discharge education, and follow-up",
@@ -1086,7 +2629,343 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Before discharge, confirm insulin and diabetes supplies, ketone testing plan, sick-day rules, glucagon when indicated, medication affordability, education, and close follow-up; address recurrent DKA or social/mental-health barriers.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hyperglycemia / possible DKA or HHS.",
+        "management_change": "Before discharge, verify insulin/supplies, sick-day and ketone testing plan, glucagon when indicated, affordability, education, follow-up, and recurrent-DKA barriers.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hyperglycemia / possible DKA or HHS."
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "dka_measure_bp",
+        "label": "Measure blood pressure",
+        "action": "Document hypotension or severe hypertension because this changes DKA or HHS severity assessment, fluid strategy, and monitoring level.",
+        "tags": [
+          "DKA_HHS",
+          "blood_pressure",
+          "shock",
+          "fluid_strategy"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Blood pressure anchors hemodynamic safety and helps identify shock, hypertensive urgency, orthostasis, or medication-risk context before focused diagnosis-specific decisions.",
+        "management_change": "Document hypotension or severe hypertension because this changes DKA or HHS severity assessment, fluid strategy, and monitoring level.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_measure_hr",
+        "label": "Measure heart rate",
+        "action": "Document tachycardia or arrhythmia because this changes dehydration severity, potassium safety, ECG need, and monitored-care urgency.",
+        "tags": [
+          "DKA_HHS",
+          "heart_rate",
+          "dehydration",
+          "potassium_safety"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Heart rate anchors physiologic severity and can reveal adrenergic state, hypovolemia, arrhythmia, infection severity, medication effect, or decompensation.",
+        "management_change": "Document tachycardia or arrhythmia because this changes dehydration severity, potassium safety, ECG need, and monitored-care urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_measure_rr",
+        "label": "Measure respiratory rate",
+        "action": "Document tachypnea because this changes acidosis severity assessment and respiratory support concern.",
+        "tags": [
+          "DKA_HHS",
+          "respiratory_rate",
+          "tachypnea",
+          "acidosis"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical presentation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Respiratory rate and visible breathing effort are early bedside markers of respiratory failure, metabolic stress, sepsis physiology, or endocrine crisis severity.",
+        "management_change": "Document tachypnea because this changes acidosis severity assessment and respiratory support concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Respiratory rate is often undercounted and may be affected by anxiety, pain, fever, compensation for metabolic disease, or sedation; observe directly when it changes acuity.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___/min",
+          "Normal effort",
+          "Tachypneic/labored",
+          "Bradypneic/tiring",
+          "Not available"
+        ],
+        "diagnostic_target": "tachypnea, hypoventilation, respiratory compensation, or acute illness severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_measure_spo2",
+        "label": "Measure oxygen saturation",
+        "action": "Document hypoxemia because it changes respiratory support needs and precipitating infection or cardiopulmonary evaluation.",
+        "tags": [
+          "DKA_HHS",
+          "oxygen_saturation",
+          "hypoxemia",
+          "respiratory_support"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Oxygenation separates stable outpatient-style assessment from possible respiratory failure, pulmonary source, shock physiology, or need for urgent support.",
+        "management_change": "Document hypoxemia because it changes respiratory support needs and precipitating infection or cardiopulmonary evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "pulse oximeter",
+        "patient_cooperation_required": "low",
+        "limitations": "Pulse oximetry can be affected by poor perfusion, motion, nail products, dyshemoglobinemia, skin pigmentation, and device quality; interpret with work of breathing and clinical context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___% room air",
+          "___% on oxygen",
+          "Hypoxemic",
+          "Escalating oxygen need",
+          "Not available"
+        ],
+        "diagnostic_target": "hypoxemia, oxygen requirement, respiratory support need, or cardiopulmonary acuity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_measure_temperature",
+        "label": "Measure temperature",
+        "action": "Document fever or hypothermia because this changes infection search, sepsis concern, and monitoring level.",
+        "tags": [
+          "DKA_HHS",
+          "temperature",
+          "infection",
+          "sepsis"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Temperature confirms fever or hypothermia and helps frame infection, inflammatory illness, endocrine crisis, or treatment urgency.",
+        "management_change": "Document fever or hypothermia because this changes infection search, sepsis concern, and monitoring level.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "thermometer",
+        "patient_cooperation_required": "low",
+        "limitations": "Temperature depends on measurement site, antipyretics, timing, immune status, and device accuracy; absence of fever does not exclude serious infection or endocrine crisis.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___ C/F",
+          "Fever",
+          "Hypothermia",
+          "Afebrile",
+          "Not available"
+        ],
+        "diagnostic_target": "fever, hypothermia, inflammatory illness, infection, or endocrine-crisis physiology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_measure_weight",
+        "label": "Measure current weight if available",
+        "action": "Document weight because it supports weight-based fluid and insulin planning when local protocol uses weight-based dosing.",
+        "tags": [
+          "DKA_HHS",
+          "weight",
+          "fluid_dosing",
+          "insulin_dosing"
+        ],
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "clinical assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Hyperglycemia / possible DKA or HHS: Anthropometrics support cardiometabolic risk, medication dosing or safety, and longitudinal disease-severity interpretation.",
+        "management_change": "Document weight because it supports weight-based fluid and insulin planning when local protocol uses weight-based dosing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___/min",
+          "Normal effort",
+          "Tachypneic/labored",
+          "Bradypneic/tiring",
+          "Not available"
+        ],
+        "diagnostic_target": "tachypnea, hypoventilation, respiratory compensation, or acute illness severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "dka_assess_mental_status",
+        "label": "Assess mental status",
+        "action": "Document confusion, somnolence, or coma because this changes HHS severity, airway concern, and monitored-care level.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Assess alertness, orientation, attention, ability to follow commands, and deviation from documented baseline.",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Hyperglycemia / possible DKA or HHS is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "encephalopathy, airway-protection risk, or high-acuity disposition need",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document confusion, somnolence, or coma because this changes HHS severity, airway concern, and monitored-care level.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Hyperglycemia / possible DKA or HHS; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "endocrine",
+          "metabolic",
+          "hyperglycemia",
+          "possible",
+          "assess",
+          "mental",
+          "status",
+          "severity",
+          "assessment",
+          "mental_status",
+          "safety_check"
+        ],
+        "item_type": "safety_check",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "rationale": "encephalopathy, airway-protection risk, or high-acuity disposition need This basic acuity check helps identify severity, airway/safety risk, escalation needs, and safe interpretation of the selected validated workup."
+      },
+      {
+        "id": "dka_check_airway_protection",
+        "label": "Check ability to protect airway",
+        "action": "Document inability to protect the airway because this changes respiratory support and high-acuity disposition.",
+        "source": {
+          "source_id": "ADA_HYPERGLYCEMIC_CRISES_2024",
+          "source_section": "severity assessment",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2024",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Assess speech, secretion handling, cough when appropriate, aspiration risk, and ability to protect the airway without provocative unsafe maneuvers.",
+        "findings_options": [
+          "Protecting airway",
+          "Questionable protection",
+          "Not protecting airway",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, airway-protection risk, or high-acuity disposition need",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document inability to protect the airway because this changes respiratory support and high-acuity disposition.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Do not use provocative unsafe maneuvers; interpret with mental status, respiratory pattern, secretion handling, aspiration risk, local airway protocols, and clinical trajectory.",
+        "tags": [
+          "endocrine_metabolic",
+          "hyperglycemia_possible_dka_or_hhs",
+          "DKA_HHS",
+          "airway_protection",
+          "altered_mental_status",
+          "respiratory_support",
+          "high_acuity",
+          "safety_check"
+        ],
+        "item_type": "safety_check",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "rationale": "Airway protection is an acuity and safety assessment, not a core diagnostic maneuver; abnormal findings change respiratory support, aspiration precautions, and monitored-care disposition."
       }
     ]
   }

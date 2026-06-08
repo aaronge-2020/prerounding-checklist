@@ -10,15 +10,23 @@ import {
   rankEvidenceCandidates
 } from "../evidence.js";
 import { checklistPrompt, parseChecklist } from "../checklist.js";
+import {
+  buildClinicalIntentRetrievalContext,
+  clinicalIntentRegistry,
+  filterEvidenceCatalogForClinicalIntents,
+  resolveClinicalIntents
+} from "../clinical-intents.js";
 
 const defaultEvalPaths = {
   base: "data/evidence/exam_technique_base.csv",
   overlay: "data/evidence/exam_evidence_overlay.csv",
   legacyOverlay: "data/physical-exam/physical_exam_evidence_overlay.csv",
+  acceptedCatalogAdditions: "data/evidence/accepted_exam_catalog_additions.csv",
   tags: "data/evidence/retrieval_tag_dictionary.csv",
   sources: "data/evidence/source_registry.csv",
   cases: "data/evidence/evidence_eval_cases.csv",
-  gold: "data/evidence/evidence_eval_gold.csv"
+  gold: "data/evidence/evidence_eval_gold.csv",
+  gaps: "data/evidence/catalog_gap_registry.csv"
 };
 
 const requiredCaseHeaders = [
@@ -38,6 +46,21 @@ const requiredGoldHeaders = [
   "acceptable_labels",
   "avoid_labels",
   "required_rationale_terms"
+];
+
+const requiredGapRegistryHeaders = [
+  "case_id",
+  "gap_exam_id",
+  "gap_label",
+  "gap_type",
+  "review_status",
+  "review_owner",
+  "last_reviewed",
+  "source_ids",
+  "source_citation",
+  "rationale",
+  "activation_condition",
+  "planned_resolution"
 ];
 
 function readCsv(path) {
@@ -106,6 +129,66 @@ function caseAllowsCoverageGap(testCase) {
   return /\bcoverage_gap_allowed\b/i.test(testCase.notes || "");
 }
 
+function gapRegistryKey(caseId, gapExamId) {
+  return `${caseId}::${gapExamId}`;
+}
+
+function validateCatalogGapRegistry(gapRows = [], sourceRows = [], caseRows = []) {
+  const issues = [];
+  const seen = new Set();
+  const sourceIds = new Set(sourceRows.map((row) => row.source_id).filter(Boolean));
+  const caseIds = new Set(caseRows.map((row) => row.case_id).filter(Boolean));
+  const allowedStatuses = new Set(["staged_gap", "validated_gap", "accepted_gap"]);
+  const allowedTypes = new Set(["exam_maneuver", "safety_check", "history_question", "source_gap", "red_flag"]);
+
+  gapRows.forEach((row, index) => {
+    const key = gapRegistryKey(row.case_id, row.gap_exam_id);
+    const label = row.gap_label || row.gap_exam_id || `row ${index + 1}`;
+    if (!row.case_id || !caseIds.has(row.case_id)) {
+      issues.push(`${label} references unknown case_id ${row.case_id || "missing"}`);
+    }
+    if (!row.gap_exam_id) {
+      issues.push(`${label} is missing gap_exam_id`);
+    }
+    if (seen.has(key)) {
+      issues.push(`Duplicate catalog gap registry key ${key}`);
+    }
+    seen.add(key);
+    if (!allowedTypes.has(row.gap_type)) {
+      issues.push(`${key} has invalid gap_type ${row.gap_type || "missing"}`);
+    }
+    if (!allowedStatuses.has(row.review_status)) {
+      issues.push(`${key} has invalid review_status ${row.review_status || "missing"}`);
+    }
+    if (!row.review_owner) {
+      issues.push(`${key} is missing review_owner`);
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(row.last_reviewed || "")) {
+      issues.push(`${key} has invalid last_reviewed date ${row.last_reviewed || "missing"}`);
+    }
+    const ids = splitList(row.source_ids);
+    if (!ids.length) {
+      issues.push(`${key} is missing source_ids`);
+    }
+    ids.forEach((sourceId) => {
+      if (!sourceIds.has(sourceId)) {
+        issues.push(`${key} references unknown source_id ${sourceId}`);
+      }
+    });
+    for (const field of ["source_citation", "rationale", "activation_condition", "planned_resolution"]) {
+      if (!row[field]) {
+        issues.push(`${key} is missing ${field}`);
+      }
+    }
+  });
+
+  return {
+    ok: issues.length === 0,
+    issues,
+    byKey: new Map(gapRows.map((row) => [gapRegistryKey(row.case_id, row.gap_exam_id), row]))
+  };
+}
+
 function goldForCase(goldRows) {
   return new Map(goldRows.map((row) => [row.case_id, {
     ...row,
@@ -136,28 +219,59 @@ export function loadEvaluationFixtures(paths = defaultEvalPaths) {
   const baseRows = readCsv(paths.base);
   const overlayRows = readCsv(paths.overlay);
   const legacyOverlayRows = readCsv(paths.legacyOverlay);
+  const acceptedCatalogAdditionRows = readCsv(paths.acceptedCatalogAdditions);
   const tagRows = readCsv(paths.tags);
   const sourceRows = readCsv(paths.sources);
   const caseRows = readCsv(paths.cases);
   const goldRows = readCsv(paths.gold);
+  const gapRows = readCsv(paths.gaps);
 
   assertHeaders(caseRows, requiredCaseHeaders, paths.cases);
   assertHeaders(goldRows, requiredGoldHeaders, paths.gold);
+  assertHeaders(gapRows, requiredGapRegistryHeaders, paths.gaps);
+  const gapRegistry = validateCatalogGapRegistry(gapRows, sourceRows, caseRows);
+  if (!gapRegistry.ok) {
+    throw new Error(`Invalid catalog gap registry:\n${gapRegistry.issues.join("\n")}`);
+  }
 
   const mergedOverlayRows = mergeLegacyPhysicalExamOverlay(baseRows, overlayRows, legacyOverlayRows);
-  const catalog = joinEvidenceCatalog(baseRows, mergedOverlayRows, sourceRows);
+  const catalog = joinEvidenceCatalog(baseRows, mergedOverlayRows, sourceRows, acceptedCatalogAdditionRows);
   return {
     baseRows,
     overlayRows: mergedOverlayRows,
     requestedOverlayRows: overlayRows,
     legacyOverlayRows,
+    acceptedCatalogAdditionRows,
     tagRows,
     sourceRows,
     caseRows,
     goldRows,
+    gapRows,
+    clinicalIntentRegistry,
+    gapRegistryByKey: gapRegistry.byKey,
     goldByCase: goldForCase(goldRows),
     catalog
   };
+}
+
+function evaluationIntentQuery(testCase = {}) {
+  return [
+    testCase.presentation,
+    testCase.must_include_tags,
+    testCase.chart_context
+  ].filter(Boolean).join(" ");
+}
+
+function resolvedEvaluationIntents(testCase = {}, registry = clinicalIntentRegistry) {
+  const exactGoldMatches = registry.filter((intentRow) => (
+    intentRow.status === "validated"
+      && (intentRow.gold_case_ids || []).includes(testCase.case_id)
+  ));
+  if (exactGoldMatches.length) {
+    return exactGoldMatches.slice(0, 2);
+  }
+  const resolved = resolveClinicalIntents(evaluationIntentQuery(testCase), registry, { limit: 4 });
+  return resolved.validatedMatches.slice(0, 1);
 }
 
 export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
@@ -168,31 +282,98 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
   const maxCandidates = options.maxCandidates || 48;
   const promptCandidateCount = options.promptCandidateCount || maxCandidates;
   const priorityWindow = options.priorityWindow || 16;
-  const ranked = rankEvidenceCandidates(fixtures.catalog, testCase.chart_context, fixtures.tagRows, {
-    specialty: options.specialty || "General clinic",
+  const selectedIntents = options.selectedIntents || resolvedEvaluationIntents(testCase, fixtures.clinicalIntentRegistry || clinicalIntentRegistry);
+  const intentContext = selectedIntents.length
+    ? buildClinicalIntentRetrievalContext(
+      selectedIntents,
+      testCase.chart_context,
+      options.specialty || testCase.setting || "General clinic",
+      options.population || "Adult"
+    )
+    : "";
+  const evaluationContext = [
+    intentContext,
+    !selectedIntents.length ? testCase.chart_context : "",
+    `evaluation case: ${testCase.presentation}`,
+    testCase.must_include_tags ? `must include tags: ${testCase.must_include_tags}` : ""
+  ].filter(Boolean).join("\n");
+  const scopedCatalog = selectedIntents.length
+    ? filterEvidenceCatalogForClinicalIntents(fixtures.catalog, selectedIntents)
+    : [];
+  const ranked = rankEvidenceCandidates(scopedCatalog, evaluationContext, fixtures.tagRows, {
+    specialty: options.specialty || testCase.setting || "General clinic",
     maxCandidates
   });
-  const recommendation = buildRecommendedExamChecklist(testCase.chart_context, ranked, {
-    specialty: options.specialty || "General clinic",
+  const recommendation = buildRecommendedExamChecklist(evaluationContext, ranked, {
+    specialty: options.specialty || testCase.setting || "General clinic",
     maxCoreItems: options.maxCoreItems || 24,
-    maxConditionalItems: options.maxConditionalItems || 36
+    maxConditionalItems: options.maxConditionalItems || 36,
+    validatedIntents: selectedIntents,
+    catalogGapRegistryRows: fixtures.gapRows || []
   });
-  const promptReplacement = buildEvidencePromptReplacement(checklistPrompt, fixtures, testCase.chart_context, {
-    specialty: options.specialty || "General clinic",
-    maxCandidates: promptCandidateCount
+  const promptReplacement = buildEvidencePromptReplacement(checklistPrompt, { ...fixtures, catalog: scopedCatalog }, evaluationContext, {
+    specialty: options.specialty || testCase.setting || "General clinic",
+    maxCandidates: promptCandidateCount,
+    validatedIntents: selectedIntents,
+    catalogGapRegistryRows: fixtures.gapRows || []
   });
   const priorityCandidates = ranked.candidates.slice(0, priorityWindow);
-  const recommendedEntries = [...recommendation.coreItems, ...recommendation.conditionalItems];
-  const recommendedCandidates = recommendedEntries.map((entry) => entry.candidate);
+  const recommendedSafetyEntries = recommendation.basicSafetyChecks || [];
+  const recommendedPhysicalEntries = [
+    ...(recommendation.corePhysicalExamManeuvers || []),
+    ...(recommendation.conditionalPhysicalExamManeuvers || [])
+  ];
+  const recommendedPhysicalCandidates = recommendedPhysicalEntries.map((entry) => entry.candidate);
+  const recommendedStructuredCandidates = [
+    ...recommendedSafetyEntries,
+    ...recommendedPhysicalEntries
+  ].map((entry) => entry.candidate);
+  const catalogGapEntries = recommendation.catalogGaps || [];
+  const catalogGapCandidates = catalogGapEntries.map((entry) => entry.candidate || entry);
+  const registeredCatalogGaps = [];
+  const unregisteredCatalogGaps = [];
+  const generatedCompletenessGaps = [];
+  catalogGapEntries.forEach((entry) => {
+    const examId = entry.exam_id || entry.candidate?.exam_id || "";
+    const registryRow = fixtures.gapRegistryByKey?.get(gapRegistryKey(testCase.case_id, examId));
+    const generatedCompletenessGap = Boolean(
+      entry.traceability?.generated_completeness_gap
+        || entry.candidate?.traceability?.generated_completeness_gap
+        || (entry.matchedTags || []).includes("workup_completeness_gap")
+        || (entry.retrievalTags || []).includes("workup_completeness_gap")
+    );
+    const summary = {
+      exam_id: examId,
+      label: entry.label || entry.candidate?.examLabel || "",
+      role: entry.role || "",
+      source: entry.evidence?.source || entry.candidate?.evidence_source_primary || ""
+    };
+    if (registryRow) {
+      registeredCatalogGaps.push({
+        ...summary,
+        review_status: registryRow.review_status,
+        review_owner: registryRow.review_owner,
+        last_reviewed: registryRow.last_reviewed,
+        planned_resolution: registryRow.planned_resolution
+      });
+    } else if (generatedCompletenessGap) {
+      generatedCompletenessGaps.push(summary);
+    } else {
+      unregisteredCatalogGaps.push(summary);
+    }
+  });
   const coreInPriority = labelsInCandidates(gold.expectedCore, priorityCandidates);
   const coreOrAcceptableInPriority = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], priorityCandidates);
   const coreInRetrieved = labelsInCandidates(gold.expectedCore, ranked.candidates);
   const coreOrAcceptableInRetrieved = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], ranked.candidates);
-  const coreInRecommended = labelsInCandidates(gold.expectedCore, recommendedCandidates);
-  const coreOrAcceptableInRecommended = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], recommendedCandidates);
+  const coreInRecommended = labelsInCandidates(gold.expectedCore, recommendedStructuredCandidates);
+  const coreOrAcceptableInRecommended = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], recommendedStructuredCandidates);
+  const coreInRecommendedPhysicalExam = labelsInCandidates(gold.expectedCore, recommendedPhysicalCandidates);
+  const coreOrAcceptableInRecommendedPhysicalExam = labelsInCandidates([...gold.expectedCore, ...gold.acceptable], recommendedPhysicalCandidates);
+  const expectedInValidatedGaps = labelsInCandidates(gold.expectedCore, catalogGapCandidates);
   const avoidHitsPriority = labelsInCandidates(gold.avoid, priorityCandidates);
   const avoidHitsRetrieved = labelsInCandidates(gold.avoid, ranked.candidates);
-  const avoidHitsRecommended = labelsInCandidates(gold.avoid, recommendedCandidates);
+  const avoidHitsRecommended = labelsInCandidates(gold.avoid, recommendedPhysicalCandidates);
   const rationaleText = normalizeEvidenceLabel(evidenceTextForCandidates(ranked.candidates));
   const missingRationaleTerms = gold.requiredRationaleTerms.filter((term) => !rationaleText.includes(normalizeEvidenceLabel(term)));
   const expectedInBase = labelsInBase(gold.expectedCore, fixtures.baseRows);
@@ -200,16 +381,19 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
   const coverageGap = caseAllowsCoverageGap(testCase) && expectedInCatalog.length < gold.expectedCore.length;
   const promptGuided = promptReplacement.prompt.includes("<retrieved_evidence_candidates>")
     && !promptReplacement.prompt.includes("<student_exam_reference>")
-    && promptReplacement.prompt.includes("starting point, not an exclusive list")
-    && promptReplacement.prompt.includes("add any missing bedside-feasible exam maneuvers");
+    && promptReplacement.prompt.includes("not permission to invent unvalidated final checklist rows")
+    && promptReplacement.prompt.includes("catalog gap for app-side review");
 
   return {
     caseId: testCase.case_id,
     category: testCase.category,
     presentation: testCase.presentation,
     coverageGap,
+    selectedIntentIds: selectedIntents.map((intentRow) => intentRow.intent_id),
+    unsupportedIntent: !selectedIntents.length,
     expectedInBase,
     expectedInCatalog,
+    expectedInValidatedGaps,
     matchedTags: ranked.matchedTags.map((tag) => tag.tag),
     priorityCandidates: priorityCandidates.map((candidate) => ({
       exam_id: candidate.exam_id,
@@ -223,35 +407,55 @@ export function evaluateRetrievalCase(testCase, fixtures, options = {}) {
       score: Math.round(candidate.score),
       source: candidate.evidence_source_primary || ""
     })),
-    recommendedCore: recommendation.coreItems.map((entry) => ({
+    recommendedSafetyChecks: (recommendation.basicSafetyChecks || []).map((entry) => ({
       exam_id: entry.exam_id,
       label: entry.label,
       fit: entry.contextFitScore,
       role: entry.role,
       reason: entry.reason
     })),
-    recommendedConditional: recommendation.conditionalItems.map((entry) => ({
+    recommendedCore: (recommendation.corePhysicalExamManeuvers || []).map((entry) => ({
       exam_id: entry.exam_id,
       label: entry.label,
       fit: entry.contextFitScore,
       role: entry.role,
       reason: entry.reason
     })),
+    recommendedConditional: (recommendation.conditionalPhysicalExamManeuvers || []).map((entry) => ({
+      exam_id: entry.exam_id,
+      label: entry.label,
+      fit: entry.contextFitScore,
+      role: entry.role,
+      reason: entry.reason
+    })),
+    catalogGaps: (recommendation.catalogGaps || []).map((entry) => ({
+      exam_id: entry.exam_id || entry.candidate?.exam_id || "",
+      label: entry.label || entry.candidate?.examLabel || "",
+      role: entry.role || "",
+      source: entry.evidence?.source || entry.candidate?.evidence_source_primary || ""
+    })),
+    registeredCatalogGaps,
+    generatedCompletenessGaps: coverageGap ? generatedCompletenessGaps : [],
+    unregisteredCatalogGaps: coverageGap ? unregisteredCatalogGaps : [],
     suppressedCandidates: recommendation.suppressedItems.map((entry) => ({
       exam_id: entry.exam_id,
       label: entry.label,
       reason: entry.reason
     })),
     retrievedCandidateCount: ranked.candidates.length,
-    recommendedCandidateCount: recommendedCandidates.length,
+    recommendedCandidateCount: recommendedStructuredCandidates.length,
+    recommendedPhysicalCandidateCount: recommendedPhysicalCandidates.length,
     coreInPriority,
     coreOrAcceptableInPriority,
     coreInRetrieved,
     coreOrAcceptableInRetrieved,
     coreInRecommended,
     coreOrAcceptableInRecommended,
+    coreInRecommendedPhysicalExam,
+    coreOrAcceptableInRecommendedPhysicalExam,
     coreCoverageRate: labelCoverageRate(coreInRetrieved, gold.expectedCore),
     recommendedCoreCoverageRate: labelCoverageRate(coreInRecommended, gold.expectedCore),
+    recommendedPhysicalExamCoreCoverageRate: labelCoverageRate(coreInRecommendedPhysicalExam, gold.expectedCore),
     avoidHitsPriority,
     avoidHitsRetrieved,
     avoidHitsRecommended,
@@ -302,8 +506,10 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
   const expectedCoreCount = enforceable.reduce((sum, result) => sum + (fixtures.goldByCase.get(result.caseId)?.expectedCore.length || 0), 0);
   const retrievedCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRetrieved.length, 0);
   const recommendedCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRecommended.length, 0);
+  const recommendedPhysicalExamCoreCount = enforceable.reduce((sum, result) => sum + result.coreInRecommendedPhysicalExam.length, 0);
   const coreLabelCoverageRate = expectedCoreCount ? retrievedCoreCount / expectedCoreCount : 1;
   const recommendedCoreLabelCoverageRate = expectedCoreCount ? recommendedCoreCount / expectedCoreCount : 1;
+  const recommendedPhysicalExamCoreLabelCoverageRate = expectedCoreCount ? recommendedPhysicalExamCoreCount / expectedCoreCount : 1;
   const completeCoreCaseRate = enforceable.length
     ? enforceable.filter((result) => result.coreCoverageRate >= 1).length / enforceable.length
     : 1;
@@ -313,7 +519,7 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
   const recommendationAvoidHitCases = enforceable.filter((result) => result.avoidHitsRecommended.length > 0).length;
   const failures = results.filter((result) => {
     if (result.coverageGap) {
-      return !result.promptPass;
+      return !result.promptPass || result.unregisteredCatalogGaps.length > 0;
     }
     if (!result.promptPass || !result.avoidPass || !result.rationalePass) {
       return true;
@@ -325,11 +531,14 @@ export function evaluateRetrievalSuite(fixtures = loadEvaluationFixtures(), opti
     totalCases: results.length,
     enforceableCases: enforceable.length,
     coverageGapCases: results.filter((result) => result.coverageGap).length,
+    validatedGapCoveredCases: results.filter((result) => result.coverageGap && result.expectedInValidatedGaps.length).length,
+    registeredGapCoveredCases: results.filter((result) => result.coverageGap && result.unregisteredCatalogGaps.length === 0).length,
     retrievalPassRate,
     priorityPassRate,
     recommendationPassRate,
     coreLabelCoverageRate,
     recommendedCoreLabelCoverageRate,
+    recommendedPhysicalExamCoreLabelCoverageRate,
     completeCoreCaseRate,
     completeRecommendedCoreCaseRate,
     recommendationAvoidHitCases,
@@ -399,9 +608,12 @@ export function formatEvaluationReport(suiteResult) {
     "",
     `Total cases: ${suiteResult.totalCases}`,
     `Enforceable cases: ${suiteResult.enforceableCases}`,
-    `Coverage gap cases: ${suiteResult.coverageGapCases}`,
+    `Catalog evidence gap cases: ${suiteResult.coverageGapCases}`,
+    `Gap cases with validated recommendation gaps: ${suiteResult.validatedGapCoveredCases}`,
+    `Gap cases with registered staged gaps: ${suiteResult.registeredGapCoveredCases}`,
     `Recommended checklist core/acceptable recall: ${(suiteResult.recommendationPassRate * 100).toFixed(1)}%`,
     `Recommended core label coverage: ${(suiteResult.recommendedCoreLabelCoverageRate * 100).toFixed(1)}%`,
+    `Recommended physical-exam core label coverage: ${(suiteResult.recommendedPhysicalExamCoreLabelCoverageRate * 100).toFixed(1)}%`,
     `Recommended avoid-hit cases: ${suiteResult.recommendationAvoidHitCases}`,
     `Priority-window core/acceptable recall: ${(suiteResult.priorityPassRate * 100).toFixed(1)}%`,
     `Full retrieved-set core/acceptable recall: ${(suiteResult.retrievalPassRate * 100).toFixed(1)}%`,
@@ -415,6 +627,7 @@ export function formatEvaluationReport(suiteResult) {
     lines.push("## Failures", "");
     failures.forEach((failure) => {
       lines.push(`- ${failure.caseId} (${failure.presentation})`);
+      lines.push(`  - selected intents: ${failure.selectedIntentIds.join("; ") || "none"}`);
       lines.push(`  - recommended core: ${failure.recommendedCore.map((candidate) => candidate.label).join("; ") || "none"}`);
       lines.push(`  - recommended matches: ${failure.coreOrAcceptableInRecommended.join("; ") || "none"}`);
       lines.push(`  - top candidates: ${failure.topCandidates.map((candidate) => candidate.label).join("; ")}`);
@@ -426,9 +639,17 @@ export function formatEvaluationReport(suiteResult) {
   }
   const gaps = suiteResult.results.filter((result) => result.coverageGap).slice(0, 40);
   if (gaps.length) {
-    lines.push("", "## Coverage Gaps", "");
+    lines.push("", "## Catalog Evidence Gaps", "");
     gaps.forEach((gap) => {
-      lines.push(`- ${gap.caseId} (${gap.presentation}): expected base maneuvers not yet evidence-backed: ${gap.expectedInBase.join("; ") || "none"}`);
+      lines.push(`- ${gap.caseId} (${gap.presentation})`);
+      lines.push(`  - selected intents: ${gap.selectedIntentIds.join("; ") || "none"}`);
+      lines.push(`  - evidence-backed catalog matches: ${gap.expectedInCatalog.join("; ") || "none"}`);
+      lines.push(`  - validated gap matches: ${gap.expectedInValidatedGaps.join("; ") || "none"}`);
+      lines.push(`  - registered staged gaps: ${gap.registeredCatalogGaps.map((candidate) => candidate.label).join("; ") || "none"}`);
+      lines.push(`  - generated completeness gaps: ${(gap.generatedCompletenessGaps || []).map((candidate) => candidate.label).join("; ") || "none"}`);
+      lines.push(`  - unregistered staged gaps: ${gap.unregisteredCatalogGaps.map((candidate) => candidate.label).join("; ") || "none"}`);
+      lines.push(`  - recommended matches: ${gap.coreOrAcceptableInRecommended.join("; ") || "none"}`);
+      lines.push(`  - physical-exam matches: ${gap.coreOrAcceptableInRecommendedPhysicalExam.join("; ") || "none"}`);
     });
   }
   return `${lines.join("\n")}\n`;

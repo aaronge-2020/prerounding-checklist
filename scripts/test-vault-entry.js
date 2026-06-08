@@ -5,9 +5,10 @@ const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
 const requiredSnippets = [
   "Start Rounds Workspace",
-  "Unlock existing vault",
-  "Create new vault",
-  "Use without vault",
+  "Existing local vault",
+  "Saved local vault",
+  "One patient, no vault",
+  "Start one-patient prep",
   "Reset / replace vault",
   "No vault found",
   "Vault found on this browser",
@@ -31,9 +32,27 @@ const requiredSnippets = [
   "completeVaultResetAndCreate"
 ];
 
+const requiredPrivacySnippets = [
+  "No cloud upload by default",
+  "No analytics, telemetry, tracking pixels, or ad scripts",
+  "does not legally certify HIPAA de-identification",
+  "Business Associate Agreement",
+  "Do not paste PHI unless your institution has approved the workflow"
+];
+
 for (const snippet of requiredSnippets) {
   assert.ok(html.includes(snippet), `Expected vault entry markup/script to include: ${snippet}`);
 }
+
+for (const snippet of requiredPrivacySnippets) {
+  assert.ok(html.includes(snippet), `Expected vault/privacy copy to include: ${snippet}`);
+}
+
+assert.doesNotMatch(
+  html,
+  /\bHIPAA\s+(?:compliant|certified)\b/i,
+  "Vault/privacy copy should avoid overclaiming HIPAA compliance or certification."
+);
 
 for (const flowState of [
   "idle",

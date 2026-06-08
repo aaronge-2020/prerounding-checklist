@@ -62,15 +62,142 @@
     },
     "moduleItem": {
       "type": "object",
-      "required": ["id", "label", "source"],
+      "required": ["id", "label", "item_type", "source"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "label": { "type": "string", "minLength": 1 },
-        "action": { "type": "string" },
-        "options": { "type": "array" },
+        "item_type": {
+          "enum": [
+            "safety_check",
+            "history_question",
+            "physical_exam_maneuver",
+            "red_flag",
+            "diagnostic_test",
+            "management_change",
+            "diagnostic_frame",
+            "catalog_gap"
+          ]
+        },
+        "text": { "type": "string", "minLength": 1 },
+        "action": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 },
+        "options": { "type": "array", "minItems": 1 },
         "when": { "$ref": "#/$defs/condition" },
+        "when_to_ask": { "type": "string", "minLength": 1 },
+        "diagnostic_purpose": { "type": "string", "minLength": 1 },
+        "management_implication": { "type": "string", "minLength": 1 },
+        "tags": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "technique": { "type": "string", "minLength": 1 },
+        "findings_options": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "diagnostic_target": { "type": "string", "minLength": 1 },
+        "management_change": { "type": "string", "minLength": 1 },
+        "LR_plus": { "type": "string", "pattern": "^(?:n/a|na|not available|not studied|pending|[<>]?\\s*\\d+(?:\\.\\d+)?(?:\\s*-\\s*[<>]?\\s*\\d+(?:\\.\\d+)?)?)$" },
+        "LR_minus": { "type": "string", "pattern": "^(?:n/a|na|not available|not studied|pending|[<>]?\\s*\\d+(?:\\.\\d+)?(?:\\s*-\\s*[<>]?\\s*\\d+(?:\\.\\d+)?)?)$" },
+        "likelihood_ratio_note": { "type": "string", "minLength": 1 },
+        "difficulty": { "type": "string", "enum": ["easy", "moderate", "hard", "difficult"] },
+        "time_burden_minutes": {
+          "anyOf": [
+            { "type": "number", "minimum": 0 },
+            { "type": "string", "pattern": "^\\d+(?:\\.\\d+)?$" }
+          ]
+        },
+        "equipment_needed": { "type": "string", "minLength": 1 },
+        "patient_cooperation_required": { "type": "string", "enum": ["low", "moderate", "high", "n/a"] },
+        "when_to_perform": { "type": "string", "minLength": 1 },
+        "limitations": { "type": "string", "minLength": 1 },
         "source": { "$ref": "#/$defs/sourceReference" }
       },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "item_type": { "const": "history_question" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["text", "options", "when_to_ask", "diagnostic_purpose", "management_implication", "likelihood_ratio_note", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "physical_exam_maneuver" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": [
+              "technique",
+              "findings_options",
+              "when_to_perform",
+              "diagnostic_target",
+              "LR_plus",
+              "LR_minus",
+              "likelihood_ratio_note",
+              "management_change",
+              "difficulty",
+              "time_burden_minutes",
+              "equipment_needed",
+              "patient_cooperation_required",
+              "limitations",
+              "tags"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "safety_check" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": [
+              "action",
+              "rationale",
+              "management_change",
+              "difficulty",
+              "time_burden_minutes",
+              "equipment_needed",
+              "patient_cooperation_required",
+              "limitations",
+              "likelihood_ratio_note",
+              "tags"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "red_flag" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "diagnostic_test" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "management_change" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "item_type": { "const": "diagnostic_frame" } },
+            "required": ["item_type"]
+          },
+          "then": {
+            "required": ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]
+          }
+        }
+      ],
       "additionalProperties": true
     }
   }

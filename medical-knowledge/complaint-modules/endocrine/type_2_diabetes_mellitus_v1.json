@@ -23,64 +23,131 @@
       {
         "id": "differential_01",
         "label": "Type 2 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic frame",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether A1c, fasting plasma glucose, or 2-hour OGTT to confirm. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Type 2 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Type 2 Diabetes Mellitus.",
+        "management_change": "Use this frame to decide whether A1c, fasting plasma glucose, or 2-hour OGTT to confirm. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "type",
+          "diabetes",
+          "mellitus"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Type 2 Diabetes Mellitus.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "normal",
+          "prediabetes",
+          "diabetes",
+          "fasting",
+          "plasma",
+          "glucose"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: mimics and exclusions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Type 2 Diabetes Mellitus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Type 2 Diabetes Mellitus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Type 2 Diabetes Mellitus.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "important",
+          "mimics",
+          "exclusions",
+          "stress",
+          "steroid",
+          "hyperglycemia",
+          "type",
+          "lada"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "DKA/HHS symptoms, dehydration, vomiting, altered mental status.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Type 2 Diabetes Mellitus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "DKA/HHS symptoms, dehydration, vomiting, altered mental status.: danger pattern, severity marker, or complication that changes urgency for Type 2 Diabetes Mellitus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "symptoms",
+          "dehydration",
+          "vomiting",
+          "altered",
+          "mental",
+          "status"
+        ],
         "when": {
           "termsAny": [
             "DKA/HHS symptoms",
@@ -93,17 +160,33 @@
       {
         "id": "red_flag_02",
         "label": "Random glucose >=200 mg/dL with classic symptoms.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Type 2 Diabetes Mellitus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Random glucose >=200 mg/dL with classic symptoms.: danger pattern, severity marker, or complication that changes urgency for Type 2 Diabetes Mellitus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "random",
+          "glucose",
+          "with",
+          "classic",
+          "symptoms"
+        ],
         "when": {
           "termsAny": [
             "Random glucose >=200 mg/dL with classic symptoms."
@@ -113,17 +196,36 @@
       {
         "id": "red_flag_03",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Type 2 Diabetes Mellitus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Type 2 Diabetes Mellitus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -138,17 +240,36 @@
       {
         "id": "red_flag_04",
         "label": "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: red flags",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Type 2 Diabetes Mellitus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.: danger pattern, severity marker, or complication that changes urgency for Type 2 Diabetes Mellitus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "physiology",
+          "recurrent",
+          "severe",
+          "hypoglycemia",
+          "vomiting",
+          "dehydration",
+          "altered",
+          "mental"
+        ],
         "when": {
           "termsAny": [
             "DKA/HHS physiology",
@@ -161,19 +282,199 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Type 2 Diabetes Mellitus.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure current weight",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Type 2 Diabetes Mellitus.",
+        "when_to_perform": "During diabetes or metabolic risk assessment",
+        "findings_options": [
+          "___ kg/lb",
+          "Recent weight gain",
+          "Recent weight loss",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "measure",
+          "current",
+          "weight"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus.",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Polyuria, polydipsia, weight change, blurred vision, infections.",
+        "label": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
             "value": "unknown",
@@ -192,21 +493,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today."
+        "action": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "polyuria"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
       {
         "id": "question_02",
-        "label": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure.",
+        "label": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
             "value": "unknown",
@@ -225,21 +537,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Type 2 Diabetes Mellitus."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "weight",
+          "change"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "options": [
           {
             "value": "unknown",
@@ -258,21 +582,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Type 2 Diabetes Mellitus workup."
+        "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "blurred",
+          "vision"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any fever, infection symptoms, recent illness, procedure, hospitalization, wound, urinary symptoms, cough, or sick contacts?",
         "options": [
           {
             "value": "unknown",
@@ -291,21 +627,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Type 2 Diabetes Mellitus."
+        "action": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "management_implication": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "infections"
+        ],
+        "source_seed": "Polyuria, polydipsia, weight change, blurred vision, infections."
       },
       {
         "id": "question_05",
-        "label": "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "label": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
         "options": [
           {
             "value": "unknown",
@@ -324,21 +671,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Type 2 Diabetes Mellitus."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "ascvd"
+        ],
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
       },
       {
         "id": "question_06",
-        "label": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "label": "Any numbness, tingling, burning pain, loss of protective sensation, falls, ulcers, or neuropathy diagnosis?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: clinical questions",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any numbness, tingling, burning pain, loss of protective sensation, falls, ulcers, or neuropathy diagnosis?",
         "options": [
           {
             "value": "unknown",
@@ -357,236 +715,655 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Type 2 Diabetes Mellitus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Type 2 Diabetes Mellitus."
+        "action": "The answer changes fracture or mineral-risk stratification, imaging threshold, calcium/vitamin D interpretation, and urgency of treatment for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture or mineral-risk stratification, imaging threshold, calcium/vitamin D interpretation, and urgency of treatment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "neuropathy"
+        ],
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
+      },
+      {
+        "id": "question_07",
+        "label": "Any known retinopathy, vision changes, eye injections/laser, or overdue dilated eye examination?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any known retinopathy, vision changes, eye injections/laser, or overdue dilated eye examination?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "retinopathy"
+        ],
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
+      },
+      {
+        "id": "question_08",
+        "label": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "sleep",
+          "apnea"
+        ],
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
+      },
+      {
+        "id": "question_09",
+        "label": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Type 2 Diabetes Mellitus.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "when_to_ask": "Ask when Type 2 Diabetes Mellitus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Type 2 Diabetes Mellitus therapy unsafe.",
+        "management_implication": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "steroid",
+          "exposure"
+        ],
+        "source_seed": "ASCVD, CKD, HF, neuropathy, retinopathy, sleep apnea, steroid exposure."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "Any current or prior foot ulcer, wound, infection, numbness, pain, or vascular symptoms?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any current or prior foot ulcer, wound, infection, numbness, pain, or vascular symptoms?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention foot, ulcer, wound, infection, numbness. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes one of: foot, ulcer, wound, infection, numbness, pain, vascular.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 2 Diabetes Mellitus needs urgent evaluation today.",
+        "management_implication": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "foot",
+          "ulcer",
+          "wound"
+        ],
+        "source_seed": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "when": {
+          "termsAny": [
+            "foot",
+            "ulcer",
+            "wound",
+            "infection",
+            "numbness",
+            "pain",
+            "vascular"
+          ]
+        }
+      },
+      {
+        "id": "question_02",
+        "label": "Do you use a CGM, insulin pump, smart pen, glucometer, or diabetes app, and are the data reliable enough to guide treatment changes?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Do you use a CGM, insulin pump, smart pen, glucometer, or diabetes app, and are the data reliable enough to guide treatment changes?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention technology, because, these, change, targets. The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 2 Diabetes Mellitus.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
+        "when_to_ask": "Ask when patient context includes one of: technology, because, these, change, targets, therapy, insulin, pump, smart, glucometer.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Type 2 Diabetes Mellitus.",
+        "management_implication": "The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "technology",
+          "because",
+          "these",
+          "change",
+          "targets",
+          "therapy"
+        ],
+        "source_seed": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "when": {
+          "termsAny": [
+            "technology",
+            "because",
+            "these",
+            "change",
+            "targets",
+            "therapy",
+            "insulin",
+            "pump",
+            "smart",
+            "glucometer"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "BP, BMI/waist, volume if symptomatic.",
+        "label": "Inspect feet for ulcers",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus."
+        "action": "Use this maneuver to evaluate diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease. An ulcer or wound changes infection workup, offloading, antibiotic planning, and disposition.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus.",
+        "technique": "Inspect both feet including interdigital spaces and pressure points for ulcer, callus, erythema, drainage, deformity, or infection.",
+        "findings_options": [
+          "No ulcer",
+          "Ulcer/wound",
+          "Callus/deformity",
+          "Infection concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When established diabetes, neuropathy, infection, vascular disease, or foot symptoms are relevant",
+        "diagnostic_target": "diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "An ulcer or wound changes infection workup, offloading, antibiotic planning, and disposition.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect feet for ulcers is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "inspect",
+          "feet",
+          "ulcers"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Foot skin/pulses/monofilament or vibration when neuropathy risk.",
+        "label": "Palpate pedal pulses",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus."
+        "action": "Use this maneuver to evaluate diabetic foot perfusion, peripheral arterial disease, or vascular risk. Diminished pulses change vascular risk assessment and foot-wound management.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus.",
+        "technique": "Palpate bilateral pulses at the named sites, comparing amplitude, symmetry, rhythm, and perfusion.",
+        "findings_options": [
+          "Symmetric/normal",
+          "Diminished",
+          "Absent",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When established diabetes, vascular symptoms, foot symptoms, or chronic complications are relevant",
+        "diagnostic_target": "diabetic foot perfusion, peripheral arterial disease, or vascular risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Diminished pulses change vascular risk assessment and foot-wound management.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate pedal pulses is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "palpate",
+          "pedal",
+          "pulses"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Cardiovascular and thyroid exam when indicated.",
+        "label": "Test monofilament sensation",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Type 2 Diabetes Mellitus."
-      },
-      {
-        "id": "exam_04",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus."
-      },
-      {
-        "id": "exam_05",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus."
-      },
-      {
-        "id": "exam_06",
-        "label": "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus."
-      },
-      {
-        "id": "exam_07",
-        "label": "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus."
+        "action": "Use this maneuver to evaluate diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease. Loss of protective sensation changes foot-care counseling, footwear planning, and ulcer prevention.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus.",
+        "technique": "Apply a 10-g monofilament perpendicular to standard plantar sites until it bends, with eyes closed, documenting sites felt or missed.",
+        "findings_options": [
+          "Protective sensation intact",
+          "Reduced",
+          "Absent",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When neuropathy risk, established diabetes duration, foot symptoms, or fall risk is relevant",
+        "diagnostic_target": "diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Loss of protective sensation changes foot-care counseling, footwear planning, and ulcer prevention.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "10-g monofilament",
+        "patient_cooperation_required": "low",
+        "limitations": "Test monofilament sensation is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "test",
+          "monofilament",
+          "sensation"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If hyperglycemic crisis, vomiting, infection, foot wound, or insulin-access concern is present: add Kussmaul/work-of-breathing assessment, mucous membranes, capillary refill/pulses, abdomen, skin/line/wound exam, and diabetes foot check.",
+        "label": "Assess Kussmaul breathing",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus.",
+        "action": "Add when dka, hhs, hyperglycemic crisis, ketones, acidosis is present; this evaluates respiratory compensation, pulmonary congestion, infection, obstruction, or distress. Kussmaul breathing changes crisis severity and urgent treatment pathway.",
+        "rationale": "Targets respiratory compensation, pulmonary congestion, infection, obstruction, or distress; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Type 2 Diabetes Mellitus.",
+        "technique": "Observe respiratory rate, depth, accessory muscle use, speech tolerance, and breathing pattern at rest.",
+        "findings_options": [
+          "Absent",
+          "Deep/labored pattern",
+          "Respiratory distress",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When DKA or metabolic acidosis is possible",
+        "diagnostic_target": "respiratory compensation, pulmonary congestion, infection, obstruction, or distress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Kussmaul breathing changes crisis severity and urgent treatment pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess Kussmaul breathing is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "assess",
+          "kussmaul",
+          "breathing"
+        ],
         "when": {
           "termsAny": [
             "dka",
             "hhs",
             "hyperglycemic crisis",
-            "vomiting",
-            "infection",
-            "fever",
-            "foot wound",
-            "ulcer",
-            "missed insulin",
-            "dehydration"
+            "ketones",
+            "acidosis",
+            "vomiting"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If recurrent hypoglycemia, neuropathy, falls, kidney disease, or vascular symptoms are present: add mental status, focused neuro/monofilament or vibration screen, foot pulses/skin, and orthostatic vitals.",
+        "label": "Palpate abdomen for tenderness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus.",
+        "action": "Add when abdominal pain, vomiting, pancreatitis, dka is present; this evaluates abdominal complication, endocrine crisis mimic, or precipitating illness. Tenderness changes precipitant evaluation and concern for surgical or pancreatitis mimic.",
+        "rationale": "Targets abdominal complication, endocrine crisis mimic, or precipitating illness; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Type 2 Diabetes Mellitus.",
+        "technique": "Inspect and palpate the abdomen gently, localizing tenderness and stopping if guarding, rebound, or severe pain occurs.",
+        "findings_options": [
+          "Nontender",
+          "Tender",
+          "Guarding",
+          "Rebound/peritoneal concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting or abdominal pain accompanies hyperglycemia",
+        "diagnostic_target": "abdominal complication, endocrine crisis mimic, or precipitating illness",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Tenderness changes precipitant evaluation and concern for surgical or pancreatitis mimic.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate abdomen for tenderness is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "palpate",
+          "abdomen",
+          "tenderness"
+        ],
         "when": {
           "termsAny": [
-            "hypoglycemia",
-            "neuropathy",
-            "fall",
-            "falls",
-            "kidney disease",
-            "ckd",
-            "claudication",
-            "vascular",
-            "dizziness",
-            "orthostasis"
+            "abdominal pain",
+            "vomiting",
+            "pancreatitis",
+            "dka"
           ]
         }
       },
       {
         "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "label": "Inspect insulin pump site",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Type 2 Diabetes Mellitus.",
+        "action": "Add when pump, device, missed insulin, site is present; this evaluates insulin delivery failure, infusion-site infection, or device-related precipitant. Site failure changes precipitant assessment and insulin delivery plan.",
+        "rationale": "Targets insulin delivery failure, infusion-site infection, or device-related precipitant; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Type 2 Diabetes Mellitus.",
+        "technique": "Inspect the infusion or device site for dislodgement, leakage, erythema, tenderness, occlusion, or supply failure.",
+        "findings_options": [
+          "Site intact",
+          "Dislodged/occluded/leaking",
+          "Erythema/tenderness/drainage",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When pump therapy or device failure is possible",
+        "diagnostic_target": "insulin delivery failure, infusion-site infection, or device-related precipitant",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Site failure changes precipitant assessment and insulin delivery plan.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect insulin pump site is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "inspect",
+          "insulin",
+          "pump",
+          "site"
+        ],
         "when": {
           "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
+            "pump",
+            "device",
+            "missed insulin",
+            "site"
           ]
         }
       },
       {
         "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "label": "Inspect foot wound",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Type 2 Diabetes Mellitus.",
+        "action": "Add when foot wound, ulcer, infection, fever, established diabetes is present; this evaluates diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease. A wound changes infection workup, antibiotics, and disposition.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Type 2 Diabetes Mellitus.",
+        "technique": "Inspect both feet including interdigital spaces and pressure points for ulcer, callus, erythema, drainage, deformity, or infection.",
+        "findings_options": [
+          "No ulcer",
+          "Ulcer/wound",
+          "Callus/deformity",
+          "Infection concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When established diabetes with foot wound, ulcer, fever, or infection is present",
+        "diagnostic_target": "diabetic neuropathy, foot ulcer risk, infection, or peripheral arterial disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "A wound changes infection workup, antibiotics, and disposition.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect foot wound is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "inspect",
+          "foot",
+          "wound"
+        ],
         "when": {
           "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "foot wound",
+            "ulcer",
+            "infection",
+            "fever",
+            "established diabetes"
+          ]
+        }
+      },
+      {
+        "id": "conditional_exam_05",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: conditional bedside maneuver add-ons",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Type 2 Diabetes Mellitus.",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Type 2 Diabetes Mellitus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
+        "when": {
+          "termsAny": [
+            "vomiting",
+            "dehydration",
+            "poor intake",
+            "polyuria",
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       }
@@ -595,289 +1372,632 @@
       {
         "id": "test_01",
         "label": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "A1c, fasting plasma glucose, or 2-hour OGTT to confirm.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "fasting",
+          "plasma",
+          "glucose",
+          "hour",
+          "ogtt",
+          "confirm"
+        ]
       },
       {
         "id": "test_02",
         "label": "CMP/eGFR, urine albumin-creatinine ratio, fasting lipids.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "CMP/eGFR, urine albumin-creatinine ratio, fasting lipids.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "egfr",
+          "urine",
+          "albumin",
+          "creatinine",
+          "ratio",
+          "fasting",
+          "lipids"
+        ]
       },
       {
         "id": "test_03",
         "label": "Ketones/anion gap if vomiting, weight loss, dehydration, or acute symptoms.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Ketones/anion gap if vomiting, weight loss, dehydration, or acute symptoms.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "ketones",
+          "anion",
+          "vomiting",
+          "weight",
+          "loss",
+          "dehydration",
+          "acute",
+          "symptoms"
+        ]
       },
       {
         "id": "test_04",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_05",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "diabetes",
+          "safety",
+          "tests",
+          "review",
+          "plasma",
+          "glucose",
+          "trend",
+          "with"
+        ]
       },
       {
         "id": "test_06",
         "label": "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "plasma",
+          "glucose",
+          "criteria",
+          "diagnosis",
+          "classification",
+          "plus",
+          "glucometer",
+          "pattern"
+        ]
       },
       {
         "id": "test_07",
         "label": "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: diagnostic workup",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. UACR normal <30 mg/g; moderately increased 30-300; severely increased >300. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "egfr",
+          "urine",
+          "albumin",
+          "creatinine",
+          "ratio",
+          "lipids",
+          "ketones",
+          "anion"
+        ]
       },
       {
         "id": "reference_01",
         "label": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "fasting",
+          "plasma",
+          "glucose",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_03",
         "label": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "hour",
+          "ogtt",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_04",
         "label": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "random",
+          "plasma",
+          "glucose",
+          "with",
+          "classic",
+          "symptoms",
+          "supports",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_05",
         "label": "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "UACR normal <30 mg/g; moderately increased 30-300; severely increased >300.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "uacr",
+          "normal",
+          "moderately",
+          "increased",
+          "severely"
+        ]
       },
       {
         "id": "reference_06",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Type 2 Diabetes Mellitus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Type 2 Diabetes Mellitus test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "diabetes",
+          "range",
+          "ogtt",
+          "changes",
+          "diagnosis",
+          "treatment",
+          "intensity"
+        ]
       },
       {
         "id": "management_02",
         "label": "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "UACR >=30 or reduced eGFR changes kidney-protective therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "uacr",
+          "reduced",
+          "egfr",
+          "changes",
+          "kidney",
+          "protective",
+          "therapy"
+        ]
       },
       {
         "id": "management_03",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_04",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_05",
         "label": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "ketosis",
+          "acidosis",
+          "osmolality",
+          "severe",
+          "hypoglycemia",
+          "triggers",
+          "urgent",
+          "protocolized"
+        ]
       },
       {
         "id": "management_06",
         "label": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Type 2 Diabetes Mellitus generated endocrine workup: results that change management",
+          "source_section": "Type 2 Diabetes Mellitus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Type 2 Diabetes Mellitus.",
+        "diagnostic_target": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Type 2 Diabetes Mellitus.",
+        "management_change": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Type 2 Diabetes Mellitus.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "type_2_diabetes_mellitus",
+          "albuminuria",
+          "ascvd",
+          "risk",
+          "pregnancy",
+          "foot",
+          "infection",
+          "insulin",
+          "access"
+        ]
       }
     ],
     "endocrine_metadata": {

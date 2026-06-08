@@ -43,6 +43,7 @@
     "medical-knowledge/complaint-modules/endocrine/type_1_diabetes_mellitus_v1.json",
     "medical-knowledge/complaint-modules/endocrine/type_2_diabetes_mellitus_v1.json",
     "medical-knowledge/complaint-modules/endocrine/vitamin_d_deficiency_osteomalacia_v1.json",
+    "medical-knowledge/complaint-modules/fever_infection_sepsis_v1.json",
     "medical-knowledge/complaint-modules/hyperglycemia_possible_dka_v1.json"
   ],
   "notes": "Source of truth for curated, reviewed clinical decision support artifacts. Build generated app modules with npm run build:medical-knowledge."

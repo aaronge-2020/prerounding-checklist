@@ -66,6 +66,66 @@ function inferSmartUpdateType(text) {
   return "note";
 }
 
+function smartHeadingType(heading = "") {
+  const normalized = String(heading || "").toLowerCase().replace(/\s+/g, " ").trim();
+  if (/\b(?:lab|result)/.test(normalized)) {
+    return "labs";
+  }
+  if (/\b(?:mar|med|medication)/.test(normalized)) {
+    return "mar";
+  }
+  if (/\b(?:handoff|event|overnight)/.test(normalized)) {
+    return "handoff";
+  }
+  if (/\bsubjective/.test(normalized)) {
+    return "subjective";
+  }
+  return "note";
+}
+
+function splitSmartUpdateChunk(chunk = "") {
+  const headingPattern = /^\s*((?:today(?:'s)?\s+)?(?:note|plan|assessment|a\/p|soap|labs?|results?|updated\s+mar|mar|updated\s+med(?:ication)?s?|med(?:ication)?s?|handoff|events?|overnight(?:\s+events?)?|subjective(?:\s+change)?))\s*[:#-]\s*(.*)$/i;
+  const sections = [];
+  let current = null;
+  let leadingLines = [];
+
+  String(chunk || "").split("\n").forEach((line) => {
+    const match = line.match(headingPattern);
+    if (match) {
+      if (current) {
+        sections.push(current);
+      } else if (leadingLines.some((leadingLine) => leadingLine.trim())) {
+        sections.push({ heading: "note", lines: leadingLines });
+      }
+      current = {
+        heading: match[1],
+        lines: match[2]?.trim() ? [match[2].trim()] : []
+      };
+      leadingLines = [];
+      return;
+    }
+    if (current) {
+      current.lines.push(line);
+    } else {
+      leadingLines.push(line);
+    }
+  });
+
+  if (current) {
+    sections.push(current);
+  } else if (leadingLines.some((line) => line.trim())) {
+    sections.push({ heading: "", lines: leadingLines });
+  }
+
+  return sections
+    .map((section) => ({
+      heading: section.heading,
+      type: section.heading ? smartHeadingType(section.heading) : "",
+      text: section.lines.join("\n").trim()
+    }))
+    .filter((section) => section.text);
+}
+
 function smartTypeToDailyField(type) {
   return {
     note: "todayNote",
@@ -177,28 +237,18 @@ export function classifySmartUpdateSections(text = "") {
     .split(/\n\s*(?:---+|={3,})\s*\n|\n{3,}/)
     .map((chunk) => chunk.trim())
     .filter(Boolean);
-  return chunks.map((chunk, index) => {
-    const headingMatch = chunk.match(/^\s*(note|soap|labs?|results?|mar|med(?:ication)?s?|handoff|events?|overnight|subjective)\s*[:#-]\s*([\s\S]*)$/i);
-    const heading = headingMatch?.[1]?.toLowerCase() || "";
-    const body = headingMatch ? headingMatch[2].trim() || chunk : chunk;
-    const type = /lab|result/.test(heading)
-      ? "labs"
-      : /mar|med/.test(heading)
-        ? "mar"
-        : /handoff|event|overnight/.test(heading)
-          ? "handoff"
-          : /subjective/.test(heading)
-            ? "subjective"
-            : /soap|note/.test(heading)
-              ? "note"
-              : inferSmartUpdateType(body);
-    return {
-      id: `smart-${index + 1}`,
-      label: `Section ${index + 1}`,
-      type,
-      text: body
-    };
-  });
+  return chunks
+    .flatMap((chunk) => splitSmartUpdateChunk(chunk))
+    .map((section, index) => {
+      const body = section.text || "";
+      const type = section.type || inferSmartUpdateType(body);
+      return {
+        id: `smart-${index + 1}`,
+        label: `Section ${index + 1}`,
+        type,
+        text: body
+      };
+    });
 }
 
 export function smartSectionsToDailyInputs(sections = []) {
@@ -447,14 +497,10 @@ ${todayBlock || "No de-identified today changes were provided."}
 Now update the existing case context for today.`;
 }
 
-export function buildContinuityChecklistPrompt({ patientCase, todayInputs, userContext = "" } = {}) {
+export function buildContinuityChecklistContext({ patientCase, todayInputs, userContext = "" } = {}) {
   const normalizedCase = normalizeContinuityCase(patientCase || {});
   const todayBlock = formatDailyInputs(todayInputs);
-  return `Use the same OpenEvidence conversation for this patient case. Prior reports and prior-day clinical context are already in this conversation.
-
-Do not ask me to paste yesterday's report or resend prior days. Use today's changes below plus the prior conversation context to generate today's bedside pre-rounding checklist.
-
-${userContext ? `${userContext}\n\n` : ""}<local_case_label>
+  return `${userContext ? `${userContext}\n\n` : ""}<local_case_label>
 ${normalizedCase.label}
 </local_case_label>
 
@@ -462,5 +508,9 @@ ${normalizedCase.label}
 ${todayBlock || "No de-identified today changes were provided."}
 </today_changes>
 
-Now produce today's bedside checklist only.`;
+Use this de-identified local continuity context to build today's bedside checklist inside the app. Do not ask OpenEvidence to generate the checklist.`;
+}
+
+export function buildContinuityChecklistPrompt(args = {}) {
+  return buildContinuityChecklistContext(args);
 }

@@ -24,64 +24,134 @@
       {
         "id": "differential_01",
         "label": "Diabetes Insipidus: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic frame",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Diabetes Insipidus: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Diabetes Insipidus.",
+        "management_change": "Use this frame to decide whether Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "diabetes",
+          "insipidus"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: thresholds",
+          "source_section": "Diabetes Insipidus curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Diabetes Insipidus.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "serum",
+          "sodium",
+          "normal",
+          "about",
+          "mmol",
+          "inpatient",
+          "guidance",
+          "mild"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: mimics and exclusions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Diabetes Insipidus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Diabetes Insipidus diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Diabetes Insipidus.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "important",
+          "mimics",
+          "exclusions",
+          "medication",
+          "effects",
+          "pregnancy",
+          "lactation",
+          "renal"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: red flags",
+          "source_section": "Diabetes Insipidus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Diabetes Insipidus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.: danger pattern, severity marker, or complication that changes urgency for Diabetes Insipidus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "hypernatremia",
+          "inability",
+          "drink",
+          "impaired",
+          "consciousness",
+          "postoperative",
+          "pituitary",
+          "patient"
+        ],
         "when": {
           "termsAny": [
             "Hypernatremia",
@@ -94,17 +164,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: red flags",
+          "source_section": "Diabetes Insipidus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Diabetes Insipidus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Diabetes Insipidus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -119,17 +208,36 @@
       {
         "id": "red_flag_03",
         "label": "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: red flags",
+          "source_section": "Diabetes Insipidus curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Diabetes Insipidus presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.: danger pattern, severity marker, or complication that changes urgency for Diabetes Insipidus.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "pituitary",
+          "apoplexy",
+          "acute",
+          "severe",
+          "headache",
+          "visual",
+          "field",
+          "deficit"
+        ],
         "when": {
           "termsAny": [
             "Pituitary apoplexy",
@@ -144,19 +252,187 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Diabetes Insipidus.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure orthostatic blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Orthostasis changes hypernatremia risk and need for monitored fluids.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
+        "when_to_perform": "When water-balance disorder or volume depletion is possible",
+        "findings_options": [
+          "No orthostatic drop",
+          "Orthostatic hypotension",
+          "Symptomatic dizziness/presyncope",
+          "Unable/unsafe to assess"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Orthostasis changes hypernatremia risk and need for monitored fluids.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "measure",
+          "orthostatic",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Confusion or somnolence changes hypernatremia severity, disposition, and monitored correction strategy.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
+        "when_to_perform": "When diabetes insipidus, hypernatremia, or acute water-balance change is possible",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Confusion or somnolence changes hypernatremia severity, disposition, and monitored correction strategy.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "assess",
+          "mental",
+          "status"
+        ]
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "24-hour urine volume, nocturia, thirst, access to water.",
+        "label": "What is the approximate 24-hour urine volume, and has urine output changed from baseline?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the approximate 24-hour urine volume, and has urine output changed from baseline?",
         "options": [
           {
             "value": "unknown",
@@ -175,21 +451,34 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today."
+        "action": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Diabetes Insipidus.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Diabetes Insipidus.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Diabetes Insipidus.",
+        "management_implication": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "hour",
+          "urine",
+          "volume"
+        ],
+        "source_seed": "24-hour urine volume, nocturia, thirst, access to water."
       },
       {
         "id": "question_02",
-        "label": "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor.",
+        "label": "How many times do you urinate overnight, and is this new or worsening?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How many times do you urinate overnight, and is this new or worsening?",
         "options": [
           {
             "value": "unknown",
@@ -208,21 +497,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Diabetes Insipidus."
+        "action": "The answer changes the leading Diabetes Insipidus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Diabetes Insipidus.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Diabetes Insipidus.",
+        "management_implication": "The answer changes the leading Diabetes Insipidus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "nocturia"
+        ],
+        "source_seed": "24-hour urine volume, nocturia, thirst, access to water."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
             "value": "unknown",
@@ -241,21 +541,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Diabetes Insipidus workup."
+        "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "management_implication": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "thirst"
+        ],
+        "source_seed": "24-hour urine volume, nocturia, thirst, access to water."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
         "options": [
           {
             "value": "unknown",
@@ -274,21 +585,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Diabetes Insipidus."
+        "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "management_implication": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "access",
+          "water"
+        ],
+        "source_seed": "24-hour urine volume, nocturia, thirst, access to water."
       },
       {
         "id": "question_05",
-        "label": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms.",
+        "label": "Any lithium, demeclocycline, amphotericin, diuretic, SGLT2 inhibitor, glucocorticoid, desmopressin, fluid restriction, or recent medication change affecting polyuria, sodium, thirst, or kidney concentrating ability?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any lithium, demeclocycline, amphotericin, diuretic, SGLT2 inhibitor, glucocorticoid, desmopressin, fluid restriction, or recent medication change affecting polyuria, sodium, thirst, or kidney concentrating ability?",
         "options": [
           {
             "value": "unknown",
@@ -307,21 +630,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Diabetes Insipidus."
+        "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Diabetes Insipidus therapy unsafe.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Diabetes Insipidus therapy unsafe.",
+        "management_implication": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "lithium"
+        ],
+        "source_seed": "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor."
       },
       {
         "id": "question_06",
-        "label": "Clarify mass-effect symptoms, pregnancy, medication causes of prolactin elevation, traumatic brain injury, childhood cancer history, and access to water/desmopressin when diabetes insipidus is possible.",
+        "label": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: clinical questions",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
         "options": [
           {
             "value": "unknown",
@@ -340,206 +674,292 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Diabetes Insipidus.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Diabetes Insipidus."
+        "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "management_implication": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "hypercalcemia"
+        ],
+        "source_seed": "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor."
+      },
+      {
+        "id": "question_07",
+        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ENDOTEXT_DI_2026",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Diabetes Insipidus.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "when_to_ask": "Ask when Diabetes Insipidus is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Diabetes Insipidus needs urgent evaluation today.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "pituitary",
+          "surgery",
+          "trauma",
+          "tumor"
+        ],
+        "source_seed": "Lithium, hypercalcemia, hypokalemia, kidney disease, pituitary surgery/trauma/tumor."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Volume status and orthostatic vitals, mental status, mucous membranes, neurologic/pituitary mass signs.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus."
+        "action": "Use this maneuver to evaluate volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid and desmopressin monitoring urgency.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Diabetes Insipidus.",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When polyuria, polydipsia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid and desmopressin monitoring urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Check capillary refill",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus."
+        "action": "Use this maneuver to evaluate volume status, dehydration severity, or peripheral perfusion. Delayed refill changes dehydration severity, fluid urgency, and monitored-care threshold.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Diabetes Insipidus.",
+        "technique": "Apply brief pressure to a fingertip or toe and record return of color while considering temperature, perfusion, and vascular disease.",
+        "findings_options": [
+          "Brisk",
+          "Delayed",
+          "Mottled/cool",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When water-balance disorder, dehydration, or hypernatremia is possible",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Delayed refill changes dehydration severity, fluid urgency, and monitored-care threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Check capillary refill is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "check",
+          "capillary",
+          "refill"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Assess skin turgor",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
+          "source_section": "Diabetes Insipidus curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus."
-      },
-      {
-        "id": "exam_04",
-        "label": "Visual fields, pupils/EOM/cranial nerves when mass effect is possible; BP/orthostatics, volume status, mental status, and secondary sex/thyroid/adrenal signs.",
-        "source": {
-          "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus."
-      },
-      {
-        "id": "exam_05",
-        "label": "Acral/facial/tongue/jaw/spacing findings, growth velocity/puberty staging in younger patients, and comorbidity signs such as sleep apnea, hypertension, diabetes, or cardiomyopathy.",
-        "source": {
-          "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Diabetes Insipidus."
+        "action": "Use this maneuver to evaluate volume status, dehydration severity, or peripheral perfusion. Reduced turgor supports clinically important dehydration but must be interpreted cautiously with age and skin changes.",
+        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Diabetes Insipidus.",
+        "technique": "Gently pinch skin over a clinically appropriate site and observe recoil, interpreting cautiously in older adults or chronic skin changes.",
+        "findings_options": [
+          "Normal recoil",
+          "Reduced recoil",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When polyuria, polydipsia, dehydration, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Reduced turgor supports clinically important dehydration but must be interpreted cautiously with age and skin changes.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess skin turgor is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "assess",
+          "skin",
+          "turgor"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If headache, visual symptoms, pituitary mass, apoplexy concern, cranial nerve symptoms, or very high pituitary hormone levels are present: add confrontation visual fields, extraocular movements, cranial nerves, mental status, and optic-chiasm mass-effect screen.",
+        "label": "Test confrontation visual fields",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Diabetes Insipidus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
+        "action": "Add when headache, vision, visual field, pituitary mass, macroadenoma is present; this evaluates pituitary/sellar mass effect or cranial nerve involvement. Field loss changes emergency imaging and neurosurgical urgency.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Diabetes Insipidus.",
+        "technique": "Test each eye separately by confrontation, comparing peripheral fields with the examiner's field while the patient fixes on a central target.",
+        "findings_options": [
+          "Full",
+          "Bitemporal deficit",
+          "Other field deficit",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When headache, visual symptoms, pituitary mass, or macroadenoma is present",
+        "diagnostic_target": "pituitary/sellar mass effect or cranial nerve involvement",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Field loss changes emergency imaging and neurosurgical urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Test confrontation visual fields is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "test",
+          "confrontation",
+          "visual",
+          "fields"
+        ],
         "when": {
           "termsAny": [
             "headache",
             "vision",
             "visual field",
-            "diplopia",
             "pituitary mass",
-            "apoplexy",
-            "cranial nerve",
             "macroadenoma",
-            "very high prolactin",
             "mass effect"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If hormone deficiency or water-balance disorder is possible: add orthostatic/volume exam, mucous membranes, secondary sex characteristics, thyroid/skin signs, pubertal or growth assessment when relevant, and neurologic safety screen.",
+        "label": "Assess extraocular movements",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Diabetes Insipidus curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
+        "action": "Add when diplopia, apoplexy, cranial nerve, cavernous is present; this evaluates pituitary/sellar mass effect, cavernous sinus involvement, or cranial nerve III/IV/VI dysfunction. Ophthalmoplegia changes emergency evaluation and neurosurgical urgency.",
+        "rationale": "Checks visual, ocular, or cranial-nerve complications that can change imaging urgency, specialty escalation, treatment safety, or monitoring for Diabetes Insipidus.",
+        "technique": "Ask the patient to follow a target through cardinal gaze positions and observe for limitation, pain, diplopia, or nystagmus.",
+        "findings_options": [
+          "Full",
+          "Restricted",
+          "Diplopia",
+          "Painful",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When diplopia, apoplexy, cavernous sinus involvement, or cranial nerve symptoms are present",
+        "diagnostic_target": "pituitary/sellar mass effect, cavernous sinus involvement, or cranial nerve III/IV/VI dysfunction",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Ophthalmoplegia changes emergency evaluation and neurosurgical urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess extraocular movements is supportive for Diabetes Insipidus, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "assess",
+          "extraocular",
+          "movements"
+        ],
         "when": {
           "termsAny": [
-            "hypopituitarism",
-            "polyuria",
-            "polydipsia",
-            "diabetes insipidus",
-            "hypernatremia",
-            "amenorrhea",
-            "low libido",
-            "growth",
-            "puberty",
-            "fatigue"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
-        "source": {
-          "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Diabetes Insipidus.",
-        "when": {
-          "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
-        "source": {
-          "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Diabetes Insipidus.",
-        "when": {
-          "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "diplopia",
+            "apoplexy",
+            "cranial nerve",
+            "cavernous"
           ]
         }
       }
@@ -548,244 +968,541 @@
       {
         "id": "test_01",
         "label": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "confirm",
+          "hypotonic",
+          "polyuria",
+          "adult",
+          "urine",
+          "volume",
+          "often",
+          "with"
+        ]
       },
       {
         "id": "test_02",
         "label": "Serum sodium/plasma osmolality.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Serum sodium/plasma osmolality.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "serum",
+          "sodium",
+          "plasma",
+          "osmolality"
+        ]
       },
       {
         "id": "test_03",
         "label": "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Exclude osmotic diuresis: glucose, calcium, potassium, renal function.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "exclude",
+          "osmotic",
+          "diuresis",
+          "glucose",
+          "calcium",
+          "potassium",
+          "renal",
+          "function"
+        ]
       },
       {
         "id": "test_04",
         "label": "Water deprivation/desmopressin or copeptin-based test.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Water deprivation/desmopressin or copeptin-based test.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "water",
+          "deprivation",
+          "desmopressin",
+          "copeptin",
+          "based",
+          "test"
+        ]
       },
       {
         "id": "test_05",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_06",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "diabetes",
+          "insipidus",
+          "safety",
+          "tests",
+          "check",
+          "serum",
+          "sodium",
+          "osmolality"
+        ]
       },
       {
         "id": "test_07",
         "label": "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Pituitary-axis panel guided by presentation: AM cortisol/ACTH, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, serum/urine osmolality and sodium when DI is possible.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "pituitary",
+          "axis",
+          "panel",
+          "guided",
+          "presentation",
+          "cortisol",
+          "acth",
+          "free"
+        ]
       },
       {
         "id": "test_08",
         "label": "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: diagnostic workup",
+          "source_section": "Diabetes Insipidus curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Diabetes Insipidus.",
+        "diagnostic_target": "Pituitary MRI after biochemical evidence or mass-effect symptoms; dynamic testing such as cosyntropin, OGTT/GH suppression, water deprivation/desmopressin or copeptin testing when indicated.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "pituitary",
+          "after",
+          "biochemical",
+          "evidence",
+          "mass",
+          "effect",
+          "symptoms",
+          "dynamic"
+        ]
       },
       {
         "id": "reference_01",
         "label": "Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Diabetes Insipidus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "serum",
+          "sodium",
+          "normal",
+          "about",
+          "mmol",
+          "inpatient",
+          "guidance",
+          "mild"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Diabetes Insipidus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "urine",
+          "osmolality",
+          "mosm",
+          "hypotonic",
+          "often",
+          "argues",
+          "against"
+        ]
       },
       {
         "id": "reference_03",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Diabetes Insipidus curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Diabetes Insipidus.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Diabetes Insipidus.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Diabetes Insipidus test or threshold.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "source_section": "Diabetes Insipidus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus.",
+        "diagnostic_target": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "management_change": "Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "hypernatremia",
+          "impaired",
+          "water",
+          "access",
+          "changes",
+          "urgent",
+          "monitored",
+          "fluid"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "source_section": "Diabetes Insipidus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus.",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "source_section": "Diabetes Insipidus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "item_type": "management_change",
         "source": {
           "source_id": "SFE_CDI_2018",
-          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "source_section": "Diabetes Insipidus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus.",
+        "diagnostic_target": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "management_change": "Central adrenal insufficiency must be addressed before thyroid hormone escalation; pituitary mass effect changes ophthalmology/neurosurgery urgency.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "central",
+          "adrenal",
+          "insufficiency",
+          "must",
+          "addressed",
+          "before",
+          "thyroid",
+          "hormone"
+        ]
       },
       {
         "id": "management_05",
         "label": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ENDOTEXT_DI_2026",
-          "source_section": "Diabetes Insipidus generated endocrine workup: results that change management",
+          "source_section": "Diabetes Insipidus curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus."
+        "rationale": "Links a result or bedside finding to a concrete management change for Diabetes Insipidus.",
+        "diagnostic_target": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Diabetes Insipidus.",
+        "management_change": "Confirmed hormone excess/deficiency plus MRI finding changes endocrine, neurosurgical, fertility, and replacement-therapy pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Diabetes Insipidus.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "diabetes_insipidus",
+          "confirmed",
+          "hormone",
+          "excess",
+          "deficiency",
+          "plus",
+          "finding",
+          "changes",
+          "endocrine"
+        ]
       }
     ],
     "endocrine_metadata": {

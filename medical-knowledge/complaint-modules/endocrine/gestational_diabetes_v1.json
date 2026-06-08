@@ -23,64 +23,129 @@
       {
         "id": "differential_01",
         "label": "Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic frame",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Early risk testing if high risk. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Gestational Diabetes.",
+        "management_change": "Use this frame to decide whether Early risk testing if high risk. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "gestational",
+          "diabetes"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Gestational Diabetes.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "step",
+          "ogtt",
+          "fasting",
+          "hour",
+          "approach",
+          "used"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: mimics and exclusions",
+          "source_section": "Gestational Diabetes curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Gestational Diabetes diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Gestational Diabetes diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Gestational Diabetes.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "important",
+          "mimics",
+          "exclusions",
+          "stress",
+          "steroid",
+          "hyperglycemia",
+          "type",
+          "lada"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Ketones, vomiting/dehydration, severe hyperglycemia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: red flags",
+          "source_section": "Gestational Diabetes curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Gestational Diabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Ketones, vomiting/dehydration, severe hyperglycemia.: danger pattern, severity marker, or complication that changes urgency for Gestational Diabetes.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "ketones",
+          "vomiting",
+          "dehydration",
+          "severe",
+          "hyperglycemia"
+        ],
         "when": {
           "termsAny": [
             "Ketones",
@@ -92,17 +157,31 @@
       {
         "id": "red_flag_02",
         "label": "Hypertension or preeclampsia features.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: red flags",
+          "source_section": "Gestational Diabetes curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Gestational Diabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hypertension or preeclampsia features.: danger pattern, severity marker, or complication that changes urgency for Gestational Diabetes.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "hypertension",
+          "preeclampsia",
+          "features"
+        ],
         "when": {
           "termsAny": [
             "Hypertension",
@@ -113,17 +192,36 @@
       {
         "id": "red_flag_03",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: red flags",
+          "source_section": "Gestational Diabetes curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Gestational Diabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Gestational Diabetes.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -137,26 +235,263 @@
       },
       {
         "id": "red_flag_04",
-        "label": "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.",
+        "label": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertension/preeclampsia features, or reduced fetal movement requires urgent obstetric/endocrine evaluation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: red flags",
+          "source_section": "Gestational Diabetes curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Gestational Diabetes presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertension/preeclampsia features, or reduced fetal movement requires urgent obstetric/endocrine evaluation.: danger pattern, severity marker, or complication that changes urgency for Gestational Diabetes.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "ketones",
+          "vomiting",
+          "dehydration",
+          "severe",
+          "hyperglycemia",
+          "altered",
+          "mental",
+          "status"
+        ],
         "when": {
           "termsAny": [
-            "DKA/HHS physiology",
-            "recurrent severe hypoglycemia",
+            "Ketones",
             "vomiting/dehydration",
+            "severe hyperglycemia",
             "altered mental status",
-            "infected foot wound",
-            "pregnancy with hyperglycemia."
+            "hypertension/preeclampsia features",
+            "reduced fetal movement requires urgent obstetric/endocrine evaluation."
+          ]
+        }
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Gestational Diabetes.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure current weight",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Gestational Diabetes.",
+        "when_to_perform": "During diabetes or metabolic risk assessment",
+        "findings_options": [
+          "___ kg/lb",
+          "Recent weight gain",
+          "Recent weight loss",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Weight change influences insulin resistance framing, nutrition plan, and medication selection.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "measure",
+          "current",
+          "weight"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Measure waist circumference",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Central adiposity changes metabolic syndrome criteria and cardiometabolic risk framing.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Gestational Diabetes.",
+        "when_to_perform": "When cardiometabolic risk or metabolic syndrome is being assessed",
+        "findings_options": [
+          "___ cm/in",
+          "Above risk threshold",
+          "Not above risk threshold",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Central adiposity changes metabolic syndrome criteria and cardiometabolic risk framing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "tape measure",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "measure",
+          "waist",
+          "circumference"
+        ]
+      },
+      {
+        "id": "safety_check_05",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes.",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
           ]
         }
       }
@@ -164,16 +499,18 @@
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Gestational age, prior GDM/macrosomia.",
+        "label": "How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?",
         "options": [
           {
             "value": "unknown",
@@ -192,21 +529,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Gestational Diabetes workup."
+        "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Gestational Diabetes therapy unsafe.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Gestational Diabetes therapy unsafe.",
+        "management_implication": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "gestational"
+        ],
+        "source_seed": "Gestational age, prior GDM/macrosomia."
       },
       {
         "id": "question_02",
-        "label": "Preexisting diabetes risk and fetal growth/polyhydramnios if known.",
+        "label": "Any history of prior gestational diabetes or macrosomia that changes Gestational Diabetes risk, test interpretation, or treatment safety?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any history of prior gestational diabetes or macrosomia that changes Gestational Diabetes risk, test interpretation, or treatment safety?",
         "options": [
           {
             "value": "unknown",
@@ -225,21 +573,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Gestational Diabetes workup."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "prior",
+          "macrosomia"
+        ],
+        "source_seed": "Gestational age, prior GDM/macrosomia."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "Any pre-pregnancy diabetes, prior A1c/glucose abnormality, PCOS, obesity, steroid exposure, or strong family history that changes gestational diabetes classification or treatment intensity?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any pre-pregnancy diabetes, prior A1c/glucose abnormality, PCOS, obesity, steroid exposure, or strong family history that changes gestational diabetes classification or treatment intensity?",
         "options": [
           {
             "value": "unknown",
@@ -258,21 +618,38 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Gestational Diabetes workup."
+        "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Gestational Diabetes therapy unsafe.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Gestational Diabetes therapy unsafe.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "preexisting",
+          "diabetes",
+          "risk",
+          "fetal",
+          "growth",
+          "polyhydramnios",
+          "known"
+        ],
+        "source_seed": "Preexisting diabetes risk and fetal growth/polyhydramnios if known."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "What is the current home glucose pattern if available, and how has it changed from baseline?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the current home glucose pattern if available, and how has it changed from baseline?",
         "options": [
           {
             "value": "unknown",
@@ -291,21 +668,35 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Gestational Diabetes."
+        "action": "The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Gestational Diabetes.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "management_implication": "The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "home",
+          "glucose",
+          "pattern",
+          "available"
+        ],
+        "source_seed": "Ask about gestational age, prior gestational diabetes or macrosomia, home glucose pattern if available, vomiting/dehydration, ketone symptoms, fetal growth/polyhydramnios context, and obstetric care plan."
       },
       {
         "id": "question_05",
-        "label": "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+        "label": "Have fetal growth, estimated fetal weight, amniotic fluid, or obstetric ultrasound findings raised concern for hyperglycemia-related risk?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Have fetal growth, estimated fetal weight, amniotic fluid, or obstetric ultrasound findings raised concern for hyperglycemia-related risk?",
         "options": [
           {
             "value": "unknown",
@@ -324,21 +715,35 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Gestational Diabetes."
+        "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "management_implication": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "fetal",
+          "growth",
+          "polyhydramnios",
+          "context"
+        ],
+        "source_seed": "Ask about gestational age, prior gestational diabetes or macrosomia, home glucose pattern if available, vomiting/dehydration, ketone symptoms, fetal growth/polyhydramnios context, and obstetric care plan."
       },
       {
         "id": "question_06",
-        "label": "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy.",
+        "label": "What is the current obstetric plan, gestational age, fetal surveillance plan, delivery timing, and maternal-fetal medicine involvement?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: clinical questions",
+          "source_section": "Gestational Diabetes curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the current obstetric plan, gestational age, fetal surveillance plan, delivery timing, and maternal-fetal medicine involvement?",
         "options": [
           {
             "value": "unknown",
@@ -357,236 +762,387 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Gestational Diabetes.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Gestational Diabetes."
+        "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "when_to_ask": "Ask when Gestational Diabetes is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Gestational Diabetes.",
+        "management_implication": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "obstetric",
+          "care",
+          "plan"
+        ],
+        "source_seed": "Ask about gestational age, prior gestational diabetes or macrosomia, home glucose pattern if available, vomiting/dehydration, ketone symptoms, fetal growth/polyhydramnios context, and obstetric care plan."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "Are meal timing, carbohydrate access, food insecurity, nausea/vomiting, work schedule, or diabetes nutrition counseling limiting safe glucose targets?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Are meal timing, carbohydrate access, food insecurity, nausea/vomiting, work schedule, or diabetes nutrition counseling limiting safe glucose targets?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention nutrition, access, meal, timing, carbohydrate. A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes one of: nutrition, access, meal, timing, carbohydrate, food, insecurity, nausea, vomiting, work.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "management_implication": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "nutrition",
+          "access"
+        ],
+        "source_seed": "Clarify preexisting diabetes risk, medications, nutrition access, steroid exposure, hypertension or preeclampsia symptoms, and postpartum follow-up barriers.",
+        "when": {
+          "termsAny": [
+            "nutrition",
+            "access",
+            "meal",
+            "timing",
+            "carbohydrate",
+            "food",
+            "insecurity",
+            "nausea",
+            "vomiting",
+            "work"
+          ]
+        }
+      },
+      {
+        "id": "question_02",
+        "label": "Any headache, visual symptoms, right upper quadrant pain, swelling, high blood pressure, proteinuria, or prior preeclampsia concern?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ADA_SOC_2026",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2026",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any headache, visual symptoms, right upper quadrant pain, swelling, high blood pressure, proteinuria, or prior preeclampsia concern?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention hypertension, preeclampsia, headache, visual, right. A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes one of: hypertension, preeclampsia, headache, visual, right, upper, quadrant, pain, swelling, high.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "hypertension",
+          "preeclampsia",
+          "symptoms"
+        ],
+        "source_seed": "Clarify preexisting diabetes risk, medications, nutrition access, steroid exposure, hypertension or preeclampsia symptoms, and postpartum follow-up barriers.",
+        "when": {
+          "termsAny": [
+            "hypertension",
+            "preeclampsia",
+            "headache",
+            "visual",
+            "right",
+            "upper",
+            "quadrant",
+            "pain",
+            "swelling",
+            "high"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "BP and weight.",
+        "label": "Inspect neck for acanthosis",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
+          "source_section": "Gestational Diabetes curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes."
-      },
-      {
-        "id": "exam_02",
-        "label": "Volume status if vomiting/hyperglycemia.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes."
-      },
-      {
-        "id": "exam_03",
-        "label": "Pregnancy-focused assessment with OB team.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Gestational Diabetes."
-      },
-      {
-        "id": "exam_04",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes."
-      },
-      {
-        "id": "exam_05",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes."
-      },
-      {
-        "id": "exam_06",
-        "label": "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes."
-      },
-      {
-        "id": "exam_07",
-        "label": "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant.",
-        "source": {
-          "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2026",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Gestational Diabetes."
+        "action": "Use this maneuver to evaluate insulin resistance or cardiometabolic risk phenotype. Acanthosis supports insulin resistance and prompts metabolic risk counseling.",
+        "rationale": "Assesses insulin-resistance phenotype and cardiometabolic risk so a positive finding can support diabetes/metabolic screening, counseling intensity, and risk-factor management for Gestational Diabetes.",
+        "technique": "Inspect the named area directly, comparing sides when relevant and documenting presence, absence, severity, and inability to assess.",
+        "findings_options": [
+          "Absent",
+          "Mild neck folds",
+          "Marked neck/axillary involvement",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When insulin resistance or metabolic syndrome is suspected",
+        "diagnostic_target": "insulin resistance or cardiometabolic risk phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Acanthosis supports insulin resistance and prompts metabolic risk counseling.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect neck for acanthosis is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "inspect",
+          "neck",
+          "acanthosis"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If hyperglycemic crisis, vomiting, infection, foot wound, or insulin-access concern is present: add Kussmaul/work-of-breathing assessment, mucous membranes, capillary refill/pulses, abdomen, skin/line/wound exam, and diabetes foot check.",
+        "label": "Assess Kussmaul breathing",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Checks complications or precipitating illness that change treatment intensity, prevention, and disposition for Gestational Diabetes.",
+        "action": "Add when dka, hhs, hyperglycemic crisis, ketones, acidosis is present; this evaluates respiratory compensation, pulmonary congestion, infection, obstruction, or distress. Kussmaul breathing changes crisis severity and urgent treatment pathway.",
+        "rationale": "Targets respiratory compensation, pulmonary congestion, infection, obstruction, or distress; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Gestational Diabetes.",
+        "technique": "Observe respiratory rate, depth, accessory muscle use, speech tolerance, and breathing pattern at rest.",
+        "findings_options": [
+          "Absent",
+          "Deep/labored pattern",
+          "Respiratory distress",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When DKA or metabolic acidosis is possible",
+        "diagnostic_target": "respiratory compensation, pulmonary congestion, infection, obstruction, or distress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Kussmaul breathing changes crisis severity and urgent treatment pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess Kussmaul breathing is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "assess",
+          "kussmaul",
+          "breathing"
+        ],
         "when": {
           "termsAny": [
             "dka",
             "hhs",
             "hyperglycemic crisis",
-            "vomiting",
-            "infection",
-            "fever",
-            "foot wound",
-            "ulcer",
-            "missed insulin",
-            "dehydration"
+            "ketones",
+            "acidosis",
+            "vomiting"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If recurrent hypoglycemia, neuropathy, falls, kidney disease, or vascular symptoms are present: add mental status, focused neuro/monofilament or vibration screen, foot pulses/skin, and orthostatic vitals.",
+        "label": "Palpate abdomen for tenderness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes.",
+        "action": "Add when abdominal pain, vomiting, pancreatitis, dka is present; this evaluates abdominal complication, endocrine crisis mimic, or precipitating illness. Tenderness changes precipitant evaluation and concern for surgical or pancreatitis mimic.",
+        "rationale": "Targets abdominal complication, endocrine crisis mimic, or precipitating illness; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Gestational Diabetes.",
+        "technique": "Inspect and palpate the abdomen gently, localizing tenderness and stopping if guarding, rebound, or severe pain occurs.",
+        "findings_options": [
+          "Nontender",
+          "Tender",
+          "Guarding",
+          "Rebound/peritoneal concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting or abdominal pain accompanies hyperglycemia",
+        "diagnostic_target": "abdominal complication, endocrine crisis mimic, or precipitating illness",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Tenderness changes precipitant evaluation and concern for surgical or pancreatitis mimic.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate abdomen for tenderness is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "palpate",
+          "abdomen",
+          "tenderness"
+        ],
         "when": {
           "termsAny": [
-            "hypoglycemia",
-            "neuropathy",
-            "fall",
-            "falls",
-            "kidney disease",
-            "ckd",
-            "claudication",
-            "vascular",
-            "dizziness",
-            "orthostasis"
+            "abdominal pain",
+            "vomiting",
+            "pancreatitis",
+            "dka"
           ]
         }
       },
       {
         "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "label": "Inspect insulin pump site",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Gestational Diabetes.",
+        "action": "Add when pump, device, missed insulin, site is present; this evaluates insulin delivery failure, infusion-site infection, or device-related precipitant. Site failure changes precipitant assessment and insulin delivery plan.",
+        "rationale": "Targets insulin delivery failure, infusion-site infection, or device-related precipitant; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Gestational Diabetes.",
+        "technique": "Inspect the infusion or device site for dislodgement, leakage, erythema, tenderness, occlusion, or supply failure.",
+        "findings_options": [
+          "Site intact",
+          "Dislodged/occluded/leaking",
+          "Erythema/tenderness/drainage",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When pump therapy or device failure is possible",
+        "diagnostic_target": "insulin delivery failure, infusion-site infection, or device-related precipitant",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Site failure changes precipitant assessment and insulin delivery plan.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect insulin pump site is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "inspect",
+          "insulin",
+          "pump",
+          "site"
+        ],
         "when": {
           "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
+            "pump",
+            "device",
+            "missed insulin",
+            "site"
           ]
         }
       },
       {
         "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Gestational Diabetes curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Gestational Diabetes.",
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Gestational Diabetes.",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Gestational Diabetes, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
         "when": {
           "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "vomiting",
+            "dehydration",
+            "poor intake",
+            "polyuria",
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       }
@@ -595,304 +1151,657 @@
       {
         "id": "test_01",
         "label": "Early risk testing if high risk.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Early risk testing if high risk.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "early",
+          "risk",
+          "testing",
+          "high"
+        ]
       },
       {
         "id": "test_02",
         "label": "24-28 week one-step 75-g OGTT or local two-step strategy.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "24-28 week one-step 75-g OGTT or local two-step strategy.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "week",
+          "step",
+          "ogtt",
+          "local",
+          "strategy"
+        ]
       },
       {
         "id": "test_03",
         "label": "Postpartum 75-g OGTT at 4-12 weeks.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Postpartum 75-g OGTT at 4-12 weeks.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "postpartum",
+          "ogtt",
+          "weeks"
+        ]
       },
       {
         "id": "test_04",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_05",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Gestational diabetes safety tests: route the local OGTT strategy with gestational age, review home glucose pattern if available, and check ketones, electrolytes/anion gap, creatinine, and acid-base status for vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Gestational diabetes safety tests: route the local OGTT strategy with gestational age, review home glucose pattern if available, and check ketones, electrolytes/anion gap, creatinine, and acid-base status for vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "gestational",
+          "diabetes",
+          "safety",
+          "tests",
+          "route",
+          "local",
+          "ogtt",
+          "strategy"
+        ]
       },
       {
         "id": "test_06",
-        "label": "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+        "label": "Gestational diabetes screening/diagnostic OGTT using the local one-step or two-step strategy and gestational-age context.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Gestational diabetes screening/diagnostic OGTT using the local one-step or two-step strategy and gestational-age context.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "gestational",
+          "diabetes",
+          "screening",
+          "diagnostic",
+          "ogtt",
+          "using",
+          "local",
+          "step"
+        ]
       },
       {
         "id": "test_07",
-        "label": "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible.",
+        "label": "Glucose monitoring plan; ketones, electrolytes, renal function, and acid-base assessment when vomiting, dehydration, severe hyperglycemia, or insulin deficiency is possible.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: diagnostic workup",
+          "source_section": "Gestational Diabetes curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Gestational Diabetes.",
+        "diagnostic_target": "Glucose monitoring plan; ketones, electrolytes, renal function, and acid-base assessment when vomiting, dehydration, severe hyperglycemia, or insulin deficiency is possible.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values. A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126. 2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200. Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "glucose",
+          "monitoring",
+          "plan",
+          "ketones",
+          "electrolytes",
+          "renal",
+          "function",
+          "acid"
+        ]
       },
       {
         "id": "reference_01",
         "label": "One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "step",
+          "ogtt",
+          "fasting",
+          "hour"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "step",
+          "approach",
+          "used",
+          "screen",
+          "often",
+          "carpenter",
+          "coustan",
+          "thresholds"
+        ]
       },
       {
         "id": "reference_03",
         "label": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_04",
         "label": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "fasting",
+          "plasma",
+          "glucose",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_05",
         "label": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "2-hour 75-g OGTT: normal <140 mg/dL; prediabetes 140-199; diabetes >=200.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "hour",
+          "ogtt",
+          "normal",
+          "prediabetes",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_06",
         "label": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Random plasma glucose >=200 mg/dL with classic symptoms supports diabetes diagnosis.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "random",
+          "plasma",
+          "glucose",
+          "with",
+          "classic",
+          "symptoms",
+          "supports",
+          "diabetes"
+        ]
       },
       {
         "id": "reference_07",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Gestational Diabetes curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Gestational Diabetes.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Gestational Diabetes.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Gestational Diabetes test or threshold.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "OGTT threshold crossing changes maternal/fetal monitoring and therapy.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "ogtt",
+          "threshold",
+          "crossing",
+          "changes",
+          "maternal",
+          "fetal",
+          "monitoring",
+          "therapy"
+        ]
       },
       {
         "id": "management_02",
         "label": "Postpartum abnormal OGTT changes long-term prevention.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Postpartum abnormal OGTT changes long-term prevention.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "Postpartum abnormal OGTT changes long-term prevention.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "Postpartum abnormal OGTT changes long-term prevention.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "postpartum",
+          "abnormal",
+          "ogtt",
+          "changes",
+          "long",
+          "term",
+          "prevention"
+        ]
       },
       {
         "id": "management_03",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_04",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_05",
-        "label": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+        "label": "OGTT threshold crossing changes maternal-fetal monitoring, nutrition therapy, glucose monitoring, medication escalation, and delivery/postpartum planning.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_SOC_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "action": "OGTT threshold crossing changes maternal-fetal monitoring, nutrition therapy, glucose monitoring, medication escalation, and delivery/postpartum planning.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "OGTT threshold crossing changes maternal-fetal monitoring, nutrition therapy, glucose monitoring, medication escalation, and delivery/postpartum planning.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "OGTT threshold crossing changes maternal-fetal monitoring, nutrition therapy, glucose monitoring, medication escalation, and delivery/postpartum planning.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "ogtt",
+          "threshold",
+          "crossing",
+          "changes",
+          "maternal",
+          "fetal",
+          "monitoring",
+          "nutrition"
+        ]
       },
       {
         "id": "management_06",
-        "label": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
+        "label": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, or hypertensive features in pregnancy changes disposition to urgent obstetric/endocrine evaluation.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ADA_DIAGNOSIS_2026",
-          "source_section": "Gestational Diabetes generated endocrine workup: results that change management",
+          "source_section": "Gestational Diabetes curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2026",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes."
+        "action": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, or hypertensive features in pregnancy changes disposition to urgent obstetric/endocrine evaluation.",
+        "rationale": "Links a result or bedside finding to a concrete management change for Gestational Diabetes.",
+        "diagnostic_target": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, or hypertensive features in pregnancy changes disposition to urgent obstetric/endocrine evaluation.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Gestational Diabetes.",
+        "management_change": "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, or hypertensive features in pregnancy changes disposition to urgent obstetric/endocrine evaluation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Gestational Diabetes.",
+        "tags": [
+          "diabetes_and_blood_sugar_disorders",
+          "gestational_diabetes",
+          "ketones",
+          "vomiting",
+          "dehydration",
+          "severe",
+          "hyperglycemia",
+          "altered",
+          "mental",
+          "status"
+        ]
       }
     ],
     "endocrine_metadata": {

@@ -1,6 +1,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { clinicalIntentRegistry, resolveClinicalIntents } from "../clinical-intents.js";
+import { evaluateComplaintCds, isBasicBedsideDataItem } from "../complaint-cds.js";
+import { moduleFromWorkup } from "./install-endocrine-workups.js";
 
 const generatedAt = new Date().toISOString();
 const accessedDate = "2026-06-06";
@@ -243,7 +245,93 @@ function uniqueList(items = []) {
     });
 }
 
+function endocrineSafetyTestingAnchor(row = {}) {
+  const category = String(row.category || "");
+  const diagnosis = String(row.diagnosis || "");
+  const text = `${category} ${diagnosis}`.toLowerCase();
+
+  if (/diabetes insipidus/.test(text)) {
+    return "Diabetes insipidus safety tests: check serum sodium/osmolality, urine osmolality/specific gravity, urine volume, glucose/calcium/potassium/renal function, and desmopressin, copeptin, or supervised water-deprivation pathway only when stable.";
+  }
+  if (/gestational diabetes/.test(text)) {
+    return "Gestational diabetes safety tests: route the local OGTT strategy with gestational age, review home glucose pattern if available, and check ketones, electrolytes/anion gap, creatinine, and acid-base status for vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms.";
+  }
+  if (/\b(?:prediabetes|metabolic syndrome)\b/.test(text)) {
+    return "Cardiometabolic safety data: confirm A1c/FPG/OGTT classification, document BP/waist/BMI, and check lipids, kidney function, albuminuria when diabetes-range, and liver/fatty-liver context when treatment selection or risk reduction is in scope.";
+  }
+  if (/diabetes|blood sugar/.test(text)) {
+    return "Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy.";
+  }
+
+  if (/thyroid cancer|thyroid nodule|nodule/.test(text)) {
+    return "Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.";
+  }
+  if (/hyperthyroid|graves|thyrotox|thyroid storm/.test(text)) {
+    return "Thyrotoxicosis safety data: check TSH, free T4, total T3, TRAb/TSI or RAIU as indicated, ECG for tachyarrhythmia, CBC/liver baseline before antithyroid drugs, and pregnancy testing before radioiodine or teratogenic treatment decisions.";
+  }
+  if (/hypothyroid|hashimoto|myxedema/.test(text)) {
+    return "Hypothyroid safety data: check TSH/free T4 with TPO antibody when autoimmune disease matters, sodium/CK/lipids if severe or symptomatic, ECG/cardiac context for older or cardiac patients, and pregnancy-specific targets when pregnant or fertility planning.";
+  }
+  if (/thyroid/.test(text)) {
+    return "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.";
+  }
+
+  if (/primary hyperparathyroid|hypoparathyroid|hypercalcemia|hypocalcemia/.test(text)) {
+    return "Calcium-PTH safety tests: check corrected or ionized calcium, phosphorus, magnesium, creatinine/eGFR, PTH, 25(OH)D, urine calcium when indicated, and ECG or urgent reassessment for severe symptomatic calcium abnormalities.";
+  }
+  if (/osteoporosis|osteopenia|vitamin d|osteomalacia|bone|parathyroid/.test(text)) {
+    return "Bone-mineral safety tests: check calcium, phosphorus, magnesium, creatinine/eGFR, alkaline phosphatase, 25(OH)D and PTH when indicated, plus DXA/vertebral imaging or fracture-risk assessment to route anti-fracture therapy.";
+  }
+
+  if (/cushing/.test(text)) {
+    return "Cushing safety tests: use late-night salivary cortisol, 1-mg dexamethasone suppression, or 24-hour urinary free cortisol after excluding exogenous steroids, and assess glucose, BP, potassium, infection/VTE, and bone risk to determine severity and treatment urgency.";
+  }
+  if (/aldosteron|conn/.test(text)) {
+    return "Primary aldosteronism safety tests: check potassium and renal function, aldosterone-renin ratio under interpretable medication/posture/salt conditions, and route confirmatory testing, subtype imaging, and adrenal venous sampling when screening is positive.";
+  }
+  if (/pheochromocytoma|paraganglioma|ppgl/.test(text)) {
+    return "PPGL safety tests: obtain plasma free or urine fractionated metanephrines under appropriate collection conditions, add ECG/cardiac injury testing for crisis symptoms, and reserve imaging/genetic pathway for biochemical framing unless emergency stabilization is needed.";
+  }
+  if (/adrenal insufficiency|addison|congenital adrenal hyperplasia|cah/.test(text)) {
+    return "Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.";
+  }
+  if (/adrenal/.test(text)) {
+    return "Adrenal safety tests: select cortisol/ACTH, aldosterone-renin, metanephrine, or androgen testing based on the syndrome, and pair results with electrolytes, glucose, renal function, BP pattern, medication effects, and crisis features that change disposition.";
+  }
+
+  if (/pcos|hirsutism|hyperandrogen/.test(text)) {
+    return "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.";
+  }
+  if (/gynecomastia/.test(text)) {
+    return "Gynecomastia safety tests: review medication/substance causes and check testosterone, estradiol, LH/FSH, beta-hCG, prolactin/TSH, liver/kidney function, and testicular evaluation when mass, rapid growth, or malignancy concern exists.";
+  }
+  if (/menopause|premature ovarian insufficiency|poi/.test(text)) {
+    return "POI/menopause safety tests: pregnancy test when uncertain, FSH/estradiol confirmation for POI, TSH/prolactin when cycles are abnormal, and bone/cardiometabolic risk labs that affect hormone therapy and prevention decisions.";
+  }
+  if (/infertility/.test(text)) {
+    return "Infertility hormone safety tests: pregnancy test when relevant, ovulatory timing, TSH/prolactin, LH/FSH with estradiol or testosterone, AMH/ovarian reserve or semen analysis as appropriate, and urgent ectopic/red-flag testing for pain or bleeding.";
+  }
+  if (/amenorrhea|hypogonadism|erectile dysfunction|gonadal|reproductive/.test(text)) {
+    return "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and targeted androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.";
+  }
+
+  if (/prolactinoma|hyperprolactin/.test(text)) {
+    return "Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.";
+  }
+  if (/acromegaly|gigantism/.test(text)) {
+    return "GH-excess safety tests: check age-adjusted IGF-1, oral-glucose GH suppression when needed, pituitary MRI after biochemical confirmation, and glucose/A1c, sleep apnea, BP/cardiac, colon, and thyroid risk screening.";
+  }
+  if (/hypopituitarism|pituitary/.test(text)) {
+    return "Pituitary safety tests: check 8 AM cortisol/ACTH before thyroid replacement decisions, free T4/TSH, prolactin, IGF-1, LH/FSH with sex steroid, sodium/osmolality, and MRI/visual-field pathway when mass effect is possible.";
+  }
+
+  return "Endocrine safety tests: choose syndrome-specific hormone confirmation plus electrolytes, glucose, renal function, pregnancy context, and organ-risk testing only when the result changes classification, disposition, medication safety, or referral urgency.";
+}
+
 function deploymentAdditions(row) {
+  const diagnosisLower = String(row.diagnosis || "").toLowerCase();
+  const isDiabetesPreventionWorkup = /\b(?:prediabetes|metabolic syndrome)\b/i.test(diagnosisLower);
+  const isGestationalDiabetesWorkup = /gestational diabetes/i.test(diagnosisLower);
   const shared = {
     questions: [
       "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
@@ -255,7 +343,7 @@ function deploymentAdditions(row) {
     ],
     tests: [
       "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-      "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG."
+      endocrineSafetyTestingAnchor(row)
     ],
     reference_values: [
       "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects."
@@ -264,33 +352,81 @@ function deploymentAdditions(row) {
       "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation."
     ],
     management_changes: [
-      "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+      isDiabetesPreventionWorkup
+        ? "Markedly abnormal glucose, severe hypertension, pregnancy-context concern, or cardiopulmonary symptoms changes disposition from prevention visit to urgent evaluation."
+        : "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
       "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
     ]
   };
 
+  const diabetesAdditions = isDiabetesPreventionWorkup
+    ? {
+        questions: [
+          "Ask about weight trajectory, activity, nutrition, sleep apnea, fatty liver, PCOS, prior gestational diabetes, family diabetes/ASCVD history, steroid exposure, and cardiometabolic medications.",
+          "Clarify hypertension, dyslipidemia, ASCVD/HF/CKD risk, smoking, pregnancy possibility, and barriers to prevention because these change cardiometabolic risk reduction."
+        ],
+        exam: [
+          "Acanthosis nigricans and anthropometric cardiometabolic phenotype when insulin resistance is suspected.",
+          "Cardiovascular risk exam only when symptoms, hypertension, established ASCVD, or heart failure features are present."
+        ],
+        tests: [
+          "A1c or plasma glucose criteria for prediabetes/diabetes classification, with repeat confirmatory testing when asymptomatic or discordant.",
+          "Lipids, blood pressure, kidney function, albuminuria when diabetes-range, and liver context when cardiometabolic risk reduction or medication choice is in scope."
+        ],
+        red_flags: [
+          "Diabetes-range glycemia with classic symptoms, severe hypertension, ASCVD symptoms, pregnancy-context hyperglycemia, or dehydration requires escalation beyond routine prevention care."
+        ],
+        management_changes: [
+          "Prediabetes or metabolic syndrome thresholds change prevention intensity, lifestyle intervention, cardiometabolic risk-factor treatment, and surveillance interval.",
+          "Diabetes-range glycemia, ASCVD/HF/CKD risk, fatty liver, obstructive sleep apnea, PCOS, or pregnancy context changes diagnostic classification, treatment safety, and referral or follow-up urgency."
+        ]
+      }
+    : isGestationalDiabetesWorkup
+      ? {
+          questions: [
+            "Ask about gestational age, prior gestational diabetes or macrosomia, home glucose pattern if available, vomiting/dehydration, ketone symptoms, fetal growth/polyhydramnios context, and obstetric care plan.",
+            "Clarify preexisting diabetes risk, medications, nutrition access, steroid exposure, hypertension or preeclampsia symptoms, and postpartum follow-up barriers."
+          ],
+          exam: [
+            "Volume status, mucous membranes, perfusion, and mental status when vomiting, severe hyperglycemia, ketones, or dehydration are possible.",
+            "Pregnancy and hypertension-focused assessment with the obstetric team when blood pressure symptoms, preeclampsia features, or fetal-growth concern exists."
+          ],
+          tests: [
+            "Gestational diabetes screening/diagnostic OGTT using the local one-step or two-step strategy and gestational-age context.",
+            "Glucose monitoring plan; ketones, electrolytes, renal function, and acid-base assessment when vomiting, dehydration, severe hyperglycemia, or insulin deficiency is possible."
+          ],
+          red_flags: [
+            "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertension/preeclampsia features, or reduced fetal movement requires urgent obstetric/endocrine evaluation."
+          ],
+          management_changes: [
+            "OGTT threshold crossing changes maternal-fetal monitoring, nutrition therapy, glucose monitoring, medication escalation, and delivery/postpartum planning.",
+            "Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, or hypertensive features in pregnancy changes disposition to urgent obstetric/endocrine evaluation."
+          ]
+        }
+      : {
+          questions: [
+            "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
+            "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
+          ],
+          exam: [
+            "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
+            "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
+          ],
+          tests: [
+            "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
+            "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
+          ],
+          red_flags: [
+            "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
+          ],
+          management_changes: [
+            "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
+            "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
+          ]
+        };
+
   const byCategory = {
-    "Diabetes and Blood Sugar Disorders": {
-      questions: [
-        "Ask about hypoglycemia, hyperglycemia symptoms, sick-day triggers, insulin/medication access, steroid or SGLT2 inhibitor exposure, and recent infection.",
-        "Clarify ASCVD, CKD, neuropathy, retinopathy, foot ulcer/wound, pregnancy, meal pattern, and technology use because these change targets and therapy."
-      ],
-      exam: [
-        "Hydration, mucous membranes, orthostasis/perfusion, respiratory pattern, and mental status when acute hyperglycemia, DKA/HHS, or hypoglycemia is possible.",
-        "Feet/skin when diabetes complications, neuropathy, infection, ulcer, vascular disease, or discharge safety is relevant."
-      ],
-      tests: [
-        "A1c or plasma glucose criteria for diagnosis/classification, plus CGM/glucometer pattern when available.",
-        "CMP/eGFR, urine albumin-creatinine ratio, lipids, and ketones/anion gap/beta-hydroxybutyrate when acute symptoms or insulin deficiency are possible."
-      ],
-      red_flags: [
-        "DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia."
-      ],
-      management_changes: [
-        "Ketosis/acidosis, HHS osmolality, or severe hypoglycemia triggers urgent protocolized treatment rather than routine outpatient adjustment.",
-        "CKD, albuminuria, ASCVD/HF risk, pregnancy, foot infection, or insulin access barriers change medication choice and follow-up urgency."
-      ]
-    },
+    "Diabetes and Blood Sugar Disorders": diabetesAdditions,
     "Thyroid Disorders": {
       questions: [
         "Ask about palpitations, heat/cold intolerance, weight change, bowel change, tremor, fatigue, mood/cognition, menstrual/fertility context, and neck symptoms.",
@@ -415,6 +551,118 @@ function augmentWorkup(row) {
   };
 }
 
+function installedModuleForRow(row) {
+  return moduleFromWorkup(row).module;
+}
+
+function itemSourceId(item = {}) {
+  return item.source?.source_id || item.source_id || "source pending";
+}
+
+function optionText(options = []) {
+  if (!Array.isArray(options) || !options.length) return "";
+  return options
+    .map((option) => {
+      if (typeof option === "string") return option;
+      return option.label || option.value || "";
+    })
+    .map((value) => String(value || "").trim())
+    .filter(Boolean)
+    .join(" / ");
+}
+
+function listText(value) {
+  if (Array.isArray(value)) return value.map((item) => String(item || "").trim()).filter(Boolean).join(" / ");
+  return String(value || "").trim();
+}
+
+function sourceSuffix(item = {}) {
+  const parts = [`Source: ${itemSourceId(item)}`];
+  if (Object.prototype.hasOwnProperty.call(item, "LR_plus")) parts.push(`LR+ ${item.LR_plus || "n/a"}`);
+  if (Object.prototype.hasOwnProperty.call(item, "LR_minus")) parts.push(`LR- ${item.LR_minus || "n/a"}`);
+  if (item.difficulty) parts.push(`difficulty ${item.difficulty}`);
+  if (item.time_burden_minutes) parts.push(`${item.time_burden_minutes} min`);
+  if (item.equipment_needed) parts.push(`equipment ${item.equipment_needed}`);
+  return parts.join("; ");
+}
+
+function formatQuestionItem(item = {}) {
+  const question = item.text || item.label || "";
+  const options = optionText(item.options);
+  const management = item.management_implication || item.action || "";
+  return [
+    question,
+    options ? `Options: ${options}.` : "",
+    item.diagnostic_purpose ? `Purpose: ${item.diagnostic_purpose}` : "",
+    management ? `Management: ${management}` : "",
+    `Source: ${itemSourceId(item)}.`
+  ].filter(Boolean).join(" ");
+}
+
+function formatExamItem(item = {}) {
+  return [
+    `${item.label}: ${item.technique || item.action || "Perform the specified bedside maneuver."}`,
+    item.findings_options?.length ? `Findings: ${listText(item.findings_options)}.` : "",
+    item.diagnostic_target ? `Target: ${item.diagnostic_target}` : "",
+    item.management_change ? `Management: ${item.management_change}` : item.action ? `Management: ${item.action}` : "",
+    sourceSuffix(item)
+  ].filter(Boolean).join(" ");
+}
+
+function formatSafetyItem(item = {}) {
+  return [
+    `${item.label}: ${item.action || item.rationale || "Check and document."}`,
+    item.rationale ? `Rationale: ${item.rationale}` : "",
+    `Source: ${itemSourceId(item)}.`
+  ].filter(Boolean).join(" ");
+}
+
+function formatSimpleItem(item = {}) {
+  const label = item.text || item.label || "";
+  return [
+    item.action && item.action !== label ? `${label}: ${item.action}` : label,
+    item.rationale ? `Rationale: ${item.rationale}` : "",
+    `Source: ${itemSourceId(item)}.`
+  ].filter(Boolean).join(" ");
+}
+
+function rawSeedReportSections(row) {
+  return {
+    source: "raw_seed_fallback",
+    module_id: "",
+    basic_bedside_data_safety_checks: [],
+    clinical_questions: row.questions || [],
+    conditional_history_add_ons: [],
+    core_physical_exam_maneuvers: row.exam || [],
+    conditional_exam_add_ons: [],
+    diagnostic_workup_and_reference_values: row.tests || [],
+    reference_ranges_and_diagnostic_thresholds: row.reference_values || [],
+    red_flags: row.red_flags || [],
+    results_that_change_management: row.management_changes || []
+  };
+}
+
+function buildReportSections(row) {
+  const module = installedModuleForRow(row);
+  if (!module) {
+    return rawSeedReportSections(row);
+  }
+  const result = evaluateComplaintCds(module.label, {}, { module });
+  return {
+    source: "installed_complaint_cds_module",
+    module_id: module.id,
+    basic_bedside_data_safety_checks: result.safetyChecks.map(formatSafetyItem),
+    clinical_questions: result.requiredQuestions.map(formatQuestionItem),
+    conditional_history_add_ons: (module.conditionalQuestions || []).map(formatQuestionItem),
+    core_physical_exam_maneuvers: result.requiredExam.map(formatExamItem),
+    conditional_exam_add_ons: (module.conditionalExam || []).filter((item) => !isBasicBedsideDataItem(item)).map(formatExamItem),
+    diagnostic_workup_and_reference_values: result.initialTests.map(formatSimpleItem),
+    reference_ranges_and_diagnostic_thresholds: row.reference_values || [],
+    red_flags: result.redFlags.map(formatSimpleItem),
+    results_that_change_management: result.dispositionRules.map(formatSimpleItem)
+  };
+}
+
 function validate(row) {
   const issues = [];
   const validSources = new Set(Object.keys(sources));
@@ -431,10 +679,20 @@ function validate(row) {
   for (const sourceId of row.source_ids || []) if (!validSources.has(sourceId)) issues.push(`unknown source ${sourceId}`);
   const hasNumericValue = [...row.tests, ...row.reference_values].some((value) => /(?:>=|<=|>|<|\d)/.test(String(value)));
   if (!hasNumericValue) issues.push("missing reference values or thresholds");
+  const reportSections = row.report_sections;
+  if (reportSections) {
+    if (!reportSections.core_physical_exam_maneuvers?.length) issues.push("report missing core physical exam maneuvers");
+    if (!reportSections.basic_bedside_data_safety_checks?.length) issues.push("report missing basic bedside data safety checks");
+    const reportText = JSON.stringify(reportSections);
+    if (/Focused physical exam|Vitals and acuity screen|Proximal strength, bone tenderness, gait\/falls, hypocalcemia signs/i.test(reportText)) {
+      issues.push("report exposes stale bundled exam wording");
+    }
+  }
   return issues;
 }
 
 function formatList(items) {
+  if (!items?.length) return "- None.";
   return items.map((item) => `- ${item}`).join("\n");
 }
 
@@ -473,23 +731,32 @@ function formatReport(results) {
       `Current app support: installed module ${row.app_module_id}; validated intent matches: ${row.app_intent_matches.length ? row.app_intent_matches.map((match) => `${match.intent_id} (${match.score})`).join("; ") : "none - searchable through installed medical knowledge module"}`,
       `Guidelines: ${row.source_ids.join("; ")}`,
       "",
-      "Clinical questions:",
-      formatList(row.questions),
+      "Basic bedside data / safety checks:",
+      formatList(row.report_sections.basic_bedside_data_safety_checks),
       "",
-      "Focused physical exam:",
-      formatList(row.exam),
+      "Clinical questions:",
+      formatList(row.report_sections.clinical_questions),
+      "",
+      "Conditional history add-ons:",
+      formatList(row.report_sections.conditional_history_add_ons),
+      "",
+      "Core physical exam maneuvers:",
+      formatList(row.report_sections.core_physical_exam_maneuvers),
+      "",
+      "Conditional exam add-ons:",
+      formatList(row.report_sections.conditional_exam_add_ons),
       "",
       "Diagnostic workup and reference values:",
-      formatList(row.tests),
+      formatList(row.report_sections.diagnostic_workup_and_reference_values),
       "",
       "Reference ranges / diagnostic thresholds:",
-      formatList(row.reference_values),
+      formatList(row.report_sections.reference_ranges_and_diagnostic_thresholds),
       "",
       "Red flags:",
-      formatList(row.red_flags),
+      formatList(row.report_sections.red_flags),
       "",
       "Results that change management:",
-      formatList(row.management_changes)
+      formatList(row.report_sections.results_that_change_management)
     );
     if (row.quality_issues.length) {
       lines.push("", "Quality issues:", formatList(row.quality_issues));
@@ -518,12 +785,18 @@ function write(path, text) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  const results = workups.map((row) => augmentWorkup(row)).map((row) => ({
-    ...row,
-    app_module_id: diagnosisModuleId(row.diagnosis),
-    app_intent_matches: resolveAppSupport(row),
-    quality_issues: validate(row)
-  }));
+  const results = workups.map((row) => augmentWorkup(row)).map((row) => {
+    const withReportSections = {
+      ...row,
+      app_module_id: diagnosisModuleId(row.diagnosis),
+      app_intent_matches: resolveAppSupport(row),
+      report_sections: buildReportSections(row)
+    };
+    return {
+      ...withReportSections,
+      quality_issues: validate(withReportSections)
+    };
+  });
   const reportPath = write(args.out, formatReport(results));
   const jsonPath = write(args.json, `${JSON.stringify({ generated_at: generatedAt, accessed_date: accessedDate, sources, workups: results }, null, 2)}\n`);
   const issueCount = results.reduce((sum, row) => sum + row.quality_issues.length, 0);

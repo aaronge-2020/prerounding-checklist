@@ -21,64 +21,129 @@
       {
         "id": "differential_01",
         "label": "Hypoparathyroidism: diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic frame",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Calcium plus PTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism.",
+        "diagnostic_target": "Hypoparathyroidism: diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypoparathyroidism.",
+        "management_change": "Use this frame to decide whether Calcium plus PTH. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypoparathyroidism.",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "corrected",
+          "calcium",
+          "often",
+          "about",
+          "ionized",
+          "mmol"
+        ]
       },
       {
         "id": "differential_03",
-        "label": "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
+        "label": "Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: mimics and exclusions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Hypoparathyroidism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Hypoparathyroidism diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hypoparathyroidism.",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "important",
+          "mimics",
+          "exclusions",
+          "primary",
+          "versus",
+          "secondary",
+          "tertiary",
+          "parathyroid"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: red flags",
+          "source_section": "Hypoparathyroidism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypoparathyroidism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.: danger pattern, severity marker, or complication that changes urgency for Hypoparathyroidism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "seizure",
+          "laryngospasm",
+          "arrhythmia",
+          "prolongation",
+          "severe",
+          "symptomatic",
+          "hypocalcemia"
+        ],
         "when": {
           "termsAny": [
             "Seizure",
@@ -91,17 +156,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: red flags",
+          "source_section": "Hypoparathyroidism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypoparathyroidism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Hypoparathyroidism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -116,17 +200,36 @@
       {
         "id": "red_flag_03",
         "label": "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: red flags",
+          "source_section": "Hypoparathyroidism curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hypoparathyroidism presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.: danger pattern, severity marker, or complication that changes urgency for Hypoparathyroidism.",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "vertebral",
+          "fracture",
+          "cord",
+          "neurologic",
+          "symptoms",
+          "with",
+          "back",
+          "pain"
+        ],
         "when": {
           "termsAny": [
             "Hip/vertebral fracture",
@@ -137,19 +240,159 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism.",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism.",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures.",
+        "label": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
         "options": [
           {
             "value": "unknown",
@@ -168,21 +411,35 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hypoparathyroidism workup."
+        "action": "Localizing symptoms change imaging, antibody or thyroid-function interpretation, airway/eye risk assessment, and specialty referral timing for Hypoparathyroidism.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypoparathyroidism.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hypoparathyroidism.",
+        "management_implication": "Localizing symptoms change imaging, antibody or thyroid-function interpretation, airway/eye risk assessment, and specialty referral timing for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "post",
+          "neck",
+          "surgery",
+          "radiation"
+        ],
+        "source_seed": "Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures."
       },
       {
         "id": "question_02",
-        "label": "Calcium/vitamin D therapy and kidney stones.",
+        "label": "Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?",
         "options": [
           {
             "value": "unknown",
@@ -201,21 +458,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hypoparathyroidism workup."
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "cramps"
+        ],
+        "source_seed": "Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?",
         "options": [
           {
             "value": "unknown",
@@ -234,21 +502,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hypoparathyroidism workup."
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "tetany"
+        ],
+        "source_seed": "Post-neck surgery/radiation, paresthesias, cramps, tetany, seizures."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure?",
         "options": [
           {
             "value": "unknown",
@@ -267,21 +546,36 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypoparathyroidism."
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypoparathyroidism therapy unsafe.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypoparathyroidism therapy unsafe.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "calcium",
+          "vitamin",
+          "therapy",
+          "kidney",
+          "stones"
+        ],
+        "source_seed": "Calcium/vitamin D therapy and kidney stones."
       },
       {
         "id": "question_05",
-        "label": "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes.",
+        "label": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
         "options": [
           {
             "value": "unknown",
@@ -300,21 +594,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypoparathyroidism."
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "stones"
+        ],
+        "source_seed": "Ask about fragility fractures, falls, height loss/back pain, stones, calcium/vitamin D intake, malabsorption, kidney disease, medications, and family fracture/endocrine syndromes."
       },
       {
         "id": "question_06",
-        "label": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia.",
+        "label": "Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?",
+        "item_type": "history_question",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: clinical questions",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?",
         "options": [
           {
             "value": "unknown",
@@ -333,206 +638,419 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hypoparathyroidism.",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hypoparathyroidism."
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypoparathyroidism therapy unsafe.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hypoparathyroidism therapy unsafe.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "anticonvulsants"
+        ],
+        "source_seed": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
+      },
+      {
+        "id": "question_07",
+        "label": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hypoparathyroidism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hypoparathyroidism needs urgent evaluation today.",
+        "management_implication": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "symptoms",
+          "hypo",
+          "hypercalcemia"
+        ],
+        "source_seed": "Clarify glucocorticoids, aromatase inhibitors, androgen deprivation, anticonvulsants, bariatric surgery, neck surgery, lithium/thiazides, and symptoms of hypo- or hypercalcemia."
       }
     ],
     "conditionalQuestions": [],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Neuromuscular irritability, Chvostek/Trousseau when appropriate, mental status if severe.",
+        "label": "Assess proximal hip flexor strength",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: focused physical exam",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism."
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Weakness changes fall risk, severity assessment, and urgency of calcium or vitamin D evaluation.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Test hip flexion strength against resistance bilaterally while the patient is seated or supine, adapting to pain and safety.",
+        "findings_options": [
+          "Normal strength",
+          "Mild weakness",
+          "Needs arms/assistance",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When osteomalacia, hypercalcemia, hypocalcemia, falls, or weakness is possible",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Weakness changes fall risk, severity assessment, and urgency of calcium or vitamin D evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess proximal hip flexor strength is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "assess",
+          "proximal",
+          "flexor",
+          "strength"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Palpate focal bone tenderness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: focused physical exam",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism."
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Focal tenderness changes fracture concern, imaging need, and treatment urgency.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Palpate the symptomatic bone or spine area gently for focal tenderness and correlate with trauma, fracture risk, and neurologic symptoms.",
+        "findings_options": [
+          "No focal tenderness",
+          "Focal tenderness",
+          "Diffuse tenderness",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When bone pain, osteomalacia, fracture, or hyperparathyroidism is possible",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Focal tenderness changes fracture concern, imaging need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate focal bone tenderness is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "palpate",
+          "focal",
+          "bone",
+          "tenderness"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Assess gait stability if safe",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: focused physical exam",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism."
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Unsafe gait changes fall precautions, disposition, and rehabilitation planning.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Observe standing and gait only if safe, noting balance, antalgia, assistive-device need, and fall risk.",
+        "findings_options": [
+          "Stable",
+          "Unsteady",
+          "Needs assistive device/help",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When falls, fracture risk, weakness, or bone disease is relevant",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Unsafe gait changes fall precautions, disposition, and rehabilitation planning.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Assess gait stability if safe is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "assess",
+          "gait",
+          "stability",
+          "safe"
+        ]
       },
       {
         "id": "exam_04",
-        "label": "Height, weight, kyphosis, spine/hip tenderness, gait/balance/fall risk, proximal strength, and neuromuscular irritability when calcium disorders are possible.",
+        "label": "Inspect spine posture for kyphosis",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: focused physical exam",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hypoparathyroidism."
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Kyphosis or height-loss concern changes vertebral fracture evaluation and imaging threshold.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Inspect standing posture and spinal curvature, noting kyphosis, height-loss concern, or vertebral compression pattern.",
+        "findings_options": [
+          "No kyphosis/height-loss concern",
+          "Kyphosis",
+          "Height-loss concern",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When osteoporosis or vertebral compression fracture risk is relevant",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Kyphosis or height-loss concern changes vertebral fracture evaluation and imaging threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect spine posture for kyphosis is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "inspect",
+          "spine",
+          "posture",
+          "kyphosis"
+        ]
       },
       {
         "id": "exam_05",
-        "label": "Volume status and mental status when severe hypercalcemia or symptomatic hypocalcemia is possible.",
+        "label": "Elicit Chvostek sign",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: focused physical exam",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism."
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Positive neuromuscular irritability changes urgency of calcium testing and treatment.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Tap over the facial nerve anterior to the ear and observe for ipsilateral facial twitching, interpreting cautiously because false positives occur.",
+        "findings_options": [
+          "Negative",
+          "Positive",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When symptomatic hypocalcemia is possible",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Positive neuromuscular irritability changes urgency of calcium testing and treatment.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Elicit Chvostek sign is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "elicit",
+          "chvostek",
+          "sign"
+        ]
+      },
+      {
+        "id": "exam_06",
+        "label": "Elicit Trousseau sign",
+        "item_type": "physical_exam_maneuver",
+        "source": {
+          "source_id": "HYPOPARA_TASK_FORCE_2022",
+          "source_section": "Hypoparathyroidism curated endocrine workup: required bedside maneuver",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2022",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Use this maneuver to evaluate hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Positive carpopedal spasm changes urgency of calcium replacement and monitoring.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Inflate a blood-pressure cuff above systolic pressure for up to three minutes if safe and observe for carpopedal spasm.",
+        "findings_options": [
+          "Negative",
+          "Positive",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When symptomatic hypocalcemia is possible and safe to perform",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Positive carpopedal spasm changes urgency of calcium replacement and monitoring.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Elicit Trousseau sign is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique. Pair this technique-dependent finding with the relevant labs, imaging, serial trend, or specialty exam before changing definitive therapy.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "elicit",
+          "trousseau",
+          "sign"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If palpitations, tachycardia, dyspnea, chest discomfort, tremor, or severe hyperthyroid symptoms are present: add rhythm regularity, heart failure/perfusion signs, tremor/hyperreflexia, and temperature.",
+        "label": "Palpate spine for focal tenderness",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypoparathyroidism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism.",
+        "action": "Add when fracture, back pain, spine, osteoporosis, osteomalacia is present; this evaluates hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk. Focal tenderness changes fracture imaging threshold.",
+        "rationale": "Targets hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Palpate the symptomatic bone or spine area gently for focal tenderness and correlate with trauma, fracture risk, and neurologic symptoms.",
+        "findings_options": [
+          "No focal tenderness",
+          "Focal tenderness",
+          "Diffuse tenderness",
+          "Unable/unsafe to assess"
+        ],
+        "when_to_perform": "When fracture, vertebral pain, osteoporosis, or osteomalacia is possible",
+        "diagnostic_target": "hypocalcemia, osteomalacia/osteoporosis complication, fracture risk, or fall risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Focal tenderness changes fracture imaging threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Palpate spine for focal tenderness is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "palpate",
+          "spine",
+          "focal",
+          "tenderness"
+        ],
         "when": {
           "termsAny": [
-            "palpitations",
-            "tachycardia",
-            "atrial fibrillation",
-            "dyspnea",
-            "chest pain",
-            "tremor",
-            "thyroid storm",
-            "heat intolerance",
-            "fever"
+            "fracture",
+            "back pain",
+            "spine",
+            "osteoporosis",
+            "osteomalacia",
+            "fall"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If eye, neck mass, hoarseness, dysphagia, dyspnea, radiation exposure, or nodule concern is present: add orbitopathy/EOM screen, thyroid palpation, cervical nodes, voice, airway, and compressive-symptom assessment.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hypoparathyroidism curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hypoparathyroidism.",
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hypoparathyroidism.",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Hypoparathyroidism, not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
         "when": {
           "termsAny": [
-            "eye",
-            "orbitopathy",
-            "diplopia",
-            "proptosis",
-            "neck mass",
-            "nodule",
-            "hoarseness",
-            "dysphagia",
-            "dyspnea",
-            "radiation",
-            "cervical nodes"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
-        "source": {
-          "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2022",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hypoparathyroidism.",
-        "when": {
-          "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
             "vomiting",
             "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
-          ]
-        }
-      },
-      {
-        "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
-        "source": {
-          "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: conditional focused physical exam add-ons",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2022",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hypoparathyroidism.",
-        "when": {
-          "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "poor intake",
+            "polyuria",
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       }
@@ -541,274 +1059,592 @@
       {
         "id": "test_01",
         "label": "Calcium plus PTH.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism.",
+        "diagnostic_target": "Calcium plus PTH.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "calcium",
+          "plus"
+        ]
       },
       {
         "id": "test_02",
         "label": "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "phosphorus",
+          "magnesium",
+          "creatinine",
+          "egfr"
+        ]
       },
       {
         "id": "test_03",
         "label": "24-hour urine calcium during chronic treatment.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "24-hour urine calcium during chronic treatment.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "hour",
+          "urine",
+          "calcium",
+          "during",
+          "chronic",
+          "treatment"
+        ]
       },
       {
         "id": "test_04",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism.",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_05",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "thyroid",
+          "safety",
+          "data",
+          "pair",
+          "free",
+          "with",
+          "syndrome",
+          "specific"
+        ]
       },
       {
         "id": "test_06",
         "label": "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "DXA/vertebral imaging or fracture-risk tool when bone density is in scope; calcium/PTH/phosphorus/magnesium/25(OH)D/renal function for calcium-bone disorders.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "vertebral",
+          "imaging",
+          "fracture",
+          "risk",
+          "tool",
+          "when",
+          "bone",
+          "density"
+        ]
       },
       {
         "id": "test_07",
         "label": "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: diagnostic workup",
+          "source_section": "Hypoparathyroidism curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "24-hour urine calcium and renal imaging when primary hyperparathyroidism, kidney stones, or chronic hypoparathyroidism management is relevant.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific. DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5. 25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults. Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "hour",
+          "urine",
+          "calcium",
+          "renal",
+          "imaging",
+          "when",
+          "primary",
+          "hyperparathyroidism"
+        ]
       },
       {
         "id": "reference_01",
         "label": "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "corrected",
+          "calcium",
+          "often",
+          "about",
+          "ionized",
+          "mmol"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Intact PTH often about 10-65 pg/mL but assay-specific.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Intact PTH often about 10-65 pg/mL but assay-specific.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "intact",
+          "often",
+          "about",
+          "assay",
+          "specific"
+        ]
       },
       {
         "id": "reference_03",
         "label": "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "DXA T-score: normal >= -1.0; osteopenia -1.0 to -2.5; osteoporosis <= -2.5.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "score",
+          "normal",
+          "osteopenia",
+          "osteoporosis"
+        ]
       },
       {
         "id": "reference_04",
         "label": "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "25(OH)D thresholds vary; many labs flag <20 ng/mL as low and <12 ng/mL as severe deficiency, while 2024 Endocrine Society guidance avoids universal screening/target thresholds for healthy adults.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "thresholds",
+          "vary",
+          "many",
+          "labs",
+          "flag",
+          "severe",
+          "deficiency",
+          "while"
+        ]
       },
       {
         "id": "reference_05",
         "label": "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Hypoparathyroidism: low calcium with low or inappropriately normal PTH, often high phosphorus.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "calcium",
+          "with",
+          "inappropriately",
+          "normal",
+          "often",
+          "high",
+          "phosphorus"
+        ]
       },
       {
         "id": "reference_06",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hypoparathyroidism curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hypoparathyroidism.",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hypoparathyroidism.",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hypoparathyroidism test or threshold.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
+        "item_type": "management_change",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: results that change management",
+          "source_section": "Hypoparathyroidism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism.",
+        "diagnostic_target": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "management_change": "Symptomatic or severe hypocalcemia changes to urgent calcium replacement and ECG monitoring.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "symptomatic",
+          "severe",
+          "hypocalcemia",
+          "changes",
+          "urgent",
+          "calcium",
+          "replacement",
+          "monitoring"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: results that change management",
+          "source_section": "Hypoparathyroidism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism.",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: results that change management",
+          "source_section": "Hypoparathyroidism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism.",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "item_type": "management_change",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: results that change management",
+          "source_section": "Hypoparathyroidism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism.",
+        "diagnostic_target": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "management_change": "Fragility fracture, very low T-score, high fracture risk, or secondary cause changes therapy intensity and fall-prevention urgency.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "fragility",
+          "fracture",
+          "very",
+          "score",
+          "high",
+          "risk",
+          "secondary"
+        ]
       },
       {
         "id": "management_05",
         "label": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "HYPOPARA_TASK_FORCE_2022",
-          "source_section": "Hypoparathyroidism generated endocrine workup: results that change management",
+          "source_section": "Hypoparathyroidism curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2022",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hypoparathyroidism.",
+        "diagnostic_target": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hypoparathyroidism.",
+        "management_change": "Calcium-PTH pattern, renal involvement, stones, osteoporosis, or severe calcium symptoms changes endocrine/surgical pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hypoparathyroidism.",
+        "tags": [
+          "bone_and_parathyroid_disorders",
+          "hypoparathyroidism",
+          "calcium",
+          "pattern",
+          "renal",
+          "involvement",
+          "stones",
+          "osteoporosis",
+          "severe"
+        ]
       }
     ],
     "endocrine_metadata": {

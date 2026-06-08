@@ -27,6 +27,8 @@
       {
         "id": "acs",
         "label": "ACS or myocardial injury",
+        "action": "Obtain ECG and serial high-sensitivity troponin using a structured chest-pain pathway, with monitoring and escalation when acute or unstable.",
+        "rationale": "ACS or myocardial injury must be prioritized because ECG/troponin timing and instability determine immediate management and disposition.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "structured chest pain pathways",
@@ -35,11 +37,37 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "ACS or myocardial injury: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Chest pain.",
+        "management_change": "Obtain ECG and serial high-sensitivity troponin using a structured chest-pain pathway, with monitoring and escalation when acute or unstable.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Chest pain.",
+        "tags": [
+          "chest_pain",
+          "pressure",
+          "tightness",
+          "myocardial",
+          "injury",
+          "obtain",
+          "serial",
+          "high",
+          "sensitivity",
+          "troponin",
+          "using",
+          "structured",
+          "chest",
+          "pain",
+          "monitoring"
+        ]
       },
       {
         "id": "pe_pulmonary",
         "label": "PE, pneumothorax, pneumonia, or pleural disease",
+        "action": "Use dyspnea, pleuritic pain, hemoptysis, oxygen need, lung findings, and DVT features to decide whether pulmonary imaging or PE/pneumothorax/pneumonia evaluation is needed.",
+        "rationale": "Life-threatening pulmonary causes can mimic ACS and change imaging, anticoagulation safety, oxygen support, antibiotics, and disposition.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "life-threatening nonischemic causes",
@@ -48,11 +76,37 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "PE, pneumothorax, pneumonia, or pleural disease: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Chest pain.",
+        "management_change": "Use dyspnea, pleuritic pain, hemoptysis, oxygen need, lung findings, and DVT features to decide whether pulmonary imaging or PE/pneumothorax/pneumonia evaluation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Chest pain.",
+        "tags": [
+          "chest_pain",
+          "pressure",
+          "tightness",
+          "pneumothorax",
+          "pneumonia",
+          "pleural",
+          "disease",
+          "dyspnea",
+          "pleuritic",
+          "pain",
+          "hemoptysis",
+          "oxygen",
+          "need",
+          "lung",
+          "findings"
+        ]
       },
       {
         "id": "aortic",
         "label": "Aortic syndrome or vascular emergency",
+        "action": "Screen for tearing or abrupt severe pain, back radiation, pulse/BP differential, neurologic symptoms, syncope, or high-risk vascular history and escalate when present.",
+        "rationale": "Aortic and vascular emergencies require different imaging and treatment pathways than routine ACS evaluation and can be rapidly fatal if missed.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "life-threatening causes",
@@ -61,11 +115,37 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Aortic syndrome or vascular emergency: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Chest pain.",
+        "management_change": "Screen for tearing or abrupt severe pain, back radiation, pulse/BP differential, neurologic symptoms, syncope, or high-risk vascular history and escalate when present.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Chest pain.",
+        "tags": [
+          "chest_pain",
+          "pressure",
+          "tightness",
+          "aortic",
+          "syndrome",
+          "vascular",
+          "emergency",
+          "screen",
+          "tearing",
+          "abrupt",
+          "severe",
+          "pain",
+          "back",
+          "radiation",
+          "pulse"
+        ]
       },
       {
         "id": "noncardiac",
         "label": "Musculoskeletal, GI, anxiety, or other noncardiac causes after red flags are addressed",
+        "action": "Consider musculoskeletal, GI, anxiety, or other lower-acuity causes only after life-threatening cardiopulmonary and vascular red flags are addressed.",
+        "rationale": "Low-risk explanations should not prematurely close the workup before ACS, PE, pneumothorax, pneumonia, aortic syndrome, and instability are considered.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "stable and acute chest pain evaluation",
@@ -74,7 +154,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Musculoskeletal, GI, anxiety, or other noncardiac causes after red flags are addressed: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Chest pain.",
+        "management_change": "Consider musculoskeletal, GI, anxiety, or other lower-acuity causes only after life-threatening cardiopulmonary and vascular red flags are addressed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Chest pain.",
+        "tags": [
+          "chest_pain",
+          "pressure",
+          "tightness",
+          "musculoskeletal",
+          "anxiety",
+          "other",
+          "noncardiac",
+          "causes",
+          "after",
+          "flags",
+          "addressed",
+          "consider"
+        ]
       }
     ],
     "redFlags": [
@@ -82,6 +183,13 @@
         "id": "chest_pain_unstable_vitals",
         "label": "Unstable vitals or shock physiology",
         "action": "Urgent emergency evaluation, monitoring, ECG, and escalation.",
+        "rationale": "Unstable physiology changes chest pain from routine risk stratification to immediate emergency assessment for ACS, shock, aortic catastrophe, PE, pneumothorax, or other life-threatening causes.",
+        "tags": [
+          "chest_pain",
+          "shock",
+          "unstable_vitals",
+          "emergency_escalation"
+        ],
         "when": {
           "termsAny": [
             "hypotension",
@@ -101,12 +209,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Unstable vitals or shock physiology: danger pattern, severity marker, or complication that changes urgency for Chest pain.",
+        "management_change": "Urgent emergency evaluation, monitoring, ECG, and escalation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Chest pain."
       },
       {
         "id": "chest_pain_syncope_neuro",
         "label": "Syncope, new neurologic deficit, or severe sudden pain",
         "action": "Treat as high-risk chest pain until life-threatening causes are excluded.",
+        "rationale": "Syncope, neurologic deficit, or abrupt severe pain changes the differential toward aortic syndrome, PE, arrhythmia, stroke mimic, or other high-risk chest pain pathway.",
+        "tags": [
+          "chest_pain",
+          "syncope",
+          "neurologic_deficit",
+          "high_risk"
+        ],
         "when": {
           "termsAny": [
             "syncope",
@@ -127,12 +249,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Syncope, new neurologic deficit, or severe sudden pain: danger pattern, severity marker, or complication that changes urgency for Chest pain.",
+        "management_change": "Treat as high-risk chest pain until life-threatening causes are excluded.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Chest pain."
       },
       {
         "id": "chest_pain_dissection_features",
         "label": "Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms",
         "action": "Escalate urgently and consider aortic imaging pathway per local protocol.",
+        "rationale": "Dissection-pattern symptoms or pulse/BP asymmetry changes testing away from isolated ACS evaluation toward urgent acute aortic syndrome assessment.",
+        "tags": [
+          "chest_pain",
+          "aortic_dissection",
+          "pulse_asymmetry",
+          "back_radiation"
+        ],
         "when": {
           "termsAny": [
             "tearing",
@@ -151,7 +287,14 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms: danger pattern, severity marker, or complication that changes urgency for Chest pain.",
+        "management_change": "Escalate urgently and consider aortic imaging pathway per local protocol.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Chest pain."
       }
     ],
     "requiredQuestions": [
@@ -180,7 +323,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "When did the chest discomfort start, and is it ongoing?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies ischemic probability, symptom tempo, risk pathway selection, and urgent ECG/troponin testing needs for chest pain.",
+        "management_implication": "The answer changes ACS probability, ECG/troponin urgency, pathway selection, and monitoring intensity.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "onset",
+          "duration",
+          "when",
+          "discomfort",
+          "start",
+          "ongoing",
+          "symptom",
+          "characterization"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_quality_location_radiation",
@@ -207,7 +369,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "What does it feel like, where is it, and does it radiate to arm, jaw, back, or shoulder?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies ischemic probability, symptom tempo, risk pathway selection, and urgent ECG/troponin testing needs for chest pain.",
+        "management_implication": "The answer changes ACS probability, ECG/troponin urgency, pathway selection, and monitoring intensity.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "quality",
+          "location",
+          "radiation",
+          "what",
+          "does",
+          "feel",
+          "like",
+          "where",
+          "radiate",
+          "back"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_exertional_pattern",
@@ -234,7 +417,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Is it exertional, relieved by rest, or similar to prior angina?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies ischemic probability, symptom tempo, risk pathway selection, and urgent ECG/troponin testing needs for chest pain.",
+        "management_implication": "The answer changes ACS probability, ECG/troponin urgency, pathway selection, and monitoring intensity.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "exertional",
+          "pattern",
+          "relieved",
+          "rest",
+          "similar",
+          "prior",
+          "angina",
+          "ischemic",
+          "symptom",
+          "assessment"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_dyspnea",
@@ -261,7 +465,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Any shortness of breath, pleuritic pain, cough, hemoptysis, or oxygen requirement?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for PE, pneumothorax, pneumonia, heart failure, and other cardiopulmonary mimics that change testing pathway and disposition.",
+        "management_implication": "A positive answer changes PE probability, diagnostic testing pathway, imaging/medication safety, and disposition planning.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "dyspnea",
+          "shortness",
+          "breath",
+          "pleuritic",
+          "cough",
+          "hemoptysis",
+          "oxygen",
+          "requirement",
+          "associated",
+          "symptoms"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_diaphoresis_nausea",
@@ -288,7 +513,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Any diaphoresis, nausea/vomiting, palpitations, or marked weakness?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies associated autonomic or cardiopulmonary symptoms that increase concern for ACS or another high-acuity chest-pain cause.",
+        "management_implication": "The answer changes ACS probability, ECG/troponin urgency, pathway selection, and monitoring intensity.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "diaphoresis",
+          "nausea",
+          "vomiting",
+          "palpitations",
+          "marked",
+          "weakness",
+          "associated",
+          "symptoms"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_syncope",
@@ -315,7 +559,27 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Any syncope, presyncope, neurologic symptoms, or sudden maximal pain?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for high-risk red flags such as syncope, neurologic symptoms, sudden maximal pain, or aortic-syndrome features that require urgent escalation.",
+        "management_implication": "A positive answer changes urgency, monitoring, and evaluation for life-threatening causes.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "syncope",
+          "presyncope",
+          "neurologic",
+          "symptoms",
+          "sudden",
+          "maximal",
+          "high",
+          "risk",
+          "features"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_cad_risk",
@@ -342,7 +606,29 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Known CAD, prior MI/stent/CABG, diabetes, CKD, smoking, hypertension, or strong family history?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies ischemic probability, symptom tempo, risk pathway selection, and urgent ECG/troponin testing needs for chest pain.",
+        "management_implication": "The answer changes ACS probability, ECG/troponin urgency, pathway selection, and monitoring intensity.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "risk",
+          "known",
+          "prior",
+          "stent",
+          "cabg",
+          "diabetes",
+          "smoking",
+          "hypertension",
+          "strong",
+          "family",
+          "history"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_med_toxin",
@@ -369,7 +655,29 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Recent cocaine/stimulant use, anticoagulants, estrogen therapy, or medication changes?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies stimulant, anticoagulant, estrogen, or medication exposures that change ACS, PE, bleeding, and treatment-safety assessment.",
+        "management_implication": "The answer changes ACS/PE/bleeding risk interpretation and treatment safety.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "toxin",
+          "recent",
+          "cocaine",
+          "stimulant",
+          "anticoagulants",
+          "estrogen",
+          "therapy",
+          "medication",
+          "changes",
+          "risk",
+          "modifiers"
+        ],
+        "item_type": "history_question"
       }
     ],
     "conditionalQuestions": [
@@ -414,7 +722,29 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Any unilateral leg swelling, recent surgery/immobility, cancer, prior VTE, pregnancy/postpartum state, or estrogen exposure?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Screens for PE, pneumothorax, pneumonia, heart failure, and other cardiopulmonary mimics that change testing pathway and disposition.",
+        "management_implication": "A positive answer changes PE probability, diagnostic testing pathway, imaging/medication safety, and disposition planning.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "risk",
+          "unilateral",
+          "swelling",
+          "recent",
+          "surgery",
+          "immobility",
+          "cancer",
+          "prior",
+          "pregnancy",
+          "postpartum",
+          "state"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_repro_pregnancy",
@@ -449,7 +779,27 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "If relevant, is pregnancy possible or is the patient postpartum?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies pregnancy or postpartum status because it changes PE risk, medication safety, imaging choices, and consultation threshold.",
+        "management_implication": "A positive answer changes PE probability, diagnostic testing pathway, imaging/medication safety, and disposition planning.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "repro",
+          "pregnancy",
+          "relevant",
+          "possible",
+          "patient",
+          "postpartum",
+          "specific",
+          "risk",
+          "assessment"
+        ],
+        "item_type": "history_question"
       },
       {
         "id": "cp_reproducible_tenderness",
@@ -487,26 +837,34 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "text": "Is the pain reproducible with movement, palpation, position, or meals?",
+        "when_to_ask": "Ask when Chest pain is the selected validated workup or when this answer would change diagnostic probability, urgency, or treatment safety.",
+        "diagnostic_purpose": "Clarifies musculoskeletal or GI features after dangerous chest-pain causes are considered.",
+        "management_implication": "The answer changes diagnostic testing, treatment safety, disposition, or follow-up planning.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "reproducible",
+          "tenderness",
+          "with",
+          "movement",
+          "palpation",
+          "position",
+          "meals",
+          "noncardiac",
+          "symptom"
+        ],
+        "item_type": "history_question"
       }
     ],
     "requiredExam": [
       {
-        "id": "cp_vitals",
-        "label": "Vital signs including BP, HR, RR, oxygen saturation, and general appearance",
-        "source": {
-          "source_id": "AHA_ACC_CHEST_PAIN_2021",
-          "source_section": "initial evaluation",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2021",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "clinical_content_lead",
-          "implementation_notes": ""
-        }
-      },
-      {
-        "id": "cp_cardiac_exam",
-        "label": "Cardiac exam: rhythm, murmurs, gallop, rub, signs of heart failure",
+        "id": "cp_auscultate_heart_rhythm",
+        "label": "Auscultate heart rhythm",
+        "action": "Document irregular rhythm because atrial fibrillation or other arrhythmia changes ECG interpretation, monitoring, and management.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "focused cardiovascular exam",
@@ -515,11 +873,131 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Auscultate the precordium with diaphragm and bell as appropriate, noting rate regularity, murmurs, rubs, or extra heart sounds.",
+        "findings_options": [
+          "Regular",
+          "Irregular",
+          "Tachycardic",
+          "Bradycardic",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "arrhythmia, structural heart disease, ischemic complication, or heart-failure finding",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document irregular rhythm because atrial fibrillation or other arrhythmia changes ECG interpretation, monitoring, and management.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "auscultate",
+          "heart",
+          "rhythm",
+          "focused",
+          "exam"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "cp_lung_exam",
-        "label": "Pulmonary exam: work of breathing, lung sounds, asymmetry, wheeze/crackles",
+        "id": "cp_auscultate_murmurs",
+        "label": "Auscultate for cardiac murmurs",
+        "action": "Document a new murmur because it changes concern for valvular disease, mechanical complication, or aortic pathology.",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "focused cardiovascular exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Auscultate the precordium with diaphragm and bell as appropriate, noting rate regularity, murmurs, rubs, or extra heart sounds.",
+        "findings_options": [
+          "No murmur",
+          "Systolic murmur",
+          "Diastolic murmur",
+          "New/changed murmur",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "arrhythmia, structural heart disease, ischemic complication, or heart-failure finding",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document a new murmur because it changes concern for valvular disease, mechanical complication, or aortic pathology.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "auscultate",
+          "murmurs",
+          "cardiac",
+          "focused",
+          "exam"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_auscultate_gallop",
+        "label": "Auscultate for gallop",
+        "action": "Document an S3 or S4 when present because it changes heart failure or ischemic risk framing.",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "focused cardiovascular exam",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Auscultate the precordium with diaphragm and bell as appropriate, noting rate regularity, murmurs, rubs, or extra heart sounds.",
+        "findings_options": [
+          "No gallop",
+          "S3",
+          "S4",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "arrhythmia, structural heart disease, ischemic complication, or heart-failure finding",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document an S3 or S4 when present because it changes heart failure or ischemic risk framing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "auscultate",
+          "gallop",
+          "focused",
+          "exam"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_assess_work_of_breathing",
+        "label": "Assess work of breathing",
+        "action": "Document increased work of breathing because it changes respiratory support needs and cardiopulmonary emergency concern.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "alternative cardiopulmonary emergencies",
@@ -528,11 +1006,89 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Observe respiratory rate, depth, accessory muscle use, speech tolerance, and breathing pattern at rest.",
+        "findings_options": [
+          "Normal effort",
+          "Increased work",
+          "Kussmaul/deep respirations",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "respiratory distress, acidosis compensation, pulmonary infection, obstruction, congestion, or pneumothorax pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document increased work of breathing because it changes respiratory support needs and cardiopulmonary emergency concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "assess",
+          "work",
+          "breathing",
+          "alternative",
+          "cardiopulmonary",
+          "emergencies"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "cp_perf_pulses",
-        "label": "Perfusion and pulses: radial pulses, extremity perfusion, pulse deficit if concern",
+        "id": "cp_auscultate_lung_sounds",
+        "label": "Auscultate lung sounds",
+        "action": "Document wheeze, crackles, or asymmetric breath sounds because these change heart failure, obstructive lung disease, pneumonia, or pneumothorax concern.",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "alternative cardiopulmonary emergencies",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Auscultate symmetric anterior, lateral, and posterior lung fields as feasible, comparing sides for crackles, wheeze, diminished sounds, or asymmetry.",
+        "findings_options": [
+          "Clear",
+          "Crackles",
+          "Wheeze",
+          "Diminished/asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "respiratory distress, acidosis compensation, pulmonary infection, obstruction, congestion, or pneumothorax pattern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document wheeze, crackles, or asymmetric breath sounds because these change heart failure, obstructive lung disease, pneumonia, or pneumothorax concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "auscultate",
+          "lung",
+          "sounds",
+          "alternative",
+          "cardiopulmonary",
+          "emergencies"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_palpate_radial_pulses",
+        "label": "Palpate radial pulses",
+        "action": "Document diminished or asymmetric pulses because this changes concern for shock or acute aortic syndrome.",
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "life-threatening causes",
@@ -541,13 +1097,91 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Palpate bilateral pulses at the named sites, comparing amplitude, symmetry, rhythm, and perfusion.",
+        "findings_options": [
+          "Symmetric/normal",
+          "Diminished",
+          "Absent",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document diminished or asymmetric pulses because this changes concern for shock or acute aortic syndrome.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "palpate",
+          "radial",
+          "pulses",
+          "life",
+          "threatening",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_assess_extremity_perfusion",
+        "label": "Assess extremity perfusion",
+        "action": "Document cool extremities, delayed capillary refill, or poor perfusion because these change shock assessment and escalation.",
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "life-threatening causes",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect and palpate distal extremities for warmth, color, capillary refill, mottling, and symmetry.",
+        "findings_options": [
+          "Normal/warm",
+          "Delayed/cool",
+          "Mottled/poor perfusion",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Chest pain is the selected validated workup and the maneuver is clinically safe and relevant at bedside.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Document cool extremities, delayed capillary refill, or poor perfusion because these change shock assessment and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "assess",
+          "extremity",
+          "perfusion",
+          "life",
+          "threatening",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       }
     ],
     "conditionalExam": [
       {
-        "id": "cp_jvp_edema",
-        "label": "JVP, lower extremity edema, and volume status",
+        "id": "cp_assess_jvp",
+        "label": "Assess jugular venous pressure",
+        "action": "Add this when dyspnea or heart failure features are present because elevated JVP changes congestion and right-heart strain assessment.",
         "when": {
           "termsAny": [
             "dyspnea",
@@ -571,11 +1205,108 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Position the patient at 30 to 45 degrees when possible and inspect the internal jugular venous pulsation, estimating height and waveform in context.",
+        "findings_options": [
+          "JVP not elevated",
+          "JVP elevated above expected level",
+          "Waveform difficult or positioning limited",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when dyspnea, orthopnea, edema, heart failure, volume overload or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "venous congestion, right-heart strain, or volume-sensitive cardiopulmonary disease",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when dyspnea or heart failure features are present because elevated JVP changes congestion and right-heart strain assessment.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "assess",
+          "jugular",
+          "venous",
+          "pressure",
+          "heart",
+          "failure",
+          "findings"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "cp_chest_wall",
-        "label": "Chest wall palpation for reproducible tenderness",
+        "id": "cp_assess_leg_edema",
+        "label": "Assess lower extremity edema",
+        "action": "Add this when dyspnea or heart failure features are present because edema changes volume overload and venous thromboembolism framing.",
+        "when": {
+          "termsAny": [
+            "dyspnea",
+            "orthopnea",
+            "edema",
+            "heart failure",
+            "volume overload"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_dyspnea",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "heart failure findings",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Inspect and press over the lower legs or dependent areas for pitting, symmetry, tenderness, and extent.",
+        "findings_options": [
+          "None",
+          "Trace",
+          "1+",
+          "2+",
+          "3+",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when dyspnea, orthopnea, edema, heart failure, volume overload or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "volume overload, DVT signs, or asymmetric lower-extremity pathology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when dyspnea or heart failure features are present because edema changes volume overload and venous thromboembolism framing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "assess",
+          "edema",
+          "lower",
+          "extremity",
+          "heart",
+          "failure",
+          "findings"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_palpate_chest_wall",
+        "label": "Palpate chest wall tenderness",
+        "action": "Add this when musculoskeletal features are present because reproducible tenderness changes nonischemic differential framing after red flags are addressed.",
         "when": {
           "termsAny": [
             "reproducible",
@@ -598,12 +1329,45 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Palpate the chest wall over the area of pain, asking whether palpation reproduces the presenting discomfort.",
+        "findings_options": [
+          "Not reproducible",
+          "Reproducible tenderness",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when reproducible, movement, costochondritis, trauma or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "reproducible musculoskeletal chest wall tenderness after dangerous causes are considered",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when musculoskeletal features are present because reproducible tenderness changes nonischemic differential framing after red flags are addressed.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "palpate",
+          "wall",
+          "tenderness",
+          "noncardiac",
+          "causes"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "cp_leg_dvt",
-        "label": "Unilateral leg swelling/tenderness and calf asymmetry if PE/DVT concern",
+        "id": "cp_inspect_unilateral_leg_swelling",
+        "label": "Inspect unilateral leg swelling",
+        "action": "Add this when PE or DVT concern is present because unilateral swelling changes venous thromboembolism probability and testing pathway.",
         "when": {
+          "intentIdsAny": [
+            "suspected_pe_v1"
+          ],
           "termsAny": [
             "leg swelling",
             "dvt",
@@ -626,11 +1390,106 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Inspect both legs side by side for asymmetric swelling, erythema, collateral veins, tenderness, and size difference.",
+        "findings_options": [
+          "No asymmetry",
+          "Asymmetric swelling",
+          "Tender/asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when leg swelling, dvt, pulmonary embolism, pleuritic, hypoxia or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "volume overload, DVT signs, or asymmetric lower-extremity pathology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when PE or DVT concern is present because unilateral swelling changes venous thromboembolism probability and testing pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "inspect",
+          "unilateral",
+          "swelling",
+          "pulmonary",
+          "embolism",
+          "alternative"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       },
       {
-        "id": "cp_bilateral_bp",
-        "label": "Blood pressure in both arms and pulse symmetry if dissection concern",
+        "id": "cp_compare_calf_circumference",
+        "label": "Compare calf circumference",
+        "action": "Add this when PE or DVT concern is present because calf asymmetry changes venous thromboembolism probability and testing pathway.",
+        "when": {
+          "intentIdsAny": [
+            "suspected_pe_v1"
+          ],
+          "termsAny": [
+            "leg swelling",
+            "dvt",
+            "pulmonary embolism",
+            "pleuritic",
+            "hypoxia"
+          ],
+          "answersAny": [
+            {
+              "id": "cp_vte_risk",
+              "value": "yes"
+            }
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "pulmonary embolism as alternative emergency",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "technique": "Measure both calves at the same distance below the tibial tuberosity and compare circumference in centimeters.",
+        "findings_options": [
+          "No asymmetry",
+          "Asymmetric swelling",
+          "Tender/asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when leg swelling, dvt, pulmonary embolism, pleuritic, hypoxia or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "volume overload, DVT signs, or asymmetric lower-extremity pathology",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when PE or DVT concern is present because calf asymmetry changes venous thromboembolism probability and testing pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 2,
+        "equipment_needed": "tape measure",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "compare",
+          "calf",
+          "circumference",
+          "pulmonary",
+          "embolism",
+          "alternative"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
+      },
+      {
+        "id": "cp_compare_radial_pulse_symmetry",
+        "label": "Compare radial pulse symmetry",
+        "action": "Add this when aortic syndrome concern is present because pulse asymmetry changes concern for acute aortic pathology.",
         "when": {
           "termsAny": [
             "tearing",
@@ -648,13 +1507,52 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "technique": "Palpate bilateral pulses at the named sites, comparing amplitude, symmetry, rhythm, and perfusion.",
+        "findings_options": [
+          "Symmetric/normal",
+          "Diminished",
+          "Absent",
+          "Asymmetric",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Add when tearing, ripping, back, pulse deficit, aortic dissection or related patient-specific modifiers are present in the selected Chest pain workup.",
+        "diagnostic_target": "dehydration, shock physiology, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Add this when aortic syndrome concern is present because pulse asymmetry changes concern for acute aortic pathology.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Interpret with clinical context and indicated diagnostic testing for Chest pain; reliability may be limited by patient cooperation, pain, body habitus, positioning, acute illness, and examiner skill.",
+        "tags": [
+          "cardiovascular",
+          "chest_pain",
+          "chest",
+          "pain",
+          "compare",
+          "radial",
+          "pulse",
+          "symmetry",
+          "aortic"
+        ],
+        "item_type": "physical_exam_maneuver",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context."
       }
     ],
     "initialTests": [
       {
         "id": "cp_ecg_10_min",
         "label": "12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation",
+        "action": "Obtain and interpret a 12-lead ECG immediately for acute or concerning chest pain; repeat if symptoms persist, evolve, or initial ECG is nondiagnostic.",
+        "rationale": "ECG findings identify STEMI, ischemia, arrhythmia, pericarditis patterns, or alternative emergencies and determine immediate reperfusion, monitoring, and escalation pathways.",
+        "tags": [
+          "chest_pain",
+          "ECG",
+          "ACS",
+          "ischemia"
+        ],
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "ECG for acute chest pain",
@@ -663,11 +1561,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "Obtain and interpret a 12-lead ECG immediately for acute or concerning chest pain; repeat if symptoms persist, evolve, or initial ECG is nondiagnostic.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       },
       {
         "id": "cp_troponin",
         "label": "High-sensitivity troponin pathway with serial testing per local protocol",
+        "action": "Use the local high-sensitivity troponin pathway with appropriate serial timing and symptom-onset context.",
+        "rationale": "Troponin dynamics change myocardial injury/MI probability, observation needs, consult urgency, and suitability for discharge versus monitored evaluation.",
+        "tags": [
+          "chest_pain",
+          "troponin",
+          "ACS",
+          "myocardial_injury"
+        ],
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "cardiac troponin recommendations",
@@ -676,11 +1589,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "High-sensitivity troponin pathway with serial testing per local protocol: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "Use the local high-sensitivity troponin pathway with appropriate serial timing and symptom-onset context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       },
       {
         "id": "cp_monitoring",
         "label": "Cardiac monitor, IV access, and repeat vitals if acute or unstable",
+        "action": "Place on cardiac monitoring, obtain IV access, and repeat vital signs when symptoms are acute, ongoing, unstable, or high risk.",
+        "rationale": "Monitoring and access change safety readiness for arrhythmia, ischemia, shock, medication administration, and rapid escalation.",
+        "tags": [
+          "chest_pain",
+          "monitoring",
+          "unstable",
+          "arrhythmia"
+        ],
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "initial evaluation and risk stratification",
@@ -689,11 +1617,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Cardiac monitor, IV access, and repeat vitals if acute or unstable: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "Place on cardiac monitoring, obtain IV access, and repeat vital signs when symptoms are acute, ongoing, unstable, or high risk.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       },
       {
         "id": "cp_cxr",
         "label": "Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible",
+        "action": "Obtain chest X-ray when symptoms, exam, or risk factors suggest pulmonary disease, pneumothorax, mediastinal abnormality, pneumonia, or heart failure.",
+        "rationale": "Chest imaging can redirect evaluation toward nonischemic cardiopulmonary causes and change imaging, antibiotics, diuresis, or procedural urgency.",
+        "tags": [
+          "chest_pain",
+          "chest_xray",
+          "pneumothorax",
+          "heart_failure"
+        ],
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "evaluation for nonischemic causes",
@@ -702,11 +1645,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "Obtain chest X-ray when symptoms, exam, or risk factors suggest pulmonary disease, pneumothorax, mediastinal abnormality, pneumonia, or heart failure.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       },
       {
         "id": "cp_pe_testing",
         "label": "If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography",
+        "action": "If PE remains plausible after structured risk assessment, use the local PE pathway to decide D-dimer versus CT pulmonary angiography.",
+        "rationale": "PE pathway testing changes anticoagulation, imaging, oxygen/monitoring needs, and disposition while avoiding unstructured overtesting.",
+        "tags": [
+          "chest_pain",
+          "pulmonary_embolism",
+          "D_dimer",
+          "CTPA"
+        ],
         "when": {
           "termsAny": [
             "pleuritic",
@@ -729,11 +1687,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "If PE remains plausible after structured risk assessment, use the local PE pathway to decide D-dimer versus CT pulmonary angiography.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       },
       {
         "id": "cp_pregnancy_test",
         "label": "Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it",
+        "action": "Check pregnancy status when pregnancy is possible and medication, radiation, PE, ectopic, or imaging decisions depend on it.",
+        "rationale": "Pregnancy status changes imaging choice, medication safety, ectopic-risk framing, and shared decision-making for acute chest pain workup.",
+        "tags": [
+          "chest_pain",
+          "pregnancy_possible",
+          "imaging_safety",
+          "medication_safety"
+        ],
         "when": {
           "answersAny": [
             {
@@ -750,13 +1723,28 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Pregnancy test when pregnancy is possible and testing/imaging decisions depend on it: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Chest pain.",
+        "management_change": "Check pregnancy status when pregnancy is possible and medication, radiation, PE, ectopic, or imaging decisions depend on it.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Chest pain test or threshold."
       }
     ],
     "dispositionRules": [
       {
         "id": "cp_emergency_escalation",
         "label": "Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.",
+        "action": "Escalate acute chest pain with red flags to emergency or monitored evaluation rather than routine outpatient follow-up.",
+        "rationale": "Red flags change management because ACS, aortic syndrome, PE, pneumothorax, shock, or serious arrhythmia must be excluded before low-risk framing.",
+        "tags": [
+          "chest_pain",
+          "red_flags",
+          "emergency_escalation",
+          "monitored_evaluation"
+        ],
         "when": {
           "termsAny": [
             "ongoing",
@@ -777,11 +1765,26 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Chest pain.",
+        "management_change": "Escalate acute chest pain with red flags to emergency or monitored evaluation rather than routine outpatient follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Chest pain."
       },
       {
         "id": "cp_structured_pathway",
         "label": "Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.",
+        "action": "Use a structured chest pain pathway that integrates symptoms, ECG, troponin timing, risk features, and local protocol.",
+        "rationale": "Structured pathways improve diagnostic safety and determine safe discharge, observation, admission, imaging, or cardiology consultation decisions.",
+        "tags": [
+          "chest_pain",
+          "clinical_decision_pathway",
+          "risk_stratification",
+          "diagnostic_safety"
+        ],
         "source": {
           "source_id": "AHA_ACC_CHEST_PAIN_2021",
           "source_section": "structured clinical decision pathways",
@@ -790,7 +1793,257 @@
           "last_reviewed": "2026-06-06",
           "clinical_owner": "clinical_content_lead",
           "implementation_notes": ""
-        }
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Chest pain.",
+        "management_change": "Use a structured chest pain pathway that integrates symptoms, ECG, troponin timing, risk features, and local protocol.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Chest pain."
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "cp_measure_bp",
+        "label": "Measure blood pressure",
+        "action": "Document hypotension, severe hypertension, or arm-to-arm differences because these change acuity, monitoring, and vascular emergency concern.",
+        "tags": [
+          "chest_pain",
+          "blood_pressure",
+          "shock",
+          "aortic_syndrome"
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Blood pressure anchors hemodynamic safety and helps identify shock, hypertensive urgency, orthostasis, or medication-risk context before focused diagnosis-specific decisions.",
+        "management_change": "Document hypotension, severe hypertension, or arm-to-arm differences because these change acuity, monitoring, and vascular emergency concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "cp_measure_hr",
+        "label": "Measure heart rate",
+        "action": "Document tachycardia, bradycardia, or irregularity because these change ECG urgency, monitoring, and cardiopulmonary differential.",
+        "tags": [
+          "chest_pain",
+          "heart_rate",
+          "arrhythmia",
+          "monitoring"
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Heart rate anchors physiologic severity and can reveal adrenergic state, hypovolemia, arrhythmia, infection severity, medication effect, or decompensation.",
+        "management_change": "Document tachycardia, bradycardia, or irregularity because these change ECG urgency, monitoring, and cardiopulmonary differential.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "cp_measure_rr",
+        "label": "Measure respiratory rate",
+        "action": "Document tachypnea or respiratory distress because this changes PE, pneumothorax, pneumonia, heart failure, and escalation concern.",
+        "tags": [
+          "chest_pain",
+          "respiratory_rate",
+          "dyspnea",
+          "cardiopulmonary"
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Respiratory rate and visible breathing effort are early bedside markers of respiratory failure, metabolic stress, sepsis physiology, or endocrine crisis severity.",
+        "management_change": "Document tachypnea or respiratory distress because this changes PE, pneumothorax, pneumonia, heart failure, and escalation concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Respiratory rate is often undercounted and may be affected by anxiety, pain, fever, compensation for metabolic disease, or sedation; observe directly when it changes acuity.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___/min",
+          "Normal effort",
+          "Tachypneic/labored",
+          "Bradypneic/tiring",
+          "Not available"
+        ],
+        "diagnostic_target": "tachypnea, hypoventilation, respiratory compensation, or acute illness severity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "cp_measure_spo2",
+        "label": "Measure oxygen saturation",
+        "action": "Document hypoxemia because it changes cardiopulmonary emergency triage and PE or pneumonia concern.",
+        "tags": [
+          "chest_pain",
+          "oxygen_saturation",
+          "hypoxemia",
+          "pulmonary_embolism"
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Oxygenation separates stable outpatient-style assessment from possible respiratory failure, pulmonary source, shock physiology, or need for urgent support.",
+        "management_change": "Document hypoxemia because it changes cardiopulmonary emergency triage and PE or pneumonia concern.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "pulse oximeter",
+        "patient_cooperation_required": "low",
+        "limitations": "Pulse oximetry can be affected by poor perfusion, motion, nail products, dyshemoglobinemia, skin pigmentation, and device quality; interpret with work of breathing and clinical context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "___% room air",
+          "___% on oxygen",
+          "Hypoxemic",
+          "Escalating oxygen need",
+          "Not available"
+        ],
+        "diagnostic_target": "hypoxemia, oxygen requirement, respiratory support need, or cardiopulmonary acuity",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "cp_assess_general_appearance",
+        "label": "Assess general appearance",
+        "action": "Document diaphoresis, distress, pallor, or toxic appearance because these change urgency and pretest concern for dangerous causes.",
+        "tags": [
+          "chest_pain",
+          "general_appearance",
+          "diaphoresis",
+          "distress"
+        ],
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "initial evaluation",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Global acuity and perfusion findings identify patients who need urgent escalation before a routine focused workup is completed.",
+        "management_change": "Document diaphoresis, distress, pallor, or toxic appearance because these change urgency and pretest concern for dangerous causes.",
+        "difficulty": "easy",
+        "time_burden_minutes": 0.5,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "Well-appearing",
+          "Ill-appearing",
+          "Toxic/unstable appearing",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "global acuity, shock/toxic appearance, distress, or immediate safety concern",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
+      },
+      {
+        "id": "cp_measure_bilateral_arm_bp",
+        "label": "Measure blood pressure in both arms",
+        "action": "Add this when aortic syndrome concern is present because a major arm-to-arm difference changes urgency and imaging pathway.",
+        "tags": [
+          "chest_pain",
+          "bilateral_arm_bp",
+          "aortic_dissection",
+          "pulse_asymmetry"
+        ],
+        "when": {
+          "termsAny": [
+            "tearing",
+            "ripping",
+            "back",
+            "pulse deficit",
+            "aortic dissection"
+          ]
+        },
+        "source": {
+          "source_id": "AHA_ACC_CHEST_PAIN_2021",
+          "source_section": "aortic syndrome concern",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "clinical_content_lead",
+          "implementation_notes": ""
+        },
+        "item_type": "safety_check",
+        "rationale": "Chest pain: Blood pressure anchors hemodynamic safety and helps identify shock, hypertensive urgency, orthostasis, or medication-risk context before focused diagnosis-specific decisions.",
+        "management_change": "Add this when aortic syndrome concern is present because a major arm-to-arm difference changes urgency and imaging pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "findings_options": [
+          "Symmetric arm BPs",
+          "Inter-arm systolic difference >=15-20 mmHg",
+          "Severe hypertension",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "inter-arm blood pressure asymmetry, severe hypertension, or aortic/dissection-risk bedside clue",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a"
       }
     ]
   }

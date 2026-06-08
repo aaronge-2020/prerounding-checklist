@@ -23,64 +23,135 @@
       {
         "id": "differential_01",
         "label": "Hirsutism (Excessive hair growth): diagnostic frame from guideline-sourced endocrine workup",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic frame",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic frame",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use this frame to decide whether Total testosterone and free testosterone when indicated. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Hirsutism (Excessive hair growth): diagnostic frame from guideline-sourced endocrine workup: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hirsutism (Excessive hair growth).",
+        "management_change": "Use this frame to decide whether Total testosterone and free testosterone when indicated. is the right first confirmatory step and whether urgent endocrine escalation is needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "excessive",
+          "hair",
+          "growth"
+        ]
       },
       {
         "id": "differential_02",
         "label": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: thresholds",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hirsutism (Excessive hair growth).",
+        "management_change": "Use local assay and patient context; do not apply numeric anchors without clinical interpretation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "prolactin",
+          "upper",
+          "limit",
+          "often",
+          "about",
+          "women",
+          "pregnancy",
+          "lactation"
+        ]
       },
       {
         "id": "differential_03",
         "label": "Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
+        "item_type": "diagnostic_frame",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: mimics and exclusions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: mimics and exclusions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
-        "rationale": "Improves Hirsutism (Excessive hair growth) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway."
+        "rationale": "Improves Hirsutism (Excessive hair growth) diagnostic safety by requiring review of dangerous mimics, common confounders, and assay/context pitfalls before committing to a final pathway.",
+        "diagnostic_target": "Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.: diagnostic bucket, mimic, exclusion, or competing frame that prevents premature closure for Hirsutism (Excessive hair growth).",
+        "management_change": "Use these alternatives to avoid premature closure and to decide which confirmatory tests, imaging, or specialty pathways are needed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this diagnostic-frame row; use it to structure the differential and avoid premature closure before applying source-backed tests and exam findings.",
+        "limitations": "This diagnostic frame is a safety check against premature closure; it does not confirm or exclude disease without the linked history, exam, tests, and longitudinal context for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "important",
+          "mimics",
+          "exclusions",
+          "pregnancy",
+          "hypothalamic",
+          "pituitary",
+          "disease",
+          "thyroid"
+        ]
       }
     ],
     "redFlags": [
       {
         "id": "red_flag_01",
         "label": "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: red flags",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hirsutism (Excessive hair growth) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.: danger pattern, severity marker, or complication that changes urgency for Hirsutism (Excessive hair growth).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "rapid",
+          "onset",
+          "virilization",
+          "very",
+          "high",
+          "testosterone",
+          "dheas",
+          "pelvic"
+        ],
         "when": {
           "termsAny": [
             "Rapid onset",
@@ -93,17 +164,36 @@
       {
         "id": "red_flag_02",
         "label": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: red flags",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hirsutism (Excessive hair growth) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.: danger pattern, severity marker, or complication that changes urgency for Hirsutism (Excessive hair growth).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "hemodynamic",
+          "instability",
+          "altered",
+          "mental",
+          "status",
+          "severe",
+          "electrolyte",
+          "glucose"
+        ],
         "when": {
           "termsAny": [
             "Hemodynamic instability",
@@ -118,17 +208,36 @@
       {
         "id": "red_flag_03",
         "label": "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.",
+        "item_type": "red_flag",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: red flags",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: red flags",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
         "rationale": "Identifies dangerous Hirsutism (Excessive hair growth) presentations that should override routine outpatient workup and prompt urgent escalation.",
+        "diagnostic_target": "Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.: danger pattern, severity marker, or complication that changes urgency for Hirsutism (Excessive hair growth).",
+        "management_change": "Escalate urgently, reassess severity, and evaluate for dangerous mimics or complications.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this red-flag/escalation row; use it to identify urgency and safety risk rather than to quantify diagnostic probability.",
+        "limitations": "Absence of this red flag does not exclude serious disease; interpret with trajectory, baseline risk, vital signs, exam findings, labs, and local escalation thresholds for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "positive",
+          "pregnancy",
+          "with",
+          "pain",
+          "bleeding",
+          "rapid",
+          "virilization",
+          "tumor"
+        ],
         "when": {
           "termsAny": [
             "Positive pregnancy with pain/bleeding",
@@ -143,19 +252,200 @@
         }
       }
     ],
+    "safetyChecks": [
+      {
+        "id": "safety_check_01",
+        "label": "Measure blood pressure",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "rationale": "Targets hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___/___ mmHg",
+          "Hypotensive",
+          "Severe hypertension",
+          "Orthostatic concern",
+          "Not available"
+        ],
+        "diagnostic_target": "hemodynamic safety, hypertension or hypotension severity, and medication or fluid-safety context",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Hypotension or severe hypertension changes acuity, medication safety, fluid strategy, and escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "low",
+        "limitations": "Single readings can be affected by cuff size, positioning, pain, anxiety, arrhythmia, recent activity, and medications; repeat or compare with baseline when results change management.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "measure",
+          "blood",
+          "pressure"
+        ]
+      },
+      {
+        "id": "safety_check_02",
+        "label": "Measure heart rate",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth).",
+        "when_to_perform": "At every endocrine workup encounter",
+        "findings_options": [
+          "___ bpm regular",
+          "Tachycardic",
+          "Bradycardic",
+          "Irregular",
+          "Not available"
+        ],
+        "diagnostic_target": "tachycardia, bradycardia, irregular rhythm, or acute physiologic stress",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Tachycardia, bradycardia, or irregular rhythm changes acuity, ECG need, and treatment urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Heart rate is nonspecific and can reflect pain, fever, anxiety, medications, arrhythmia, hypovolemia, anemia, or endocrine state; interpret with rhythm, blood pressure, and context.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "measure",
+          "heart",
+          "rate"
+        ]
+      },
+      {
+        "id": "safety_check_03",
+        "label": "Measure body mass index",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. BMI changes PCOS, hypogonadism, infertility, menopause, and cardiometabolic risk framing.",
+        "rationale": "Quantifies anthropometric and cardiometabolic risk so abnormal values can change diagnostic criteria, treatment selection, dosing context, or prevention intensity for Hirsutism (Excessive hair growth).",
+        "when_to_perform": "During reproductive or gonadal endocrine evaluation",
+        "findings_options": [
+          "___ kg/m2",
+          "Underweight",
+          "Overweight/obesity range",
+          "Unable/not available"
+        ],
+        "diagnostic_target": "anthropometric risk, treatment dosing context, and cardiometabolic phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "BMI changes PCOS, hypogonadism, infertility, menopause, and cardiometabolic risk framing.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale and height measurement",
+        "patient_cooperation_required": "low",
+        "limitations": "Anthropometric values can be distorted by fluid status, clothing, scale differences, height error, pregnancy, body composition, or measurement technique; trend and context matter.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "measure",
+          "body",
+          "mass",
+          "index"
+        ]
+      },
+      {
+        "id": "safety_check_04",
+        "label": "Assess mental status",
+        "item_type": "safety_check",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: basic bedside data and safety checks",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "action": "Check and document as baseline bedside data for this workup. Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth).",
+        "when_to_perform": "When acute illness, severe electrolyte disturbance, crisis physiology, or confusion is present",
+        "findings_options": [
+          "Baseline/alert",
+          "Confused",
+          "Somnolent",
+          "Agitated",
+          "Unable to assess"
+        ],
+        "diagnostic_target": "encephalopathy, crisis severity, or airway-protection risk",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "management_change": "Altered mental status changes urgency, disposition, and need for monitored evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Global appearance and perfusion are subjective and affected by baseline function, pain, medications, temperature, and examiner experience; pair with objective vitals and reassessment.",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to routine bedside safety data; use this item to assess acuity, monitoring needs, and management safety rather than diagnostic probability.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "assess",
+          "mental",
+          "status"
+        ],
+        "when": {
+          "termsAny": [
+            "unstable",
+            "confusion",
+            "altered mental status",
+            "severe",
+            "crisis",
+            "hypernatremia",
+            "hyponatremia",
+            "hypoglycemia",
+            "hypercalcemia"
+          ]
+        }
+      }
+    ],
     "requiredQuestions": [
       {
         "id": "question_01",
-        "label": "Onset/progression, virilization, menstrual irregularity.",
+        "label": "Any new or rapidly progressive facial/body hair growth, acne, scalp hair loss, deepening voice, clitoromegaly, or menstrual irregularity?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any new or rapidly progressive facial/body hair growth, acne, scalp hair loss, deepening voice, clitoromegaly, or menstrual irregularity?",
         "options": [
           {
             "value": "unknown",
@@ -174,21 +464,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hirsutism (Excessive hair growth) workup."
+        "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "when_to_ask": "Ask when Hirsutism (Excessive hair growth) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "management_implication": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "virilization"
+        ],
+        "source_seed": "Onset/progression, virilization, menstrual irregularity."
       },
       {
         "id": "question_02",
-        "label": "Acne/alopecia, infertility, medications, family/ethnic hair pattern.",
+        "label": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
             "value": "unknown",
@@ -207,21 +508,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hirsutism (Excessive hair growth)."
+        "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Hirsutism (Excessive hair growth) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
+        "management_implication": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "menstrual",
+          "irregularity"
+        ],
+        "source_seed": "Onset/progression, virilization, menstrual irregularity."
       },
       {
         "id": "question_03",
-        "label": "What is the current trajectory, baseline status, prior diagnosis date, and what changed today?",
+        "label": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hirsutism (Excessive hair growth) interpretation or safety?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hirsutism (Excessive hair growth) interpretation or safety?",
         "options": [
           {
             "value": "unknown",
@@ -240,21 +553,32 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Establishes the clinical context needed to interpret endocrine testing and choose a safe Hirsutism (Excessive hair growth) workup."
+        "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "when_to_ask": "Ask when Hirsutism (Excessive hair growth) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "management_implication": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "medications"
+        ],
+        "source_seed": "Acne/alopecia, infertility, medications, family/ethnic hair pattern."
       },
       {
         "id": "question_04",
-        "label": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?",
+        "label": "Are fertility goals, pregnancy possibility, partner factors, or treatment choices relevant to the timing and safety of this endocrine workup?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Are fertility goals, pregnancy possibility, partner factors, or treatment choices relevant to the timing and safety of this endocrine workup?",
         "options": [
           {
             "value": "unknown",
@@ -273,21 +597,33 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hirsutism (Excessive hair growth)."
+        "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "when_to_ask": "Ask when Hirsutism (Excessive hair growth) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "management_implication": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "fertility",
+          "goals"
+        ],
+        "source_seed": "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization."
       },
       {
         "id": "question_05",
-        "label": "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization.",
+        "label": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
+        "item_type": "history_question",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required clinical questions",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
+        "text": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "options": [
           {
             "value": "unknown",
@@ -306,238 +642,525 @@
             "label": "Other"
           }
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hirsutism (Excessive hair growth)."
-      },
-      {
-        "id": "question_06",
-        "label": "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact.",
-        "source": {
-          "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Hirsutism (Excessive hair growth).",
+        "rationale": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "when_to_ask": "Ask when Hirsutism (Excessive hair growth) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Identifies exposures, physiologic states, or treatment changes that can explain abnormal results or make Hirsutism (Excessive hair growth) therapy unsafe.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "galactorrhea"
         ],
-        "action": "Ask and document because the answer changes diagnostic probability, urgency, test interpretation, or treatment safety for Hirsutism (Excessive hair growth).",
-        "rationale": "Clarifies reversible causes, assay interference, safety constraints, and treatment modifiers for Hirsutism (Excessive hair growth)."
+        "source_seed": "Ask about cycle pattern, pregnancy possibility, fertility goals, libido/sexual function, galactorrhea, hirsutism/acne/alopecia, hot flashes, medication exposure, and rapid virilization."
       }
     ],
-    "conditionalQuestions": [],
+    "conditionalQuestions": [
+      {
+        "id": "question_01",
+        "label": "How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention puberty, timing, height, velocity, changed. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "when_to_ask": "Ask when patient context includes one of: puberty, timing, height, velocity, changed, compared, with, measurements, family, pattern.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "management_implication": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "puberty",
+          "timing"
+        ],
+        "source_seed": "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact.",
+        "when": {
+          "termsAny": [
+            "puberty",
+            "timing",
+            "height",
+            "velocity",
+            "changed",
+            "compared",
+            "with",
+            "measurements",
+            "family",
+            "pattern"
+          ]
+        }
+      },
+      {
+        "id": "question_02",
+        "label": "Any weight loss, eating restriction, intense exercise, psychosocial stress, or change in energy balance that could suppress reproductive hormones?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any weight loss, eating restriction, intense exercise, psychosocial stress, or change in energy balance that could suppress reproductive hormones?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention eating, exercise, stress, weight, loss. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
+        "when_to_ask": "Ask when patient context includes one of: eating, exercise, stress, weight, loss, restriction, intense, psychosocial, change, energy.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hirsutism (Excessive hair growth) needs urgent evaluation today.",
+        "management_implication": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "eating",
+          "exercise",
+          "stress"
+        ],
+        "source_seed": "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact.",
+        "when": {
+          "termsAny": [
+            "eating",
+            "exercise",
+            "stress",
+            "weight",
+            "loss",
+            "restriction",
+            "intense",
+            "psychosocial",
+            "change",
+            "energy"
+          ]
+        }
+      },
+      {
+        "id": "question_03",
+        "label": "Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_HIRSUTISM_2018",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2018",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?",
+        "options": [
+          {
+            "value": "unknown",
+            "label": "Unknown"
+          },
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "action": "Ask when the history or modifiers mention chemotherapy, radiation, surgery, pelvic, cranial. The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "when_to_ask": "Ask when patient context includes one of: chemotherapy, radiation, surgery, pelvic, cranial, cancer, that, could, affect, function.",
+        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hirsutism (Excessive hair growth).",
+        "management_implication": "The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "chemotherapy",
+          "radiation",
+          "surgery"
+        ],
+        "source_seed": "Clarify age/puberty timing, eating/exercise/stress, chronic disease, opioids/anabolic steroids, chemotherapy/radiation/surgery, family POI/PCOS, and psychosocial impact.",
+        "when": {
+          "termsAny": [
+            "chemotherapy",
+            "radiation",
+            "surgery",
+            "pelvic",
+            "cranial",
+            "cancer",
+            "that",
+            "could",
+            "affect",
+            "function"
+          ]
+        }
+      }
+    ],
     "requiredExam": [
       {
         "id": "exam_01",
-        "label": "Ferriman-Gallwey pattern/severity, virilization signs, acne/alopecia, BMI/BP/acanthosis.",
+        "label": "Inspect acne distribution",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth)."
+        "action": "Use this maneuver to evaluate gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Inflammatory acne supports hyperandrogenism and changes androgen testing threshold.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.",
+        "findings_options": [
+          "Absent/minimal",
+          "Inflammatory acne",
+          "Severe/nodulocystic",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When androgen excess or PCOS is possible",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Inflammatory acne supports hyperandrogenism and changes androgen testing threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect acne distribution is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "acne",
+          "distribution"
+        ]
       },
       {
         "id": "exam_02",
-        "label": "Vitals and acuity screen: BP, HR, respiratory status, temperature when acute, weight/BMI or waist when cardiometabolic risk matters.",
+        "label": "Inspect terminal hair distribution",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth)."
+        "action": "Use this maneuver to evaluate gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Terminal hair pattern changes hyperandrogenism grading and need for androgen evaluation.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.",
+        "findings_options": [
+          "Expected distribution",
+          "Mild excess",
+          "Marked excess",
+          "Virilization concern",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When hirsutism, PCOS, or androgen excess is possible",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Terminal hair pattern changes hyperandrogenism grading and need for androgen evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect terminal hair distribution is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "terminal",
+          "hair",
+          "distribution"
+        ]
       },
       {
         "id": "exam_03",
-        "label": "Targeted complication screen guided by symptoms: volume/perfusion, mental status, skin/mucosa, neuromuscular findings, and organ-system complications.",
+        "label": "Inspect neck for acanthosis",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: required bedside maneuver",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth)."
-      },
-      {
-        "id": "exam_04",
-        "label": "BP/BMI/waist, hirsutism/acne/alopecia/acanthosis, thyroid, galactorrhea/breast findings when appropriate, secondary sex characteristics, and testicular/genital exam when in scope.",
-        "source": {
-          "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth)."
-      },
-      {
-        "id": "exam_05",
-        "label": "Visual fields/cranial nerve screen when headache, galactorrhea, hypogonadotropic pattern, or pituitary concern is present.",
-        "source": {
-          "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: focused physical exam",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2018",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "action": "Perform and document positive, negative, and unable-to-assess findings.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hirsutism (Excessive hair growth)."
+        "action": "Use this maneuver to evaluate insulin resistance or cardiometabolic risk phenotype. Acanthosis changes metabolic-risk framing and diabetes screening urgency.",
+        "rationale": "Assesses insulin-resistance phenotype and cardiometabolic risk so a positive finding can support diabetes/metabolic screening, counseling intensity, and risk-factor management for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect the named area directly, comparing sides when relevant and documenting presence, absence, severity, and inability to assess.",
+        "findings_options": [
+          "Absent",
+          "Mild neck folds",
+          "Marked neck/axillary involvement",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When PCOS, insulin resistance, or hyperandrogenic metabolic risk is possible",
+        "diagnostic_target": "insulin resistance or cardiometabolic risk phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Acanthosis changes metabolic-risk framing and diabetes screening urgency.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect neck for acanthosis is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "neck",
+          "acanthosis"
+        ]
       }
     ],
     "conditionalExam": [
       {
         "id": "conditional_exam_01",
-        "label": "If infertility, amenorrhea, pregnancy possibility, pelvic pain, abnormal bleeding, or virilization is present: add BP/BMI, thyroid/galactorrhea screen, hirsutism/acne/alopecia scoring, pelvic/abdominal exam when appropriate, and pregnancy safety assessment.",
+        "label": "Inspect for clitoromegaly",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth).",
+        "action": "Add when virilization, rapid, androgen is present; this evaluates gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Virilization changes urgency of androgen tumor evaluation.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect the relevant androgen-sensitive areas respectfully and document distribution, severity, and signs of virilization.",
+        "findings_options": [
+          "Absent",
+          "Present/possible",
+          "Rapid virilization concern",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When rapid virilization or severe androgen excess is present",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Virilization changes urgency of androgen tumor evaluation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect for clitoromegaly is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "clitoromegaly"
+        ],
         "when": {
           "termsAny": [
-            "infertility",
-            "amenorrhea",
-            "pregnancy",
-            "pelvic pain",
-            "bleeding",
             "virilization",
-            "hirsutism",
-            "acne",
-            "alopecia",
-            "galactorrhea"
+            "rapid",
+            "androgen"
           ]
         }
       },
       {
         "id": "conditional_exam_02",
-        "label": "If male hypogonadism, erectile dysfunction, gynecomastia, testicular symptoms, or pituitary symptoms are present: add testicular size/consistency, breast/nipple/nodal exam, body hair/secondary sex characteristics, and visual fields.",
+        "label": "Inspect for galactorrhea",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Looks for localizing or mass-effect findings that change imaging, specialty escalation, or procedure planning for Hirsutism (Excessive hair growth).",
+        "action": "Add when amenorrhea, infertility, galactorrhea, prolactin, breast is present; this evaluates gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Galactorrhea changes prolactin and pituitary testing threshold.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect for spontaneous discharge and, only when clinically appropriate, gently express from the areola toward the nipple while preserving privacy and consent.",
+        "findings_options": [
+          "Absent",
+          "Spontaneous discharge",
+          "Expressible discharge",
+          "Bloody/unilateral discharge",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When amenorrhea, infertility, breast symptoms, or prolactin excess is possible",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Galactorrhea changes prolactin and pituitary testing threshold.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect for galactorrhea is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "galactorrhea"
+        ],
         "when": {
           "termsAny": [
-            "hypogonadism",
-            "erectile dysfunction",
-            "gynecomastia",
-            "testicular",
-            "low testosterone",
-            "breast mass",
-            "nipple discharge",
-            "headache",
-            "vision"
+            "amenorrhea",
+            "infertility",
+            "galactorrhea",
+            "prolactin",
+            "breast"
           ]
         }
       },
       {
         "id": "conditional_exam_03",
-        "label": "If the patient is acutely ill, unstable, vomiting, dehydrated, febrile, perioperative, pregnant, or inpatient: add repeat vitals, orthostatic/volume-perfusion assessment, mental status, respiratory status, and focused trigger exam.",
+        "label": "Inspect breast tissue",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Screens severity and immediate safety findings that can change triage, monitoring, fluids, or urgent escalation for Hirsutism (Excessive hair growth).",
+        "action": "Add when gynecomastia, breast mass, nipple discharge, breast is present; this evaluates gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype. Suspicious breast findings change endocrine versus breast-mass pathway.",
+        "rationale": "Targets gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect and palpate breast tissue to distinguish glandular tissue from adiposity and to identify discrete mass, tenderness, or discharge.",
+        "findings_options": [
+          "No glandular tissue",
+          "Tender glandular tissue",
+          "Discrete mass",
+          "Nipple discharge/skin change",
+          "Unable/deferred"
+        ],
+        "when_to_perform": "When gynecomastia, breast mass, or nipple symptoms are present",
+        "diagnostic_target": "gonadal axis, prolactin, androgen excess/deficiency, or reproductive endocrine phenotype",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Suspicious breast findings change endocrine versus breast-mass pathway.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect breast tissue is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "breast",
+          "tissue"
+        ],
         "when": {
           "termsAny": [
-            "unstable",
-            "shock",
-            "hypotension",
-            "vomiting",
-            "dehydration",
-            "febrile",
-            "fever",
-            "perioperative",
-            "pregnant",
-            "pregnancy",
-            "inpatient",
-            "altered mental status",
-            "confusion"
+            "gynecomastia",
+            "breast mass",
+            "nipple discharge",
+            "breast"
           ]
         }
       },
       {
         "id": "conditional_exam_04",
-        "label": "If symptoms, exam, or labs are discordant with the suspected endocrine diagnosis: repeat the focused exam for mimics, medication effects, assay interference clues, and complications before escalating therapy.",
+        "label": "Inspect mucous membranes for dehydration",
+        "item_type": "physical_exam_maneuver",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: conditional focused physical exam add-ons",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: conditional bedside maneuver add-ons",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "action": "Add this focused exam only when the listed modifier is present; document why it was included or deferred.",
-        "rationale": "Documents focused endocrine signs and complications that help distinguish severity, mimics, and management priorities for Hirsutism (Excessive hair growth).",
+        "action": "Add when vomiting, dehydration, poor intake, polyuria, hyperglycemia is present; this evaluates volume status, dehydration severity, or peripheral perfusion. Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "rationale": "Targets volume status, dehydration severity, or peripheral perfusion; positive, negative, or unable-to-assess findings guide escalation, diagnostic testing, treatment safety, or specialty planning for Hirsutism (Excessive hair growth).",
+        "technique": "Inspect oral mucosa and tongue moisture with attention to dry mucosa, cracked lips, and overall hydration context.",
+        "findings_options": [
+          "Moist",
+          "Dry",
+          "Very dry",
+          "Unable to assess"
+        ],
+        "when_to_perform": "When vomiting, poor intake, polyuria, hyperglycemia, hypercalcemia, or hypernatremia is present",
+        "diagnostic_target": "volume status, dehydration severity, or peripheral perfusion",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available in the local validated source metadata; treat this bedside finding as supportive and interpret it with the cited guideline, diagnostic tests, and patient context.",
+        "management_change": "Dehydration changes fluid strategy, lab urgency, and monitoring needs.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Inspect mucous membranes for dehydration is supportive for Hirsutism (Excessive hair growth), not diagnostic by itself; reliability can be reduced by pain, positioning, acute illness, cooperation, body habitus, baseline disability, and examiner technique.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "inspect",
+          "mucous",
+          "membranes",
+          "dehydration"
+        ],
         "when": {
           "termsAny": [
-            "discordant",
-            "mimic",
-            "medication",
-            "biotin",
-            "supplement",
-            "steroid",
-            "amiodarone",
-            "lithium",
-            "immune checkpoint",
-            "unexpected",
-            "assay"
+            "vomiting",
+            "dehydration",
+            "poor intake",
+            "polyuria",
+            "hyperglycemia",
+            "hypercalcemia",
+            "hypernatremia"
           ]
         }
       }
@@ -546,259 +1169,567 @@
       {
         "id": "test_01",
         "label": "Total testosterone and free testosterone when indicated.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Total testosterone and free testosterone when indicated.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "total",
+          "testosterone",
+          "free",
+          "when",
+          "indicated"
+        ]
       },
       {
         "id": "test_02",
         "label": "Early morning 17-OHP.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Early morning 17-OHP.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "early",
+          "morning"
+        ]
       },
       {
         "id": "test_03",
         "label": "DHEAS when severe/rapid.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "DHEAS when severe/rapid.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "dheas",
+          "when",
+          "severe",
+          "rapid"
+        ]
       },
       {
         "id": "test_04",
         "label": "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "TSH/prolactin/metabolic PCOS tests when menstrual disturbance.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "prolactin",
+          "metabolic",
+          "pcos",
+          "tests",
+          "when",
+          "menstrual",
+          "disturbance"
+        ]
       },
       {
         "id": "test_05",
         "label": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "compare",
+          "with",
+          "prior",
+          "results",
+          "repeat",
+          "discordant",
+          "nonurgent",
+          "endocrine"
+        ]
       },
       {
         "id": "test_06",
-        "label": "Check safety labs that change immediate management when clinically relevant: glucose, sodium, potassium, calcium, renal function, pregnancy test, or ECG.",
+        "label": "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Hyperandrogenism/PCOS safety tests: pregnancy test when relevant, total/free testosterone with reliable assay, DHEAS or 17-OHP for mimics, TSH/prolactin as indicated, and A1c/OGTT/lipids for cardiometabolic risk.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "hyperandrogenism",
+          "pcos",
+          "safety",
+          "tests",
+          "pregnancy",
+          "test",
+          "when",
+          "relevant"
+        ]
       },
       {
         "id": "test_07",
         "label": "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "pregnancy",
+          "test",
+          "first",
+          "when",
+          "amenorrhea",
+          "possible",
+          "prolactin"
+        ]
       },
       {
         "id": "test_08",
         "label": "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: diagnostic workup",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: diagnostic workup",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
-        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth)."
+        "rationale": "Confirms the diagnosis, identifies mimics or complications, or establishes a baseline that changes treatment for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Interpret with local lab ranges. Reference anchors: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay. IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "androgen",
+          "testing",
+          "with",
+          "reliable",
+          "assays",
+          "hyperandrogenism",
+          "metabolic",
+          "screening"
+        ]
       },
       {
         "id": "reference_01",
         "label": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "prolactin",
+          "upper",
+          "limit",
+          "often",
+          "about",
+          "women",
+          "pregnancy",
+          "lactation"
+        ]
       },
       {
         "id": "reference_02",
         "label": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "male",
+          "total",
+          "testosterone",
+          "should",
+          "early",
+          "morning",
+          "repeated",
+          "lower"
+        ]
       },
       {
         "id": "reference_03",
         "label": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "IGF-1, LH/FSH, estradiol, AMH, and pediatric growth labs require age/sex/puberty-specific ranges.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "estradiol",
+          "pediatric",
+          "growth",
+          "labs",
+          "require",
+          "puberty",
+          "specific",
+          "ranges"
+        ]
       },
       {
         "id": "reference_04",
         "label": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
+        "item_type": "diagnostic_test",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: reference ranges and diagnostic thresholds",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: reference ranges and diagnostic thresholds",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
-        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth)."
+        "rationale": "Provides diagnostic or safety thresholds that change interpretation and management for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: objective test, threshold, imaging, or baseline data that confirms diagnosis, identifies complications, or routes care for Hirsutism (Excessive hair growth).",
+        "management_change": "Use as a diagnostic anchor; confirm with local laboratory assay, pregnancy/age/sex context, and acute illness context.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not encoded in this workup-support row unless the cited source validates the exact test threshold; use the cited guideline, local assay characteristics, and pretest probability.",
+        "limitations": "Use local assay methods, reference intervals, imaging availability, specimen quality, timing, medications, pregnancy status, and baseline values when interpreting this Hirsutism (Excessive hair growth) test or threshold.",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "local",
+          "laboratory",
+          "intervals",
+          "assay",
+          "specific",
+          "cutoffs",
+          "endocrine",
+          "immunoassays"
+        ]
       }
     ],
     "dispositionRules": [
       {
         "id": "management_01",
         "label": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hirsutism (Excessive hair growth).",
+        "management_change": "Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "tumor",
+          "range",
+          "androgens",
+          "virilization",
+          "changes",
+          "urgent",
+          "imaging",
+          "endocrine"
+        ]
       },
       {
         "id": "management_02",
         "label": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "item_type": "management_change",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hirsutism (Excessive hair growth).",
+        "management_change": "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "unstable",
+          "physiology",
+          "endocrine",
+          "crisis",
+          "pregnancy",
+          "critical",
+          "medication",
+          "issue"
+        ]
       },
       {
         "id": "management_03",
         "label": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hirsutism (Excessive hair growth).",
+        "management_change": "Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "discordant",
+          "borderline",
+          "endocrine",
+          "tests",
+          "should",
+          "confirmed",
+          "interpreted",
+          "with"
+        ]
       },
       {
         "id": "management_04",
         "label": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "item_type": "management_change",
         "source": {
           "source_id": "PCOS_GUIDELINE_2023",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2023",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hirsutism (Excessive hair growth).",
+        "management_change": "Pregnancy, fertility intent, rapid virilization, tumor-range hormones, or pituitary symptoms changes medication safety, imaging urgency, and referral pathway.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "pregnancy",
+          "fertility",
+          "intent",
+          "rapid",
+          "virilization",
+          "tumor",
+          "range",
+          "hormones"
+        ]
       },
       {
         "id": "management_05",
         "label": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection.",
+        "item_type": "management_change",
         "source": {
           "source_id": "ES_HIRSUTISM_2018",
-          "source_section": "Hirsutism (Excessive hair growth) generated endocrine workup: results that change management",
+          "source_section": "Hirsutism (Excessive hair growth) curated endocrine workup: results that change management",
           "evidence_strength": "guideline/consensus",
           "version_date": "2018",
           "last_reviewed": "2026-06-06",
           "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Generated from guideline-backed endocrine workup automation; schema, source, PHI, and regression tests run on 2026-06-06."
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
         "action": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection.",
-        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth)."
+        "rationale": "Links a result or bedside finding to a concrete management change for Hirsutism (Excessive hair growth).",
+        "diagnostic_target": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection.: result or bedside context that changes treatment intensity, monitoring, referral, or disposition for Hirsutism (Excessive hair growth).",
+        "management_change": "Biochemical hypogonadism, POI, hyperprolactinemia, PCOS, or thyroid disease changes counseling, bone/cardiometabolic prevention, and treatment selection.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this management-change row; use it to connect a finding or result to treatment, monitoring, referral, or disposition decisions.",
+        "limitations": "This rule supports but does not replace clinician judgment, local protocols, patient preferences, access constraints, comorbidities, and reassessment for Hirsutism (Excessive hair growth).",
+        "tags": [
+          "reproductive_and_gonadal_disorders",
+          "hirsutism",
+          "biochemical",
+          "hypogonadism",
+          "hyperprolactinemia",
+          "pcos",
+          "thyroid",
+          "disease",
+          "changes",
+          "counseling"
+        ]
       }
     ],
     "endocrine_metadata": {
