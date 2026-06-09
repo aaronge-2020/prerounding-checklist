@@ -534,3 +534,30 @@ mobile review Image #1 refinement pass:
 - Image/icon fidelity: review rail icons are closer after adding review-only dotted-chat and checked-clipboard variants, but the broader generated icon family is still approximated in code rather than exactly reproduced.
 - Copy/content: reference values (`Assessed 22`, `Notes 5`, rail badges `11/11`, note strip `5 note(s)`) differ from the live verified seed (`Assessed 13`, `Notes 2`, `Questions 6`, `Exam 9`, note strip `2 note(s)`). This is a seeded-data mismatch, not a component geometry bug, but it still blocks pixel-perfect screenshot parity.
 - Current mobile review result: blocked for perfect-fidelity handoff until exact reference seed data and remaining icon-glyph deltas are resolved.
+
+mobile review Image #1 reference-count seed follow-up:
+- Re-seeded the phone review screen with 11 bedside questions, 11 exam findings, and 5 notes to match Image #1 content and counters (`Assessed 22`, `Notes 5`, `Questions 11`, `Exam 11`).
+- Latest implementation screenshot path: C:/Users/Aaron Ge/Documents/GitHub/prerounding-checklist/qa-screenshots/fidelity-426/50-review-reference-count-final.png
+- Latest full-view comparison evidence: C:/Users/Aaron Ge/Documents/GitHub/prerounding-checklist/qa-screenshots/fidelity-426/compare-review-50-reference-count.png
+- Latest metrics path: C:/Users/Aaron Ge/Documents/GitHub/prerounding-checklist/qa-screenshots/fidelity-426/50-review-reference-count-final.metrics.json
+- Reference-count content now matches the generated review mockup: patient summary `Feels better; mild DOE with stairs`, cardio rows `Regular rhythm` and `No edema`, respiratory rows `Comfortable`, `Bibasilar crackles, improves after cough`, and `Room air`, abdomen/skin rows `No abdominal tenderness`, `Present`, `Line sites clean`, and `Warm, dry, intact`, plus note strip `Update includes 5 note(s) with additional detail.`
+- Geometry evidence at 426 x 922 CSS px: status band y=52-114, workflow rail y ranges `114-232`, `232-350`, `350-445`, title x=93 y=134.5, PHI card x=93 y=173 w=315 h=80.1, note strip y=826.3 h=26, footer y=856-922, footer clearance 3.73px, no symptom response grids, and no open question note panels.
+- Additional fidelity patches in this follow-up: one-line review row rhythm restored to 40px, PHI safety shield color aligned to the safety green, PHI card copy forced to the reference two-line break, the review/topbar chat glyphs changed from squared boxes to rounded speech bubbles with dots where appropriate, and the review-only footer home indicator hidden to match Image #1.
+- Latest focused verification: `npm.cmd run test:syntax` passed after the reference-count review refinements; `npm.cmd run test:checklist` passed after the same refinements.
+- Current mobile review result: content/counter mismatch is resolved for the reference-count seed. Remaining non-pixel-perfect drift is concentrated in exact generated SVG glyph parity and subtle type weight differences from the app's Inter/system stack.
+
+mobile Skin/Lines and quick-note collapse follow-up:
+- Addressed browser feedback that `Skin` and `Lines` used two rail slots but opened the same mixed pane. The phone concept now treats split `Skin / Lines` source sections as true filtered domains: `Skin` opens a `SKIN` pane with only non-line skin rows, and `Lines` opens a `LINES` pane with line-site rows only.
+- The `Lines` row title is display-normalized from mixed source labels such as `Skin wounds or line sites` to `Line sites` when shown inside the `Lines` section.
+- `Mark section normal`, Jump to section, active rail state, and Next unfinished now preserve the selected split subsection instead of falling back to the mixed source section.
+- Fixed sticky quick-note behavior in the phone concept: `Save note` always collapses the open note panel, `Clear` clears note/chip state and collapses the panel, and the phone renderer no longer auto-reopens an abnormal answered row after the clinician explicitly saves or clears.
+- Latest focused verification: `npm.cmd run test:syntax` passed and `npm.cmd run test:checklist` passed after the Skin/Lines and quick-note collapse patch.
+- Live 426 x 922 CDP verification in a temporary seeded tab: `Skin` rendered heading `SKIN` with rows `Abdominal tenderness`, `Foot ulcers`; `Lines` rendered heading `LINES` with row `Line sites`; after entering `Line site clean` and tapping `Save note`, open panels were `0` and summaries were `1`; after reopening and tapping `Clear`, open panels were `0`, summaries were `0`, and open rows were empty.
+
+mobile Abdomen/Skin/Lines domain refinement:
+- Refined the previous split so mixed source sections such as `ABDOMEN AND SKIN` become three bedside exam domains when the underlying items support it: `Abd`, `Skin`, and `Lines`.
+- Abdomen-like rows now route to `ABDOMEN` (`Abdominal tenderness`, `Bowel sounds`), skin/wound rows route to `SKIN` (`Foot ulcers`, `Skin`), and line/site rows route to `LINES` (`Line sites`).
+- Updated the abdomen rail icon to a larger stomach-outline glyph so the rail reads more like the generated medical concept and less like an abstract mark.
+- Latest screenshot evidence: C:/Users/Aaron Ge/Documents/GitHub/prerounding-checklist/qa-screenshots/fidelity-426/53-skin-lines-abd-icon-split.png
+- Latest metrics evidence: C:/Users/Aaron Ge/Documents/GitHub/prerounding-checklist/qa-screenshots/fidelity-426/53-skin-lines-abd-icon-split.metrics.json
+- Latest focused verification: `npm.cmd run test:syntax` passed and `npm.cmd run test:checklist` passed after the Abdomen/Skin/Lines domain and icon patch.

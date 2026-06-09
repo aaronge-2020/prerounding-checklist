@@ -4866,26 +4866,25 @@
       }
 
       .history-response-control {
-        grid-template-columns: 54px minmax(0, 1fr) 54px;
+        grid-template-columns: minmax(72px, 0.3fr) minmax(0, 1fr) minmax(82px, 0.34fr);
       }
 
       .history-response-action {
-        min-height: 40px;
-        font-size: 0;
+        min-height: 44px;
+        padding: 0 5px;
+        font-size: 0.68rem;
       }
 
       .history-response-action.is-negative::after {
-        content: "(-)";
-        font-size: 0.86rem;
+        content: none;
       }
 
       .history-response-action.is-positive::after {
-        content: "(+)";
-        font-size: 0.86rem;
+        content: none;
       }
 
       .history-response-label {
-        min-height: 40px;
+        min-height: 44px;
         font-size: 0.74rem;
       }
     }
@@ -18077,35 +18076,50 @@
 
       .phone-concept-symptom-response {
         display: grid;
-        grid-template-columns: 72px minmax(0, 1fr) 86px;
-        overflow: hidden;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+          "label label"
+          "denied endorsed";
+        gap: 6px;
+        overflow: visible;
         border: 1px solid #d3dae3;
         border-radius: 7px;
+        padding: 6px;
         background: #ffffff;
       }
 
       .phone-concept-symptom-response-label {
+        grid-area: label;
         display: flex;
         align-items: center;
-        justify-content: center;
-        min-height: 34px;
-        padding: 3px 8px;
+        justify-content: flex-start;
+        min-height: 30px;
+        padding: 2px 4px;
         color: #071832;
-        font-size: 0.72rem;
-        font-weight: 680;
-        line-height: 1.16;
-        text-align: center;
+        font-size: 0.76rem;
+        font-weight: 760;
+        line-height: 1.2;
+        text-align: left;
         overflow-wrap: anywhere;
       }
 
       .phone-concept-symptom-response-button {
-        border: 0;
-        border-radius: 0;
+        min-height: 40px;
+        border: 1px solid #d3dae3;
+        border-radius: 6px;
         color: #5f6f82;
         background: #f6f8fb;
-        font-size: 0.65rem;
+        font-size: 0.72rem;
         font-weight: 900;
         line-height: 1.05;
+      }
+
+      .phone-concept-symptom-response-button[data-phone-response="denied"] {
+        grid-area: denied;
+      }
+
+      .phone-concept-symptom-response-button[data-phone-response="endorsed"] {
+        grid-area: endorsed;
       }
 
       .phone-concept-symptom-response-button.is-selected[data-phone-response="denied"] {
@@ -18198,6 +18212,10 @@
         background: #ffffff;
       }
 
+      .phone-concept-question-note-panel:has(.phone-concept-question-note-clear[hidden]) {
+        padding-right: 9px;
+      }
+
       .phone-concept-question-note-panel label {
         color: #007f79;
         font-size: 0.66rem;
@@ -18233,19 +18251,31 @@
         right: 10px;
         top: 50%;
         display: grid;
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
         place-items: center;
         transform: translateY(-50%);
-        border: 1px solid #c4ccd6;
-        border-radius: 50%;
-        color: #7b8798;
-        background: #ffffff;
+        border: 1px solid #cfd7e2;
+        border-radius: 999px;
+        padding: 0;
+        color: #6f7d90;
+        background: #fbfcfd;
+        box-shadow: 0 1px 2px rgba(7, 24, 50, 0.04);
+      }
+
+      .phone-concept-question-note-panel button[hidden] {
+        display: none;
+      }
+
+      .phone-concept-question-note-panel button:focus-visible {
+        outline: 2px solid rgba(0, 127, 121, 0.24);
+        outline-offset: 2px;
       }
 
       .phone-concept-question-note-panel button svg {
-        width: 16px;
-        height: 16px;
+        width: 13px;
+        height: 13px;
+        stroke-width: 2;
       }
 
       .phone-concept-note-panel {
@@ -18659,6 +18689,7 @@
         height: 44px;
         place-items: center;
         justify-self: center;
+        color: #176d25;
       }
 
       .phone-concept-review .phone-concept-phi-card .phone-concept-inline-icon svg {
@@ -18791,7 +18822,7 @@
         grid-template-columns: minmax(112px, 0.9fr) minmax(0, 1.1fr) 18px;
         gap: 10px;
         align-items: center;
-        min-height: 39px;
+        min-height: 40px;
         border-bottom: 1px solid #dfe5eb;
         padding: 6px 0;
         color: #071832;
@@ -18875,6 +18906,10 @@
         gap: 11px;
         padding-right: 16px;
         padding-left: 16px;
+      }
+
+      .phone-concept-review .phone-concept-actions::after {
+        display: none;
       }
 
       .phone-concept-review .phone-concept-actions button {
@@ -20297,7 +20332,7 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-body {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-body {
         grid-template-columns: 320px minmax(0, 1fr) 360px !important;
         grid-template-areas:
           "context results controls"
@@ -20309,11 +20344,11 @@
         border-bottom: 1px solid #d7e3e1 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-grid {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-grid {
         display: contents !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-context {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-context {
         grid-area: context !important;
         border: 0 !important;
         border-right: 1px solid #d7e3e1 !important;
@@ -20322,7 +20357,7 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-controls {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-controls {
         grid-area: controls !important;
         border: 0 !important;
         border-left: 1px solid #d7e3e1 !important;
@@ -20331,7 +20366,7 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults {
         grid-area: results !important;
         display: block !important;
         max-height: 390px !important;
@@ -20342,7 +20377,7 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions {
         grid-area: actions !important;
         display: grid !important;
         grid-template-columns: minmax(180px, 1fr) repeat(3, minmax(150px, 0.7fr)) minmax(220px, 1.1fr) !important;
@@ -20352,14 +20387,14 @@
         background: #fbfdfd !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions .btn {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions .btn {
         width: 100% !important;
         min-height: 36px !important;
         border-radius: 7px !important;
         font-size: 0.74rem !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsStatus {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsStatus {
         grid-area: status !important;
         min-height: 0 !important;
         margin: 0 !important;
@@ -20370,7 +20405,7 @@
         font-size: 0.74rem !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSummary {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSummary {
         grid-area: summary !important;
         margin: 0 !important;
         border-top: 1px solid #d7e3e1 !important;
@@ -20379,18 +20414,18 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSources {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSources {
         grid-area: sources !important;
         margin: 0 !important;
         border-top: 1px solid #d7e3e1 !important;
         padding: 8px 16px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-control {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-control {
         margin-top: 12px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
         border: 1px solid #d7e3e1 !important;
         border-radius: 8px !important;
         margin: 0 0 8px !important;
@@ -20398,14 +20433,14 @@
         background: #fbfdfd !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #knowledgeBasePanel,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #demoPanel,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #installPanel,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #checklistFormatToolSection {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #knowledgeBasePanel,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #demoPanel,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #installPanel,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #checklistFormatToolSection {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-body {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-body {
         min-height: 520px !important;
         grid-template-columns: 320px minmax(0, 1fr) 392px !important;
         grid-template-rows: minmax(0, 340px) 48px 58px minmax(0, 1fr) !important;
@@ -20417,12 +20452,12 @@
         overflow: hidden !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-control {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-control {
         display: block !important;
         margin-top: 14px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-control > summary {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-control > summary {
         min-height: 28px !important;
         border: 0 !important;
         padding: 0 !important;
@@ -20431,7 +20466,7 @@
         font-size: 0.78rem !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-body {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-body {
         display: grid !important;
         gap: 10px !important;
         border: 0 !important;
@@ -20439,19 +20474,19 @@
         background: transparent !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-note,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-body label,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-input {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-note,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-body label,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-input {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chips {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chips {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 8px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chip {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chip {
         min-height: 38px !important;
         justify-content: flex-start !important;
         border-radius: 7px !important;
@@ -20462,19 +20497,19 @@
         font-weight: 720 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chip[aria-pressed="true"] {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chip[aria-pressed="true"] {
         border-color: #9fd5ce !important;
         color: #006c64 !important;
         background: #eaf8f5 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults {
         height: 100% !important;
         max-height: none !important;
         padding: 16px 18px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults::before {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults::before {
         display: block !important;
         margin: 0 0 10px !important;
         color: #006c64 !important;
@@ -20485,7 +20520,7 @@
         text-transform: uppercase !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) auto !important;
         align-items: center !important;
@@ -20497,18 +20532,18 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(n+7) {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(n+7) {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section-title {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section-title {
         margin: 0 !important;
         color: #172b2e !important;
         font-size: 0.82rem !important;
         font-weight: 820 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section-title::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section-title::after {
         display: block !important;
         margin-top: 2px !important;
         color: #52666b !important;
@@ -20516,30 +20551,30 @@
         font-weight: 560 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1) .complaint-cds-section-title::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1) .complaint-cds-section-title::after {
         content: "Immediate risks and must-not-miss bedside data" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(2) .complaint-cds-section-title::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(2) .complaint-cds-section-title::after {
         content: "Urgent findings that change disposition" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(3) .complaint-cds-section-title::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(3) .complaint-cds-section-title::after {
         content: "High-yield history to ask at bedside" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(5) .complaint-cds-section-title::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(5) .complaint-cds-section-title::after {
         content: "Focused physical exam for DKA" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-list,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .review-details {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-list,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .review-details {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section::after {
         display: inline-flex !important;
         min-width: 74px !important;
         justify-content: center !important;
@@ -20551,27 +20586,27 @@
         font-weight: 820 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1)::after {
         content: "8 checks" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(2)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(2)::after {
         content: "6 red flags" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(3)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(3)::after {
         content: "14 questions" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(5)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(5)::after {
         content: "6 exam items" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(6)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(6)::after {
         content: "2 add-ons" !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsStatus {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsStatus {
         display: grid !important;
         align-items: center !important;
         border: 1px solid #bfe2dd !important;
@@ -20584,12 +20619,12 @@
         font-weight: 720 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSummary,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSources {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSummary,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSources {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-controls::before {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-controls::before {
         display: block !important;
         margin-bottom: 14px !important;
         color: #172b2e !important;
@@ -20598,7 +20633,7 @@
         font-weight: 850 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-context-summary {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-context-summary {
         display: grid !important;
         gap: 8px !important;
         margin-top: 18px !important;
@@ -20612,7 +20647,7 @@
         line-height: 1.55 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions {
         display: flex !important;
         justify-content: flex-end !important;
         gap: 10px !important;
@@ -20620,33 +20655,33 @@
         padding: 10px 14px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions .btn {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions .btn {
         width: auto !important;
         min-width: 154px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #stageKnowledgeGapButton {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #stageKnowledgeGapButton {
         order: 1 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #copyClinicalImprovementAuditButton {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #copyClinicalImprovementAuditButton {
         order: 2 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #copyComplaintCdsButton {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #copyComplaintCdsButton {
         order: 3 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #runComplaintCdsButton {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #runComplaintCdsButton {
         order: 4 !important;
         min-width: 210px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #clearComplaintCdsButton {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clearComplaintCdsButton {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #examTesterPanel {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #examTesterPanel {
         grid-area: reviewer !important;
         margin: 0 !important;
         border-top: 1px solid #d7e3e1 !important;
@@ -20654,28 +20689,28 @@
         background: #ffffff !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #examTesterPanel > summary {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #examTesterPanel > summary {
         min-height: 52px !important;
         border: 0 !important;
         padding: 0 18px !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
         display: block !important;
         height: 100% !important;
         min-height: 0 !important;
         overflow: hidden !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-tester-section-title,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-card,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .review-details {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-tester-section-title,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-card,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .review-details {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary {
         display: flex !important;
         max-height: 92px !important;
         gap: 8px !important;
@@ -20685,11 +20720,11 @@
         background: transparent !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary > :nth-child(n+7) {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary > :nth-child(n+7) {
         display: none !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary .complaint-cds-chip {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary .complaint-cds-chip {
         min-height: 28px !important;
         border-radius: 7px !important;
         padding: 5px 9px !important;
@@ -20697,7 +20732,7 @@
         font-weight: 780 !important;
       }
 
-      body:not([data-screen="censusScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1)::after {
+      body:not([data-screen="censusScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:nth-of-type(1)::after {
         display: block !important;
         margin-top: 12px !important;
         border: 1px solid #d7e3e1 !important;
@@ -21196,26 +21231,8 @@
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-nav button::before {
-        justify-self: end !important;
-        color: #0a7d74 !important;
-        font-size: 0.72rem !important;
-        font-weight: 850 !important;
-      }
-
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-nav button:nth-child(1)::before {
-        content: "Chart snapshot";
-      }
-
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-nav button:nth-child(2)::before {
-        content: "Complete";
-      }
-
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-nav button:nth-child(3)::before {
-        content: "1.8k";
-      }
-
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-nav button:nth-child(4)::before {
-        content: "Just now";
+        display: none !important;
+        content: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status {
@@ -21230,21 +21247,17 @@
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status strong,
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status span {
-        font-size: 0 !important;
+        font-size: 0.72rem !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status strong::after {
-        color: #0a6d64 !important;
-        content: "Privacy & safety" !important;
-        font-size: 0.78rem !important;
-        font-weight: 860 !important;
+        display: none !important;
+        content: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status span:nth-of-type(1)::after {
-        color: #476367 !important;
-        content: "Prompts and answers stay local until you copy." !important;
-        font-size: 0.7rem !important;
-        line-height: 1.3 !important;
+        display: none !important;
+        content: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .workspace-sidebar-status span:nth-of-type(2)::after,
@@ -21253,11 +21266,153 @@
         content: none !important;
       }
 
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceSidebarProgress[hidden] {
+        display: none !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceSidebarProgress {
+        display: grid !important;
+        gap: 12px !important;
+        border: 1px solid #d7e4e2 !important;
+        border-radius: 8px !important;
+        padding: 13px 12px 14px !important;
+        background: #ffffff !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-title {
+        margin: 0 !important;
+        color: #173136 !important;
+        font-size: 0.78rem !important;
+        font-weight: 860 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-progress-donut {
+        --open-evidence-progress-deg: 0deg;
+        position: relative !important;
+        display: grid !important;
+        width: 116px !important;
+        height: 116px !important;
+        place-items: center !important;
+        justify-self: center !important;
+        border-radius: 50% !important;
+        background:
+          radial-gradient(circle, #ffffff 0 52%, transparent 53%),
+          conic-gradient(#0f9f8d 0 var(--open-evidence-progress-deg), #d6dee0 var(--open-evidence-progress-deg) 360deg) !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-progress-donut strong {
+        margin-top: 8px !important;
+        color: #173136 !important;
+        font-size: 1rem !important;
+        font-weight: 880 !important;
+        line-height: 1 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-progress-donut span {
+        margin-top: -36px !important;
+        color: #536d72 !important;
+        font-size: 0.66rem !important;
+        font-weight: 760 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts {
+        display: grid !important;
+        gap: 7px !important;
+        margin: 0 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts div {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts dt,
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts dd {
+        margin: 0 !important;
+        color: #536d72 !important;
+        font-size: 0.68rem !important;
+        font-weight: 760 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts dt {
+        position: relative !important;
+        padding-left: 14px !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts dt::before {
+        position: absolute !important;
+        top: 50% !important;
+        left: 0 !important;
+        width: 7px !important;
+        height: 7px !important;
+        border-radius: 50% !important;
+        background: #9fb0b4 !important;
+        content: "" !important;
+        transform: translateY(-50%) !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts div:nth-child(1) dt::before {
+        background: #0f9f8d !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts div:nth-child(2) dt::before {
+        background: #73b9ad !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-sidebar-counts div:nth-child(3) dt::before {
+        background: #b8c6c9 !important;
+      }
+
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #pasteScreen {
         display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(420px, 522px) !important;
+        column-gap: 18px !important;
+        row-gap: 16px !important;
         max-width: none !important;
         margin: 0 !important;
-        padding: 18px 0 0 !important;
+        padding: 14px 0 0 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] .app-shell {
+        height: 100vh !important;
+        min-height: 100vh !important;
+        overflow: hidden !important;
+        padding-bottom: 0 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #pasteScreen::before {
+        display: block !important;
+        align-self: center !important;
+        grid-column: 1 !important;
+        color: #10282d !important;
+        content: "OpenEvidence handoff hub\aUse the de-identified context to create prompts for OpenEvidence. Review answers here before using." !important;
+        font-size: 0.82rem !important;
+        font-weight: 730 !important;
+        line-height: 1.45 !important;
+        white-space: pre-line !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #pasteScreen::before::first-line {
+        font-size: 1.06rem !important;
+        font-weight: 880 !important;
+        line-height: 1.2 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #guidedLayout {
+        display: grid !important;
+        width: 100% !important;
+        max-width: none !important;
+        grid-column: 1 / -1 !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 0 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .guided-main {
+        width: 100% !important;
+        max-width: none !important;
+        grid-column: 1 !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #pasteScreen > .hero,
@@ -21271,23 +21426,42 @@
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure {
         display: grid !important;
+        grid-column: 2 !important;
+        align-self: center !important;
         max-width: none !important;
+        height: 50px !important;
         min-height: 50px !important;
-        margin: 0 0 12px !important;
+        max-height: 50px !important;
+        margin: 0 !important;
         border-color: #bfd8f4 !important;
         border-radius: 8px !important;
-        padding: 10px 18px 10px 46px !important;
+        overflow: hidden !important;
+        padding: 8px 18px 8px 46px !important;
         color: #1a4772 !important;
         background: #f3f8ff !important;
         box-shadow: none !important;
       }
 
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure > summary {
+        display: grid !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 1px !important;
+        align-content: center !important;
+      }
+
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure::before {
-        top: 15px !important;
+        top: 13px !important;
         left: 18px !important;
         border-color: #2e77c5 !important;
         color: #2e77c5 !important;
         background: #ffffff !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-status-dot,
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-summary-action {
+        display: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure strong,
@@ -21309,14 +21483,47 @@
         font-weight: 720 !important;
       }
 
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure span::after {
+        display: none !important;
+        content: none !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure .privacy-summary-title::after {
+        display: inline !important;
+        color: #164473 !important;
+        content: "External clinical AI sites are separate systems." !important;
+        font-size: 0.76rem !important;
+        font-weight: 850 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure .privacy-summary-copy::after {
+        display: inline !important;
+        color: #25527d !important;
+        content: "You control what you copy and paste." !important;
+        font-size: 0.72rem !important;
+        font-weight: 720 !important;
+      }
+
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #sourceWorkflowCard {
         display: block !important;
+        width: 100% !important;
         max-width: none !important;
+        grid-template-columns: minmax(0, 1fr) !important;
         border: 0 !important;
         border-radius: 0 !important;
         padding: 0 !important;
         background: transparent !important;
         box-shadow: none !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #guidedLayout {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #sourceWorkflowCard {
+        display: block !important;
+        width: 100% !important;
+        grid-template-columns: minmax(0, 1fr) !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #sourceWorkflowCard > div:first-child {
@@ -21364,6 +21571,24 @@
         box-shadow: 0 10px 24px rgba(20, 42, 46, 0.04) !important;
       }
 
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #guidedLayout,
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #sourceWorkflowCard,
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] .guided-main {
+        height: auto !important;
+        min-height: 0 !important;
+        align-content: start !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #sourceWorkflowCard > :not(#promptCopiedSummary),
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] #guidedLayout > .guide-sidebar {
+        display: none !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] .device-mode-switch,
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] .simple-workflow-strip {
+        display: none !important;
+      }
+
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #promptCopiedSummary > .compact-summary-title,
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #promptCopiedSummary > .compact-summary-copy,
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #promptCopiedSummary > .more-options {
@@ -21373,13 +21598,16 @@
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-hub {
         display: grid !important;
         grid-template-columns: minmax(0, 1.12fr) minmax(420px, 0.88fr) !important;
+        grid-template-rows: 66px 655px !important;
         gap: 0 !important;
         align-items: stretch !important;
-        min-height: 690px !important;
+        height: 782px !important;
+        min-height: 0 !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-hub-head {
-        grid-column: 1 / -1 !important;
+        grid-column: 1 !important;
+        grid-row: 1 !important;
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) auto !important;
         align-items: center !important;
@@ -21400,11 +21628,24 @@
         font-size: 0.76rem !important;
       }
 
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-total {
+        margin: 0 !important;
+        color: #405a60 !important;
+        font-size: 0.72rem !important;
+        font-weight: 760 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-hub-head > .open-link {
+        display: none !important;
+      }
+
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskBoard {
         position: relative !important;
         display: grid !important;
+        grid-row: 2 !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         grid-auto-rows: minmax(116px, auto) !important;
+        height: 655px !important;
         gap: 0 !important;
         align-content: start !important;
         border-right: 1px solid #d8e2e1 !important;
@@ -21455,16 +21696,24 @@
         box-shadow: inset 0 0 0 1px rgba(13, 139, 120, 0.12) !important;
       }
 
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-active::before,
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card[data-open-evidence-task-id="initial_rounds_report"]::before {
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-reviewed::before {
         border-color: #0d8b78 !important;
         color: #0d8b78 !important;
       }
 
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-active::after,
-      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card[data-open-evidence-task-id="initial_rounds_report"]::after {
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-reviewed::after {
         color: #0a7d62 !important;
         content: "Reviewed" !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-built::after {
+        color: #0c6d79 !important;
+        content: "Built / copied" !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card.is-not-started::after {
+        color: #697d82 !important;
+        content: "Not started" !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .open-evidence-task-card[data-open-evidence-task-id="final_rounds_update"],
@@ -21579,9 +21828,12 @@
         position: relative !important;
         top: auto !important;
         display: grid !important;
+        grid-column: 2 !important;
+        grid-row: 1 / 3 !important;
+        height: 782px !important;
         max-height: none !important;
-        min-height: 100% !important;
-        gap: 10px !important;
+        min-height: 0 !important;
+        gap: 8px !important;
         overflow: visible !important;
         border: 0 !important;
         border-radius: 0 !important;
@@ -21590,18 +21842,22 @@
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskDetail::before {
-        display: block !important;
-        margin-bottom: -2px !important;
-        color: #50666b !important;
-        content: "Verify medications, doses, interactions, and monitoring needs." !important;
-        font-size: 0.78rem !important;
-        font-weight: 720 !important;
+        display: none !important;
+        content: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskDetailTitle {
         color: #172e34 !important;
         font-size: 1.04rem !important;
         font-weight: 880 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskDetailCopy {
+        margin: -6px 0 2px !important;
+        color: #50666b !important;
+        font-size: 0.78rem !important;
+        font-weight: 720 !important;
+        line-height: 1.35 !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskDetailTitle::after {
@@ -21642,6 +21898,15 @@
         background: #fbfdfd !important;
         font-size: 0.72rem !important;
         line-height: 1.34 !important;
+      }
+
+      body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidencePromptPreviewMeta {
+        justify-self: end !important;
+        margin: -26px 10px 2px 0 !important;
+        color: #5d7478 !important;
+        font-size: 0.68rem !important;
+        font-weight: 720 !important;
+        pointer-events: none !important;
       }
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] #openEvidenceTaskDetail .compact-summary-actions {
@@ -21700,6 +21965,10 @@
 
       body[data-screen="pasteScreen"][data-prompt-collapsed="true"] .privacy-disclosure {
         display: none !important;
+      }
+
+      body[data-screen="pasteScreen"][data-source-mode][data-source-reviewed][data-prompt-collapsed="true"] .privacy-disclosure {
+        display: grid !important;
       }
     }
 
@@ -25072,14 +25341,14 @@
     }
 
     @media (min-width: 1020px) {
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) {
         min-height: 100vh !important;
         overflow: hidden !important;
         color: #172b2e !important;
         background: #f7faf9 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-shell {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-shell {
         width: 100% !important;
         max-width: none !important;
         height: 100vh !important;
@@ -25087,16 +25356,16 @@
         overflow: hidden !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workflow-rail,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workflow-status-line,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .census-topbar,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .screen.is-active,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #pasteScreen,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #censusScreen {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workflow-rail,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workflow-status-line,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .census-topbar,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .screen.is-active,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #pasteScreen,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #censusScreen {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-topbar {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-topbar {
         position: fixed !important;
         top: 0 !important;
         right: 0 !important;
@@ -25115,14 +25384,14 @@
         box-shadow: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-brand {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-brand {
         display: flex !important;
         min-width: 0 !important;
         align-items: center !important;
         gap: 10px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-brand-mark {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-brand-mark {
         width: 28px !important;
         height: 28px !important;
         flex: 0 0 28px !important;
@@ -25133,58 +25402,58 @@
         box-shadow: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-brand-mark svg {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-brand-mark svg {
         width: 18px !important;
         height: 18px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-short,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-subtitle-mobile {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-short,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-subtitle-mobile {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-full,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-subtitle-default {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-full,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-subtitle-default {
         display: inline !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-full {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-full {
         color: #182d31 !important;
         font-size: 0.98rem !important;
         font-weight: 820 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-subtitle-default {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-subtitle-default {
         margin-left: 12px !important;
         color: #087d75 !important;
         font-size: 0 !important;
         font-weight: 760 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .brand-subtitle-default::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .brand-subtitle-default::before {
         content: "Local-first";
         font-size: 0.76rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-case-context {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-case-context {
         display: grid !important;
         justify-self: center !important;
         text-align: center !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-case-context p {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-case-context p {
         margin: 0 !important;
         color: #13282c !important;
         font-size: 0 !important;
         font-weight: 820 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-case-context p:first-child::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-case-context p:first-child::before {
         content: "Case A - DKA consult";
         font-size: 0.9rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-case-context p:first-child::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-case-context p:first-child::after {
         margin-left: 16px !important;
         color: #087d75 !important;
         content: "Change case v";
@@ -25192,19 +25461,19 @@
         font-weight: 780 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-case-context p + p {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-case-context p + p {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-topbar-actions {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-topbar-actions {
         display: flex !important;
         justify-content: flex-end !important;
         gap: 8px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .local-status-chip,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-tool-button,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-settings-button {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .local-status-chip,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-tool-button,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-settings-button {
         min-height: 32px !important;
         border: 1px solid #cddbd9 !important;
         border-radius: 8px !important;
@@ -25215,7 +25484,7 @@
         font-weight: 760 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .local-status-chip {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .local-status-chip {
         min-width: 166px !important;
         border-color: #9fd5ce !important;
         color: #0a6d64 !important;
@@ -25223,12 +25492,12 @@
         font-size: 0 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .local-status-chip::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .local-status-chip::after {
         content: "Local de-ID complete";
         font-size: 0.72rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-tool-button[data-quick-tool="deid"] {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-tool-button[data-quick-tool="deid"] {
         min-width: 176px !important;
         border-color: #d5b974 !important;
         color: #6d4c00 !important;
@@ -25236,16 +25505,16 @@
         font-size: 0 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-tool-button[data-quick-tool="deid"]::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-tool-button[data-quick-tool="deid"]::after {
         content: "PHI review before copy";
         font-size: 0.72rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-tool-button[data-quick-tool="workup"] {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-tool-button[data-quick-tool="workup"] {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-settings-button {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-settings-button {
         display: inline-flex !important;
         min-width: 122px !important;
         align-items: center !important;
@@ -25257,14 +25526,14 @@
         transform: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .app-settings-button::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .app-settings-button::after {
         content: "Close tools  X";
         font-size: 0.72rem !important;
         white-space: nowrap !important;
         transform: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar {
         position: fixed !important;
         top: 58px !important;
         bottom: 0 !important;
@@ -25280,7 +25549,7 @@
         box-shadow: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar::before {
         display: block !important;
         color: #64787d !important;
         content: "WORKSPACE" !important;
@@ -25288,17 +25557,17 @@
         font-weight: 780 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-brand {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-brand {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav {
         display: grid !important;
         align-content: start !important;
         gap: 6px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button {
         display: flex !important;
         min-height: 36px !important;
         align-items: center !important;
@@ -25313,46 +25582,46 @@
         text-align: left !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button::after {
         font-size: 0.68rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(1)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(1)::after {
         content: "Today's prep";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(2)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(2)::after {
         content: "Local census";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(3)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(3)::after {
         content: "Saved vault";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(4)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(4)::after {
         content: "One patient";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(5)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(5)::after {
         content: "Clinical tools";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(6)::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(6)::after {
         content: "Evidence review";
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button.is-active {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button.is-active {
         color: #354e54 !important;
         background: transparent !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(2),
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(5) {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(2),
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-nav button:nth-child(5) {
         color: #087d75 !important;
         background: #e8f6f3 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-status {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-status {
         display: grid !important;
         gap: 4px !important;
         border: 1px solid #bfe2dd !important;
@@ -25361,24 +25630,24 @@
         background: #effaf8 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-status strong,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-status span {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-status strong,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-status span {
         font-size: 0 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-status strong::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-status strong::after {
         color: #0a6d64 !important;
         content: "Vault unlocked" !important;
         font-size: 0.66rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .workspace-sidebar-status span::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .workspace-sidebar-status span::after {
         color: #476367 !important;
         content: "Local only" !important;
         font-size: 0.62rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer {
         display: block !important;
         position: fixed !important;
         top: 76px !important;
@@ -25395,7 +25664,7 @@
         box-shadow: 0 12px 28px rgba(20, 42, 46, 0.08) !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer > summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer > summary {
         display: grid !important;
         position: absolute !important;
         top: 0 !important;
@@ -25418,23 +25687,23 @@
         list-style: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer > summary::-webkit-details-marker {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer > summary::-webkit-details-marker {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer > summary::marker {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer > summary::marker {
         content: "" !important;
         font-size: 0 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer > summary::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer > summary::before {
         content: "Clinical tools" !important;
         grid-column: 1 !important;
         justify-self: start !important;
         font-size: 1rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #toolsDrawer > summary::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #toolsDrawer > summary::after {
         display: block !important;
         grid-column: 2 !important;
         justify-self: end !important;
@@ -25452,7 +25721,7 @@
         transform: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-body {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-body {
         display: block !important;
         position: absolute !important;
         top: 50px !important;
@@ -25469,16 +25738,16 @@
         box-shadow: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-overview {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-overview {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-body > details {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-body > details {
         display: block !important;
         grid-area: auto !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-body > details > summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-body > details > summary {
         display: grid !important;
         min-height: 50px !important;
         grid-template-columns: 34px minmax(0, 1fr) auto !important;
@@ -25491,7 +25760,7 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-body > details[open] > summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-body > details[open] > summary {
         border-top: 1px solid #a9d7d1 !important;
         border-bottom-color: #a9d7d1 !important;
         color: #087d75 !important;
@@ -25499,22 +25768,22 @@
         box-shadow: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tool-summary-copy {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tool-summary-copy {
         display: grid !important;
         grid-template-columns: 190px minmax(0, 1fr) !important;
         gap: 16px !important;
         align-items: center !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tool-summary-copy strong {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tool-summary-copy strong {
         font-size: 0.88rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tool-summary-copy span {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tool-summary-copy span {
         font-size: 0.76rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .tools-body > details[open] > .complaint-cds-body {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .tools-body > details[open] > .complaint-cds-body {
         position: static !important;
         display: grid !important;
         height: auto !important;
@@ -25535,11 +25804,11 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-grid {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-grid {
         display: contents !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-context {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-context {
         grid-area: context !important;
         border: 0 !important;
         border-right: 1px solid #d7e3e1 !important;
@@ -25548,7 +25817,7 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-controls {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-controls {
         grid-area: controls !important;
         border: 0 !important;
         border-left: 1px solid #d7e3e1 !important;
@@ -25557,7 +25826,7 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults {
         grid-area: results !important;
         display: block !important;
         height: 100% !important;
@@ -25569,7 +25838,7 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults::before {
         display: block !important;
         margin: 0 0 10px !important;
         color: #006c64 !important;
@@ -25580,7 +25849,7 @@
         text-transform: uppercase !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions {
         grid-area: actions !important;
         display: flex !important;
         justify-content: flex-end !important;
@@ -25590,7 +25859,7 @@
         background: #fbfdfd !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-actions .btn {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-actions .btn {
         width: auto !important;
         min-width: 154px !important;
         min-height: 36px !important;
@@ -25598,29 +25867,29 @@
         font-size: 0.74rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #stageKnowledgeGapButton {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #stageKnowledgeGapButton {
         display: flex !important;
         order: 1 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #copyClinicalImprovementAuditButton {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #copyClinicalImprovementAuditButton {
         order: 2 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #copyComplaintCdsButton {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #copyComplaintCdsButton {
         order: 3 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #runComplaintCdsButton {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #runComplaintCdsButton {
         order: 4 !important;
         min-width: 210px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clearComplaintCdsButton {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clearComplaintCdsButton {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsStatus {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsStatus {
         grid-area: status !important;
         display: grid !important;
         min-height: 0 !important;
@@ -25635,12 +25904,12 @@
         font-weight: 720 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSummary,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsSources {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSummary,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsSources {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-controls::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-controls::before {
         display: block !important;
         margin-bottom: 14px !important;
         color: #172b2e !important;
@@ -25649,7 +25918,7 @@
         font-weight: 850 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .complaint-cds-context-summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .complaint-cds-context-summary {
         display: grid !important;
         gap: 8px !important;
         margin-top: 18px !important;
@@ -25663,12 +25932,12 @@
         line-height: 1.55 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-control {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-control {
         display: block !important;
         margin-top: 14px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults {
         display: grid !important;
         max-height: 148px !important;
         gap: 6px !important;
@@ -25676,7 +25945,7 @@
         overflow: auto !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .complaint-cds-item {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .complaint-cds-item {
         display: grid !important;
         min-height: 58px !important;
         grid-template-columns: minmax(0, 1fr) auto !important;
@@ -25690,13 +25959,13 @@
         position: relative !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .exam-result-head {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .exam-result-head {
         grid-column: 1 !important;
         grid-row: 1 !important;
         min-width: 0 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .exam-result-meta {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .exam-result-meta {
         grid-column: 1 !important;
         grid-row: 2 !important;
         display: flex !important;
@@ -25705,12 +25974,12 @@
         overflow: hidden !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .exam-result-text,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .review-details {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .exam-result-text,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .review-details {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentResults .btn {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentResults .btn {
         grid-column: 2 !important;
         grid-row: 1 / span 2 !important;
         min-width: 96px !important;
@@ -25726,7 +25995,7 @@
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden]) {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden]) {
         display: grid !important;
         min-height: 54px !important;
         margin: 10px 0 0 !important;
@@ -25737,11 +26006,11 @@
         overflow: hidden !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden]) > * {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden]) > * {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden])::before {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden])::before {
         display: block !important;
         color: #0a6d64 !important;
         content: "Validated intent" !important;
@@ -25749,7 +26018,7 @@
         font-weight: 820 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden])::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #clinicalIntentSelection:not([hidden])::after {
         display: block !important;
         margin-top: 5px !important;
         color: #172b2e !important;
@@ -25759,31 +26028,31 @@
         white-space: pre !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section {
         display: block !important;
         height: 100% !important;
         min-height: 0 !important;
         overflow: hidden !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-tester-section-title,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-card,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .review-details,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-list {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-tester-section-title,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-card,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-row,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-text,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .review-details,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-list {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary > :nth-child(n+7) {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary > :nth-child(n+7) {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary .complaint-cds-chip {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-summary .complaint-cds-chip {
         min-height: 28px !important;
         border-radius: 7px !important;
         padding: 5px 9px !important;
@@ -25791,7 +26060,7 @@
         font-weight: 780 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:first-child::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:first-child::after {
         display: block !important;
         margin-top: 0 !important;
         border: 1px solid #d7e3e1 !important;
@@ -25812,7 +26081,7 @@
         white-space: pre !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-control > summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-control > summary {
         min-height: 28px !important;
         border: 0 !important;
         padding: 0 !important;
@@ -25821,7 +26090,7 @@
         font-size: 0.78rem !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-body {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-body {
         display: grid !important;
         gap: 10px !important;
         border: 0 !important;
@@ -25829,19 +26098,19 @@
         background: transparent !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-note,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-body label,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-input {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-note,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-body label,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-input {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chips {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chips {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 8px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chip {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chip {
         min-height: 38px !important;
         justify-content: flex-start !important;
         border-radius: 7px !important;
@@ -25852,20 +26121,20 @@
         font-weight: 720 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) .clinical-modifier-chip[aria-pressed="true"] {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) .clinical-modifier-chip[aria-pressed="true"] {
         border-color: #9fd5ce !important;
         color: #006c64 !important;
         background: #eaf8f5 !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #knowledgeBasePanel,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #demoPanel,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #installPanel,
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #checklistFormatToolSection {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #knowledgeBasePanel,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #demoPanel,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #installPanel,
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #checklistFormatToolSection {
         display: none !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #examTesterPanel {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #examTesterPanel {
         grid-area: reviewer !important;
         margin: 0 !important;
         border-top: 1px solid #d7e3e1 !important;
@@ -25873,13 +26142,13 @@
         background: #ffffff !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open]) #examTesterPanel > summary {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open]) #examTesterPanel > summary {
         min-height: 52px !important;
         border: 0 !important;
         padding: 0 18px !important;
       }
 
-      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#complaintCdsPanel[open])::after {
+      body:is([data-screen="censusScreen"], [data-screen="pasteScreen"]):has(#toolsDrawer[open] #complaintCdsPanel[open])::after {
         position: fixed !important;
         right: 16px !important;
         bottom: 12px !important;
@@ -27161,46 +27430,53 @@
       min-height: 0 !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .review-details:has(.complaint-component-answer-board) {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .review-details:has(.complaint-component-answer-board) {
       display: block !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .review-details:not([open]) .complaint-cds-section:has(.complaint-component-answer-board) {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .review-details:not([open]) .complaint-cds-section:has(.complaint-component-answer-board) {
       display: none !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) {
       display: block !important;
       height: auto !important;
       max-height: 430px !important;
       overflow: auto !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board)::after {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board)::after {
       display: none !important;
       content: none !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .exam-result-row.has-component-answers {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .exam-result-row.has-component-answers {
       display: grid !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control {
-      grid-template-columns: minmax(74px, auto) minmax(0, 1fr) minmax(82px, auto) !important;
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control {
+      grid-template-columns: minmax(0, 1fr) minmax(156px, auto) !important;
       gap: 8px !important;
       align-items: center !important;
       overflow: visible !important;
       padding: 6px !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-label {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(72px, 1fr)) !important;
+      gap: 6px !important;
+      align-items: stretch !important;
+    }
+
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-label {
       justify-content: flex-start !important;
       min-height: 34px !important;
       padding: 0 8px !important;
       text-align: left !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control > .history-response-action {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions > .history-response-action {
       min-height: 32px !important;
       border: 1px solid rgba(218, 232, 228, 0.14) !important;
       border-radius: 6px !important;
@@ -27208,34 +27484,37 @@
     }
 
     @media (max-width: 560px) {
-      body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control {
-        grid-template-columns: 54px minmax(0, 1fr) 54px !important;
-        gap: 5px !important;
+      body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 6px !important;
       }
 
-      body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control > .history-response-action {
-        min-height: 40px !important;
-        padding: 0 !important;
-        font-size: 0 !important;
+      body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
       }
 
-      body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control > .history-response-action.is-negative::after {
-        content: "(-)" !important;
-        font-size: 0.86rem !important;
+      body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions > .history-response-action {
+        min-height: 42px !important;
+        padding: 0 8px !important;
+        font-size: 0.72rem !important;
       }
 
-      body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-control > .history-response-action.is-positive::after {
-        content: "(+)" !important;
-        font-size: 0.86rem !important;
+      body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions > .history-response-action.is-negative::after {
+        content: none !important;
+      }
+
+      body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-component-answer-actions > .history-response-action.is-positive::after {
+        content: none !important;
       }
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-tester-section-title {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-tester-section-title {
       display: block !important;
     }
 
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-result-row:not(.has-component-answers),
-    body:has(#complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-result-text {
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-result-row:not(.has-component-answers),
+    body:has(#toolsDrawer[open] #complaintCdsPanel[open]) #complaintCdsResults .complaint-cds-section:has(.complaint-component-answer-board) .exam-result-text {
       display: none !important;
     }
 
@@ -27471,13 +27750,38 @@
         <span id="sidebarWorkspaceLabel">Single patient</span>
       </div>
       <nav class="workspace-sidebar-nav" aria-label="Primary workspace sections">
-        <button type="button" class="is-active">Workspace</button>
-        <button type="button">Patients</button>
-        <button type="button">Vault</button>
-        <button type="button">Evidence</button>
-        <button type="button">Settings</button>
-        <button type="button">Help</button>
+        <button type="button" class="is-active" data-sidebar-action="workspace">Workspace</button>
+        <button type="button" data-sidebar-action="patients">Patients</button>
+        <button type="button" data-sidebar-action="vault">Vault</button>
+        <button type="button" data-sidebar-action="evidence">Evidence</button>
+        <button type="button" data-sidebar-action="tools">Settings</button>
+        <button type="button" data-sidebar-action="help">Help</button>
       </nav>
+      <section id="openEvidenceSidebarProgress" class="open-evidence-sidebar-progress" aria-labelledby="openEvidenceSidebarProgressTitle" hidden>
+        <p id="openEvidenceSidebarProgressTitle" class="open-evidence-sidebar-title">Prompt progress</p>
+        <div id="openEvidenceSidebarProgressDonut" class="open-evidence-progress-donut" aria-label="0 of 0 OpenEvidence tasks reviewed">
+          <strong id="openEvidenceSidebarProgressRatio">0 / 0</strong>
+          <span>Reviewed</span>
+        </div>
+        <dl class="open-evidence-sidebar-counts" aria-label="OpenEvidence task counts">
+          <div>
+            <dt>Reviewed</dt>
+            <dd id="openEvidenceSidebarReviewedCount">0</dd>
+          </div>
+          <div>
+            <dt>Built / Copied</dt>
+            <dd id="openEvidenceSidebarBuiltCount">0</dd>
+          </div>
+          <div>
+            <dt>Needs review</dt>
+            <dd id="openEvidenceSidebarNeedsReviewCount">0</dd>
+          </div>
+          <div>
+            <dt>Not started</dt>
+            <dd id="openEvidenceSidebarNotStartedCount">0</dd>
+          </div>
+        </dl>
+      </section>
       <div class="workspace-sidebar-status">
         <strong>Local vault</strong>
         <span>No app-server upload</span>
@@ -28457,11 +28761,13 @@
                 <p class="open-evidence-hub-title">OpenEvidence review tasks</p>
                 <p class="open-evidence-hub-copy">Choose a task, copy a PHI-reviewed prompt, then paste the answer here for local review and structured summary storage.</p>
               </div>
+              <p id="openEvidenceTaskTotal" class="open-evidence-task-total">0 tasks total</p>
               <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
             </div>
             <div id="openEvidenceTaskBoard" class="open-evidence-task-grid" aria-label="OpenEvidence review tasks"></div>
             <div id="openEvidenceTaskDetail" class="open-evidence-detail" hidden>
               <p id="openEvidenceTaskDetailTitle" class="open-evidence-detail-title">Review task</p>
+              <p id="openEvidenceTaskDetailCopy" class="open-evidence-detail-copy">Select a task to review the prompt before copying.</p>
               <fieldset id="openEvidenceRefinementPanel" class="open-evidence-result-summary" hidden>
                 <legend>Checklist refinement reasons</legend>
                 <label><input type="checkbox" data-refinement-reason value="too long"> Too long</label>
@@ -28475,6 +28781,7 @@
               </fieldset>
               <label for="openEvidencePromptPreview">Prompt to copy</label>
               <textarea id="openEvidencePromptPreview" class="open-evidence-prompt-preview" readonly spellcheck="false"></textarea>
+              <p id="openEvidencePromptPreviewMeta" class="open-evidence-prompt-preview-meta">0 characters in copied prompt</p>
               <div class="compact-summary-actions">
                 <button id="copyOpenEvidenceTaskPromptButton" class="btn btn-primary" type="button">Copy reviewed prompt</button>
                 <a class="btn btn-secondary open-link" href="https://www.openevidence.com/" target="_blank" rel="noopener">Open OpenEvidence</a>
@@ -30035,25 +30342,36 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       nextActionCopy: document.getElementById("nextActionCopy"),
       nextActionPrimaryButton: document.getElementById("nextActionPrimaryButton"),
       nextActionSecondaryButton: document.getElementById("nextActionSecondaryButton"),
+      workspaceSidebarNav: document.querySelector(".workspace-sidebar-nav"),
       sidebarSourceStatus: document.getElementById("sidebarSourceStatus"),
       sidebarChecklistStatus: document.getElementById("sidebarChecklistStatus"),
       sidebarFindingsStatus: document.getElementById("sidebarFindingsStatus"),
       sidebarOutputStatus: document.getElementById("sidebarOutputStatus"),
       promptCopiedSummary: document.getElementById("promptCopiedSummary"),
       promptCopiedCopy: document.getElementById("promptCopiedCopy"),
+      openEvidenceSidebarProgress: document.getElementById("openEvidenceSidebarProgress"),
+      openEvidenceSidebarProgressDonut: document.getElementById("openEvidenceSidebarProgressDonut"),
+      openEvidenceSidebarProgressRatio: document.getElementById("openEvidenceSidebarProgressRatio"),
+      openEvidenceSidebarReviewedCount: document.getElementById("openEvidenceSidebarReviewedCount"),
+      openEvidenceSidebarBuiltCount: document.getElementById("openEvidenceSidebarBuiltCount"),
+      openEvidenceSidebarNeedsReviewCount: document.getElementById("openEvidenceSidebarNeedsReviewCount"),
+      openEvidenceSidebarNotStartedCount: document.getElementById("openEvidenceSidebarNotStartedCount"),
       editSourceButton: document.getElementById("editSourceButton"),
       exportSummaryContextButton: document.getElementById("exportSummaryContextButton"),
       copySummaryRoundsPromptButton: document.getElementById("copySummaryRoundsPromptButton"),
       copySummaryChecklistPromptButton: document.getElementById("copySummaryChecklistPromptButton"),
       copySummaryTeachingPromptButton: document.getElementById("copySummaryTeachingPromptButton"),
       copySummaryMedicationSafetyPromptButton: document.getElementById("copySummaryMedicationSafetyPromptButton"),
+      openEvidenceTaskTotal: document.getElementById("openEvidenceTaskTotal"),
       openEvidenceTaskBoardCard: document.getElementById("openEvidenceTaskBoardCard"),
       openEvidenceTaskBoard: document.getElementById("openEvidenceTaskBoard"),
       openEvidenceTaskDetail: document.getElementById("openEvidenceTaskDetail"),
       openEvidenceTaskDetailTitle: document.getElementById("openEvidenceTaskDetailTitle"),
+      openEvidenceTaskDetailCopy: document.getElementById("openEvidenceTaskDetailCopy"),
       openEvidenceRefinementPanel: document.getElementById("openEvidenceRefinementPanel"),
       openEvidenceRefinementNotes: document.getElementById("openEvidenceRefinementNotes"),
       openEvidencePromptPreview: document.getElementById("openEvidencePromptPreview"),
+      openEvidencePromptPreviewMeta: document.getElementById("openEvidencePromptPreviewMeta"),
       copyOpenEvidenceTaskPromptButton: document.getElementById("copyOpenEvidenceTaskPromptButton"),
       openEvidencePastebackInput: document.getElementById("openEvidencePastebackInput"),
       parseOpenEvidencePastebackButton: document.getElementById("parseOpenEvidencePastebackButton"),
@@ -30114,6 +30432,7 @@ Upper extremity strength left: 0 / 1 / 2 / 3 / 4 / 5</pre>
       clinicalIntentModifierInput: document.getElementById("clinicalIntentModifierInput"),
       complaintCdsSettingSelect: document.getElementById("complaintCdsSettingSelect"),
       complaintCdsPopulationSelect: document.getElementById("complaintCdsPopulationSelect"),
+      complaintCdsContextSummary: document.getElementById("complaintCdsContextSummary"),
       runComplaintCdsButton: document.getElementById("runComplaintCdsButton"),
       copyComplaintCdsButton: document.getElementById("copyComplaintCdsButton"),
       copyClinicalImprovementAuditButton: document.getElementById("copyClinicalImprovementAuditButton"),
@@ -31741,6 +32060,62 @@ Sensory level present: No / Yes, at ___`;
       });
     }
 
+    function setWorkspaceSidebarActiveAction(action) {
+      if (!elements.workspaceSidebarNav) {
+        return;
+      }
+      elements.workspaceSidebarNav.querySelectorAll("[data-sidebar-action]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.sidebarAction === action);
+      });
+    }
+
+    function preferredOpenEvidenceSidebarTaskId() {
+      const medicationTask = getOpenEvidenceTask("medication_safety");
+      if (medicationTask && openEvidenceTaskReadiness(medicationTask).ready) {
+        return "medication_safety";
+      }
+      const initialTask = getOpenEvidenceTask("initial_rounds_report");
+      if (initialTask && openEvidenceTaskReadiness(initialTask).ready) {
+        return "initial_rounds_report";
+      }
+      return state.activeOpenEvidenceTaskId || "initial_rounds_report";
+    }
+
+    async function openOpenEvidenceHubFromSidebar() {
+      setChecklistFirstMode(false, { focus: false, save: false });
+      state.openEvidenceHubSuppressed = false;
+      setPromptCollapsed(true, "OpenEvidence handoff hub ready. Select a task, review the PHI-safe prompt, then paste the answer back for local review.", {
+        laptopPrepareStep: state.initialRoundsPromptCopied || state.conversationContextReady ? "initialCopied" : "review"
+      });
+      showScreen("pasteScreen");
+      setWorkspaceSidebarActiveAction("evidence");
+      const preferredTaskId = preferredOpenEvidenceSidebarTaskId();
+      if (preferredTaskId) {
+        await selectOpenEvidenceTask(preferredTaskId, { scroll: false });
+      } else {
+        renderOpenEvidenceTaskBoard();
+      }
+      requestAnimationFrame(() => {
+        elements.promptCopiedSummary?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+
+    async function handleWorkspaceSidebarAction(action) {
+      if (action === "evidence") {
+        await openOpenEvidenceHubFromSidebar();
+        return;
+      }
+      if (action === "tools" || action === "help") {
+        openToolsDrawer();
+        setWorkspaceSidebarActiveAction(action);
+        return;
+      }
+      if (action === "workspace" || action === "patients" || action === "vault") {
+        showScreen("censusScreen");
+        setWorkspaceSidebarActiveAction(action);
+      }
+    }
+
     function setChecklistFirstMode(enabled, options = {}) {
       state.checklistFirstMode = Boolean(enabled);
       state.deviceWorkflowMode = state.checklistFirstMode ? "bedside" : "prepare";
@@ -32664,11 +33039,157 @@ Sensory level present: No / Yes, at ___`;
       return { expected, conversation, status: readiness.reason };
     }
 
+    function openEvidenceTaskDetailCopy(task = {}) {
+      return {
+        initial_rounds_report: "Create a one-paragraph summary, key problems, and a rounds plan from de-identified context.",
+        final_rounds_update: "Update the rounds report using reviewed bedside findings from this local checklist.",
+        medication_safety: "Verify medications, doses, interactions, and monitoring needs.",
+        attending_plan: "Build an attending-level diagnostic and treatment plan.",
+        what_am_i_missing: "Find blind spots, missing checks, and management-changing details.",
+        confirm_guideline: "Confirm best-practice guideline recommendations.",
+        find_exception: "Identify when guideline recommendations may not apply.",
+        teaching_explanation: "Explain this case to a junior learner.",
+        discharge_checklist: "Review discharge readiness and follow-up needs.",
+        checklist_improvement_review: "Review the local checklist for gaps without replacing it."
+      }[task.id] || task.label || "Review the prompt before copying.";
+    }
+
+    function compactPromptSection(prompt = "", tagName = "") {
+      if (!tagName) {
+        return "";
+      }
+      const pattern = new RegExp(`<${tagName}>\\s*([\\s\\S]*?)\\s*<\\/${tagName}>`, "i");
+      return String(prompt || "").match(pattern)?.[1]?.trim() || "";
+    }
+
+    function cleanPromptPreviewText(text = "", maxLength = 620) {
+      const compact = String(text || "")
+        .replace(/<\/?[a-z0-9_ -]+>/gi, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+      if (compact.length <= maxLength) {
+        return compact;
+      }
+      return `${compact.slice(0, maxLength).trim()}\n[Preview shortened; copied prompt keeps the full reviewed instructions.]`;
+    }
+
+    function formatOpenEvidencePromptPreview(built = {}, context = {}) {
+      const task = getOpenEvidenceTask(built.taskId) || {};
+      const taskLabel = built.label || task.label || "OpenEvidence task";
+      const contextText = cleanPromptPreviewText(
+        built.contextText || context.sourceContext || context.checklistPatientSummary || "",
+        520
+      );
+      if (built.taskId === "medication_safety") {
+        const sameConversation = built.reviewScope === "source-free" || built.sameConversationReady;
+        return [
+          `Using the ${sameConversation ? "de-identified inpatient context already provided in this OpenEvidence conversation" : "de-identified inpatient context below"}, perform a medication safety review.`,
+          "",
+          "1) List current medications and doses when provided.",
+          "2) Identify high-risk medications, interactions, duplications, and contraindications.",
+          "3) Recommend monitoring parameters and frequency.",
+          "4) Suggest safer alternatives if appropriate.",
+          "5) Highlight anything to verify before rounds.",
+          "",
+          "Context:",
+          sameConversation ? "[Use the prior de-identified context in this same conversation.]" : (contextText || "[DE-IDENTIFIED CONTEXT REVIEWED LOCALLY]"),
+          "",
+          "Answer in concise bullet points."
+        ].join("\n");
+      }
+
+      const sourceBlock = cleanPromptPreviewText(
+        compactPromptSection(built.prompt, "source_context")
+          || compactPromptSection(built.prompt, "deidentified_patient_context")
+          || compactPromptSection(built.prompt, "current_checklist")
+          || contextText,
+        520
+      );
+      return [
+        `Using the de-identified inpatient context${sourceBlock ? " below" : " already reviewed locally"}, perform: ${taskLabel}.`,
+        "",
+        openEvidenceTaskDetailCopy(task),
+        "",
+        "Context:",
+        sourceBlock || "[Use the prior de-identified context in this same OpenEvidence conversation.]",
+        "",
+        "Answer in concise bullet points. Do not include patient identifiers."
+      ].join("\n");
+    }
+
+    function visibleOpenEvidenceHubTasks() {
+      const hiddenInHandoffHub = new Set(["final_rounds_update", "checklist_improvement_review"]);
+      return openEvidenceTasks.filter((task) => state.promptCollapsed ? !hiddenInHandoffHub.has(task.id) : true);
+    }
+
+    function openEvidenceTaskVisualStatus(task, readiness = openEvidenceTaskReadiness(task)) {
+      const initialCopied = task.id === "initial_rounds_report" && (state.initialRoundsPromptCopied || state.conversationContextReady);
+      const activePreviewBuilt = task.id === state.activeOpenEvidenceTaskId && state.openEvidencePromptBuild?.taskId === task.id;
+      if (readiness.accepted || initialCopied || activePreviewBuilt) {
+        return "reviewed";
+      }
+      if (state.openEvidencePromptBuild?.taskId === task.id) {
+        return "built";
+      }
+      if (!readiness.ready) {
+        return "not-started";
+      }
+      return "needs-review";
+    }
+
+    function renderOpenEvidenceSidebarProgress(tasks = visibleOpenEvidenceHubTasks()) {
+      if (!elements.openEvidenceSidebarProgress) {
+        return;
+      }
+      const shouldShow = state.promptCollapsed && !state.openEvidenceHubSuppressed && tasks.length > 0;
+      elements.openEvidenceSidebarProgress.hidden = !shouldShow;
+      if (!shouldShow) {
+        return;
+      }
+      const counts = { reviewed: 0, built: 0, needsReview: 0, notStarted: 0 };
+      tasks.forEach((task) => {
+        const readiness = openEvidenceTaskReadiness(task);
+        const status = openEvidenceTaskVisualStatus(task, readiness);
+        if (status === "reviewed") {
+          counts.reviewed += 1;
+        } else if (status === "built") {
+          counts.built += 1;
+        } else if (status === "not-started") {
+          counts.notStarted += 1;
+        } else {
+          counts.needsReview += 1;
+        }
+      });
+      const total = tasks.length;
+      const progressDeg = total ? Math.round((counts.reviewed / total) * 360) : 0;
+      if (elements.openEvidenceSidebarProgressDonut) {
+        elements.openEvidenceSidebarProgressDonut.style.setProperty("--open-evidence-progress-deg", `${progressDeg}deg`);
+        elements.openEvidenceSidebarProgressDonut.setAttribute("aria-label", `${counts.reviewed} of ${total} OpenEvidence tasks reviewed`);
+      }
+      if (elements.openEvidenceSidebarProgressRatio) {
+        elements.openEvidenceSidebarProgressRatio.textContent = `${counts.reviewed} / ${total}`;
+      }
+      if (elements.openEvidenceSidebarReviewedCount) {
+        elements.openEvidenceSidebarReviewedCount.textContent = String(counts.reviewed);
+      }
+      if (elements.openEvidenceSidebarBuiltCount) {
+        elements.openEvidenceSidebarBuiltCount.textContent = String(counts.built);
+      }
+      if (elements.openEvidenceSidebarNeedsReviewCount) {
+        elements.openEvidenceSidebarNeedsReviewCount.textContent = String(counts.needsReview);
+      }
+      if (elements.openEvidenceSidebarNotStartedCount) {
+        elements.openEvidenceSidebarNotStartedCount.textContent = String(counts.notStarted);
+      }
+    }
+
     function renderOpenEvidenceTaskBoard() {
       if (!elements.openEvidenceTaskBoardCard || !elements.openEvidenceTaskBoard) {
         return;
       }
       const visible = !state.openEvidenceHubSuppressed && (state.promptCollapsed || hasAnyOpenEvidenceSourceContext() || Boolean(state.sections.length) || Boolean(state.compiledText));
+      const visibleTasks = visibleOpenEvidenceHubTasks();
+      renderOpenEvidenceSidebarProgress(visible ? visibleTasks : []);
       if (elements.promptCopiedSummary) {
         elements.promptCopiedSummary.hidden = !visible;
       }
@@ -32677,12 +33198,17 @@ Sensory level present: No / Yes, at ___`;
       }
       elements.openEvidenceTaskBoardCard.hidden = !visible;
       elements.openEvidenceTaskBoard.innerHTML = "";
-      openEvidenceTasks.forEach((task) => {
+      if (elements.openEvidenceTaskTotal) {
+        elements.openEvidenceTaskTotal.textContent = `${visibleTasks.length} task${visibleTasks.length === 1 ? "" : "s"} total`;
+      }
+      visibleTasks.forEach((task) => {
         const readiness = openEvidenceTaskReadiness(task);
         const description = openEvidenceTaskDescription(task, readiness);
+        const visualStatus = openEvidenceTaskVisualStatus(task, readiness);
         const card = document.createElement("article");
-        card.className = `open-evidence-task-card${state.activeOpenEvidenceTaskId === task.id ? " is-active" : ""}`;
+        card.className = `open-evidence-task-card is-${visualStatus}${state.activeOpenEvidenceTaskId === task.id ? " is-active" : ""}`;
         card.dataset.openEvidenceTaskId = task.id;
+        card.setAttribute("data-open-evidence-task-status", visualStatus);
         card.tabIndex = 0;
         card.setAttribute("role", "button");
         card.setAttribute("aria-label", `${task.label} OpenEvidence task`);
@@ -32879,6 +33405,9 @@ Sensory level present: No / Yes, at ___`;
       if (elements.openEvidencePromptPreview) {
         elements.openEvidencePromptPreview.value = "";
       }
+      if (elements.openEvidencePromptPreviewMeta) {
+        elements.openEvidencePromptPreviewMeta.textContent = "0 characters in copied prompt";
+      }
       if (elements.openEvidencePastebackInput) {
         elements.openEvidencePastebackInput.value = "";
       }
@@ -32902,6 +33431,9 @@ Sensory level present: No / Yes, at ___`;
       state.activeOpenEvidenceTaskId = task.id;
       elements.openEvidenceTaskDetail.hidden = false;
       elements.openEvidenceTaskDetailTitle.textContent = task.label;
+      if (elements.openEvidenceTaskDetailCopy) {
+        elements.openEvidenceTaskDetailCopy.textContent = openEvidenceTaskDetailCopy(task);
+      }
       elements.openEvidenceRefinementPanel.hidden = task.id !== "checklist_improvement_review";
       elements.openEvidencePastebackSummary.hidden = true;
       elements.openEvidencePastebackSummary.textContent = "";
@@ -32913,7 +33445,11 @@ Sensory level present: No / Yes, at ___`;
         const context = await buildOpenEvidenceTaskContext(task.id);
         const built = buildOpenEvidencePrompt(task.id, context);
         state.openEvidencePromptBuild = built;
-        elements.openEvidencePromptPreview.value = built.prompt;
+        elements.openEvidencePromptPreview.value = formatOpenEvidencePromptPreview(built, context);
+        if (elements.openEvidencePromptPreviewMeta) {
+          elements.openEvidencePromptPreviewMeta.textContent = `${built.prompt.length.toLocaleString()} characters in copied prompt`;
+        }
+        renderOpenEvidenceTaskBoard();
         if (options.scroll !== false) {
           elements.openEvidenceTaskDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
@@ -32921,6 +33457,9 @@ Sensory level present: No / Yes, at ___`;
       } catch (error) {
         console.error(error);
         elements.openEvidencePromptPreview.value = "";
+        if (elements.openEvidencePromptPreviewMeta) {
+          elements.openEvidencePromptPreviewMeta.textContent = "0 characters in copied prompt";
+        }
         elements.promptStatus.textContent = error?.message || "Could not build this OpenEvidence prompt.";
         return null;
       }
@@ -40079,6 +40618,7 @@ Now create the initial rounds report for this case. Output the report only and n
 
     function setComplaintCdsStatus(message) {
       elements.complaintCdsStatus.textContent = message || "";
+      renderComplaintCdsContextSummary();
       syncLocalWorkupStep();
     }
 
@@ -40087,6 +40627,60 @@ Now create the initial rounds report for this case. Output the report only and n
       chip.className = `complaint-cds-chip${strong ? " is-strong" : ""}`;
       chip.textContent = text;
       return chip;
+    }
+
+    function appendComplaintContextSummaryRow(list, label, value) {
+      const row = document.createElement("div");
+      row.className = "complaint-cds-context-summary-row";
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const description = document.createElement("dd");
+      description.textContent = value || "Not selected";
+      row.append(term, description);
+      list.appendChild(row);
+    }
+
+    function renderComplaintCdsContextSummary() {
+      if (!elements.complaintCdsContextSummary) {
+        return;
+      }
+      const selectedIntents = selectedClinicalIntents();
+      const currentResult = state.complaintCdsResult;
+      const currentModule = currentResult?.matched
+        ? currentResult.module
+        : (selectedIntents.length ? complaintModuleForSelectedIntents(selectedIntents) : null);
+      const hasBuiltWorkup = Boolean(state.unifiedClinicalWorkup || state.examTesterRecommendation);
+      const searchText = clinicalIntentSearchText();
+      const modifierText = clinicalModifierParts().join(", ");
+      const selectedLabel = selectedIntents.length
+        ? selectedIntents.map((intentRow) => intentRow.label).join("; ")
+        : (searchText ? "Select a validated local intent" : "Search a diagnosis or concern");
+      const moduleLabel = currentModule?.label || (searchText ? "Pending validated selection" : "None yet");
+      const nextStep = selectedIntents.length
+        ? hasBuiltWorkup
+          ? "Review recommendations, then build the bedside checklist or copy the workup after PHI review."
+          : "Build the clinical workup to create source-backed bedside recommendations."
+        : "Select a validated local intent before generating recommendations.";
+
+      elements.complaintCdsContextSummary.innerHTML = "";
+      const title = document.createElement("p");
+      title.className = "complaint-cds-context-summary-title";
+      title.textContent = "Suggested next step";
+      const copy = document.createElement("p");
+      copy.className = "complaint-cds-context-summary-copy";
+      copy.textContent = nextStep;
+      const summaryTitle = document.createElement("p");
+      summaryTitle.className = "complaint-cds-context-summary-title";
+      summaryTitle.textContent = "Workup summary";
+      const list = document.createElement("dl");
+      list.className = "complaint-cds-context-summary-list";
+      appendComplaintContextSummaryRow(list, "Intent", selectedLabel);
+      appendComplaintContextSummaryRow(list, "Workup", moduleLabel);
+      appendComplaintContextSummaryRow(list, "Modifiers", modifierText || "None selected");
+      appendComplaintContextSummaryRow(list, "Setting", elements.complaintCdsSettingSelect.value.trim());
+      appendComplaintContextSummaryRow(list, "Population", elements.complaintCdsPopulationSelect.value.trim());
+      appendComplaintContextSummaryRow(list, "Privacy", "Local, de-identified context only");
+      elements.complaintCdsContextSummary.append(title, copy, summaryTitle, list);
     }
 
     function effectiveClinicalIntentRegistry() {
@@ -40175,6 +40769,7 @@ Now create the initial rounds report for this case. Output the report only and n
       ].filter(Boolean).join(" | ");
       autoResize(elements.clinicalIntentModifierInput);
       autoResize(elements.examTesterInput);
+      renderComplaintCdsContextSummary();
     }
 
     function clinicalIntentSearchText() {
@@ -40324,6 +40919,7 @@ Now create the initial rounds report for this case. Output the report only and n
       elements.runComplaintCdsButton.disabled = !selected.length;
       elements.copyComplaintCdsButton.disabled = !selected.length || !(state.examTesterRecommendation || state.complaintCdsResult);
       elements.stageKnowledgeGapButton.hidden = Boolean(selected.length || hasSelectableValidatedMatches);
+      renderComplaintCdsContextSummary();
     }
 
     function renderKnowledgeModuleResultRow(module) {
@@ -40943,12 +41539,12 @@ Now create the initial rounds report for this case. Output the report only and n
 
       const title = document.createElement("p");
       title.className = "history-response-title";
-      title.textContent = `Component answers ${answeredCount}/${components.length}`;
+      title.textContent = `Component responses ${answeredCount}/${components.length}`;
       wrapper.appendChild(title);
 
       const hint = document.createElement("p");
       hint.className = "history-response-hint";
-      hint.textContent = "Answer each component separately; incomplete rows stay unknown for workup logic.";
+      hint.textContent = "Mark each component separately: left (-) denied, right (+) endorsed. Incomplete rows stay unknown for workup logic.";
       wrapper.appendChild(hint);
 
       const list = document.createElement("div");
@@ -40958,34 +41554,38 @@ Now create the initial rounds report for this case. Output the report only and n
         control.className = "history-response-control complaint-component-answer-control";
         const responseValue = responses[component.key] || "";
 
-        const negativeButton = document.createElement("button");
-        negativeButton.type = "button";
-        negativeButton.className = "history-response-action is-negative";
-        negativeButton.textContent = "(-) No";
-        negativeButton.title = `Mark ${component.label} no`;
-        negativeButton.setAttribute("aria-label", `Mark ${component.label} no`);
-        negativeButton.setAttribute("aria-pressed", responseValue === "no" ? "true" : "false");
-        negativeButton.dataset.complaintComponentAnswer = "no";
-        negativeButton.dataset.complaintAnswerId = item.id;
-        negativeButton.dataset.complaintComponentKey = component.key;
-        control.appendChild(negativeButton);
-
         const labelEl = document.createElement("span");
         labelEl.className = "history-response-label complaint-component-answer-label";
         labelEl.textContent = component.label;
         control.appendChild(labelEl);
 
+        const actions = document.createElement("div");
+        actions.className = "complaint-component-answer-actions";
+
+        const negativeButton = document.createElement("button");
+        negativeButton.type = "button";
+        negativeButton.className = "history-response-action is-negative";
+        negativeButton.textContent = "(-) No";
+        negativeButton.title = `Mark ${component.label} denied`;
+        negativeButton.setAttribute("aria-label", `Mark ${component.label} denied`);
+        negativeButton.setAttribute("aria-pressed", responseValue === "no" ? "true" : "false");
+        negativeButton.dataset.complaintComponentAnswer = "no";
+        negativeButton.dataset.complaintAnswerId = item.id;
+        negativeButton.dataset.complaintComponentKey = component.key;
+        actions.appendChild(negativeButton);
+
         const positiveButton = document.createElement("button");
         positiveButton.type = "button";
         positiveButton.className = "history-response-action is-positive";
         positiveButton.textContent = "(+) Yes";
-        positiveButton.title = `Mark ${component.label} yes`;
-        positiveButton.setAttribute("aria-label", `Mark ${component.label} yes`);
+        positiveButton.title = `Mark ${component.label} endorsed`;
+        positiveButton.setAttribute("aria-label", `Mark ${component.label} endorsed`);
         positiveButton.setAttribute("aria-pressed", responseValue === "yes" ? "true" : "false");
         positiveButton.dataset.complaintComponentAnswer = "yes";
         positiveButton.dataset.complaintAnswerId = item.id;
         positiveButton.dataset.complaintComponentKey = component.key;
-        control.appendChild(positiveButton);
+        actions.appendChild(positiveButton);
+        control.appendChild(actions);
 
         list.appendChild(control);
       });
@@ -41093,10 +41693,12 @@ Now create the initial rounds report for this case. Output the report only and n
       if (question.originalFullQuestion) {
         appendExamTesterText(row, "Atomized from", "Original grouped prompt split into separate bedside response rows.");
       }
-      appendExamTesterText(row, "Options", question.options);
       const responseControls = renderHistoryOptionResponseControls(question, index);
       if (responseControls) {
+        appendExamTesterText(row, "Selectable components", historyQuestionOptionChoices(question).join(" / "));
         row.appendChild(responseControls);
+      } else {
+        appendExamTesterText(row, "Options", question.options);
       }
       appendExamTesterText(row, "Recorded responses", historyOptionResponseSummary(question, index));
       appendExamTesterText(row, "Detail prompts", question.detail_prompts);
@@ -41589,6 +42191,7 @@ Now create the initial rounds report for this case. Output the report only and n
       const hasWorkupEvidence = Boolean(state.examTesterRecommendation);
       elements.copyComplaintCdsButton.disabled = !hasSelectedIntent || (!result?.matched && !hasWorkupEvidence);
       elements.copyClinicalImprovementAuditButton.disabled = !hasSelectedIntent || !result;
+      renderComplaintCdsContextSummary();
 
       if (!result) {
         syncLocalWorkupStep();
@@ -41877,10 +42480,28 @@ Now create the initial rounds report for this case. Output the report only and n
     }
 
     function cleanedHistoryOptionLabel(value = "") {
-      return String(value || "")
+      let label = String(value || "")
         .replace(/[_-]{2,}/g, "")
         .replace(/\s+/g, " ")
         .trim();
+      const replacements = [
+        [/^How have weight$/i, "Weight trajectory"],
+        [/^Waist circumference changed over time$/i, "Waist circumference trend"],
+        [/^The change intentional$/i, "Intentional change"],
+        [/^How many weeks pregnant are you$/i, "Gestational age"],
+        [/^This new$/i, "New or worsening"],
+        [/^Including polyuria$/i, "Polyuria"],
+        [/^Any dehydration$/i, "Dehydration"],
+        [/^Has pregnancy dating$/i, "Pregnancy dating"],
+        [/^Pregnancy dating$/i, "Pregnancy dating"],
+        [/^Fetal growth$/i, "Fetal growth"],
+        [/^Obstetric context changed diabetes screening or treatment safety$/i, "Obstetric diabetes-safety context"]
+      ];
+      const matched = replacements.find(([pattern]) => pattern.test(label));
+      if (matched) {
+        label = matched[1];
+      }
+      return label;
     }
 
     function isGenericHistoryOption(label = "") {
@@ -41892,6 +42513,15 @@ Now create the initial rounds report for this case. Output the report only and n
         ? question.options.map((option) => option?.label || option?.value || option)
         : String(question.options || "").split(/\s+\/\s+|[;\n|]+/);
       const explicitOptions = rawOptions
+        .map(cleanedHistoryOptionLabel)
+        .filter(Boolean)
+        .flatMap((label) => {
+          const splitLabels = splitSymptomResponseOption(label);
+          if (splitLabels.length) {
+            return splitLabels;
+          }
+          return isGenericSymptomResponseOption(label) || isGenericHistoryOption(label) ? [] : [label];
+        })
         .map(cleanedHistoryOptionLabel)
         .filter((label) => label && !isGenericHistoryOption(label));
       const fallbackPrompts = explicitOptions.length
@@ -41939,11 +42569,11 @@ Now create the initial rounds report for this case. Output the report only and n
       wrapper.className = "history-response-board";
       const title = document.createElement("p");
       title.className = "history-response-title";
-      title.textContent = "Response marks";
+      title.textContent = "Component responses";
       wrapper.appendChild(title);
       const hint = document.createElement("p");
       hint.className = "history-response-hint";
-      hint.textContent = "Use left (-) for denied and right (+) for endorsed; mark as many components as apply.";
+      hint.textContent = "Mark each symptom separately: left (-) denied, right (+) endorsed. Multiple components can be marked.";
       wrapper.appendChild(hint);
       const list = document.createElement("div");
       list.className = "history-response-list";
@@ -42613,6 +43243,14 @@ Now create the initial rounds report for this case. Output the report only and n
       const tagText = normalizedExamText(Array.isArray(tags) ? tags.join(" ") : tags);
       const sourceSignalText = tagText;
       const allText = `${normalized} ${sourceSignalText}`;
+      const earlyDiabetesInsipidusContext = /\b(?:diabetes_insipidus|diabetes insipidus|pituitary_gland_disorders|desmopressin)\b/.test(allText)
+        && /\b(?:urine|urinating|thirst|water|sodium|desmopressin|polyuria|polydipsia|nocturia|fluid restriction|lithium)\b/.test(allText);
+      if (earlyDiabetesInsipidusContext && /24-hour urine volume|urine output changed/.test(normalized)) return "Ask 24-hour urine volume and baseline change";
+      if (earlyDiabetesInsipidusContext && /urinate overnight|nocturia|new or worsening/.test(normalized)) return "Ask nocturia frequency and progression";
+      if (earlyDiabetesInsipidusContext && /reliable access to water|thirst[\s\S]*limiting safe hydration|mental status limiting safe hydration/.test(normalized)) return "Ask water access and safe hydration";
+      if (earlyDiabetesInsipidusContext && /lithium|demeclocycline|amphotericin|diuretic|sglt2|glucocorticoid|desmopressin|fluid restriction|medication change/.test(normalized)) return "Review DI medication and fluid-balance triggers";
+      if (earlyDiabetesInsipidusContext && /kidney stones|constipation|bone pain|hypercalcemia|reduced kidney function|kidney concentrating ability/.test(normalized)) return "Ask hypercalcemia and renal DI mimics";
+      if (earlyDiabetesInsipidusContext && /how much are you drinking and urinating|fluid intake|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(normalized)) return "Ask DI thirst, polyuria, and hydration symptoms";
       const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
       if (earlyDkaContext && /fever|dysuria|cough|wound|line infection|dental\/skin infection|dental skin infection|chest pain|stroke symptoms|pancreatitis symptoms|other trigger/.test(normalized)) return "Ask DKA/HHS infectious, ischemic, and medication triggers";
       if (earlyDkaContext && /what has already been given|fluids|insulin route|current monitoring level|potassium\/phosphate|dextrose|antibiotics/.test(normalized)) return "Review hyperglycemic-crisis treatments already started";
@@ -42638,13 +43276,19 @@ Now create the initial rounds report for this case. Output the report only and n
       const pelvicPregnancyContext = /\b(?:pelvic_pain|pelvic pain|menstrual|period|missed period|ectopic|pid|gynecology|dyspareunia|purulent discharge|heavy bleeding|shoulder pain)\b/.test(allText);
       const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
       const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
+      if (diabetesContext && /how have weight[\s\S]*waist circumference[\s\S]*(?:intentional|over time)/.test(allText)) return "Ask weight, waist, and intentional change";
+      if (diabetesContext && /pre-pregnancy diabetes|prior a1c|prior glucose abnormality|pcos|obesity|steroid exposure|strong family history/.test(allText)) return "Ask pre-pregnancy diabetes and GDM risk factors";
+      if (diabetesContext && /have fetal growth|estimated fetal weight|amniotic fluid|obstetric ultrasound|polyhydramnios/.test(normalized)) return "Ask fetal-growth and obstetric ultrasound concerns";
+      if (diabetesContext && /how many weeks pregnant|pregnancy dating|obstetric context[\s\S]*diabetes screening|obstetric context[\s\S]*treatment safety/.test(normalized)) return "Ask gestational age, dating, and obstetric context";
       if (eyeVisionContext && /jaw claudication|scalp tenderness|halos|chemical exposure|shingles|inability to keep the eye open/.test(allText)) return "Ask ocular emergency and systemic red flags";
       if (eyeVisionContext && /vision loss|eye pain|photophobia|trauma|contact lens|discharge|severe headache|diplopia|neurologic|immunocompromise/.test(allText)) return "Ask vision-threatening red-eye symptoms";
-      if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) return "Ask GU/STI symptoms and exposure risk";
-      if (/\b(?:scrotal|testicular|torsion|epididymitis|acute_scrotum|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+      if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`)) {
+        if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
         if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) return "Ask scrotal pain onset and torsion features";
         return "Ask epididymitis/STI and urology-risk features";
       }
+      if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) return "Ask groin nodes, genital lesions, and skin infection features";
+      if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) return "Ask discharge, dysuria, genital lesions, and STI exposure";
       if (guRenalContext && !boneMineralContext && !/what symptoms localize|localize the fever source|source:/.test(normalized) && /are symptoms limited to dysuria|dysuria\/frequency\/urgency|dysuria|urinary frequency|urinary urgency|hematuria|flank pain|catheter\/procedure|urologic|pyelonephritis|stone history|obstruction|resistant urine culture|pregnancy possibility/.test(normalized)) return "Ask UTI symptoms and complicated-infection risk";
       const sourceLocalizingPrompt = /what symptoms localize|localize the fever source|source:/.test(normalized);
       if (dermRashContext && !sourceLocalizingPrompt && /^(?:is there )?(?:drainage|spreading redness|odor|worsening pain)|black tissue|exposed bone|exposed tendon|reduced pulses|foot ulcer/.test(normalized)) return "Ask wound infection and limb-threat features";
@@ -42674,9 +43318,11 @@ Now create the initial rounds report for this case. Output the report only and n
       if (boneMineralContext && /head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(normalized)) return "Ask neck radiation and parathyroid-risk history";
       if (boneMineralContext && /prior neck|thyroid surgery|parathyroid surgery|postoperative calcium|post neck surgery|neck surgery/.test(normalized)) return "Ask neck surgery and postoperative calcium history";
       if (boneMineralContext && /muscle cramps|perioral numbness|tingling|cramps|tetany|carpopedal|paresthesias|paralysis|seizure|laryngospasm|arrhythmia/.test(normalized)) return "Ask hypocalcemia neuromuscular symptoms";
-      if (boneMineralContext && /kidney stones|nephrocalcinosis|hematuria|flank|polyuria|polydipsia|dehydration|renal-function|reduced kidney/.test(allText)) return "Ask renal stone and calcium-complication symptoms";
+      if (boneMineralContext && /nephrocalcinosis|hematuria|flank|recurrent utis|renal-function changes affecting calcium|affecting calcium\/pth interpretation/.test(allText)) return "Ask kidney-stone and renal calcium/PTH complications";
+      if (boneMineralContext && /kidney stones|constipation|polyuria|polydipsia|bone pain|confusion|dehydration|reduced kidney function/.test(allText)) return "Ask hypercalcemia symptom pattern and renal impact";
       if (boneMineralContext && /chronic kidney disease|liver disease|calcium|phosphorus|pth|vitamin d interpretation|mineral/.test(allText)) return "Ask renal, liver, and mineral-metabolism modifiers";
       if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) return "Ask malabsorption and nutrient-absorption risks";
+      if (boneMineralContext && /family history of men|familial hypocalciuric|parathyroid disease|pituitary tumors|pancreatic neuroendocrine|jaw tumors/.test(allText)) return "Ask hereditary hyperparathyroidism/FHH and MEN history";
       if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) return "Review antiseizure and vitamin D metabolism medications";
       if (boneMineralContext && /aromatase inhibitor|androgen-deprivation|glucocorticoid|antiseizure medication|ppi|transplant medication|bone-active medication/.test(allText)) return "Review bone-active medication exposure";
       if (boneMineralContext && /menopause|ovarian-insufficiency|ovarian insufficiency|fragility fracture|hormone-therapy|hormone therapy/.test(allText)) return "Ask menopause timing and fracture-risk modifiers";
@@ -42704,19 +43350,21 @@ Now create the initial rounds report for this case. Output the report only and n
       if (pituitaryAdrenalContext && /nipple discharge|breast tenderness|prolactin/.test(allText)) return "Ask prolactin symptoms and medication causes";
       if (/spontaneous or expressible nipple discharge|galactorrhea|nipple discharge|breast tenderness|medications that raise prolactin|raise prolactin|hyperprolactin|prolactin/.test(allText)
         && /headaches|visual symptoms|visual field|pituitary|amenorrhea|infertility|erectile dysfunction|polycystic|reproductive|gonadal|cycle/.test(allText)) return "Ask prolactin symptoms, medication causes, and mass-effect symptoms";
-      if (pituitaryAdrenalContext && /polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) return "Ask diabetes-insipidus thirst and polyuria safety";
+      if (pituitaryAdrenalContext && /24-hour urine volume|urine output changed|urinate overnight|nocturia|polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) return "Ask diabetes-insipidus thirst, nocturia, and polyuria safety";
       if (pituitaryAdrenalContext && /thyroid symptoms|palpitations|tremor|heat\/cold intolerance|neck swelling/.test(allText)) return "Ask adrenal and thyroid-axis symptoms";
       if (pituitaryAdrenalContext && /measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(allText)) return "Ask infection precipitant or mimic symptoms";
       if (pituitaryAdrenalContext && /cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(allText)) return "Ask respiratory infection symptoms";
       if (pituitaryAdrenalContext && /dysuria|urinary frequency|suprapubic|hematuria|flank pain|uti|pyelonephritis/.test(allText)) return "Ask urinary infection symptoms";
       if (pituitaryAdrenalContext && /wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) return "Ask wound and procedure-site infection symptoms";
-      if (pituitaryAdrenalContext && /hypertension|diabetes|complication screening|medication choice/.test(allText)) return "Ask treatment-limiting hypertension and diabetes complications";
+      if (pituitaryAdrenalContext && /hypertension|(?:type 1|type 2|gestational|mellitus)\s+diabetes|complication screening|medication choice/.test(allText)) return "Ask treatment-limiting hypertension and diabetes complications";
       if (pituitaryAdrenalContext && /autoimmune thyroid|type 1 diabetes|celiac|pernicious anemia|polyglandular autoimmune/.test(allText)) return "Ask autoimmune polyglandular history";
       if (/new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) return "Ask pituitary mass-effect and treatment history";
       if (/new, worsening, resistant, or treatment-limiting hypertension or diabetes|treatment-limiting hypertension|treatment-limiting diabetes|complication screening|medication choice/.test(allText)) return "Ask treatment-limiting hypertension and diabetes complications";
       if (/hirsutism|acne|scalp hair loss|deepening voice|clitoromegaly|rapid virilization|cycle irregularity|androgenic medication/.test(allText)) return "Ask hyperandrogenism and virilization features";
       if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(allText)
         && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant|oxygen need|full sentences)\b/.test(allText)) return "Ask PE severity, VTE risk factors, and bleeding risk";
+      if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText) && /\b(?:loud snoring|witnessed apneas|waking choking|morning headache|daytime sleepiness)\b/.test(allText)) return "Ask OSA symptoms and daytime sleepiness";
+      if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText) && /\b(?:drowsy driving|work-safety|resistant hypertension|atrial fibrillation|heart failure|opioid|sedative|alcohol near bedtime|prior sleep study|cpap intolerance|oral-appliance|oral appliance)\b/.test(allText)) return "Ask OSA safety, comorbidities, and treatment context";
       if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)) return "Ask OSA symptoms, drowsy-driving risk, and CPAP context";
       if (/\b(?:hypoglycemia|low glucose|neuroglycopenic|insulin|secretagogue|carbohydrate|jittery|shaky)\b/.test(allText)
         && /\b(?:confusion|sleepiness|seizure|trouble thinking|eat\/drink|eat drink|carbohydrates|most recent glucose|last meal)\b/.test(allText)) return "Ask neuroglycopenic severity and carbohydrate response";
@@ -42743,8 +43391,9 @@ Now create the initial rounds report for this case. Output the report only and n
       if (thyroidContext && /childhood head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2/.test(allText)) return "Ask thyroid cancer radiation and family-risk history";
       if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) return "Review thyroid medications, iodine/biotin exposure, and assay interference";
       if (infectionContext && /immunosuppression|pregnancy|hospitalization|procedure|indwelling|travel|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication/.test(allText)) return "Ask host-risk and exposure history";
-      if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain)\b/.test(allText)) return "Ask GU/STI symptoms and exposure risk";
-      if (/scrotal|testicular|torsion|epididymitis|urology|mumps|solitary testis/.test(allText)) return "Ask scrotal pain source and urology-risk features";
+      if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(allText)) return "Ask scrotal pain source and urology-risk features";
+      if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) return "Ask groin nodes, genital lesions, and skin infection features";
+      if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) return "Ask discharge, dysuria, genital lesions, and STI exposure";
       if (/foot ulcer|foot wound|drainage|protective sensation|amputation|offload|footwear|wound care/.test(allText)) return "Ask diabetic foot wound, neuropathy, and self-care risk";
       if (/rash|mucosal|tongue swelling|skin pain|blistering|purpura|new medication|urticaria|immunocompromise/.test(allText)) return "Ask rash danger features and exposure history";
       if (/sick contacts|covid|flu|strep|ear|sinus|dental|muffled voice|trismus|swallow fluids|heent|throat/.test(allText)) return "Ask HEENT infection exposure and deep-space warning symptoms";
@@ -44017,7 +44666,7 @@ Now create the initial rounds report for this case. Output the report only and n
           if (question.fullQuestion && question.fullQuestion !== questionLabel) {
             lines.push(`   Full source question: ${question.fullQuestion}`);
           }
-          lines.push(`   Options: ${question.options || "n/a"}`);
+          lines.push(`   Options: ${historyQuestionOptionChoices(question).join(" / ") || question.options || "n/a"}`);
           lines.push(`   Recorded responses: ${question.recorded_responses || "none recorded"}`);
           lines.push(`   Detail prompts: ${clinicalDisplayText(question.detail_prompts) || "n/a"}`);
           lines.push(`   Ask when: ${question.whenToAsk || "n/a"}`);
@@ -44421,7 +45070,7 @@ Now create the initial rounds report for this case. Output the report only and n
         "## Focused History Response Marks",
         historyQuestions.length ? historyQuestions.map((question, index) => [
           `${index + 1}. ${question.displayLabel || question.label || question.text || "Focused history question"}`,
-          `   options: ${question.options || "n/a"}`,
+          `   options: ${historyQuestionOptionChoices(question).join(" / ") || question.options || "n/a"}`,
           `   recorded_responses: ${question.recorded_responses || "none recorded"}`,
           `   full_question: ${question.fullQuestion || question.text || "n/a"}`,
           `   source: ${question.source || "n/a"}`,
@@ -45176,8 +45825,8 @@ If source context is missing from this conversation, say that the prior context 
       if (!clean || isGenericSymptomResponseOption(clean)) {
         return [];
       }
-      const splitCandidates = /[-/,]|\b(?:and|or)\b/i.test(clean)
-        ? clean.split(/\s*(?:-|\/|,|\band\b|\bor\b)\s*/gi)
+      const splitCandidates = /[\/,]|\b(?:and|or)\b/i.test(clean)
+        ? clean.split(/\s*(?:\/|,|\band\b|\bor\b)\s*/gi)
         : [clean];
       const labels = splitCandidates
         .map((part) => symptomResponseComponentLabel(part, clean))
@@ -45640,13 +46289,13 @@ If source context is missing from this conversation, say that the prior context 
         check: '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>',
         checkCircle: '<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="m8 12 3 3 6-6"/></svg>',
         shield: '<svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3.5 8-7 10-3.5-2-7-5-7-10V6l7-3z"/><path d="m8.5 12 2.5 2.5L16 9"/></svg>',
-        chat: '<svg viewBox="0 0 24 24"><path d="M5 5h14v10H8l-4 4V5z"/></svg>',
-        chatDots: '<svg viewBox="0 0 24 24"><path d="M5 5h14v10H8l-4 4V5z"/><circle cx="10" cy="10" r="0.8" fill="currentColor" stroke="none"/><circle cx="14" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>',
+        chat: '<svg viewBox="0 0 24 24"><path d="M20.4 10.9c0 3.5-3.5 6.4-7.8 6.4-1.1 0-2.2-.2-3.2-.6L4.5 19.5l1.2-4.4a5.6 5.6 0 0 1-.9-3.1c0-3.6 3.5-6.5 7.8-6.5 4.3 0 7.8 2.4 7.8 5.4z"/></svg>',
+        chatDots: '<svg viewBox="0 0 24 24"><path d="M6.4 5.5h11.2a2.8 2.8 0 0 1 2.8 2.8v5.7a2.8 2.8 0 0 1-2.8 2.8H10l-5.4 3.7V8.3a2.8 2.8 0 0 1 2.8-2.8z"/><circle cx="9.6" cy="11.2" r="0.65" fill="currentColor" stroke="none"/><circle cx="12" cy="11.2" r="0.65" fill="currentColor" stroke="none"/><circle cx="14.4" cy="11.2" r="0.65" fill="currentColor" stroke="none"/></svg>',
         stethoscope: '<svg viewBox="0 0 24 24"><path d="M6 4v5a4 4 0 0 0 8 0V4"/><path d="M14 9v5a5 5 0 0 0 10 0v-1"/><path d="M22 13a2 2 0 1 0-4 0 2 2 0 0 0 4 0z"/></svg>',
         heart: '<svg viewBox="0 0 24 24"><path d="M20.8 5.6a5.2 5.2 0 0 0-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 0 0-7.4 7.4L12 21l8.8-8.9a5.2 5.2 0 0 0 0-7.5z"/></svg>',
         pulse: '<svg viewBox="0 0 24 24"><path d="M3 13h4l2-7 4 14 3-7h5"/></svg>',
         lungs: '<svg viewBox="0 0 24 24"><path d="M12 4v8"/><path d="M12 12c-3-4-6-4-7 1-1 4 0 7 3 7 3 0 4-4 4-8z"/><path d="M12 12c3-4 6-4 7 1 1 4 0 7-3 7-3 0-4-4-4-8z"/></svg>',
-        stomach: '<svg viewBox="0 0 24 24"><path d="M12.5 3.2c-1 3.1.7 4.2 2.4 6 2.1 2.2 2.4 5.2.4 7.4-2.4 2.7-7.2 3.3-9.1.8-1.6-2.1-.5-4.7 2.5-5.7 2.8-.9 4.5-2.1 4.2-4.2-.2-1.3-1.1-2.4-2.8-3.4"/><path d="M8.2 6c1.9 1 2.3 2.8.9 4.2"/></svg>',
+        stomach: '<svg viewBox="0 0 24 24"><path d="M10 3v3.7c0 1.3.7 2.3 1.9 3l2.1 1.2c2.7 1.5 3.7 5 2.1 7.5-1.2 2-3.4 3.1-5.8 2.8-3.2-.3-5.6-2.6-5.6-5.3 0-2.2 1.6-4 3.8-4.5l2.4-.5c1.4-.3 2.3-1.6 2-3-.2-.9-.9-1.6-2-2.2"/><path d="M8 15.5c1.5-.4 3.3 0 4.8 1.1"/></svg>',
         brain: '<svg viewBox="0 0 24 24"><path d="M9.5 4.2A3.4 3.4 0 0 0 6 7.5a3.7 3.7 0 0 0-2 3.3 3.6 3.6 0 0 0 1.3 2.8 3.8 3.8 0 0 0 3.8 4.8h.4V4.2z"/><path d="M14.5 4.2A3.4 3.4 0 0 1 18 7.5a3.7 3.7 0 0 1 2 3.3 3.6 3.6 0 0 1-1.3 2.8 3.8 3.8 0 0 1-3.8 4.8h-.4V4.2z"/><path d="M9.5 8.2c-1.5 0-2.4.9-2.4 2.1M9.5 13.2c-1.3 0-2.2.8-2.2 2M14.5 8.2c1.5 0 2.4.9 2.4 2.1M14.5 13.2c1.3 0 2.2.8 2.2 2"/></svg>',
         hand: '<svg viewBox="0 0 24 24"><path d="M8 12V5a1.5 1.5 0 0 1 3 0v6"/><path d="M11 11V4a1.5 1.5 0 0 1 3 0v7"/><path d="M14 11V6a1.5 1.5 0 0 1 3 0v8"/><path d="M17 14v-3a1.5 1.5 0 0 1 3 0v5c0 5-4 7-8 7-3 0-5-1-7-4l-2-4a1.5 1.5 0 0 1 2.5-1.6L8 16"/></svg>',
         line: '<svg viewBox="0 0 24 24"><path d="M8 3h8v14H8z"/><path d="M12 17v5M9 7h6M9 11h6"/></svg>',
@@ -45692,15 +46341,21 @@ If source context is missing from this conversation, say that the prior context 
       if (/vital|general|perfus|capillary|mucous/.test(title)) return { label: "Vitals", icon: "pulse", copy: "Observed & measured" };
       if (/cardio|heart|pulse|edema|jvd|rhythm|circulation/.test(title)) return { label: "Cardio", icon: "heart", copy: "Heart & circulation" };
       if (/resp|lung|breath|oxygen|pulm/.test(title)) return { label: "Resp", icon: "lungs", copy: "Lungs & breathing" };
-      if (/abd|gi|bowel|skin|line/.test(title)) return { label: /skin|line/.test(title) ? "Skin / Lines" : "Abd", icon: /skin|line/.test(title) ? "hand" : "stomach", copy: /skin|line/.test(title) ? "Skin, wounds, lines" : "GI & abdomen" };
+      if (/abd|gi|bowel|skin|line/.test(title)) {
+        const mixedSurface = /skin|line/.test(title) && /abd|gi|bowel/.test(title);
+        if (/skin|line/.test(title) && !mixedSurface) return { label: "Skin / Lines", icon: "hand", copy: "Skin, wounds, lines" };
+        return { label: mixedSurface ? "Abdomen / Skin" : "Abd", icon: "stomach", copy: mixedSurface ? "GI, skin, wounds, lines" : "GI & abdomen" };
+      }
       if (/neuro|mental|orientation/.test(title)) return { label: "Neuro", icon: "brain", copy: "Mental status & neuro" };
       if (/ext|edema|peripheral/.test(title)) return { label: "Ext", icon: "pulse", copy: "Extremities" };
       return { label: section.category === "bedside" ? "Questions" : "Other", icon: section.category === "bedside" ? "chat" : "clipboard", copy: section.category === "bedside" ? "Symptoms & history" : "Other findings" };
     }
 
     function phoneConceptSectionTitle(section = {}) {
-      const domain = phoneConceptSectionDomain(section);
+      const domain = section.phoneConceptDomain || phoneConceptSectionDomain(section);
       if (domain.label === "Resp") return "Respiratory";
+      if (domain.label === "Abd") return "Abdomen";
+      if (domain.label === "Abdomen / Skin") return "Abdomen / Skin";
       if (domain.label === "Skin / Lines") return "Skin / Lines";
       if (domain.label === "Questions") return "Bedside questions";
       return domain.label;
@@ -45764,32 +46419,47 @@ If source context is missing from this conversation, say that the prior context 
     }
 
     function phoneConceptExamRailSections() {
-      return phoneConceptExamSections().flatMap((section) => {
-        const domain = phoneConceptSectionDomain(section);
-        if (domain.label !== "Skin / Lines") return [section];
+      return phoneConceptExamSections().flatMap((section) => phoneConceptSplitSkinLineSection(section));
+    }
 
-        const examItems = section.items.filter((item) => item.category === "exam");
-        const lineItems = examItems.filter((item) => /line|site|iv|catheter|tube|drain/i.test(cleanOutputLabel(item.label)));
-        const skinItems = examItems.filter((item) => !lineItems.some((lineItem) => lineItem.id === item.id));
-        if (!lineItems.length || !skinItems.length) return [section];
+    function phoneConceptIsLineItem(item) {
+      return /line|site|iv|catheter|tube|drain/i.test(cleanOutputLabel(item?.label || ""));
+    }
 
-        return [
-          {
-            ...section,
-            items: skinItems,
-            actionSection: section.title,
-            phoneConceptRailSubsection: "skin",
-            phoneConceptDomain: { label: "Skin", icon: "hand", copy: "Skin, wounds" }
-          },
-          {
-            ...section,
-            items: lineItems,
-            actionSection: section.title,
-            phoneConceptRailSubsection: "lines",
-            phoneConceptDomain: { label: "Lines", icon: "line", copy: "Lines" }
-          }
-        ];
+    function phoneConceptExamSubsectionForItem(item) {
+      const label = cleanOutputLabel(item?.label || "");
+      if (phoneConceptIsLineItem(item)) return "lines";
+      if (/abdomen|abdominal|bowel|gi\b|stomach|tenderness|distension|guarding|rebound/i.test(label)) return "abdomen";
+      if (/skin|wound|ulcer|rash|lesion|erythema|drainage|warm|dry|intact/i.test(label)) return "skin";
+      return "skin";
+    }
+
+    function phoneConceptSplitSkinLineSection(section = {}) {
+      const domain = phoneConceptSectionDomain(section);
+      if (!/Skin|Line/i.test(domain.label)) return [section];
+
+      const examItems = (section.items || []).filter((item) => item.category === "exam");
+      const groups = [
+        { key: "abdomen", label: "Abd", icon: "stomach", copy: "GI & abdomen", items: [] },
+        { key: "skin", label: "Skin", icon: "hand", copy: "Skin, wounds", items: [] },
+        { key: "lines", label: "Lines", icon: "line", copy: "Lines", items: [] }
+      ];
+      examItems.forEach((item) => {
+        const subsection = phoneConceptExamSubsectionForItem(item);
+        const group = groups.find((candidate) => candidate.key === subsection) || groups[1];
+        group.items.push(item);
       });
+
+      const visibleGroups = groups.filter((group) => group.items.length);
+      if (visibleGroups.length <= 1) return [section];
+
+      return visibleGroups.map((group) => ({
+        ...section,
+        items: group.items,
+        actionSection: section.title,
+        phoneConceptRailSubsection: group.key,
+        phoneConceptDomain: { label: group.label, icon: group.icon, copy: group.copy }
+      }));
     }
 
     function phoneConceptSectionRail(activeSectionTitle = "") {
@@ -45847,17 +46517,30 @@ If source context is missing from this conversation, say that the prior context 
     }
 
     function phoneConceptActiveExamSection() {
-      const sections = phoneConceptExamSections();
+      const sections = phoneConceptExamRailSections();
       if (!sections.length) return null;
-      const selected = sections.find((section) => section.title === state.phoneConceptSection);
+      const currentSubsection = state.phoneConceptRailSubsection || "";
+      const selected = sections.find((section) => {
+        const actionSection = section.actionSection || section.title;
+        if (actionSection !== state.phoneConceptSection && section.title !== state.phoneConceptSection) {
+          return false;
+        }
+        if (!section.phoneConceptRailSubsection) {
+          return true;
+        }
+        return section.phoneConceptRailSubsection === currentSubsection
+          || (!currentSubsection && section.phoneConceptRailSubsection === "skin");
+      });
       if (selected) return selected;
       const cardio = sections.find((section) => /cardio|heart|pulm|resp|lung/i.test(section.title));
-      state.phoneConceptSection = (cardio || sections[0]).title;
-      return cardio || sections[0];
+      const fallback = cardio || sections[0];
+      state.phoneConceptSection = fallback.actionSection || fallback.title;
+      state.phoneConceptRailSubsection = fallback.phoneConceptRailSubsection || "";
+      return fallback;
     }
 
     function phoneConceptCanMarkNormalSection(section = {}) {
-      const domain = phoneConceptSectionDomain(section).label;
+      const domain = (section.phoneConceptDomain || phoneConceptSectionDomain(section)).label;
       return /cardio|skin|lines/i.test(`${section.title} ${domain}`);
     }
 
@@ -45867,7 +46550,9 @@ If source context is missing from this conversation, say that the prior context 
     }
 
     function phoneConceptOverviewSections() {
-      const sections = state.sections.filter((section) => section.items.length);
+      const sections = state.sections
+        .filter((section) => section.items.length)
+        .flatMap((section) => section.category === "exam" ? phoneConceptSplitSkinLineSection(section) : [section]);
       const hasRespiratory = sections.some((section) => phoneConceptSectionTitle(section) === "Respiratory");
       if (hasRespiratory) return sections;
 
@@ -45906,7 +46591,14 @@ If source context is missing from this conversation, say that the prior context 
         return stats.answered < stats.total;
       });
       const ordered = unfinishedSections.length ? unfinishedSections : examSections;
-      const activeIndex = ordered.findIndex((section) => section.title === state.phoneConceptSection);
+      const activeIndex = ordered.findIndex((section) => {
+        const actionSection = section.actionSection || section.title;
+        if (actionSection !== state.phoneConceptSection && section.title !== state.phoneConceptSection) {
+          return false;
+        }
+        if (!section.phoneConceptRailSubsection) return true;
+        return section.phoneConceptRailSubsection === (state.phoneConceptRailSubsection || "");
+      });
       const workflowOrder = activeIndex > 0
         ? [...ordered.slice(activeIndex), ...ordered.slice(0, activeIndex)]
         : ordered;
@@ -45966,13 +46658,13 @@ If source context is missing from this conversation, say that the prior context 
       const responses = symptomResponseMapForItem(item);
       const components = symptomResponseComponents(item);
       return `
-        <p class="phone-concept-symptom-response-hint">Use left (-) Deny and right (+) Endorse for each symptom.</p>
+        <p class="phone-concept-symptom-response-hint">Use left (-) Denied and right (+) Endorsed for each symptom.</p>
         <div class="phone-concept-symptom-response-list" role="group" aria-label="${phoneConceptEscape(`Endorsed or denied symptoms for ${item.label}`)}">
           ${components.map((component) => `
             <div class="phone-concept-symptom-response">
-              <button class="phone-concept-symptom-response-button${responses[component.key] === "denied" ? " is-selected" : ""}" type="button" data-phone-action="response-option" data-phone-item="${phoneConceptEscape(item.id)}" data-phone-option="${phoneConceptEscape(component.label)}" data-phone-response="denied" aria-label="${phoneConceptEscape(`Mark ${component.label} denied`)}">(-) Deny</button>
+              <button class="phone-concept-symptom-response-button${responses[component.key] === "denied" ? " is-selected" : ""}" type="button" data-phone-action="response-option" data-phone-item="${phoneConceptEscape(item.id)}" data-phone-option="${phoneConceptEscape(component.label)}" data-phone-response="denied" aria-label="${phoneConceptEscape(`Mark ${component.label} denied`)}">(-) Denied</button>
               <span class="phone-concept-symptom-response-label">${phoneConceptEscape(component.label)}</span>
-              <button class="phone-concept-symptom-response-button${responses[component.key] === "endorsed" ? " is-selected" : ""}" type="button" data-phone-action="response-option" data-phone-item="${phoneConceptEscape(item.id)}" data-phone-option="${phoneConceptEscape(component.label)}" data-phone-response="endorsed" aria-label="${phoneConceptEscape(`Mark ${component.label} endorsed`)}">(+) Endorse</button>
+              <button class="phone-concept-symptom-response-button${responses[component.key] === "endorsed" ? " is-selected" : ""}" type="button" data-phone-action="response-option" data-phone-item="${phoneConceptEscape(item.id)}" data-phone-option="${phoneConceptEscape(component.label)}" data-phone-response="endorsed" aria-label="${phoneConceptEscape(`Mark ${component.label} endorsed`)}">(+) Endorsed</button>
             </div>
           `).join("")}
         </div>
@@ -45999,10 +46691,7 @@ If source context is missing from this conversation, say that the prior context 
     }
 
     function phoneConceptNoteShouldOpen(item, mode) {
-      if (mode === "questions") {
-        return Boolean(item?.id && state.openNoteItems[item.id]);
-      }
-      return noteShouldOpen(item);
+      return Boolean(item?.id && state.openNoteItems[item.id]);
     }
 
     function phoneConceptNoteUi(item, mode) {
@@ -46015,7 +46704,7 @@ If source context is missing from this conversation, say that the prior context 
             <div class="phone-concept-question-note-panel">
               <label>Patient's words or detail...</label>
               <textarea data-phone-note-input="${phoneConceptEscape(item.id)}" maxlength="200" placeholder="Patient's words or detail...">${phoneConceptEscape(note)}</textarea>
-              <button type="button" data-phone-action="clear-note" data-phone-item="${phoneConceptEscape(item.id)}" aria-label="Clear note">${phoneConceptIcon("x")}</button>
+              <button class="phone-concept-question-note-clear" type="button" data-phone-action="clear-note" data-phone-item="${phoneConceptEscape(item.id)}" aria-label="Clear note"${note.trim() ? "" : " hidden"}>${phoneConceptIcon("x")}</button>
             </div>
           `;
         }
@@ -46072,7 +46761,7 @@ If source context is missing from this conversation, say that the prior context 
       const noteOpen = phoneConceptNoteShouldOpen(item, mode);
       const noteIcon = noteOpen ? "chevronUp" : mode === "exam" ? (phoneConceptSectionHasOpenExamNote(item) ? "edit" : "chat") : "edit";
       const titleNoteButton = mode === "questions" ? "" : `<button class="phone-concept-note-btn" type="button" data-phone-action="open-note" data-phone-item="${phoneConceptEscape(item.id)}" aria-label="Edit note">${phoneConceptIcon(noteIcon)}</button>`;
-      const rowTitle = mode === "questions" ? phoneConceptQuestionTitle(item) : cleanOutputLabel(item.label);
+      const rowTitle = mode === "questions" ? phoneConceptQuestionTitle(item) : phoneConceptExamRowTitle(item);
       const questionCopy = String(item.label || "").trim();
       const patientPrompt = mode === "questions" ? phoneConceptQuestionPrompt(item) : "";
       const normalizedPrompt = patientPrompt.replace(/[?:]+\s*$/, "").toLowerCase();
@@ -46089,7 +46778,9 @@ If source context is missing from this conversation, say that the prior context 
             </div>
             ${titleNoteButton}
           </div>
-          ${item.options.length ? phoneConceptOptionButtons(item) : ""}
+          ${mode === "questions" && usesSymptomResponseAnswers(item)
+            ? phoneConceptSymptomResponseControls(item)
+            : (item.options.length ? phoneConceptOptionButtons(item) : "")}
           ${phoneConceptNoteUi(item, mode)}
         </article>
       `;
@@ -46101,6 +46792,14 @@ If source context is missing from this conversation, say that the prior context 
         return "Symptoms today";
       }
       return label || cleanOutputLabel(item?.label || "");
+    }
+
+    function phoneConceptExamRowTitle(item) {
+      const label = cleanOutputLabel(item?.label || "");
+      if (state.phoneConceptRailSubsection === "lines" && /line|site|iv|catheter|tube|drain/i.test(label)) {
+        return "Line sites";
+      }
+      return label;
     }
 
     function phoneConceptProgressBand(mode, progress) {
@@ -46207,7 +46906,7 @@ If source context is missing from this conversation, say that the prior context 
         ? phoneConceptItems("bedside")
         : phoneConceptOrderedExamItems(activeSection);
       const progress = mode === "questions" ? countItemsByCategory("bedside") : countItemsByCategory("exam");
-      const hasOpenNote = mode === "exam" && items.some((item) => noteShouldOpen(item));
+      const hasOpenNote = mode === "exam" && items.some((item) => phoneConceptNoteShouldOpen(item, mode));
       const primaryAction = phoneConceptNextAction(mode, progress);
       const primaryLabel = phoneConceptNextLabel(mode, progress, hasOpenNote);
       elements.phoneConceptChecklist.innerHTML = `
@@ -46220,7 +46919,7 @@ If source context is missing from this conversation, say that the prior context 
               <div>
                 <h2 class="phone-concept-h2">${phoneConceptEscape(mode === "questions" ? "Bedside questions" : phoneConceptSectionTitle(activeSection).toUpperCase())}</h2>
               </div>
-              ${mode === "exam" && activeSection ? `<button class="phone-concept-mark-normal" type="button" data-phone-action="mark-section-normal" data-phone-section="${phoneConceptEscape(activeSection.title)}">${phoneConceptIcon("checkCircle")}Mark section normal</button>` : `<div class="phone-concept-section-head-actions"><button class="phone-concept-mark-normal" type="button" data-phone-action="mark-answered">${phoneConceptIcon("checkCircle")}Mark answered</button><button class="phone-concept-skip-btn" type="button" data-phone-action="mode-exam">${phoneConceptIcon("skip")}Skip</button></div>`}
+              ${mode === "exam" && activeSection ? `<button class="phone-concept-mark-normal" type="button" data-phone-action="mark-section-normal" data-phone-section="${phoneConceptEscape(activeSection.actionSection || activeSection.title)}" data-phone-subsection="${phoneConceptEscape(activeSection.phoneConceptRailSubsection || "")}">${phoneConceptIcon("checkCircle")}Mark section normal</button>` : `<div class="phone-concept-section-head-actions"><button class="phone-concept-mark-normal" type="button" data-phone-action="mark-answered">${phoneConceptIcon("checkCircle")}Mark answered</button><button class="phone-concept-skip-btn" type="button" data-phone-action="mode-exam">${phoneConceptIcon("skip")}Skip</button></div>`}
             </header>
             ${items.map((item) => phoneConceptChecklistRow(item, mode)).join("")}
           </main>
@@ -46259,7 +46958,10 @@ If source context is missing from this conversation, say that the prior context 
                 const domain = section.phoneConceptDomain || phoneConceptSectionDomain(section);
                 const sectionTitle = phoneConceptOverviewSectionTitle(section);
                 const actionSection = section.actionSection || section.title;
-                const isActive = !section.phoneConceptVirtual && section.title === activeTitle;
+                const subsection = section.phoneConceptRailSubsection || "";
+                const isActive = !section.phoneConceptVirtual
+                  && actionSection === activeTitle
+                  && (!subsection || subsection === (state.phoneConceptRailSubsection || ""));
                 const isComplete = stats.total > 0 && stats.answered === stats.total;
                 return `
                   <article class="phone-concept-section-card${isActive ? " is-active" : ""}">
@@ -46271,8 +46973,8 @@ If source context is missing from this conversation, say that the prior context 
                       <div class="phone-concept-section-remaining">${Math.max(stats.total - stats.answered, 0)} remaining</div>
                     </div>
                     <div class="phone-concept-section-actions">
-                      ${section.category === "exam" && !section.phoneConceptVirtual && phoneConceptCanMarkNormalSection(section) ? `<button class="phone-concept-outline-btn" type="button" data-phone-action="mark-section-normal" data-phone-section="${phoneConceptEscape(section.title)}">${phoneConceptIcon("checkCircle")}Mark normal</button>` : ""}
-                      <button class="${section.category === "bedside" && isComplete ? "phone-concept-outline-btn" : isActive ? "phone-concept-filled-btn" : "phone-concept-outline-btn"}" type="button" data-phone-action="open-section" data-phone-section="${phoneConceptEscape(actionSection)}">${section.category === "bedside" && isComplete ? `${phoneConceptIcon("checkCircle")}Complete` : `Open ${phoneConceptIcon("chevron")}`}</button>
+                      ${section.category === "exam" && !section.phoneConceptVirtual && phoneConceptCanMarkNormalSection(section) ? `<button class="phone-concept-outline-btn" type="button" data-phone-action="mark-section-normal" data-phone-section="${phoneConceptEscape(actionSection)}" data-phone-subsection="${phoneConceptEscape(subsection)}">${phoneConceptIcon("checkCircle")}Mark normal</button>` : ""}
+                      <button class="${section.category === "bedside" && isComplete ? "phone-concept-outline-btn" : isActive ? "phone-concept-filled-btn" : "phone-concept-outline-btn"}" type="button" data-phone-action="open-section" data-phone-section="${phoneConceptEscape(actionSection)}" data-phone-subsection="${phoneConceptEscape(subsection)}">${section.category === "bedside" && isComplete ? `${phoneConceptIcon("checkCircle")}Complete` : `Open ${phoneConceptIcon("chevron")}`}</button>
                     </div>
                   </article>
                 `;
@@ -46449,7 +47151,7 @@ If source context is missing from this conversation, say that the prior context 
               </div>
               <div class="phone-concept-phi-card">
                 <span class="phone-concept-inline-icon">${phoneConceptIcon("shield")}</span>
-                <div><div class="phone-concept-card-title">PHI safety passed</div><div class="phone-concept-card-copy">This update is safe to copy. No patient identifiers detected.</div></div>
+                <div><div class="phone-concept-card-title">PHI safety passed</div><div class="phone-concept-card-copy">This update is safe to copy.<br>No patient identifiers detected.</div></div>
                 <span class="phone-concept-inline-icon">${phoneConceptIcon("checkCircle")}</span>
               </div>
               <div class="phone-concept-review-groups">
@@ -46497,7 +47199,7 @@ If source context is missing from this conversation, say that the prior context 
       }
     }
 
-    function phoneConceptGoTo(mode, sectionTitle = "") {
+    function phoneConceptGoTo(mode, sectionTitle = "", subsection = "") {
       if (mode === "start") {
         state.phoneConceptMode = "start";
         showScreen("censusScreen");
@@ -46521,6 +47223,11 @@ If source context is missing from this conversation, say that the prior context 
         if (sectionTitle) {
           state.phoneConceptSection = sectionTitle;
           state.activeSection = sectionTitle;
+          state.phoneConceptRailSubsection = subsection || "";
+        } else if (!state.phoneConceptSection) {
+          const fallback = phoneConceptActiveExamSection();
+          state.phoneConceptSection = fallback?.actionSection || fallback?.title || "";
+          state.phoneConceptRailSubsection = fallback?.phoneConceptRailSubsection || "";
         }
         setChecklistView("exam");
         showScreen("checklistScreen");
@@ -46547,18 +47254,23 @@ If source context is missing from this conversation, say that the prior context 
         return;
       }
       const section = phoneConceptActiveExamSection();
+      (section?.items || []).forEach((item) => {
+        if (item.category === "exam" && state.openNoteItems[item.id]) {
+          updateNoteOpenState(item, false);
+        }
+      });
       const nextInSection = section?.items.find((item) => item.category === "exam" && !isItemAnswered(item));
       if (nextInSection) {
-        updateNoteOpenState(nextInSection, Boolean(state.notes[nextInSection.id]));
+        updateNoteOpenState(nextInSection, false);
         renderPhoneConcept();
         requestAnimationFrame(() => {
           document.querySelector(`[data-phone-row="${CSS.escape(nextInSection.id)}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
         });
         return;
       }
-      const nextSection = phoneConceptExamSections().find((candidate) => candidate.items.some((item) => item.category === "exam" && !isItemAnswered(item)));
+      const nextSection = phoneConceptExamRailSections().find((candidate) => candidate.items.some((item) => item.category === "exam" && !isItemAnswered(item)));
       if (nextSection) {
-        phoneConceptGoTo("exam", nextSection.title);
+        phoneConceptGoTo("exam", nextSection.actionSection || nextSection.title, nextSection.phoneConceptRailSubsection || "");
         return;
       }
       phoneConceptGoTo("review");
@@ -46608,8 +47320,17 @@ If source context is missing from this conversation, say that the prior context 
       }
     }
 
-    function phoneConceptMarkSectionNormal(sectionTitle) {
-      const section = state.sections.find((candidate) => candidate.title === sectionTitle);
+    function phoneConceptMarkSectionNormal(sectionTitle, subsection = "") {
+      const section = phoneConceptExamRailSections().find((candidate) => {
+        const actionSection = candidate.actionSection || candidate.title;
+        if (actionSection !== sectionTitle && candidate.title !== sectionTitle) {
+          return false;
+        }
+        if (!candidate.phoneConceptRailSubsection) {
+          return !subsection;
+        }
+        return candidate.phoneConceptRailSubsection === subsection;
+      }) || state.sections.find((candidate) => candidate.title === sectionTitle);
       if (!section) return;
       section.items.forEach((item) => {
         if (item.options.length) {
@@ -46632,6 +47353,8 @@ If source context is missing from this conversation, say that the prior context 
           state.openNoteItems[itemId] = true;
           const counter = textarea.closest(".phone-concept-note-input-wrap")?.querySelector(".phone-concept-note-counter");
           if (counter) counter.textContent = `${Math.min(textarea.value.length, 200)}/200`;
+          const questionClear = textarea.closest(".phone-concept-question-note-panel")?.querySelector(".phone-concept-question-note-clear");
+          if (questionClear) questionClear.hidden = !textarea.value.trim();
           updateProgress();
           saveChecklistSession();
         });
@@ -46647,13 +47370,13 @@ If source context is missing from this conversation, say that the prior context 
           if (action === "mode-questions") phoneConceptGoTo("questions");
           if (action === "mode-exam") {
             state.phoneConceptRailSubsection = subsection;
-            phoneConceptGoTo("exam", sectionTitle);
+            phoneConceptGoTo("exam", sectionTitle, subsection);
           }
           if (action === "mode-sections") phoneConceptGoTo("sections");
           if (action === "mode-review") phoneConceptGoTo("review");
           if (action === "open-section") {
             state.phoneConceptRailSubsection = subsection;
-            phoneConceptGoTo("exam", sectionTitle);
+            phoneConceptGoTo("exam", sectionTitle, subsection);
           }
           if (action === "select-option") phoneConceptSelectOption(itemId, option);
           if (action === "response-option") phoneConceptSetSymptomResponse(itemId, option, control.getAttribute("data-phone-response") || "");
@@ -46670,7 +47393,7 @@ If source context is missing from this conversation, say that the prior context 
           if (action === "close-note") {
             const item = phoneConceptFindItem(itemId);
             if (item) {
-              updateNoteOpenState(item, Boolean(state.notes[item.id]));
+              updateNoteOpenState(item, false);
               renderChecklist();
             }
           }
@@ -46701,7 +47424,7 @@ If source context is missing from this conversation, say that the prior context 
               saveChecklistSession();
             }
           }
-          if (action === "mark-section-normal") phoneConceptMarkSectionNormal(sectionTitle);
+          if (action === "mark-section-normal") phoneConceptMarkSectionNormal(sectionTitle, subsection);
           if (action === "mark-answered") {
             phoneConceptItems("bedside").forEach((item) => {
               if (!isItemAnswered(item) && item.options.length) {
@@ -47582,7 +48305,7 @@ If source context is missing from this conversation, say that the prior context 
                 const negativeButton = document.createElement("button");
                 negativeButton.type = "button";
                 negativeButton.className = "finding-symptom-response-button";
-                negativeButton.textContent = "(-) Denied";
+                negativeButton.textContent = "(-) No";
                 negativeButton.dataset.symptomResponseValue = "denied";
                 negativeButton.setAttribute("aria-label", `Mark ${component.label} denied`);
                 negativeButton.setAttribute("aria-pressed", selectedByKey[component.key] === "denied" ? "true" : "false");
@@ -47603,7 +48326,7 @@ If source context is missing from this conversation, say that the prior context 
                 const positiveButton = document.createElement("button");
                 positiveButton.type = "button";
                 positiveButton.className = "finding-symptom-response-button";
-                positiveButton.textContent = "(+) Endorsed";
+                positiveButton.textContent = "(+) Yes";
                 positiveButton.dataset.symptomResponseValue = "endorsed";
                 positiveButton.setAttribute("aria-label", `Mark ${component.label} endorsed`);
                 positiveButton.setAttribute("aria-pressed", selectedByKey[component.key] === "endorsed" ? "true" : "false");
@@ -48609,6 +49332,15 @@ If source context is missing from this conversation, say that the prior context 
         clinicalIntentModifierText()
       ].filter(Boolean).join(" | ");
       autoResize(elements.examTesterInput);
+      renderComplaintCdsContextSummary();
+    });
+
+    elements.complaintCdsSettingSelect.addEventListener("change", () => {
+      renderComplaintCdsContextSummary();
+    });
+
+    elements.complaintCdsPopulationSelect.addEventListener("change", () => {
+      renderComplaintCdsContextSummary();
     });
 
     elements.complaintCdsInput.addEventListener("keydown", (event) => {
@@ -48773,6 +49505,14 @@ If source context is missing from this conversation, say that the prior context 
         reviewScope: "custom",
         reviewText: rawChecklist
       });
+    });
+
+    elements.workspaceSidebarNav?.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-sidebar-action]");
+      if (!button) {
+        return;
+      }
+      await handleWorkspaceSidebarAction(button.dataset.sidebarAction);
     });
 
     elements.priorModeButton.addEventListener("click", () => {

@@ -894,9 +894,111 @@ function tagsForQuestionItem(item = {}) {
     .slice(0, 10);
 }
 
+function cleanQuestionOptionLabel(value = "") {
+  let text = String(value || "")
+    .replace(/[_]{2,}/g, "___")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!text) {
+    return "";
+  }
+  if (/^Other(?:\s*_+)?$/i.test(text)) {
+    return "Other ___";
+  }
+  const replacements = [
+    [/^Have you had new salt craving$/i, "Salt craving"],
+    [/^Have you had heat intolerance$/i, "Heat intolerance"],
+    [/^Have you had cold intolerance$/i, "Cold intolerance"],
+    [/^Have you noticed easy bruising$/i, "Easy bruising"],
+    [/^Did menstrual periods never start by the expected age$/i, "Periods never started by expected age"],
+    [/^Did previously present periods stop$/i, "Previously present periods stopped"],
+    [/^When was the last menstrual period$/i, "Last menstrual period timing"],
+    [/^How regular are cycles$/i, "Cycle regularity"],
+    [/^How has weight changed from baseline$/i, "Weight change from baseline"],
+    [/^How have weight$/i, "Weight trajectory"],
+    [/^Waist circumference changed over time$/i, "Waist circumference trend"],
+    [/^Was the change intentional$/i, "Intentional weight change"],
+    [/^The change intentional$/i, "Intentional change"],
+    [/^Associated with appetite$/i, "Appetite change"],
+    [/^Fluid status$/i, "Fluid-status change"],
+    [/^Systemic symptoms$/i, "Systemic symptoms"],
+    [/^Do symptoms occur in episodes$/i, "Episodic symptoms"],
+    [/^Are there symptom-free intervals$/i, "Symptom-free intervals"],
+    [/^Do you have reliable access to water$/i, "Reliable water access"],
+    [/^Are thirst$/i, "Thirst/intake limits hydration"],
+    [/^What is the usual calcium$/i, "Calcium intake"],
+    [/^Supplement$/i, "Supplement use"],
+    [/^What is the usual physical activity level$/i, "Physical activity level"],
+    [/^It changed recently because of symptoms$/i, "Activity changed because of symptoms"],
+    [/^Function$/i, "Functional limitation"],
+    [/^What is the current weight trajectory$/i, "Current weight trajectory"],
+    [/^It changed from baseline$/i, "Changed from baseline"],
+    [/^What is the current prior FNA Bethesda category$/i, "Prior FNA/Bethesda category"],
+    [/^What is the approximate 24-hour urine volume$/i, "24-hour urine volume"],
+    [/^How many times do you urinate overnight$/i, "Nocturia frequency"],
+    [/^How much are you drinking$/i, "Fluid intake"],
+    [/^Including polyuria$/i, "Polyuria"],
+    [/^Any dehydration$/i, "Dehydration"],
+    [/^How many weeks pregnant are you$/i, "Gestational age"],
+    [/^This new$/i, "New or worsening"],
+    [/^Has pregnancy dating$/i, "Pregnancy dating"],
+    [/^Pregnancy dating$/i, "Pregnancy dating"],
+    [/^Fetal growth$/i, "Fetal growth"],
+    [/^Obstetric context changed diabetes screening or treatment safety$/i, "Obstetric diabetes-safety context"],
+    [/^Urinating$/i, "Urine output"],
+    [/^Do you have trouble rising from a chair$/i, "Trouble rising from chair"],
+    [/^Have ring size$/i, "Ring size change"],
+    [/^Shoe size$/i, "Shoe size change"],
+    [/^Facial features$/i, "Facial feature change"],
+    [/^How has height$/i, "Height/growth change"],
+    [/^Do you currently smoke$/i, "Current smoking"],
+    [/^Recently smoke$/i, "Recent smoking"],
+    [/^How long has breast tissue enlargement$/i, "Breast enlargement duration"],
+    [/^Tenderness been present$/i, "Breast tenderness duration"],
+    [/^Is it unilateral$/i, "Unilateral breast enlargement"],
+    [/^Have rapid growth$/i, "Rapid growth"],
+    [/^Nipple discharge occurred$/i, "Nipple discharge"],
+    [/^Has the thyroid nodule$/i, "Thyroid nodule or neck mass"],
+    [/^Neck mass grown rapidly$/i, "Rapid neck-mass growth"],
+    [/^Become painful$/i, "Painful nodule or neck mass"],
+    [/^Associated with hoarseness$/i, "Hoarseness"]
+  ];
+  for (const [pattern, replacement] of replacements) {
+    if (pattern.test(text)) {
+      return replacement;
+    }
+  }
+  text = text
+    .replace(/^Have you had\s+/i, "")
+    .replace(/^Have you noticed\s+/i, "")
+    .replace(/^Do you have\s+/i, "")
+    .replace(/^Did\s+/i, "")
+    .replace(/^When was the\s+/i, "")
+    .replace(/^What is the approximate\s+/i, "")
+    .replace(/^How many times do you\s+/i, "")
+    .replace(/^How much are you\s+/i, "")
+    .replace(/^How has\s+/i, "")
+    .replace(/^Was the\s+/i, "")
+    .replace(/^Are there\s+/i, "")
+    .replace(/^Is it\s+/i, "")
+    .replace(/^Has the\s+/i, "")
+    .replace(/^Are\s+/i, "")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!text) {
+    return "";
+  }
+  if (/^Other(?:\s*_+)?$/i.test(text)) {
+    return "Other ___";
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 function questionOptionLabels(value) {
   if (Array.isArray(value)) {
-    return value
+    const labels = value
       .map((entry) => {
         if (entry && typeof entry === "object") {
           return entry.label || entry.value || entry.text || "";
@@ -904,14 +1006,16 @@ function questionOptionLabels(value) {
         return entry;
       })
       .map((entry) => String(entry || "").replace(/\s+/g, " ").trim())
-      .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+      .map(cleanQuestionOptionLabel)
       .filter(Boolean);
+    return Array.from(new Map(labels.map((entry) => [entry.toLowerCase(), entry])).values());
   }
-  return String(value || "")
+  const labels = String(value || "")
     .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
     .map((entry) => entry.replace(/\s+/g, " ").trim())
-    .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+    .map(cleanQuestionOptionLabel)
     .filter(Boolean);
+  return Array.from(new Map(labels.map((entry) => [entry.toLowerCase(), entry])).values());
 }
 
 function genericQuestionOptions(value) {
@@ -1044,10 +1148,12 @@ function normalizeEvaluatedQuestionItem(item, group = "") {
     || item.action
     || "The answer changes urgency, diagnostic testing, treatment safety, disposition, or follow-up planning.";
   const detailPrompts = historyQuestionDetailPrompts(item);
+  const options = questionOptionLabels(inferredQuestionOptions(item, text, existingOptions));
   return {
     ...item,
     text,
-    options: inferredQuestionOptions(item, text, existingOptions),
+    options,
+    answer_options: options,
     detail_prompts: detailPrompts,
     when_to_ask: item.when_to_ask || item.whenToAsk || "Ask when this validated workup is selected or when the answer changes clinical interpretation.",
     diagnostic_purpose: diagnosticPurpose,
@@ -1060,7 +1166,7 @@ function normalizeEvaluatedQuestionItem(item, group = "") {
 const feverSourceHistoryAtomDefinitions = [
   {
     suffix: "heent_oral",
-    label: "Ask throat, ear, sinus, dental, and oral source symptoms",
+    label: "Ask HEENT/oral source symptoms",
     text: "Any sore throat, ear pain, sinus pain, dental or oral pain, neck swelling, hoarseness, trouble swallowing, or drooling with the fever?",
     options: "No / Sore throat / Ear pain / Sinus pain / Dental or oral pain / Neck swelling / Hoarseness / Trouble swallowing / Drooling / Other ___",
     diagnostic_purpose: "Screens for HEENT, dental, oral, or deep-neck infection sources.",
@@ -1087,7 +1193,7 @@ const feverSourceHistoryAtomDefinitions = [
   },
   {
     suffix: "skin_wound_line",
-    label: "Ask skin, wound, and line-site infection-source symptoms",
+    label: "Ask skin/line infection-source symptoms",
     text: "Any rash, wound, ulcer, drainage, line pain or redness, rapidly spreading skin pain, bite, recent procedure site, or soft-tissue infection concern?",
     options: "No / Rash / Wound or ulcer / Drainage / Line pain or redness / Rapidly spreading skin pain / Bite / Procedure site / Other ___",
     diagnostic_purpose: "Screens for cellulitis, abscess, wound infection, line/device infection, bite-related infection, and soft-tissue source-control needs.",
@@ -1096,7 +1202,7 @@ const feverSourceHistoryAtomDefinitions = [
   },
   {
     suffix: "cns_joint_spine",
-    label: "Ask CNS, joint, spine, and rapid-worsening danger symptoms",
+    label: "Ask CNS/joint/spine danger symptoms",
     text: "Any severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, purpura, hot swollen joint, severe focal bone or back pain, new weakness, bowel or bladder symptoms, fainting, low urine output, or rapid worsening?",
     options: "No / Severe headache / Neck stiffness / Photophobia / Confusion / Seizure / Petechiae or purpura / Hot swollen joint / Focal bone or back pain / New weakness / Bowel or bladder symptoms / Fainting / Low urine output / Rapid worsening / Other ___",
     diagnostic_purpose: "Screens for meningitis/encephalitis, septic arthritis, spine infection, osteomyelitis, bacteremia complications, sepsis severity, and dangerous trajectory.",
@@ -1616,7 +1722,7 @@ const infectionModifierHistoryFloorDefinitions = [
   },
   {
     id_suffix: "infection_modifier_skin_line_source",
-    label: "Ask wound and line infection symptoms",
+    label: "Ask skin/line infection-source symptoms",
     text: "Any rash, cellulitis, abscess, ulcer, drainage, painful skin, rapidly spreading redness, indwelling line/device, surgical site, procedure-site tenderness, bite, petechiae, or purpura suggesting a skin, line, or soft-tissue infection source?",
     answer_options: "No / Rash / Cellulitis / Abscess / Wound-ulcer / Drainage / Painful skin / Rapid spread / Line-device / Procedure site / Bite / Petechiae-purpura / Other ___",
     options: "No / Rash / Cellulitis / Abscess / Wound-ulcer / Drainage / Painful skin / Rapid spread / Line-device / Procedure site / Bite / Petechiae-purpura / Other ___",

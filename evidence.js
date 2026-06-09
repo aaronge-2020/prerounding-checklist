@@ -1295,17 +1295,17 @@ const clinicalRecommendationProfiles = [
     context: /\b(?:pulmonary embolism|suspected pe|pleuritic chest pain|pleuritic pain|dvt|venous thromboembolism|unilateral leg swelling|one calf|calf swelling|calf more swollen|post-?op.*(?:dyspnea|hypoxia|pleuritic)|surgery.*(?:dyspnea|hypoxia|pleuritic))\b/,
     requiredItems: [
       {
-        exam_id: "REQ-pe-risk-and-bleeding-history",
+        exam_id: "REQ-pe-cardiopulmonary-symptoms-history",
         item_type: "history_question",
         gap_type: "history_question",
-        label: "PE probability and anticoagulation-safety question",
-        options: "No PE features / Sudden dyspnea / Pleuritic chest pain / Hemoptysis / Syncope or presyncope / Prior VTE / Surgery-immobility-travel / Estrogen or pregnancy-postpartum / Cancer / Unilateral leg swelling-pain / Bleeding risk or anticoagulant contraindication / Other ___",
+        label: "PE cardiopulmonary symptom question",
+        options: "No / Sudden dyspnea / Pleuritic chest pain / Hemoptysis / Syncope or presyncope / Escalating oxygen need / Cannot speak full sentences / Other ___",
         domain: "Focused VTE History",
-        reason: "A suspected PE workup needs explicit pretest-probability, DVT, provoking-factor, and bleeding-risk history before diagnostic testing or treatment decisions are framed.",
-        diagnosticTarget: "PE/DVT probability and treatment safety: cardiopulmonary symptoms, VTE risk factors, prior clot, DVT symptoms, and anticoagulation or thrombolysis contraindications.",
-        management: "These findings change PERC/Wells/Geneva framing, D-dimer versus imaging strategy, compression ultrasound threshold, empiric anticoagulation discussion, bleeding-risk documentation, and ED/monitoring escalation.",
-        bedsideQuestion: "Any sudden shortness of breath, pleuritic chest pain, hemoptysis, syncope, prior VTE, recent surgery/immobility/travel, estrogen or pregnancy/postpartum state, cancer, unilateral leg swelling or pain, or bleeding risk?",
-        bedsideQuestionOptions: "No / Sudden dyspnea / Pleuritic pain / Hemoptysis / Syncope / Prior VTE / Surgery-immobility-travel / Estrogen-pregnancy-postpartum / Cancer / Unilateral leg swelling-pain / Bleeding risk / Other ___",
+        reason: "A suspected PE workup needs cardiopulmonary symptom severity separated from VTE risk factors and treatment-safety history.",
+        diagnosticTarget: "PE probability and severity: sudden dyspnea, pleuritic pain, hemoptysis, syncope, oxygen escalation, and inability to speak full sentences.",
+        management: "Positive symptoms change PE probability framing, oxygen/support strategy, ECG/troponin/BNP/imaging urgency, ED/monitoring escalation, and empiric anticoagulation discussion.",
+        bedsideQuestion: "Any sudden shortness of breath, pleuritic chest pain, hemoptysis, syncope or presyncope, escalating oxygen need, or inability to speak full sentences?",
+        bedsideQuestionOptions: "No / Sudden dyspnea / Pleuritic pain / Hemoptysis / Syncope or presyncope / Escalating oxygen need / Cannot speak full sentences / Other ___",
         source: "ESC_PE_2019; ACEP_VTE_POLICY; ASH_VTE_DIAGNOSIS; CDC_VTE_DIAGNOSIS; AHRQ_CALIBRATE_DX",
         source_citation: "2019 ESC/ERS pulmonary embolism guideline; ACEP suspected VTE clinical policy; ASH VTE diagnosis guideline; CDC VTE testing overview; AHRQ Calibrate Dx",
         evidenceTier: "Guideline",
@@ -1313,8 +1313,74 @@ const clinicalRecommendationProfiles = [
         time_burden_minutes: "1",
         equipment_needed: "none",
         patient_cooperation_required: "moderate",
-        matchedTags: ["pulmonary_embolism", "dvt", "vte", "clinical_probability", "anticoagulation_safety", "history_question"],
-        satisfiedBy: /\b(?:pe probability and anticoagulation-safety question|sudden dyspnea|pleuritic chest pain|hemoptysis|prior vte|unilateral leg swelling|bleeding risk)\b/
+        matchedTags: ["pulmonary_embolism", "vte", "clinical_probability", "dyspnea", "pleuritic_chest_pain", "history_question"],
+        satisfiedBy: /\b(?:pe cardiopulmonary symptom question|sudden dyspnea|pleuritic chest pain|hemoptysis|syncope|oxygen need|full sentences)\b/
+      },
+      {
+        exam_id: "REQ-pe-dvt-leg-symptoms-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "DVT leg symptom question",
+        options: "No / Unilateral leg swelling / Unilateral calf pain / New leg redness or warmth / Recent leg immobilization or cast / Other ___",
+        domain: "Focused VTE History",
+        reason: "Suspected PE workups need DVT symptoms asked separately because they trigger leg comparison, compression ultrasound, and anticoagulation documentation.",
+        diagnosticTarget: "DVT probability context: unilateral leg swelling, calf pain, redness/warmth, or immobilization/cast context.",
+        management: "Positive DVT symptoms change lower-extremity exam priority, compression ultrasound threshold, PE probability framing, anticoagulation discussion, and imaging strategy when chest imaging is delayed or contraindicated.",
+        bedsideQuestion: "Any unilateral leg swelling, calf pain, new leg redness or warmth, or recent leg immobilization/cast?",
+        bedsideQuestionOptions: "No / Unilateral leg swelling / Unilateral calf pain / Redness-warmth / Immobilization-cast / Other ___",
+        source: "ESC_PE_2019; ACEP_VTE_POLICY; ASH_VTE_DIAGNOSIS; CDC_VTE_DIAGNOSIS; AHRQ_CALIBRATE_DX",
+        source_citation: "2019 ESC/ERS pulmonary embolism guideline; ACEP suspected VTE clinical policy; ASH VTE diagnosis guideline; CDC VTE testing overview; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["dvt", "vte", "lower_extremity", "unilateral_leg_swelling", "history_question"],
+        satisfiedBy: /\b(?:dvt leg symptom question|unilateral leg swelling|unilateral calf pain|leg redness|leg warmth|immobilization|cast)\b/
+      },
+      {
+        exam_id: "REQ-pe-vte-provoking-factors-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "VTE provoking-factor question",
+        options: "No / Prior VTE / Recent surgery / Immobility or hospitalization / Long travel / Estrogen therapy / Pregnancy or postpartum / Active cancer / Other ___",
+        domain: "Focused VTE History",
+        reason: "VTE provoking factors should be separated from current symptoms so probability framing is auditable and not hidden in one multi-domain prompt.",
+        diagnosticTarget: "VTE risk context: prior clot, recent surgery, immobility/hospitalization, travel, estrogen exposure, pregnancy/postpartum state, or active cancer.",
+        management: "Positive provoking factors change Wells/Geneva/PERC applicability, D-dimer versus imaging strategy, recurrence-risk documentation, anticoagulation planning, and follow-up framing.",
+        bedsideQuestion: "Any prior VTE, recent surgery, immobility or hospitalization, long travel, estrogen therapy, pregnancy or postpartum state, or active cancer?",
+        bedsideQuestionOptions: "No / Prior VTE / Recent surgery / Immobility-hospitalization / Long travel / Estrogen therapy / Pregnancy-postpartum / Active cancer / Other ___",
+        source: "ESC_PE_2019; ACEP_VTE_POLICY; ASH_VTE_DIAGNOSIS; CDC_VTE_DIAGNOSIS; AHRQ_CALIBRATE_DX",
+        source_citation: "2019 ESC/ERS pulmonary embolism guideline; ACEP suspected VTE clinical policy; ASH VTE diagnosis guideline; CDC VTE testing overview; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["vte", "dvt", "clinical_probability", "provoking_factor", "pregnancy", "cancer", "history_question"],
+        satisfiedBy: /\b(?:vte provoking-factor question|prior vte|recent surgery|immobility|hospitalization|long travel|estrogen|pregnancy|postpartum|active cancer)\b/
+      },
+      {
+        exam_id: "REQ-pe-anticoagulation-safety-history",
+        item_type: "history_question",
+        gap_type: "history_question",
+        label: "Anticoagulation bleeding-safety question",
+        options: "No bleeding concern / Active bleeding / Recent major surgery or trauma / Prior intracranial hemorrhage or stroke concern / Anticoagulant use / Severe uncontrolled hypertension / Pending procedure / Pregnancy or postpartum / Other ___",
+        domain: "Focused VTE History",
+        reason: "Treatment-safety history must be separate from PE probability history because it affects anticoagulation and thrombolysis decisions even when PE probability is high.",
+        diagnosticTarget: "Anticoagulation and thrombolysis safety: active bleeding, recent major surgery/trauma, intracranial risk, anticoagulant use, severe hypertension, procedure timing, or pregnancy/postpartum context.",
+        management: "Positive bleeding-safety features change empiric anticoagulation risk-benefit discussion, reversal/holding decisions, thrombolysis contraindication review, imaging urgency, and specialist/monitored-care threshold.",
+        bedsideQuestion: "Any active bleeding, recent major surgery or trauma, prior intracranial hemorrhage or stroke concern, anticoagulant use, severe uncontrolled hypertension, pending procedure, or pregnancy/postpartum state?",
+        bedsideQuestionOptions: "No bleeding concern / Active bleeding / Recent major surgery-trauma / Prior intracranial hemorrhage-stroke concern / Anticoagulant use / Severe uncontrolled hypertension / Pending procedure / Pregnancy-postpartum / Other ___",
+        source: "ESC_PE_2019; ACEP_VTE_POLICY; ASH_VTE_DIAGNOSIS; CDC_VTE_DIAGNOSIS; AHRQ_CALIBRATE_DX",
+        source_citation: "2019 ESC/ERS pulmonary embolism guideline; ACEP suspected VTE clinical policy; ASH VTE diagnosis guideline; CDC VTE testing overview; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["pulmonary_embolism", "anticoagulation_safety", "bleeding_risk", "thrombolysis", "history_question"],
+        satisfiedBy: /\b(?:anticoagulation bleeding-safety question|active bleeding|recent major surgery|major trauma|intracranial hemorrhage|anticoagulant|severe uncontrolled hypertension|pending procedure)\b/
       },
       {
         exam_id: "REQ-pe-work-of-breathing",
@@ -5455,15 +5521,44 @@ function validatedSafetyFloorEntries(validatedIntentTrace = [], selectedEntries 
 }
 
 const validatedIntentHistoryQuestionDefinitions = {
-  suspected_pe_v1: {
-    label: "Pulmonary embolism and DVT risk history",
-    text: "Any sudden dyspnea, pleuritic chest pain, hemoptysis, syncope, unilateral leg swelling or pain, recent surgery/immobility/travel, pregnancy or estrogen exposure, prior VTE, cancer, or anticoagulant use?",
-    options: "None / Sudden dyspnea / Pleuritic pain / Hemoptysis / Syncope / Unilateral leg swelling-pain / Surgery-immobility-travel / Pregnancy-estrogen / Prior VTE / Cancer / Anticoagulant / Other ___",
-    whenToAsk: "Ask when suspected PE, pleuritic chest pain, unexplained dyspnea/hypoxia, syncope with VTE risk, or DVT concern is selected.",
-    diagnosticTarget: "PE and DVT probability/severity: cardiopulmonary symptoms, VTE provoking factors, clot history, bleeding/anticoagulant context, and DVT symptoms.",
-    management: "The answer changes PE probability framing, DVT exam priority, ECG/troponin/BNP/imaging urgency, anticoagulation risk review, and ED/escalation threshold.",
-    tags: ["pulmonary_embolism", "dyspnea", "dvt", "chest_pain", "syncope", "history_question"]
-  },
+  suspected_pe_v1: [
+    {
+      label: "PE cardiopulmonary symptom history",
+      text: "Any sudden dyspnea, pleuritic chest pain, hemoptysis, syncope or presyncope, escalating oxygen need, or inability to speak full sentences?",
+      options: "None / Sudden dyspnea / Pleuritic pain / Hemoptysis / Syncope-presyncope / Escalating oxygen / Cannot speak full sentences / Other ___",
+      whenToAsk: "Ask when suspected PE, pleuritic chest pain, unexplained dyspnea/hypoxia, or syncope with VTE risk is selected.",
+      diagnosticTarget: "PE probability and severity: cardiopulmonary symptom pattern, hypoxemia trajectory, and hemodynamic-risk symptoms.",
+      management: "The answer changes PE probability framing, oxygen/support strategy, ECG/troponin/BNP/imaging urgency, and ED/escalation threshold.",
+      tags: ["pulmonary_embolism", "dyspnea", "hypoxia", "chest_pain", "syncope", "history_question"]
+    },
+    {
+      label: "DVT leg symptom history",
+      text: "Any unilateral leg swelling, calf pain, new leg redness or warmth, or recent leg immobilization/cast?",
+      options: "None / Unilateral leg swelling / Calf pain / Redness-warmth / Immobilization-cast / Other ___",
+      whenToAsk: "Ask when suspected PE or DVT concern is selected.",
+      diagnosticTarget: "DVT probability context: unilateral swelling, calf pain, inflammatory leg changes, or immobilization.",
+      management: "The answer changes lower-extremity exam priority, compression ultrasound threshold, PE probability framing, and anticoagulation documentation.",
+      tags: ["pulmonary_embolism", "dvt", "vte", "lower_extremity", "history_question"]
+    },
+    {
+      label: "VTE provoking-factor history",
+      text: "Any prior VTE, recent surgery, immobility or hospitalization, long travel, estrogen therapy, pregnancy or postpartum state, or active cancer?",
+      options: "None / Prior VTE / Recent surgery / Immobility-hospitalization / Long travel / Estrogen therapy / Pregnancy-postpartum / Active cancer / Other ___",
+      whenToAsk: "Ask when suspected PE, DVT, or VTE probability framing is selected.",
+      diagnosticTarget: "VTE risk context: prior clot, surgery, immobilization, travel, estrogen/pregnancy/postpartum, or active cancer.",
+      management: "The answer changes PERC/Wells/Geneva applicability, D-dimer versus imaging strategy, recurrence-risk documentation, and anticoagulation planning.",
+      tags: ["pulmonary_embolism", "dvt", "vte", "clinical_probability", "provoking_factor", "history_question"]
+    },
+    {
+      label: "Anticoagulation bleeding-safety history",
+      text: "Any active bleeding, recent major surgery or trauma, prior intracranial hemorrhage or stroke concern, anticoagulant use, severe uncontrolled hypertension, pending procedure, or pregnancy/postpartum state?",
+      options: "No bleeding concern / Active bleeding / Recent major surgery-trauma / Intracranial hemorrhage-stroke concern / Anticoagulant use / Severe uncontrolled hypertension / Pending procedure / Pregnancy-postpartum / Other ___",
+      whenToAsk: "Ask when suspected PE treatment or escalation decisions may include anticoagulation or thrombolysis.",
+      diagnosticTarget: "Treatment safety: anticoagulation and thrombolysis contraindication context.",
+      management: "The answer changes empiric anticoagulation risk-benefit discussion, thrombolysis contraindication review, reversal/holding decisions, and monitored-care threshold.",
+      tags: ["pulmonary_embolism", "anticoagulation_safety", "bleeding_risk", "thrombolysis", "history_question"]
+    }
+  ],
   chest_pain_acs_v1: {
     label: "Chest pain ischemic and alternate-cause history",
     text: "For chest discomfort: onset/time course, exertional or rest symptoms, pressure quality, radiation, dyspnea, diaphoresis, nausea, syncope, pleuritic/positional/reproducible features, prior CAD, or stimulant/cocaine use?",
@@ -7464,6 +7559,26 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   const tagText = normalizeEvidenceLabel(Array.isArray(tags) ? tags.join(" ") : String(tags || ""));
   const sourceSignalText = tagText;
   const allText = `${normalized} ${sourceSignalText}`;
+  const earlyDiabetesInsipidusContext = /\b(?:diabetes_insipidus|diabetes insipidus|pituitary_gland_disorders|desmopressin)\b/.test(allText)
+    && /\b(?:urine|urinating|thirst|water|sodium|desmopressin|polyuria|polydipsia|nocturia|fluid restriction|lithium)\b/.test(allText);
+  if (earlyDiabetesInsipidusContext && /24-hour urine volume|urine output changed/.test(normalized)) {
+    return "Ask 24-hour urine volume and baseline change";
+  }
+  if (earlyDiabetesInsipidusContext && /urinate overnight|nocturia|new or worsening/.test(normalized)) {
+    return "Ask nocturia frequency and progression";
+  }
+  if (earlyDiabetesInsipidusContext && /reliable access to water|thirst[\s\S]*limiting safe hydration|mental status limiting safe hydration/.test(normalized)) {
+    return "Ask water access and safe hydration";
+  }
+  if (earlyDiabetesInsipidusContext && /lithium|demeclocycline|amphotericin|diuretic|sglt2|glucocorticoid|desmopressin|fluid restriction|medication change/.test(normalized)) {
+    return "Review DI medication and fluid-balance triggers";
+  }
+  if (earlyDiabetesInsipidusContext && /kidney stones|constipation|bone pain|hypercalcemia|reduced kidney function|kidney concentrating ability/.test(normalized)) {
+    return "Ask hypercalcemia and renal DI mimics";
+  }
+  if (earlyDiabetesInsipidusContext && /how much are you drinking and urinating|fluid intake|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(normalized)) {
+    return "Ask DI thirst, polyuria, and hydration symptoms";
+  }
   const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
   if (earlyDkaContext && /known diabetes type|diabetes type|duration|insulin regimen|pump\/cgm|pump cgm|last insulin dose/.test(normalized)) {
     return "Ask diabetes history, insulin regimen, and last insulin dose";
@@ -7500,7 +7615,7 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     return "Ask urinary and flank infection-source symptoms";
   }
   if (sourceSpecificInfectionContext && (/heent[_ ]source|dental[_ ]source|oral[_ ]source/.test(sourceSignalText) || /sore throat|ear pain|sinus pain|dental|oral pain|neck swelling|hoarseness|trouble swallowing|drooling/.test(normalized))) {
-    return "Ask throat, ear, sinus, dental, and oral source symptoms";
+    return "Ask HEENT/oral source symptoms";
   }
   if (sourceSpecificInfectionContext && (/abdominal[_ ]source|gi[_ ]source|biliary[_ ]source/.test(sourceSignalText) || /abdominal pain|vomiting|diarrhea|jaundice|focal tenderness|intra-abdominal|abdominal infection/.test(normalized))) {
     return "Ask abdominal and GI infection-source symptoms";
@@ -7509,10 +7624,10 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     return "Ask host-risk and exposure history";
   }
   if (sourceSpecificInfectionContext && (/skin[_ ]source|wound[_ ]source|line[_ ]source/.test(sourceSignalText) || /rash|wound|ulcer|drainage|line pain|line redness|line concern|line site|cellulitis|abscess|procedure-site|procedure site|skin infection|soft-tissue|soft tissue/.test(normalized))) {
-    return "Ask skin, wound, and line-site infection-source symptoms";
+    return "Ask skin/line infection-source symptoms";
   }
   if (sourceSpecificInfectionContext && (/cns[_ ]infection|joint[_ ]source|spine[_ ]infection/.test(sourceSignalText) || /severe headache|neck stiffness|photophobia|seizure|petechiae|purpura|hot swollen joint|bone or back pain|focal bone|new weakness|bowel or bladder|meningitis|spine infection/.test(normalized))) {
-    return "Ask CNS, joint, spine, and rapid-worsening danger symptoms";
+    return "Ask CNS/joint/spine danger symptoms";
   }
   if (sourceSpecificInfectionContext && (/severity[_ ]history/.test(sourceSignalText) || /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion|mottled|oxygen/.test(normalized))) {
     return "Ask sepsis severity, hydration, and perfusion symptoms";
@@ -7529,20 +7644,42 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   const pelvicPregnancyContext = /\b(?:pelvic_pain|pelvic pain|menstrual|period|missed period|ectopic|pid|gynecology|dyspareunia|purulent discharge|heavy bleeding|shoulder pain)\b/.test(allText);
   const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
   const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
+  const endocrineWeightSystemicQuestion = /^how has weight changed|weight changed from baseline|intentional weight|appetite|fluid status|systemic symptoms/.test(allText);
+  if (!infectionContext && (diabetesContext || pituitaryAdrenalContext || boneMineralContext) && endocrineWeightSystemicQuestion) {
+    return "Ask weight trajectory and systemic symptoms";
+  }
+  if (diabetesContext && /how have weight[\s\S]*waist circumference[\s\S]*(?:intentional|over time)/.test(allText)) {
+    return "Ask weight, waist, and intentional change";
+  }
+  if (diabetesContext && /pre-pregnancy diabetes|prior a1c|prior glucose abnormality|pcos|obesity|steroid exposure|strong family history/.test(allText)) {
+    return "Ask pre-pregnancy diabetes and GDM risk factors";
+  }
+  if (diabetesContext && /have fetal growth|estimated fetal weight|amniotic fluid|obstetric ultrasound|polyhydramnios/.test(normalized)) {
+    return "Ask fetal-growth and obstetric ultrasound concerns";
+  }
+  if (diabetesContext && /how many weeks pregnant|pregnancy dating|obstetric context[\s\S]*diabetes screening|obstetric context[\s\S]*treatment safety/.test(normalized)) {
+    return "Ask gestational age, dating, and obstetric context";
+  }
   if (eyeVisionContext && /jaw claudication|scalp tenderness|halos|chemical exposure|shingles|inability to keep the eye open/.test(allText)) {
     return "Ask ocular emergency and systemic red flags";
   }
   if (eyeVisionContext && /vision loss|eye pain|photophobia|trauma|contact lens|discharge|severe headache|diplopia|neurologic|immunocompromise/.test(allText)) {
     return "Ask vision-threatening red-eye symptoms";
   }
-  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
-    return "Ask GU/STI symptoms and exposure risk";
-  }
-  if (/\b(?:scrotal|testicular|torsion|epididymitis|acute_scrotum|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+  if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`)) {
+    if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
+      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+    }
     if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
       return "Ask scrotal pain onset and torsion features";
     }
     return "Ask epididymitis/STI and urology-risk features";
+  }
+  if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) {
+    return "Ask groin nodes, genital lesions, and skin infection features";
+  }
+  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask discharge, dysuria, genital lesions, and STI exposure";
   }
   if (guRenalContext
     && !boneMineralContext
@@ -7583,10 +7720,31 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     return "Ask host-risk and exposure history";
   }
   if (feverWorkupContext && /rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure-site|skin infection/.test(allText)) {
-    return "Ask wound and line infection symptoms";
+    return "Ask skin/line infection-source symptoms";
   }
   if (feverWorkupContext && /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion/.test(allText)) {
     return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  if (thyroidContext && /^how has weight changed|weight changed from baseline|appetite|fluid status|systemic symptoms/.test(normalized)) {
+    return "Ask thyroid-related weight and systemic symptoms";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine\/contrast|iodine|contrast exposure|biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if (thyroidContext && /has the thyroid nodule|neck mass grown rapidly|become painful|fixed|associated with hoarseness|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule growth and invasion symptoms";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*rapid growth[\s\S]*radiation exposure[\s\S]*family thyroid cancer/.test(normalized)) {
+    return "Ask thyroid structural symptoms and cancer-risk history";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer risk factor/.test(normalized)) {
+    return "Ask thyroid radiation and family-risk history";
+  }
+  if (thyroidContext && /personal or family history of men|vhl|nf1|sdhx|medullary thyroid cancer|pheochromocytoma|paraganglioma/.test(normalized)) {
+    return "Ask hereditary endocrine tumor history";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*thyroid pain|thyroid pain or tenderness|pressure[\s\S]*hoarseness[\s\S]*trouble swallowing|rapidly enlarging neck mass/.test(normalized)) {
+    return "Ask thyroid pain, pressure, and airway symptoms";
   }
   if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2|suspicious thyroid biopsy/.test(normalized)) {
     return "Ask thyroid cancer radiation, biopsy, and MEN2 risk";
@@ -7618,14 +7776,23 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (boneMineralContext && /muscle cramps|perioral numbness|tingling|cramps|tetany|carpopedal|paresthesias|paralysis|seizure|laryngospasm|arrhythmia/.test(normalized)) {
     return "Ask hypocalcemia neuromuscular symptoms";
   }
-  if (boneMineralContext && /kidney stones|nephrocalcinosis|hematuria|flank|polyuria|polydipsia|dehydration|renal-function|reduced kidney/.test(allText)) {
-    return "Ask renal stone and calcium-complication symptoms";
+  if (boneMineralContext && /usual calcium|vitamin d intake|supplement use|diet pattern|sun exposure/.test(allText)) {
+    return "Ask calcium/vitamin D intake and sun exposure";
+  }
+  if (boneMineralContext && /nephrocalcinosis|hematuria|flank|recurrent utis|renal-function changes affecting calcium|affecting calcium\/pth interpretation/.test(allText)) {
+    return "Ask kidney-stone and renal calcium/PTH complications";
+  }
+  if (boneMineralContext && /kidney stones|constipation|polyuria|polydipsia|bone pain|confusion|dehydration|reduced kidney function/.test(allText)) {
+    return "Ask hypercalcemia symptom pattern and renal impact";
   }
   if (boneMineralContext && /chronic kidney disease|liver disease|calcium|phosphorus|pth|vitamin d interpretation|mineral/.test(allText)) {
     return "Ask renal, liver, and mineral-metabolism modifiers";
   }
   if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) {
     return "Ask malabsorption and nutrient-absorption risks";
+  }
+  if (boneMineralContext && /family history of men|familial hypocalciuric|parathyroid disease|pituitary tumors|pancreatic neuroendocrine|jaw tumors/.test(allText)) {
+    return "Ask hereditary hyperparathyroidism/FHH and MEN history";
   }
   if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) {
     return "Review antiseizure and vitamin D metabolism medications";
@@ -7709,8 +7876,8 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     && /headaches|visual symptoms|visual field|pituitary|amenorrhea|infertility|erectile dysfunction|polycystic|reproductive|gonadal|cycle/.test(allText)) {
     return "Ask prolactin symptoms, medication causes, and mass-effect symptoms";
   }
-  if (pituitaryAdrenalContext && /polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
-    return "Ask diabetes-insipidus thirst and polyuria safety";
+  if (pituitaryAdrenalContext && /24-hour urine volume|urine output changed|urinate overnight|nocturia|polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst, nocturia, and polyuria safety";
   }
   if (pituitaryAdrenalContext && /thyroid symptoms|palpitations|tremor|heat\/cold intolerance|neck swelling/.test(allText)) {
     return "Ask adrenal and thyroid-axis symptoms";
@@ -7727,7 +7894,7 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (pituitaryAdrenalContext && /wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
     return "Ask wound and procedure-site infection symptoms";
   }
-  if (pituitaryAdrenalContext && /hypertension|diabetes|complication screening|medication choice/.test(allText)) {
+  if (pituitaryAdrenalContext && /hypertension|(?:type 1|type 2|gestational|mellitus)\s+diabetes|complication screening|medication choice/.test(allText)) {
     return "Ask treatment-limiting hypertension and diabetes complications";
   }
   if (pituitaryAdrenalContext && /autoimmune thyroid|type 1 diabetes|celiac|pernicious anemia|polyglandular autoimmune/.test(allText)) {
@@ -7736,15 +7903,53 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (/new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
     return "Ask pituitary mass-effect and treatment history";
   }
+  if (pituitaryAdrenalContext && /24-hour urine volume|urine output changed|urinate overnight|nocturia|polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst, nocturia, and polyuria safety";
+  }
   if (/new, worsening, resistant, or treatment-limiting hypertension or diabetes|treatment-limiting hypertension|treatment-limiting diabetes|complication screening|medication choice/.test(allText)) {
     return "Ask treatment-limiting hypertension and diabetes complications";
   }
   if (/hirsutism|acne|scalp hair loss|deepening voice|clitoromegaly|rapid virilization|cycle irregularity|androgenic medication/.test(allText)) {
     return "Ask hyperandrogenism and virilization features";
   }
-  if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(allText)
-    && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant|oxygen need|full sentences)\b/.test(allText)) {
-    return "Ask PE severity, VTE risk factors, and bleeding risk";
+  const peVteHistoryContext = /\b(?:pulmonary embolism|suspected pe|pe\/dvt|vte|dvt|clinical probability|esc_pe|acep_vte|ash_vte|ctpa|d-dimer|d dimer)\b/.test(allText)
+    && !/\b(?:aha_asa_stroke|focal_neurologic_deficit|neuro_red_flags|gi_bleed|heme_bleeding_anemia|acg_ugib|hematemesis|melena|hematochezia|pallor|anemia)\b/.test(allText);
+  if (peVteHistoryContext && /\b(?:sudden dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|presyncope|oxygen need|escalating oxygen|full sentences)\b/.test(allText)) {
+    return "Ask PE cardiopulmonary severity symptoms";
+  }
+  if (peVteHistoryContext && /\b(?:unilateral leg|calf pain|leg swelling|redness|warmth|immobilization|cast)\b/.test(allText)) {
+    return "Ask DVT leg symptoms";
+  }
+  if (peVteHistoryContext && /\b(?:active bleeding|bleeding risk|anticoagulant|thrombolysis|contraindication|major surgery|major trauma|intracranial|severe uncontrolled hypertension|pending procedure)\b/.test(allText)) {
+    return "Ask anticoagulation and bleeding-safety history";
+  }
+  if (peVteHistoryContext && /\b(?:prior vte|recent surgery|surgery|immobility|hospitalization|travel|estrogen|pregnancy|postpartum|active cancer|cancer)\b/.test(allText)) {
+    return "Ask VTE provoking-factor history";
+  }
+  if (/\b(?:stroke|focal neurologic|last-known-well|reperfusion|thrombolysis|thrombectomy|aphasia|neglect)\b/.test(allText)
+    && /\b(?:anticoagulant|bleeding risk|hypoglycemia|seizure|migraine|trauma|last-known-well|wake-up stroke)\b/.test(allText)) {
+    return "Ask stroke mimics, anticoagulants, and reperfusion timing";
+  }
+  const bleedingAnemiaHistoryContext = /\b(?:bleeding|anemia|gi bleed|hematemesis|melena|hematochezia|pallor|bruising|petechiae|acg_ugib|heme_bleeding_anemia)\b/.test(allText);
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|coagulopathy|prior transfusion|reversal)\b/.test(allText)) {
+    return "Ask bleeding medication, coagulopathy, and transfusion-risk history";
+  }
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|epistaxis|heavy menses|dizziness|syncope|dyspnea|chest pain)\b/.test(allText)) {
+    return "Ask overt bleeding and anemia symptoms";
+  }
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:anticoagulant|antiplatelet|liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|dyspnea at rest|syncope)\b/.test(allText)) {
+    return "Ask bleeding medication, coagulopathy, and transfusion-risk history";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)
+    && /\b(?:loud snoring|witnessed apneas|waking choking|morning headache|daytime sleepiness)\b/.test(allText)) {
+    return "Ask OSA symptoms and daytime sleepiness";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)
+    && /\b(?:drowsy driving|work-safety|resistant hypertension|atrial fibrillation|heart failure|opioid|sedative|alcohol near bedtime|prior sleep study|cpap intolerance|oral-appliance|oral appliance)\b/.test(allText)) {
+    return "Ask OSA safety, comorbidities, and treatment context";
   }
   if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)) {
     return "Ask OSA symptoms, drowsy-driving risk, and CPAP context";
@@ -7800,14 +8005,32 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|unintentional weight loss|diarrhea|increased sweating/.test(normalized)) {
     return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
   }
+  if (thyroidContext && /^how has weight changed|weight changed from baseline|appetite|fluid status|systemic symptoms/.test(normalized)) {
+    return "Ask thyroid-related weight and systemic symptoms";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if (thyroidContext && /has the thyroid nodule|neck mass grown rapidly|become painful|fixed|associated with hoarseness|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule growth and invasion symptoms";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*rapid growth[\s\S]*radiation exposure[\s\S]*family thyroid cancer/.test(normalized)) {
+    return "Ask thyroid structural symptoms and cancer-risk history";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer risk factor/.test(normalized)) {
+    return "Ask thyroid radiation and family-risk history";
+  }
+  if (thyroidContext && /personal or family history of men|vhl|nf1|sdhx|medullary thyroid cancer|pheochromocytoma|paraganglioma/.test(normalized)) {
+    return "Ask hereditary endocrine tumor history";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*thyroid pain|thyroid pain or tenderness|pressure[\s\S]*hoarseness[\s\S]*trouble swallowing|rapidly enlarging neck mass/.test(normalized)) {
+    return "Ask thyroid pain, pressure, and airway symptoms";
+  }
   if (thyroidContext && /thyroid nodule|neck mass|grown rapidly|hoarseness|dysphagia|dyspnea|suspicious nodes/.test(normalized)) {
     return "Ask thyroid nodule growth, compressive, and node warnings";
   }
   if (thyroidContext && /childhood head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2/.test(allText)) {
     return "Ask thyroid cancer radiation and family-risk history";
-  }
-  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
-    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
   }
   if ((thyroidContext || /hypothyroid|hypothyroidism/.test(allText))
     && /cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid|hypothyroidism/.test(allText)) {
@@ -7825,11 +8048,20 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     && /\b(?:fever|urinary|renal|pyelonephritis|uti|infection)\b/.test(`${normalized} ${tagText}`)) {
     return "Ask urinary and renal-source symptoms";
   }
-  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain)\b/.test(allText)) {
-    return "Ask GU/STI symptoms and exposure risk";
+  if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`)) {
+    if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
+      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+    }
+    if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
+      return "Ask scrotal pain onset and torsion features";
+    }
+    return "Ask epididymitis/STI and urology-risk features";
   }
-  if (/\b(?:scrotal|testicular|torsion|epididymitis|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
-    return "Ask scrotal pain source and urology-risk features";
+  if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) {
+    return "Ask groin nodes, genital lesions, and skin infection features";
+  }
+  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask discharge, dysuria, genital lesions, and STI exposure";
   }
   if (/\b(?:foot ulcer|foot wound|drainage|protective sensation|prior amputation|offload|footwear|wound-care supplies)\b/.test(`${normalized} ${tagText}`)) {
     return "Ask diabetic foot wound, neuropathy, and self-care risk";
@@ -7879,6 +8111,13 @@ function historyQuestionDisplayLabelSuffix(question = {}) {
   if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses/.test(fullQuestion)) return "fluid-risk comorbidities";
   if (/childhood head|neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(fullQuestion)) return "radiation/family cancer risk";
   if (/personal or family history of men|vhl|nf1|sdhx|medullary thyroid|pheochromocytoma|paraganglioma/.test(fullQuestion)) return "hereditary endocrine syndromes";
+  if (/\b(?:thyroid|goiter|nodule|neck mass)\b/.test(allText)
+    && /neck swelling|rapid growth|thyroid pain|hoarseness|trouble swallowing|positional shortness|positional dyspnea|compressive/.test(fullQuestion)) return "compressive symptoms";
+  const bleedingAnemiaSuffixContext = /\b(?:bleeding|anemia|gi bleed|hematemesis|melena|hematochezia|pallor|bruising|petechiae|acg_ugib|heme_bleeding_anemia)\b/.test(allText);
+  if (bleedingAnemiaSuffixContext
+    && /\b(?:liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|coagulopathy|prior transfusion|reversal)\b/.test(fullQuestion)) return "medication/coagulopathy risk";
+  if (bleedingAnemiaSuffixContext
+    && /\b(?:hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|epistaxis|heavy menses|dizziness|syncope|dyspnea|chest pain)\b/.test(fullQuestion)) return "overt bleeding/anemia symptoms";
   if (/measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(fullQuestion)) return "infection precipitant";
   if (/cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(fullQuestion)) return "respiratory source";
   if (/immunosuppression|transplant|chemotherapy|high-dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medication/.test(fullQuestion)) return "host/exposure risk";
@@ -7949,6 +8188,20 @@ function historyQuestionSemanticBucket(question = {}) {
     question.source,
     ...(question.tags || [])
   ].filter(Boolean).join(" "));
+  const earlyPeVteBucketContext = /\b(?:pulmonary embolism|suspected pe|pe\/dvt|vte|dvt|clinical probability|esc_pe|acep_vte|ash_vte|ctpa|d-dimer|d dimer)\b/.test(text)
+    && !/\b(?:aha_asa_stroke|focal_neurologic_deficit|neuro_red_flags|gi_bleed|heme_bleeding_anemia|acg_ugib|hematemesis|melena|hematochezia|pallor|anemia)\b/.test(text);
+  if (earlyPeVteBucketContext && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|presyncope|oxygen need|escalating oxygen|full sentences)\b/.test(questionText)) {
+    return "pe-cardiopulmonary-severity-history";
+  }
+  if (earlyPeVteBucketContext && /\b(?:unilateral leg|calf pain|leg swelling|redness|warmth|immobilization|cast)\b/.test(questionText)) {
+    return "pe-dvt-leg-symptoms-history";
+  }
+  if (earlyPeVteBucketContext && /\b(?:active bleeding|bleeding risk|anticoagulant|thrombolysis|contraindication|major surgery|major trauma|intracranial|severe uncontrolled hypertension|pending procedure)\b/.test(questionText)) {
+    return "pe-anticoagulation-safety-history";
+  }
+  if (earlyPeVteBucketContext && /\b(?:prior vte|recent surgery|surgery|immobility|hospitalization|travel|estrogen|pregnancy|postpartum|active cancer|cancer)\b/.test(questionText)) {
+    return "pe-vte-provoking-factor-history";
+  }
   const feverSepsisHistoryContext = /\b(?:ssc sepsis|merck fever|ats cap|idsa cap|sepsis|source control|pneumonia)\b/.test(text);
   const infectionSourceDomainCount = [
     /\b(?:cough|shortness of breath|dyspnea|sputum|pleuritic|oxygen|aspiration|wheeze|respiratory)\b/.test(questionText),
@@ -8034,9 +8287,19 @@ function historyQuestionSemanticBucket(question = {}) {
     && /\b(?:cold intolerance|fatigue|constipation|dry or coarse skin|dry skin|coarse skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid)\b/.test(questionText)) {
     return "thyroid-hypothyroid-symptoms-history";
   }
-  if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(text)
-    && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant)\b/.test(questionText)) {
-    return "pe-vte-probability-history";
+  const peVteBucketContext = /\b(?:pulmonary embolism|suspected pe|pe\/dvt|vte|dvt|clinical probability|esc_pe|acep_vte|ash_vte|ctpa|d-dimer|d dimer)\b/.test(text)
+    && !/\b(?:aha_asa_stroke|focal_neurologic_deficit|neuro_red_flags|gi_bleed|heme_bleeding_anemia|acg_ugib|hematemesis|melena|hematochezia|pallor|anemia)\b/.test(text);
+  if (peVteBucketContext && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|presyncope|oxygen need|escalating oxygen|full sentences)\b/.test(questionText)) {
+    return "pe-cardiopulmonary-severity-history";
+  }
+  if (peVteBucketContext && /\b(?:unilateral leg|calf pain|leg swelling|redness|warmth|immobilization|cast)\b/.test(questionText)) {
+    return "pe-dvt-leg-symptoms-history";
+  }
+  if (peVteBucketContext && /\b(?:active bleeding|bleeding risk|anticoagulant|thrombolysis|contraindication|major surgery|major trauma|intracranial|severe uncontrolled hypertension|pending procedure)\b/.test(questionText)) {
+    return "pe-anticoagulation-safety-history";
+  }
+  if (peVteBucketContext && /\b(?:prior vte|recent surgery|surgery|immobility|hospitalization|travel|estrogen|pregnancy|postpartum|active cancer|cancer)\b/.test(questionText)) {
+    return "pe-vte-provoking-factor-history";
   }
   if (/\b(?:abdominal_pain_cramping|abdominal pain|acute abdomen|peritonitis|biliary|appendicitis|pancreatitis|obstruction|gi bleed)\b/.test(text)
     && !/\b(?:pelvic|menstrual|ectopic|pid|pregnancy)\b/.test(text)
@@ -9283,10 +9546,10 @@ const requiredDomainCoverageDefinitions = [
     label: "Fever source-localizing infection history needs review",
     applies: (trace) => traceIsIntent(trace, "fever_sepsis_v1") || traceHasBundle(trace, "infection_sepsis"),
     isMissing: (sectionedWorkup) => !(
-      workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:source|localiz|localis)/i)
-      && workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:cough|sputum|dyspnea|pleuritic|shortness)/i)
+      workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:cough|sputum|dyspnea|pleuritic|shortness)/i)
       && workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:dysuria|flank|urinary|urine)/i)
       && workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:rash|wound|line|skin|neck stiffness|photophobia|abdominal|diarrhea|vomiting)/i)
+      && workupHas(sectionedWorkup, ["focusedHistoryQuestions"], /\b(?:host|exposure|immunosuppression|pregnancy|travel|sick contacts)/i)
     ),
     reason: (trace) => `The validated intent "${trace.label || trace.intent_id}" must keep source-localizing infection history visible, including respiratory, urinary/flank, skin/line, abdominal/GI, and CNS danger prompts. A fever workup is not clinically complete if it only asks generic fever questions.`,
     resolutionPlan: (trace) => `Add or restore a reviewed source-localizing fever history question with concrete respiratory, urinary/flank, skin/line, abdominal/GI, CNS, severity, management, source IDs, LR note, and regression tests for ${trace.label || trace.intent_id}.`

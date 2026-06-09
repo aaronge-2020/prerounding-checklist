@@ -799,7 +799,8 @@ if (!/usesSymptomResponseAnswers/.test(moduleScript)
 }
 if (!/phone-concept-symptom-response-button/.test(html)
   || !/phoneConceptSetSymptomResponse/.test(moduleScript)
-  || !/Use left \(-\) Deny and right \(\+\) Endorse/.test(moduleScript)
+  || !/Use left \(-\) Denied and right \(\+\) Endorsed/.test(moduleScript)
+  || !/mode === "questions"[\s\S]{0,80}usesSymptomResponseAnswers\(item\)/.test(moduleScript)
   || !/data-phone-action="response-option"/.test(moduleScript)) {
   throw new Error("Mobile bedside symptom-list questions should support explicit per-symptom -/+ response controls.");
 }

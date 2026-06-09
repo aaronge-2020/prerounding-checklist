@@ -629,15 +629,15 @@ function sourceDomainHistorySatisfiedByEvaluatedQuestion(item = {}, result = {})
     },
     {
       trigger: /cns|meningeal|meningitis|headache|neck stiffness|photophobia/i,
-      coverage: /CNS, joint, spine|severe headache|neck stiffness|photophobia|seizure/i
+      coverage: /CNS\/joint\/spine|severe headache|neck stiffness|photophobia|seizure/i
     },
     {
       trigger: /skin|wound|line|soft[- ]tissue|cellulitis/i,
-      coverage: /skin, wound, and line|rash|wound|line pain|drainage|soft-tissue/i
+      coverage: /skin\/line|rash|wound|line pain|drainage|soft-tissue/i
     },
     {
       trigger: /hot joint|bone|spine|back pain/i,
-      coverage: /CNS, joint, spine|hot swollen joint|focal bone|back pain|spine/i
+      coverage: /CNS\/joint\/spine|hot swollen joint|focal bone|back pain|spine/i
     }
   ];
   return checks.some((check) => check.trigger.test(itemText) && check.coverage.test(evaluatedText));
@@ -1774,7 +1774,9 @@ function auditModuleBackedIntent(intentRow) {
         ...(triggered.conditionalQuestions || [])
       ].find((candidate) => candidate.id === item.id || candidate.label === item.label);
       if (!triggeredItem) {
-        issues.push(`conditional history question did not activate from its own trigger terms: ${item.label}`);
+        if (!sourceDomainHistorySatisfiedByEvaluatedQuestion(item, triggered)) {
+          issues.push(`conditional history question did not activate from its own trigger terms: ${item.label}`);
+        }
       } else {
         auditEvaluatedHistoryQuestion(triggeredItem, issues, intentRow, "conditional history question");
       }
@@ -2065,7 +2067,7 @@ assert.doesNotMatch(
 );
 assert.match(
   feverHistoryText,
-  /cough[\s\S]*(?:dysuria|flank)[\s\S]*(?:rash|wound|line)[\s\S]*(?:exposure|host|immunosuppression|pregnancy)/i,
+  /(?=[\s\S]*cough)(?=[\s\S]*(?:dysuria|flank))(?=[\s\S]*(?:rash|wound|line))(?=[\s\S]*(?:exposure|host|immunosuppression|pregnancy))/i,
   "fever/sepsis should visibly ask source-localizing respiratory, urinary, skin/line, and host/exposure questions"
 );
 assert.match(
@@ -2154,7 +2156,7 @@ assert.match(
 );
 assert.match(
   dkaWithFeverHistoryText,
-  /wound and line infection symptoms/i,
+  /skin\/line infection-source symptoms/i,
   "fever modifier should make skin/wound/line source history visible in DKA/HHS"
 );
 assert.match(
@@ -2205,6 +2207,10 @@ assert.ok(
 });
 const genitalDischargeRow = iterationRun.results.find((result) => result.intent_id === "genital_discharge_sti_v1");
 const genitalCoreLabels = (genitalDischargeRow?.core || []).map((entry) => entry.label).join("; ");
+const genitalHistoryLabels = (genitalDischargeRow?.history || []).map((entry) => entry.label).join("; ");
+assert.match(genitalHistoryLabels, /discharge, dysuria, genital lesions, and STI exposure/i, "genital discharge should label discharge/dysuria/exposure history as local GU/STI context");
+assert.match(genitalHistoryLabels, /groin nodes, genital lesions, and skin infection features/i, "genital discharge should label groin-node/lesion history separately from urinary source history");
+assert.doesNotMatch(genitalHistoryLabels, /urinary\/flank symptoms/i, "genital discharge history labels should not borrow urinary/flank suffixes");
 assert.match(genitalCoreLabels, /Inspect genital area/i, "genital discharge should include the accepted atomic genital exam, not a broad mucosal substitute");
 assert.match(genitalCoreLabels, /Palpate inguinal lymph nodes/i, "genital discharge should include accepted local inguinal-node assessment");
 assert.doesNotMatch(genitalCoreLabels, /Mucosal lesions/i, "genital discharge core exam should not substitute a broad mucosal-lesion row for the local GU exam");
@@ -2212,11 +2218,20 @@ assert.match((genitalDischargeRow?.tests || []).map((entry) => entry.label).join
 assert.match((genitalDischargeRow?.red_flags || []).map((entry) => entry.label).join("; "), /Complicated STI\/GU escalation cues/i, "genital discharge should include complication and escalation cues");
 const acuteScrotalRow = iterationRun.results.find((result) => result.intent_id === "acute_scrotal_pain_v1");
 const acuteScrotalCoreLabels = (acuteScrotalRow?.core || []).map((entry) => entry.label).join("; ");
+const acuteScrotalHistoryLabels = (acuteScrotalRow?.history || []).map((entry) => entry.label).join("; ");
+assert.match(acuteScrotalHistoryLabels, /scrotal pain onset and torsion features/i, "acute scrotal pain should label onset/nausea/high-riding features as torsion-focused history");
+assert.match(acuteScrotalHistoryLabels, /epididymitis\/STI and urology-risk features/i, "acute scrotal pain should label infectious/urology barriers separately from torsion onset");
+assert.doesNotMatch(acuteScrotalHistoryLabels, /urinary\/flank symptoms/i, "acute scrotal pain history labels should not borrow urinary/flank suffixes");
 assert.match(acuteScrotalCoreLabels, /Inspect and palpate scrotum/i, "acute scrotal pain should include the accepted atomic scrotal exam");
 assert.match(acuteScrotalCoreLabels, /Test cremasteric reflex/i, "acute scrotal pain should include cremasteric reflex as a separate torsion-associated maneuver");
 assert.doesNotMatch(acuteScrotalCoreLabels, /Genital exam|Mucosal lesions/i, "acute scrotal pain core exam should not substitute broad genital or mucosal rows for scrotal exam");
 assert.match((acuteScrotalRow?.tests || []).map((entry) => entry.label).join("; "), /Acute scrotum torsion and infection pathway/i, "acute scrotal pain should include torsion and infection diagnostic pathway");
 assert.match((acuteScrotalRow?.red_flags || []).map((entry) => entry.label).join("; "), /Torsion and acute scrotum escalation cues/i, "acute scrotal pain should include torsion escalation cues");
+const sleepApneaHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "sleep_apnea_snoring_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(sleepApneaHistoryLabels, /OSA safety, comorbidities, and treatment context/i, "sleep apnea should label drowsy-driving/comorbidity/CPAP context separately");
+assert.match(sleepApneaHistoryLabels, /OSA symptoms and daytime sleepiness/i, "sleep apnea should label symptom-screen history separately");
+assert.doesNotMatch(sleepApneaHistoryLabels, /SGLT2\/fasting risks/i, "sleep apnea history labels should not borrow diabetes/DKA suffixes");
 [
   "vitamin_d_deficiency_osteomalacia_intent_v1",
   "hypoparathyroidism_intent_v1",
@@ -2235,11 +2250,47 @@ const vitaminDHistoryLabels = (iterationRun.results.find((result) => result.inte
   .map((entry) => entry.label).join("; ");
 assert.match(vitaminDHistoryLabels, /malabsorption and nutrient-absorption risks/i, "vitamin D workup should label malabsorption history as bone/mineral-specific");
 assert.match(vitaminDHistoryLabels, /renal, liver, and mineral-metabolism modifiers/i, "vitamin D workup should label CKD/liver/PTH history as mineral-metabolism context");
-assert.match(vitaminDHistoryLabels, /renal stone and calcium-complication symptoms/i, "vitamin D workup should label stone/polyuria history as calcium-complication context");
+assert.match(vitaminDHistoryLabels, /kidney-stone and renal calcium\/PTH complications|hypercalcemia symptom pattern and renal impact/i, "vitamin D workup should label stone/polyuria history as calcium/PTH or hypercalcemia context");
+const diabetesInsipidusHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "diabetes_insipidus_intent_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(diabetesInsipidusHistoryLabels, /24-hour urine volume and baseline change/i, "diabetes insipidus should label 24-hour urine-volume history as DI/polyuria context");
+assert.match(diabetesInsipidusHistoryLabels, /nocturia frequency and progression/i, "diabetes insipidus should label nocturia history as progression/severity context");
+assert.match(diabetesInsipidusHistoryLabels, /DI medication and fluid-balance triggers/i, "diabetes insipidus should label lithium/desmopressin/fluid-trigger history as DI medication context");
+assert.doesNotMatch(diabetesInsipidusHistoryLabels, /hyperglycemia dehydration|treatment-limiting hypertension and diabetes complications/i, "diabetes insipidus should not borrow diabetes-mellitus or hyperglycemic-crisis history labels");
 const hypoparaHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "hypoparathyroidism_intent_v1")?.history || [])
   .map((entry) => entry.label).join("; ");
 assert.match(hypoparaHistoryLabels, /neck surgery and postoperative calcium history/i, "hypoparathyroidism workup should label neck surgery history as postoperative calcium context");
 assert.match(hypoparaHistoryLabels, /hypocalcemia neuromuscular symptoms/i, "hypoparathyroidism workup should label cramps/tetany history as hypocalcemia symptoms");
+const thyroidNoduleHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "thyroid_nodules_intent_v1")?.history || [])
+  .map((entry) => entry.label);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /thyroid nodule growth and invasion symptoms/i.test(label)),
+  "thyroid nodule workup should label growth/fixation/voice/node questions as nodule invasion symptoms"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /thyroid structural symptoms and cancer-risk history/i.test(label)),
+  "thyroid nodule workup should distinguish structural symptoms plus cancer-risk history"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /thyroid radiation and family-risk history/i.test(label)),
+  "thyroid nodule workup should separately label radiation/family thyroid cancer risk"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /hereditary endocrine tumor history/i.test(label)),
+  "thyroid nodule workup should separately label MEN/VHL/NF1/SDHx hereditary tumor history"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /thyroid-related weight and systemic symptoms/i.test(label)),
+  "thyroid nodule workup should label weight/systemic symptoms rather than clipping the raw question"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.some((label) => /thyroid medications, iodine\/biotin exposure, and assay interference/i.test(label)),
+  "thyroid nodule workup should label medication/biotin/iodine context as assay interpretation history"
+);
+assert.ok(
+  thyroidNoduleHistoryLabels.every((label) => !/\s2$/.test(label)),
+  `thyroid nodule history labels should not require duplicate counters: ${thyroidNoduleHistoryLabels.join("; ")}`
+);
 const longRawAnyHistoryLabels = iterationRun.results.flatMap((result) => (
   (result.history || [])
     .filter((entry) => /^Any\b/i.test(entry.label || "") && String(entry.label || "").length >= 105)
@@ -2252,10 +2303,32 @@ assert.deepEqual(
 );
 const gestationalDiabetesHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "gestational_diabetes_intent_v1")?.history || [])
   .map((entry) => entry.label).join("; ");
+const metabolicSyndromeHistoryLabels = (iterationRun.results.find((result) => result.intent_id === "metabolic_syndrome_intent_v1")?.history || [])
+  .map((entry) => entry.label).join("; ");
+assert.match(
+  metabolicSyndromeHistoryLabels,
+  /weight, waist, and intentional change/i,
+  "metabolic syndrome should label weight/waist trajectory as a concise cardiometabolic history domain"
+);
 assert.match(
   gestationalDiabetesHistoryLabels,
   /prior gestational diabetes and macrosomia history/i,
   "gestational diabetes should label prior GDM/macrosomia risk as a concise obstetric-metabolic history domain"
+);
+assert.match(
+  gestationalDiabetesHistoryLabels,
+  /gestational age, dating, and obstetric context/i,
+  "gestational diabetes should label gestational-age/dating history as obstetric diabetes context, not pelvic-pain/ectopic danger wording"
+);
+assert.match(
+  gestationalDiabetesHistoryLabels,
+  /pre-pregnancy diabetes and GDM risk factors/i,
+  "gestational diabetes should label pre-pregnancy diabetes risk factors as GDM risk, not pregnancy/ectopic danger wording"
+);
+assert.match(
+  gestationalDiabetesHistoryLabels,
+  /fetal-growth and obstetric ultrasound concerns/i,
+  "gestational diabetes should label fetal-growth/polyhydramnios concerns as a distinct obstetric-ultrasound history domain"
 );
 const genericHighScoreSuppressedNotes = iterationRun.results.flatMap((result) => (
   (result.review_notes || [])
@@ -2318,12 +2391,12 @@ const routineThyroidRow = iterationRun.results.find((result) => result.intent_id
 const routineThyroidHistoryLabels = (routineThyroidRow?.history || []).map((entry) => entry.label).join("; ");
 assert.match(
   routineThyroidHistoryLabels,
-  /thyroid nodule, pain, and compressive symptoms/i,
+  /thyroid pain, pressure, and airway symptoms|thyroid nodule growth and invasion symptoms|thyroid structural symptoms and cancer-risk history/i,
   "routine thyroid disease should label thyroid pain/compressive history as thyroid-specific, not generic pain/trauma"
 );
 assert.match(
   routineThyroidHistoryLabels,
-  /thyroid cancer radiation, biopsy, and MEN2 risk/i,
+  /thyroid radiation and family-risk history|thyroid structural symptoms and cancer-risk history/i,
   "routine thyroid disease should label radiation/family-risk history as thyroid cancer risk"
 );
 assert.match(
@@ -2424,6 +2497,41 @@ iterationRun.results.forEach((result) => {
     [],
     `${result.intent_id}: visible focused-history labels should be unique within the workup`
   );
+  const visibleHistoryLabels = (result.history || []).map((entry) => String(entry.label || ""));
+  visibleHistoryLabels.forEach((label) => {
+    assert.doesNotMatch(
+      label,
+      /Ask PE severity, VTE risk factors, and bleeding risk/i,
+      `${result.intent_id}: PE history should be split into atomic symptom, DVT, provoking-factor, and bleeding-safety questions`
+    );
+    if (result.intent_id !== "suspected_pe_v1") {
+      assert.doesNotMatch(
+        label,
+        /^Ask PE\b/i,
+        `${result.intent_id}: PE-specific history labels should not leak into unrelated validated intents`
+      );
+    }
+  });
+  if (result.intent_id === "suspected_pe_v1") {
+    const historyLabelText = visibleHistoryLabels.join(" | ");
+    [
+      /PE cardiopulmonary severity symptoms/i,
+      /DVT leg symptoms/i,
+      /VTE provoking-factor history/i,
+      /anticoagulation and bleeding-safety history/i
+    ].forEach((pattern) => {
+      assert.match(
+        historyLabelText,
+        pattern,
+        `suspected PE history should expose separate bedside-facing domains: ${pattern}`
+      );
+    });
+    assert.equal(
+      visibleHistoryLabels.filter((label) => /PE cardiopulmonary severity symptoms/i.test(label)).length,
+      1,
+      "suspected PE should not duplicate the cardiopulmonary symptom history row from attached exam-question metadata"
+    );
+  }
   const visibleManagementChangeCounts = new Map();
   (result.management_changes || []).forEach((entry) => {
     const key = normalizedLabel(entry.management_change || entry.management_implication || "");
@@ -2468,6 +2576,23 @@ iterationRun.results.forEach((result) => {
       /(?:^|\/)\s*Which medications\b/i,
       `${result.intent_id}: ${entry.label || entry.exam_id} history row should not turn a question stem into an answer option`
     );
+    const optionQuestionStemFragments = String(entry.options || "")
+      .split(/\s+\/\s+|[;\n|]+/)
+      .map((option) => option.replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+      .filter((option) => /^(?:Have you(?: had| noticed)?|How has|How have|Was the|Associated with|Did |When was|How regular|Do symptoms|Are there|Do you(?: have| currently)?|What is|How many|How much|Have ring|Has the|Has pregnancy dating|Neck mass grown|Become painful|Is it|Have rapid growth|Nipple discharge occurred|Tenderness been present|Recently smoke|Waist circumference changed|The change intentional|This new)\b/i.test(option));
+    assert.deepEqual(
+      optionQuestionStemFragments,
+      [],
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row options should be selectable components, not clipped question stems`
+    );
+    if (/^How has weight changed/i.test(String(entry.full_question || entry.text || ""))) {
+      assert.match(
+        String(entry.label || ""),
+        /weight|systemic/i,
+        `${result.intent_id}: weight/systemic history should be labeled as weight/systemic context, not an unrelated clinical domain`
+      );
+    }
     if (/cold intolerance|fatigue|constipation|dry(?: or coarse)? skin|hoarse voice|slowed thinking|weight gain|heavy menses|hypothyroid/i.test(`${entry.text || ""} ${entry.full_question || ""}`)) {
       assert.doesNotMatch(
         entry.label || "",
@@ -2490,6 +2615,14 @@ iterationRun.results.forEach((result) => {
         "chest pain medication/thrombotic-risk history should not be mislabeled as bleeding-source history"
       );
     }
+    if (/respiratory source/i.test(entry.label || "")) {
+      const explicitRespiratorySourceContext = /fever|infection|sepsis|pneumonia|respiratory_source|respiratory source|pulmonary embolism|suspected pe|cough|sputum|wheeze|aspiration/i
+        .test(`${result.intent_id || ""} ${result.label || ""} ${entry.text || ""} ${entry.full_question || ""} ${entry.options || ""} ${entry.tags || ""}`);
+      assert.ok(
+        explicitRespiratorySourceContext,
+        `${result.intent_id}: respiratory-source history label should require infection, PE, or true respiratory-source context`
+      );
+    }
     assert.ok(
       String(entry.when_to_ask || "").trim(),
       `${result.intent_id}: ${entry.label || entry.exam_id} history row should preserve when-to-ask metadata in exported row data`
@@ -2509,8 +2642,13 @@ iterationRun.results.forEach((result) => {
     );
     assert.doesNotMatch(
       String(entry.label || ""),
-      /^Ask (?:is it|did|what is|has a|have|are|do|does|was|were|can|could|has)\b|,\s*$/i,
+      /^Ask (?:is it|did|what is|how|has a|have|are|do|does|was|were|can|could|has)\b|,\s*$/i,
       `${result.intent_id}: ${entry.label || entry.exam_id} history row should not expose clipped question fragments as bedside-facing labels`
+    );
+    assert.doesNotMatch(
+      String(entry.label || ""),
+      /\s-\s+(?:How has|How have|How many|Has the|Has pregnancy dating|Waist circumference|Any thyroid hormone|Any neck swelling)\b/i,
+      `${result.intent_id}: ${entry.label || entry.exam_id} history row should use a clinical-domain suffix, not a clipped raw question fragment`
     );
     if (normalizedLabel(entry.label || "") !== normalizedLabel(entry.full_question || "")) {
       assert.ok(

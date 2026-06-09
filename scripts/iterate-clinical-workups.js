@@ -477,9 +477,111 @@ function moduleItemFindingsOptions(item = {}) {
   return item.findings_options || item.findingsOptions || item.options || "";
 }
 
+function cleanModuleOptionLabel(value = "") {
+  let text = String(value || "")
+    .replace(/[_]{2,}/g, "___")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!text) {
+    return "";
+  }
+  if (/^Other(?:\s*_+)?$/i.test(text)) {
+    return "Other ___";
+  }
+  const replacements = [
+    [/^Have you had new salt craving$/i, "Salt craving"],
+    [/^Have you had heat intolerance$/i, "Heat intolerance"],
+    [/^Have you had cold intolerance$/i, "Cold intolerance"],
+    [/^Have you noticed easy bruising$/i, "Easy bruising"],
+    [/^Did menstrual periods never start by the expected age$/i, "Periods never started by expected age"],
+    [/^Did previously present periods stop$/i, "Previously present periods stopped"],
+    [/^When was the last menstrual period$/i, "Last menstrual period timing"],
+    [/^How regular are cycles$/i, "Cycle regularity"],
+    [/^How has weight changed from baseline$/i, "Weight change from baseline"],
+    [/^How have weight$/i, "Weight trajectory"],
+    [/^Waist circumference changed over time$/i, "Waist circumference trend"],
+    [/^Was the change intentional$/i, "Intentional weight change"],
+    [/^The change intentional$/i, "Intentional change"],
+    [/^Associated with appetite$/i, "Appetite change"],
+    [/^Fluid status$/i, "Fluid-status change"],
+    [/^Systemic symptoms$/i, "Systemic symptoms"],
+    [/^Do symptoms occur in episodes$/i, "Episodic symptoms"],
+    [/^Are there symptom-free intervals$/i, "Symptom-free intervals"],
+    [/^Do you have reliable access to water$/i, "Reliable water access"],
+    [/^Are thirst$/i, "Thirst/intake limits hydration"],
+    [/^What is the usual calcium$/i, "Calcium intake"],
+    [/^Supplement$/i, "Supplement use"],
+    [/^What is the usual physical activity level$/i, "Physical activity level"],
+    [/^It changed recently because of symptoms$/i, "Activity changed because of symptoms"],
+    [/^Function$/i, "Functional limitation"],
+    [/^What is the current weight trajectory$/i, "Current weight trajectory"],
+    [/^It changed from baseline$/i, "Changed from baseline"],
+    [/^What is the current prior FNA Bethesda category$/i, "Prior FNA/Bethesda category"],
+    [/^What is the approximate 24-hour urine volume$/i, "24-hour urine volume"],
+    [/^How many times do you urinate overnight$/i, "Nocturia frequency"],
+    [/^How much are you drinking$/i, "Fluid intake"],
+    [/^Including polyuria$/i, "Polyuria"],
+    [/^Any dehydration$/i, "Dehydration"],
+    [/^How many weeks pregnant are you$/i, "Gestational age"],
+    [/^This new$/i, "New or worsening"],
+    [/^Has pregnancy dating$/i, "Pregnancy dating"],
+    [/^Pregnancy dating$/i, "Pregnancy dating"],
+    [/^Fetal growth$/i, "Fetal growth"],
+    [/^Obstetric context changed diabetes screening or treatment safety$/i, "Obstetric diabetes-safety context"],
+    [/^Urinating$/i, "Urine output"],
+    [/^Do you have trouble rising from a chair$/i, "Trouble rising from chair"],
+    [/^Have ring size$/i, "Ring size change"],
+    [/^Shoe size$/i, "Shoe size change"],
+    [/^Facial features$/i, "Facial feature change"],
+    [/^How has height$/i, "Height/growth change"],
+    [/^Do you currently smoke$/i, "Current smoking"],
+    [/^Recently smoke$/i, "Recent smoking"],
+    [/^How long has breast tissue enlargement$/i, "Breast enlargement duration"],
+    [/^Tenderness been present$/i, "Breast tenderness duration"],
+    [/^Is it unilateral$/i, "Unilateral breast enlargement"],
+    [/^Have rapid growth$/i, "Rapid growth"],
+    [/^Nipple discharge occurred$/i, "Nipple discharge"],
+    [/^Has the thyroid nodule$/i, "Thyroid nodule or neck mass"],
+    [/^Neck mass grown rapidly$/i, "Rapid neck-mass growth"],
+    [/^Become painful$/i, "Painful nodule or neck mass"],
+    [/^Associated with hoarseness$/i, "Hoarseness"]
+  ];
+  for (const [pattern, replacement] of replacements) {
+    if (pattern.test(text)) {
+      return replacement;
+    }
+  }
+  text = text
+    .replace(/^Have you had\s+/i, "")
+    .replace(/^Have you noticed\s+/i, "")
+    .replace(/^Do you have\s+/i, "")
+    .replace(/^Did\s+/i, "")
+    .replace(/^When was the\s+/i, "")
+    .replace(/^What is the approximate\s+/i, "")
+    .replace(/^How many times do you\s+/i, "")
+    .replace(/^How much are you\s+/i, "")
+    .replace(/^How has\s+/i, "")
+    .replace(/^Was the\s+/i, "")
+    .replace(/^Are there\s+/i, "")
+    .replace(/^Is it\s+/i, "")
+    .replace(/^Has the\s+/i, "")
+    .replace(/^Are\s+/i, "")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!text) {
+    return "";
+  }
+  if (/^Other(?:\s*_+)?$/i.test(text)) {
+    return "Other ___";
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 function moduleItemOptionLabels(value) {
   if (Array.isArray(value)) {
-    return value
+    const labels = value
       .map((entry) => {
         if (entry && typeof entry === "object") {
           return entry.label || entry.value || entry.text || "";
@@ -487,18 +589,81 @@ function moduleItemOptionLabels(value) {
         return entry;
       })
       .map((entry) => String(entry || "").replace(/\s+/g, " ").trim())
-      .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+      .map(cleanModuleOptionLabel)
       .filter(Boolean);
+    return Array.from(new Map(labels.map((entry) => [entry.toLowerCase(), entry])).values());
   }
-  return String(value || "")
+  const labels = String(value || "")
     .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
     .map((entry) => entry.replace(/\s+/g, " ").trim())
-    .map((entry) => /^Other$/i.test(entry) ? "Other ___" : entry)
+    .map(cleanModuleOptionLabel)
     .filter(Boolean);
+  return Array.from(new Map(labels.map((entry) => [entry.toLowerCase(), entry])).values());
 }
 
 function moduleItemOptionText(value) {
   return moduleItemOptionLabels(value).join(" / ");
+}
+
+function genericModuleHistoryOption(label = "") {
+  return /^(?:no|none|yes|other|other ___|unknown|unable|unable to assess|not assessed|n\/a|na|not sure|unsure|no localizing symptoms)$/i
+    .test(String(label || "").replace(/[_-]{2,}/g, "").trim());
+}
+
+function moduleHistoryOptionComponentLabel(part = "", source = "") {
+  const label = cleanModuleOptionLabel(part);
+  if (!label || genericModuleHistoryOption(label)) {
+    return "";
+  }
+  const lower = label.toLowerCase();
+  const sourceText = String(source || "").toLowerCase();
+  if (/^(?:ear|sinus|dental)$/.test(lower) && /\bpain\b/.test(sourceText)) {
+    return `${label} pain`;
+  }
+  if (lower === "line") {
+    return "Line concern";
+  }
+  if (lower === "wound") {
+    return "Wound concern";
+  }
+  if (lower === "frequency" && /\b(?:urinary|dysuria|uti)\b/.test(sourceText)) {
+    return "Urinary frequency";
+  }
+  return label;
+}
+
+function moduleHistoryOptionLabels(value) {
+  const labels = moduleItemOptionLabels(value);
+  const output = [];
+  const seen = new Set();
+  labels.forEach((label) => {
+    if (genericModuleHistoryOption(label)) {
+      return;
+    }
+    const protectedCompoundOption = /\b(?:24-hour|2-hour|1-hour|50-g|75-g|100-g|beta-hydroxybutyrate|pre-pregnancy)\b/i.test(label);
+    const groupish = !protectedCompoundOption
+      && /[-/,]|\b(?:and|or)\b/i.test(label)
+      && /\b(?:cough|dyspnea|sputum|pleuritic|dysuria|frequency|urgency|flank|abdominal|vomit|diarrhea|rash|wound|line|headache|neck stiffness|confusion|joint|back pain|urine|worsening|heat intolerance|cold intolerance|palpitations|tremor|anxiety|insomnia|weight|appetite|sweating|nausea|syncope|hemoptysis|leg swelling|calf pain)\b/i.test(label);
+    const pieces = groupish
+      ? label.split(/\s*(?:-|\/|,|\band\b|\bor\b)\s*/i)
+      : [label];
+    pieces
+      .map((part) => moduleHistoryOptionComponentLabel(part, label))
+      .filter(Boolean)
+      .forEach((component) => {
+        const key = normalizeClinicalIntentText(component);
+        if (!key || seen.has(key)) {
+          return;
+        }
+        seen.add(key);
+        output.push(component);
+      });
+  });
+  return output.length ? output : labels.filter((label) => !genericModuleHistoryOption(label));
+}
+
+function moduleHistoryOptionText(value) {
+  return moduleHistoryOptionLabels(value).join(" / ");
 }
 
 function genericFindingsOptions(value) {
@@ -756,7 +921,7 @@ function attendingBaselineIssuesForModule(intentRow = {}, module = {}, result = 
       {
         label: "source-localizing fever history must ask respiratory, urinary, skin/line/wound, abdominal/GI, CNS, and host/exposure questions",
         text: historyText,
-        pattern: /cough[\s\S]*(?:dysuria|urinary|flank)[\s\S]*(?:rash|wound|line)[\s\S]*(?:abdominal|vomiting|diarrhea)[\s\S]*(?:headache|neck|confusion)[\s\S]*(?:exposure|host|immunosuppression|pregnancy)/i
+        pattern: /(?=[\s\S]*cough)(?=[\s\S]*(?:dysuria|urinary|flank))(?=[\s\S]*(?:rash|wound|line))(?=[\s\S]*(?:abdominal|vomiting|diarrhea))(?=[\s\S]*(?:headache|neck|confusion))(?=[\s\S]*(?:exposure|host|immunosuppression|pregnancy))/i
       },
       {
         label: "fever/infection exam must include respiratory effort and lung auscultation for pneumonia/hypoxemia source screening",
@@ -881,7 +1046,7 @@ function summarizeQuestionItem(item, intentRow = {}) {
     diagnostic_purpose: diagnosticPurpose,
     management_implication: managementImplication,
     management_change: managementImplication,
-    options: moduleItemOptionText(item.options || item.answer_options || item.answerOptions || item.bedsideQuestionOptions || item.bedside_question_options || ""),
+    options: moduleHistoryOptionText(item.options || item.answer_options || item.answerOptions || item.bedsideQuestionOptions || item.bedside_question_options || ""),
     evidence: source,
     source,
     LR_plus: lrPlus,
@@ -915,6 +1080,26 @@ function conciseHistoryQuestionLabel(item = {}) {
   const itemKeyText = normalizeEvidenceLabel([item.id, item.label, item.exam_id].filter(Boolean).join(" "));
   const sourceSignalText = `${itemKeyText} ${tagText}`;
   const allText = `${normalized} ${sourceSignalText}`;
+  const earlyDiabetesInsipidusContext = /\b(?:diabetes_insipidus|diabetes insipidus|pituitary_gland_disorders|desmopressin)\b/.test(allText)
+    && /\b(?:urine|urinating|thirst|water|sodium|desmopressin|polyuria|polydipsia|nocturia|fluid restriction|lithium)\b/.test(allText);
+  if (earlyDiabetesInsipidusContext && /24-hour urine volume|urine output changed/.test(normalized)) {
+    return "Ask 24-hour urine volume and baseline change";
+  }
+  if (earlyDiabetesInsipidusContext && /urinate overnight|nocturia|new or worsening/.test(normalized)) {
+    return "Ask nocturia frequency and progression";
+  }
+  if (earlyDiabetesInsipidusContext && /reliable access to water|thirst[\s\S]*limiting safe hydration|mental status limiting safe hydration/.test(normalized)) {
+    return "Ask water access and safe hydration";
+  }
+  if (earlyDiabetesInsipidusContext && /lithium|demeclocycline|amphotericin|diuretic|sglt2|glucocorticoid|desmopressin|fluid restriction|medication change/.test(normalized)) {
+    return "Review DI medication and fluid-balance triggers";
+  }
+  if (earlyDiabetesInsipidusContext && /kidney stones|constipation|bone pain|hypercalcemia|reduced kidney function|kidney concentrating ability/.test(normalized)) {
+    return "Ask hypercalcemia and renal DI mimics";
+  }
+  if (earlyDiabetesInsipidusContext && /how much are you drinking and urinating|fluid intake|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(normalized)) {
+    return "Ask DI thirst, polyuria, and hydration symptoms";
+  }
   const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(`${normalized} ${tagText}`);
   if (earlyDkaContext && /known diabetes type|diabetes type|duration|insulin regimen|pump\/cgm|pump cgm|last insulin dose/.test(normalized)) {
     return "Ask diabetes history, insulin regimen, and last insulin dose";
@@ -940,7 +1125,7 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (/how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
     return "Ask fever timeline, measurement, and medication exposure";
   }
-  const sourceSpecificInfectionContext = /\b(?:source[_ ]localizing[_ ]history|respiratory[_ ]source|urinary[_ ]source|skin[_ ]source|wound[_ ]source|line[_ ]source|host[_ ]risk|exposure[_ ]history|severity[_ ]history)\b/.test(sourceSignalText);
+  const sourceSpecificInfectionContext = /\b(?:source[_ ]localizing[_ ]history|respiratory[_ ]source|heent[_ ]source|dental[_ ]source|oral[_ ]source|urinary[_ ]source|abdominal[_ ]source|gi[_ ]source|biliary[_ ]source|skin[_ ]source|wound[_ ]source|line[_ ]source|cns[_ ]infection|joint[_ ]source|spine[_ ]infection|host[_ ]risk|exposure[_ ]history|severity[_ ]history)\b/.test(sourceSignalText);
   if (sourceSpecificInfectionContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
     return "Ask source-localizing infection symptoms";
   }
@@ -950,11 +1135,20 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (sourceSpecificInfectionContext && (/urinary[_ ]source/.test(sourceSignalText) || /dysuria|urinary frequency|urinary urgency|frequency|urgency|hematuria|flank|catheter|urologic|pyelonephritis|reduced urine output/.test(normalized))) {
     return "Ask urinary and flank infection-source symptoms";
   }
+  if (sourceSpecificInfectionContext && (/heent[_ ]source|dental[_ ]source|oral[_ ]source/.test(sourceSignalText) || /sore throat|ear pain|sinus pain|dental|oral pain|neck swelling|hoarseness|trouble swallowing|drooling/.test(normalized))) {
+    return "Ask HEENT/oral source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/abdominal[_ ]source|gi[_ ]source|biliary[_ ]source/.test(sourceSignalText) || /abdominal pain|vomiting|diarrhea|jaundice|focal tenderness|intra-abdominal|abdominal infection/.test(normalized))) {
+    return "Ask abdominal and GI infection-source symptoms";
+  }
   if (sourceSpecificInfectionContext && (/host[_ ]risk|exposure[_ ]history/.test(sourceSignalText) || /immunosuppression|immunocompromised|pregnancy|hospitalization|travel|outdoor|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication|chemotherapy|transplant|asplenia|frailty/.test(normalized))) {
     return "Ask host-risk and exposure history";
   }
   if (sourceSpecificInfectionContext && (/skin[_ ]source|wound[_ ]source|line[_ ]source/.test(sourceSignalText) || /rash|wound|ulcer|drainage|line pain|line redness|line concern|line site|cellulitis|abscess|procedure-site|procedure site|skin infection|soft-tissue|soft tissue/.test(normalized))) {
-    return "Ask wound and line infection symptoms";
+    return "Ask skin/line infection-source symptoms";
+  }
+  if (sourceSpecificInfectionContext && (/cns[_ ]infection|joint[_ ]source|spine[_ ]infection/.test(sourceSignalText) || /severe headache|neck stiffness|photophobia|seizure|petechiae|purpura|hot swollen joint|bone or back pain|focal bone|new weakness|bowel or bladder|meningitis|spine infection/.test(normalized))) {
+    return "Ask CNS/joint/spine danger symptoms";
   }
   if (sourceSpecificInfectionContext && (/severity[_ ]history/.test(sourceSignalText) || /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion|mottled|oxygen/.test(normalized))) {
     return "Ask sepsis severity, hydration, and perfusion symptoms";
@@ -969,6 +1163,22 @@ function conciseHistoryQuestionLabel(item = {}) {
   const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
   const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
   const reproductiveContext = /\b(?:reproductive_and_gonadal|reproductive and gonadal|amenorrhea|hypogonadism|menopause|premature ovarian insufficiency|infertility|gynecomastia|hirsutism|erectile dysfunction|libido|puberty|fertility|galactorrhea|vasomotor|genitourinary)\b/.test(allText);
+  const endocrineWeightSystemicQuestion = /^how has weight changed|weight changed from baseline|intentional weight|appetite|fluid status|systemic symptoms/.test(allText);
+  if (!infectionContext && (diabetesContext || pituitaryAdrenalContext || boneMineralContext || reproductiveContext) && endocrineWeightSystemicQuestion) {
+    return "Ask weight trajectory and systemic symptoms";
+  }
+  if (diabetesContext && /how have weight[\s\S]*waist circumference[\s\S]*(?:intentional|over time)/.test(allText)) {
+    return "Ask weight, waist, and intentional change";
+  }
+  if (diabetesContext && /pre-pregnancy diabetes|prior a1c|prior glucose abnormality|pcos|obesity|steroid exposure|strong family history/.test(allText)) {
+    return "Ask pre-pregnancy diabetes and GDM risk factors";
+  }
+  if (diabetesContext && /have fetal growth|estimated fetal weight|amniotic fluid|obstetric ultrasound|polyhydramnios/.test(normalized)) {
+    return "Ask fetal-growth and obstetric ultrasound concerns";
+  }
+  if (diabetesContext && /how many weeks pregnant|pregnancy dating|obstetric context[\s\S]*diabetes screening|obstetric context[\s\S]*treatment safety/.test(normalized)) {
+    return "Ask gestational age, dating, and obstetric context";
+  }
   const explicitFeverWorkupContext = /\b(?:fever sepsis|fever infection|infection sepsis|source localizing history|respiratory source|urinary source|skin source|host risk|exposure history|sepsis)\b/.test(allText)
     && !diabetesContext
     && !boneMineralContext
@@ -992,10 +1202,31 @@ function conciseHistoryQuestionLabel(item = {}) {
     return "Ask host-risk and exposure history";
   }
   if (feverWorkupContext && /rash|wound|ulcer|drainage|line|device|cellulitis|abscess|procedure-site|skin infection/.test(allText)) {
-    return "Ask wound and line infection symptoms";
+    return "Ask skin/line infection-source symptoms";
   }
   if (feverWorkupContext && /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion/.test(allText)) {
     return "Ask sepsis severity, hydration, and perfusion symptoms";
+  }
+  if (thyroidContext && /^how has weight changed|weight changed from baseline|appetite|fluid status|systemic symptoms/.test(normalized)) {
+    return "Ask thyroid-related weight and systemic symptoms";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine\/contrast|iodine|contrast exposure|biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if (thyroidContext && /has the thyroid nodule|neck mass grown rapidly|become painful|fixed|associated with hoarseness|suspicious nodes/.test(normalized)) {
+    return "Ask thyroid nodule growth and invasion symptoms";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*rapid growth[\s\S]*radiation exposure[\s\S]*family thyroid cancer/.test(normalized)) {
+    return "Ask thyroid structural symptoms and cancer-risk history";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer risk factor/.test(normalized)) {
+    return "Ask thyroid radiation and family-risk history";
+  }
+  if (thyroidContext && /personal or family history of men|vhl|nf1|sdhx|medullary thyroid cancer|pheochromocytoma|paraganglioma/.test(normalized)) {
+    return "Ask hereditary endocrine tumor history";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*thyroid pain|thyroid pain or tenderness|pressure[\s\S]*hoarseness[\s\S]*trouble swallowing|rapidly enlarging neck mass/.test(normalized)) {
+    return "Ask thyroid pain, pressure, and airway symptoms";
   }
   if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2|suspicious thyroid biopsy/.test(normalized)) {
     return "Ask thyroid cancer radiation, biopsy, and MEN2 risk";
@@ -1015,14 +1246,21 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (thyroidContext && /eye pain|redness|gritty|light sensitivity|bulging eyes|double vision|reduced vision|closing the eyelids|orbitopathy/.test(normalized)) {
     return "Ask Graves orbitopathy eye symptoms";
   }
-  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
-    return "Ask GU/STI symptoms and exposure risk";
-  }
-  if (/\b(?:scrotal|testicular|torsion|epididymitis|acute_scrotum|urology|mumps|solitary testis)\b/.test(`${normalized} ${tagText}`)) {
+  const acuteScrotalHistoryContext = /\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`);
+  if (acuteScrotalHistoryContext) {
+    if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
+      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+    }
     if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
       return "Ask scrotal pain onset and torsion features";
     }
     return "Ask epididymitis/STI and urology-risk features";
+  }
+  if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) {
+    return "Ask groin nodes, genital lesions, and skin infection features";
+  }
+  if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask discharge, dysuria, genital lesions, and STI exposure";
   }
   if (/\b(?:dysuria|urinary|uti|pyelonephritis|renal_colic|renal colic|flank|hematuria|catheter|urologic|oliguria|low urine|aki|obstruction|stone)\b/.test(allText)
     && !guStiContext
@@ -1088,14 +1326,23 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (boneMineralContext && /muscle cramps|perioral numbness|tingling|cramps|tetany|carpopedal|paresthesias|paralysis|seizure|laryngospasm|arrhythmia/.test(normalized)) {
     return "Ask hypocalcemia neuromuscular symptoms";
   }
-  if (boneMineralContext && /kidney stones|nephrocalcinosis|hematuria|flank|polyuria|polydipsia|dehydration|renal-function|reduced kidney/.test(allText)) {
-    return "Ask renal stone and calcium-complication symptoms";
+  if (boneMineralContext && /usual calcium|vitamin d intake|supplement use|diet pattern|sun exposure/.test(allText)) {
+    return "Ask calcium/vitamin D intake and sun exposure";
+  }
+  if (boneMineralContext && /nephrocalcinosis|hematuria|flank|recurrent utis|renal-function changes affecting calcium|affecting calcium\/pth interpretation/.test(allText)) {
+    return "Ask kidney-stone and renal calcium/PTH complications";
+  }
+  if (boneMineralContext && /kidney stones|constipation|polyuria|polydipsia|bone pain|confusion|dehydration|reduced kidney function/.test(allText)) {
+    return "Ask hypercalcemia symptom pattern and renal impact";
   }
   if (boneMineralContext && /chronic kidney disease|liver disease|calcium|phosphorus|pth|vitamin d interpretation|mineral/.test(allText)) {
     return "Ask renal, liver, and mineral-metabolism modifiers";
   }
   if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) {
     return "Ask malabsorption and nutrient-absorption risks";
+  }
+  if (boneMineralContext && /family history of men|familial hypocalciuric|parathyroid disease|pituitary tumors|pancreatic neuroendocrine|jaw tumors/.test(allText)) {
+    return "Ask hereditary hyperparathyroidism/FHH and MEN history";
   }
   if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) {
     return "Review antiseizure and vitamin D metabolism medications";
@@ -1175,15 +1422,53 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (/new headache|peripheral vision loss|double vision|eye movement pain|sudden severe headache|pituitary surgery|pituitary radiation/.test(allText)) {
     return "Ask pituitary mass-effect and treatment history";
   }
+  if (pituitaryAdrenalContext && /24-hour urine volume|urine output changed|urinate overnight|nocturia|polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst, nocturia, and polyuria safety";
+  }
   if (/new, worsening, resistant, or treatment-limiting hypertension or diabetes|treatment-limiting hypertension|treatment-limiting diabetes|complication screening|medication choice/.test(allText)) {
     return "Ask treatment-limiting hypertension and diabetes complications";
   }
   if (/hirsutism|acne|scalp hair loss|deepening voice|clitoromegaly|rapid virilization|cycle irregularity|androgenic medication/.test(allText)) {
     return "Ask hyperandrogenism and virilization features";
   }
-  if (/\b(?:pulmonary embolism|suspected pe|vte|dvt|pe\/dvt|anticoagulation|clinical probability)\b/.test(allText)
-    && /\b(?:sudden|dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|prior vte|surgery|immobility|travel|estrogen|pregnancy|postpartum|cancer|unilateral leg swelling|bleeding risk|anticoagulant|oxygen need|full sentences)\b/.test(allText)) {
-    return "Ask PE severity, VTE risk factors, and bleeding risk";
+  const peVteHistoryContext = /\b(?:pulmonary embolism|suspected pe|pe\/dvt|vte|dvt|clinical probability|esc_pe|acep_vte|ash_vte|ctpa|d-dimer|d dimer)\b/.test(allText)
+    && !/\b(?:aha_asa_stroke|focal_neurologic_deficit|neuro_red_flags|gi_bleed|heme_bleeding_anemia|acg_ugib|hematemesis|melena|hematochezia|pallor|anemia)\b/.test(allText);
+  if (peVteHistoryContext && /\b(?:sudden dyspnea|shortness of breath|pleuritic|hemoptysis|syncope|presyncope|oxygen need|escalating oxygen|full sentences)\b/.test(allText)) {
+    return "Ask PE cardiopulmonary severity symptoms";
+  }
+  if (peVteHistoryContext && /\b(?:unilateral leg|calf pain|leg swelling|redness|warmth|immobilization|cast)\b/.test(allText)) {
+    return "Ask DVT leg symptoms";
+  }
+  if (peVteHistoryContext && /\b(?:active bleeding|bleeding risk|anticoagulant|thrombolysis|contraindication|major surgery|major trauma|intracranial|severe uncontrolled hypertension|pending procedure)\b/.test(allText)) {
+    return "Ask anticoagulation and bleeding-safety history";
+  }
+  if (peVteHistoryContext && /\b(?:prior vte|recent surgery|surgery|immobility|hospitalization|travel|estrogen|pregnancy|postpartum|active cancer|cancer)\b/.test(allText)) {
+    return "Ask VTE provoking-factor history";
+  }
+  if (/\b(?:stroke|focal neurologic|last-known-well|reperfusion|thrombolysis|thrombectomy|aphasia|neglect)\b/.test(allText)
+    && /\b(?:anticoagulant|bleeding risk|hypoglycemia|seizure|migraine|trauma|last-known-well|wake-up stroke)\b/.test(allText)) {
+    return "Ask stroke mimics, anticoagulants, and reperfusion timing";
+  }
+  const bleedingAnemiaHistoryContext = /\b(?:bleeding|anemia|gi bleed|hematemesis|melena|hematochezia|pallor|bruising|petechiae|acg_ugib|heme_bleeding_anemia)\b/.test(allText);
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|coagulopathy|prior transfusion|reversal)\b/.test(allText)) {
+    return "Ask bleeding medication, coagulopathy, and transfusion-risk history";
+  }
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|epistaxis|heavy menses|dizziness|syncope|dyspnea|chest pain)\b/.test(allText)) {
+    return "Ask overt bleeding and anemia symptoms";
+  }
+  if (bleedingAnemiaHistoryContext
+    && /\b(?:anticoagulant|antiplatelet|liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|dyspnea at rest|syncope)\b/.test(allText)) {
+    return "Ask bleeding medication, coagulopathy, and transfusion-risk history";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)
+    && /\b(?:loud snoring|witnessed apneas|waking choking|morning headache|daytime sleepiness)\b/.test(allText)) {
+    return "Ask OSA symptoms and daytime sleepiness";
+  }
+  if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)
+    && /\b(?:drowsy driving|work-safety|resistant hypertension|atrial fibrillation|heart failure|opioid|sedative|alcohol near bedtime|prior sleep study|cpap intolerance|oral-appliance|oral appliance)\b/.test(allText)) {
+    return "Ask OSA safety, comorbidities, and treatment context";
   }
   if (/\b(?:sleep apnea|snoring|osa|cpap|daytime sleepiness|witnessed apneas|drowsy driving)\b/.test(allText)) {
     return "Ask OSA symptoms, drowsy-driving risk, and CPAP context";
@@ -1214,8 +1499,8 @@ function conciseHistoryQuestionLabel(item = {}) {
     && /headaches|visual symptoms|visual field|pituitary|amenorrhea|infertility|erectile dysfunction|polycystic|reproductive|gonadal|cycle/.test(allText)) {
     return "Ask prolactin symptoms, medication causes, and mass-effect symptoms";
   }
-  if (pituitaryAdrenalContext && /polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
-    return "Ask diabetes-insipidus thirst and polyuria safety";
+  if (pituitaryAdrenalContext && /24-hour urine volume|urine output changed|urinate overnight|nocturia|polyuria|polydipsia|overnight urination|thirst intensity|access to water|desmopressin/.test(allText)) {
+    return "Ask diabetes-insipidus thirst, nocturia, and polyuria safety";
   }
   if (pituitaryAdrenalContext && /thyroid symptoms|palpitations|tremor|heat\/cold intolerance|neck swelling/.test(allText)) {
     return "Ask adrenal and thyroid-axis symptoms";
@@ -1232,7 +1517,7 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (pituitaryAdrenalContext && /wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(allText)) {
     return "Ask wound and procedure-site infection symptoms";
   }
-  if (pituitaryAdrenalContext && /hypertension|diabetes|complication screening|medication choice/.test(allText)) {
+  if (pituitaryAdrenalContext && /hypertension|(?:type 1|type 2|gestational|mellitus)\s+diabetes|complication screening|medication choice/.test(allText)) {
     return "Ask treatment-limiting hypertension and diabetes complications";
   }
   if (pituitaryAdrenalContext && /autoimmune thyroid|type 1 diabetes|celiac|pernicious anemia|polyglandular autoimmune/.test(allText)) {
@@ -1285,14 +1570,32 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (thyroidContext && /heat intolerance|palpitations|tremor|anxiety|unintentional weight loss|diarrhea|increased sweating/.test(allText)) {
     return "Ask hyperthyroid adrenergic, weight, and GI symptoms";
   }
+  if (thyroidContext && /^how has weight changed|weight changed from baseline|appetite|fluid status|systemic symptoms/.test(allText)) {
+    return "Ask thyroid-related weight and systemic symptoms";
+  }
+  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
+    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
+  }
+  if (thyroidContext && /has the thyroid nodule|neck mass grown rapidly|become painful|fixed|associated with hoarseness|suspicious nodes/.test(allText)) {
+    return "Ask thyroid nodule growth and invasion symptoms";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*rapid growth[\s\S]*radiation exposure[\s\S]*family thyroid cancer/.test(allText)) {
+    return "Ask thyroid structural symptoms and cancer-risk history";
+  }
+  if (thyroidContext && /childhood head\/neck radiation|childhood head or neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer risk factor/.test(allText)) {
+    return "Ask thyroid radiation and family-risk history";
+  }
+  if (thyroidContext && /personal or family history of men|vhl|nf1|sdhx|medullary thyroid cancer|pheochromocytoma|paraganglioma/.test(allText)) {
+    return "Ask hereditary endocrine tumor history";
+  }
+  if (thyroidContext && /neck swelling[\s\S]*thyroid pain|thyroid pain or tenderness|pressure[\s\S]*hoarseness[\s\S]*trouble swallowing|rapidly enlarging neck mass/.test(allText)) {
+    return "Ask thyroid pain, pressure, and airway symptoms";
+  }
   if (thyroidContext && /thyroid nodule|neck mass|grown rapidly|hoarseness|dysphagia|dyspnea|suspicious nodes/.test(allText)) {
     return "Ask thyroid nodule growth, compressive, and node warnings";
   }
   if (thyroidContext && /childhood head\/neck radiation|head neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer|medullary thyroid|men2/.test(allText)) {
     return "Ask thyroid cancer radiation and family-risk history";
-  }
-  if (thyroidContext && /thyroid hormone|antithyroid drug|amiodarone|lithium|iodine|contrast exposure|high-dose biotin|thyroid supplement|missed dose|recent dose change/.test(allText)) {
-    return "Review thyroid medications, iodine/biotin exposure, and assay interference";
   }
   if (/missed|reduced insulin|pump|reservoir|expired insulin|medication access/.test(allText)) {
     return "Ask insulin delivery and access precipitants";
@@ -1320,11 +1623,20 @@ function conciseHistoryQuestionLabel(item = {}) {
   if (infectionContext && /immunosuppression|pregnancy|hospitalization|procedure|indwelling|travel|tick|mosquito|animal|food|water|sick contacts|sexual exposure|injection drug|new medication/.test(allText)) {
     return "Ask host-risk and exposure history";
   }
-  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain)\b/.test(allText)) {
-    return "Ask GU/STI symptoms and exposure risk";
+  if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(allText)) {
+    if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
+      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+    }
+    if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
+      return "Ask scrotal pain onset and torsion features";
+    }
+    return "Ask epididymitis/STI and urology-risk features";
   }
-  if (/scrotal|testicular|torsion|epididymitis|urology|mumps|solitary testis/.test(allText)) {
-    return "Ask scrotal pain source and urology-risk features";
+  if (guStiContext && /groin lumps|groin swelling|inguinal|genital ulcers|painful lesions|lower limb skin infection|skin infection/.test(allText)) {
+    return "Ask groin nodes, genital lesions, and skin infection features";
+  }
+  if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
+    return "Ask discharge, dysuria, genital lesions, and STI exposure";
   }
   if (/foot ulcer|foot wound|drainage|protective sensation|amputation|offload|footwear|wound care/.test(allText)) {
     return "Ask diabetic foot wound, neuropathy, and self-care risk";
@@ -1351,6 +1663,9 @@ function conciseHistoryQuestionLabel(item = {}) {
   }
   if (/usual physical activity level|physical activity level|treatment barriers|function/.test(allText)) {
     return "Ask physical activity level and treatment barriers";
+  }
+  if (thyroidContext && /prior fna bethesda|bethesda category|fna result|thyroid biopsy/.test(allText)) {
+    return "Ask prior thyroid biopsy/FNA category and change";
   }
   if (/current weight trajectory|weight trajectory|changed from baseline/.test(allText)) {
     return "Ask weight trajectory and baseline change";
@@ -1415,6 +1730,13 @@ function historyQuestionLabelSuffix(item = {}) {
   if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses/.test(fullQuestion)) return "fluid-risk comorbidities";
   if (/childhood head|neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(fullQuestion)) return "radiation/family cancer risk";
   if (/personal or family history of men|vhl|nf1|sdhx|medullary thyroid|pheochromocytoma|paraganglioma/.test(fullQuestion)) return "hereditary endocrine syndromes";
+  if (/\b(?:thyroid|goiter|nodule|neck mass)\b/.test(allText)
+    && /neck swelling|rapid growth|thyroid pain|hoarseness|trouble swallowing|positional shortness|positional dyspnea|compressive/.test(fullQuestion)) return "compressive symptoms";
+  const bleedingAnemiaSuffixContext = /\b(?:bleeding|anemia|gi bleed|hematemesis|melena|hematochezia|pallor|bruising|petechiae|acg_ugib|heme_bleeding_anemia)\b/.test(allText);
+  if (bleedingAnemiaSuffixContext
+    && /\b(?:liver disease|kidney disease|bleeding disorder|procedure|trauma|transfusion|coagulopathy|prior transfusion|reversal)\b/.test(fullQuestion)) return "medication/coagulopathy risk";
+  if (bleedingAnemiaSuffixContext
+    && /\b(?:hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|epistaxis|heavy menses|dizziness|syncope|dyspnea|chest pain)\b/.test(fullQuestion)) return "overt bleeding/anemia symptoms";
   if (/measured fever|rigors|hypothermia|toxic appearance|infection as a precipitant|infection as a mimic/.test(fullQuestion)) return "infection precipitant";
   if (/cough|sputum|pleuritic pain|dyspnea|hypoxemia|respiratory infection|pneumonia/.test(fullQuestion)) return "respiratory source";
   if (/immunosuppression|transplant|chemotherapy|high-dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medication/.test(fullQuestion)) return "host/exposure risk";
@@ -2247,7 +2569,7 @@ function evaluateIntent(intentRow, fixtures, args) {
       diagnostic_purpose: diagnosticPurpose,
       management_implication: managementImplication,
       management_change: managementImplication,
-      options: entry.options || entry.answer_options || entry.answerOptions || entry.displayBedsideQuestionOptions || entry.candidate?.bedside_question_options || "",
+      options: moduleHistoryOptionText(entry.options || entry.answer_options || entry.answerOptions || entry.displayBedsideQuestionOptions || entry.candidate?.bedside_question_options || ""),
       evidence: source,
       source,
       LR_plus: lrPlus,

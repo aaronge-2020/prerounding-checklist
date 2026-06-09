@@ -788,30 +788,93 @@ assert.ok(
   "mobile checklist response controls should visibly expose left denied (-) and right endorsed (+) buttons"
 );
 assert.ok(
-  appHtml.includes(".history-response-action.is-negative::after")
-    && appHtml.includes(".history-response-action.is-positive::after")
-    && appHtml.includes("grid-template-columns: 54px minmax(0, 1fr) 54px;"),
-  "mobile clinical-workup response controls should also expose compact left denied (-) and right endorsed (+) buttons"
+  appHtml.includes('negativeButton.textContent = "(-) No";')
+    && appHtml.includes('positiveButton.textContent = "(+) Yes";')
+    && appHtml.includes(".complaint-component-answer-actions")
+    && appHtml.includes("grid-template-columns: repeat(2, minmax(0, 1fr)) !important;")
+    && appHtml.includes("left (-) denied, right (+) endorsed")
+    && appHtml.includes("Component responses")
+    && appHtml.includes("Multiple components can be marked."),
+  "clinical-workup component response controls should expose explicit paired (-) no and (+) yes actions"
+);
+assert.ok(
+  appHtml.includes("const splitCandidates = /[\\/,]|\\b(?:and|or)\\b/i.test(clean)")
+    && appHtml.includes("clean.split(/\\s*(?:\\/|,|\\band\\b|\\bor\\b)\\s*/gi)"),
+  "clinical-workup component splitting should preserve hyphenated descriptors such as reflux-like and non-exertional"
+);
+assert.ok(
+  appHtml.includes("function historyQuestionOptionChoices")
+    && appHtml.includes("const splitLabels = splitSymptomResponseOption(label);")
+    && appHtml.includes('appendExamTesterText(row, "Selectable components"'),
+  "focused-history cards should split grouped source options into selectable components before rendering/copying"
+);
+assert.ok(
+  appHtml.includes("grid-template-areas:")
+    && appHtml.includes('"label label"')
+    && appHtml.includes('"denied endorsed"')
+    && appHtml.includes('>(-) Denied</button>')
+    && appHtml.includes('>(+) Endorsed</button>')
+    && appHtml.includes("mode === \"questions\" && usesSymptomResponseAnswers(item)")
+    && appHtml.includes("phoneConceptSymptomResponseControls(item)")
+    && appHtml.includes("Use left (-) Denied and right (+) Endorsed for each symptom."),
+  "phone bedside component controls should show readable denied/endorsed actions instead of symbol-only buttons"
 );
 assert.ok(
   appHtml.includes("complaintCdsComponentAnswers: {}")
     && appHtml.includes("function renderComplaintComponentAnswerBoard")
     && appHtml.includes("data-complaint-component-answer")
+    && appHtml.includes("complaint-component-answer-actions")
     && appHtml.includes("function aggregateComplaintComponentAnswer"),
-  "compound installed-workup questions should render per-component answer controls instead of only a single select"
+  "compound installed-workup questions should render label-first per-component answer controls instead of only a single select"
 );
 assert.ok(
-  /control\.appendChild\(negativeButton\);[\s\S]*control\.appendChild\(labelEl\);[\s\S]*control\.appendChild\(positiveButton\);/.test(appHtml)
-    && appHtml.includes(".complaint-component-answer-control > .history-response-action.is-negative::after")
-    && appHtml.includes(".complaint-component-answer-control > .history-response-action.is-positive::after")
-    && appHtml.includes("grid-template-columns: 54px minmax(0, 1fr) 54px !important;"),
-  "compound installed-workup controls should visibly use left denied (-), middle symptom label, and right endorsed (+) buttons on mobile"
+  /control\.appendChild\(labelEl\);[\s\S]*actions\.appendChild\(negativeButton\);[\s\S]*actions\.appendChild\(positiveButton\);[\s\S]*control\.appendChild\(actions\);/.test(appHtml)
+    && appHtml.includes("grid-template-columns: minmax(0, 1fr) minmax(156px, auto) !important;")
+    && appHtml.includes("grid-template-columns: minmax(0, 1fr) !important;")
+    && appHtml.includes("font-size: 0.72rem !important;"),
+  "compound installed-workup controls should keep each component label with grouped denied/endorsed actions and stack readably on mobile"
 );
 assert.ok(
   appHtml.includes('closest?.("[data-intent-select-id]")')
     && appHtml.includes("max-height: 148px !important;")
     && appHtml.includes("z-index: 2 !important;"),
   "validated clinical intent rows should keep their Select buttons reachable in the compact desktop workup drawer"
+);
+assert.ok(
+  appHtml.includes(":has(#toolsDrawer[open] #complaintCdsPanel[open])")
+    && !appHtml.includes(":has(#complaintCdsPanel[open])"),
+  "clinical workup drawer concept CSS should only take over the desktop shell while the tools drawer is open"
+);
+assert.ok(
+  appHtml.includes('id="complaintCdsContextSummary"')
+    && appHtml.includes("function renderComplaintCdsContextSummary")
+    && !appHtml.includes("Concern: DKA / hyperglycemic crisis"),
+  "desktop clinical context summary should be rendered from current workup state, not hard-coded to a DKA reference scenario"
+);
+assert.ok(
+  appHtml.includes("function formatOpenEvidencePromptPreview")
+    && appHtml.includes("openEvidenceTaskDetailCopy")
+    && appHtml.includes("openEvidencePromptPreviewMeta")
+    && appHtml.includes("characters in copied prompt"),
+  "desktop OpenEvidence handoff should show a readable prompt preview while preserving copied prompt length metadata"
+);
+assert.ok(
+  appHtml.includes('id="openEvidenceSidebarProgress"')
+    && appHtml.includes("function renderOpenEvidenceSidebarProgress")
+    && appHtml.includes("visibleOpenEvidenceHubTasks")
+    && appHtml.includes("openEvidenceTaskVisualStatus")
+    && appHtml.includes("elements.openEvidenceTaskTotal.textContent")
+    && (appHtml.includes("card.dataset.openEvidenceTaskStatus = visualStatus")
+      || appHtml.includes('card.setAttribute("data-open-evidence-task-status", visualStatus)')),
+  "desktop OpenEvidence handoff should render task progress and card status from real task state rather than static concept chrome"
+);
+assert.ok(
+  appHtml.includes('data-sidebar-action="evidence"')
+    && appHtml.includes("function openOpenEvidenceHubFromSidebar")
+    && appHtml.includes("handleWorkspaceSidebarAction(button.dataset.sidebarAction)")
+    && appHtml.includes('showScreen("pasteScreen")')
+    && appHtml.includes("selectOpenEvidenceTask(preferredTaskId"),
+  "desktop workspace sidebar Evidence action should open the functional OpenEvidence handoff hub"
 );
 
 const baseExamRows = parseCsv(examReferenceCsv);

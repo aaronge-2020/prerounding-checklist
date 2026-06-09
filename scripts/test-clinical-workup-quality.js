@@ -1211,11 +1211,11 @@ assert.doesNotMatch(
 );
 [
   /Ask respiratory infection-source symptoms[\s\S]*cough[\s\S]*sputum[\s\S]*shortness/i,
-  /Ask throat, ear, sinus, dental, and oral source symptoms[\s\S]*sore throat[\s\S]*dental/i,
+  /Ask HEENT\/oral source symptoms[\s\S]*sore throat[\s\S]*dental/i,
   /Ask urinary and flank infection-source symptoms[\s\S]*dysuria[\s\S]*flank/i,
   /Ask abdominal and GI infection-source symptoms[\s\S]*abdominal pain[\s\S]*vomiting[\s\S]*diarrhea/i,
-  /Ask skin, wound, and line-site infection-source symptoms[\s\S]*rash[\s\S]*wound[\s\S]*line/i,
-  /Ask CNS, joint, spine, and rapid-worsening danger symptoms[\s\S]*headache[\s\S]*neck stiffness[\s\S]*hot swollen joint/i,
+  /Ask skin\/line infection-source symptoms[\s\S]*rash[\s\S]*wound[\s\S]*line/i,
+  /Ask CNS\/joint\/spine danger symptoms[\s\S]*headache[\s\S]*neck stiffness[\s\S]*hot swollen joint/i,
   /Ask host-risk and exposure history[\s\S]*immunosuppression[\s\S]*travel[\s\S]*sick contacts/i
 ].forEach((pattern) => {
   assert.match(
@@ -1306,7 +1306,7 @@ assert.ok(
 const feverStartHereExcerpt = feverConciseReport.slice(feverStartHereIndex, feverStartHereIndex + 4200);
 [
   /ask: Ask respiratory infection-source symptoms/i,
-  /ask: Ask throat, ear, sinus, dental, and oral source symptoms/i,
+  /ask: Ask HEENT\/oral source symptoms/i,
   /examine: Observe work of breathing/i,
   /examine: Auscultate posterior lung fields/i,
   /examine: Inspect skin for infection source/i
@@ -1396,11 +1396,11 @@ const dkaInfectionHistoryLabels = (dkaInfectionModifierRecommendation.focusedHis
 [
   /UTI symptoms and complicated-infection risk/i,
   /respiratory infection-source symptoms/i,
-  /throat, ear, sinus, dental, and oral source symptoms/i,
+  /HEENT\/oral source symptoms/i,
   /urinary and flank infection-source symptoms/i,
   /abdominal and GI infection-source symptoms/i,
-  /skin, wound, and line-site infection-source symptoms/i,
-  /CNS, joint, spine, and rapid-worsening danger symptoms/i,
+  /skin\/line infection-source symptoms/i,
+  /CNS\/joint\/spine danger symptoms/i,
   /host-risk and exposure history/i,
   /sepsis severity, hydration, and perfusion symptoms/i,
   /rash danger features and exposure history/i,
@@ -1425,7 +1425,7 @@ const type2DiabetesInfectionRecommendation = recommendationForIntent(
 const type2DiabetesInfectionHistoryLabels = labels(type2DiabetesInfectionRecommendation.focusedHistoryQuestions || []);
 [
   /respiratory infection-source symptoms/i,
-  /skin, wound, and line-site infection-source symptoms/i,
+  /skin\/line infection-source symptoms/i,
   /wound infection and limb-threat features/i,
   /host-risk and exposure history/i
 ].forEach((pattern) => {
@@ -1599,7 +1599,7 @@ const feverConciseClinicalReport = formatConciseClinicalWorkupReport({
   "Suppressed/not-recommended items",
   "Catalog gaps needing review",
   "Ask respiratory infection-source symptoms",
-  "Ask skin, wound, and line-site infection-source symptoms",
+  "Ask skin/line infection-source symptoms",
   "Auscultate posterior lung fields",
   "Observe work of breathing",
   "Technique:",
@@ -1745,7 +1745,8 @@ assert.ok(
 assert.ok(
   uiSource.includes("phone-concept-symptom-response-button")
     && uiSource.includes("function phoneConceptSetSymptomResponse")
-    && uiSource.includes("Use left (-) Deny and right (+) Endorse")
+    && uiSource.includes("Use left (-) Denied and right (+) Endorsed")
+    && uiSource.includes("mode === \"questions\" && usesSymptomResponseAnswers(item)")
     && uiSource.includes('data-phone-action="response-option"'),
   "Mobile bedside symptom-list questions should use the same endorsed/denied control model"
 );
