@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { complaintModules, evaluateComplaintCds } from "../complaint-cds.js";
+import { clinicalIntentRegistry } from "../clinical-intents.js";
 import {
   auditChecklistTraceability,
   buildCleanupPrompt,
@@ -129,6 +130,40 @@ assert.ok(
     && cushingOrganItems.some((label) => /supraclavicular fullness/i.test(label)),
   "Cushing checklist should classify hypertension and supraclavicular-fullness rows without orphaning them"
 );
+
+const moduleChecklistFailures = [];
+for (const module of complaintModules) {
+  const validatedIntents = clinicalIntentRegistry.filter((intent) => (
+    intent.status === "validated" && intent.complaint_module_id === module.id
+  ));
+  try {
+    const complaintResult = evaluateComplaintCds(
+      `${module.label} ${(module.triggers || []).join(" ")}`,
+      {},
+      { module, modules: [module], validatedIntents }
+    );
+    const checklistText = buildLocalChecklistFromWorkup(
+      { complaintResult, recommendation: complaintResult?.recommendation, selectedIntents: validatedIntents },
+      { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+    );
+    const sections = parseChecklist(checklistText).filter((section) => Array.isArray(section.items) && section.items.length);
+    const audit = validateChecklist(sections);
+    const bedsideCount = itemsByCategory(sections, "bedside").length;
+    const examCount = itemsByCategory(sections, "exam").length;
+    groupChecklistSectionsByOrganSystem(sections, { throwOnError: true });
+    if (!checklistText || !audit.ok || bedsideCount < 5 || examCount < 1) {
+      moduleChecklistFailures.push(`${module.id}: checklist=${Boolean(checklistText)} bedside=${bedsideCount} exam=${examCount} issues=${audit.issues.map((issue) => issue.message).join("; ")}`);
+    }
+  } catch (error) {
+    moduleChecklistFailures.push(`${module.id}: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+assert.deepEqual(
+  moduleChecklistFailures,
+  [],
+  `Every bundled validated workup module should build a parseable organ-system bedside checklist:\n${moduleChecklistFailures.join("\n")}`
+);
+
 assert.equal(itemsByCategory(dkaSections, "bedside").length, 12, "DKA sample should atomize compound bedside questions");
 assert.equal(itemsByCategory(dkaSections, "exam").length, 13, "DKA sample has 13 targeted exam item lines");
 assert.ok(!issueTypes(dkaAudit).includes("bedside-count-low"), "DKA sample must not warn that bedside questions are zero");
@@ -246,8 +281,9 @@ const feverSourceHistorySections = parseChecklist(feverSourceHistoryChecklist);
 const feverSourceHistoryLabels = itemsByCategory(feverSourceHistorySections, "bedside").map((item) => item.label);
 assert.ok(
   feverSourceHistoryLabels.includes("How high was the measured temperature?")
-    && feverSourceHistoryLabels.includes("Any antibiotic use before evaluation?")
-    && feverSourceHistoryLabels.includes("Any steroid or immunosuppressant use before evaluation?"),
+    && feverSourceHistoryLabels.includes("Before we evaluated you, did you take any fever medicine such as acetaminophen or ibuprofen?")
+    && feverSourceHistoryLabels.includes("Before we evaluated you, did you take any antibiotics?")
+    && feverSourceHistoryLabels.includes("Before we evaluated you, did you take any steroid or immunosuppressing medicine?"),
   "parsed pasted fever timeline/medication bundles should become separate bedside questions"
 );
 assert.ok(
@@ -352,7 +388,7 @@ assert.ok(
 
 const olderMultiDomainSourceFeatureQuestion = {
   id: "REQ-older-source-feature-wording",
-  label: "Any abdominal, CNS, skin, line, joint, or spine source features?",
+  label: "Any abdominal, neurologic, skin, line, joint, or spine source features?",
   options: "No / Abdominal pain / Vomiting / Diarrhea / Rash / Wound / Line pain / Severe headache / Neck stiffness / Confusion / Hot swollen joint / Back pain / Rapid worsening / Other ___",
   tags: ["fever", "infection", "sepsis"]
 };
@@ -364,7 +400,7 @@ assert.ok(
   "older multi-domain source-feature wording should be atomized into source-domain bedside rows"
 );
 assert.ok(
-  !olderMultiDomainSourceFeatureRows.some((item) => /abdominal, CNS, skin, line, joint, or spine source features/i.test(item.label)),
+  !olderMultiDomainSourceFeatureRows.some((item) => /abdominal, neurologic, skin, line, joint, or spine source features/i.test(item.label)),
   "older multi-domain source-feature wording should not survive as one giant bedside question"
 );
 
@@ -501,7 +537,7 @@ assert.match(
 );
 assert.doesNotMatch(
   dyspneaAtomicLocalChecklist,
-  /How high was the measured temperature|Any antipyretic use before evaluation/i,
+  /How high was the measured temperature|Before we evaluated you, did you take any fever medicine/i,
   "dyspnea local checklist should not misroute broad cardiopulmonary questions into fever timeline rows"
 );
 assert.doesNotMatch(
@@ -550,7 +586,7 @@ const stiSourceWordChecklist = buildLocalChecklistFromWorkup({
 }, { maxBedsideQuestions: 12 });
 assert.doesNotMatch(
   stiSourceWordChecklist,
-  /Any respiratory source symptoms|Any CNS, joint, spine, or rapid-worsening danger symptoms/i,
+  /Any respiratory source symptoms|Any severe headache, stiff neck, confusion, seizure/i,
   "non-fever intents should not activate the full infection-source screen merely because their label contains source"
 );
 
@@ -637,7 +673,7 @@ assert.match(
 );
 assert.doesNotMatch(
   adrenalSteroidCrisisChecklist,
-  /How high was the measured temperature|Any antipyretic use before evaluation/i,
+  /How high was the measured temperature|Before we evaluated you, did you take any fever medicine/i,
   "adrenal sick-day questions should not be rewritten into fever timeline medication rows"
 );
 
@@ -705,7 +741,7 @@ assert.equal(
   [/urinary or flank source symptoms/i, "urinary/flank source"],
   [/abdominal or GI source symptoms/i, "abdominal/GI source"],
   [/skin.*wound.*line.*device source symptoms/i, "skin/wound/line/device source"],
-  [/CNS.*joint.*spine.*rapid-worsening danger symptoms/i, "CNS/joint/spine danger source"]
+  [/severe headache.*stiff neck.*confusion.*seizure.*hot swollen joint.*severe back pain/i, "neurologic/joint/spine danger source"]
 ].forEach(([pattern, domain]) => assert.equal(
   feverDedupedQuestionLabelRows.filter((label) => pattern.test(label)).length,
   1,
@@ -848,6 +884,17 @@ assert.ok(appHtml.includes('id="workupConcernInput"'), "main workflow should exp
 assert.ok(appHtml.includes('id="patientWorkupSelect"'), "patient workspace should expose an explicit validated-workup selector");
 assert.ok(appHtml.includes("selectedWorkupModuleId"), "patient workup selection should persist as first-class state");
 assert.ok(appHtml.includes("patientWorkupSelections"), "patient workup selections should persist per patient instead of globally");
+assert.ok(appHtml.includes("patientObjectiveData"), "patient objective workup data should persist locally per selected workup");
+assert.ok(appHtml.includes('id="patientObjectiveDataPanel"'), "patient context should expose structured workup data fields");
+assert.ok(appHtml.includes('id="patientObjectiveSummaryPanel"'), "patient summary should expose entered and missing objective workup data");
+assert.ok(appHtml.includes('id="patientGuidelineSnapshot"') && appHtml.includes('id="workupGuidelineSnapshot"'), "workup views should show decision-tree and management snapshots before detailed evidence rows");
+assert.ok(
+  appHtml.includes("betaHydroxybutyrate")
+    && appHtml.includes("anionGap")
+    && appHtml.includes("bicarbonate")
+    && appHtml.includes("sodiumOsmolality"),
+  "DKA objective data UI should include beta-hydroxybutyrate, anion gap, bicarbonate, and sodium/osmolality fields"
+);
 assert.ok(appHtml.includes('id="patientWorkupResults"') && appHtml.includes("workup-result-row"), "patient workspace should render selectable workup result rows from the search surface");
 assert.ok(!appHtml.includes("Validated workup to use"), "patient workup UI should not show a separate dropdown label next to the search control");
 assert.ok(appHtml.includes("No validated workup selected"), "unsupported patient concerns should render an explicit no-workup-selected state");
@@ -868,8 +915,9 @@ assert.ok(
   appHtml.includes("checklistOptionsForItem")
     && appHtml.includes("splitChecklistOptions")
     && appHtml.includes("answer-chip")
+    && appHtml.includes("answer-select")
     && appHtml.includes("aria-pressed"),
-  "bedside checklist response controls should render item-specific option chips with accessible pressed state"
+  "bedside checklist response controls should render item-specific chips or menus with accessible state"
 );
 assert.ok(
   appHtml.includes('id="evidenceReviewCard"')

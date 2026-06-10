@@ -88,7 +88,17 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for this broad anemia frame; source-backed CBC, film, reticulocyte, ferritin, hemolysis, and red-flag findings drive management.",
         "limitations": "Normal appearance can coexist with chronic anemia; acute bleeding or hemolysis can deteriorate before repeat labs return.",
-        "tags": ["pediatric", "hematology", "anemia", "pallor", "reticulocyte", "blood_film", "iron_deficiency", "hemolysis", "malignancy"]
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "pallor",
+          "reticulocyte",
+          "blood_film",
+          "iron_deficiency",
+          "hemolysis",
+          "malignancy"
+        ]
       },
       {
         "id": "peds_heme_itp_bleeding_frame",
@@ -111,7 +121,16 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for the broad ITP frame; diagnosis requires source-defined exclusion of alternative causes.",
         "limitations": "A low platelet count alone does not determine treatment, and a child who is unwell is not a low-risk ITP presentation.",
-        "tags": ["pediatric", "hematology", "itp", "thrombocytopenia", "petechiae", "purpura", "bruising", "bleeding"]
+        "tags": [
+          "pediatric",
+          "hematology",
+          "itp",
+          "thrombocytopenia",
+          "petechiae",
+          "purpura",
+          "bruising",
+          "bleeding"
+        ]
       },
       {
         "id": "peds_heme_leukemia_lymphoma_frame",
@@ -134,7 +153,18 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for this red-flag referral frame; NICE uses symptom combinations and urgency thresholds rather than LR+/LR-.",
         "limitations": "Many features are nonspecific, but unexplained combinations in children should not be dismissed because a single symptom is common.",
-        "tags": ["pediatric", "hematology", "leukemia", "lymphoma", "pallor", "bruising", "petechiae", "bone_pain", "lymphadenopathy", "splenomegaly"]
+        "tags": [
+          "pediatric",
+          "hematology",
+          "leukemia",
+          "lymphoma",
+          "pallor",
+          "bruising",
+          "petechiae",
+          "bone_pain",
+          "lymphadenopathy",
+          "splenomegaly"
+        ]
       },
       {
         "id": "peds_heme_transfusion_iron_frame",
@@ -157,7 +187,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not applicable to transfusion and iron-treatment thresholds; management follows source-defined thresholds and symptoms.",
         "limitations": "Transfusion thresholds vary with chronic anemia, hemoglobinopathy, cardiac disease, active bleeding, hemolysis, and local policy.",
-        "tags": ["pediatric", "hematology", "transfusion", "hemoglobin", "iron_deficiency", "management"]
+        "tags": [
+          "pediatric",
+          "hematology",
+          "transfusion",
+          "hemoglobin",
+          "iron_deficiency",
+          "management"
+        ]
       }
     ],
     "safetyChecks": [
@@ -174,7 +211,15 @@
         "patient_cooperation_required": "low",
         "limitations": "Antipyretics, timing, immunosuppression, or severe illness can mask fever.",
         "likelihood_ratio_note": "LR is not applicable to temperature as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "temperature", "fever", "sepsis", "malignancy"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "temperature",
+          "fever",
+          "sepsis",
+          "malignancy"
+        ],
         "source": {
           "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
           "source_section": "assessment and serious bacterial infection risk",
@@ -199,7 +244,16 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Pain, fever, anxiety, dehydration, cuff size, chronic anemia, and active bleeding affect interpretation.",
         "likelihood_ratio_note": "LR is not applicable to vital signs as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "heart_rate", "blood_pressure", "bleeding", "anemia", "shock"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "heart_rate",
+          "blood_pressure",
+          "bleeding",
+          "anemia",
+          "shock"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "red flags and monitoring",
@@ -224,7 +278,15 @@
         "patient_cooperation_required": "low",
         "limitations": "Crying, fever, pain, asthma, infection, and severe anemia affect respiratory rate and oxygen demand.",
         "likelihood_ratio_note": "LR is not applicable to respiratory rate or oxygen saturation as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "respiratory_rate", "oxygen_saturation", "anemia", "lymphoma", "dyspnea"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "respiratory_rate",
+          "oxygen_saturation",
+          "anemia",
+          "lymphoma",
+          "dyspnea"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "shortness of breath with lymphadenopathy or splenomegaly in children",
@@ -249,7 +311,14 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Critical illness or immobility may require estimated weight and later confirmation.",
         "likelihood_ratio_note": "LR is not applicable to weight as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "weight", "iron", "transfusion", "dosing"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "weight",
+          "iron",
+          "transfusion",
+          "dosing"
+        ],
         "source": {
           "source_id": "RCH_IRON_DEFICIENCY_CHILD",
           "source_section": "oral iron supplementation dosing",
@@ -268,14 +337,29 @@
         "rationale": "Active bleeding, syncope, altered state, or heavy ongoing losses change immediate stabilization, transfusion, reversal, and specialty escalation.",
         "management_change": "Active heavy bleeding or altered state changes IV access, labs, type and screen, transfusion, resuscitation, observation, and admission.",
         "options": "No active bleeding / mild mucocutaneous bleeding / heavy or recurrent bleeding / suspected internal bleeding / AVPU alert / altered / unable to assess",
-        "findings_options": ["no active bleeding", "mild mucocutaneous bleeding", "heavy or recurrent bleeding", "suspected internal bleeding", "AVPU alert", "altered", "unable to assess"],
+        "findings_options": [
+          "no active bleeding",
+          "mild mucocutaneous bleeding",
+          "heavy or recurrent bleeding",
+          "suspected internal bleeding",
+          "AVPU alert",
+          "altered",
+          "unable to assess"
+        ],
         "difficulty": "moderate",
         "time_burden_minutes": 2,
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Bleeding volume estimates can be inaccurate; caregiver report, pads/tissues, stool or emesis description, and serial vitals matter.",
         "likelihood_ratio_note": "LR is not applicable to active bleeding burden or mental status as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "active_bleeding", "mental_status", "shock", "transfusion"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "active_bleeding",
+          "mental_status",
+          "shock",
+          "transfusion"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "clinical features and treatment based on bleeding features",
@@ -303,7 +387,14 @@
         "diagnostic_purpose": "Establishes pediatric applicability, baseline risk, chronicity, and whether a local specialty protocol should override this general workup.",
         "management_implication": "Known hemoglobinopathy, marrow failure, oncology, transplant, chronic transfusion, or abnormal baseline changes thresholds, consultation, and discharge safety.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for baseline pediatric hematology context; it changes applicability, chronicity, and specialty routing.",
-        "tags": ["pediatric", "hematology", "baseline", "chronicity", "hemoglobinopathy", "transfusion"],
+        "tags": [
+          "pediatric",
+          "hematology",
+          "baseline",
+          "chronicity",
+          "hemoglobinopathy",
+          "transfusion"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "history and causes of anaemia",
@@ -328,7 +419,15 @@
         "diagnostic_purpose": "Localizes anemia severity and cardiopulmonary strain rather than treating hemoglobin as the only severity marker.",
         "management_implication": "Syncope, chest pain, dyspnea, poor feeding, lethargy, or heart failure symptoms change monitoring, admission, transfusion discussion, and urgent consultation.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for anemia symptom burden; source guidance uses symptoms with Hb, chronicity, and cause to change management.",
-        "tags": ["pediatric", "anemia", "pallor", "fatigue", "syncope", "dyspnea", "transfusion"],
+        "tags": [
+          "pediatric",
+          "anemia",
+          "pallor",
+          "fatigue",
+          "syncope",
+          "dyspnea",
+          "transfusion"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "RBC transfusion indications and anemia symptoms",
@@ -353,7 +452,15 @@
         "diagnostic_purpose": "Separates mucocutaneous bleeding, GI/GU blood loss, menstrual blood loss, and procedural bleeding patterns that require different tests and actions.",
         "management_implication": "Active, recurrent, GI/GU, menstrual, or procedure-related bleeding changes coagulation testing, type and screen, transfusion threshold, specialty consultation, and source-specific workup.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for bleeding-source history; management changes by site, severity, hemodynamics, platelet count, and coagulation results.",
-        "tags": ["pediatric", "bleeding", "epistaxis", "mucosal_bleeding", "gi_bleed", "hematuria", "heavy_menses"],
+        "tags": [
+          "pediatric",
+          "bleeding",
+          "epistaxis",
+          "mucosal_bleeding",
+          "gi_bleed",
+          "hematuria",
+          "heavy_menses"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "clinical features and bleeding assessment",
@@ -378,7 +485,15 @@
         "diagnostic_purpose": "Separates mechanical or traumatic petechiae from ITP, sepsis, leukemia, vasculitis, coagulopathy, and non-accidental injury patterns.",
         "management_implication": "Fever, unwell appearance, mucosal bleeding, rapid spread, unexplained bruising, or inconsistent story changes sepsis, hematology, safeguarding, and admission actions.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for bruising and petechiae patterns; guideline-defined danger features and distribution change escalation.",
-        "tags": ["pediatric", "bruising", "petechiae", "purpura", "non_blanching", "safeguarding", "sepsis"],
+        "tags": [
+          "pediatric",
+          "bruising",
+          "petechiae",
+          "purpura",
+          "non_blanching",
+          "safeguarding",
+          "sepsis"
+        ],
         "source": {
           "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
           "source_section": "assessment and management of petechiae and purpura",
@@ -403,7 +518,14 @@
         "diagnostic_purpose": "Identifies common pediatric iron-deficiency causes and situations where additional workup is needed.",
         "management_implication": "Positive risk changes ferritin testing, oral iron and diet plan, dosing, adherence counseling, repeat labs, and referral when response is poor or diagnosis is uncertain.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for iron-risk history; ferritin, CBC indices, inflammation context, and response to iron change management.",
-        "tags": ["pediatric", "iron_deficiency", "nutrition", "pica", "ferritin", "microcytosis"],
+        "tags": [
+          "pediatric",
+          "iron_deficiency",
+          "nutrition",
+          "pica",
+          "ferritin",
+          "microcytosis"
+        ],
         "source": {
           "source_id": "RCH_IRON_DEFICIENCY_CHILD",
           "source_section": "risk factors, investigations, and treatment",
@@ -428,7 +550,14 @@
         "diagnostic_purpose": "Routes anemia toward hemolysis, hemoglobinopathy, enzymopathy, immune hemolysis, or hepatobiliary mimics.",
         "management_implication": "Positive hemolysis features change bilirubin/LDH/haptoglobin/DAT testing, urine testing, transfusion caution, hematology consultation, and admission threshold.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for hemolysis history; lab-confirmed hemolysis and clinical severity change management.",
-        "tags": ["pediatric", "anemia", "hemolysis", "jaundice", "dark_urine", "hemoglobinopathy"],
+        "tags": [
+          "pediatric",
+          "anemia",
+          "hemolysis",
+          "jaundice",
+          "dark_urine",
+          "hemoglobinopathy"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "causes and investigations of anaemia",
@@ -453,7 +582,17 @@
         "diagnostic_purpose": "Identifies NICE child and young-person leukemia and lymphoma referral triggers.",
         "management_implication": "Positive unexplained features change CBC urgency, blood film review, immediate or very urgent specialist assessment, imaging, admission, and discharge constraints.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for leukemia/lymphoma red flags; NICE referral thresholds guide urgency.",
-        "tags": ["pediatric", "leukemia", "lymphoma", "pallor", "bruising", "petechiae", "bone_pain", "lymphadenopathy", "splenomegaly"],
+        "tags": [
+          "pediatric",
+          "leukemia",
+          "lymphoma",
+          "pallor",
+          "bruising",
+          "petechiae",
+          "bone_pain",
+          "lymphadenopathy",
+          "splenomegaly"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "symptoms and signs in children and young people",
@@ -478,7 +617,15 @@
         "diagnostic_purpose": "Identifies medication-induced bleeding or cytopenia, inherited bleeding disorders, inherited anemia, and hemolysis risk.",
         "management_implication": "Positive exposure or family history changes medication holds, coagulation testing, hemolysis testing, hematology consultation, and counseling.",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for medication and family history; source-guided interpretation depends on CBC, film, coagulation tests, and clinical context.",
-        "tags": ["pediatric", "medications", "anticoagulant", "nsaid", "family_history", "bleeding_disorder", "hemolysis"],
+        "tags": [
+          "pediatric",
+          "medications",
+          "anticoagulant",
+          "nsaid",
+          "family_history",
+          "bleeding_disorder",
+          "hemolysis"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "history and causes of anaemia",
@@ -505,11 +652,31 @@
         "diagnostic_purpose": "Separates menstrual blood loss, pregnancy/postpartum complications, nutritional restriction, self-harm, and safety contexts.",
         "management_implication": "Positive findings change pregnancy testing, gynecology consultation, iron therapy, bleeding treatment, safeguarding, and confidential follow-up.",
         "when": {
-          "termsAny": ["adolescent", "teen", "heavy period", "heavy menstrual", "menstruation", "menstrual", "pregnancy", "postpartum", "self harm", "eating disorder", "substance use"]
+          "termsAny": [
+            "adolescent",
+            "teen",
+            "heavy period",
+            "heavy menstrual",
+            "menstruation",
+            "menstrual",
+            "pregnancy",
+            "postpartum",
+            "self harm",
+            "eating disorder",
+            "substance use"
+          ]
         },
         "trigger": "adolescent teen heavy period menstruation menstrual pregnancy postpartum self harm eating disorder",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for adolescent confidential context; it changes safety, pregnancy, gynecology, and bleeding management.",
-        "tags": ["pediatric", "adolescent", "heavy_menses", "pregnancy", "postpartum", "confidential", "safety"],
+        "tags": [
+          "pediatric",
+          "adolescent",
+          "heavy_menses",
+          "pregnancy",
+          "postpartum",
+          "confidential",
+          "safety"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "history and causes of anaemia",
@@ -534,11 +701,24 @@
         "diagnostic_purpose": "Prevents an ITP label from being applied to children with alternative-diagnosis features.",
         "management_implication": "Any exclusion feature changes from observation-focused ITP care toward urgent senior review, hematology consultation, additional labs, admission, or safeguarding route.",
         "when": {
-          "termsAny": ["itp", "thrombocytopenia", "low platelets", "platelet count", "isolated thrombocytopenia"]
+          "termsAny": [
+            "itp",
+            "thrombocytopenia",
+            "low platelets",
+            "platelet count",
+            "isolated thrombocytopenia"
+          ]
         },
         "trigger": "itp thrombocytopenia low platelets platelet count isolated thrombocytopenia",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for ITP exclusions; RCH defines ITP by isolated thrombocytopenia in a well child with otherwise normal FBE and film.",
-        "tags": ["pediatric", "itp", "thrombocytopenia", "exclusion", "leukemia", "safeguarding"],
+        "tags": [
+          "pediatric",
+          "itp",
+          "thrombocytopenia",
+          "exclusion",
+          "leukemia",
+          "safeguarding"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "assessment and differential diagnosis",
@@ -563,11 +743,29 @@
         "diagnostic_purpose": "Identifies situations where general RBC thresholds are modified by disease, product requirements, or local hematology protocol.",
         "management_implication": "Positive context changes transfusion threshold, product selection, consent, hematology consultation, and whether this module should defer to local specialty guidance.",
         "when": {
-          "termsAny": ["transfusion", "hemoglobinopathy", "thalassemia", "sickle", "congenital heart", "chemotherapy", "transplant", "irradiated product", "prior transfusion reaction", "consent barrier"]
+          "termsAny": [
+            "transfusion",
+            "hemoglobinopathy",
+            "thalassemia",
+            "sickle",
+            "congenital heart",
+            "chemotherapy",
+            "transplant",
+            "irradiated product",
+            "prior transfusion reaction",
+            "consent barrier"
+          ]
         },
         "trigger": "transfusion hemoglobinopathy thalassemia sickle congenital heart chemotherapy transplant irradiated product",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for transfusion protocol context; it changes management thresholds and product safety.",
-        "tags": ["pediatric", "transfusion", "hemoglobinopathy", "oncology", "transplant", "blood_product"],
+        "tags": [
+          "pediatric",
+          "transfusion",
+          "hemoglobinopathy",
+          "oncology",
+          "transplant",
+          "blood_product"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "blood product prescription and special patient groups",
@@ -584,7 +782,13 @@
         "id": "peds_heme_inspect_conjunctival_pallor",
         "label": "Inspect conjunctival pallor",
         "technique": "Use ambient light or a penlight to inspect lower palpebral conjunctiva while avoiding pressure on the eye; compare with mucosa and clinical context.",
-        "findings_options": ["pink conjunctiva", "pale conjunctiva", "jaundiced sclera", "limited by lighting", "unable to assess"],
+        "findings_options": [
+          "pink conjunctiva",
+          "pale conjunctiva",
+          "jaundiced sclera",
+          "limited by lighting",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when pallor, anemia, fatigue, bleeding, hemolysis, or abnormal CBC is being evaluated.",
         "diagnostic_target": "Visible anemia clue, jaundice clue, and need to correlate with hemoglobin and hemolysis testing.",
         "LR_plus": "n/a",
@@ -596,7 +800,14 @@
         "equipment_needed": "penlight optional",
         "patient_cooperation_required": "moderate",
         "limitations": "Lighting, baseline skin tone, crying, and examiner variability limit accuracy; a normal look does not exclude anemia.",
-        "tags": ["pediatric", "hematology", "anemia", "pallor", "jaundice", "conjunctiva"],
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "pallor",
+          "jaundice",
+          "conjunctiva"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "clinical features and investigations",
@@ -611,7 +822,16 @@
         "id": "peds_heme_inspect_petechiae_distribution",
         "label": "Inspect petechiae distribution",
         "technique": "Inspect visible skin for petechiae, purpura, bruises, lesion size, distribution above or below the nipple line, dependent areas, pressure areas, and whether lesions blanch with gentle pressure.",
-        "findings_options": ["none seen", "localized above nipple line", "generalized petechiae", "purpura", "ecchymoses", "non-blanching lesions", "rapidly spreading", "unable to assess"],
+        "findings_options": [
+          "none seen",
+          "localized above nipple line",
+          "generalized petechiae",
+          "purpura",
+          "ecchymoses",
+          "non-blanching lesions",
+          "rapidly spreading",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when bruising, petechiae, purpura, thrombocytopenia, fever, bleeding, or non-blanching rash is possible.",
         "diagnostic_target": "Mechanical petechiae, ITP, sepsis, meningococcal disease, leukemia, vasculitis, coagulopathy, trauma, or safeguarding concern.",
         "LR_plus": "n/a",
@@ -623,7 +843,16 @@
         "equipment_needed": "good lighting and clear tumbler or gentle pressure",
         "patient_cooperation_required": "moderate",
         "limitations": "A partial skin view can miss dependent or covered lesions; privacy and safeguarding sensitivity are important.",
-        "tags": ["pediatric", "petechiae", "purpura", "bruising", "non_blanching", "itp", "sepsis", "leukemia"],
+        "tags": [
+          "pediatric",
+          "petechiae",
+          "purpura",
+          "bruising",
+          "non_blanching",
+          "itp",
+          "sepsis",
+          "leukemia"
+        ],
         "source": {
           "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
           "source_section": "definitions and assessment",
@@ -638,7 +867,15 @@
         "id": "peds_heme_inspect_oral_mucosal_bleeding",
         "label": "Inspect oral mucosal bleeding",
         "technique": "Inspect lips, gums, buccal mucosa, palate, and tongue for petechiae, wet purpura, gum bleeding, ulcers, pallor, or trauma using a light when needed.",
-        "findings_options": ["no mucosal bleeding", "gum bleeding", "wet purpura", "oral petechiae", "oral ulceration", "traumatic lesion", "unable to assess"],
+        "findings_options": [
+          "no mucosal bleeding",
+          "gum bleeding",
+          "wet purpura",
+          "oral petechiae",
+          "oral ulceration",
+          "traumatic lesion",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when thrombocytopenia, ITP, bleeding, bruising, petechiae, anticoagulant exposure, or coagulopathy concern is present.",
         "diagnostic_target": "Clinically important mucosal bleeding, ITP severity, coagulopathy, trauma, infection, or leukemia/chemotherapy mucosal disease.",
         "LR_plus": "n/a",
@@ -650,7 +887,13 @@
         "equipment_needed": "penlight",
         "patient_cooperation_required": "moderate",
         "limitations": "Young children may not tolerate oral inspection; avoid provoking bleeding.",
-        "tags": ["pediatric", "mucosal_bleeding", "itp", "thrombocytopenia", "coagulopathy"],
+        "tags": [
+          "pediatric",
+          "mucosal_bleeding",
+          "itp",
+          "thrombocytopenia",
+          "coagulopathy"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "clinical features and management",
@@ -665,7 +908,15 @@
         "id": "peds_heme_palpate_cervical_nodes",
         "label": "Palpate cervical lymph nodes",
         "technique": "Palpate anterior and posterior cervical chains gently and document size, tenderness, mobility, firmness, fixation, and whether nodes are localized or generalized by history and targeted exam.",
-        "findings_options": ["no cervical lymphadenopathy", "small mobile nodes", "tender nodes", "firm nodes", "fixed nodes", "supraclavicular node", "unable to assess"],
+        "findings_options": [
+          "no cervical lymphadenopathy",
+          "small mobile nodes",
+          "tender nodes",
+          "firm nodes",
+          "fixed nodes",
+          "supraclavicular node",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when pallor, fatigue, bruising, petechiae, fever, infection recurrence, weight loss, night sweats, pruritus, or lymphoma/leukemia concern is present.",
         "diagnostic_target": "Reactive lymphadenopathy, leukemia, lymphoma, infection, inflammatory disease, or malignancy referral trigger.",
         "LR_plus": "n/a",
@@ -677,7 +928,14 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Small reactive nodes are common; interpret with duration, distribution, fever, weight loss, night sweats, pruritus, and CBC/film.",
-        "tags": ["pediatric", "lymphadenopathy", "leukemia", "lymphoma", "infection", "malignancy"],
+        "tags": [
+          "pediatric",
+          "lymphadenopathy",
+          "leukemia",
+          "lymphoma",
+          "infection",
+          "malignancy"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "lymphadenopathy and associated symptoms in children and young people",
@@ -692,7 +950,14 @@
         "id": "peds_heme_palpate_liver_edge",
         "label": "Palpate liver edge",
         "technique": "With the child supine and relaxed, palpate from the right lower abdomen toward the costal margin during inspiration and document liver edge distance, tenderness, and consistency.",
-        "findings_options": ["not enlarged", "palpable normal edge", "hepatomegaly", "tender liver edge", "firm liver edge", "unable to assess"],
+        "findings_options": [
+          "not enlarged",
+          "palpable normal edge",
+          "hepatomegaly",
+          "tender liver edge",
+          "firm liver edge",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when anemia, hemolysis, leukemia/lymphoma concern, abdominal fullness, jaundice, or systemic symptoms are present.",
         "diagnostic_target": "Hepatomegaly from hemolysis, infection, leukemia, lymphoma, liver disease, heart failure, or storage/infiltrative disease.",
         "LR_plus": "n/a",
@@ -704,7 +969,14 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Body habitus, crying, distension, and examiner variability affect palpation; ultrasound may be needed when exam is uncertain and management depends on size.",
-        "tags": ["pediatric", "hepatomegaly", "hemolysis", "leukemia", "lymphoma", "abdominal_fullness"],
+        "tags": [
+          "pediatric",
+          "hepatomegaly",
+          "hemolysis",
+          "leukemia",
+          "lymphoma",
+          "abdominal_fullness"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "splenomegaly and associated symptoms in children and young people",
@@ -719,7 +991,13 @@
         "id": "peds_heme_palpate_spleen_tip",
         "label": "Palpate spleen tip",
         "technique": "With the child supine or right lateral if needed, palpate from the right lower abdomen toward the left costal margin during inspiration and document whether a spleen tip or enlargement is felt.",
-        "findings_options": ["not palpable", "spleen tip palpable", "splenomegaly", "tender splenic area", "unable to assess"],
+        "findings_options": [
+          "not palpable",
+          "spleen tip palpable",
+          "splenomegaly",
+          "tender splenic area",
+          "unable to assess"
+        ],
         "when_to_perform": "Perform when anemia, hemolysis, recurrent infection, lymphadenopathy, weight loss, night sweats, pruritus, abdominal fullness, or malignancy concern is present.",
         "diagnostic_target": "Splenomegaly from hemolysis, leukemia, lymphoma, infection, portal hypertension, storage disease, or hemoglobinopathy.",
         "LR_plus": "n/a",
@@ -731,7 +1009,14 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "A nonpalpable spleen does not exclude pathology; body habitus and cooperation limit sensitivity.",
-        "tags": ["pediatric", "splenomegaly", "hemolysis", "leukemia", "lymphoma", "hemoglobinopathy"],
+        "tags": [
+          "pediatric",
+          "splenomegaly",
+          "hemolysis",
+          "leukemia",
+          "lymphoma",
+          "hemoglobinopathy"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "splenomegaly and associated symptoms in children and young people",
@@ -748,7 +1033,14 @@
         "id": "peds_heme_inspect_anterior_nares",
         "label": "Inspect anterior nares",
         "technique": "Inspect the anterior nares with light for active bleeding, clot, crusting, trauma, septal lesion, or unilateral source when epistaxis is reported.",
-        "findings_options": ["no active epistaxis", "active anterior bleeding", "clot present", "nasal trauma", "septal lesion", "unable to assess"],
+        "findings_options": [
+          "no active epistaxis",
+          "active anterior bleeding",
+          "clot present",
+          "nasal trauma",
+          "septal lesion",
+          "unable to assess"
+        ],
         "when_to_perform": "Add when epistaxis, recurrent nosebleeds, anticoagulant exposure, thrombocytopenia, or active bleeding is reported.",
         "diagnostic_target": "Epistaxis source, local trauma, mucosal bleeding, thrombocytopenia severity, or coagulopathy.",
         "LR_plus": "n/a",
@@ -761,10 +1053,19 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Posterior bleeding can be missed; do not delay resuscitation for heavy bleeding.",
         "when": {
-          "termsAny": ["epistaxis", "nosebleed", "nasal bleeding"]
+          "termsAny": [
+            "epistaxis",
+            "nosebleed",
+            "nasal bleeding"
+          ]
         },
         "trigger": "epistaxis nosebleed nasal bleeding",
-        "tags": ["pediatric", "epistaxis", "bleeding", "mucosal_bleeding"],
+        "tags": [
+          "pediatric",
+          "epistaxis",
+          "bleeding",
+          "mucosal_bleeding"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "bleeding features and management",
@@ -779,7 +1080,15 @@
         "id": "peds_heme_palpate_axillary_nodes",
         "label": "Palpate axillary lymph nodes",
         "technique": "Palpate each axilla with the child's arm relaxed and document node size, tenderness, mobility, firmness, fixation, and symmetry.",
-        "findings_options": ["no axillary lymphadenopathy", "small mobile nodes", "tender nodes", "firm nodes", "fixed nodes", "bilateral nodes", "unable to assess"],
+        "findings_options": [
+          "no axillary lymphadenopathy",
+          "small mobile nodes",
+          "tender nodes",
+          "firm nodes",
+          "fixed nodes",
+          "bilateral nodes",
+          "unable to assess"
+        ],
         "when_to_perform": "Add when cervical nodes are abnormal, generalized lymphadenopathy is suspected, or systemic leukemia/lymphoma features are present.",
         "diagnostic_target": "Generalized lymphadenopathy, lymphoma, leukemia, infection, or inflammatory disease.",
         "LR_plus": "n/a",
@@ -792,10 +1101,23 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Reactive nodes are common; interpret with distribution, duration, symptoms, and CBC/film.",
         "when": {
-          "termsAny": ["lymphadenopathy", "generalized nodes", "lymphoma", "leukemia", "night sweats", "weight loss", "pruritus"]
+          "termsAny": [
+            "lymphadenopathy",
+            "generalized nodes",
+            "lymphoma",
+            "leukemia",
+            "night sweats",
+            "weight loss",
+            "pruritus"
+          ]
         },
         "trigger": "lymphadenopathy generalized nodes lymphoma leukemia night sweats weight loss pruritus",
-        "tags": ["pediatric", "lymphadenopathy", "lymphoma", "leukemia"],
+        "tags": [
+          "pediatric",
+          "lymphadenopathy",
+          "lymphoma",
+          "leukemia"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "lymphadenopathy in children and young people",
@@ -810,7 +1132,15 @@
         "id": "peds_heme_palpate_inguinal_nodes",
         "label": "Palpate inguinal lymph nodes",
         "technique": "Palpate inguinal regions when clinically appropriate and document node size, tenderness, mobility, firmness, fixation, and whether findings are localized or generalized.",
-        "findings_options": ["no inguinal lymphadenopathy", "small mobile nodes", "tender nodes", "firm nodes", "fixed nodes", "bilateral nodes", "unable to assess"],
+        "findings_options": [
+          "no inguinal lymphadenopathy",
+          "small mobile nodes",
+          "tender nodes",
+          "firm nodes",
+          "fixed nodes",
+          "bilateral nodes",
+          "unable to assess"
+        ],
         "when_to_perform": "Add when generalized lymphadenopathy, lower-extremity infection, lymphoma/leukemia concern, or systemic symptoms are present.",
         "diagnostic_target": "Generalized lymphadenopathy, local infection, lymphoma, leukemia, or inflammatory disease.",
         "LR_plus": "n/a",
@@ -823,10 +1153,22 @@
         "patient_cooperation_required": "high",
         "limitations": "Respect privacy and chaperone needs; local infection and reactive nodes are common.",
         "when": {
-          "termsAny": ["lymphadenopathy", "generalized nodes", "lymphoma", "leukemia", "leg infection", "systemic"]
+          "termsAny": [
+            "lymphadenopathy",
+            "generalized nodes",
+            "lymphoma",
+            "leukemia",
+            "leg infection",
+            "systemic"
+          ]
         },
         "trigger": "lymphadenopathy generalized nodes lymphoma leukemia leg infection systemic",
-        "tags": ["pediatric", "lymphadenopathy", "lymphoma", "leukemia"],
+        "tags": [
+          "pediatric",
+          "lymphadenopathy",
+          "lymphoma",
+          "leukemia"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "lymphadenopathy in children and young people",
@@ -841,7 +1183,15 @@
         "id": "peds_heme_inspect_joint_swelling",
         "label": "Inspect target joint swelling",
         "technique": "Inspect the symptomatic joint for swelling, warmth, bruising, deformity, range-limiting pain, and visible hemarthrosis pattern before palpation or movement.",
-        "findings_options": ["no swelling", "swelling present", "warmth present", "bruising present", "deformity present", "movement limited", "unable to assess"],
+        "findings_options": [
+          "no swelling",
+          "swelling present",
+          "warmth present",
+          "bruising present",
+          "deformity present",
+          "movement limited",
+          "unable to assess"
+        ],
         "when_to_perform": "Add when joint pain, swelling, hemarthrosis concern, trauma, bleeding disorder, anticoagulant exposure, leukemia, or bone pain is reported.",
         "diagnostic_target": "Hemarthrosis, trauma, septic arthritis, leukemia-related bone pain, inflammatory arthritis, or safeguarding concern.",
         "LR_plus": "n/a",
@@ -854,10 +1204,25 @@
         "patient_cooperation_required": "moderate",
         "limitations": "This is not a full MSK workup; use pediatric MSK pathway if limp, hot joint, non-weight-bearing, or trauma dominates.",
         "when": {
-          "termsAny": ["joint swelling", "hemarthrosis", "bone pain", "limp", "trauma", "bleeding disorder", "anticoagulant"]
+          "termsAny": [
+            "joint swelling",
+            "hemarthrosis",
+            "bone pain",
+            "limp",
+            "trauma",
+            "bleeding disorder",
+            "anticoagulant"
+          ]
         },
         "trigger": "joint swelling hemarthrosis bone pain limp trauma bleeding disorder anticoagulant",
-        "tags": ["pediatric", "hemarthrosis", "joint_swelling", "bone_pain", "bleeding_disorder", "leukemia"],
+        "tags": [
+          "pediatric",
+          "hemarthrosis",
+          "joint_swelling",
+          "bone_pain",
+          "bleeding_disorder",
+          "leukemia"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "bone pain and leukemia in children and young people",
@@ -881,7 +1246,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this emergency red flag; instability changes management immediately.",
         "limitations": "Do not wait for complete lab workup before resuscitation when the child is unstable.",
-        "tags": ["pediatric", "red_flag", "active_bleeding", "shock", "transfusion", "emergency"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "active_bleeding",
+          "shock",
+          "transfusion",
+          "emergency"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "RBC transfusion indications and clinical setting",
@@ -903,7 +1275,15 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this red flag; guideline-defined danger features change escalation.",
         "limitations": "Most petechiae are not meningococcal disease, but reassurance requires structured assessment and safety netting.",
-        "tags": ["pediatric", "red_flag", "petechiae", "purpura", "fever", "sepsis", "meningococcal"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "petechiae",
+          "purpura",
+          "fever",
+          "sepsis",
+          "meningococcal"
+        ],
         "source": {
           "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
           "source_section": "key points and management",
@@ -925,7 +1305,16 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this referral red flag; NICE uses symptom-triggered urgent CBC and specialist assessment thresholds.",
         "limitations": "Symptoms are nonspecific; combinations, persistence, unexplained nature, and abnormal CBC increase urgency.",
-        "tags": ["pediatric", "red_flag", "leukemia", "pallor", "bruising", "petechiae", "fatigue", "bone_pain"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "leukemia",
+          "pallor",
+          "bruising",
+          "petechiae",
+          "fatigue",
+          "bone_pain"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "leukemia symptoms and signs in children and young people",
@@ -947,7 +1336,15 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this referral red flag; NICE uses associated symptoms and referral timing rather than LR+/LR-.",
         "limitations": "Localized tender nodes often reflect infection, but unexplained or generalized lymphadenopathy with systemic features needs structured escalation.",
-        "tags": ["pediatric", "red_flag", "lymphoma", "lymphadenopathy", "splenomegaly", "night_sweats", "weight_loss"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "lymphoma",
+          "lymphadenopathy",
+          "splenomegaly",
+          "night_sweats",
+          "weight_loss"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "lymphadenopathy and splenomegaly referral triggers",
@@ -969,7 +1366,15 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this ITP exclusion rule; source-defined exclusion features change management.",
         "limitations": "ITP has no single confirmatory lab test; do not anchor on platelet count alone.",
-        "tags": ["pediatric", "red_flag", "itp", "thrombocytopenia", "leukemia", "cytopenia", "safeguarding"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "itp",
+          "thrombocytopenia",
+          "leukemia",
+          "cytopenia",
+          "safeguarding"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "background, assessment, and differential diagnosis",
@@ -991,7 +1396,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to hemoglobin transfusion thresholds; management follows source thresholds, symptoms, cause, and local policy.",
         "limitations": "Children with chronic anemia, hemoglobinopathy, cyanotic heart disease, or active bleeding may need individualized thresholds.",
-        "tags": ["pediatric", "red_flag", "anemia", "hemoglobin", "transfusion", "threshold"],
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "anemia",
+          "hemoglobin",
+          "transfusion",
+          "threshold"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "RBC transfusion indications",
@@ -1019,7 +1431,16 @@
           "ITP frame requires platelet count <100 x 10^9/L with otherwise normal FBE and film in a well child.",
           "Hb <70 g/L often indicates RBC transfusion; Hb 70-90 g/L may indicate transfusion depending on symptoms and setting."
         ],
-        "tags": ["pediatric", "diagnostic_test", "cbc", "fbe", "blood_film", "reticulocyte", "platelets", "hemoglobin"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "cbc",
+          "fbe",
+          "blood_film",
+          "reticulocyte",
+          "platelets",
+          "hemoglobin"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "investigations",
@@ -1045,7 +1466,14 @@
           "Ferritin <20 microgram/L indicates borderline or low iron stores in RCH guidance.",
           "Severe iron deficiency anemia is Hb 80 g/L or less for RCH higher-dose oral iron framing."
         ],
-        "tags": ["pediatric", "diagnostic_test", "ferritin", "iron_deficiency", "microcytosis", "inflammation"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "ferritin",
+          "iron_deficiency",
+          "microcytosis",
+          "inflammation"
+        ],
         "source": {
           "source_id": "RCH_IRON_DEFICIENCY_CHILD",
           "source_section": "assessment and investigations",
@@ -1067,7 +1495,15 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not encoded for this broad coagulation screen; abnormal tests require source and hematology interpretation.",
         "limitations": "Screening tests can be normal in some platelet function or von Willebrand disorders; targeted tests may need hematology input.",
-        "tags": ["pediatric", "diagnostic_test", "coagulation", "pt_inr", "aptt", "fibrinogen", "bleeding"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "coagulation",
+          "pt_inr",
+          "aptt",
+          "fibrinogen",
+          "bleeding"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "investigations and alternative causes",
@@ -1089,7 +1525,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to group and screen; it is a safety and readiness action when transfusion may change management.",
         "limitations": "Do not delay emergency transfusion for administrative completion when local massive hemorrhage or emergency-release protocol applies.",
-        "tags": ["pediatric", "diagnostic_test", "transfusion", "group_screen", "crossmatch", "blood_product"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "transfusion",
+          "group_screen",
+          "crossmatch",
+          "blood_product"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "blood product prescription and RBC transfusion indications",
@@ -1111,7 +1554,16 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not encoded for this hemolysis test cluster; result pattern and severity change management.",
         "limitations": "Haptoglobin and LDH interpretation varies by age, inflammation, sample hemolysis, and liver disease.",
-        "tags": ["pediatric", "diagnostic_test", "hemolysis", "bilirubin", "ldh", "haptoglobin", "dat", "dark_urine"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "hemolysis",
+          "bilirubin",
+          "ldh",
+          "haptoglobin",
+          "dat",
+          "dark_urine"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "investigations selected by clinical features",
@@ -1133,7 +1585,17 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not encoded for this targeted test set; use only when source-defined clinical features make results management-changing.",
         "limitations": "Do not order broad panels without a clinical trigger; interpret age-specific ranges and local lab units.",
-        "tags": ["pediatric", "diagnostic_test", "b12", "folate", "renal", "liver", "esr", "crp", "macrocytosis"],
+        "tags": [
+          "pediatric",
+          "diagnostic_test",
+          "b12",
+          "folate",
+          "renal",
+          "liver",
+          "esr",
+          "crp",
+          "macrocytosis"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "B12 deficiency and further investigations",
@@ -1155,7 +1617,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to pregnancy testing as a binary management gate in adolescent bleeding or anemia context.",
         "limitations": "Ask privately and use local consent/confidentiality rules; do not expose pregnancy testing unnecessarily in prepubertal children.",
-        "tags": ["pediatric", "adolescent", "pregnancy", "heavy_menses", "bleeding", "anemia"],
+        "tags": [
+          "pediatric",
+          "adolescent",
+          "pregnancy",
+          "heavy_menses",
+          "bleeding",
+          "anemia"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "history and causes of anaemia",
@@ -1179,7 +1648,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to emergency disposition; source-defined instability and danger features change management immediately.",
         "limitations": "This module supports documentation and routing but does not replace local resuscitation or transfusion protocols.",
-        "tags": ["pediatric", "management", "emergency", "active_bleeding", "sepsis", "transfusion"],
+        "tags": [
+          "pediatric",
+          "management",
+          "emergency",
+          "active_bleeding",
+          "sepsis",
+          "transfusion"
+        ],
         "source": {
           "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
           "source_section": "management",
@@ -1206,7 +1682,13 @@
           "Hb 70-90 g/L: RBC transfusion may be indicated depending on clinical setting and symptoms.",
           "Hb >90 g/L: RBC transfusion is often unnecessary and may be inappropriate."
         ],
-        "tags": ["pediatric", "management", "transfusion", "hemoglobin", "threshold"],
+        "tags": [
+          "pediatric",
+          "management",
+          "transfusion",
+          "hemoglobin",
+          "threshold"
+        ],
         "source": {
           "source_id": "RCH_BLOOD_PRODUCT_CHILD",
           "source_section": "indications for red blood cell transfusion",
@@ -1232,7 +1714,14 @@
           "Ferritin <20 microgram/L indicates borderline or low iron stores.",
           "Severe IDA Hb 80 g/L or less uses higher-dose oral iron framing in RCH guidance."
         ],
-        "tags": ["pediatric", "management", "iron_deficiency", "oral_iron", "diet", "follow_up"],
+        "tags": [
+          "pediatric",
+          "management",
+          "iron_deficiency",
+          "oral_iron",
+          "diet",
+          "follow_up"
+        ],
         "source": {
           "source_id": "RCH_IRON_DEFICIENCY_CHILD",
           "source_section": "treatment and dosing",
@@ -1258,7 +1747,14 @@
           "ITP is isolated platelet count <100 x 10^9/L in a well child with otherwise normal FBE and film.",
           "Intracranial hemorrhage risk is very low, under 1%, but head injury or neurologic symptoms require urgent escalation."
         ],
-        "tags": ["pediatric", "management", "itp", "thrombocytopenia", "bleeding", "precautions"],
+        "tags": [
+          "pediatric",
+          "management",
+          "itp",
+          "thrombocytopenia",
+          "bleeding",
+          "precautions"
+        ],
         "source": {
           "source_id": "RCH_ITP_CHILD",
           "source_section": "key points and management",
@@ -1280,7 +1776,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to NICE referral urgency; source-defined symptoms and signs determine action.",
         "limitations": "NICE guidance is a referral framework; local emergency, oncology, and hematology pathways may be more urgent when the child is unstable or labs are abnormal.",
-        "tags": ["pediatric", "management", "leukemia", "lymphoma", "urgent_referral", "cbc"],
+        "tags": [
+          "pediatric",
+          "management",
+          "leukemia",
+          "lymphoma",
+          "urgent_referral",
+          "cbc"
+        ],
         "source": {
           "source_id": "NICE_NG12_SUSPECTED_CANCER_2026",
           "source_section": "symptoms and signs in children and young people",
@@ -1302,7 +1805,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to handoff structure; this action preserves traceability and auditability.",
         "limitations": "Do not include patient identifiers in copied audit text; keep source IDs and clinical facts only.",
-        "tags": ["pediatric", "management", "handoff", "traceability", "audit", "phi_safe"],
+        "tags": [
+          "pediatric",
+          "management",
+          "handoff",
+          "traceability",
+          "audit",
+          "phi_safe"
+        ],
         "source": {
           "source_id": "RCH_ANAEMIA_CHILD",
           "source_section": "red flags and specialty discussion",
@@ -1312,6 +1822,307 @@
           "clinical_owner": "general_medicine_content_review"
         },
         "item_type": "management_change"
+      }
+    ],
+    "decisionTrees": [
+      {
+        "id": "decision_01",
+        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Active bleeding with shock or altered state.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_BLOOD_PRODUCT_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived decision tree: triage and escalation",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Active bleeding with shock or altered state.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Active bleeding with shock or altered state.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Active bleeding with shock or altered state.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "screen",
+          "immediate",
+          "danger",
+          "disposition"
+        ]
+      },
+      {
+        "id": "decision_02",
+        "label": "Order focused first-line studies and interpret them in sequence: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_ANAEMIA_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived decision tree: initial tests",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Order focused first-line studies and interpret them in sequence: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Order focused first-line studies and interpret them in sequence: Full blood examination film and reticulocyte count; Ferritin and iron deficiency assessment; Coagulation and fibrinogen tests; Group screen and crossmatch when transfusion possible.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "order",
+          "focused",
+          "first",
+          "line"
+        ]
+      },
+      {
+        "id": "decision_03",
+        "label": "Use the leading diagnostic frame to avoid premature closure: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_ANAEMIA_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived decision tree: diagnostic branching",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not treat pallor or fatigue as benign until red flags, CBC/film, and severity context are reviewed."
+        },
+        "action": "Use the leading diagnostic frame to avoid premature closure: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Use the leading diagnostic frame to avoid premature closure: Pediatric anemia or pallor: classify severity, symptom burden, production failure, blood loss, hemolysis, iron deficiency, B12 or folate deficiency, chronic disease, hemoglobinopathy, or malignancy pattern.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "leading",
+          "diagnostic",
+          "frame",
+          "avoid"
+        ]
+      },
+      {
+        "id": "decision_04",
+        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency stabilization route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived decision tree: management routing",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency stabilization route.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency stabilization route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency stabilization route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "results",
+          "bedside",
+          "status",
+          "high"
+        ]
+      }
+    ],
+    "treatmentOptions": [
+      {
+        "id": "treatment_01",
+        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Active bleeding with shock or altered state.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_BLOOD_PRODUCT_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived treatment options: urgent care",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Active bleeding with shock or altered state.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Active bleeding with shock or altered state.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Active bleeding with shock or altered state.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "stabilize",
+          "escalate",
+          "before",
+          "routine"
+        ]
+      },
+      {
+        "id": "treatment_02",
+        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency stabilization route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived treatment options: high-risk pathway",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency stabilization route.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency stabilization route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency stabilization route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "high",
+          "risk",
+          "confirmed",
+          "pathway"
+        ]
+      },
+      {
+        "id": "treatment_03",
+        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: RBC transfusion threshold route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_BLOOD_PRODUCT_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived treatment options: lower-risk pathway",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: RBC transfusion threshold route.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: RBC transfusion threshold route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: RBC transfusion threshold route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "lower",
+          "risk",
+          "outpatient",
+          "supportive"
+        ]
+      },
+      {
+        "id": "treatment_04",
+        "label": "Monitor treatment response, complications, and need for reassessment with: Full blood examination film and reticulocyte count.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_ANAEMIA_CHILD",
+          "source_section": "Pediatric pallor, anemia, bruising, bleeding, or petechiae derived treatment options: monitoring",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review"
+        },
+        "action": "Monitor treatment response, complications, and need for reassessment with: Full blood examination film and reticulocyte count.",
+        "rationale": "Derives a Pediatric pallor, anemia, bruising, bleeding, or petechiae workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Full blood examination film and reticulocyte count.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "management_change": "Monitor treatment response, complications, and need for reassessment with: Full blood examination film and reticulocyte count.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric pallor, anemia, bruising, bleeding, or petechiae.",
+        "tags": [
+          "pediatric",
+          "hematology",
+          "anemia",
+          "bleeding",
+          "pediatric",
+          "pallor",
+          "anemia",
+          "bruising",
+          "bleeding",
+          "petechiae",
+          "monitor",
+          "treatment",
+          "response",
+          "complications"
+        ]
       }
     ]
   }

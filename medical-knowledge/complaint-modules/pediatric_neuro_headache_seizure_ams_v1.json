@@ -231,7 +231,13 @@
         "patient_cooperation_required": "low",
         "limitations": "Antipyretics and timing can mask fever trajectory.",
         "likelihood_ratio_note": "LR is not applicable to temperature as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "temperature", "fever"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "temperature",
+          "fever"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "red flags and meningitis/encephalitis features",
@@ -256,7 +262,12 @@
         "patient_cooperation_required": "low",
         "limitations": "Pain, fever, crying, medications, and post-ictal state affect interpretation.",
         "likelihood_ratio_note": "LR is not applicable to heart rate as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "heart_rate"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "heart_rate"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: cardiac and raised intracranial pressure signs",
@@ -281,7 +292,13 @@
         "patient_cooperation_required": "low",
         "limitations": "Crying, sedation, seizure activity, and post-ictal state affect interpretation.",
         "likelihood_ratio_note": "LR is not applicable to respiratory rate as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "respiratory_rate", "airway"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "respiratory_rate",
+          "airway"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: respiratory",
@@ -306,7 +323,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Incorrect cuff size and agitation can distort measurements; repeat abnormal values.",
         "likelihood_ratio_note": "LR is not applicable to blood pressure as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "blood_pressure", "hypertension"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "blood_pressure",
+          "hypertension"
+        ],
         "source": {
           "source_id": "NICE_NG127_CHILD_NEURO_2019",
           "source_section": "recurrent headaches and blood pressure recommendation",
@@ -331,7 +354,12 @@
         "patient_cooperation_required": "low",
         "limitations": "Motion, poor perfusion, nail products, and seizure activity can impair readings.",
         "likelihood_ratio_note": "LR is not applicable to oxygen saturation as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "oxygen_saturation", "hypoxemia"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "oxygen_saturation",
+          "hypoxemia"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: respiratory",
@@ -357,7 +385,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Developmental delay, sedation, post-ictal state, intoxication, and language barriers affect scoring.",
         "likelihood_ratio_note": "LR is not applicable to conscious-state scoring as baseline safety data.",
-        "tags": ["pediatric", "baseline_safety", "mental_status", "gcs", "avpu"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "mental_status",
+          "gcs",
+          "avpu"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "initial assessment and management",
@@ -382,7 +416,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Confirm unexpected values per local policy without delaying treatment of severe hypoglycemia.",
         "likelihood_ratio_note": "LR is not applicable to bedside glucose as baseline safety data; abnormal results directly change management.",
-        "tags": ["pediatric", "baseline_safety", "glucose", "hypoglycemia", "seizure"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "glucose",
+          "hypoglycemia",
+          "seizure"
+        ],
         "source": {
           "source_id": "RCH_SEIZURES_ACUTE_2025",
           "source_section": "investigations: blood glucose",
@@ -407,7 +447,12 @@
         "patient_cooperation_required": "low",
         "limitations": "Use actual weight when possible and document if estimated during resuscitation.",
         "likelihood_ratio_note": "LR is not applicable to weight as baseline dosing data.",
-        "tags": ["pediatric", "baseline_safety", "weight", "medication_safety"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "weight",
+          "medication_safety"
+        ],
         "source": {
           "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
           "source_section": "medication dosing and emergency management",
@@ -430,7 +475,12 @@
         "management_implication": "Positive infant, under-4 headache, developmental-delay, disability, or changed-baseline context changes senior review, testing, admission, follow-up, and adult-pathway exclusion.",
         "options": "Multi-select: under 6 months / 6 to 23 months / 2 to 3 years / 4 to 11 years / 12 years or older / known developmental difference / known epilepsy / baseline changed / baseline unchanged",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; age band and baseline are source-defined routing variables.",
-        "tags": ["pediatric", "age_band", "development", "baseline_neuro"],
+        "tags": [
+          "pediatric",
+          "age_band",
+          "development",
+          "baseline_neuro"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "key points and history",
@@ -451,7 +501,12 @@
         "management_implication": "Progressive, positional, sudden severe, occipital, morning, sleep-waking, or activity-limiting patterns change senior review, imaging discussion, follow-up, and discharge safety.",
         "options": "Multi-select: sudden severe / progressive worsening / early morning / wakes from sleep / cough sneeze or bend trigger / positional / occipital / recurrent nonprogressive / activity-limiting / none of these / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; RCH/NICE red-flag patterns change urgency rather than providing one LR.",
-        "tags": ["pediatric", "headache", "red_flag", "raised_icp"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "red_flag",
+          "raised_icp"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "red flags and headache patterns",
@@ -472,7 +527,15 @@
         "management_implication": "Any positive feature changes senior review, imaging/LP safety discussion, infection/head-injury pathway, admission/transfer threshold, and discharge constraints.",
         "options": "Multi-select: vomiting / ataxia / abnormal eye movement or squint / visual change / papilledema concern / confusion or lethargy / focal neurologic symptom / seizure / fever with neck stiffness or photophobia / recent head injury / VP shunt / malignancy or immunosuppression / hypertension / bleeding tendency or anticoagulant / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for this red-flag cluster; each positive feature changes management by guideline rule.",
-        "tags": ["pediatric", "headache", "vomiting", "ataxia", "papilledema", "meningism", "shunt"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "vomiting",
+          "ataxia",
+          "papilledema",
+          "meningism",
+          "shunt"
+        ],
         "source": {
           "source_id": "NICE_NG127_CHILD_NEURO_2019",
           "source_section": "headaches in children under 12 and recurrent headache recommendations",
@@ -493,7 +556,13 @@
         "management_implication": "Ongoing seizure, duration over 5 minutes, repeated events without recovery, focal onset, rescue medicines, or incomplete recovery changes emergency medication, glucose/labs, imaging, admission, transfer, and follow-up.",
         "options": "Multi-select: still seizing / lasted over 5 minutes / repeated without recovery / focal onset or focal signs / generalized convulsion / vacant spell or altered awareness / rescue medication given / first seizure / known epilepsy typical event / full recovery / no seizure markers / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to status epilepticus; duration and recovery define emergency management.",
-        "tags": ["pediatric", "seizure", "blackout", "status_epilepticus", "focal"],
+        "tags": [
+          "pediatric",
+          "seizure",
+          "blackout",
+          "status_epilepticus",
+          "focal"
+        ],
         "source": {
           "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
           "source_section": "key points, definition, and history",
@@ -514,7 +583,13 @@
         "management_implication": "Incomplete recovery or persistent focal findings change glucose/labs, imaging, EEG/referral, senior review, admission, transfer, and discharge safety.",
         "options": "Multi-select: returned to baseline / not at baseline / persistent weakness / facial droop / aphasia or speech change / vision change or diplopia / ataxia / severe headache / behavior change / none of these / unable to assess",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; persistent deficits are management-changing red flags.",
-        "tags": ["pediatric", "postictal", "focal_neurologic_deficit", "stroke", "disposition"],
+        "tags": [
+          "pediatric",
+          "postictal",
+          "focal_neurologic_deficit",
+          "stroke",
+          "disposition"
+        ],
         "source": {
           "source_id": "RCH_SEIZURES_ACUTE_2025",
           "source_section": "imaging indications and consultation criteria",
@@ -535,7 +610,14 @@
         "management_implication": "Positive features change isolation, cultures/labs, antibiotics/antivirals, LP safety, imaging, senior review, admission, and transfer.",
         "options": "Multi-select: fever / neck stiffness / photophobia / petechiae or purpura / severe irritability / persistent vomiting / immunization gap / sick contacts / travel / recent antibiotics / none of these / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available for this infection cluster; source features trigger infection and sepsis pathways.",
-        "tags": ["pediatric", "meningitis", "encephalitis", "fever", "sepsis", "rash"],
+        "tags": [
+          "pediatric",
+          "meningitis",
+          "encephalitis",
+          "fever",
+          "sepsis",
+          "rash"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "causes, history, investigations, and treatment",
@@ -556,7 +638,14 @@
         "management_implication": "Positive features change glucose/labs/toxicology, head injury imaging, safeguarding review, poison center contact, DKA/metabolic workup, senior review, admission, and transfer.",
         "options": "Multi-select: head injury or fall / possible non-accidental injury / poisoning or medication exposure / alcohol or substance use / diabetes / poor intake or dehydration / renal or hepatic disease / hypothermia / known metabolic condition / overdose possible / none of these / unable to obtain confidentially",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; these are source-defined causes that redirect management.",
-        "tags": ["pediatric", "trauma", "toxin", "metabolic", "hypoglycemia", "safeguarding"],
+        "tags": [
+          "pediatric",
+          "trauma",
+          "toxin",
+          "metabolic",
+          "hypoglycemia",
+          "safeguarding"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "causes and history",
@@ -576,7 +665,15 @@
         "text": "For a child under 4 years or concern for abnormal head shape/size, has head circumference changed across centile lines, or are tense fontanelle, vomiting, unsteadiness, sixth-nerve palsy, upward-gaze failure, or headache present?",
         "options": "Multi-select: head circumference crossing centiles / tense fontanelle / vomiting / unsteadiness or ataxia / sixth nerve palsy / upward-gaze failure / headache / none / not applicable / unable to measure",
         "when": {
-          "termsAny": ["under 4", "toddler", "infant", "head circumference", "fontanelle", "sunsetting", "head size"]
+          "termsAny": [
+            "under 4",
+            "toddler",
+            "infant",
+            "head circumference",
+            "fontanelle",
+            "sunsetting",
+            "head size"
+          ]
         },
         "when_to_ask": "Ask when the child is under 4 years, has abnormal head shape/size concern, or has raised-ICP features.",
         "diagnostic_purpose": "Identifies NICE urgent pediatric/neuro assessment and imaging triggers in younger children.",
@@ -592,7 +689,12 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; NICE uses these findings as referral/imaging triggers.",
-        "tags": ["pediatric", "under4", "head_circumference", "raised_icp"]
+        "tags": [
+          "pediatric",
+          "under4",
+          "head_circumference",
+          "raised_icp"
+        ]
       },
       {
         "id": "peds_neuro_known_epilepsy_plan",
@@ -600,7 +702,15 @@
         "text": "For known epilepsy or recurrent seizures, is this a typical event, is there a seizure management plan, have rescue medicines been used, are medicines missed, has sleep illness or trigger changed, and are seizures more frequent or uncontrolled?",
         "options": "Multi-select: typical event / atypical event / seizure plan available / rescue medication used / missed antiseizure medicine / illness or sleep trigger / more frequent or uncontrolled / no known epilepsy / unable to obtain",
         "when": {
-          "termsAny": ["known epilepsy", "epilepsy", "seizure plan", "rescue medication", "midazolam", "recurrent seizure", "missed medication"]
+          "termsAny": [
+            "known epilepsy",
+            "epilepsy",
+            "seizure plan",
+            "rescue medication",
+            "midazolam",
+            "recurrent seizure",
+            "missed medication"
+          ]
         },
         "when_to_ask": "Ask when known epilepsy, recurrent seizure, rescue medicine, or seizure plan is mentioned.",
         "diagnostic_purpose": "Distinguishes typical breakthrough seizure from uncontrolled epilepsy, medication issue, acute illness, or atypical event requiring review.",
@@ -616,7 +726,12 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; event typicality and recovery change imaging and consultation.",
-        "tags": ["pediatric", "epilepsy", "seizure_plan", "medication_safety"]
+        "tags": [
+          "pediatric",
+          "epilepsy",
+          "seizure_plan",
+          "medication_safety"
+        ]
       },
       {
         "id": "peds_neuro_adolescent_confidential_context",
@@ -624,7 +739,18 @@
         "text": "For an adolescent, are pregnancy possible, postpartum state, estrogen therapy, substance use, eating disorder, migraine triggers, bullying/stress, medication overuse, self-harm, or unsafe environment relevant?",
         "options": "Multi-select: pregnancy possible / postpartum / estrogen therapy / substance use / eating disorder / stress or bullying / medication overuse / self-harm concern / unsafe environment / none endorsed / unable to obtain confidentially",
         "when": {
-          "termsAny": ["adolescent", "teen", "pregnancy", "postpartum", "estrogen", "substance", "bullying", "stress", "medication overuse", "self harm"]
+          "termsAny": [
+            "adolescent",
+            "teen",
+            "pregnancy",
+            "postpartum",
+            "estrogen",
+            "substance",
+            "bullying",
+            "stress",
+            "medication overuse",
+            "self harm"
+          ]
         },
         "when_to_ask": "Ask confidentially for adolescents with headache, seizure, altered mental status, syncope mimic, or focal neurologic concern.",
         "diagnostic_purpose": "Identifies pregnancy/medication/imaging constraints, substance/toxin causes, medication-overuse headache, psychosocial triggers, and safety risks.",
@@ -640,7 +766,13 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to confidential context; positive context changes safety and medication choices.",
-        "tags": ["pediatric", "adolescent", "pregnancy", "substance", "psychosocial"]
+        "tags": [
+          "pediatric",
+          "adolescent",
+          "pregnancy",
+          "substance",
+          "psychosocial"
+        ]
       },
       {
         "id": "peds_neuro_shunt_bleeding_immunocompromise",
@@ -648,7 +780,18 @@
         "text": "Is there a VP shunt, neurosurgery, malignancy, immunosuppression, bleeding disorder, anticoagulant/antiplatelet use, prothrombotic condition, sickle cell disease, or severe anemia?",
         "options": "Multi-select: VP shunt / recent neurosurgery / malignancy / immunosuppression / bleeding disorder / anticoagulant or antiplatelet / prothrombotic condition / sickle cell disease / severe anemia / none / unable to obtain",
         "when": {
-          "termsAny": ["vp shunt", "shunt", "neurosurgery", "malignancy", "immunosuppression", "bleeding", "anticoagulant", "sickle", "anemia", "prothrombotic"]
+          "termsAny": [
+            "vp shunt",
+            "shunt",
+            "neurosurgery",
+            "malignancy",
+            "immunosuppression",
+            "bleeding",
+            "anticoagulant",
+            "sickle",
+            "anemia",
+            "prothrombotic"
+          ]
         },
         "when_to_ask": "Ask when headache, seizure, focal deficit, altered mental status, trauma, or systemic disease context is present.",
         "diagnostic_purpose": "Identifies higher-risk intracranial, infectious, hemorrhagic, thrombotic, or hematologic pathways.",
@@ -664,7 +807,13 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; these contexts change threshold for urgent workup.",
-        "tags": ["pediatric", "shunt", "immunocompromise", "bleeding", "stroke_risk"]
+        "tags": [
+          "pediatric",
+          "shunt",
+          "immunocompromise",
+          "bleeding",
+          "stroke_risk"
+        ]
       }
     ],
     "requiredExam": [
@@ -684,7 +833,12 @@
         "equipment_needed": "penlight",
         "patient_cooperation_required": "moderate",
         "limitations": "Ambient light, medications, trauma, and cooperation affect assessment.",
-        "tags": ["pediatric", "pupils", "raised_icp", "neuro_exam"],
+        "tags": [
+          "pediatric",
+          "pupils",
+          "raised_icp",
+          "neuro_exam"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: signs of raised intracranial pressure",
@@ -712,7 +866,12 @@
         "equipment_needed": "target or finger",
         "patient_cooperation_required": "moderate",
         "limitations": "Age, development, cooperation, and visual acuity affect interpretation.",
-        "tags": ["pediatric", "cranial_nerve", "eye_movements", "raised_icp"],
+        "tags": [
+          "pediatric",
+          "cranial_nerve",
+          "eye_movements",
+          "raised_icp"
+        ],
         "source": {
           "source_id": "NICE_NG127_CHILD_NEURO_2019",
           "source_section": "headache and raised intracranial pressure referral features",
@@ -740,7 +899,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Pain, developmental stage, cooperation, post-ictal state, and baseline disability affect interpretation.",
-        "tags": ["pediatric", "motor_exam", "focal_neurologic_deficit", "stroke"],
+        "tags": [
+          "pediatric",
+          "motor_exam",
+          "focal_neurologic_deficit",
+          "stroke"
+        ],
         "source": {
           "source_id": "RCH_SEIZURES_ACUTE_2025",
           "source_section": "imaging indications and consultation criteria",
@@ -768,7 +932,13 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Do not force unsafe gait testing; fatigue, medications, baseline disability, and developmental stage affect interpretation.",
-        "tags": ["pediatric", "coordination", "gait", "ataxia", "headache"],
+        "tags": [
+          "pediatric",
+          "coordination",
+          "gait",
+          "ataxia",
+          "headache"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "examination and red flag findings",
@@ -796,7 +966,12 @@
         "equipment_needed": "ophthalmoscope or local fundoscopy pathway",
         "patient_cooperation_required": "moderate",
         "limitations": "Bedside fundoscopy can be difficult; a failed exam does not rule out papilledema.",
-        "tags": ["pediatric", "fundoscopy", "papilledema", "raised_icp"],
+        "tags": [
+          "pediatric",
+          "fundoscopy",
+          "papilledema",
+          "raised_icp"
+        ],
         "source": {
           "source_id": "NICE_NG127_CHILD_NEURO_2019",
           "source_section": "recurrent headaches and fundoscopy recommendation",
@@ -816,7 +991,16 @@
         "technique": "Assess for neck stiffness or meningism in an age-appropriate way without forcing painful movement in an unstable child.",
         "findings_options": "absent / present / photophobia present / not tolerated / unsafe to assess",
         "when": {
-          "termsAny": ["fever with neck stiffness", "photophobia", "neck stiffness", "meningitis", "encephalitis", "petechiae", "purpura", "fever with rash"]
+          "termsAny": [
+            "fever with neck stiffness",
+            "photophobia",
+            "neck stiffness",
+            "meningitis",
+            "encephalitis",
+            "petechiae",
+            "purpura",
+            "fever with rash"
+          ]
         },
         "when_to_perform": "Perform when fever, headache, photophobia, rash, altered mental status, or meningitis/encephalitis concern is present.",
         "diagnostic_target": "Meningitis, encephalitis, sepsis, raised intracranial pressure, or other CNS infection.",
@@ -829,7 +1013,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "Young age, irritability, analgesia, and altered mental status can limit reliability.",
-        "tags": ["pediatric", "meningism", "meningitis", "infection"],
+        "tags": [
+          "pediatric",
+          "meningism",
+          "meningitis",
+          "infection"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "red flag findings: signs of meningism",
@@ -847,7 +1036,16 @@
         "technique": "Inspect exposed skin for petechiae, purpura, bruising, birth marks, sweating, needle marks, or neurocutaneous stigmata.",
         "findings_options": "none / petechiae or purpura / bruising / neurocutaneous stigmata / sweating or needle marks / unable to assess",
         "when": {
-          "termsAny": ["fever with rash", "rash", "petechiae", "purpura", "bruising", "safeguarding", "toxin", "neurocutaneous"]
+          "termsAny": [
+            "fever with rash",
+            "rash",
+            "petechiae",
+            "purpura",
+            "bruising",
+            "safeguarding",
+            "toxin",
+            "neurocutaneous"
+          ]
         },
         "when_to_perform": "Perform when fever, altered mental status, seizure, headache red flags, bruising, toxin, or safeguarding concern is present.",
         "diagnostic_target": "Sepsis/meningococcemia, bleeding disorder, non-accidental injury, toxin exposure, neurocutaneous syndrome, or systemic disease.",
@@ -860,7 +1058,13 @@
         "equipment_needed": "adequate lighting",
         "patient_cooperation_required": "moderate",
         "limitations": "Respect privacy and document if full skin inspection is deferred.",
-        "tags": ["pediatric", "skin", "rash", "bruising", "safeguarding"],
+        "tags": [
+          "pediatric",
+          "skin",
+          "rash",
+          "bruising",
+          "safeguarding"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: skin",
@@ -878,7 +1082,17 @@
         "technique": "Inspect scalp, face, ears, and nose for hematoma, bruising, CSF-like fluid, blood, mastoid signs, or concerning injury pattern.",
         "findings_options": "none / scalp hematoma / bruising / ear or nasal blood or clear fluid / mastoid signs / injury pattern concern / unable to assess",
         "when": {
-          "termsAny": ["head injury", "fall", "trauma", "bruise", "safeguarding", "vomiting after injury", "skull fracture", "ear or nasal blood", "seizure after injury"]
+          "termsAny": [
+            "head injury",
+            "fall",
+            "trauma",
+            "bruise",
+            "safeguarding",
+            "vomiting after injury",
+            "skull fracture",
+            "ear or nasal blood",
+            "seizure after injury"
+          ]
         },
         "when_to_perform": "Perform when head injury, seizure or amnesia after injury, vomiting, altered mental status, or safeguarding concern is present.",
         "diagnostic_target": "Head injury, skull fracture, intracranial injury, CSF leak, non-accidental injury, or infection source.",
@@ -891,7 +1105,12 @@
         "equipment_needed": "adequate lighting",
         "patient_cooperation_required": "moderate",
         "limitations": "A normal external exam does not exclude intracranial injury.",
-        "tags": ["pediatric", "head_injury", "trauma", "safeguarding"],
+        "tags": [
+          "pediatric",
+          "head_injury",
+          "trauma",
+          "safeguarding"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: head and neck",
@@ -909,7 +1128,14 @@
         "technique": "For children under 4 years with abnormal head size/shape or raised-ICP concern, take 3 head-circumference measurements and plot the longest on an appropriate chart.",
         "findings_options": "normal trend / below 2nd centile / crosses 2 or more centile lines / rapidly increasing / unable to measure / not applicable",
         "when": {
-          "termsAny": ["under 4", "head circumference", "head size", "fontanelle", "hydrocephalus", "sunsetting"]
+          "termsAny": [
+            "under 4",
+            "head circumference",
+            "head size",
+            "fontanelle",
+            "hydrocephalus",
+            "sunsetting"
+          ]
         },
         "when_to_perform": "Perform for children under 4 with suspected abnormal head shape/size or raised-ICP concern.",
         "diagnostic_target": "Hydrocephalus, microcephaly, progressive raised intracranial pressure, or abnormal head growth.",
@@ -922,7 +1148,12 @@
         "equipment_needed": "paper tape and growth chart",
         "patient_cooperation_required": "moderate",
         "limitations": "Measurement technique and chart selection affect interpretation.",
-        "tags": ["pediatric", "head_circumference", "under4", "raised_icp"],
+        "tags": [
+          "pediatric",
+          "head_circumference",
+          "under4",
+          "raised_icp"
+        ],
         "source": {
           "source_id": "NICE_NG127_CHILD_NEURO_2019",
           "source_section": "head shape or size abnormalities under 4 years",
@@ -947,7 +1178,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; the time/recovery threshold defines emergency management.",
         "limitations": "Include prehospital medication doses and seizure duration when deciding next steps.",
-        "tags": ["pediatric", "seizure", "status_epilepticus", "red_flag"],
+        "tags": [
+          "pediatric",
+          "seizure",
+          "status_epilepticus",
+          "red_flag"
+        ],
         "source": {
           "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
           "source_section": "key points and escalation",
@@ -970,7 +1206,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; persistence and unexplained altered baseline are management-changing safety features.",
         "limitations": "Post-ictal state and sedating medicines can explain but do not automatically make persistent altered consciousness safe.",
-        "tags": ["pediatric", "altered_mental_status", "gcs", "red_flag"],
+        "tags": [
+          "pediatric",
+          "altered_mental_status",
+          "gcs",
+          "red_flag"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "key points, initial assessment, discharge criteria",
@@ -993,7 +1234,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not available for the combined red-flag set; each feature changes management by guideline rule.",
         "limitations": "Normal pain relief does not remove red flags such as papilledema, focal deficit, or progressive pattern.",
-        "tags": ["pediatric", "headache", "raised_icp", "red_flag"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "raised_icp",
+          "red_flag"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "red flags and investigations",
@@ -1016,7 +1262,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not available; these findings are high-risk examination triggers.",
         "limitations": "Cushing reflex is late; do not wait for it before escalating other raised-ICP signs.",
-        "tags": ["pediatric", "focal_neurologic_deficit", "papilledema", "raised_icp", "red_flag"],
+        "tags": [
+          "pediatric",
+          "focal_neurologic_deficit",
+          "papilledema",
+          "raised_icp",
+          "red_flag"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "examination: signs of raised intracranial pressure",
@@ -1039,7 +1291,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not available for this broad safety frame; source-defined causes determine urgent management.",
         "limitations": "Absence of a single feature does not rule out CNS infection, occult injury, or poisoning.",
-        "tags": ["pediatric", "infection", "trauma", "toxin", "safeguarding", "red_flag"],
+        "tags": [
+          "pediatric",
+          "infection",
+          "trauma",
+          "toxin",
+          "safeguarding",
+          "red_flag"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "causes, history, investigations, treatment, and consultation",
@@ -1066,7 +1325,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to a testing-restraint rule.",
         "limitations": "Do not apply if any source-defined red flag or abnormal exam is present.",
-        "tags": ["pediatric", "headache", "testing_stewardship", "low_risk"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "testing_stewardship",
+          "low_risk"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "investigations",
@@ -1091,7 +1355,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; glucose is a directly management-changing bedside result.",
         "limitations": "Confirm unexpected results where feasible without delaying treatment.",
-        "tags": ["pediatric", "glucose", "hypoglycemia", "seizure", "altered_mental_status"],
+        "tags": [
+          "pediatric",
+          "glucose",
+          "hypoglycemia",
+          "seizure",
+          "altered_mental_status"
+        ],
         "source": {
           "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
           "source_section": "key points: check blood glucose",
@@ -1116,7 +1386,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned to this conditional lab bundle; results are management-changing when source-defined indications are present.",
         "limitations": "Do not delay seizure termination or airway support to obtain labs.",
-        "tags": ["pediatric", "seizure", "electrolytes", "venous_gas", "metabolic"],
+        "tags": [
+          "pediatric",
+          "seizure",
+          "electrolytes",
+          "venous_gas",
+          "metabolic"
+        ],
         "source": {
           "source_id": "RCH_SEIZURES_ACUTE_2025",
           "source_section": "investigations: bloods",
@@ -1141,7 +1417,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned; ECG identifies mimics and management-changing rhythm/interval abnormalities.",
         "limitations": "Normal ECG does not exclude epilepsy or all arrhythmias.",
-        "tags": ["pediatric", "ecg", "seizure_mimic", "blackout", "syncope"],
+        "tags": [
+          "pediatric",
+          "ecg",
+          "seizure_mimic",
+          "blackout",
+          "syncope"
+        ],
         "source": {
           "source_id": "NICE_NG217_EPILEPSY_2025",
           "source_section": "specialist assessment and diagnosis",
@@ -1166,7 +1448,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned to imaging selection; the indication is source- and risk-feature driven.",
         "limitations": "Do not delay resuscitation, seizure control, or urgent antimicrobials for imaging.",
-        "tags": ["pediatric", "neuroimaging", "ct", "mri", "raised_icp", "seizure"],
+        "tags": [
+          "pediatric",
+          "neuroimaging",
+          "ct",
+          "mri",
+          "raised_icp",
+          "seizure"
+        ],
         "source": {
           "source_id": "RCH_SEIZURES_ACUTE_2025",
           "source_section": "investigations: imaging",
@@ -1191,7 +1480,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "EEG should support diagnosis but should not be used alone to exclude epilepsy.",
         "limitations": "EEG is rarely required in the acute ED setting and a normal EEG does not rule out epilepsy.",
-        "tags": ["pediatric", "seizure", "eeg", "first_seizure", "referral"],
+        "tags": [
+          "pediatric",
+          "seizure",
+          "eeg",
+          "first_seizure",
+          "referral"
+        ],
         "source": {
           "source_id": "NICE_NG217_EPILEPSY_2025",
           "source_section": "referral after first seizure and EEG recommendations",
@@ -1216,7 +1511,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned to this infection-testing bundle; source-defined safety and treatment rules drive management.",
         "limitations": "Do not delay antimicrobials/antivirals for LP or imaging in an unwell child.",
-        "tags": ["pediatric", "meningitis", "encephalitis", "lumbar_puncture", "antibiotics"],
+        "tags": [
+          "pediatric",
+          "meningitis",
+          "encephalitis",
+          "lumbar_puncture",
+          "antibiotics"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "investigations and treatment",
@@ -1241,7 +1542,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this management rule; seizure duration and recovery define emergency treatment.",
         "limitations": "This rule does not replace local status epilepticus medication protocol, airway leadership, or PICU/retrieval advice.",
-        "tags": ["pediatric", "seizure", "status_epilepticus", "emergency", "transfer"],
+        "tags": [
+          "pediatric",
+          "seizure",
+          "status_epilepticus",
+          "emergency",
+          "transfer"
+        ],
         "source": {
           "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
           "source_section": "key points and escalation",
@@ -1264,7 +1571,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this disposition rule; return to baseline and explained cause drive safety.",
         "limitations": "Post-ictal or sedating-medication explanation still requires reassessment and safe trajectory before discharge.",
-        "tags": ["pediatric", "altered_mental_status", "disposition", "admission", "transfer"],
+        "tags": [
+          "pediatric",
+          "altered_mental_status",
+          "disposition",
+          "admission",
+          "transfer"
+        ],
         "source": {
           "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
           "source_section": "consultation, transfer, and discharge criteria",
@@ -1287,7 +1600,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this management rule; guideline-defined red flags determine escalation.",
         "limitations": "Symptom improvement alone does not neutralize papilledema, focal signs, progressive pattern, or under-4 headache.",
-        "tags": ["pediatric", "headache", "red_flag", "imaging", "senior_review"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "red_flag",
+          "imaging",
+          "senior_review"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "management and investigations",
@@ -1310,7 +1629,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this follow-up rule; specialist assessment and event details guide diagnosis.",
         "limitations": "Urgent follow-up does not replace emergency care for persistent altered mental status, focal deficit, recurrent seizure, or active seizure.",
-        "tags": ["pediatric", "first_seizure", "follow_up", "eeg", "safety_net"],
+        "tags": [
+          "pediatric",
+          "first_seizure",
+          "follow_up",
+          "eeg",
+          "safety_net"
+        ],
         "source": {
           "source_id": "NICE_NG217_EPILEPSY_2025",
           "source_section": "referral after first seizure and information/support",
@@ -1333,7 +1658,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this discharge rule; safety depends on absent red flags, normal exam, and reliable follow-up.",
         "limitations": "Do not use this rule for under-4 headache without neuro review, abnormal exam, vomiting, altered consciousness, fever with meningism, trauma, shunt, or progressive symptoms.",
-        "tags": ["pediatric", "headache", "low_risk", "discharge", "safety_net"],
+        "tags": [
+          "pediatric",
+          "headache",
+          "low_risk",
+          "discharge",
+          "safety_net"
+        ],
         "source": {
           "source_id": "RCH_HEADACHE_CHILD",
           "source_section": "investigations, management, and parent information",
@@ -1344,6 +1675,314 @@
           "implementation_notes": "Discharge constraints should be concise enough for copy/export."
         },
         "item_type": "management_change"
+      }
+    ],
+    "decisionTrees": [
+      {
+        "id": "decision_01",
+        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Seizure over 5 minutes or repeated without recovery.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived decision tree: triage and escalation",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This red flag should bypass routine build pacing and prompt emergency protocol."
+        },
+        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Seizure over 5 minutes or repeated without recovery.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Seizure over 5 minutes or repeated without recovery.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Seizure over 5 minutes or repeated without recovery.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "screen"
+        ]
+      },
+      {
+        "id": "decision_02",
+        "label": "Order focused first-line studies and interpret them in sequence: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_HEADACHE_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived decision tree: initial tests",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Testing restraint is a positive recommendation, not missing care."
+        },
+        "action": "Order focused first-line studies and interpret them in sequence: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Order focused first-line studies and interpret them in sequence: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "order"
+        ]
+      },
+      {
+        "id": "decision_03",
+        "label": "Use the leading diagnostic frame to avoid premature closure: Primary headache or migraine only after pediatric red flags are absent.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_HEADACHE_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived decision tree: diagnostic branching",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not let a migraine label suppress red-flag screening or age-specific referral rules."
+        },
+        "action": "Use the leading diagnostic frame to avoid premature closure: Primary headache or migraine only after pediatric red flags are absent.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Primary headache or migraine only after pediatric red flags are absent.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Use the leading diagnostic frame to avoid premature closure: Primary headache or migraine only after pediatric red flags are absent.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "leading"
+        ]
+      },
+      {
+        "id": "decision_04",
+        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Active seizure emergency route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived decision tree: management routing",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not wait for a generated checklist before treating active status."
+        },
+        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Active seizure emergency route.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Active seizure emergency route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Active seizure emergency route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "results"
+        ]
+      }
+    ],
+    "treatmentOptions": [
+      {
+        "id": "treatment_01",
+        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Seizure over 5 minutes or repeated without recovery.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived treatment options: urgent care",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This red flag should bypass routine build pacing and prompt emergency protocol."
+        },
+        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Seizure over 5 minutes or repeated without recovery.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Seizure over 5 minutes or repeated without recovery.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Seizure over 5 minutes or repeated without recovery.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "stabilize"
+        ]
+      },
+      {
+        "id": "treatment_02",
+        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Active seizure emergency route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_STATUS_EPILEPTICUS_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived treatment options: high-risk pathway",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not wait for a generated checklist before treating active status."
+        },
+        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Active seizure emergency route.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Active seizure emergency route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Active seizure emergency route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "high"
+        ]
+      },
+      {
+        "id": "treatment_03",
+        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Persistent altered conscious state admission or transfer.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_ALTERED_CONSCIOUS_STATE_2022",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived treatment options: lower-risk pathway",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated November 2022",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Caregiver-reported baseline change counts."
+        },
+        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Persistent altered conscious state admission or transfer.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Persistent altered conscious state admission or transfer.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Persistent altered conscious state admission or transfer.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "lower"
+        ]
+      },
+      {
+        "id": "treatment_04",
+        "label": "Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "RCH_HEADACHE_CHILD",
+          "source_section": "Pediatric headache, seizure, altered mental status, or focal neurologic concern derived treatment options: monitoring",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current guideline accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Testing restraint is a positive recommendation, not missing care."
+        },
+        "action": "Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.",
+        "rationale": "Derives a Pediatric headache, seizure, altered mental status, or focal neurologic concern workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "management_change": "Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric headache, seizure, altered mental status, or focal neurologic concern.",
+        "tags": [
+          "pediatric",
+          "neuro",
+          "headache",
+          "seizure",
+          "pediatric",
+          "headache",
+          "seizure",
+          "altered",
+          "mental",
+          "status",
+          "focal",
+          "neurologic",
+          "concern",
+          "monitor"
+        ]
       }
     ]
   }

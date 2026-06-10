@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import {
   buildMedicalKnowledgeDatabase,
   loadMedicalKnowledgeDatabase,
@@ -17,6 +18,25 @@ assert.ok(validation.ok, validation.issues.join("\n"));
 assert.equal(validation.moduleCount, complaintModules.length, "module count should match source database");
 assert.equal(validation.sourceCount, complaintSourceRegistry.length, "source count should match source database");
 assert.equal(medicalKnowledgeDbManifest.schema_version, "medical_knowledge_database_v1");
+
+function readComplaintModuleSourceFiles(dir = "medical-knowledge/complaint-modules") {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      return readComplaintModuleSourceFiles(fullPath);
+    }
+    if (!entry.name.endsWith(".json")) {
+      return [];
+    }
+    const raw = JSON.parse(readFileSync(fullPath, "utf8"));
+    return [{ file: fullPath, module: raw.module || raw }];
+  });
+}
+
+readComplaintModuleSourceFiles().forEach(({ file, module }) => {
+  assert.ok((module.decisionTrees || []).length >= 3, `${file} should include source decision-tree support rows`);
+  assert.ok((module.treatmentOptions || []).length >= 3, `${file} should include source treatment-option support rows`);
+});
 
 const medicalKnowledgeSchema = JSON.parse(readFileSync("medical-knowledge/schema/medical-knowledge-database-v1.schema.json", "utf8"));
 const moduleItemSchema = medicalKnowledgeSchema.$defs.moduleItem;
@@ -118,7 +138,9 @@ complaintModules.forEach((module) => {
       assert.ok(value && (!Array.isArray(value) || value.length), `${module.id}.${item.id} source safety check should include ${field}`);
     });
   });
-  ["redFlags", "initialTests", "dispositionRules", "differentialBuckets"].forEach((group) => {
+  assert.ok((module.decisionTrees || []).length >= 3, `${module.id} should include decision-tree support rows`);
+  assert.ok((module.treatmentOptions || []).length >= 3, `${module.id} should include treatment-option support rows`);
+  ["redFlags", "initialTests", "dispositionRules", "decisionTrees", "treatmentOptions", "differentialBuckets"].forEach((group) => {
     (module[group] || []).forEach((item) => {
       [
         "action",

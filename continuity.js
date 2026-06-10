@@ -481,9 +481,11 @@ You are updating the same OpenEvidence conversation for this local patient case.
 
 <task>
 Update today's rounds preparation using only today's de-identified changes below plus the prior context already in this same OpenEvidence conversation.
-Summarize what changed since yesterday.
-Separate stable background, changed data, unresolved pending items, and new concerns.
+Output only changes since yesterday that could change what the student says, verifies, asks, escalates, monitors, or carries forward for rounds.
+Use at most 5 bullets total. Prefix each bullet with SAY, CHECK, ASK, WATCH, or CARRY-FORWARD.
+If nothing changes management, output exactly: NO MANAGEMENT-CHANGING ITEMS FOUND.
 Preserve uncertainty and do not invent trends, plans, diagnoses, vitals, labs, medications, or bedside findings.
+Do not include unchanged background, no-action items, broad summaries, or filler.
 </task>${userContext ? `\n\n${userContext}` : ""}
 
 <local_case_label>
@@ -494,7 +496,7 @@ ${normalizedCase.label}
 ${todayBlock || "No de-identified today changes were provided."}
 </today_changes>
 
-Now update the existing case context for today.`;
+Now update the existing case context for today using only management-changing deltas.`;
 }
 
 export function buildContinuityChecklistContext({ patientCase, todayInputs, userContext = "" } = {}) {

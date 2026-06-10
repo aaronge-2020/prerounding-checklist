@@ -384,7 +384,7 @@ function itemTypeForPrefix(prefix = "") {
   if (prefix === "exam" || prefix === "conditional_exam") return "physical_exam_maneuver";
   if (prefix === "red_flag") return "red_flag";
   if (prefix === "test" || prefix === "reference") return "diagnostic_test";
-  if (prefix === "management") return "management_change";
+  if (prefix === "management" || prefix === "decision" || prefix === "treatment") return "management_change";
   if (prefix === "differential") return "diagnostic_frame";
   return "catalog_gap";
 }
@@ -2223,6 +2223,18 @@ function moduleFromWorkup(row) {
     ...decisionItemMetadata("management", managementChange, row, managementChange),
     tags: questionTagsForPhrase(managementChange, row)
   }));
+  const decisionTrees = (row.decision_steps || []).map((decisionStep, index) => item("decision", index, decisionStep, row.source_ids[index % row.source_ids.length], `${sourceSectionPrefix}: clinical decision tree`, {
+    action: decisionStep,
+    rationale: `Routes ${row.diagnosis} testing and interpretation through a source-backed sequence so the next step follows the result, phenotype, and safety context.`,
+    ...decisionItemMetadata("management", decisionStep, row, decisionStep),
+    tags: questionTagsForPhrase(decisionStep, row)
+  }));
+  const treatmentOptions = (row.treatment_options || []).map((treatmentOption, index) => item("treatment", index, treatmentOption, row.source_ids[index % row.source_ids.length], `${sourceSectionPrefix}: treatment options`, {
+    action: treatmentOption,
+    rationale: `Links confirmed ${row.diagnosis} results, severity, contraindications, and patient context to guideline-backed treatment options and monitoring.`,
+    ...decisionItemMetadata("management", treatmentOption, row, treatmentOption),
+    tags: questionTagsForPhrase(treatmentOption, row)
+  }));
   const applicability = applicabilityForEndocrineWorkup(row);
 
   return {
@@ -2270,6 +2282,8 @@ function moduleFromWorkup(row) {
       conditionalExam,
       initialTests: [...testItems, ...referenceItems],
       dispositionRules,
+      decisionTrees,
+      treatmentOptions,
       endocrine_metadata: {
         generated_from: "scripts/generate-endocrine-workups.js",
         source_diagnosis: row.diagnosis,
@@ -2277,6 +2291,8 @@ function moduleFromWorkup(row) {
         aliases: row.aliases,
         source_ids: row.source_ids,
         reference_values: row.reference_values,
+        decision_steps: row.decision_steps || [],
+        treatment_options: row.treatment_options || [],
         quality_issues: row.quality_issues,
         activation_status: "active_guideline_workup"
       }
@@ -2335,7 +2351,7 @@ function formatCompletionReport(workups, modulePaths, sourceRegistry) {
       `${index + 1}. ${row.diagnosis} (${moduleId})`,
       `   - Category: ${row.category}`,
       `   - Sources: ${row.source_ids.join("; ")}`,
-      `   - Required questions: ${questionTiers.required.length}; conditional question add-ons: ${questionTiers.conditional.length}; safety checks: ${safetyCheckCount}; required exams: ${requiredExamTemplates(row).length}; conditional exam add-ons: ${conditionalExamTemplates(row).length}; tests/reference anchors: ${row.tests.length + row.reference_values.length}; red flags: ${row.red_flags.length}; management rules: ${row.management_changes.length}`,
+      `   - Required questions: ${questionTiers.required.length}; conditional question add-ons: ${questionTiers.conditional.length}; safety checks: ${safetyCheckCount}; required exams: ${requiredExamTemplates(row).length}; conditional exam add-ons: ${conditionalExamTemplates(row).length}; tests/reference anchors: ${row.tests.length + row.reference_values.length}; red flags: ${row.red_flags.length}; management rules: ${row.management_changes.length}; decision steps: ${(row.decision_steps || []).length}; treatment options: ${(row.treatment_options || []).length}`,
       `   - Quality issues: ${row.quality_issues.length ? row.quality_issues.join("; ") : "none"}`,
       `   - File: ${modulePaths[index]}`
     );

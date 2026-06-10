@@ -240,10 +240,11 @@ function parseOptionText(value) {
   const rawValue = String(value || "").trim();
   const hasInlineNotes = /_{2,3}/.test(rawValue);
   const noteParse = stripTrailingNotePlaceholder(rawValue);
-  const parseText = hasInlineNotes ? rawValue : noteParse.text;
+  const optionSlashSentinel = "OPTIONNATIVEABBREVIATIONSLASH";
+  const parseText = (hasInlineNotes ? rawValue : noteParse.text).replace(/\bN\/A\b/gi, `N${optionSlashSentinel}A`);
   const options = parseText.includes("/")
-    ? parseText.split("/").map(cleanOptionText).filter(Boolean)
-    : [cleanOptionText(noteParse.text)].filter(Boolean);
+    ? parseText.split("/").map((option) => cleanOptionText(option).replaceAll(optionSlashSentinel, "/")).filter(Boolean)
+    : [cleanOptionText(parseText).replaceAll(optionSlashSentinel, "/")].filter(Boolean);
   return {
     options,
     hasNotes: noteParse.hasNotes || hasInlineNotes
@@ -311,7 +312,14 @@ function cleanChecklistLine(line) {
   if (colonIndex === -1) {
     return cleaned;
   }
-  return `${cleaned.slice(0, colonIndex).trim()}: ${cleaned.slice(colonIndex + 1).replace(/\s*\/\s*/g, " / ").replace(/\s{2,}/g, " ").trim()}`;
+  const optionSlashSentinel = "OPTIONNATIVEABBREVIATIONSLASH";
+  const normalizedOptions = cleaned.slice(colonIndex + 1)
+    .replace(/\bN\/A\b/gi, `N${optionSlashSentinel}A`)
+    .replace(/\s*\/\s*/g, " / ")
+    .replaceAll(optionSlashSentinel, "/")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return `${cleaned.slice(0, colonIndex).trim()}: ${normalizedOptions}`;
 }
 
 export function normalizeChecklistText(rawText) {
@@ -365,7 +373,7 @@ function shouldExpandParsedBedsideItem(item = {}, expandedItems = []) {
     return false;
   }
   const originalLabel = String(item.label || "").replace(/\s+/g, " ").trim();
-  if (/^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|CNS, joint, spine, or rapid-worsening danger symptoms)\?$/i.test(originalLabel)) {
+  if (/^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|severe headache, stiff neck, confusion, seizure, hot swollen joint, severe back pain, fainting, very low urine, or symptoms getting worse quickly)\?$/i.test(originalLabel)) {
     return false;
   }
   if (!Array.isArray(expandedItems) || expandedItems.length <= 1) {
@@ -893,13 +901,25 @@ function patientFacingQuestionText(item = {}) {
   ];
   const directQuestion = candidates
     .map((value) => String(value || "").replace(/\s+/g, " ").trim())
-    .find((value) => /^(?:Any|What|How|When|Where|Which|Are|Do|Did|Have|Has|Is|Can|Could)\b/i.test(value));
+    .find((value) => /^(?:Any|What|How|When|Where|Which|Are|Do|Did|Have|Has|Is|Can|Could|Before|Since)\b/i.test(value));
   if (directQuestion) {
-    return directQuestion;
+    return patientFacingQuestionCopy(directQuestion);
   }
-  return candidates
+  return patientFacingQuestionCopy(candidates
     .map((value) => String(value || "").replace(/\s+/g, " ").trim())
-    .find(Boolean) || "";
+    .find(Boolean) || "");
+}
+
+function patientFacingQuestionCopy(value = "") {
+  return String(value || "")
+    .replace(
+      /^Any CNS, joint, spine, or rapid-worsening danger symptoms\?$/i,
+      "Any severe headache, stiff neck, confusion, seizure, hot swollen joint, severe back pain, fainting, very low urine, or symptoms getting worse quickly?"
+    )
+    .replace(/\bCNS\b/g, "neurologic")
+    .replace(/\bcns\b/g, "neurologic")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function optionLabels(value, fallback) {
@@ -1059,7 +1079,8 @@ function componentPresenceOptions(component = "") {
     return `Baseline ${lower} / Increased ${lower} / Decreased ${lower} / New change / Unsure / Other ___`;
   }
   if (/\b(?:new|worsening|progressive|change|trajectory)\b/.test(normalized)) {
-    return `Baseline or resolved / New ${lower} / Worsening ${lower} / Rapidly worsening / Unsure / Other ___`;
+    const changingSubject = lower.replace(/^(?:new|worsening|progressive)\s+/i, "").trim() || lower;
+    return `Baseline or resolved / New ${changingSubject} / Worsening ${changingSubject} / Rapidly worsening / Unsure / Other ___`;
   }
   if (/\b(?:pain|ache|headache|nausea|vomiting|diarrhea|dizziness|lightheaded|weakness|fatigue|confusion|sleepiness|dyspnea|breath|cough|wheeze|palpitation|sweating|diaphoresis|tremor|itch|rash|swelling|edema|cramp|thirst|hunger|fever|chills|rigors)\b/.test(normalized)) {
     return `No ${lower} / Mild ${lower} / Moderate ${lower} / Severe ${lower} / Worse than baseline / Unsure / Other ___`;
@@ -1310,7 +1331,7 @@ function isBroadInfectionSourceQuestion(item = {}) {
     return false;
   }
   const questionText = normalizedListText(patientFacingQuestionText(item));
-  if (/^any (?:respiratory source symptoms|throat ear sinus dental or oral source symptoms|urinary or flank source symptoms|abdominal or gi source symptoms|skin wound line or device source symptoms|cns joint spine or rapid worsening danger symptoms)$/.test(questionText)) {
+  if (/^any (?:respiratory source symptoms|throat ear sinus dental or oral source symptoms|urinary or flank source symptoms|abdominal or gi source symptoms|skin wound line or device source symptoms|severe headache stiff neck confusion seizure hot swollen joint severe back pain fainting very low urine or symptoms getting worse quickly)$/.test(questionText)) {
     return false;
   }
   const explicitSourcePrompt = /\b(?:what symptoms localize|localize the fever source|source localizing symptoms|source localization|source localizing history|source symptoms|source features|most plausible source|fever source)\b/.test(text);
@@ -1368,12 +1389,12 @@ const infectionSourceBedsideRows = [
     tags: ["skin_source", "line_source", "device_source"]
   },
   {
-    label: "Any CNS, joint, spine, or rapid-worsening danger symptoms?",
-    options: "No / Headache / Neck stiffness / Confusion / Photophobia / Hot joint / Back pain / Fainting / Rapid worsening / Other ___",
-    diagnosticPurpose: "Screens for CNS, meningeal, joint, spine, and sepsis-severity danger symptoms.",
+    label: "Any severe headache, stiff neck, confusion, seizure, hot swollen joint, severe back pain, fainting, very low urine, or symptoms getting worse quickly?",
+    options: "No / Severe headache / Stiff neck / Confusion / Seizure / Hot swollen joint / Severe back pain / Fainting / Very low urine / Getting worse quickly / Other ___",
+    diagnosticPurpose: "Screens for neurologic, meningeal, joint, spine, and sepsis-severity danger symptoms.",
     managementImplication: "Positive answers change urgency, neurologic or musculoskeletal examination, cultures/imaging/LP planning, antimicrobials, and disposition.",
     sourceDomainKey: "bedside:infection-cns-joint-spine-danger",
-    tags: ["CNS_source", "joint_source", "spine_source", "sepsis_severity"]
+    tags: ["neurologic_source", "joint_source", "spine_source", "sepsis_severity"]
   }
 ];
 
@@ -1393,22 +1414,22 @@ const feverTimelineBedsideRows = [
     tags: ["fever", "timeline"]
   },
   {
-    label: "Any antipyretic use before evaluation?",
-    options: "No antipyretic / Acetaminophen / NSAID / Other antipyretic / Time of last dose ___ / Unsure / Other ___",
+    label: "Before we evaluated you, did you take any fever medicine such as acetaminophen or ibuprofen?",
+    options: "No / Yes / Not sure / N/A",
     diagnosticPurpose: "Identifies medication masking of fever trajectory.",
     managementImplication: "Antipyretic use changes interpretation of measured temperature and clinical trajectory.",
     tags: ["fever", "medication"]
   },
   {
-    label: "Any antibiotic use before evaluation?",
-    options: "No antibiotic / Current antibiotic / Recent outpatient antibiotic / Single dose before evaluation / Time of last dose ___ / Unsure / Other ___",
+    label: "Before we evaluated you, did you take any antibiotics?",
+    options: "No / Yes / Not sure / N/A",
     diagnosticPurpose: "Identifies pretreatment that can alter fever trajectory and culture yield.",
     managementImplication: "Antibiotic exposure changes culture interpretation, resistance concern, antimicrobial framing, and escalation threshold.",
     tags: ["fever", "antibiotic", "medication"]
   },
   {
-    label: "Any steroid or immunosuppressant use before evaluation?",
-    options: "No / Steroid / Immunosuppressant / Unsure / Other ___",
+    label: "Before we evaluated you, did you take any steroid or immunosuppressing medicine?",
+    options: "No / Yes / Not sure / N/A",
     diagnosticPurpose: "Identifies host-risk and medication masking of fever or inflammatory response.",
     managementImplication: "Steroid or immunosuppressant exposure lowers threshold for serious infection evaluation and escalation.",
     tags: ["fever", "host_risk", "medication", "immunosuppression"]
@@ -1808,11 +1829,11 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^chest discomfort quality$/, "What does the chest discomfort feel like?"],
     [/^chest discomfort location$/, "Where is the chest discomfort located?"],
     [/^chest discomfort radiation$/, "Does the chest discomfort radiate?"],
-    [/^known diabetes type$|^diabetes type known$|^diabetes type$/, "What type of diabetes does the patient have?"],
-    [/^diabetes duration$/, "How long has diabetes been present?"],
+    [/^known diabetes type$|^diabetes type known$|^diabetes type$/, "What type of diabetes do you have?"],
+    [/^diabetes duration$/, "How long have you had diabetes?"],
     [/^duration$|^symptom duration$/, "How long has this been present?"],
-    [/^insulin regimen known$|^insulin regimen$/, "What insulin regimen is being used?"],
-    [/^last insulin dose known$|^last insulin dose$/, "When was the last insulin dose?"],
+    [/^insulin regimen known$|^insulin regimen$/, "What insulin regimen do you use?"],
+    [/^last insulin dose known$|^last insulin dose$/, "When was your last insulin dose?"],
     [/^new$/, "Is this symptom new?"],
     [/^rapidly progressive facial$/, "Any rapidly progressive facial hair growth?"],
     [/^body hair growth$/, "Any increased body hair growth?"],
@@ -1827,12 +1848,21 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^pnd$/, "Any waking from sleep short of breath?"],
     [/^chest pain$/, "Any chest pain with the breathing symptoms?"],
     [/^relieved by rest$/, "Is the chest discomfort relieved by rest?"],
-    [/^similar to prior angina$/, "Is this similar to prior angina?"],
+    [/^similar to prior angina$/, "Does this feel like chest discomfort you have had before from your heart?"],
     [/^marked weakness$/, "Any marked weakness?"],
-    [/^syncope$/, "Any syncope?"],
-    [/^presyncope$/, "Any presyncope?"],
-    [/^neurologic symptoms$/, "Any neurologic symptoms?"],
-    [/^sudden maximal pain$/, "Any sudden maximal chest pain?"],
+    [/^syncope$/, "Did you faint or pass out?"],
+    [/^presyncope$/, "Did you feel like you might faint or pass out?"],
+    [/^neurologic symptoms$/, "Any new neurologic problem?"],
+    [/^sudden maximal pain$/, "Did the chest pain become severe suddenly, right at the start?"],
+    [/^known cad$|^cad$/, "Have you ever been told you have coronary artery disease?"],
+    [/^prior mi$/, "Have you ever had a heart attack?"],
+    [/^stent$/, "Have you ever had a heart stent placed?"],
+    [/^cabg$/, "Have you ever had heart bypass surgery?"],
+    [/^diabetes$/, "Have you ever been told you have diabetes?"],
+    [/^ckd$/, "Have you ever been told you have chronic kidney disease?"],
+    [/^smoking$/, "Do you currently smoke or have a significant smoking history?"],
+    [/^hypertension$/, "Have you ever been told you have high blood pressure?"],
+    [/^strong family history$/, "Any close family member with early heart disease?"],
     [/^menstrual periods never start by the expected age$|^menstrual periods never start by expected age$/, "Did menstrual periods never start by the expected age?"],
     [/^previously present periods stop$/, "Did previously present periods stop?"],
     [/^what is the approximate 24 hour urine volume$|^approximate 24 hour urine volume$/, "What is the approximate 24-hour urine volume?"],
@@ -1866,10 +1896,10 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^empty reservoir or expired insulin$/, "Any empty reservoir or expired insulin?"],
     [/^medication access issue$/, "Any insulin supply or medication access issue?"],
     [/^recent insulin dose change$/, "Any recent insulin dose change?"],
-    [/^insulin supplies arranged$/, "Are insulin supplies arranged?"],
-    [/^ketone strips arranged$/, "Are ketone strips arranged?"],
-    [/^sick day plan$|^sick day plan reviewed$/, "Has the sick-day plan been reviewed?"],
-    [/^follow up arranged$/, "Is follow-up arranged?"],
+    [/^insulin supplies arranged$/, "Do you have the insulin supplies you need?"],
+    [/^ketone strips arranged$/, "Do you have ketone strips you can use?"],
+    [/^sick day plan$|^sick day plan reviewed$/, "Do you know your sick-day plan?"],
+    [/^follow up arranged$/, "Do you have follow-up arranged?"],
     [/^missed steroid doses$/, "Any missed steroid doses?"],
     [/^missed doses$/, "Any missed doses?"],
     [/^missed diuretics$/, "Any missed diuretic doses?"],
@@ -1923,13 +1953,17 @@ function atomicQuestionOptionsForComponent(component = "") {
     [/^rest$|^at rest$|^rest dyspnea$|^is breathing worse at rest$/, "No dyspnea at rest / Mild at rest / Moderate at rest / Severe at rest / Unsure / Other ___"],
     [/^chest pain$/, "No chest pain / Mild chest pain / Moderate chest pain / Severe chest pain / Pressure or pleuritic quality / Other ___"],
     [/^relieved by rest$/, "Not relieved by rest / Partially relieved / Fully relieved / Unsure / Other ___"],
-    [/^similar to prior angina$/, "No prior angina / Similar to prior angina / Different from prior angina / Unsure / Other ___"],
+    [/^similar to prior angina$/, "No prior heart-related chest pain / Similar to prior heart-related chest pain / Different from prior episodes / Unsure / Other ___"],
     [/^marked weakness$/, "No marked weakness / New marked weakness / Unable to stand or walk safely / Worse than baseline / Unsure / Other ___"],
-    [/^syncope$/, "No syncope / Syncope today / Recurrent syncope / With exertion / Unsure / Other ___"],
-    [/^presyncope$/, "No presyncope / Near-syncope / Recurrent episodes / With exertion / Unsure / Other ___"],
-    [/^neurologic symptoms$/, "No neurologic symptoms / Focal weakness or numbness / Speech or vision change / Confusion / Unsure / Other ___"],
+    [/^syncope$/, "No fainting / Fainted today / Recurrent fainting / Fainted with exertion / Unsure / Other ___"],
+    [/^presyncope$/, "No near-fainting / Felt like fainting / Recurrent near-fainting / With exertion / Unsure / Other ___"],
+    [/^neurologic symptoms$/, "No new neurologic problem / Weakness or numbness / Trouble speaking / Vision change / Confusion / Unsure / Other ___"],
     [/^sudden maximal pain$/, "No sudden maximal pain / Sudden maximal at onset / Tearing or ripping quality / Severe persistent pain / Unsure / Other ___"],
-    [/^known cad$/, "No known CAD / Known CAD / Prior MI or revascularization / Unknown / Other ___"],
+    [/^known cad$|^cad$/, "No known coronary artery disease / Coronary artery disease / Prior heart attack, stent, or bypass / Unknown / Other ___"],
+    [/^prior mi$/, "No prior heart attack / Prior heart attack / Unknown / Other ___"],
+    [/^stent$/, "No heart stent / Heart stent placed / Unknown / Other ___"],
+    [/^cabg$/, "No heart bypass surgery / Heart bypass surgery / Unknown / Other ___"],
+    [/^ckd$/, "No chronic kidney disease / Chronic kidney disease / Unknown / Other ___"],
     [/^where is the pain worst$|^focal location$|^location$/, "Location ___ / Diffuse / Localized / Moved / Unknown"],
     [/^weight change$|^weight changed from baseline$|^how has weight changed from baseline$/, "Loss / Gain / Stable / Intentional / Unintentional / Unknown / Other ___"],
     [/^menstrual periods never start by the expected age$|^menstrual periods never start by expected age$|^previously present periods stop$/, "Periods started / Never started / Previously stopped / Unsure / Other ___"],
@@ -2105,7 +2139,7 @@ function localChecklistQuestionSemanticKey(item = {}, label = "") {
     if (/\b(?:urinary or flank source features|dysuria frequency urgency hematuria flank pain|catheter or recent urologic procedure|prior resistant urine culture)\b/.test(text)) {
       return "bedside:infection-urinary-source";
     }
-    if (/\b(?:abdominal cns skin line joint or spine source features|severe headache neck stiffness photophobia|rash wound line pain|hot swollen joint|rapidly spreading skin pain)\b/.test(text)) {
+    if (/\b(?:abdominal (?:cns|neurologic) skin line joint or spine source features|severe headache neck stiffness photophobia|rash wound line pain|hot swollen joint|rapidly spreading skin pain)\b/.test(text)) {
       return "bedside:infection-abdomen-cns-skin-source";
     }
     const sourceDomainCount = [
@@ -2384,7 +2418,7 @@ const contextualBackfillMetadataByBank = {
   neuro: {
     source_id: "AHRQ_CALIBRATE_DX",
     source_section: "neurologic diagnostic safety history scaffold",
-    diagnosticPurpose: "Screens for time-sensitive neurologic deficits, CNS red flags, cord compression features, and functional safety when additional focused history is needed.",
+    diagnosticPurpose: "Screens for time-sensitive neurologic deficits, neurologic red flags, cord compression features, and functional safety when additional focused history is needed.",
     managementImplication: "Positive answers change neurologic exam scope, imaging urgency, glucose/seizure/stroke pathway review, mobility safety, and escalation.",
     tags: ["diagnostic_safety", "neuro", "red_flag"]
   },

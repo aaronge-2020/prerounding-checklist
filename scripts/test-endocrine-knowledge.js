@@ -91,6 +91,8 @@ const auditedItemGroups = [
   "conditionalExam",
   "initialTests",
   "dispositionRules",
+  "decisionTrees",
+  "treatmentOptions",
   "differentialBuckets"
 ];
 
@@ -169,9 +171,13 @@ for (const module of endocrineModules) {
   assert.ok(module.initialTests.length >= 6, `${module.id} should include tests and reference anchors`);
   assert.ok(module.redFlags.length >= 2, `${module.id} should include red flags and escalation cues`);
   assert.ok(module.dispositionRules.length >= 3, `${module.id} should include management-changing results`);
+  assert.ok(module.decisionTrees.length >= 3, `${module.id} should include guideline-backed decision-tree steps`);
+  assert.ok(module.treatmentOptions.length >= 3, `${module.id} should include guideline-backed treatment options`);
   assert.ok(module.differentialBuckets.length >= 3, `${module.id} should include diagnostic buckets and mimics/exclusions`);
   assert.match(labels(module.differentialBuckets), /mimic|exclusion|alternative|confounder|premature closure/, `${module.id} should include differential mimics/exclusions`);
   assert.ok(module.endocrine_metadata.reference_values.length >= 2, `${module.id} should preserve reference values`);
+  assert.ok(module.endocrine_metadata.decision_steps.length >= 3, `${module.id} should preserve decision-tree source rows`);
+  assert.ok(module.endocrine_metadata.treatment_options.length >= 3, `${module.id} should preserve treatment-option source rows`);
   assert.ok(module.endocrine_metadata.source_ids.every((sourceId) => sourceIds.has(sourceId)), `${module.id} should reference valid sources`);
   assert.doesNotMatch(flattenModuleText(module), /\b(?:MRN|DOB|John Smith|Room 412B|Riverside General)\b/i, `${module.id} should not include PHI fixture text`);
   assert.equal(selectComplaintModule(module.label)?.id, module.id, `${module.id} should be searchable/selectable by exact diagnosis label`);

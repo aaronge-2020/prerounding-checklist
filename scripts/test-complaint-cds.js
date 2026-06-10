@@ -146,6 +146,8 @@ function combinedWorkupText(result) {
     ...(result.conditionalExam || []),
     ...(result.initialTests || []),
     ...(result.dispositionRules || []),
+    ...(result.decisionTrees || []),
+    ...(result.treatmentOptions || []),
     ...(result.redFlags || []),
     ...(result.differentialBuckets || [])
   ]
@@ -161,7 +163,7 @@ function assertFeverWorkupMeetsGeneralClinicianFloor(result) {
     ["urinary and flank source history", /dysuria[\s\S]*flank|urinalysis[\s\S]*urine culture/],
     ["GI and abdominal source history", /abdominal pain[\s\S]*(vomiting|diarrhea)|abdominal source/],
     ["skin, wound, or line source history", /rash[\s\S]*(wound|line)|skin[\s\S]*source/],
-    ["CNS danger history", /headache[\s\S]*neck stiffness|meningitis|photophobia/],
+    ["neurologic danger history", /headache[\s\S]*neck stiffness|meningitis|photophobia/],
     ["host and exposure risk history", /immunosuppression[\s\S]*pregnancy[\s\S]*(travel|hospitalization)|animal exposure|food or water exposure/],
     ["severity, hydration, and perfusion history", /poor intake[\s\S]*(dehydration|low urine output|fainting)|perfusion/],
     ["lung auscultation", /auscultate posterior lung fields|lung sounds|breath sounds/],
@@ -330,7 +332,7 @@ function generatedChecklistBundledLabelFailures(module = {}, scenarioName = "", 
     (section.items || []).forEach((item) => {
       const kind = item.category || section.category;
       const label = String(item.label || "").replace(/\s+/g, " ").trim();
-      const canonicalSourceDomain = /^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|CNS, joint, spine, or rapid-worsening danger symptoms)\?$/i.test(label);
+      const canonicalSourceDomain = /^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|severe headache, stiff neck, confusion, seizure, hot swollen joint, severe back pain, fainting, very low urine, or symptoms getting worse quickly)\?$/i.test(label);
       if (canonicalSourceDomain) {
         return;
       }
@@ -377,6 +379,29 @@ assert.equal(dkaModule?.id, "hyperglycemia_possible_dka_v1", "hyperglycemia text
 
 const feverModule = selectComplaintModule("fever with chills and possible pneumonia");
 assert.equal(feverModule?.id, "fever_infection_sepsis_v1", "fever text should route to fever/infection/sepsis module");
+
+const lowTestosteroneModule = selectComplaintModule("low testosterone with low libido and fatigue");
+assert.equal(lowTestosteroneModule?.id, "hypogonadism_v1", "low testosterone text should route to hypogonadism module");
+const testosteroneDeficiencyModule = selectComplaintModule("testosterone deficiency and reduced morning erections");
+assert.equal(testosteroneDeficiencyModule?.id, "hypogonadism_v1", "testosterone deficiency text should route to hypogonadism module");
+const lowTestosteroneResult = evaluateComplaintCds(
+  "testosterone deficiency with low libido and reduced morning erections",
+  {},
+  { module: testosteroneDeficiencyModule }
+);
+const lowTestosteroneChecklist = parseChecklist(buildLocalChecklistFromWorkup(
+  { complaintResult: lowTestosteroneResult, recommendation: lowTestosteroneResult.recommendation },
+  { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+));
+assert.ok(
+  lowTestosteroneChecklist.flatMap((section) => section.items || []).length >= 8,
+  "testosterone deficiency should build a parseable bedside checklist"
+);
+assert.match(
+  lowTestosteroneChecklist.flatMap((section) => section.items || []).map((item) => item.label || item.text || "").join("\n"),
+  /libido|morning erections|testicular/i,
+  "testosterone deficiency checklist should include hypogonadism-specific bedside questions"
+);
 
 const plainFever = evaluateComplaintCds("fever", {}, { module: feverModule });
 assert.equal(plainFever.matched, true, "plain fever should match the fever/infection/sepsis module");
@@ -510,8 +535,13 @@ assert.match(
 );
 assert.doesNotMatch(
   chestPainChecklist,
-  /What does it feel like, where is it|What does it feel like present|Any it radiate to arm|Jaw present|No known known CAD/i,
+  /What does it feel like, where is it|What does it feel like present|Any it radiate to arm|Jaw present|No known known CAD|Any known CAD|Any syncope|Any presyncope|prior MI|CABG|CKD/i,
   "source-backed chest pain checklist should not keep bundled rows or generic fragment controls"
+);
+assert.match(
+  chestPainChecklist,
+  /Have you ever been told you have coronary artery disease\?|Did you faint or pass out\?|Did you feel like you might faint or pass out\?/i,
+  "source-backed chest pain checklist should rewrite shorthand into patient-facing questions"
 );
 
 const suspectedPeIntent = getClinicalIntentById("suspected_pe_v1");
@@ -595,7 +625,7 @@ assertHas(dka.differentialBuckets, /glucose >=200|beta-hydroxybutyrate >=3.0|glu
 const dkaChecklist = buildLocalChecklistFromWorkup({ complaintResult: dka }, { maxBedsideQuestions: 18 });
 assert.match(
   dkaChecklist,
-  /What type of diabetes does the patient have\?: Type 1 \/ Type 2 \/ Other \/ Unknown/i,
+  /What type of diabetes do you have\?: Type 1 \/ Type 2 \/ Other \/ Unknown/i,
   "source-backed DKA checklist should atomize diabetes type controls"
 );
 assert.match(
@@ -779,6 +809,8 @@ complaintModules.forEach((module) => {
     ["conditionalExam", result.conditionalExam || []],
     ["initialTests", result.initialTests || []],
     ["dispositionRules", result.dispositionRules || []],
+    ["decisionTrees", result.decisionTrees || []],
+    ["treatmentOptions", result.treatmentOptions || []],
     ["limitationsAndInterpretationCautions", result.limitationsAndInterpretationCautions || []],
     ["suppressedNotRecommendedItems", result.suppressedNotRecommendedItems || []],
     ["catalogGapsNeedingReview", result.catalogGapsNeedingReview || []],

@@ -540,9 +540,372 @@ function deploymentAdditions(row) {
     tests: uniqueList([...(row.tests || []), ...shared.tests, ...(extra.tests || [])]),
     reference_values: uniqueList([...(row.reference_values || []), ...shared.reference_values, ...(extra.reference_values || [])]),
     red_flags: uniqueList([...(row.red_flags || []), ...shared.red_flags, ...(extra.red_flags || [])]),
-    management_changes: uniqueList([...(row.management_changes || []), ...shared.management_changes, ...(extra.management_changes || [])])
+    management_changes: uniqueList([...(row.management_changes || []), ...shared.management_changes, ...(extra.management_changes || [])]),
+    decision_steps: uniqueList([...(row.decision_steps || []), ...guidelineDecisionSupport(row).decision_steps]),
+    treatment_options: uniqueList([...(row.treatment_options || []), ...guidelineDecisionSupport(row).treatment_options])
   };
 }
+
+function guidelineDecisionSupport(row = {}) {
+  const diagnosis = String(row.diagnosis || "");
+  const lower = diagnosis.toLowerCase();
+  const defaultDecisionSteps = [
+    `Confirm that ${diagnosis} is the selected clinical intent, then screen for red flags before routine outpatient testing.`,
+    `Order the first-line tests in sequence: ${cleanSupportList(row.tests?.slice(0, 3)) || "use the guideline-specified diagnostic test set"}.`,
+    `Interpret numeric results against the workup cutoffs and local assay ranges: ${row.reference_values?.slice(0, 2).join(" ") || "use the listed diagnostic thresholds."}`,
+    `If the initial result is equivocal, discordant with the phenotype, or affected by medication, acute illness, pregnancy, age, sex, or assay interference, repeat or confirm using the next guideline test before committing to long-term therapy.`
+  ];
+  const defaultTreatmentOptions = [
+    `Treat unstable presentations first using the urgent escalation rule for ${diagnosis}; draw time-sensitive labs only if doing so does not delay stabilization.`,
+    `For confirmed ${diagnosis}, choose therapy based on severity, comorbidities, pregnancy/fertility context, contraindications, patient preference, and local specialty pathway.`,
+    `Monitor treatment response with the condition-specific clinical endpoint plus the most relevant labs or imaging listed in this workup.`,
+    `Escalate to endocrinology or the relevant specialty when results are severe, discordant, recurrent, treatment-limiting, or require localization, surgery, genetic testing, or high-risk medication.`
+  ];
+  const s = (decisionSteps, treatmentOptions) => ({
+    decision_steps: uniqueList([...decisionSteps, ...defaultDecisionSteps]).slice(0, 8),
+    treatment_options: uniqueList([...treatmentOptions, ...defaultTreatmentOptions]).slice(0, 8)
+  });
+
+  if (/type 2 diabetes/.test(lower)) return s([
+    "Diagnose with A1c >=6.5%, fasting plasma glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, or random glucose >=200 mg/dL with classic symptoms; repeat confirmatory testing if asymptomatic.",
+    "At diagnosis, classify ASCVD, heart failure, CKD, obesity, hypoglycemia risk, medication access, and pregnancy possibility before selecting therapy.",
+    "Screen complications with eGFR, urine albumin-creatinine ratio, lipids, BP, foot neuropathy/perfusion exam, and eye/retinopathy follow-up.",
+    "If vomiting, dehydration, weight loss, ketones, acidosis, or very high glucose is present, route to DKA/HHS evaluation instead of routine outpatient titration."
+  ], [
+    "Begin individualized lifestyle, diabetes education, weight-management, BP/lipid, tobacco, vaccine, kidney, and cardiovascular risk-reduction plan.",
+    "Use metformin when appropriate and add GLP-1 RA or SGLT2 inhibitor preferentially when ASCVD, CKD, heart failure, obesity, or cardiorenal risk dominates.",
+    "Use insulin when catabolic symptoms, ketosis, severe symptomatic hyperglycemia, or A1c/glucose level suggests insulin deficiency or urgent control is needed.",
+    "Titrate therapy to individualized A1c and glucose goals while monitoring hypoglycemia, kidney function, adverse effects, and access."
+  ]);
+  if (/type 1 diabetes/.test(lower)) return s([
+    "If symptomatic hyperglycemia, check glucose, beta-hydroxybutyrate or urine ketones, electrolytes, anion gap, bicarbonate, pH, and osmolality as indicated.",
+    "Confirm autoimmune insulin-deficient diabetes with islet autoantibodies and C-peptide interpreted with concurrent glucose when presentation is not classic.",
+    "Classify acute DKA/HHS severity before routine chronic diabetes planning; euglycemic DKA remains possible with SGLT2 inhibitor exposure.",
+    "After stabilization, screen thyroid/celiac/autoimmune comorbidity and chronic complications according to duration and age."
+  ], [
+    "Treat DKA/HHS with institutional protocol for IV fluids, insulin, potassium, dextrose transition, precipitant treatment, and monitored disposition.",
+    "Use lifelong physiologic basal-bolus insulin or pump therapy with CGM when feasible, plus education on carbohydrate dosing and correction factors.",
+    "Prescribe glucagon rescue, sick-day rules, ketone testing, backup basal insulin plan, and supplies before discharge or transition.",
+    "Adjust regimen to avoid severe hypoglycemia and address technology access, exercise, meals, pregnancy, renal function, and psychosocial barriers."
+  ]);
+  if (/prediabetes/.test(lower)) return s([
+    "Classify prediabetes with A1c 5.7-6.4%, fasting glucose 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL after excluding diabetes-range results.",
+    "Assess BMI, waist, BP, lipids, fatty liver, sleep apnea, PCOS, prior gestational diabetes, medications, and ASCVD risk.",
+    "Repeat diabetes testing on a surveillance interval and sooner if symptoms, steroid exposure, pregnancy, or rising risk appears.",
+    "If any confirmatory result reaches diabetes range, switch to the diabetes diagnostic and treatment pathway."
+  ], [
+    "Offer intensive lifestyle intervention aiming for durable weight loss when appropriate, nutrition quality, physical activity, sleep, and tobacco risk reduction.",
+    "Consider metformin for higher-risk adults such as younger age with obesity, prior gestational diabetes, rising A1c, or other strong diabetes-risk features.",
+    "Treat BP, lipids, fatty liver risk, sleep apnea, and weight-related comorbidities as part of cardiometabolic risk reduction.",
+    "Use shared decision-making for anti-obesity pharmacotherapy or bariatric referral when BMI/comorbidity criteria and patient goals support it."
+  ]);
+  if (/gestational diabetes/.test(lower)) return s([
+    "Confirm pregnancy status and gestational age; screen high-risk patients early for overt diabetes and otherwise test at 24-28 weeks using the local one-step or two-step strategy.",
+    "Interpret one-step 75-g OGTT using fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL; one abnormal value diagnoses GDM in that strategy.",
+    "If using two-step testing, route abnormal 50-g screen to diagnostic 100-g OGTT and apply local Carpenter-Coustan or NDDG thresholds.",
+    "After delivery, schedule 75-g OGTT at 4-12 weeks and long-term diabetes surveillance."
+  ], [
+    "Start nutrition therapy, activity as obstetrically appropriate, glucose monitoring, and obstetric fetal-growth coordination.",
+    "Add insulin when lifestyle therapy does not meet pregnancy glucose targets or if fasting/postprandial values are persistently above local goals.",
+    "Use metformin or glyburide only within local obstetric/endocrine policy and shared decision-making about placental transfer and failure rates.",
+    "Escalate vomiting, ketones, dehydration, severe hyperglycemia, hypertension, or fetal/maternal danger signs urgently."
+  ]);
+  if (/metabolic syndrome/.test(lower)) return s([
+    "Apply ATP III-style criteria and count waist, triglycerides, HDL, BP, and fasting glucose abnormalities; three or more supports metabolic syndrome.",
+    "Look for secondary contributors and related disease: diabetes, fatty liver, sleep apnea, PCOS, hypothyroidism, medications, and alcohol.",
+    "Estimate ASCVD and diabetes risk, then decide whether each risk factor needs lifestyle alone or pharmacologic treatment.",
+    "If glycemia reaches diabetes range, route to diabetes diagnosis and complication screening."
+  ], [
+    "Use intensive lifestyle intervention for weight, waist, diet quality, physical activity, sleep, and alcohol/tobacco risk.",
+    "Treat hypertension, dyslipidemia, hypertriglyceridemia, and diabetes/prediabetes according to their individual guideline thresholds.",
+    "Consider anti-obesity medication or bariatric referral when BMI criteria and comorbidity burden support it.",
+    "Coordinate fatty liver, sleep apnea, PCOS, CKD, and ASCVD prevention follow-up."
+  ]);
+  if (/hypothyroidism|hashimoto/.test(lower)) return s([
+    "Start with TSH and free T4; high TSH with low free T4 supports overt primary hypothyroidism, while low free T4 with low/normal TSH suggests central disease.",
+    "Check TPO antibody when autoimmune thyroiditis changes prognosis, pregnancy planning, or etiology; ultrasound is reserved for goiter, nodule, asymmetry, or compressive symptoms.",
+    "Before levothyroxine escalation in pituitary disease or severe illness, assess adrenal insufficiency risk.",
+    "Screen urgently for myxedema coma physiology when hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, or altered mental status is present."
+  ], [
+    "Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
+    "For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
+    "Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.",
+    "For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol."
+  ]);
+  if (/hyperthyroidism|graves|thyrotoxicosis/.test(lower)) return s([
+    "Confirm thyrotoxicosis with suppressed TSH plus elevated free T4 and/or T3, then determine etiology with TRAb/TSI, uptake scan, Doppler ultrasound, medication/iodine history, or thyroiditis labs.",
+    "Differentiate high-uptake hormone overproduction from low-uptake thyroiditis, exogenous hormone, iodine/amiodarone effect, or destructive thyroiditis because treatment differs.",
+    "Assess severity with heart rate/rhythm, fever, heart failure, mental status, liver disease, pregnancy, orbitopathy, and thyroid storm features.",
+    "For nodular or uncertain disease, evaluate autonomous nodules and malignancy-risk features before definitive therapy."
+  ], [
+    "Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.",
+    "Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.",
+    "Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.",
+    "Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism."
+  ]);
+  if (/thyroid nodules/.test(lower)) return s([
+    "Measure TSH first; if TSH is low, obtain radionuclide scan to identify hyperfunctioning nodules before FNA decisions.",
+    "If TSH is normal or high, perform high-quality thyroid ultrasound with risk stratification, nodule size, cervical node assessment, and compressive-symptom review.",
+    "Apply the local ATA, ACR TI-RADS, or ETA risk-system size thresholds for FNA; high-risk sonographic patterns have lower biopsy thresholds than low-risk patterns.",
+    "Use Bethesda cytology, molecular testing when locally appropriate, and ultrasound surveillance intervals to decide repeat FNA, surgery, or observation."
+  ], [
+    "Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.",
+    "Treat autonomous hyperfunctioning nodules with radioactive iodine, surgery, or ablation according to size, symptoms, pregnancy context, and local expertise.",
+    "Refer suspicious cytology, suspicious nodes, rapid growth, compressive symptoms, or high-risk history to thyroid specialist/surgery.",
+    "Consider minimally invasive ablation only for selected benign symptomatic nodules in centers with appropriate expertise."
+  ]);
+  if (/thyroid cancer/.test(lower)) return s([
+    "Confirm malignant or suspicious disease with ultrasound mapping, FNA/Bethesda cytology, and node evaluation; check calcitonin/CEA and RET when medullary cancer is suspected.",
+    "Risk-stratify by tumor type, size, nodal/distant spread, invasion, cytology/histology, molecular/genetic findings, voice/airway status, and patient goals.",
+    "Use cross-sectional imaging, laryngoscopy, or additional staging when bulky, invasive, recurrent, high-risk, or medullary/anaplastic disease is possible.",
+    "After initial therapy, monitor dynamic risk using thyroglobulin/antibody or calcitonin/CEA as appropriate plus neck imaging."
+  ], [
+    "Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.",
+    "Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
+    "For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.",
+    "Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently."
+  ]);
+  if (/osteoporosis/.test(lower)) return s([
+    "Diagnose osteoporosis by fragility fracture, T-score <= -2.5, or high fracture risk; assess vertebral imaging and secondary causes before therapy selection.",
+    "Classify fracture risk as high versus very high using recent fracture, multiple fractures, very low BMD, falls, glucocorticoids, and FRAX or local tool.",
+    "Check calcium, 25(OH)D, kidney function, PTH or other secondary-cause labs as indicated before antiresorptive or anabolic therapy.",
+    "Reassess BMD and fracture risk after therapy interval, especially after 3-5 years of bisphosphonate exposure."
+  ], [
+    "Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.",
+    "Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.",
+    "Use denosumab when appropriate, but plan transition therapy if stopping to avoid rebound vertebral fracture risk.",
+    "Ensure calcium/vitamin D adequacy, fall prevention, exercise, smoking/alcohol counseling, dental risk review, and secondary-cause treatment."
+  ]);
+  if (/osteopenia/.test(lower)) return s([
+    "Classify T-score between -1.0 and -2.5 as osteopenia and combine with FRAX or local fracture-risk tool rather than treating T-score alone.",
+    "Look for fragility fracture, vertebral compression, glucocorticoid exposure, endocrine causes, malabsorption, CKD, and fall risk.",
+    "If fracture risk crosses treatment threshold or a fragility fracture is present, route to osteoporosis treatment pathway.",
+    "If below treatment threshold, set surveillance interval and prevention plan based on baseline risk."
+  ], [
+    "Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review.",
+    "Start osteoporosis pharmacotherapy if FRAX/local risk threshold, fragility fracture, or progression to osteoporosis occurs.",
+    "Treat reversible secondary causes such as hyperthyroidism, hyperparathyroidism, vitamin D deficiency, hypogonadism, malabsorption, or glucocorticoid exposure.",
+    "Repeat DXA on an interval driven by risk, prior BMD, age, and treatment decisions."
+  ]);
+  if (/primary hyperparathyroidism/.test(lower)) return s([
+    "Confirm repeated hypercalcemia or high ionized calcium with inappropriately high or nonsuppressed PTH after correcting albumin and vitamin D context.",
+    "Assess kidney and skeletal involvement with eGFR/creatinine clearance, 24-hour urine calcium, renal imaging for stones, DXA, and vertebral imaging when indicated.",
+    "Differentiate familial hypocalciuric hypercalcemia, medication effects, malignancy, granulomatous disease, and secondary hyperparathyroidism before surgery.",
+    "Apply surgical criteria including symptoms, calcium elevation, osteoporosis/fracture, kidney stones, renal impairment, hypercalciuria, and age per guideline."
+  ], [
+    "Refer surgical candidates for parathyroidectomy with localization imaging used for operative planning, not diagnosis.",
+    "For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; maintain hydration and avoid exacerbating medications when possible.",
+    "Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; use antiresorptive therapy for low BMD when appropriate.",
+    "Treat severe symptomatic hypercalcemia urgently with fluids, antiresorptive/calcitonin strategies, and specialist input."
+  ]);
+  if (/hypoparathyroidism/.test(lower)) return s([
+    "Confirm hypocalcemia with low or inappropriately normal PTH, then check phosphorus, magnesium, creatinine/eGFR, 25(OH)D, urinary calcium, and postsurgical history.",
+    "Classify acute symptomatic hypocalcemia separately from chronic stable disease; ECG/QT, seizure, laryngospasm, or arrhythmia changes urgency.",
+    "Identify reversible contributors such as hypomagnesemia, vitamin D deficiency, hungry bone, renal disease, or medication effects.",
+    "Monitor chronic therapy by serum calcium target, urinary calcium, kidney function, phosphorus, magnesium, and renal imaging when indicated."
+  ], [
+    "Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.",
+    "Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
+    "Use thiazide and low-sodium strategy for hypercalciuria when appropriate; avoid overtreatment that raises kidney-stone or nephrocalcinosis risk.",
+    "Consider PTH replacement pathway when conventional therapy is inadequate or causes complications, subject to availability and specialty oversight."
+  ]);
+  if (/vitamin d/.test(lower)) return s([
+    "Test 25(OH)D when there is an established indication such as bone disease, hypocalcemia, malabsorption, CKD, osteoporosis therapy planning, or osteomalacia concern.",
+    "Interpret low 25(OH)D with calcium, phosphorus, alkaline phosphatase, PTH, renal function, symptoms, and fracture/bone pain context.",
+    "If osteomalacia is suspected, look for low phosphorus, elevated alkaline phosphatase, secondary hyperparathyroidism, Looser zones, or proximal weakness.",
+    "Avoid routine population screening or target chasing in otherwise healthy adults where the 2024 prevention guideline does not support it."
+  ], [
+    "Replete vitamin D and calcium intake when deficiency is clinically relevant, using local dosing protocols and malabsorption/obesity/medication adjustments.",
+    "Treat osteomalacia with vitamin D repletion, calcium/phosphate strategy when indicated, and cause-specific therapy for malabsorption, renal phosphate wasting, or medication effects.",
+    "Use age/risk-appropriate empiric supplementation only where guideline groups support it; otherwise follow dietary reference intake.",
+    "Monitor calcium, phosphorus, PTH, alkaline phosphatase, 25(OH)D, symptoms, and bone outcomes according to indication and risk."
+  ]);
+  if (/adrenal insufficiency|addison/.test(lower)) return s([
+    "If adrenal crisis is possible, draw cortisol/ACTH only if it does not delay treatment, then give stress-dose hydrocortisone and fluids immediately.",
+    "In stable patients, obtain early morning cortisol with ACTH; if indeterminate or suspicious, perform 250 microgram cosyntropin stimulation test.",
+    "Interpret cosyntropin peak cortisol using assay-specific cutoff, traditionally <18 ug/dL but often lower with modern assays; high ACTH supports primary adrenal insufficiency.",
+    "After primary adrenal insufficiency is confirmed, check renin/aldosterone and 21-hydroxylase antibodies and evaluate etiology; low/normal ACTH routes to pituitary workup."
+  ], [
+    "Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol.",
+    "For chronic replacement, use hydrocortisone 15-25 mg/day in divided doses or prednisolone 3-5 mg/day when appropriate; avoid dexamethasone for routine replacement.",
+    "Add fludrocortisone 50-100 microgram/day and liberal salt intake when aldosterone deficiency is confirmed, monitoring BP, edema, electrolytes, salt craving, and renin.",
+    "Provide sick-day rules, emergency injectable glucocorticoid plan, medical alert identification, perioperative stress dosing, and pregnancy-specific review."
+  ]);
+  if (/cushing/.test(lower)) return s([
+    "Exclude exogenous glucocorticoid exposure first, including injections, creams, inhaled, topical, supplements, and medication interactions.",
+    "Screen with one of the recommended first-line tests: 1-mg overnight dexamethasone suppression, late-night salivary cortisol, or 24-hour urinary free cortisol, repeating or confirming abnormal results.",
+    "After endogenous hypercortisolism is confirmed, measure ACTH to separate ACTH-independent from ACTH-dependent disease.",
+    "Use adrenal imaging for ACTH-independent disease; for ACTH-dependent disease use pituitary MRI and inferior petrosal sinus sampling when imaging and biochemistry are discordant."
+  ], [
+    "Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
+    "Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
+    "Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.",
+    "Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment."
+  ]);
+  if (/hyperaldosteronism|conn/.test(lower)) return s([
+    "Screen hypertensive patients with aldosterone, renin, ARR, and potassium; correct hypokalemia and manage interfering medications when safe.",
+    "A positive screen generally requires suppressed renin with inappropriately high aldosterone and elevated ARR; use local assay cutoffs and repeat if medication or potassium confounds results.",
+    "If overt biochemical primary aldosteronism is present, confirmatory suppression testing may be unnecessary before PA-specific therapy in selected patients.",
+    "After biochemical diagnosis, obtain adrenal CT and decide on adrenal vein sampling for lateralization when surgery is desired and feasible."
+  ], [
+    "Use unilateral adrenalectomy for lateralizing disease in surgical candidates who desire surgery.",
+    "Use mineralocorticoid receptor antagonists such as spironolactone or eplerenone for bilateral disease, nonsurgical candidates, or patients not pursuing surgery.",
+    "Correct hypokalemia, monitor renin/aldosterone response, BP, potassium, kidney function, and medication tolerance.",
+    "Treat cardiovascular, kidney, sleep apnea, and resistant-hypertension risk aggressively because PA-specific therapy reduces excess risk."
+  ]);
+  if (/pheochromocytoma/.test(lower)) return s([
+    "Test with plasma free metanephrines or urinary fractionated metanephrines using proper sampling conditions; repeat borderline results with optimized preparation.",
+    "Marked metanephrine elevation, especially >3 times upper limit, strongly supports PPGL and should route to localization imaging.",
+    "Do not proceed to biopsy or surgery for suspected PPGL without biochemical framing and preoperative blockade unless emergent specialist-directed care is required.",
+    "Assess hereditary risk, multifocal disease, metastatic disease, and medication/stress confounders."
+  ], [
+    "Begin alpha-adrenergic blockade and volume/salt preparation before surgery once diagnosis is established; add beta-blocker only after adequate alpha blockade if tachyarrhythmia requires it.",
+    "Refer for adrenalectomy or tumor resection with endocrine, anesthesia, and surgical planning.",
+    "Use genetic counseling/testing when PPGL is confirmed or hereditary features are present.",
+    "Manage hypertensive crisis, arrhythmia, ACS/stroke symptoms, or planned urgent procedure with specialist/ICU-level support."
+  ]);
+  if (/congenital adrenal hyperplasia/.test(lower)) return s([
+    "For suspected classic CAH or crisis, check electrolytes, glucose, cortisol/ACTH context, 17-hydroxyprogesterone, renin/aldosterone, and treat instability immediately.",
+    "For nonclassic CAH, screen with early morning follicular 17-hydroxyprogesterone and confirm with cosyntropin-stimulated testing when borderline.",
+    "Interpret 17-OHP by age, gestational age, sex, assay, timing, menstrual phase, and glucocorticoid exposure.",
+    "Use androgen profile and CYP21A2 genetics when diagnosis, family planning, or genotype-phenotype counseling is needed."
+  ], [
+    "Treat adrenal crisis or salt-wasting with stress-dose hydrocortisone, fluids, dextrose, electrolyte correction, and mineralocorticoid/salt support as indicated.",
+    "Use physiologic glucocorticoid replacement for classic CAH and fludrocortisone when mineralocorticoid deficiency is present.",
+    "For nonclassic CAH, treat symptoms such as hirsutism, acne, menstrual dysfunction, or infertility rather than asymptomatic labs alone.",
+    "Monitor growth/puberty in younger patients and adult overtreatment risks including Cushingoid effects, bone, metabolic, fertility, and adrenal-rest tumors."
+  ]);
+  if (/polycystic ovary|hirsutism/.test(lower)) return s([
+    "Exclude pregnancy and dangerous mimics first, especially rapid virilization or tumor-range androgens.",
+    "Diagnose adult PCOS with two of three Rotterdam features after excluding mimics: ovulatory dysfunction, hyperandrogenism, and PCOM or elevated AMH where guideline-supported.",
+    "Measure total/free testosterone with reliable assay; add DHEAS, 17-OHP, TSH, prolactin, and Cushing/acromegaly workup when phenotype suggests.",
+    "Assess metabolic risk with BP, BMI/waist, glycemia or OGTT, lipids, sleep apnea, fatty liver, and mood/quality-of-life screening."
+  ], [
+    "Use lifestyle and weight-management support for metabolic risk and patient goals.",
+    "Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
+    "Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.",
+    "For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline."
+  ]);
+  if (/hypogonadism/.test(lower)) return s([
+    "Confirm symptoms plus consistently low morning total testosterone on two separate occasions; check free testosterone when SHBG is altered or total testosterone is borderline.",
+    "Measure LH/FSH to classify primary versus secondary hypogonadism; add prolactin, iron studies, pituitary evaluation, or karyotype/testicular workup as indicated.",
+    "Assess fertility goals before therapy because exogenous testosterone suppresses spermatogenesis.",
+    "Before testosterone therapy, assess prostate/breast risk, hematocrit, untreated severe sleep apnea, heart failure, recent cardiovascular events, and contraindications."
+  ], [
+    "Treat reversible causes such as obesity, sleep apnea, medications, opioids/anabolic steroid withdrawal, systemic illness, pituitary disease, or hyperprolactinemia.",
+    "Use testosterone therapy only for confirmed symptomatic testosterone deficiency without contraindications and with monitoring of symptoms, testosterone level, hematocrit, PSA/prostate risk, and adverse effects.",
+    "Use fertility-preserving approaches such as gonadotropins or selective estrogen receptor modulators under specialist care when conception is desired.",
+    "Refer severe secondary hypogonadism, pituitary mass symptoms, very low testosterone with low/normal gonadotropins, infertility, or testicular mass urgently."
+  ]);
+  if (/menopause|premature ovarian insufficiency/.test(lower)) return s([
+    "For typical menopause at usual age, diagnose clinically when appropriate; rule out pregnancy or abnormal bleeding causes when indicated.",
+    "For POI under age 40, confirm ovarian insufficiency with elevated FSH and low estradiol in the right clinical context, repeating if uncertain.",
+    "Evaluate POI causes and consequences with pregnancy test, TSH/prolactin when relevant, karyotype/FMR1/adrenal-thyroid autoimmunity, DXA, and fertility counseling as indicated.",
+    "Assess contraindications to hormone therapy, cardiovascular/VTE/breast cancer risk, uterine status, symptom burden, bone risk, and patient preferences."
+  ], [
+    "Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.",
+    "For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.",
+    "Use nonhormonal options for vasomotor symptoms when hormone therapy is contraindicated or declined.",
+    "Treat genitourinary symptoms with local vaginal therapy or nonhormonal measures based on severity, contraindications, and preference."
+  ]);
+  if (/erectile dysfunction/.test(lower)) return s([
+    "Assess onset, libido, morning erections, vascular risk, medications, depression, sleep apnea, neurologic symptoms, and cardiovascular exercise tolerance.",
+    "Measure morning testosterone when low libido, symptoms of hypogonadism, infertility, or endocrine features are present; screen glycemia and lipids.",
+    "If testosterone is low, repeat and classify with LH/FSH and prolactin or pituitary workup when indicated.",
+    "Identify red flags such as priapism, penile trauma, neurologic deficit, testicular mass, or unstable cardiovascular symptoms."
+  ], [
+    "Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.",
+    "Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.",
+    "Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.",
+    "Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated."
+  ]);
+  if (/amenorrhea/.test(lower)) return s([
+    "Rule out pregnancy first in all pregnancy-capable patients with amenorrhea.",
+    "Initial labs include TSH, prolactin, FSH, and estradiol; add androgen testing when hyperandrogenism is present.",
+    "Use FSH/estradiol pattern to separate ovarian insufficiency from hypothalamic/pituitary causes, then image pituitary or pelvis when indicated.",
+    "Check urgent causes: pregnancy with pain/bleeding, severe eating disorder/vital instability, headache/vision symptoms, or rapid virilization."
+  ], [
+    "Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.",
+    "For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.",
+    "For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.",
+    "Provide endometrial protection for chronic anovulation when pregnancy is not desired."
+  ]);
+  if (/infertility/.test(lower)) return s([
+    "Confirm duration, age, ovulatory pattern, pregnancy loss history, partner factors, and urgency criteria before endocrine-only testing.",
+    "Evaluate ovulation and endocrine causes with pregnancy test when amenorrhea, TSH, prolactin, ovarian reserve markers when indicated, PCOS/androgen labs, and midluteal progesterone when useful.",
+    "Include semen analysis and tubal/uterine evaluation rather than assuming an endocrine-only cause.",
+    "Escalate earlier for age, POI, severe oligo/azoospermia, amenorrhea, recurrent loss, known tubal disease, or cancer-treatment history."
+  ], [
+    "Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.",
+    "Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
+    "Use gonadotropins, dopamine agonists, surgery, ART, or male-factor treatment according to etiology and specialist guidance.",
+    "Avoid teratogenic medications and align treatment with pregnancy status, partner context, and patient goals."
+  ]);
+  if (/gynecomastia/.test(lower)) return s([
+    "Distinguish glandular gynecomastia from adiposity and from suspicious breast mass, then assess medications, substances, liver/kidney/thyroid disease, hypogonadism, and testicular symptoms.",
+    "Order testosterone, LH/FSH, estradiol, hCG, prolactin, TSH, liver/kidney tests, and testicular ultrasound when tumor or testicular abnormality is suspected.",
+    "Urgently evaluate hard eccentric mass, nipple discharge, skin/nodal changes, testicular mass, rapid progression, or elevated hCG/estradiol.",
+    "If pubertal, medication-related, or physiologic and low risk, observe with follow-up."
+  ], [
+    "Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.",
+    "Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
+    "Consider selective estrogen receptor modulator therapy for painful recent gynecomastia in appropriate patients with specialist input.",
+    "Refer for breast imaging, oncology/urology/endocrine, or surgery when malignant, testicular, persistent, severe, or distressing disease is present."
+  ]);
+  if (/prolactinoma/.test(lower)) return s([
+    "Confirm hyperprolactinemia with repeat fasting morning prolactin when mild or discordant; exclude pregnancy, hypothyroidism, kidney disease, medications, chest wall causes, and macroprolactin.",
+    "Prolactin in the 15-20 ng/mL range generally excludes hyperprolactinemia in many assays, but use local reference intervals.",
+    "Obtain pituitary MRI for persistent unexplained prolactin elevation or mass-effect symptoms.",
+    "Assess hypogonadism, fertility goals, visual fields, macroadenoma size, pregnancy, and apoplexy symptoms."
+  ], [
+    "Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.",
+    "Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.",
+    "Use surgery or radiation when medication is not tolerated, ineffective, or urgent decompression is required.",
+    "Manage pregnancy with specialist plan, especially macroadenoma or visual symptoms."
+  ]);
+  if (/acromegaly|gigantism/.test(lower)) return s([
+    "Screen with age/sex/puberty-adjusted IGF-1 when phenotype suggests GH excess.",
+    "Confirm with oral glucose GH suppression testing when IGF-1 is elevated or equivocal; use assay-specific GH nadir cutoffs.",
+    "After biochemical confirmation, obtain pituitary MRI and assess visual fields and pituitary axes.",
+    "Screen complications including sleep apnea, hypertension, diabetes, cardiomyopathy, colon polyps, arthropathy, thyroid nodules, and in gigantism growth velocity/bone age/puberty."
+  ], [
+    "Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.",
+    "Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease.",
+    "Treat comorbidities such as sleep apnea, diabetes, hypertension, cardiomyopathy, colon neoplasia risk, and joint disease.",
+    "Monitor IGF-1, GH suppression/remission criteria, MRI, pituitary deficits, and complication surveillance longitudinally."
+  ]);
+  if (/hypopituitarism/.test(lower)) return s([
+    "Assess pituitary mass effect and emergency adrenal status first; check 8 AM cortisol/ACTH or dynamic testing when safe.",
+    "Evaluate axes with free T4/TSH, LH/FSH plus sex steroid, prolactin, IGF-1 and GH testing when indicated, and sodium/osmolality if DI is possible.",
+    "Obtain pituitary MRI for structural cause, prior tumor follow-up, or multiple axis deficits.",
+    "Never start or increase thyroid hormone in suspected central adrenal insufficiency until glucocorticoid status is addressed."
+  ], [
+    "Replace glucocorticoid deficiency before thyroid hormone, with stress-dose education and emergency steroid plan.",
+    "Use levothyroxine for central hypothyroidism titrated to free T4, not TSH.",
+    "Replace sex steroids, fertility therapy, desmopressin, or growth hormone selectively based on axis deficit, age, contraindications, and goals.",
+    "Treat tumor, apoplexy, visual compromise, or postoperative/radiation complications with endocrine-neurosurgical coordination."
+  ]);
+  if (/diabetes insipidus/.test(lower)) return s([
+    "First confirm hypotonic polyuria: high urine volume with low urine osmolality, then check serum sodium and plasma osmolality.",
+    "Exclude osmotic diuresis and reversible nephrogenic contributors: hyperglycemia, hypercalcemia, hypokalemia, kidney disease, lithium, and diuretics.",
+    "Differentiate central DI, nephrogenic DI, and primary polydipsia using supervised water deprivation/desmopressin or copeptin-based testing when stable.",
+    "In postoperative or impaired-consciousness patients, treat hypernatremia and water access risk as urgent before elective diagnostic testing."
+  ], [
+    "For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.",
+    "For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
+    "For primary polydipsia, avoid empiric desmopressin unless clearly indicated and address psychiatric, medication, or behavioral drivers.",
+    "Treat hypernatremia or inability to drink with monitored fluids, desmopressin if central DI is likely, urine output tracking, and frequent sodium checks."
+  ]);
+  return s([], []);
+}
+
+function cleanSupportList(items = []) {
+  return (items || [])
+    .map((item) => String(item || "").replace(/\s+/g, " ").replace(/[.;\s]+$/g, "").trim())
+    .filter(Boolean)
+    .join("; ");
+}
+
 
 function augmentWorkup(row) {
   return {
@@ -637,8 +1000,10 @@ function rawSeedReportSections(row) {
     conditional_exam_add_ons: [],
     diagnostic_workup_and_reference_values: row.tests || [],
     reference_ranges_and_diagnostic_thresholds: row.reference_values || [],
+    clinical_decision_tree: row.decision_steps || [],
     red_flags: row.red_flags || [],
-    results_that_change_management: row.management_changes || []
+    results_that_change_management: row.management_changes || [],
+    treatment_options: row.treatment_options || []
   };
 }
 
@@ -658,8 +1023,10 @@ function buildReportSections(row) {
     conditional_exam_add_ons: (module.conditionalExam || []).filter((item) => !isBasicBedsideDataItem(item)).map(formatExamItem),
     diagnostic_workup_and_reference_values: result.initialTests.map(formatSimpleItem),
     reference_ranges_and_diagnostic_thresholds: row.reference_values || [],
+    clinical_decision_tree: (result.decisionTrees || []).map(formatSimpleItem),
     red_flags: result.redFlags.map(formatSimpleItem),
-    results_that_change_management: result.dispositionRules.map(formatSimpleItem)
+    results_that_change_management: result.dispositionRules.map(formatSimpleItem),
+    treatment_options: (result.treatmentOptions || []).map(formatSimpleItem)
   };
 }
 
@@ -670,7 +1037,7 @@ function validate(row) {
   for (const key of ["source_ids", "questions", "exam", "tests", "reference_values", "red_flags", "management_changes"]) {
     if (!Array.isArray(row[key]) || !row[key].length) issues.push(`missing ${key}`);
   }
-  const minimums = { questions: 4, exam: 3, tests: 4, reference_values: 2, red_flags: 2, management_changes: 3 };
+  const minimums = { questions: 4, exam: 3, tests: 4, reference_values: 2, red_flags: 2, management_changes: 3, decision_steps: 3, treatment_options: 3 };
   for (const [key, minimum] of Object.entries(minimums)) {
     if ((row[key] || []).length < minimum) {
       issues.push(`${key} has ${row[key]?.length || 0}; expected at least ${minimum}`);
@@ -683,6 +1050,8 @@ function validate(row) {
   if (reportSections) {
     if (!reportSections.core_physical_exam_maneuvers?.length) issues.push("report missing core physical exam maneuvers");
     if (!reportSections.basic_bedside_data_safety_checks?.length) issues.push("report missing basic bedside data safety checks");
+    if (!reportSections.clinical_decision_tree?.length) issues.push("report missing clinical decision tree");
+    if (!reportSections.treatment_options?.length) issues.push("report missing treatment options");
     const reportText = JSON.stringify(reportSections);
     if (/Focused physical exam|Vitals and acuity screen|Proximal strength, bone tenderness, gait\/falls, hypocalcemia signs/i.test(reportText)) {
       issues.push("report exposes stale bundled exam wording");
@@ -752,11 +1121,17 @@ function formatReport(results) {
       "Reference ranges / diagnostic thresholds:",
       formatList(row.report_sections.reference_ranges_and_diagnostic_thresholds),
       "",
+      "Clinical decision tree:",
+      formatList(row.report_sections.clinical_decision_tree),
+      "",
       "Red flags:",
       formatList(row.report_sections.red_flags),
       "",
       "Results that change management:",
-      formatList(row.report_sections.results_that_change_management)
+      formatList(row.report_sections.results_that_change_management),
+      "",
+      "Treatment options:",
+      formatList(row.report_sections.treatment_options)
     );
     if (row.quality_issues.length) {
       lines.push("", "Quality issues:", formatList(row.quality_issues));

@@ -34,6 +34,79 @@ function contextContainsTerm(context, term) {
   return context.includes(normalized);
 }
 
+const complaintMatchStopWords = new Set([
+  "a",
+  "an",
+  "and",
+  "for",
+  "in",
+  "men",
+  "of",
+  "or",
+  "patient",
+  "patients",
+  "possible",
+  "related",
+  "the",
+  "to",
+  "with",
+  "women"
+]);
+
+function complaintSearchTokens(value = "") {
+  return normalizeComplaintText(value)
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean)
+    .filter((token) => !complaintMatchStopWords.has(token));
+}
+
+function distinctiveComplaintToken(token = "") {
+  return token.length >= 6 || /^(?:aki|acs|dka|ed|hhs|sti|uti)$/.test(token);
+}
+
+const pediatricComplaintTokens = new Set([
+  "adolescent",
+  "baby",
+  "child",
+  "children",
+  "infant",
+  "paediatric",
+  "pediatric",
+  "teen",
+  "toddler"
+]);
+
+function termRequiresPediatricContext(termTokens = []) {
+  return termTokens.some((token) => pediatricComplaintTokens.has(token));
+}
+
+function contextHasPediatricToken(contextTokens = new Set()) {
+  return Array.from(pediatricComplaintTokens).some((token) => contextTokens.has(token));
+}
+
+function tokenSubsetScore(context, term = "") {
+  const termTokens = complaintSearchTokens(term);
+  if (termTokens.length < 2) return 0;
+  const contextTokens = new Set(complaintSearchTokens(context));
+  if (termRequiresPediatricContext(termTokens) && !contextHasPediatricToken(contextTokens)) return 0;
+  const matched = termTokens.filter((token) => contextTokens.has(token));
+  if (matched.length < 2 || !matched.some(distinctiveComplaintToken)) return 0;
+  const coverage = matched.length / termTokens.length;
+  const coverageBonus = coverage >= 0.6 ? 8 : 0;
+  return 8 + matched.length * 5 + coverageBonus;
+}
+
+function clinicalSynonymModuleScore(module, context) {
+  if (
+    module.id === "hypogonadism_v1"
+    && /\b(?:androgen deficiency|low t|low testosterone|testosterone deficiency)\b/i.test(context)
+  ) {
+    return 60;
+  }
+  return 0;
+}
+
 function answerMatches(answerValue, expected = "yes") {
   const answer = String(answerValue || "unknown").toLowerCase();
   if (Array.isArray(expected)) {
@@ -115,7 +188,11 @@ function moduleScore(module, context) {
     return score + baseScore + leadingDiagnosisBonus;
   }, 0);
   const labelScore = contextContainsTerm(context, module.label) ? 12 : 0;
-  return triggerScore + labelScore;
+  const tokenScore = [
+    module.label,
+    ...(module.triggers || [])
+  ].reduce((score, term) => score + tokenSubsetScore(context, term), 0);
+  return triggerScore + labelScore + tokenScore + clinicalSynonymModuleScore(module, context);
 }
 
 export function selectComplaintModule(inputText, modules = complaintModules) {
@@ -182,6 +259,7 @@ function expectedItemTypeForGroup(group = "") {
   if (group === "redFlags") return "red_flag";
   if (group === "initialTests") return "diagnostic_test";
   if (group === "dispositionRules") return "management_change";
+  if (group === "decisionTrees" || group === "treatmentOptions") return "management_change";
   if (group === "differentialBuckets") return "diagnostic_frame";
   return "";
 }
@@ -389,7 +467,7 @@ function infectionSourceDetailPrompts(normalized = "") {
       "Ask about urinary or flank source: dysuria, frequency, urgency, hematuria, flank pain, catheter/procedure context, pregnancy possibility, and reduced urine output.",
       "Ask about abdominal or GI source: abdominal pain, vomiting, diarrhea, jaundice, blood in stool, poor intake, or severe localized pain.",
       "Ask about skin, wound, or line source: rash, cellulitis, abscess, ulcer, drainage, indwelling line/device, surgical site, or procedure-site tenderness.",
-      "Ask about CNS danger source: severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, or purpura.",
+      "Ask about neurologic danger symptoms: severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, or purpura.",
       "Ask about joint, bone, or spine source: hot swollen joint, focal bone pain, severe back pain, injection drug use, or inability to bear weight.",
       "Ask about host and exposure risks: immunosuppression, pregnancy, recent hospitalization/procedure, travel, outdoor bites, animals, food/water, sick contacts, sexual exposure, injection drug use, and new medications."
     ];
@@ -1202,7 +1280,7 @@ const feverSourceHistoryAtomDefinitions = [
   },
   {
     suffix: "cns_joint_spine",
-    label: "Ask CNS/joint/spine danger symptoms",
+    label: "Ask about severe headache, stiff neck, confusion, seizure, hot swollen joint, severe back pain, fainting, very low urine, or symptoms getting worse quickly",
     text: "Any severe headache, neck stiffness, photophobia, confusion, seizure, petechiae, purpura, hot swollen joint, severe focal bone or back pain, new weakness, bowel or bladder symptoms, fainting, low urine output, or rapid worsening?",
     options: "No / Severe headache / Neck stiffness / Photophobia / Confusion / Seizure / Petechiae or purpura / Hot swollen joint / Focal bone or back pain / New weakness / Bowel or bladder symptoms / Fainting / Low urine output / Rapid worsening / Other ___",
     diagnostic_purpose: "Screens for meningitis/encephalitis, septic arthritis, spine infection, osteomyelitis, bacteremia complications, sepsis severity, and dangerous trajectory.",
@@ -2636,6 +2714,8 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
     ...postpartumMaternalAddOns.dispositionRules,
     ...olderAdultAddOns.dispositionRules
   ];
+  const decisionTrees = includeItems(module.decisionTrees, conditionalContext, answers, "decisionTrees", traceContext);
+  const treatmentOptions = includeItems(module.treatmentOptions, conditionalContext, answers, "treatmentOptions", traceContext);
   const redFlags = [
     ...evaluateRedFlags(module.redFlags, conditionalContext, answers)
       .map((item) => traceComplaintCdsItem(item, module, "redFlags", traceContext.intentTrace, traceContext.authorizedBy)),
@@ -2654,6 +2734,8 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
     ...includedConditionalExam,
     ...initialTests,
     ...dispositionRules,
+    ...decisionTrees,
+    ...treatmentOptions,
     ...redFlags,
     ...differentialBuckets
   ];
@@ -2665,6 +2747,8 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
       ...conditionalExam,
       ...initialTests,
       ...dispositionRules,
+      ...decisionTrees,
+      ...treatmentOptions,
       ...redFlags,
       ...differentialBuckets
     ]),
@@ -2699,6 +2783,8 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
     focusedExam: [...requiredExam, ...conditionalExam],
     initialTests,
     dispositionRules,
+    decisionTrees,
+    treatmentOptions,
     limitationsAndInterpretationCautions,
     suppressedNotRecommendedItems,
     suppressedItems: suppressedNotRecommendedItems,
@@ -2867,7 +2953,7 @@ export function validateComplaintModules(modules = complaintModules, sources = c
   const issues = [];
   const moduleIds = new Set();
   const sourceIds = new Set(sources.map((row) => row.id));
-  const itemGroups = ["redFlags", "safetyChecks", "requiredQuestions", "conditionalQuestions", "requiredExam", "conditionalExam", "initialTests", "dispositionRules", "differentialBuckets"];
+  const itemGroups = ["redFlags", "safetyChecks", "requiredQuestions", "conditionalQuestions", "requiredExam", "conditionalExam", "initialTests", "dispositionRules", "decisionTrees", "treatmentOptions", "differentialBuckets"];
   const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
   const vagueExamActionPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
   const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
@@ -2997,7 +3083,7 @@ export function validateComplaintModules(modules = complaintModules, sources = c
         if (group === "initialTests") {
           requireComplaintItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
         }
-        if (group === "dispositionRules") {
+        if (group === "dispositionRules" || group === "decisionTrees" || group === "treatmentOptions") {
           requireComplaintItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
         }
         if (group === "differentialBuckets") {
@@ -3220,7 +3306,9 @@ export function formatComplaintCdsReport(result) {
   reportItems("Conditional exam add-ons", result.conditionalExam || [], lines, examComplaintReportLines);
   reportItems("Conditional history add-ons", result.conditionalQuestions, lines, questionComplaintReportLines);
   reportItems("Immediate tests / next steps", result.initialTests, lines);
+  reportItems("Clinical decision tree", result.decisionTrees || [], lines);
   reportItems("Management-changing findings / disposition cues", result.dispositionRules, lines);
+  reportItems("Treatment options", result.treatmentOptions || [], lines);
   reportItems("Red flags and escalation cues", result.redFlags, lines, (item) => `${item.triggered ? "TRIGGERED: " : "Screen: "}${item.label}${item.action ? ` - ${item.action}` : ""}`);
   reportEvidenceMetadata(result, lines);
   reportItems("Limitations and interpretation cautions", result.limitationsAndInterpretationCautions || [], lines);

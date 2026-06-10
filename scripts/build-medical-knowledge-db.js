@@ -76,6 +76,8 @@ function collectModuleItems(module) {
     "conditionalExam",
     "initialTests",
     "dispositionRules",
+    "decisionTrees",
+    "treatmentOptions",
     "differentialBuckets"
   ].flatMap((group) => (module[group] || []).map((item) => ({ group, item })));
 }
@@ -90,6 +92,8 @@ function mapModuleItemGroups(module, mapper) {
     "conditionalExam",
     "initialTests",
     "dispositionRules",
+    "decisionTrees",
+    "treatmentOptions",
     "differentialBuckets"
   ];
   return groups.reduce((nextModule, group) => {
@@ -187,6 +191,7 @@ function expectedItemTypeForGroup(group = "") {
   if (group === "redFlags") return "red_flag";
   if (group === "initialTests") return "diagnostic_test";
   if (group === "dispositionRules") return "management_change";
+  if (group === "decisionTrees" || group === "treatmentOptions") return "management_change";
   if (group === "differentialBuckets") return "diagnostic_frame";
   return "";
 }
@@ -234,8 +239,114 @@ function questionLikelihoodRatioNote(item = {}) {
   return "Question-level LR+/LR- is not available unless the cited evidence validates the exact response; use this answer to localize the source, assess severity, and guide management.";
 }
 
+function cleanSupportLabel(value = "") {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .replace(/[.;\s]+$/g, "")
+    .trim();
+}
+
+function supportLabelList(items = [], max = 3) {
+  return items
+    .map((item) => cleanSupportLabel(item?.label || item?.action || item?.management_change || item?.text || ""))
+    .filter(Boolean)
+    .slice(0, max)
+    .join("; ");
+}
+
+function supportTags(module = {}, label = "") {
+  return `${module.id || ""} ${module.label || ""} ${label}`
+    .toLowerCase()
+    .replace(/[()]/g, " ")
+    .split(/[^a-z0-9+]+/)
+    .filter((term) => term.length >= 4)
+    .slice(0, 14);
+}
+
+function sourceForDerivedSupport(module = {}, preferredItem = {}, section = "") {
+  const fallbackItem = preferredItem?.source
+    ? preferredItem
+    : [
+      ...(module.initialTests || []),
+      ...(module.dispositionRules || []),
+      ...(module.redFlags || []),
+      ...(module.differentialBuckets || [])
+    ].find((item) => item?.source);
+  const source = fallbackItem?.source || {};
+  return {
+    ...source,
+    source_section: section || source.source_section || "derived source-backed decision support"
+  };
+}
+
+function derivedSupportItem(module = {}, id = "", label = "", sourceItem = {}, section = "", rationale = "") {
+  const source = sourceForDerivedSupport(module, sourceItem, section);
+  return {
+    id,
+    label,
+    item_type: "management_change",
+    source,
+    action: label,
+    rationale: rationale || `Derives a ${module.label || "selected"} workup decision from existing source-backed tests, red flags, and management rules.`,
+    diagnostic_target: `${label}: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for ${module.label || "the selected workup"}.`,
+    management_change: label,
+    LR_plus: "n/a",
+    LR_minus: "n/a",
+    likelihood_ratio_note: "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+    limitations: `Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for ${module.label || "the selected workup"}.`,
+    tags: supportTags(module, label)
+  };
+}
+
+function deriveDecisionTrees(module = {}) {
+  const tests = module.initialTests || [];
+  const redFlags = module.redFlags || [];
+  const dispositions = module.dispositionRules || [];
+  const differentials = module.differentialBuckets || [];
+  const escalation = cleanSupportLabel(redFlags[0]?.label || dispositions[0]?.label || "unstable or high-risk presentation");
+  const testList = supportLabelList(tests, 4) || "use the source-backed initial test set";
+  const riskFrame = cleanSupportLabel(differentials[0]?.label || tests[0]?.label || "the highest-risk diagnostic frame");
+  const management = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "the source-backed escalation route");
+  return [
+    derivedSupportItem(module, "decision_01", `Screen for immediate danger or disposition-changing findings before routine workup: ${escalation}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived decision tree: triage and escalation`),
+    derivedSupportItem(module, "decision_02", `Order focused first-line studies and interpret them in sequence: ${testList}.`, tests[0] || dispositions[0], `${module.label} derived decision tree: initial tests`),
+    derivedSupportItem(module, "decision_03", `Use the leading diagnostic frame to avoid premature closure: ${riskFrame}.`, differentials[0] || tests[0], `${module.label} derived decision tree: diagnostic branching`),
+    derivedSupportItem(module, "decision_04", `If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: ${management}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived decision tree: management routing`)
+  ];
+}
+
+function deriveTreatmentOptions(module = {}) {
+  const tests = module.initialTests || [];
+  const redFlags = module.redFlags || [];
+  const dispositions = module.dispositionRules || [];
+  const firstDisposition = cleanSupportLabel(dispositions[0]?.label || redFlags[0]?.action || "urgent escalation route");
+  const secondDisposition = cleanSupportLabel(dispositions[1]?.label || dispositions[0]?.action || "lower-risk treatment or follow-up route when criteria are met");
+  const monitoring = cleanSupportLabel(tests[0]?.label || "the source-backed monitoring test set");
+  const safety = cleanSupportLabel(redFlags[0]?.label || "clinical worsening or unresolved diagnostic uncertainty");
+  return [
+    derivedSupportItem(module, "treatment_01", `Stabilize or escalate before routine treatment when danger criteria are present: ${safety}.`, redFlags[0] || dispositions[0] || tests[0], `${module.label} derived treatment options: urgent care`),
+    derivedSupportItem(module, "treatment_02", `Use the high-risk or confirmed-pathway management option when criteria are met: ${firstDisposition}.`, dispositions[0] || redFlags[0] || tests[0], `${module.label} derived treatment options: high-risk pathway`),
+    derivedSupportItem(module, "treatment_03", `Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: ${secondDisposition}.`, dispositions[1] || dispositions[0] || tests[0], `${module.label} derived treatment options: lower-risk pathway`),
+    derivedSupportItem(module, "treatment_04", `Monitor treatment response, complications, and need for reassessment with: ${monitoring}.`, tests[0] || dispositions[0], `${module.label} derived treatment options: monitoring`)
+  ];
+}
+
+function deriveDecisionSupportForBuild(module = {}) {
+  const decisionTrees = Array.isArray(module.decisionTrees) && module.decisionTrees.length
+    ? module.decisionTrees
+    : deriveDecisionTrees(module);
+  const treatmentOptions = Array.isArray(module.treatmentOptions) && module.treatmentOptions.length
+    ? module.treatmentOptions
+    : deriveTreatmentOptions(module);
+  return {
+    ...module,
+    decisionTrees,
+    treatmentOptions
+  };
+}
+
 function normalizeMedicalKnowledgeModuleForBuild(module = {}) {
-  return mapModuleItemGroups(module, (item, group) => {
+  const normalized = mapModuleItemGroups(module, (item, group) => {
     if (!isQuestionGroup(group)) {
       return item;
     }
@@ -244,6 +355,7 @@ function normalizeMedicalKnowledgeModuleForBuild(module = {}) {
       likelihood_ratio_note: questionLikelihoodRatioNote(item)
     };
   });
+  return deriveDecisionSupportForBuild(normalized);
 }
 
 export function loadMedicalKnowledgeDatabase() {
@@ -447,7 +559,7 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
       if (group === "initialTests") {
         requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
       }
-      if (group === "dispositionRules") {
+      if (group === "dispositionRules" || group === "decisionTrees" || group === "treatmentOptions") {
         requireItemFields(issues, module.id, group, item, ["action", "rationale", "diagnostic_target", "management_change", "LR_plus", "LR_minus", "likelihood_ratio_note", "limitations", "tags"]);
       }
       if (group === "differentialBuckets") {

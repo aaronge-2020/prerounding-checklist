@@ -146,6 +146,11 @@ assert.ok(updatePrompt.includes("Overnight events:\nNo acute events."));
 assert.ok(updatePrompt.includes("Subjective change:\nLess nausea."));
 assert.ok(updatePrompt.includes("Do not ask me to paste yesterday's OpenEvidence report back into the app."));
 assert.ok(!/paste yesterday.?s report back into the app/i.test(updatePrompt.replace("Do not ask me to paste yesterday's OpenEvidence report back into the app.", "")));
+assert.ok(updatePrompt.includes("Output only changes since yesterday that could change what the student says, verifies, asks, escalates, monitors, or carries forward for rounds."));
+assert.ok(updatePrompt.includes("Use at most 5 bullets total. Prefix each bullet with SAY, CHECK, ASK, WATCH, or CARRY-FORWARD."));
+assert.ok(updatePrompt.includes("NO MANAGEMENT-CHANGING ITEMS FOUND."));
+assert.ok(!updatePrompt.includes("Separate stable background, changed data, unresolved pending items, and new concerns."));
+assert.ok(!updatePrompt.includes("Summarize what changed since yesterday."));
 
 const checklistPrompt = buildContinuityChecklistPrompt({
   patientCase: dayTwo,

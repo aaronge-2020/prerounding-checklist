@@ -1836,7 +1836,7 @@ if (uiSource.includes("prerounding-redesign-state-v1")) {
     "Clinical reasoning aids",
     "buildLocalChecklistFromWorkup",
     "parseChecklist",
-    'const endorsementOptions = ["(-) No", "(+) Yes"];',
+    'const endorsementOptions = ["No", "Yes"];',
     'id="copyWorkupButton"',
     'id="patientWorkupSelect"',
     'id="patientWorkupResults"',

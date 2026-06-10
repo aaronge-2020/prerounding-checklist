@@ -83,7 +83,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for this diagnostic frame; pediatric DKA is defined by biochemical criteria plus clinical severity and source-backed management thresholds.",
         "limitations": "A normal or only mildly elevated glucose does not exclude euglycemic DKA when acidosis and ketones are present.",
-        "tags": ["pediatric", "dka", "ketones", "acidosis", "euglycemic_dka"]
+        "tags": [
+          "pediatric",
+          "dka",
+          "ketones",
+          "acidosis",
+          "euglycemic_dka"
+        ]
       },
       {
         "id": "peds_hhs_diagnostic_frame",
@@ -106,7 +112,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for this diagnostic frame; HHS is defined by source thresholds and specialist management rules.",
         "limitations": "Do not assume all high glucose is DKA; HHS may need more aggressive fluid replacement and slower insulin only after glucose stops falling with fluids.",
-        "tags": ["pediatric", "hhs", "hyperosmolar", "osmolality", "mixed_dka_hhs"]
+        "tags": [
+          "pediatric",
+          "hhs",
+          "hyperosmolar",
+          "osmolality",
+          "mixed_dka_hhs"
+        ]
       },
       {
         "id": "peds_dka_precipitant_frame",
@@ -129,7 +141,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "Likelihood ratios are not available for this broad precipitant frame; management changes by source-specific history, exam, and test findings.",
         "limitations": "Do not order broad infection tests solely because DKA can cause leukocytosis; localize infection by symptoms, fever, exam, and senior judgment.",
-        "tags": ["pediatric", "precipitant", "infection", "pump_failure", "insulin_omission", "recurrent_dka"]
+        "tags": [
+          "pediatric",
+          "precipitant",
+          "infection",
+          "pump_failure",
+          "insulin_omission",
+          "recurrent_dka"
+        ]
       }
     ],
     "safetyChecks": [
@@ -146,7 +165,13 @@
         "patient_cooperation_required": "low",
         "limitations": "Antipyretics and timing can mask fever trajectory.",
         "likelihood_ratio_note": "LR is not applicable to temperature as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "temperature", "infection"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "temperature",
+          "infection"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "assessment and precipitating cause",
@@ -171,7 +196,15 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Pain, fever, anxiety, dehydration, cuff size, and cerebral edema affect interpretation.",
         "likelihood_ratio_note": "LR is not applicable to vital signs as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "vitals", "heart_rate", "blood_pressure", "shock", "cerebral_edema"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "heart_rate",
+          "blood_pressure",
+          "shock",
+          "cerebral_edema"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "assessment, dehydration, and cerebral oedema signs",
@@ -196,7 +229,13 @@
         "patient_cooperation_required": "low",
         "limitations": "Crying, pain, acidosis, bronchodilators, and shock affect respiratory rate.",
         "likelihood_ratio_note": "LR is not applicable to respiratory rate or oxygen saturation as baseline clinical data.",
-        "tags": ["pediatric", "baseline_safety", "respiratory_rate", "oxygen_saturation", "acidosis"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "respiratory_rate",
+          "oxygen_saturation",
+          "acidosis"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "assessment and observations",
@@ -222,7 +261,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Development, sedation, exhaustion, post-ictal state, disability baseline, and language barriers affect scoring.",
         "likelihood_ratio_note": "LR is not applicable to neurologic status as baseline safety data; trajectory directly changes management.",
-        "tags": ["pediatric", "baseline_safety", "mental_status", "modified_gcs", "cerebral_edema"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "mental_status",
+          "modified_gcs",
+          "cerebral_edema"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "monitoring during DKA treatment",
@@ -247,7 +292,13 @@
         "patient_cooperation_required": "low",
         "limitations": "Use actual weight when possible; document when estimated during resuscitation.",
         "likelihood_ratio_note": "LR is not applicable to weight as baseline dosing data.",
-        "tags": ["pediatric", "baseline_safety", "weight", "fluid_safety", "insulin_safety"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "weight",
+          "fluid_safety",
+          "insulin_safety"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "presentation: weigh child",
@@ -272,7 +323,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Urine ketones lag behind blood beta-hydroxybutyrate and can misrepresent treatment response.",
         "likelihood_ratio_note": "LR is not applicable to bedside glucose/ketones; these are diagnostic and management-threshold data.",
-        "tags": ["pediatric", "baseline_safety", "glucose", "ketones", "beta_hydroxybutyrate"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "glucose",
+          "ketones",
+          "beta_hydroxybutyrate"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "baseline investigations and DKA/HHS criteria",
@@ -298,7 +355,13 @@
         "patient_cooperation_required": "moderate",
         "limitations": "Caregiver estimates can be imprecise; use measured output when possible.",
         "likelihood_ratio_note": "LR is not applicable to fluid balance as baseline treatment-safety data.",
-        "tags": ["pediatric", "baseline_safety", "fluid_balance", "urine_output", "potassium_safety"],
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "fluid_balance",
+          "urine_output",
+          "potassium_safety"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "timeline and fluid balance monitoring",
@@ -321,7 +384,13 @@
         "management_implication": "New diabetes, known T1D, type 2/HHS risk, device use, or missing weight changes diagnostics, fluid/insulin calculation, diabetes-team ownership, education, and follow-up.",
         "options": "Multi-select: new diabetes symptoms / known type 1 diabetes / known type 2 diabetes / pump or CGM / long-acting insulin regimen / diabetes team known / weight confirmed / weight unknown / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; age, weight, diabetes type, and regimen are pediatric routing and dosing variables.",
-        "tags": ["pediatric", "age_band", "diabetes", "weight", "pump"],
+        "tags": [
+          "pediatric",
+          "age_band",
+          "diabetes",
+          "weight",
+          "pump"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "history and presentation",
@@ -342,7 +411,14 @@
         "management_implication": "Positive vomiting, abdominal pain, deep breathing, dehydration, or mental status change increases urgency for VBG, ketones, fluids, potassium safety, neurologic monitoring, and escalation.",
         "options": "Multi-select: polyuria / polydipsia / weight loss / fatigue / vomiting / abdominal pain / deep or Kussmaul breathing / fruity breath / dehydration / confusion or drowsy / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; symptoms prompt source-defined biochemical confirmation and severity assessment.",
-        "tags": ["pediatric", "dka", "symptoms", "vomiting", "abdominal_pain", "kussmaul"],
+        "tags": [
+          "pediatric",
+          "dka",
+          "symptoms",
+          "vomiting",
+          "abdominal_pain",
+          "kussmaul"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "clinical features and diagnosis",
@@ -363,7 +439,13 @@
         "management_implication": "Positive findings change pump discontinuation, insulin replacement, site inspection, supply/social-work plan, diabetes-team handoff, sick-day education, and safe discharge planning.",
         "options": "Multi-select: missed basal / missed bolus / insulin unavailable / affordability or access barrier / pump failure / infusion site problem / CGM concern / no sick-day plan / doses taken as prescribed / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; insulin interruption and pump failure are management-changing precipitants.",
-        "tags": ["pediatric", "insulin_omission", "pump_failure", "access_barrier", "recurrent_dka"],
+        "tags": [
+          "pediatric",
+          "insulin_omission",
+          "pump_failure",
+          "access_barrier",
+          "recurrent_dka"
+        ],
         "source": {
           "source_id": "ISPAD_DKA_HHS_2022",
           "source_section": "risk factors, insulin omission, and recurrent DKA",
@@ -384,7 +466,13 @@
         "management_implication": "Poor intake, ongoing vomiting, oliguria/anuria, syncope, or severe dehydration changes fluids, potassium-in-fluid rules, antiemetic caution, monitoring, and disposition.",
         "options": "Multi-select: ongoing vomiting / unable to keep fluids down / poor intake / dry mouth / marked thirst / dizziness or syncope / oliguria / anuria / urine output normal / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; hydration and urine output change treatment safety rather than diagnostic probability alone.",
-        "tags": ["pediatric", "dehydration", "vomiting", "poor_intake", "urine_output"],
+        "tags": [
+          "pediatric",
+          "dehydration",
+          "vomiting",
+          "poor_intake",
+          "urine_output"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "fluid therapy and hydration assessment",
@@ -405,7 +493,13 @@
         "management_implication": "Positive source symptoms change targeted exam, cultures, urine testing, chest imaging, antibiotics, sepsis pathway, medication review, and admission handoff.",
         "options": "Multi-select: fever / cough or respiratory symptoms / sore throat / dysuria or frequency / flank pain / focal abdominal pain / diarrhea / skin wound / pump or line site infection / sick contacts / recent steroids or stressor / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; source-localizing features drive targeted tests and treatment.",
-        "tags": ["pediatric", "infection", "source_localizing", "precipitant", "sepsis"],
+        "tags": [
+          "pediatric",
+          "infection",
+          "source_localizing",
+          "precipitant",
+          "sepsis"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "precipitating cause and baseline investigations",
@@ -426,7 +520,12 @@
         "management_implication": "Positive features change immediate senior/PICU escalation, head-up positioning, hyperosmolar therapy consideration, fluid reassessment, and transfer; do not delay for imaging.",
         "options": "Multi-select: headache / recurrent vomiting / irritability / altered conscious state / fluctuating conscious state / bradycardia concern / hypertension concern / seizure / abnormal behavior / weakness / cranial nerve symptom / abnormal posturing / none / unable to assess",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; cerebral edema signs are source-defined emergency triggers.",
-        "tags": ["pediatric", "cerebral_edema", "neurologic_monitoring", "red_flag"],
+        "tags": [
+          "pediatric",
+          "cerebral_edema",
+          "neurologic_monitoring",
+          "red_flag"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "cerebral oedema signs and management",
@@ -447,7 +546,13 @@
         "management_implication": "Positive features change osmolality calculation, specialist/PICU involvement, fluid strategy, slower insulin dose, and neurologic monitoring.",
         "options": "Multi-select: very high glucose / marked thirst / prolonged polyuria / severe dehydration / confusion or obtundation / seizure / type 2 diabetes or obesity context / low or absent ketones / none / unable to obtain",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; HHS uses biochemical thresholds and specialist management rules.",
-        "tags": ["pediatric", "hhs", "hyperosmolar", "osmolality", "type2_diabetes"],
+        "tags": [
+          "pediatric",
+          "hhs",
+          "hyperosmolar",
+          "osmolality",
+          "type2_diabetes"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "HHS assessment and management",
@@ -468,7 +573,13 @@
         "management_implication": "Positive context changes diabetes educator/social work/mental-health/safeguarding involvement, sick-day plan, supplies, family teaching, and follow-up intensity.",
         "options": "Multi-select: recurrent DKA / recent admission / insulin restriction / eating disorder concern / depression or self-harm concern / caregiver conflict / supply or school barrier / housing or food insecurity / diabetes team hard to reach / none endorsed / unable to obtain confidentially",
         "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to psychosocial context; positive items change safe-discharge planning.",
-        "tags": ["pediatric", "recurrent_dka", "psychosocial", "safeguarding", "adolescent"],
+        "tags": [
+          "pediatric",
+          "recurrent_dka",
+          "psychosocial",
+          "safeguarding",
+          "adolescent"
+        ],
         "source": {
           "source_id": "ISPAD_DKA_HHS_2022",
           "source_section": "recurrent DKA and psychosocial risk",
@@ -488,7 +599,18 @@
         "text": "For adolescent, pregnancy possibility, fasting, eating disorder, low-carbohydrate intake, alcohol/substance use, SGLT2 inhibitor exposure, or recent bariatric/weight-loss medication context, are ketones or acidosis present despite near-normal glucose?",
         "options": "Multi-select: pregnancy possible / fasting / eating disorder concern / low-carbohydrate intake / alcohol or substance use / SGLT2 inhibitor / weight-loss medication context / ketones with near-normal glucose / none / unable to obtain confidentially",
         "when": {
-          "termsAny": ["sglt2", "euglycemic", "near normal glucose", "fasting", "low carbohydrate", "pregnancy", "adolescent", "teen", "eating disorder", "alcohol"]
+          "termsAny": [
+            "sglt2",
+            "euglycemic",
+            "near normal glucose",
+            "fasting",
+            "low carbohydrate",
+            "pregnancy",
+            "adolescent",
+            "teen",
+            "eating disorder",
+            "alcohol"
+          ]
         },
         "when_to_ask": "Ask when euglycemic DKA risk, adolescent, pregnancy, fasting, SGLT2, or atypical glucose/ketone pattern is mentioned.",
         "diagnostic_purpose": "Prevents false reassurance from glucose below classic DKA thresholds when ketones and acidosis are present.",
@@ -504,7 +626,13 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "Question-level LR+/LR- is not available; euglycemic DKA is a threshold/risk-context rule.",
-        "tags": ["pediatric", "adolescent", "pregnancy", "sglt2", "euglycemic_dka"]
+        "tags": [
+          "pediatric",
+          "adolescent",
+          "pregnancy",
+          "sglt2",
+          "euglycemic_dka"
+        ]
       },
       {
         "id": "peds_dka_hypernatremia_anuria_high_k",
@@ -512,7 +640,19 @@
         "text": "Are hypernatremia, hyperosmolality, anuria, potassium above normal, potassium below normal, renal impairment, or ECG change reported before choosing potassium-containing fluids or insulin timing?",
         "options": "Multi-select: hypernatremia / hyperosmolality / anuria / potassium high / potassium low / renal impairment / ECG change / potassium unknown / none / unable to obtain",
         "when": {
-          "termsAny": ["hypernatremia", "hypernatraemia", "hyperosmolality", "osmolality", "anuria", "hyperkalemia", "hyperkalaemia", "hypokalemia", "hypokalaemia", "ecg change", "renal impairment"]
+          "termsAny": [
+            "hypernatremia",
+            "hypernatraemia",
+            "hyperosmolality",
+            "osmolality",
+            "anuria",
+            "hyperkalemia",
+            "hyperkalaemia",
+            "hypokalemia",
+            "hypokalaemia",
+            "ecg change",
+            "renal impairment"
+          ]
         },
         "when_to_ask": "Ask when sodium/osmolality/potassium/renal-output concern is mentioned or labs are available.",
         "diagnostic_purpose": "Identifies children who need urgent specialist advice and prevents unsafe potassium or insulin sequencing.",
@@ -528,7 +668,13 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "LR is not applicable to electrolyte-safety context; values directly change treatment.",
-        "tags": ["pediatric", "potassium", "sodium", "osmolality", "renal"]
+        "tags": [
+          "pediatric",
+          "potassium",
+          "sodium",
+          "osmolality",
+          "renal"
+        ]
       },
       {
         "id": "peds_dka_recurrent_omission_confidential",
@@ -536,7 +682,18 @@
         "text": "When recurrent DKA or insulin omission is possible, can the child/adolescent and caregiver be asked separately about access, distress, body image, self-harm, neglect, coercion, bullying, or unsafe home/school support?",
         "options": "Multi-select: child/adolescent private history obtained / caregiver private history obtained / access barrier / diabetes distress / body image or insulin restriction / self-harm concern / neglect or coercion concern / school support barrier / safe supports present / unable to obtain confidentially",
         "when": {
-          "termsAny": ["recurrent dka", "insulin omission", "missed insulin", "eating disorder", "self harm", "body image", "neglect", "bullying", "school barrier", "access barrier"]
+          "termsAny": [
+            "recurrent dka",
+            "insulin omission",
+            "missed insulin",
+            "eating disorder",
+            "self harm",
+            "body image",
+            "neglect",
+            "bullying",
+            "school barrier",
+            "access barrier"
+          ]
         },
         "when_to_ask": "Ask when recurrent DKA, missed insulin, adolescent, or unsafe discharge context is present.",
         "diagnostic_purpose": "Identifies high-risk recurrence and safety factors that can be missed if the caregiver-only story is accepted.",
@@ -552,7 +709,12 @@
         },
         "item_type": "history_question",
         "likelihood_ratio_note": "LR is not applicable to confidentiality/safeguarding context; positive findings change disposition and follow-up.",
-        "tags": ["pediatric", "recurrent_dka", "confidential_history", "safeguarding"]
+        "tags": [
+          "pediatric",
+          "recurrent_dka",
+          "confidential_history",
+          "safeguarding"
+        ]
       }
     ],
     "requiredExam": [
@@ -572,7 +734,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
         "limitations": "Cool environment, skin tone, fever, shock, and examiner technique affect interpretation.",
-        "tags": ["pediatric", "perfusion", "dehydration", "shock"],
+        "tags": [
+          "pediatric",
+          "perfusion",
+          "dehydration",
+          "shock"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "dehydration assessment",
@@ -600,7 +767,11 @@
         "equipment_needed": "adequate lighting",
         "patient_cooperation_required": "moderate",
         "limitations": "Mouth breathing, fever, oxygen therapy, and recent fluids can affect findings.",
-        "tags": ["pediatric", "dehydration", "mucous_membranes"],
+        "tags": [
+          "pediatric",
+          "dehydration",
+          "mucous_membranes"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "dehydration assessment",
@@ -628,7 +799,11 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
         "limitations": "Young infants, malnutrition, obesity, and chronic skin changes reduce reliability.",
-        "tags": ["pediatric", "dehydration", "skin_turgor"],
+        "tags": [
+          "pediatric",
+          "dehydration",
+          "skin_turgor"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "dehydration assessment",
@@ -656,7 +831,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
         "limitations": "Anxiety, pain, asthma, pneumonia, and fatigue can mimic or obscure Kussmaul breathing.",
-        "tags": ["pediatric", "respiratory_exam", "kussmaul", "acidosis"],
+        "tags": [
+          "pediatric",
+          "respiratory_exam",
+          "kussmaul",
+          "acidosis"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "assessment and clinical signs",
@@ -684,7 +864,12 @@
         "equipment_needed": "penlight",
         "patient_cooperation_required": "moderate",
         "limitations": "Age, sedation, hypoglycemia, post-ictal state, and cooperation affect assessment.",
-        "tags": ["pediatric", "cerebral_edema", "pupils", "cranial_nerve"],
+        "tags": [
+          "pediatric",
+          "cerebral_edema",
+          "pupils",
+          "cranial_nerve"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "cerebral oedema signs",
@@ -712,7 +897,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "moderate",
         "limitations": "DKA can cause nonspecific abdominal pain; reassess after stabilization and acidosis improvement.",
-        "tags": ["pediatric", "abdominal_exam", "abdominal_pain", "precipitant"],
+        "tags": [
+          "pediatric",
+          "abdominal_exam",
+          "abdominal_pain",
+          "precipitant"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "assessment and precipitating cause",
@@ -732,7 +922,15 @@
         "technique": "Auscultate anterior and posterior lung fields for focal crackles, wheeze, reduced air entry, or signs of pneumonia when respiratory symptoms, fever, hypoxemia, or sepsis concern is present.",
         "findings_options": "clear / focal crackles / wheeze / reduced air entry / unable to assess",
         "when": {
-          "termsAny": ["fever", "cough", "respiratory", "hypoxemia", "pneumonia", "shortness of breath", "work of breathing"]
+          "termsAny": [
+            "fever",
+            "cough",
+            "respiratory",
+            "hypoxemia",
+            "pneumonia",
+            "shortness of breath",
+            "work of breathing"
+          ]
         },
         "when_to_perform": "Perform when source-localizing infection symptoms, fever, hypoxemia, cough, or respiratory distress is present.",
         "diagnostic_target": "Pneumonia, bronchiolitis/asthma mimic, sepsis source, or respiratory comorbidity during DKA.",
@@ -745,7 +943,12 @@
         "equipment_needed": "stethoscope",
         "patient_cooperation_required": "moderate",
         "limitations": "Early pneumonia can have subtle findings; interpret with vitals, oxygen saturation, and symptoms.",
-        "tags": ["pediatric", "lung_exam", "infection_source", "pneumonia"],
+        "tags": [
+          "pediatric",
+          "lung_exam",
+          "infection_source",
+          "pneumonia"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "precipitating cause and infection testing on senior advice",
@@ -763,7 +966,17 @@
         "technique": "Inspect insulin pump infusion site, CGM site, IV/line sites, skin wounds, and pressure areas for erythema, drainage, abscess, cellulitis, or tenderness.",
         "findings_options": "normal / pump-site inflammation / line-site inflammation / cellulitis / abscess or drainage / unable or not applicable",
         "when": {
-          "termsAny": ["pump", "cgm", "infusion site", "line site", "skin infection", "cellulitis", "abscess", "wound", "fever"]
+          "termsAny": [
+            "pump",
+            "cgm",
+            "infusion site",
+            "line site",
+            "skin infection",
+            "cellulitis",
+            "abscess",
+            "wound",
+            "fever"
+          ]
         },
         "when_to_perform": "Perform when pump/CGM/line use, fever, skin symptoms, recurrent DKA, or unclear precipitant is present.",
         "diagnostic_target": "Device failure, infusion-site infection, cellulitis, abscess, or line infection precipitating DKA.",
@@ -776,7 +989,13 @@
         "equipment_needed": "adequate lighting and gloves",
         "patient_cooperation_required": "moderate",
         "limitations": "Respect privacy and document if site inspection is deferred.",
-        "tags": ["pediatric", "pump", "skin", "infection_source", "device_failure"],
+        "tags": [
+          "pediatric",
+          "pump",
+          "skin",
+          "infection_source",
+          "device_failure"
+        ],
         "source": {
           "source_id": "ISPAD_DKA_HHS_2022",
           "source_section": "insulin pump therapy and precipitating factors",
@@ -794,7 +1013,14 @@
         "technique": "Palpate radial and pedal pulses for volume and symmetry while noting coolness or mottling separately from monitor-derived heart rate.",
         "findings_options": "normal volume / weak pulses / bounding pulses / asymmetric / unable to assess",
         "when": {
-          "termsAny": ["shock", "poor perfusion", "delayed capillary refill", "hypotension", "severe dehydration", "cardiovascular compromise"]
+          "termsAny": [
+            "shock",
+            "poor perfusion",
+            "delayed capillary refill",
+            "hypotension",
+            "severe dehydration",
+            "cardiovascular compromise"
+          ]
         },
         "when_to_perform": "Perform when dehydration, HHS, shock, poor perfusion, hypotension, or cardiovascular compromise is present.",
         "diagnostic_target": "Shock, severe dehydration, poor peripheral perfusion, or vascular compromise.",
@@ -807,7 +1033,12 @@
         "equipment_needed": "none",
         "patient_cooperation_required": "low",
         "limitations": "Cold extremities and examiner technique affect interpretation.",
-        "tags": ["pediatric", "perfusion", "pulses", "shock"],
+        "tags": [
+          "pediatric",
+          "perfusion",
+          "pulses",
+          "shock"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "dehydration assessment and shock",
@@ -825,7 +1056,18 @@
         "technique": "Repeat pupil/eye-movement check and observe for abnormal posturing, new weakness, seizure activity, or worsening response while emergency treatment is being arranged.",
         "findings_options": "stable / worsening conscious state / new pupil or gaze abnormality / seizure / abnormal posturing / unsafe to delay care",
         "when": {
-          "termsAny": ["cerebral edema", "cerebral oedema", "headache", "bradycardia", "hypertension", "seizure", "abnormal posturing", "cranial nerve", "falling gcs", "worsening conscious"]
+          "termsAny": [
+            "cerebral edema",
+            "cerebral oedema",
+            "headache",
+            "bradycardia",
+            "hypertension",
+            "seizure",
+            "abnormal posturing",
+            "cranial nerve",
+            "falling gcs",
+            "worsening conscious"
+          ]
         },
         "when_to_perform": "Perform immediately when cerebral edema/oedema concern or neurologic deterioration is present, without delaying emergency management.",
         "diagnostic_target": "Cerebral edema/oedema, raised intracranial pressure, herniation risk, or seizure complication.",
@@ -838,7 +1080,12 @@
         "equipment_needed": "penlight and bedside monitor",
         "patient_cooperation_required": "moderate",
         "limitations": "Do not delay treatment for imaging or complete examination if cerebral edema is suspected.",
-        "tags": ["pediatric", "cerebral_edema", "neurologic_monitoring", "emergency"],
+        "tags": [
+          "pediatric",
+          "cerebral_edema",
+          "neurologic_monitoring",
+          "emergency"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "cerebral oedema emergency management",
@@ -863,7 +1110,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not available; this is an emergency red-flag rule based on source-defined signs.",
         "limitations": "Absence of one sign does not exclude evolving cerebral edema; repeat neurologic monitoring is required.",
-        "tags": ["pediatric", "cerebral_edema", "red_flag", "picu"],
+        "tags": [
+          "pediatric",
+          "cerebral_edema",
+          "red_flag",
+          "picu"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "cerebral oedema signs and emergency management",
@@ -886,7 +1138,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; pH/bicarbonate and age thresholds define high-risk management.",
         "limitations": "Use local PICU/retrieval thresholds when stricter than this general pathway.",
-        "tags": ["pediatric", "severe_dka", "young_age", "red_flag"],
+        "tags": [
+          "pediatric",
+          "severe_dka",
+          "young_age",
+          "red_flag"
+        ],
         "source": {
           "source_id": "RCH_DKA_CHILD",
           "source_section": "transfer and severe DKA criteria",
@@ -909,7 +1166,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; shock/perfusion criteria drive emergency management.",
         "limitations": "Treat shock immediately while avoiding unchecked adult large-volume fluid assumptions.",
-        "tags": ["pediatric", "shock", "fluid_bolus", "red_flag"],
+        "tags": [
+          "pediatric",
+          "shock",
+          "fluid_bolus",
+          "red_flag"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "emergency management and shock fluid bolus",
@@ -932,7 +1194,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; potassium and urine output are direct treatment-safety thresholds.",
         "limitations": "Do not add potassium blindly if anuric or potassium is above normal; do not start insulin before addressing severe hypokalemia per local protocol.",
-        "tags": ["pediatric", "potassium", "anuria", "ecg", "red_flag"],
+        "tags": [
+          "pediatric",
+          "potassium",
+          "anuria",
+          "ecg",
+          "red_flag"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "potassium and insulin therapy",
@@ -955,7 +1223,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; HHS uses biochemical thresholds and high-acuity management rules.",
         "limitations": "Do not start routine DKA insulin dosing when HHS glucose is falling with fluids and specialist advice is pending.",
-        "tags": ["pediatric", "hhs", "hyperosmolar", "red_flag"],
+        "tags": [
+          "pediatric",
+          "hhs",
+          "hyperosmolar",
+          "red_flag"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "HHS management",
@@ -982,7 +1255,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; VBG values define diagnostic/severity thresholds.",
         "limitations": "Interpret with ketones and glucose; euglycemic DKA can have lower glucose.",
-        "tags": ["pediatric", "dka", "vbg", "pH", "bicarbonate"],
+        "tags": [
+          "pediatric",
+          "dka",
+          "vbg",
+          "pH",
+          "bicarbonate"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "DKA diagnostic criteria and investigations",
@@ -1007,7 +1286,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; glucose/ketones are direct diagnostic and treatment thresholds.",
         "limitations": "Urine ketones can lag behind blood ketones and should not be the only treatment-response marker when blood ketones are available.",
-        "tags": ["pediatric", "glucose", "ketones", "hhs", "dextrose"],
+        "tags": [
+          "pediatric",
+          "glucose",
+          "ketones",
+          "hhs",
+          "dextrose"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "fluids and glucose threshold",
@@ -1032,7 +1317,14 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; electrolyte results are direct treatment-safety thresholds.",
         "limitations": "Use local pediatric reference ranges and pharmacy double-check for potassium-containing fluids.",
-        "tags": ["pediatric", "potassium", "sodium", "corrected_sodium", "renal", "osmolality"],
+        "tags": [
+          "pediatric",
+          "potassium",
+          "sodium",
+          "corrected_sodium",
+          "renal",
+          "osmolality"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "potassium, sodium, and monitoring recommendations",
@@ -1057,7 +1349,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable; osmolality is a diagnostic and treatment threshold.",
         "limitations": "Use local formula/unit convention; mixed DKA/HHS may still have ketones and acidosis.",
-        "tags": ["pediatric", "hhs", "osmolality", "hypernatremia"],
+        "tags": [
+          "pediatric",
+          "hhs",
+          "osmolality",
+          "hypernatremia"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "HHS diagnostic criteria",
@@ -1082,7 +1379,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned; ECG identifies treatment-danger signs rather than DKA probability.",
         "limitations": "Normal ECG does not rule out dangerous potassium trend; repeat labs per protocol.",
-        "tags": ["pediatric", "ecg", "potassium", "arrhythmia"],
+        "tags": [
+          "pediatric",
+          "ecg",
+          "potassium",
+          "arrhythmia"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "face-to-face review and blood investigations including ECG",
@@ -1107,7 +1409,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned to the baseline new-diabetes lab bundle; acute management is based on DKA/HHS criteria.",
         "limitations": "Do not use HbA1c alone to diagnose or exclude acute DKA.",
-        "tags": ["pediatric", "new_diabetes", "hba1c", "thyroid", "celiac"],
+        "tags": [
+          "pediatric",
+          "new_diabetes",
+          "hba1c",
+          "thyroid",
+          "celiac"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "baseline investigations and new diabetes tests",
@@ -1132,7 +1440,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not assigned to this test bundle; source-specific test interpretation depends on suspected infection.",
         "limitations": "Do not delay DKA stabilization for nonurgent source tests.",
-        "tags": ["pediatric", "infection", "source_directed", "stewardship"],
+        "tags": [
+          "pediatric",
+          "infection",
+          "source_directed",
+          "stewardship"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "baseline investigations and precipitating causes",
@@ -1157,7 +1470,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to an emergency management rule.",
         "limitations": "This module supports documentation and decision support; it does not replace local pediatric DKA/PICU protocol.",
-        "tags": ["pediatric", "emergency", "abcd", "senior_review", "transfer"],
+        "tags": [
+          "pediatric",
+          "emergency",
+          "abcd",
+          "senior_review",
+          "transfer"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "emergency management",
@@ -1180,7 +1499,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to fluid management thresholds.",
         "limitations": "HHS may need different fluid replacement and specialist advice; local protocol overrides this general rule.",
-        "tags": ["pediatric", "fluids", "dextrose", "shock", "hhs"],
+        "tags": [
+          "pediatric",
+          "fluids",
+          "dextrose",
+          "shock",
+          "hhs"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "fluid therapy and glucose-containing fluids",
@@ -1203,7 +1528,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to insulin treatment timing.",
         "limitations": "HHS insulin may be delayed and lower dose if glucose is falling with fluids; use urgent specialist advice.",
-        "tags": ["pediatric", "insulin", "no_bolus", "fluids_first", "potassium"],
+        "tags": [
+          "pediatric",
+          "insulin",
+          "no_bolus",
+          "fluids_first",
+          "potassium"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "insulin therapy recommendations",
@@ -1226,7 +1557,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to potassium safety rules.",
         "limitations": "Follow local electrolyte protocol and pharmacy/pediatric critical-care advice for severe hypo- or hyperkalemia.",
-        "tags": ["pediatric", "potassium", "fluids", "insulin_safety"],
+        "tags": [
+          "pediatric",
+          "potassium",
+          "fluids",
+          "insulin_safety"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "potassium in fluids and insulin sequencing",
@@ -1249,7 +1585,12 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to bicarbonate treatment limitation.",
         "limitations": "This does not replace local PICU protocol for life-threatening hyperkalemia or profound acidosis.",
-        "tags": ["pediatric", "bicarbonate", "hyperkalemia", "limitation"],
+        "tags": [
+          "pediatric",
+          "bicarbonate",
+          "hyperkalemia",
+          "limitation"
+        ],
         "source": {
           "source_id": "NICE_NG18_DKA_CHILD",
           "source_section": "bicarbonate recommendation",
@@ -1272,7 +1613,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to this emergency management rule.",
         "limitations": "Intubation is high risk and should be specialist-led; local protocol and retrieval advice override generic output.",
-        "tags": ["pediatric", "cerebral_edema", "hypertonic_saline", "mannitol", "picu"],
+        "tags": [
+          "pediatric",
+          "cerebral_edema",
+          "hypertonic_saline",
+          "mannitol",
+          "picu"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "cerebral oedema emergency management",
@@ -1295,7 +1642,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to HHS management routing.",
         "limitations": "Do not apply routine DKA insulin rate or timing to HHS without specialist advice.",
-        "tags": ["pediatric", "hhs", "specialist", "osmolality", "insulin"],
+        "tags": [
+          "pediatric",
+          "hhs",
+          "specialist",
+          "osmolality",
+          "insulin"
+        ],
         "source": {
           "source_id": "CHQ_DKA_HHS_CHILD_2024",
           "source_section": "HHS management",
@@ -1318,7 +1671,13 @@
         "LR_minus": "n/a",
         "likelihood_ratio_note": "LR is not applicable to recurrence-prevention management.",
         "limitations": "Keep copy/export PHI-safe; document sensitive details only in the clinical record per local policy.",
-        "tags": ["pediatric", "diabetes_team", "education", "recurrent_dka", "phi_safe"],
+        "tags": [
+          "pediatric",
+          "diabetes_team",
+          "education",
+          "recurrent_dka",
+          "phi_safe"
+        ],
         "source": {
           "source_id": "ISPAD_DKA_HHS_2022",
           "source_section": "recurrent DKA and psychosocial support",
@@ -1329,6 +1688,314 @@
           "implementation_notes": "This route supports the improvement audit loop without exporting unnecessary PHI."
         },
         "item_type": "management_change"
+      }
+    ],
+    "decisionTrees": [
+      {
+        "id": "decision_01",
+        "label": "Screen for immediate danger or disposition-changing findings before routine workup: Cerebral edema or oedema signs.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived decision tree: triage and escalation",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This must remain visible in copy/export."
+        },
+        "action": "Screen for immediate danger or disposition-changing findings before routine workup: Cerebral edema or oedema signs.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Screen for immediate danger or disposition-changing findings before routine workup: Cerebral edema or oedema signs.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Screen for immediate danger or disposition-changing findings before routine workup: Cerebral edema or oedema signs.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "screen",
+          "immediate",
+          "danger",
+          "disposition",
+          "changing",
+          "findings",
+          "before",
+          "routine",
+          "workup"
+        ]
+      },
+      {
+        "id": "decision_02",
+        "label": "Order focused first-line studies and interpret them in sequence: Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Effective osmolality for HHS or mixed DKA/HHS.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived decision tree: initial tests",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Show thresholds in output, not just 'order labs'."
+        },
+        "action": "Order focused first-line studies and interpret them in sequence: Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Effective osmolality for HHS or mixed DKA/HHS.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Order focused first-line studies and interpret them in sequence: Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Effective osmolality for HHS or mixed DKA/HHS.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Order focused first-line studies and interpret them in sequence: Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Effective osmolality for HHS or mixed DKA/HHS.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "order",
+          "focused",
+          "first",
+          "line",
+          "studies",
+          "interpret",
+          "them",
+          "sequence",
+          "venous"
+        ]
+      },
+      {
+        "id": "decision_03",
+        "label": "Use the leading diagnostic frame to avoid premature closure: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived decision tree: diagnostic branching",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not silently reuse adult ADA/HHS thresholds for pediatric routing."
+        },
+        "action": "Use the leading diagnostic frame to avoid premature closure: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the leading diagnostic frame to avoid premature closure: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Use the leading diagnostic frame to avoid premature closure: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "leading",
+          "diagnostic",
+          "frame",
+          "avoid",
+          "premature",
+          "closure",
+          "pediatric",
+          "hyperglycemia",
+          "diabetes"
+        ]
+      },
+      {
+        "id": "decision_04",
+        "label": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency ABCD and senior escalation route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived decision tree: management routing",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Export should state escalation criteria plainly."
+        },
+        "action": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency ABCD and senior escalation route.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency ABCD and senior escalation route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "If results or bedside status are high-risk, abnormal, worsening, or discordant, follow the source-backed management route: Emergency ABCD and senior escalation route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "results",
+          "bedside",
+          "status",
+          "high",
+          "risk",
+          "abnormal",
+          "worsening",
+          "discordant",
+          "follow"
+        ]
+      }
+    ],
+    "treatmentOptions": [
+      {
+        "id": "treatment_01",
+        "label": "Stabilize or escalate before routine treatment when danger criteria are present: Cerebral edema or oedema signs.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived treatment options: urgent care",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This must remain visible in copy/export."
+        },
+        "action": "Stabilize or escalate before routine treatment when danger criteria are present: Cerebral edema or oedema signs.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Stabilize or escalate before routine treatment when danger criteria are present: Cerebral edema or oedema signs.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Stabilize or escalate before routine treatment when danger criteria are present: Cerebral edema or oedema signs.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "stabilize",
+          "escalate",
+          "before",
+          "routine",
+          "treatment",
+          "when",
+          "danger",
+          "criteria",
+          "present"
+        ]
+      },
+      {
+        "id": "treatment_02",
+        "label": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency ABCD and senior escalation route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived treatment options: high-risk pathway",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Export should state escalation criteria plainly."
+        },
+        "action": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency ABCD and senior escalation route.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency ABCD and senior escalation route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Use the high-risk or confirmed-pathway management option when criteria are met: Emergency ABCD and senior escalation route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "high",
+          "risk",
+          "confirmed",
+          "pathway",
+          "management",
+          "option",
+          "when",
+          "criteria",
+          "emergency"
+        ]
+      },
+      {
+        "id": "treatment_03",
+        "label": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Pediatric fluid and dextrose route.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "NICE_NG18_DKA_CHILD",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived treatment options: lower-risk pathway",
+          "evidence_strength": "national guideline",
+          "version_date": "NG18 current recommendations accessed 2026-06-09",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Avoid adult large-volume fluid assumptions."
+        },
+        "action": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Pediatric fluid and dextrose route.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Pediatric fluid and dextrose route.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Use the lower-risk, outpatient, supportive, or safety-net pathway only when the source-backed criteria are satisfied: Pediatric fluid and dextrose route.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "lower",
+          "risk",
+          "outpatient",
+          "supportive",
+          "safety",
+          "pathway",
+          "only",
+          "when",
+          "source"
+        ]
+      },
+      {
+        "id": "treatment_04",
+        "label": "Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.",
+        "item_type": "management_change",
+        "source": {
+          "source_id": "CHQ_DKA_HHS_CHILD_2024",
+          "source_section": "Pediatric DKA, HHS, or hyperglycemic crisis derived treatment options: monitoring",
+          "evidence_strength": "pediatric emergency guideline",
+          "version_date": "version 6.0, July 2024",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Show thresholds in output, not just 'order labs'."
+        },
+        "action": "Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.",
+        "rationale": "Derives a Pediatric DKA, HHS, or hyperglycemic crisis workup decision from existing source-backed tests, red flags, and management rules.",
+        "diagnostic_target": "Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.: result or bedside context that changes testing, treatment, monitoring, referral, or disposition for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "management_change": "Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not applicable to this decision-support row; use it to route source-backed testing, treatment, monitoring, referral, or disposition.",
+        "limitations": "Use with clinician judgment, local protocols, patient-specific risks, and reassessment; this derived row summarizes existing source-backed module content for Pediatric DKA, HHS, or hyperglycemic crisis.",
+        "tags": [
+          "pediatric",
+          "hyperglycemia",
+          "pediatric",
+          "hyperglycemic",
+          "crisis",
+          "monitor",
+          "treatment",
+          "response",
+          "complications",
+          "need",
+          "reassessment",
+          "with",
+          "venous",
+          "blood"
+        ]
       }
     ]
   }

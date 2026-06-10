@@ -206,7 +206,27 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   const sidebarLabels = await page.locator(".sidebar .nav-button").allTextContents();
   assert(sidebarLabels.join("|") === "Patient roster|Admit patient|Quick de-ID|About privacy", `sidebar should expose only shift utilities, got ${sidebarLabels.join("|")}`);
   const tabLabels = await page.locator(".patient-task-strip [role='tab']").allTextContents();
-  assert(tabLabels.join("|") === "Overview|Context|Workup|Checklist|Findings|OpenEvidence|Phone handoff", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
+  assert(tabLabels.join("|") === "Summary|Context|Workup|Checklist|Findings|Evidence|Phone", `patient tabs should match clinical workflow order, got ${tabLabels.join("|")}`);
+  const patientTabLayout = await page.evaluate(() => {
+    const strip = document.querySelector(".patient-task-strip");
+    const tabs = Array.from(document.querySelectorAll(".patient-task-strip [role='tab']"));
+    const rowTops = new Set(tabs.map((tab) => Math.round(tab.getBoundingClientRect().top)));
+    const clipped = tabs
+      .filter((tab) => tab.scrollWidth > tab.clientWidth + 2 || tab.scrollHeight > tab.clientHeight + 2)
+      .map((tab) => tab.textContent?.trim() || "");
+    return {
+      rowCount: rowTops.size,
+      clipped,
+      scrollWidth: Math.round(strip?.scrollWidth || 0),
+      clientWidth: Math.round(strip?.clientWidth || 0)
+    };
+  });
+  if (viewport.width >= 760) {
+    assert(patientTabLayout.rowCount === 1, `patient workflow tabs should stay in one navigable row on tablet/desktop: ${JSON.stringify(patientTabLayout)}`);
+  } else {
+    assert(patientTabLayout.rowCount <= 2, `patient workflow tabs should stay visible in a compact phone grid: ${JSON.stringify(patientTabLayout)}`);
+  }
+  assert(patientTabLayout.clipped.length === 0, `patient workflow tab labels should not be clipped: ${JSON.stringify(patientTabLayout)}`);
   const countLabel = await page.textContent("#patientCountLabel");
   assert(/1 active \/ 1 total/.test(countLabel), `patient count should reflect the admitted patient, got ${countLabel}`);
 
@@ -239,8 +259,94 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.click('[data-patient-tab="evidence"]');
   const patientEvidenceTasks = await page.locator("#patientEvidenceTaskStrip .task-card").count();
   assert(patientEvidenceTasks >= 8, `OpenEvidence patient tab should render task cards, got ${patientEvidenceTasks}`);
-  const patientPromptPreview = await page.textContent("#patientEvidencePromptPreview");
+  const patientEvidenceLayout = await page.evaluate(() => {
+    const grid = document.querySelector(".patient-evidence-grid");
+    const nav = document.querySelector(".patient-evidence-nav");
+    const preview = document.querySelector(".patient-evidence-preview");
+    const patientRail = document.querySelector(".patient-rail");
+    const contextRail = document.querySelector(".context-rail");
+    const cards = Array.from(document.querySelectorAll("#patientEvidenceTaskStrip .task-card"));
+    const clipped = cards.flatMap((card) => (
+      Array.from(card.querySelectorAll("strong, span")).filter((node) => node.scrollWidth > node.clientWidth + 2)
+        .map((node) => node.textContent?.trim() || "")
+    ));
+    const gridRect = grid?.getBoundingClientRect();
+    const navRect = nav?.getBoundingClientRect();
+    const previewRect = preview?.getBoundingClientRect();
+    return {
+      patientTab: document.body.dataset.patientTab,
+      gridWidth: Math.round(gridRect?.width || 0),
+      navRight: Math.round(navRect?.right || 0),
+      previewLeft: Math.round(previewRect?.left || 0),
+      sideBySide: Boolean(navRect && previewRect && navRect.right <= previewRect.left + 2),
+      patientRailDisplay: patientRail ? getComputedStyle(patientRail).display : "",
+      contextRailDisplay: contextRail ? getComputedStyle(contextRail).display : "",
+      clipped
+    };
+  });
+  assert(patientEvidenceLayout.patientTab === "evidence", `Evidence tab should mark layout state on body: ${JSON.stringify(patientEvidenceLayout)}`);
+  assert(patientEvidenceLayout.patientRailDisplay === "none", `Evidence tab should hide the roster rail to give prompts room: ${JSON.stringify(patientEvidenceLayout)}`);
+  assert(patientEvidenceLayout.contextRailDisplay === "none", `Evidence tab should hide the status rail to give prompts room: ${JSON.stringify(patientEvidenceLayout)}`);
+	  assert(patientEvidenceLayout.clipped.length === 0, `OpenEvidence task card text should wrap instead of clipping: ${JSON.stringify(patientEvidenceLayout)}`);
+	  if (viewport.width >= 980) {
+	    assert(patientEvidenceLayout.sideBySide, `OpenEvidence patient workbench should keep task list and preview side-by-side on usable widths: ${JSON.stringify(patientEvidenceLayout)}`);
+	  }
+	  const patientEvidenceActionLayout = await page.evaluate(() => {
+	    const answer = document.querySelector(".patient-evidence-answer-panel");
+	    const copy = document.querySelector("#patientCopyPromptFromAnswerButton");
+	    const apply = document.querySelector("#patientRebuildFromEvidenceButton");
+	    const prompt = document.querySelector("#patientEvidencePromptPreview");
+	    const rectFor = (element) => {
+	      const rect = element?.getBoundingClientRect();
+	      return rect ? {
+	        top: Math.round(rect.top),
+	        bottom: Math.round(rect.bottom),
+	        height: Math.round(rect.height),
+	        width: Math.round(rect.width)
+	      } : null;
+	    };
+	    const clippedActions = Array.from(document.querySelectorAll(".patient-evidence-answer-actions .btn"))
+	      .filter((button) => button.scrollWidth > button.clientWidth + 2 || button.scrollHeight > button.clientHeight + 2)
+	      .map((button) => button.textContent?.trim() || "");
+	    return {
+	      answer: rectFor(answer),
+	      copy: rectFor(copy),
+	      apply: rectFor(apply),
+	      prompt: rectFor(prompt),
+	      viewportHeight: window.innerHeight,
+	      clippedActions
+	    };
+	  });
+	  assert(patientEvidenceActionLayout.clippedActions.length === 0, `OpenEvidence answer actions should not clip labels: ${JSON.stringify(patientEvidenceActionLayout)}`);
+	  if (viewport.width < 760) {
+	    assert(patientEvidenceActionLayout.answer?.top < viewport.height * 0.5, `mobile Evidence should put paste/rebuild controls before the prompt list: ${JSON.stringify(patientEvidenceActionLayout)}`);
+	    assert(patientEvidenceActionLayout.apply?.bottom < viewport.height, `mobile Evidence rebuild action should be visible without scrolling: ${JSON.stringify(patientEvidenceActionLayout)}`);
+	  } else {
+	    assert(patientEvidenceActionLayout.answer?.top <= (patientEvidenceActionLayout.prompt?.top || 0) + 4, `desktop Evidence answer panel should sit beside the prompt preview: ${JSON.stringify(patientEvidenceActionLayout)}`);
+	  }
+	  const patientPromptPreview = await page.textContent("#patientEvidencePromptPreview");
   assert(/Task boundary:/.test(patientPromptPreview) && /Output contract:/.test(patientPromptPreview), "OpenEvidence patient tab should show a real prompt preview");
+  await page.fill("#patientEvidenceTaskSearchInput", "checklist");
+  await page.waitForFunction(() => /of/.test(document.querySelector("#patientEvidenceTaskCount")?.textContent || ""));
+  const filteredPatientEvidenceTasks = await page.locator("#patientEvidenceTaskStrip .task-card").count();
+  const filteredPatientEvidenceLabels = await page.locator("#patientEvidenceTaskStrip .task-card").allTextContents();
+  assert(filteredPatientEvidenceTasks >= 1 && filteredPatientEvidenceTasks < patientEvidenceTasks, `OpenEvidence task search should narrow the prompt list, got ${filteredPatientEvidenceTasks} from ${patientEvidenceTasks}`);
+  assert(filteredPatientEvidenceLabels.some((text) => /checklist/i.test(text)), `OpenEvidence task search should expose checklist-related task, got ${filteredPatientEvidenceLabels.join(" | ")}`);
+  await page.click("#clearPatientEvidenceTaskSearchButton");
+  await page.waitForFunction((expectedCount) => document.querySelectorAll("#patientEvidenceTaskStrip .task-card").length === expectedCount, patientEvidenceTasks);
+  await page.fill("#patientEvidenceTaskSearchInput", "medication");
+  await page.waitForFunction(() => /Medication safety/i.test(document.querySelector("#patientEvidencePromptPreview")?.textContent || ""));
+  await page.click("#patientCopyOpenEvidencePromptButton");
+  await page.waitForSelector("#phiOverlay:not([hidden])");
+  const copiedPromptPreview = await page.textContent("#phiPreviewText");
+  assert(/Medication safety|medication_safety|medication, dosing/i.test(copiedPromptPreview), "Copy prompt should respect the searched/selected OpenEvidence task");
+  await page.click("#closePhiOverlayButton");
+  await page.click("#clearPatientEvidenceTaskSearchButton");
+  await page.waitForFunction((expectedCount) => document.querySelectorAll("#patientEvidenceTaskStrip .task-card").length === expectedCount, patientEvidenceTasks);
+  await page.click("#patientOpenEvidenceBoardButton");
+  await page.waitForFunction(() => document.body.dataset.view === "evidence");
+  await page.click("#evidenceBackToPatientButton");
+  await page.waitForFunction(() => document.body.dataset.view === "workspace" && document.body.dataset.patientTab === "evidence");
 
   await page.click('[data-patient-tab="workup"]');
   await page.fill("#patientWorkupConcernInput", "chest pain");
@@ -261,6 +367,31 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
   checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
   assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Rebuild from workup", `built checklist panel should switch to answer/rebuild actions, got ${checklistPanelButtons.join("|")}`);
+  const checklistDirectoryAudit = await page.evaluate(() => {
+    const directory = document.querySelector("#workspaceChecklistDirectory");
+    const buttons = Array.from(document.querySelectorAll("#workspaceChecklistDirectory .workspace-checklist-jump"));
+    const clipped = buttons.flatMap((button) => (
+      Array.from(button.querySelectorAll("strong, .jump-hint, .question-number"))
+        .filter((node) => node.scrollWidth > node.clientWidth + 2 || node.scrollHeight > node.clientHeight + 2)
+        .map((node) => node.textContent?.trim() || "")
+    ));
+    return {
+      hidden: !directory || directory.hidden,
+      sections: document.querySelectorAll("#workspaceChecklistDirectory .workspace-checklist-section").length,
+      buttons: buttons.length,
+      clipped
+    };
+  });
+  assert(!checklistDirectoryAudit.hidden, `built checklist tab should show an all-question directory: ${JSON.stringify(checklistDirectoryAudit)}`);
+  assert(checklistDirectoryAudit.sections >= 1 && checklistDirectoryAudit.buttons >= 8, `checklist directory should expose the full built checklist, not a tiny preview: ${JSON.stringify(checklistDirectoryAudit)}`);
+  assert(checklistDirectoryAudit.clipped.length === 0, `checklist directory rows should not clip labels: ${JSON.stringify(checklistDirectoryAudit)}`);
+  await page.locator("#workspaceChecklistDirectory .workspace-checklist-jump").first().click();
+  await page.waitForSelector("#bedsideView:not([hidden])");
+  await page.waitForFunction(() => document.querySelector(".checklist-row.is-active")?.getBoundingClientRect().height > 0);
+  await page.click(viewport.width < 760 ? "#bedsideMobileMenuButton" : "#bedsideHeaderSettingsButton");
+  await page.waitForSelector("#workspaceView:not([hidden])");
+  await page.click('[data-patient-tab="checklist"]');
+  await page.waitForFunction(() => document.body.dataset.patientTab === "checklist");
 
   await page.click('[data-patient-tab="handoff"]');
   await page.click("#workspaceHandoffButton");
