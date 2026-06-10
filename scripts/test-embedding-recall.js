@@ -162,6 +162,14 @@ assert.ok(knowledgePackSchema.$defs.item.required.includes("intent_ids"), "knowl
 assert.ok(knowledgePackSchema.$defs.item.required.includes("item_type"), "knowledge-pack items should require item_type for section/type separation");
 assert.ok(knowledgePackSchema.$defs.item.required.includes("likelihood_ratio_note"), "knowledge-pack items should require explicit LR/evidence interpretation notes");
 assert.ok(knowledgePackSchema.$defs.intent.required.includes("intent_type"), "knowledge-pack intents should require intent_type for complaint/diagnosis/syndrome separation");
+assert.ok(knowledgePackSchema.$defs.intent.required.includes("applicability"), "knowledge-pack intents should require explicit applicability constraints");
+assert.deepEqual(
+  knowledgePackSchema.$defs.applicability.properties.pregnancy_status_required.enum,
+  ["pregnant", "must_assess", "not_required_but_must_consider", "not_applicable", "not_limited"],
+  "knowledge-pack applicability should restrict pregnancy_status_required to recognized patient-context values"
+);
+assert.equal(knowledgePackSchema.$defs.applicability.properties.use_when.minItems, 1, "knowledge-pack applicability should require at least one use_when scope statement");
+assert.equal(knowledgePackSchema.$defs.applicability.properties.do_not_use_when.minItems, 1, "knowledge-pack applicability should require at least one do_not_use_when limitation");
 assert.deepEqual(
   knowledgePackSchema.$defs.intent.properties.intent_type.enum,
   ["complaint", "diagnosis", "syndrome", "management_scenario"],
@@ -405,6 +413,11 @@ const validPack = {
       url_or_doi: "https://example.org/curated-local-test-source",
       date_accessed: "2026-06-06",
       license_or_access_notes: "Synthetic local test citation.",
+      review_owner: "test_reviewer",
+      reviewed_by_role: "clinician_content_reviewer",
+      last_reviewed: "2026-06-06",
+      next_review_due: "2027-06-06",
+      currency_status: "reviewed_current_for_scope",
       preferred_citation: "Curated local test source"
     }
   ],
@@ -421,6 +434,18 @@ const validPack = {
       required_domains: ["vitals", "CVA tenderness"],
       avoid_labels: ["PMI"],
       gold_case_ids: ["burning_pee"],
+      applicability: {
+        age_group: "adult",
+        setting: "clinician support",
+        sex_or_reproductive_context: "adult dysuria patient; pregnancy status must be assessed when medication, imaging, or disposition safety could change",
+        pregnancy_status_required: "must_assess",
+        use_when: [
+          "Use for adult dysuria, urinary frequency, flank pain, fever, or possible pyelonephritis workups."
+        ],
+        do_not_use_when: [
+          "Do not use as a pediatric UTI workup or as pregnancy-specific obstetric care without separate reviewed guidance."
+        ]
+      },
       last_reviewed: "2026-06-06",
       review_owner: "test_reviewer"
     }
@@ -1209,6 +1234,30 @@ const crossIntentGoldCaseResult = validateClinicalKnowledgePack(crossIntentGoldC
 assert.ok(!crossIntentGoldCaseResult.ok, "intents should not cite gold cases owned by a different staged intent");
 assert.ok(crossIntentGoldCaseResult.issues.some((issue) => issue.type === "intent-gold-case-intent"));
 
+const missingIntentApplicabilityResult = validateClinicalKnowledgePack({
+  ...validPack,
+  intents: validPack.intents.map(({ applicability, ...intent }) => intent)
+});
+assert.ok(!missingIntentApplicabilityResult.ok, "knowledge packs should require intent-level applicability constraints");
+assert.ok(missingIntentApplicabilityResult.issues.some((issue) => issue.type === "intent-applicability"));
+
+const invalidIntentApplicabilityResult = validateClinicalKnowledgePack({
+  ...validPack,
+  intents: [{
+    ...validPack.intents[0],
+    applicability: {
+      ...validPack.intents[0].applicability,
+      pregnancy_status_required: "maybe",
+      use_when: [],
+      do_not_use_when: []
+    }
+  }]
+});
+assert.ok(!invalidIntentApplicabilityResult.ok, "knowledge packs should reject vague or empty applicability constraints");
+assert.ok(invalidIntentApplicabilityResult.issues.some((issue) => issue.type === "intent-applicability-pregnancy_status_required"));
+assert.ok(invalidIntentApplicabilityResult.issues.some((issue) => issue.type === "intent-applicability-use_when"));
+assert.ok(invalidIntentApplicabilityResult.issues.some((issue) => issue.type === "intent-applicability-do_not_use_when"));
+
 const missingSuppressIntentTraceResult = validateClinicalKnowledgePack({
   ...validPack,
   suppress_rules: validPack.suppress_rules.map(({ intent_ids, ...rule }) => rule)
@@ -1414,6 +1463,8 @@ const incompleteSourceResult = validateClinicalKnowledgePack({
 });
 assert.ok(!incompleteSourceResult.ok, "source registry rows need URL/DOI, access, license, and citation metadata");
 assert.ok(incompleteSourceResult.issues.some((issue) => issue.type === "source-url_or_doi"));
+assert.ok(incompleteSourceResult.issues.some((issue) => issue.type === "source-review_owner"));
+assert.ok(incompleteSourceResult.issues.some((issue) => issue.type === "source-next_review_due"));
 
 const invalidSourceDateResult = validateClinicalKnowledgePack({
   ...validPack,
@@ -1421,6 +1472,20 @@ const invalidSourceDateResult = validateClinicalKnowledgePack({
 });
 assert.ok(!invalidSourceDateResult.ok, "source registry access dates should use ISO dates");
 assert.ok(invalidSourceDateResult.issues.some((issue) => issue.type === "source-date_accessed-format"));
+
+const invalidSourceGovernanceDateResult = validateClinicalKnowledgePack({
+  ...validPack,
+  source_registry: [{ ...validPack.source_registry[0], next_review_due: "2026-01-01" }]
+});
+assert.ok(!invalidSourceGovernanceDateResult.ok, "source registry next-review dates should be later than last review");
+assert.ok(invalidSourceGovernanceDateResult.issues.some((issue) => issue.type === "source-next_review_due-order"));
+
+const invalidSourceCurrencyResult = validateClinicalKnowledgePack({
+  ...validPack,
+  source_registry: [{ ...validPack.source_registry[0], currency_status: "probably_current" }]
+});
+assert.ok(!invalidSourceCurrencyResult.ok, "source registry rows should use recognized currency statuses");
+assert.ok(invalidSourceCurrencyResult.issues.some((issue) => issue.type === "source-currency_status"));
 
 const invalidSourceLocatorResult = validateClinicalKnowledgePack({
   ...validPack,

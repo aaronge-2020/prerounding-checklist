@@ -6,15 +6,15 @@ This app is built for local review before prompts are copied elsewhere. It shoul
 
 - Pasted chart text is processed in the browser and is not saved into the vault.
 - Structured-only de-identification is the default and does not download model assets.
-- Single-patient mode does not create a saved census vault.
-- Census mode stores encrypted de-identified case workspaces in this browser's IndexedDB using the local passcode.
-- Raw chart text, admission intake text, patient names, MRNs, room numbers, and obvious roster identifiers are dropped before vault storage.
+- Single-patient mode does not create a saved vault or write workflow state to local storage.
+- Vault mode stores encrypted patient workspaces in this browser profile using the local password.
+- Raw chart text is not saved to the vault. Patient roster labels and saved workflow state are encrypted before browser-local storage.
 - OpenEvidence paste-back review stores reviewed summaries in browser storage only after a PHI safety check. The raw pasted answer is not persisted.
 
 ## Data That Can Leave The Browser
 
 - Text leaves the browser only when a user intentionally copies and pastes it into another site.
-- Encrypted context and census exports leave the browser only when a user intentionally downloads or shares those files.
+- Encrypted context exports leave the browser only when a user intentionally downloads or shares those files.
 - If enhanced model de-identification is enabled, the browser may download third-party code/model assets. Chart text is still intended to be processed locally, but the asset requests expose ordinary network metadata such as IP address and user agent to those providers.
 - External clinical AI tools, including OpenEvidence, are separate systems with their own privacy, security, and contracting requirements.
 

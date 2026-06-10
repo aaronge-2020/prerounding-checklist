@@ -1,0 +1,1667 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "pediatric_rash_skin_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Pediatric rash, urticaria, petechiae, or skin infection",
+    "complaint_group": "dermatology",
+    "version": "1.0.0",
+    "status": "mvp",
+    "population": {
+      "age_group": "pediatric",
+      "setting": "clinician support"
+    },
+    "applicability": {
+      "age_group": "pediatric",
+      "sex_or_reproductive_context": "any",
+      "pregnancy_status_required": "not_required_but_must_consider",
+      "setting": "clinician support",
+      "review_owner": "general_medicine_content_review",
+      "last_reviewed": "2026-06-09",
+      "use_when": [
+        "Child or adolescent with rash, hives, urticaria, petechiae, purpura, bruising with rash, cellulitis, abscess, impetigo, skin lesion, wound infection, fever with rash, or prolonged fever with Kawasaki features.",
+        "Pediatric rash workup needs child-specific red flags, blanching assessment, anaphylaxis screening, non-blanching rash and meningococcal safety, Kawasaki feature review, and skin infection route decisions."
+      ],
+      "do_not_use_when": [
+        "Adult patient; use the adult rash, dermatology, wound, allergy, infection, or hematology pathway as appropriate.",
+        "Unstable child with shock, airway compromise, severe respiratory distress, altered mental status, rapidly progressive purpura, or active anaphylaxis; escalate immediately while documenting focused rash findings.",
+        "Primary isolated eye, sore throat, abdominal, respiratory, or urinary complaint without rash or skin findings; use the source-specific pediatric pathway and add this module only if rash changes management.",
+        "Known burns, large traumatic wounds, immunocompromised oncology/transplant protocol, or post-operative infection where local specialty pathway overrides this general pediatric rash module."
+      ]
+    },
+    "modifier_add_on_policy": {
+      "suppress_generic_infection_modifier_history_floor": true,
+      "rationale": "This validated pediatric rash pack already includes fever/sepsis, anaphylaxis, Kawasaki, petechiae/purpura, and skin-infection routing; generic infection modifier prompts should not be activated by its own rash aliases."
+    },
+    "triggers": [
+      "pediatric rash",
+      "paediatric rash",
+      "child rash",
+      "rash child",
+      "fever and rash child",
+      "pediatric hives",
+      "child hives",
+      "pediatric urticaria",
+      "child urticaria",
+      "child petechiae",
+      "child purpura",
+      "non blanching rash child",
+      "child cellulitis",
+      "pediatric cellulitis",
+      "child abscess",
+      "skin infection child",
+      "kawasaki concern",
+      "prolonged fever rash child"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "peds_rash_nonblanching_sepsis",
+        "label": "Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance",
+        "action": "Treat non-blanching rash with fever or unwell appearance as a senior-review and sepsis/meningococcal-risk problem until serious bacterial infection is judged unlikely.",
+        "rationale": "Serious bacterial infection can present with petechiae or purpura, and the child who is unwell or has fever plus non-blanching rash needs prompt senior review.",
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "key points, definitions, assessment, and management of petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local pediatric sepsis and meningococcal disease pathway when the child is unwell."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Meningococcal disease, serious bacterial infection, viral petechiae, mechanical petechiae, hematologic disease, vasculitis, or trauma.",
+        "management_change": "Changes urgency of senior review, cultures/labs, empiric antibiotics, observation or admission, and whether discharge is allowed.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not assigned to this broad non-blanching rash frame; guideline-defined danger features and trajectory determine escalation.",
+        "limitations": "Most children with petechiae do not have meningococcal disease, but reassuring appearance does not remove the need for structured assessment.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "petechiae",
+          "purpura",
+          "non_blanching",
+          "fever",
+          "sepsis",
+          "meningococcal"
+        ]
+      },
+      {
+        "id": "peds_rash_kawasaki_inflammatory",
+        "label": "Prolonged fever with Kawasaki disease or inflammatory rash features",
+        "action": "Ask for fever duration and Kawasaki features that may have occurred sequentially, especially in infants with prolonged fever and fewer features.",
+        "rationale": "Timely Kawasaki diagnosis and treatment reduces coronary artery aneurysm risk, and infants can have incomplete presentations.",
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "key points, history, complete KD clinical features, and incomplete KD risk",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with NICE fever under 5 Kawasaki feature prompts when fever has lasted 5 days or longer."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Kawasaki disease, incomplete Kawasaki disease, MIS-C mimic, viral exanthem, scarlet fever, or other inflammatory syndrome.",
+        "management_change": "Changes need for senior pediatric review, inflammatory labs, ECG/echocardiography, IVIg/aspirin pathway, and cardiology follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not assigned to this Kawasaki frame; diagnosis is clinical and source guidance stresses sequential features and timely treatment.",
+        "limitations": "Do not rule out Kawasaki disease because all features are not present at the same time.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "kawasaki",
+          "prolonged_fever",
+          "conjunctivitis",
+          "mucosal",
+          "coronary_risk"
+        ]
+      },
+      {
+        "id": "peds_rash_urticaria_anaphylaxis",
+        "label": "Urticaria or angioedema with or without anaphylaxis features",
+        "action": "Separate isolated urticaria from hives or angioedema with airway, breathing, circulation, or gastrointestinal symptoms.",
+        "rationale": "RCH urticaria guidance treats systemic involvement as possible anaphylaxis, while most isolated urticaria does not need admission.",
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "urticaria assessment, anaphylaxis exclusion, consultation, and discharge",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local anaphylaxis protocol immediately when systemic symptoms are present."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Acute urticaria, angioedema, anaphylaxis, viral-triggered hives, drug reaction, or chronic urticaria.",
+        "management_change": "Changes epinephrine/anaphylaxis pathway, observation, antihistamine use, admission, and follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not assigned to this urticaria/anaphylaxis frame; systemic involvement changes management regardless of rash appearance.",
+        "limitations": "Isolated hives are common and often viral, but airway, respiratory, cardiovascular, or gastrointestinal symptoms must override low-risk assumptions.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "urticaria",
+          "hives",
+          "angioedema",
+          "anaphylaxis",
+          "allergy"
+        ]
+      },
+      {
+        "id": "peds_rash_ssti_cellulitis_abscess",
+        "label": "Cellulitis, abscess, impetigo, or skin and soft tissue infection",
+        "action": "Look for localized warmth, tenderness, fluctuance, drainage, rapidly spreading erythema, immunocompromise, sepsis, or deep/necrotizing infection features.",
+        "rationale": "Pediatric SSTI pathways separate outpatient oral therapy from observation/admission, IV antibiotics, drainage, imaging, and urgent surgical or ID advice.",
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "cellulitis and abscess pathway, severe infection criteria, admission and therapy route",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local antimicrobial guidance and source-control policy."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Cellulitis, abscess, impetigo, necrotizing infection, bite wound infection, periorbital/orbital cellulitis, or sepsis.",
+        "management_change": "Changes oral versus IV antibiotics, culture/drainage, imaging, admission, surgical consultation, ID advice, and follow-up interval.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not assigned to this SSTI frame; severity, anatomy, source control, and sepsis features drive management.",
+        "limitations": "This general SSTI frame does not replace bite, orbital, burn, immunocompromised, or post-operative specialty pathways.",
+        "tags": [
+          "pediatric",
+          "skin_infection",
+          "cellulitis",
+          "abscess",
+          "impetigo",
+          "wound",
+          "sepsis",
+          "source_control"
+        ]
+      },
+      {
+        "id": "peds_rash_lower_risk_exanthem_contact",
+        "label": "Lower-risk viral exanthem, contact dermatitis, eczema flare, or benign rash pattern",
+        "action": "Classify as lower risk only after non-blanching rash, anaphylaxis, Kawasaki features, severe infection, and systemic danger cues are absent.",
+        "rationale": "Clinician-ready rash support must explicitly show why dangerous pediatric rash syndromes are not being pursued before reassurance or outpatient care.",
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light risk assessment and disease-specific fever/rash features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use with pediatric rash morphology and return precautions rather than generic reassurance."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Viral exanthem, contact dermatitis, eczema flare, insect bites, mild urticaria, or other low-acuity rash after red flags are excluded.",
+        "management_change": "Changes outpatient care, symptom treatment, school/daycare guidance, and return precautions while avoiding unnecessary sepsis or antibiotic workup.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not assigned to this lower-risk frame; it depends on absence of source-defined danger features.",
+        "limitations": "Do not use as reassurance if the rash is rapidly progressive, non-blanching, painful, mucosal, associated with fever, or the child looks unwell.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "viral_exanthem",
+          "contact_dermatitis",
+          "eczema",
+          "low_risk",
+          "safety_net"
+        ]
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "peds_rash_temperature",
+        "label": "Measure temperature",
+        "action": "Measure and document current temperature with age-appropriate method.",
+        "rationale": "Fever changes pediatric rash risk, including meningococcal disease, Kawasaki disease, cellulitis severity, and sepsis routing.",
+        "management_change": "Fever moves rash workup toward traffic-light risk assessment, non-blanching rash escalation, Kawasaki duration review, and source testing.",
+        "options": "___ C/F / Febrile / Afebrile / Hypothermic / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 0.5,
+        "equipment_needed": "thermometer",
+        "patient_cooperation_required": "low",
+        "limitations": "Antipyretics and recent measurement timing can mask fever trajectory.",
+        "likelihood_ratio_note": "LR is not applicable to temperature as baseline clinical data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "temperature",
+          "fever"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "thermometers and fever risk assessment",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Keep temperature in baseline data, not physical exam maneuvers."
+        },
+        "item_type": "safety_check"
+      },
+      {
+        "id": "peds_rash_heart_rate",
+        "label": "Measure heart rate",
+        "action": "Measure heart rate and compare with age, fever, pain, hydration, and perfusion context.",
+        "rationale": "Tachycardia can signal sepsis, anaphylaxis, dehydration, pain, or severe infection.",
+        "management_change": "Abnormal heart rate changes urgency, observation, fluid/anaphylaxis/sepsis pathway, and disposition.",
+        "options": "___ bpm / Normal for age / Tachycardic / Bradycardic / Irregular / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 0.5,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Crying, fever, bronchodilators, pain, and anxiety can change pediatric heart rate.",
+        "likelihood_ratio_note": "LR is not applicable to heart rate as baseline clinical data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "heart_rate",
+          "sepsis",
+          "anaphylaxis"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light risk assessment and circulation/hydration features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document trend and age context."
+        },
+        "item_type": "safety_check"
+      },
+      {
+        "id": "peds_rash_respiratory_rate",
+        "label": "Measure respiratory rate",
+        "action": "Count respiratory rate for a full interval when feasible and compare with age-adjusted concern.",
+        "rationale": "Respiratory distress can accompany anaphylaxis, sepsis, pneumonia with fever/rash, or severe systemic illness.",
+        "management_change": "Abnormal respiratory rate changes oxygen support, anaphylaxis/sepsis escalation, and pneumonia or respiratory-source add-on.",
+        "options": "___/min / Normal for age / Tachypneic / Bradypneic / Labored / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 0.5,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Agitation and crying can distort the count; repeat when calm if safe.",
+        "likelihood_ratio_note": "LR is not applicable to respiratory rate as baseline clinical data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "respiratory_rate",
+          "anaphylaxis",
+          "sepsis"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light respiratory risk and pneumonia features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Keep as baseline safety data."
+        },
+        "item_type": "safety_check"
+      },
+      {
+        "id": "peds_rash_spo2",
+        "label": "Measure oxygen saturation",
+        "action": "Measure oxygen saturation on room air or document oxygen support.",
+        "rationale": "Hypoxemia changes anaphylaxis, sepsis, pneumonia, and transfer decisions.",
+        "management_change": "Low saturation triggers oxygen, respiratory assessment, escalation, and possible admission or transfer.",
+        "options": "___% room air / ___% on oxygen ___ L/min / Hypoxemic / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 0.5,
+        "equipment_needed": "pulse oximeter",
+        "patient_cooperation_required": "low",
+        "limitations": "Borderline pulse oximetry can be inaccurate; confirm signal quality and clinical context.",
+        "likelihood_ratio_note": "LR is not applicable to oxygen saturation as baseline safety data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "oxygen_saturation",
+          "respiratory"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "pneumonia and oxygen saturation risk features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document oxygen device and flow if not room air."
+        },
+        "item_type": "safety_check"
+      },
+      {
+        "id": "peds_rash_blood_pressure",
+        "label": "Measure blood pressure",
+        "action": "Measure blood pressure with a correct-size pediatric cuff when rash is systemic, child is unwell, anaphylaxis is possible, or severe infection is suspected.",
+        "rationale": "Hypotension is late and dangerous in pediatric shock and can accompany anaphylaxis or sepsis.",
+        "management_change": "Abnormal blood pressure changes resuscitation, observation, admission, and transfer decisions.",
+        "options": "___/___ mmHg / Normal for age / Low / High / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "blood pressure cuff",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Wrong cuff size, crying, and movement can distort pediatric blood pressure.",
+        "likelihood_ratio_note": "LR is not applicable to blood pressure as baseline safety data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "vitals",
+          "blood_pressure",
+          "shock"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "unwell child signs and shock physiology",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with perfusion and mental-status assessment."
+        },
+        "item_type": "safety_check"
+      },
+      {
+        "id": "peds_rash_mental_status",
+        "label": "Document mental status",
+        "action": "Document alertness, interaction with caregivers, irritability, lethargy, and ability to wake and stay awake.",
+        "rationale": "Altered mental status or inconsolability is a major pediatric rash/fever danger cue.",
+        "management_change": "Abnormal mental status triggers urgent senior review, sepsis/meningitis evaluation, and monitored disposition.",
+        "options": "Baseline / Irritable / Lethargic / Difficult to rouse / Confused / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Use caregiver baseline because young children may not cooperate with formal testing.",
+        "likelihood_ratio_note": "LR is not applicable to mental status as baseline acuity data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "mental_status",
+          "sepsis",
+          "meningitis"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light activity and red features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Keep mental status in baseline safety data."
+        },
+        "item_type": "safety_check",
+        "findings_options": [
+          "Baseline interactive",
+          "Irritable or inconsolable",
+          "Lethargic or unusually sleepy",
+          "Difficult to rouse",
+          "Confused or not acting normally",
+          "Not available"
+        ]
+      },
+      {
+        "id": "peds_rash_weight",
+        "label": "Measure current weight",
+        "action": "Measure or confirm current weight for weight-based medication and transfer decisions.",
+        "rationale": "Pediatric antibiotics, epinephrine, antihistamines, IVIg, fluids, and analgesia are weight-based.",
+        "management_change": "Missing weight blocks safe dosing and handoff for emergency therapy.",
+        "options": "___ kg measured today / Recent reliable weight ___ kg / Estimated only / Not available",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Estimated weights can be unsafe for high-risk medications; verify when feasible.",
+        "likelihood_ratio_note": "LR is not applicable to weight as medication-safety data.",
+        "tags": [
+          "pediatric",
+          "baseline_safety",
+          "weight",
+          "medication_safety"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "weight-based pediatric antimicrobial therapy",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local dosing guidelines."
+        },
+        "item_type": "safety_check"
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "peds_rash_age_context",
+        "label": "Ask pediatric rash age and vulnerability",
+        "text": "What is the child's exact age band, immunization status, immune risk, prior invasive infection history, and whether the child is under 6 months or an infant under 12 months with prolonged fever?",
+        "answer_options": "Age ___ / Under 6 months / Under 12 months / Immunizations complete / Incomplete immunizations / Immunocompromised / Prior invasive infection / None of these",
+        "options": "Age ___ / Under 6 months / Under 12 months / Immunizations complete / Incomplete immunizations / Immunocompromised / Prior invasive infection / None of these",
+        "when_to_ask": "Ask at the start of every pediatric rash workup.",
+        "diagnostic_purpose": "Separates infant risk, incomplete immunization, immunocompromise, and Kawasaki incomplete-presentation risk from generic adult rash logic.",
+        "management_implication": "Positive infant, immunization, or immune-risk context lowers the threshold for senior review, sepsis workup, admission, or specialty consultation.",
+        "detail_prompts": [
+          "Document exact age in days/months/years.",
+          "Ask whether vaccines are incomplete or unavailable.",
+          "Ask about immunosuppression, oncology, transplant, asplenia, biologics, or previous invasive bacterial infection."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to age and vulnerability context; it changes pathway selection and escalation threshold.",
+        "tags": [
+          "pediatric",
+          "age_band",
+          "immunization",
+          "immunocompromised",
+          "infant",
+          "risk_factor"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "history risk factors for petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use exact age and risk status in handoff."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_morphology_onset",
+        "label": "Ask rash morphology and progression",
+        "text": "Is the rash petechial, purpuric, non-blanching, urticarial wheals, vesicular, pustular, crusted, cellulitic, abscess-like, target-like, painful, itchy, localized, generalized, rapidly spreading, or changing after pressure?",
+        "answer_options": "Petechiae / Purpura / Non-blanching / Hives-wheals / Vesicles / Pustules-crusting / Cellulitis / Abscess / Target-like / Painful / Itchy / Localized / Generalized / Rapidly spreading / Other ___",
+        "options": "Petechiae / Purpura / Non-blanching / Hives-wheals / Vesicles / Pustules-crusting / Cellulitis / Abscess / Target-like / Painful / Itchy / Localized / Generalized / Rapidly spreading / Other ___",
+        "when_to_ask": "Ask in every pediatric rash workup and document positive and negative morphology separately.",
+        "diagnostic_purpose": "Classifies morphology into non-blanching danger rash, urticaria/anaphylaxis, SSTI, viral exanthem, inflammatory rash, or other dermatologic pattern.",
+        "management_implication": "Morphology changes urgency, isolation/source control, culture/imaging, senior review, and whether reassurance is safe.",
+        "detail_prompts": [
+          "Ask where rash began and how quickly it spread.",
+          "Ask whether pressure or a glass test makes it disappear.",
+          "Ask whether pain is out of proportion to appearance."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for broad rash morphology; use it to route source-specific exam and testing.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "morphology",
+          "non_blanching",
+          "urticaria",
+          "ssti",
+          "progression"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "definitions of petechiae, purpura, blanching, and assessment",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Ask morphology in terms caregivers can answer, then verify on exam."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_fever_systemic_danger",
+        "label": "Ask fever and systemic danger symptoms",
+        "text": "Is there fever, rigors, rapid worsening, poor feeding, reduced urine output, lethargy, inconsolable irritability, neck stiffness, bulging fontanelle, focal seizure, joint swelling, non-weight bearing, severe pain, vomiting, or breathing difficulty?",
+        "answer_options": "No systemic symptoms / Fever / Rigors / Rapid worsening / Poor feeding / Reduced urine output / Lethargy / Inconsolable irritability / Neck stiffness / Bulging fontanelle / Focal seizure / Joint swelling / Non-weight bearing / Severe pain / Vomiting / Breathing difficulty",
+        "options": "No systemic symptoms / Fever / Rigors / Rapid worsening / Poor feeding / Reduced urine output / Lethargy / Inconsolable irritability / Neck stiffness / Bulging fontanelle / Focal seizure / Joint swelling / Non-weight bearing / Severe pain / Vomiting / Breathing difficulty",
+        "when_to_ask": "Ask in every pediatric rash workup because systemic signs change acuity more than rash label alone.",
+        "diagnostic_purpose": "Screens for traffic-light fever danger, meningitis/sepsis, septic arthritis/osteomyelitis, dehydration, and respiratory compromise.",
+        "management_implication": "Any danger cue should trigger urgent reassessment, pediatric fever/sepsis pathway, targeted tests, or escalation rather than routine rash care.",
+        "detail_prompts": [
+          "Ask whether the child is acting unlike their usual self.",
+          "Ask whether the rash and illness are worsening hour by hour.",
+          "Ask about antipyretics and whether fever returns."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this broad systemic danger screen; use guideline red and amber features with vitals and exam.",
+        "tags": [
+          "pediatric",
+          "fever",
+          "sepsis",
+          "meningitis",
+          "systemic_symptoms",
+          "red_flag"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light risk assessment and disease-specific features",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair positive danger symptoms with pediatric fever/sepsis intent when needed."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_anaphylaxis_context",
+        "label": "Ask hives and anaphylaxis symptoms",
+        "text": "If hives, angioedema, or suspected allergy are present, is there tongue or lip swelling, voice change, wheeze, stridor, dyspnea, hypotension, collapse, repetitive vomiting, abdominal pain, diarrhea, known allergen exposure, or epinephrine already given?",
+        "answer_options": "No systemic allergy symptoms / Lip-tongue swelling / Voice change / Wheeze / Stridor / Dyspnea / Hypotension-collapse / Repetitive vomiting / Abdominal pain / Diarrhea / Allergen exposure / Epinephrine already given",
+        "options": "No systemic allergy symptoms / Lip-tongue swelling / Voice change / Wheeze / Stridor / Dyspnea / Hypotension-collapse / Repetitive vomiting / Abdominal pain / Diarrhea / Allergen exposure / Epinephrine already given",
+        "when_to_ask": "Ask whenever hives, urticaria, angioedema, allergy, or diffuse itchy rash is present.",
+        "diagnostic_purpose": "Separates isolated urticaria from possible anaphylaxis with airway, respiratory, cardiovascular, or gastrointestinal involvement.",
+        "management_implication": "Systemic features trigger epinephrine/anaphylaxis protocol, observation, and escalation; isolated urticaria can often avoid admission.",
+        "detail_prompts": [
+          "Ask timing from food, medicine, sting, vaccine, or exercise exposure.",
+          "Ask whether symptoms are recurring after treatment.",
+          "Ask whether an epinephrine autoinjector was used and when."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to anaphylaxis screening; systemic involvement changes emergency management.",
+        "tags": [
+          "pediatric",
+          "urticaria",
+          "hives",
+          "angioedema",
+          "anaphylaxis",
+          "allergy"
+        ],
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "urticaria systemic involvement and anaphylaxis suspicion",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not wait for rash progression when systemic features are present."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_kawasaki_features",
+        "label": "Ask Kawasaki fever and feature history",
+        "text": "Has fever lasted 4 to 5 days or longer, and at any point were there bilateral non-exudative conjunctivitis, cracked red lips, strawberry tongue, red mouth or throat, swollen red hands or feet, peeling, polymorphous rash, or cervical lymph node swelling?",
+        "answer_options": "Fever duration ___ days / Bilateral conjunctivitis / Cracked red lips / Strawberry tongue / Red mouth-throat / Swollen red hands-feet / Peeling / Polymorphous rash / Cervical lymph node / None of these",
+        "options": "Fever duration ___ days / Bilateral conjunctivitis / Cracked red lips / Strawberry tongue / Red mouth-throat / Swollen red hands-feet / Peeling / Polymorphous rash / Cervical lymph node / None of these",
+        "when_to_ask": "Ask when fever lasts 4 days or longer, fever duration is unclear, infant has prolonged unexplained fever, or rash is polymorphous.",
+        "diagnostic_purpose": "Identifies complete or incomplete Kawasaki disease features that may appear sequentially or resolve before assessment.",
+        "management_implication": "Positive features trigger senior pediatric review, inflammatory labs, ECG/echocardiography, IVIg/aspirin consideration, and cardiology follow-up.",
+        "detail_prompts": [
+          "Ask parents or carers about features present earlier in the illness.",
+          "Ask specifically about infants under 12 months with prolonged fever and fewer features.",
+          "Ask whether another diagnosis convincingly explains the fever and rash."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this Kawasaki feature cluster; source guidance uses clinical criteria and sequential history.",
+        "tags": [
+          "pediatric",
+          "kawasaki",
+          "prolonged_fever",
+          "conjunctivitis",
+          "mucosal",
+          "hands_feet",
+          "lymphadenopathy"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "history and complete KD clinical features",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "NICE uses 5 days or longer; RCH allows diagnosis with clinical features and 4 or more days of fever."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_ssti_source_history",
+        "label": "Ask skin infection and source-control history",
+        "text": "Is there a painful red warm area, abscess, drainage, crusting, bite, scratch, penetrating injury, rapidly spreading border, periorbital location, immunocompromise, prior MRSA, recent antibiotics, or failure of oral treatment?",
+        "answer_options": "No SSTI features / Painful red warm area / Abscess / Drainage / Crusting / Bite / Scratch or injury / Rapid spread / Periorbital location / Immunocompromised / Prior MRSA / Recent antibiotics / Failed oral treatment",
+        "options": "No SSTI features / Painful red warm area / Abscess / Drainage / Crusting / Bite / Scratch or injury / Rapid spread / Periorbital location / Immunocompromised / Prior MRSA / Recent antibiotics / Failed oral treatment",
+        "when_to_ask": "Ask when rash is focal, painful, warm, draining, crusted, wound-related, or cellulitis/abscess is possible.",
+        "diagnostic_purpose": "Identifies cellulitis, abscess, impetigo, bite wound infection, periorbital/orbital cellulitis, necrotizing infection, or treatment failure.",
+        "management_implication": "Positive features change need for drainage, culture, imaging, oral versus IV antibiotics, surgical/ID advice, and admission.",
+        "detail_prompts": [
+          "Document whether erythema is spreading and at what pace.",
+          "Ask about fever and systemic symptoms paired with focal skin infection.",
+          "Ask about anatomic location: face, orbit, hand, genital/perineal, joint-adjacent, or device site."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for broad SSTI source history; severity and anatomy determine management.",
+        "tags": [
+          "pediatric",
+          "cellulitis",
+          "abscess",
+          "impetigo",
+          "wound",
+          "source_control",
+          "ssti"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "cellulitis and abscess pathway and severe infection criteria",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local antimicrobial stewardship and surgical drainage pathways."
+        },
+        "item_type": "history_question"
+      },
+      {
+        "id": "peds_rash_bleeding_trauma_vasculitis_history",
+        "label": "Ask bleeding trauma and vasculitis clues",
+        "text": "With petechiae, purpura, or bruising, is there mucosal bleeding, nosebleeds, gum bleeding, abdominal pain, joint pain or swelling, difficulty mobilizing, hematuria, recent vomiting/coughing, tight pressure exposure, injury, safeguarding concern, or travel/sick contacts?",
+        "answer_options": "No bleeding or vasculitis clues / Mucosal bleeding / Nosebleeds / Gum bleeding / Abdominal pain / Joint pain-swelling / Difficulty mobilizing / Hematuria / Vomiting-coughing / Pressure exposure / Injury / Safeguarding concern / Travel / Sick contacts",
+        "options": "No bleeding or vasculitis clues / Mucosal bleeding / Nosebleeds / Gum bleeding / Abdominal pain / Joint pain-swelling / Difficulty mobilizing / Hematuria / Vomiting-coughing / Pressure exposure / Injury / Safeguarding concern / Travel / Sick contacts",
+        "when_to_ask": "Ask when petechiae, purpura, bruising, or non-blanching rash is present.",
+        "diagnostic_purpose": "Screens for mechanical petechiae, trauma, child abuse, ITP, leukemia, DIC, HSP/IgA vasculitis, HUS, and imported infection context.",
+        "management_implication": "Positive findings change CBC/film/coagulation/urinalysis threshold, safeguarding review, hematology/pediatric consultation, and discharge safety.",
+        "detail_prompts": [
+          "Ask whether spots are limited above the nipple line after vomiting or coughing.",
+          "Ask whether bruising pattern fits the history.",
+          "Ask about abdominal pain and hematuria with lower-limb purpura."
+        ],
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for bleeding/vasculitis screening; it routes guideline-defined tests and consultation.",
+        "tags": [
+          "pediatric",
+          "petechiae",
+          "purpura",
+          "bleeding",
+          "vasculitis",
+          "trauma",
+          "safeguarding",
+          "hematology"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "history and differential diagnoses for petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not classify as benign until serious causes and safeguarding concerns are considered."
+        },
+        "item_type": "history_question"
+      }
+    ],
+    "conditionalQuestions": [
+      {
+        "id": "peds_rash_chronic_urticaria_followup",
+        "label": "Ask chronic urticaria duration and systemic features",
+        "text": "Have hives or angioedema persisted or recurred for more than 6 weeks, and are there fever, bruising, joint pain, weight loss, abdominal pain, or other systemic features?",
+        "answer_options": "Less than 6 weeks / More than 6 weeks / Fever / Bruising / Joint pain / Weight loss / Abdominal pain / Other systemic features / None",
+        "options": "Less than 6 weeks / More than 6 weeks / Fever / Bruising / Joint pain / Weight loss / Abdominal pain / Other systemic features / None",
+        "when_to_ask": "Ask when hives are recurrent, chronic, or associated with non-allergic systemic symptoms.",
+        "diagnostic_purpose": "Identifies chronic urticaria or urticarial vasculitis/systemic disease features requiring pediatric or allergy advice.",
+        "management_implication": "Positive chronic/systemic features change follow-up, antihistamine escalation, specialist advice, and need to avoid simple viral-hives reassurance.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to chronic urticaria routing; duration and systemic features change referral and follow-up.",
+        "tags": [
+          "pediatric",
+          "urticaria",
+          "chronic_urticaria",
+          "systemic_features",
+          "follow_up"
+        ],
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "chronic urticaria and consultation criteria",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Ask after anaphylaxis has been excluded."
+        },
+        "item_type": "history_question",
+        "when": {
+          "termsAny": [
+            "chronic urticaria",
+            "hives more than 6 weeks",
+            "recurrent hives",
+            "urticarial vasculitis",
+            "systemic features with hives"
+          ]
+        }
+      },
+      {
+        "id": "peds_rash_adolescent_pregnancy_context",
+        "label": "Ask adolescent pregnancy and medication context",
+        "text": "For an adolescent, is pregnancy possible or present, postpartum state possible, or are there new medicines, antibiotics, anticonvulsants, isotretinoin, NSAIDs, sexual exposure, or genital lesions?",
+        "answer_options": "Pregnancy possible / Currently pregnant / Postpartum / New antibiotic / Anticonvulsant / Isotretinoin / NSAID / Sexual exposure / Genital lesions / None of these",
+        "options": "Pregnancy possible / Currently pregnant / Postpartum / New antibiotic / Anticonvulsant / Isotretinoin / NSAID / Sexual exposure / Genital lesions / None of these",
+        "when_to_ask": "Ask confidentially when an adolescent has generalized rash, mucosal findings, genital rash, medication exposure, or treatment decisions affected by pregnancy.",
+        "diagnostic_purpose": "Identifies pregnancy-sensitive medication/testing issues, STI or genital rash mimics, and medication-associated severe rash concern.",
+        "management_implication": "Positive context changes pregnancy testing, medication safety, STI testing, confidential care, and specialty routing.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to adolescent pregnancy/medication context; it changes safety and testing.",
+        "tags": [
+          "pediatric",
+          "adolescent",
+          "pregnancy",
+          "postpartum",
+          "medication",
+          "sti",
+          "mucosal"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "risk assessment and imported infections; adolescent safety context added for medication/testing governance",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local adolescent consent, safeguarding, and medication safety policies."
+        },
+        "item_type": "history_question",
+        "when": {
+          "termsAny": [
+            "adolescent medication context",
+            "teen pregnancy possible",
+            "new medicine rash",
+            "anticonvulsant rash",
+            "isotretinoin",
+            "genital lesions"
+          ]
+        }
+      },
+      {
+        "id": "peds_rash_imported_infection_exposure",
+        "label": "Ask travel outbreak and contact exposure",
+        "text": "Was there recent travel, measles/varicella exposure, under-immunized contact, daycare/school outbreak, tick or animal exposure, food or water exposure, or household sick contacts?",
+        "answer_options": "Travel / Measles exposure / Varicella exposure / Under-immunized contact / School-daycare outbreak / Tick-animal exposure / Food-water exposure / Household sick contacts / None",
+        "options": "Travel / Measles exposure / Varicella exposure / Under-immunized contact / School-daycare outbreak / Tick-animal exposure / Food-water exposure / Household sick contacts / None",
+        "when_to_ask": "Ask when fever with rash, generalized exanthem, incomplete immunization, or outbreak concern is present.",
+        "diagnostic_purpose": "Routes infection-control, public-health, imported infection, and isolation decisions without making a generic rash recommendation authoritative.",
+        "management_implication": "Positive exposure changes isolation, testing, public-health notification, source-specific workup, and return-to-school guidance.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for broad exposure history; use it to route source-specific testing and public-health action.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "travel",
+          "exposure",
+          "outbreak",
+          "infection_control",
+          "immunization"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "imported infections and fever assessment",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Public-health reporting depends on local jurisdiction and suspected disease."
+        },
+        "item_type": "history_question",
+        "when": {
+          "termsAny": [
+            "recent travel rash",
+            "measles exposure",
+            "varicella exposure",
+            "school outbreak",
+            "tick exposure",
+            "animal exposure"
+          ]
+        }
+      }
+    ],
+    "requiredExam": [
+      {
+        "id": "peds_rash_inspect_morphology_distribution",
+        "label": "Inspect rash morphology and distribution",
+        "technique": "Expose enough skin with consent and warmth preserved; inspect lesion type, color, size, distribution, symmetry, trunk/extremity/face involvement, and whether lesions cluster above or below the nipple line.",
+        "findings_options": [
+          "No rash seen",
+          "Maculopapular",
+          "Urticarial wheals",
+          "Petechiae",
+          "Purpura",
+          "Vesicular",
+          "Pustular",
+          "Crusted",
+          "Localized",
+          "Generalized",
+          "Rapidly spreading",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform in every pediatric rash workup.",
+        "diagnostic_target": "Rash morphology and distribution: non-blanching rash, urticaria, viral exanthem, cellulitis/abscess, Kawasaki pattern, mechanical petechiae, or safeguarding concern.",
+        "management_change": "Morphology changes need for blanching test, senior review, isolation, infection workup, allergy pathway, source control, or outpatient reassurance.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; rash morphology routes guideline-specific next steps.",
+        "difficulty": "easy",
+        "time_burden_minutes": 2,
+        "equipment_needed": "gloves and adequate lighting",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Rash appearance varies by skin tone, lighting, pressure, and timing; document uncertainty and photographs only per local policy.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "skin",
+          "morphology",
+          "distribution"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "definitions and assessment of petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document whether lesions are petechiae, purpura, wheals, vesicles, pustules, or cellulitic."
+        },
+        "item_type": "physical_exam_maneuver"
+      },
+      {
+        "id": "peds_rash_test_blanching_pressure",
+        "label": "Test rash blanching with clear pressure",
+        "technique": "Press a clear glass or transparent object firmly over representative lesions and observe whether redness disappears while maintaining child comfort.",
+        "findings_options": [
+          "Blanches",
+          "Does not blanch",
+          "Mixed blanching",
+          "Not safe to test",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when petechiae, purpura, fever with rash, or non-blanching concern is present.",
+        "diagnostic_target": "Non-blanching petechiae/purpura versus blanching exanthem or urticaria.",
+        "management_change": "Non-blanching lesions with fever or unwell appearance trigger senior review, sepsis/meningococcal assessment, and discharge restraint.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available for the glass test; use it to classify non-blanching rash and apply guideline escalation.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "clear glass or transparent pressure tool",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Very dark lesions, bruising, poor lighting, and child movement can make blanching uncertain.",
+        "tags": [
+          "pediatric",
+          "rash",
+          "petechiae",
+          "purpura",
+          "non_blanching",
+          "glass_test"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "glass test and non-blanching rash definitions",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "A non-blanching result is a routing finding, not a stand-alone diagnosis."
+        },
+        "item_type": "physical_exam_maneuver"
+      },
+      {
+        "id": "peds_rash_inspect_oral_mucosa_lips",
+        "label": "Inspect oral mucosa and lips",
+        "technique": "With consent and appropriate light, inspect lips, tongue, oral mucosa, and pharynx for erythema, fissuring, strawberry tongue, exudate, ulceration, swelling, or dehydration.",
+        "findings_options": [
+          "Normal",
+          "Cracked red lips",
+          "Strawberry tongue",
+          "Erythematous mouth or pharynx",
+          "Exudate",
+          "Ulceration",
+          "Lip or tongue swelling",
+          "Dry mucosa",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when fever, Kawasaki concern, urticaria/angioedema, mucosal symptoms, or systemic rash is present.",
+        "diagnostic_target": "Kawasaki mucosal changes, angioedema, dehydration, pharyngitis/scarlet fever mimic, or severe mucosal rash concern.",
+        "management_change": "Findings change Kawasaki evaluation, anaphylaxis escalation, hydration support, infectious differential, and specialty review.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; mucosal findings are interpreted in source-defined Kawasaki, anaphylaxis, and infection contexts.",
+        "difficulty": "moderate",
+        "time_burden_minutes": 1,
+        "equipment_needed": "light source",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Young or distressed children may not tolerate a full oral exam; avoid force and document limits.",
+        "tags": [
+          "pediatric",
+          "mucosal",
+          "kawasaki",
+          "angioedema",
+          "mouth",
+          "rash"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "mucosal changes in complete Kawasaki disease",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document whether mucosa is exudative or ulcerated because that may argue against typical Kawasaki disease."
+        },
+        "item_type": "physical_exam_maneuver"
+      },
+      {
+        "id": "peds_rash_inspect_conjunctiva",
+        "label": "Inspect conjunctival injection",
+        "technique": "Inspect both eyes without fluorescein unless separately indicated; note conjunctival injection, exudate, pain, photophobia, or periorbital swelling.",
+        "findings_options": [
+          "Normal",
+          "Bilateral non-exudative injection",
+          "Exudative conjunctivitis",
+          "Eye pain",
+          "Photophobia",
+          "Periorbital swelling",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when fever with rash, Kawasaki concern, eye symptoms, or periorbital skin infection is present.",
+        "diagnostic_target": "Kawasaki conjunctival injection, infectious conjunctivitis mimic, orbital/periorbital cellulitis clue, or eye emergency.",
+        "management_change": "Findings change Kawasaki workup, eye/HEENT add-on, imaging/antibiotics for periorbital infection, or urgent ophthalmology/ED routing.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; conjunctival findings are interpreted with fever duration and other features.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "light source",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Crying, allergies, and infection can cause redness; use with the full syndrome.",
+        "tags": [
+          "pediatric",
+          "conjunctiva",
+          "kawasaki",
+          "eye",
+          "periorbital",
+          "rash"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "conjunctival injection in complete Kawasaki disease",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pain or photophobia should trigger an eye-specific workup."
+        },
+        "item_type": "physical_exam_maneuver"
+      },
+      {
+        "id": "peds_rash_inspect_skin_infection",
+        "label": "Inspect skin infection border warmth and drainage",
+        "technique": "Inspect the suspected infected area for erythema border, warmth, tenderness cues, fluctuance, drainage, crusting, necrosis, crepitus, streaking, and high-risk location.",
+        "findings_options": [
+          "No focal infection",
+          "Warm erythema",
+          "Tender swelling",
+          "Fluctuance",
+          "Drainage",
+          "Crusting",
+          "Necrosis",
+          "Crepitus",
+          "Lymphangitic streaking",
+          "High-risk location",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when cellulitis, abscess, impetigo, wound infection, bite, or focal painful rash is possible.",
+        "diagnostic_target": "Cellulitis, abscess, impetigo, necrotizing infection, lymphangitis, bite wound infection, or high-risk anatomic SSTI.",
+        "management_change": "Findings change drainage/culture need, oral versus IV antibiotics, imaging, admission, and surgical/ID consultation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; source control and severity determine SSTI management.",
+        "difficulty": "easy",
+        "time_burden_minutes": 2,
+        "equipment_needed": "gloves and skin marker if marking border per local practice",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Deep infection can have subtle skin findings; pain out of proportion or toxicity should escalate even if inspection is limited.",
+        "tags": [
+          "pediatric",
+          "ssti",
+          "cellulitis",
+          "abscess",
+          "wound",
+          "source_control"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "SSTI pathway severity and source control criteria",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Avoid squeezing abscesses during diagnostic inspection unless performing a procedure."
+        },
+        "item_type": "physical_exam_maneuver"
+      }
+    ],
+    "conditionalExam": [
+      {
+        "id": "peds_rash_palpate_cervical_node",
+        "label": "Palpate cervical lymph node size",
+        "technique": "Palpate anterior cervical nodes gently and document laterality, tenderness, and whether any node is approximately 1.5 cm or larger.",
+        "findings_options": [
+          "No enlarged cervical nodes",
+          "Unilateral tender node",
+          "Bilateral nodes",
+          "Node 1.5 cm or larger",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Kawasaki disease, throat infection, lymphadenitis, or prolonged fever with rash is possible.",
+        "diagnostic_target": "Kawasaki cervical adenopathy, lymphadenitis, malignancy/hematologic clue, or infection source.",
+        "management_change": "Findings change Kawasaki criteria count, antibiotic/source evaluation, and pediatric consultation threshold.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; node findings are interpreted with fever duration and other features.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Reactive nodes are common; do not use node size alone to diagnose Kawasaki disease or malignancy.",
+        "tags": [
+          "pediatric",
+          "lymphadenopathy",
+          "kawasaki",
+          "infection",
+          "neck"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "cervical adenopathy in complete Kawasaki disease",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use as one Kawasaki feature, not a stand-alone diagnosis."
+        },
+        "item_type": "physical_exam_maneuver",
+        "when": {
+          "termsAny": [
+            "cervical lymph node",
+            "lymphadenitis",
+            "prolonged fever with neck swelling",
+            "kawasaki lymph node",
+            "neck swelling"
+          ]
+        }
+      },
+      {
+        "id": "peds_rash_palpate_liver_spleen",
+        "label": "Palpate liver edge and spleen tip",
+        "technique": "Palpate gently for liver edge and spleen tip with the child supine when tolerated; stop if pain or distress is significant.",
+        "findings_options": [
+          "No enlargement felt",
+          "Hepatomegaly",
+          "Splenomegaly",
+          "Abdominal tenderness",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when petechiae, purpura, bruising, pallor, lymphadenopathy, abdominal pain, or hematologic disease is possible.",
+        "diagnostic_target": "Hepatosplenomegaly suggesting hematologic disease, systemic infection, HSP/vasculitis complication, or alternate diagnosis.",
+        "management_change": "Findings change CBC/film/hemolysis/coagulation testing, hematology/pediatric consultation, and discharge safety.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; hepatosplenomegaly changes hematology and systemic illness routing.",
+        "difficulty": "moderate",
+        "time_burden_minutes": 2,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Body habitus, guarding, and cooperation can limit accuracy; abnormal concern should be confirmed clinically.",
+        "tags": [
+          "pediatric",
+          "hepatomegaly",
+          "splenomegaly",
+          "hematology",
+          "purpura"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "examination for hematological causes in petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with lymph node and bleeding history when hematologic disease is possible."
+        },
+        "item_type": "physical_exam_maneuver",
+        "when": {
+          "termsAny": [
+            "bruising with rash",
+            "pallor with rash",
+            "hepatosplenomegaly",
+            "mucosal bleeding",
+            "abdominal pain with purpura"
+          ]
+        }
+      },
+      {
+        "id": "peds_rash_inspect_palms_soles_perineum",
+        "label": "Inspect palms soles and perineum",
+        "technique": "Inspect palms, soles, fingers, toes, and perineal area when clinically appropriate and consented, looking for erythema, edema, desquamation, polymorphous rash, or painful swelling.",
+        "findings_options": [
+          "Normal",
+          "Palmar erythema",
+          "Plantar erythema",
+          "Hand-foot edema",
+          "Periungual desquamation",
+          "Perineal rash",
+          "Painful swelling",
+          "Unable to assess"
+        ],
+        "when_to_perform": "Perform when Kawasaki disease, hand-foot-mouth mimic, HSP/vasculitis, or widespread febrile rash is possible.",
+        "diagnostic_target": "Kawasaki extremity changes, perineal rash/desquamation, hand-foot-mouth mimic, vasculitis, or other inflammatory rash.",
+        "management_change": "Findings change Kawasaki criteria count, infectious differential, cardiology/echo route, and follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; extremity findings are interpreted with fever duration and other Kawasaki features.",
+        "difficulty": "moderate",
+        "time_burden_minutes": 2,
+        "equipment_needed": "gloves and adequate lighting",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Perineal inspection requires privacy, consent, chaperone practice, and only when clinically indicated.",
+        "tags": [
+          "pediatric",
+          "kawasaki",
+          "hands_feet",
+          "perineum",
+          "desquamation",
+          "rash"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "rash and extremity changes in Kawasaki disease",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not perform perineal inspection unless it changes the differential or safeguarding/consent context is clear."
+        },
+        "item_type": "physical_exam_maneuver",
+        "when": {
+          "termsAny": [
+            "kawasaki hands feet",
+            "palms soles rash",
+            "desquamation",
+            "perineal rash",
+            "hand foot swelling"
+          ]
+        }
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "peds_rash_redflag_nonblanching_unwell",
+        "label": "Non-blanching rash with fever or unwell child",
+        "action": "Obtain urgent senior pediatric review and use sepsis/meningococcal pathway when a child has fever or unwell appearance with petechiae/purpura or rapidly progressive non-blanching rash.",
+        "rationale": "Serious bacterial infection can present with non-blanching rash, and RCH recommends prompt senior review for fever with petechiae/purpura.",
+        "diagnostic_target": "Meningococcal disease, sepsis, serious bacterial infection, DIC, or other dangerous non-blanching rash cause.",
+        "management_change": "Triggers urgent assessment, cultures/labs, empiric antibiotics when indicated, admission/transfer decision, and discharge restraint.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to this red flag; guideline danger features determine urgent escalation.",
+        "limitations": "Absence of fever at one time point does not exclude serious illness if antipyretics or evolving disease are present.",
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "non_blanching",
+          "petechiae",
+          "purpura",
+          "sepsis"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "assessment and management of fever with petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local antimicrobial and sepsis protocols."
+        },
+        "item_type": "red_flag"
+      },
+      {
+        "id": "peds_rash_redflag_anaphylaxis",
+        "label": "Urticaria with airway breathing circulation or GI symptoms",
+        "action": "Treat hives/angioedema with airway, respiratory, cardiovascular, collapse, or repetitive gastrointestinal symptoms as possible anaphylaxis.",
+        "rationale": "RCH urticaria guidance states anaphylaxis should be suspected when urticaria involves other systems.",
+        "diagnostic_target": "Anaphylaxis, angioedema, airway compromise, bronchospasm, shock, or severe allergic reaction.",
+        "management_change": "Triggers epinephrine/anaphylaxis protocol, airway/oxygen/IV access consideration, observation, and escalation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to anaphylaxis escalation; systemic involvement changes emergency management.",
+        "limitations": "Rash may be absent in anaphylaxis; do not delay treatment waiting for skin findings.",
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "urticaria",
+          "anaphylaxis",
+          "angioedema",
+          "airway"
+        ],
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "systemic involvement and anaphylaxis consultation/discharge criteria",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local anaphylaxis policy and weight-based epinephrine."
+        },
+        "item_type": "red_flag"
+      },
+      {
+        "id": "peds_rash_redflag_kawasaki",
+        "label": "Prolonged fever with Kawasaki features",
+        "action": "Escalate for senior pediatric review when fever lasts 4 to 5 days or longer with Kawasaki features, especially in infants with incomplete presentation.",
+        "rationale": "Timely IVIg under senior guidance reduces coronary aneurysm risk, and infants can have fewer clinical features.",
+        "diagnostic_target": "Complete or incomplete Kawasaki disease with coronary artery aneurysm risk.",
+        "management_change": "Triggers inflammatory labs, ECG/echo/cardiology route, IVIg/aspirin consideration, and follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to this red flag; Kawasaki diagnosis uses clinical criteria and source-defined treatment urgency.",
+        "limitations": "Features can appear sequentially and do not need to be simultaneous.",
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "kawasaki",
+          "prolonged_fever",
+          "coronary_risk"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "key points and clinical features",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "NICE under-5 guidance uses fever 5 days or longer; RCH notes diagnosis can be made with clinical features and 4 or more days of fever."
+        },
+        "item_type": "red_flag"
+      },
+      {
+        "id": "peds_rash_redflag_severe_ssti",
+        "label": "Severe skin infection or necrotizing features",
+        "action": "Escalate urgently for IV antibiotics, source control, surgical/ID advice, or admission when skin infection is paired with immunocompromise, hemodynamic instability, sepsis, deep infection, necrosis, crepitus, or pain out of proportion.",
+        "rationale": "Pediatric SSTI pathway severe criteria include immunocompromise, signs of deep/necrotizing infection, hemodynamic instability, and sepsis.",
+        "diagnostic_target": "Severe cellulitis, abscess with systemic illness, necrotizing soft-tissue infection, bacteremia, or high-risk site infection.",
+        "management_change": "Triggers admission, IV therapy, imaging/procedure planning, surgical/ID consultation, and transfer consideration.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to severe SSTI red flags; source-defined severity criteria determine route.",
+        "limitations": "Early necrotizing infection can have subtle skin changes; pain, toxicity, and rapid spread should override a mild-looking rash.",
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "cellulitis",
+          "abscess",
+          "necrotizing",
+          "sepsis",
+          "ssti"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "severe infection criteria and inpatient route",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local surgical, ID, and antimicrobial protocols."
+        },
+        "item_type": "red_flag"
+      },
+      {
+        "id": "peds_rash_redflag_bleeding_heme_vasculitis",
+        "label": "Purpura with bleeding abdominal joint or hematology features",
+        "action": "Do not discharge as simple rash when petechiae/purpura are paired with mucosal bleeding, pallor, hepatosplenomegaly, lymphadenopathy, abdominal pain, hematuria, joint swelling, difficulty mobilizing, or safeguarding concern.",
+        "rationale": "RCH petechiae/purpura guidance lists hematologic, vasculitic, traumatic, and non-accidental injury causes that need review.",
+        "diagnostic_target": "ITP, leukemia, DIC, HSP/IgA vasculitis, HUS, trauma, child abuse, or systemic infection.",
+        "management_change": "Triggers CBC/film/coagulation/urinalysis, pediatric/hematology/safeguarding review, observation, and follow-up rather than reassurance.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to this red flag; associated features change testing and consultation.",
+        "limitations": "Mechanical petechiae may be benign, but distribution and history must fit before reassurance.",
+        "tags": [
+          "pediatric",
+          "red_flag",
+          "purpura",
+          "bleeding",
+          "hematology",
+          "vasculitis",
+          "safeguarding"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "differential diagnoses and examination for hematologic causes",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Escalate safeguarding concerns according to local policy."
+        },
+        "item_type": "red_flag"
+      }
+    ],
+    "initialTests": [
+      {
+        "id": "peds_rash_petechiae_sepsis_tests",
+        "label": "Non-blanching rash senior-review tests",
+        "action": "For fever or unwell child with petechiae/purpura, use senior pediatric review to decide CBC with film, blood culture, inflammatory markers, coagulation studies, glucose/lactate or sepsis labs, and empiric antibiotics without delaying urgent treatment.",
+        "rationale": "Non-blanching rash with fever or unwell appearance can signal serious bacterial infection; testing and antibiotics depend on clinical risk and local pathway.",
+        "diagnostic_target": "Serious bacterial infection, meningococcal disease, DIC, hematologic disease, or low-risk non-blanching rash after assessment.",
+        "management_change": "Results and clinical status change antibiotics, admission/transfer, observation duration, hematology review, and discharge safety.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Guidelines do not provide one universal LR for non-blanching rash tests; testing is selected by illness severity, rash features, and senior review.",
+        "limitations": "Do not delay sepsis treatment in an unstable child while awaiting labs.",
+        "tags": [
+          "pediatric",
+          "petechiae",
+          "purpura",
+          "sepsis",
+          "blood_culture",
+          "cbc",
+          "coagulation"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "management and flowchart principles for petechiae/purpura",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Local flowchart determines exact test bundle."
+        },
+        "item_type": "diagnostic_test"
+      },
+      {
+        "id": "peds_rash_kawasaki_tests",
+        "label": "Kawasaki labs ECG and echocardiography route",
+        "action": "When Kawasaki disease is possible, obtain senior pediatric review for inflammatory labs, CBC, electrolytes/liver tests/albumin as locally used, urinalysis when helpful, ECG, echocardiography, and cardiology follow-up planning.",
+        "rationale": "Kawasaki has no single diagnostic test; timely evaluation is needed because untreated disease can cause coronary artery aneurysms.",
+        "diagnostic_target": "Complete or incomplete Kawasaki disease and coronary artery involvement.",
+        "management_change": "Testing changes IVIg/aspirin/corticosteroid decisions, cardiology involvement, follow-up echo schedule, and admission.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to the Kawasaki testing route; tests support a clinical diagnosis and cardiac risk management.",
+        "limitations": "Normal early labs or incomplete features do not independently exclude Kawasaki disease in infants or evolving illness.",
+        "tags": [
+          "pediatric",
+          "kawasaki",
+          "echocardiography",
+          "ecg",
+          "inflammatory_markers",
+          "coronary_risk"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "diagnosis, treatment urgency, and coronary artery aneurysm risk",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Follow local Kawasaki and cardiology pathway for exact lab and echo timing."
+        },
+        "item_type": "diagnostic_test"
+      },
+      {
+        "id": "peds_rash_ssti_tests_source_control",
+        "label": "SSTI culture imaging and source control route",
+        "action": "For suspected abscess or severe SSTI, decide whether incision/drainage, culture of purulent drainage, ultrasound for abscess, imaging for deep infection, or surgical/ID consultation is needed.",
+        "rationale": "Skin infection management changes when there is purulence, abscess, deep infection, necrotizing concern, high-risk anatomy, or sepsis.",
+        "diagnostic_target": "Drainable abscess, cellulitis, necrotizing infection, orbital/deep infection, resistant organism, or source-control need.",
+        "management_change": "Findings change source control, oral versus IV therapy, admission, antimicrobial selection, and specialist consultation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not attached to this SSTI test bundle; imaging/culture are selected by abscess, severity, anatomy, and treatment route.",
+        "limitations": "Do not culture intact cellulitis without drainage unless local pathway indicates; do not delay surgical review for necrotizing concern.",
+        "tags": [
+          "pediatric",
+          "ssti",
+          "cellulitis",
+          "abscess",
+          "culture",
+          "imaging",
+          "source_control"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "skin and soft tissue infection pathway and special clinical scenarios",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local procedure, ultrasound, and antimicrobial guidance."
+        },
+        "item_type": "diagnostic_test"
+      },
+      {
+        "id": "peds_rash_anaphylaxis_actions",
+        "label": "Anaphylaxis immediate treatment route",
+        "action": "If urticaria or angioedema involves airway, respiratory, cardiovascular, or repetitive gastrointestinal symptoms, activate local anaphylaxis protocol with weight-based epinephrine and observation/escalation.",
+        "rationale": "Systemic symptoms with urticaria can represent anaphylaxis and require emergency treatment rather than rash testing.",
+        "diagnostic_target": "Anaphylaxis, airway compromise, bronchospasm, hypotension, collapse, or recurrent systemic allergic reaction.",
+        "management_change": "Changes immediate epinephrine use, airway/oxygen/IV access, monitoring, discharge criteria, and allergy follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to immediate anaphylaxis action; treatment is triggered by systemic involvement.",
+        "limitations": "Do not use antihistamines alone for systemic anaphylaxis features.",
+        "tags": [
+          "pediatric",
+          "urticaria",
+          "anaphylaxis",
+          "epinephrine",
+          "emergency_action"
+        ],
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "systemic involvement and anaphylaxis consultation/discharge criteria",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local anaphylaxis guideline for exact epinephrine dose and observation period."
+        },
+        "item_type": "diagnostic_test"
+      },
+      {
+        "id": "peds_rash_heme_vasculitis_tests",
+        "label": "Bleeding vasculitis and hematology screen",
+        "action": "When petechiae/purpura are paired with bleeding, pallor, hepatosplenomegaly, lymphadenopathy, abdominal pain, joint symptoms, hematuria, or safeguarding concern, add CBC with film, coagulation studies, urinalysis, renal function, blood pressure review, and pediatric/hematology/safeguarding consultation as indicated.",
+        "rationale": "RCH lists hematologic, vasculitic, HUS, DIC, trauma, and non-accidental injury causes that require targeted assessment.",
+        "diagnostic_target": "ITP, leukemia, DIC, HSP/IgA vasculitis, HUS, traumatic bruising, child abuse, or systemic infection.",
+        "management_change": "Results change discharge safety, observation/admission, hematology/nephrology/pediatric review, safeguarding escalation, and follow-up.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not attached to this broad hematology/vasculitis screen; tests are selected because associated findings change management.",
+        "limitations": "Testing should be guided by clinical findings and senior review, not every low-risk localized petechia.",
+        "tags": [
+          "pediatric",
+          "purpura",
+          "bleeding",
+          "hematology",
+          "vasculitis",
+          "urinalysis",
+          "safeguarding"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "differential diagnoses and examination for hematological causes",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Follow local HSP/IgA vasculitis and child-protection guidance when suggested."
+        },
+        "item_type": "diagnostic_test"
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "peds_rash_disposition_sepsis_meningococcal",
+        "label": "Immediate sepsis or meningococcal route",
+        "action": "If the child is unwell, has fever with petechiae/purpura, rapidly progressive non-blanching rash, shock, altered mental status, or meningitis features, escalate to senior pediatric/sepsis pathway and do not discharge.",
+        "rationale": "Pediatric non-blanching rash with fever or illness can represent serious bacterial infection and needs prompt review.",
+        "diagnostic_target": "Meningococcal disease, sepsis, meningitis, DIC, or other life-threatening rash presentation.",
+        "management_change": "Changes urgency, antibiotics, labs/cultures, admission/transfer, and handoff priority.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to disposition escalation; guideline danger features determine safety.",
+        "limitations": "Escalation should not wait for full rash classification when the child is unstable.",
+        "tags": [
+          "pediatric",
+          "disposition",
+          "sepsis",
+          "meningococcal",
+          "non_blanching",
+          "admission"
+        ],
+        "source": {
+          "source_id": "RCH_PETECHIAE_PURPURA_CHILD",
+          "source_section": "management and consultation/transfer criteria",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated February 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local retrieval and PICU/neonatal ICU pathway when needed."
+        },
+        "item_type": "management_change"
+      },
+      {
+        "id": "peds_rash_disposition_anaphylaxis",
+        "label": "Anaphylaxis observation and discharge route",
+        "action": "For urticaria, discharge only after anaphylaxis has been excluded or treated and observation/safety-net criteria are met; arrange allergy follow-up when indicated.",
+        "rationale": "RCH notes most urticaria does not need admission, but discharge requires anaphylaxis exclusion.",
+        "diagnostic_target": "Isolated urticaria versus anaphylaxis, angioedema, or recurrent systemic allergic reaction.",
+        "management_change": "Changes observation, epinephrine prescription/training, trigger avoidance, allergy referral, and discharge safety.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to urticaria disposition; systemic involvement and observation determine route.",
+        "limitations": "Recurrent symptoms, airway involvement, or caregiver inability to return should lower discharge threshold.",
+        "tags": [
+          "pediatric",
+          "disposition",
+          "urticaria",
+          "anaphylaxis",
+          "safety_net"
+        ],
+        "source": {
+          "source_id": "RCH_URTICARIA_CHILD",
+          "source_section": "consider discharge and consultation criteria",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "last updated March 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local anaphylaxis discharge rules."
+        },
+        "item_type": "management_change"
+      },
+      {
+        "id": "peds_rash_disposition_kawasaki",
+        "label": "Kawasaki senior review and cardiac route",
+        "action": "When Kawasaki disease is possible, arrange senior pediatric review, cardiac evaluation pathway, treatment decision, and follow-up rather than routine rash discharge.",
+        "rationale": "RCH emphasizes timely diagnosis and IVIg under senior guidance to reduce coronary aneurysm risk.",
+        "diagnostic_target": "Complete or incomplete Kawasaki disease and coronary artery aneurysm risk.",
+        "management_change": "Changes admission, IVIg/aspirin/corticosteroid consideration, echocardiography, cardiology follow-up, and return precautions.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to Kawasaki disposition; clinical criteria and cardiac risk determine route.",
+        "limitations": "Incomplete Kawasaki can occur in infants; do not require all features before senior review.",
+        "tags": [
+          "pediatric",
+          "disposition",
+          "kawasaki",
+          "cardiology",
+          "echo",
+          "ivig"
+        ],
+        "source": {
+          "source_id": "RCH_KAWASAKI_DISEASE",
+          "source_section": "key points and timely treatment",
+          "evidence_strength": "pediatric guideline",
+          "version_date": "current clinical guideline",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Follow local Kawasaki treatment protocol and cardiology follow-up schedule."
+        },
+        "item_type": "management_change"
+      },
+      {
+        "id": "peds_rash_disposition_ssti",
+        "label": "SSTI outpatient observation or admission route",
+        "action": "Stable mild-to-moderate cellulitis/impetigo can use local oral therapy and close follow-up; severe infection, immunocompromise, sepsis, deep/necrotizing concern, or failed outpatient therapy requires observation/admission or transfer.",
+        "rationale": "The pediatric SSTI pathway separates outpatient therapy, observation, and inpatient admission by severity and host risk.",
+        "diagnostic_target": "Mild/moderate SSTI, severe SSTI, abscess needing source control, or deep infection.",
+        "management_change": "Changes oral versus IV therapy, drainage/imaging, observation/admission, follow-up interval, and consultation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to SSTI disposition; severity and host factors determine route.",
+        "limitations": "Local antimicrobial susceptibility and high-risk locations can override the general route.",
+        "tags": [
+          "pediatric",
+          "disposition",
+          "ssti",
+          "cellulitis",
+          "abscess",
+          "antibiotics",
+          "admission"
+        ],
+        "source": {
+          "source_id": "JHACH_SSTI_CHILD_2023",
+          "source_section": "outpatient, observation, and inpatient criteria for SSTI",
+          "evidence_strength": "pediatric clinical pathway",
+          "version_date": "last revised October 2023",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local pediatric antimicrobial and follow-up criteria."
+        },
+        "item_type": "management_change"
+      },
+      {
+        "id": "peds_rash_disposition_low_risk",
+        "label": "Low-risk rash discharge and return precautions",
+        "action": "Use outpatient care only when the child is well appearing, vitals are acceptable, anaphylaxis/non-blanching rash/Kawasaki/severe SSTI/systemic danger cues have been excluded, and caregivers have clear return precautions.",
+        "rationale": "Low-risk rash adoption depends on showing why dangerous pediatric rash syndromes were not pursued and what should trigger reassessment.",
+        "diagnostic_target": "Low-risk viral exanthem, contact dermatitis, eczema flare, mild urticaria, or localized benign rash.",
+        "management_change": "Changes discharge counseling, symptom care, follow-up timing, and return-for-review triggers.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "LR is not applicable to safety-net instructions; discharge depends on absence of red flags and reliable reassessment.",
+        "limitations": "Rash can evolve; caregivers should return for fever, non-blanching lesions, rapid spread, breathing symptoms, swelling, lethargy, poor intake, or worsening pain.",
+        "tags": [
+          "pediatric",
+          "disposition",
+          "low_risk",
+          "rash",
+          "safety_net",
+          "return_precautions"
+        ],
+        "source": {
+          "source_id": "NICE_FEVER_UNDER5_NG143",
+          "source_section": "traffic light risk assessment and safety-netting for feverish illness",
+          "evidence_strength": "guideline",
+          "version_date": "NG143 last updated 2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Tailor safety-netting to age, rash pattern, fever, and access to reassessment."
+        },
+        "item_type": "management_change"
+      }
+    ]
+  }
+}

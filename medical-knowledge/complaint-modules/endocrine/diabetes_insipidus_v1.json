@@ -434,20 +434,32 @@
         "text": "What is the approximate 24-hour urine volume, and has urine output changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Diabetes Insipidus.",
@@ -480,20 +492,20 @@
         "text": "How many times do you urinate overnight, and is this new or worsening?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "how_many_times_do_you_urinate_overnight",
+            "label": "How many times do you urinate overnight"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "this_new",
+            "label": "This new"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "worsening",
+            "label": "Worsening"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Diabetes Insipidus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -524,20 +536,32 @@
         "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
@@ -568,20 +592,32 @@
         "text": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "baseline_intake_urine",
+            "label": "Baseline intake/urine"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "excess_thirst",
+            "label": "Excess thirst"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "polyuria",
+            "label": "Polyuria"
+          },
+          {
+            "value": "nocturia",
+            "label": "Nocturia"
+          },
+          {
+            "value": "cannot_keep_up_with_thirst",
+            "label": "Cannot keep up with thirst"
+          },
+          {
+            "value": "limited_water_access",
+            "label": "Limited water access"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
@@ -613,20 +649,36 @@
         "text": "Any lithium, demeclocycline, amphotericin, diuretic, SGLT2 inhibitor, glucocorticoid, desmopressin, fluid restriction, or recent medication change affecting polyuria, sodium, thirst, or kidney concentrating ability?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
@@ -657,20 +709,32 @@
         "text": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes medication-induced polyuria assessment, sodium monitoring, urine-osmolality interpretation, desmopressin safety, and hydration planning for Diabetes Insipidus.",
@@ -701,20 +765,32 @@
         "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Diabetes Insipidus.",

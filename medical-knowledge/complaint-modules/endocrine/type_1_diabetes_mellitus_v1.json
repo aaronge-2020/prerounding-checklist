@@ -480,20 +480,32 @@
         "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 1 Diabetes Mellitus.",
@@ -525,20 +537,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 1 Diabetes Mellitus.",
@@ -570,20 +594,32 @@
         "text": "Any vomiting, abdominal pain, deep or labored breathing, confusion, dehydration, infection symptoms, missed insulin, pump failure, steroid use, or very high glucose/ketones suggesting hyperglycemic crisis?",
         "options": [
           {
+            "value": "diabetes_type_known",
+            "label": "Diabetes type known"
+          },
+          {
+            "value": "basal_bolus_regimen",
+            "label": "Basal/bolus regimen"
+          },
+          {
+            "value": "pump_or_cgm_use",
+            "label": "Pump or CGM use"
+          },
+          {
+            "value": "last_insulin_dose_known",
+            "label": "Last insulin dose known"
+          },
+          {
+            "value": "missed_or_reduced_insulin",
+            "label": "Missed or reduced insulin"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Type 1 Diabetes Mellitus.",
@@ -614,20 +650,36 @@
         "text": "Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "personal",
+            "label": "Personal"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "family_autoimmune_disease",
+            "label": "Family autoimmune disease"
+          },
+          {
+            "value": "endocrine_disease",
+            "label": "Endocrine disease"
+          },
+          {
+            "value": "thyroid_cancer_men2",
+            "label": "Thyroid cancer/MEN2"
+          },
+          {
+            "value": "adrenal_disease",
+            "label": "Adrenal disease"
+          },
+          {
+            "value": "related_inherited_condition",
+            "label": "Related inherited condition"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes autoimmune clustering, associated endocrine screening, antibody testing, family-risk framing, and follow-up planning for Type 1 Diabetes Mellitus.",
@@ -660,20 +712,32 @@
         "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
+            "value": "no_measured_fever",
+            "label": "No measured fever"
+          },
+          {
+            "value": "less_than_39_c",
+            "label": "Less than 39 C"
+          },
+          {
+            "value": "39_c_or_higher",
+            "label": "39 C or higher"
+          },
+          {
+            "value": "chills_or_rigors",
+            "label": "Chills or rigors"
+          },
+          {
+            "value": "hypothermia_toxic_appearance",
+            "label": "Hypothermia/toxic appearance"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 1 Diabetes Mellitus.",
@@ -705,20 +769,32 @@
         "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptoms",
+            "label": "No respiratory symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cough",
+            "label": "Cough"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "sputum",
+            "label": "Sputum"
+          },
+          {
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
+          },
+          {
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "hypoxemia_or_oxygen_need",
+            "label": "Hypoxemia or oxygen need"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 1 Diabetes Mellitus.",
@@ -750,20 +826,36 @@
         "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Type 1 Diabetes Mellitus pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -796,20 +888,32 @@
         "text": "Any foot ulcer, wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_skin_or_line_concern",
+            "label": "No skin or line concern"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "redness",
+            "label": "Redness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "drainage",
+            "label": "Drainage"
+          },
+          {
+            "value": "wound_or_ulcer",
+            "label": "Wound or ulcer"
+          },
+          {
+            "value": "line_device_concern",
+            "label": "Line/device concern"
+          },
+          {
+            "value": "procedure_site_concern",
+            "label": "Procedure-site concern"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Type 1 Diabetes Mellitus.",
@@ -846,20 +950,36 @@
         "text": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "history_of_ascvd",
+            "label": "History of ASCVD"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "heart_failure",
+            "label": "Heart failure"
+          },
+          {
+            "value": "stroke_tia",
+            "label": "Stroke/TIA"
+          },
+          {
+            "value": "peripheral_arterial_disease",
+            "label": "Peripheral arterial disease"
+          },
+          {
+            "value": "claudication",
+            "label": "Claudication"
+          },
+          {
+            "value": "vascular_procedures",
+            "label": "Vascular procedures"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support ascvd, heart, failure, stroke. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Type 1 Diabetes Mellitus.",
@@ -903,20 +1023,36 @@
         "text": "Any numbness, tingling, burning pain, loss of protective sensation, falls, ulcers, or neuropathy diagnosis?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_bone_mineral_symptom",
+            "label": "No bone/mineral symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "low_trauma_fracture",
+            "label": "Low-trauma fracture"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "bone_or_back_pain",
+            "label": "Bone or back pain"
+          },
+          {
+            "value": "height_loss",
+            "label": "Height loss"
+          },
+          {
+            "value": "falls_gait_instability",
+            "label": "Falls/gait instability"
+          },
+          {
+            "value": "kidney_stones",
+            "label": "Kidney stones"
+          },
+          {
+            "value": "malabsorption_risk",
+            "label": "Malabsorption risk"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support neuropathy, numbness, tingling, burning. The answer changes fracture or mineral-risk stratification, imaging threshold, calcium/vitamin D interpretation, and urgency of treatment for Type 1 Diabetes Mellitus.",
@@ -947,7 +1083,7 @@
       },
       {
         "id": "question_03",
-        "label": "Any known retinopathy, vision changes, eye injections/laser, or overdue dilated eye examination?",
+        "label": "Any blurred vision, known retinopathy, eye injections/laser, or overdue dilated eye examination?",
         "item_type": "history_question",
         "source": {
           "source_id": "ADA_SOC_2026",
@@ -958,30 +1094,38 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any known retinopathy, vision changes, eye injections/laser, or overdue dilated eye examination?",
+        "text": "Any blurred vision, known retinopathy, eye injections/laser, or overdue dilated eye examination?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "blurred_vision",
+            "label": "Blurred vision"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "known_retinopathy",
+            "label": "Known retinopathy"
+          },
+          {
+            "value": "eye_injections_laser",
+            "label": "Eye injections/laser"
+          },
+          {
+            "value": "overdue_dilated_eye_examination",
+            "label": "Overdue dilated eye examination"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
-        "action": "Ask when the history or modifiers support retinopathy, vision, or eye-care concerns. A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 1 Diabetes Mellitus.",
+        "action": "Ask when the history or modifiers support retinopathy, vision, or eye-care concerns. The answer changes diabetes eye-complication triage, dilated-eye exam referral timing, medication safety, and follow-up intensity for Type 1 Diabetes Mellitus.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Type 1 Diabetes Mellitus needs urgent evaluation today.",
         "when_to_ask": "Ask when patient context includes retinopathy, vision, or eye-care concerns.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Type 1 Diabetes Mellitus needs urgent evaluation today.",
-        "management_implication": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Type 1 Diabetes Mellitus.",
+        "management_implication": "The answer changes diabetes eye-complication triage, dilated-eye exam referral timing, medication safety, and follow-up intensity for Type 1 Diabetes Mellitus.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "type_1_diabetes_mellitus",
@@ -991,6 +1135,7 @@
         "when": {
           "termsAny": [
             "retinopathy",
+            "blurred",
             "vision",
             "injections",
             "laser",
@@ -1016,20 +1161,32 @@
         "text": "Do you use a CGM, insulin pump, smart pen, glucometer, or diabetes app, and are the data reliable enough to guide treatment changes?",
         "options": [
           {
+            "value": "diabetes_type_known",
+            "label": "Diabetes type known"
+          },
+          {
+            "value": "basal_bolus_regimen",
+            "label": "Basal/bolus regimen"
+          },
+          {
+            "value": "pump_or_cgm_use",
+            "label": "Pump or CGM use"
+          },
+          {
+            "value": "last_insulin_dose_known",
+            "label": "Last insulin dose known"
+          },
+          {
+            "value": "missed_or_reduced_insulin",
+            "label": "Missed or reduced insulin"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support diabetes technology or glucose-device use. The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Type 1 Diabetes Mellitus.",

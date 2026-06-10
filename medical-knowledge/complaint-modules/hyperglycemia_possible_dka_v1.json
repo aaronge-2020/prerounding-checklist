@@ -428,16 +428,36 @@
         "label": "Known diabetes type, duration, insulin regimen, pump/CGM use, and last insulin dose?",
         "options": [
           {
+            "value": "type_1_diabetes",
+            "label": "Type 1 diabetes"
+          },
+          {
+            "value": "type_2_diabetes",
+            "label": "Type 2 diabetes"
+          },
+          {
+            "value": "other_diabetes_type",
+            "label": "Other diabetes type"
+          },
+          {
+            "value": "basal_bolus_insulin",
+            "label": "Basal-bolus insulin"
+          },
+          {
+            "value": "pump_or_cgm_use",
+            "label": "Pump or CGM use"
+          },
+          {
+            "value": "last_insulin_dose_known",
+            "label": "Last insulin dose known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -476,16 +496,36 @@
         "label": "Recent glucose values, beta-hydroxybutyrate/urine ketones, anion gap, bicarbonate, pH, potassium, creatinine, and osmolality if known?",
         "options": [
           {
+            "value": "glucose_under_200_euglycemic_concern",
+            "label": "Glucose under 200 with euglycemic concern"
+          },
+          {
+            "value": "glucose_200_to_599",
+            "label": "Glucose 200-599"
+          },
+          {
+            "value": "glucose_600_or_more",
+            "label": "Glucose 600 or more"
+          },
+          {
+            "value": "ketones_elevated",
+            "label": "Ketones elevated"
+          },
+          {
+            "value": "acidosis_or_anion_gap",
+            "label": "Acidosis or anion gap"
+          },
+          {
+            "value": "potassium_creatinine_osmolality_concern",
+            "label": "Potassium, creatinine, or osmolality concern"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -524,16 +564,32 @@
         "label": "Missed or reduced insulin, pump/infusion-set failure, empty reservoir, expired insulin, medication access issue, or recent dose change?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "taking_as_prescribed",
+            "label": "Taking as prescribed"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "missed_reduced_insulin",
+            "label": "Missed or reduced insulin"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "pump_infusion_failure",
+            "label": "Pump or infusion-set failure"
+          },
+          {
+            "value": "empty_or_expired_insulin",
+            "label": "Empty reservoir or expired insulin"
+          },
+          {
+            "value": "access_affordability_issue",
+            "label": "Access or affordability issue"
+          },
+          {
+            "value": "recent_dose_change",
+            "label": "Recent dose change"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -572,16 +628,32 @@
         "label": "Polyuria, polydipsia, weight loss, dehydration, or very dry mouth?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_osmotic_symptom",
+            "label": "No osmotic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "polyuria",
+            "label": "Polyuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "polydipsia",
+            "label": "Polydipsia"
+          },
+          {
+            "value": "weight_loss",
+            "label": "Weight loss"
+          },
+          {
+            "value": "dehydration_or_dry_mouth",
+            "label": "Dehydration or dry mouth"
+          },
+          {
+            "value": "worse_than_baseline",
+            "label": "Worse than baseline"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -620,16 +692,32 @@
         "label": "Vomiting, abdominal pain, poor oral intake, or inability to keep fluids down?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_or_po_intolerance",
+            "label": "No GI or oral-intake intolerance"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_oral_intake",
+            "label": "Poor oral intake"
+          },
+          {
+            "value": "cannot_keep_fluids_down",
+            "label": "Cannot keep fluids down"
+          },
+          {
+            "value": "worse_or_persistent",
+            "label": "Worse or persistent"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -670,16 +758,36 @@
         "label": "Fever, dysuria, cough, wound, line infection, dental/skin infection, chest pain, stroke symptoms, pancreatitis symptoms, steroids, or other trigger?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_trigger_symptom",
+            "label": "No trigger symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "fever_infection",
+            "label": "Fever or infection symptom"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "urinary_symptom",
+            "label": "Urinary symptom"
+          },
+          {
+            "value": "respiratory_symptom",
+            "label": "Respiratory symptom"
+          },
+          {
+            "value": "skin_wound_line_dental",
+            "label": "Skin, wound, line, or dental symptom"
+          },
+          {
+            "value": "ischemia_or_pancreatitis",
+            "label": "Chest pain, stroke, or pancreatitis symptom"
+          },
+          {
+            "value": "steroid_medication_trigger",
+            "label": "Steroid or medication trigger"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -719,16 +827,32 @@
         "label": "Any confusion, sleepiness, seizure, severe weakness, or inability to participate in care?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "baseline_mental_status",
+            "label": "Baseline mental status"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "confusion",
+            "label": "Confusion"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "somnolent",
+            "label": "Sleepy or somnolent"
+          },
+          {
+            "value": "seizure",
+            "label": "Seizure"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "unable_participate",
+            "label": "Unable to participate in care"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -769,16 +893,32 @@
         "label": "SGLT2 inhibitor use, pregnancy/postpartum state, fasting/low-carb intake, alcohol, toxin exposure, or recent surgery?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_euglycemic_risk_exposure",
+            "label": "No euglycemic-risk exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "sglt2_inhibitor",
+            "label": "SGLT2 inhibitor"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "pregnancy_postpartum",
+            "label": "Pregnancy or postpartum"
+          },
+          {
+            "value": "fasting_low_carb",
+            "label": "Fasting or low-carb intake"
+          },
+          {
+            "value": "alcohol_toxin",
+            "label": "Alcohol or toxin exposure"
+          },
+          {
+            "value": "recent_surgery",
+            "label": "Recent surgery"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -817,16 +957,32 @@
         "label": "Heart failure, CKD/ESKD, frailty, cirrhosis, pregnancy, or other reason to use smaller fluid boluses and closer electrolyte monitoring?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_fluid_risk_comorbidity",
+            "label": "No fluid-risk comorbidity"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "heart_failure",
+            "label": "Heart failure"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "ckd_eskd",
+            "label": "CKD or ESKD"
+          },
+          {
+            "value": "frailty_older_adult",
+            "label": "Frailty or older adult"
+          },
+          {
+            "value": "cirrhosis",
+            "label": "Cirrhosis"
+          },
+          {
+            "value": "pregnancy",
+            "label": "Pregnancy"
+          },
+          {
+            "value": "other_fluid_risk",
+            "label": "Other fluid-risk reason ___"
           }
         ],
         "source": {
@@ -867,16 +1023,36 @@
         "label": "What has already been given: fluids, insulin route/rate, potassium/phosphate, dextrose, bicarbonate, antibiotics, and current monitoring level?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_treatment_yet",
+            "label": "No treatment yet"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "iv_fluids_started",
+            "label": "IV fluids started"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "insulin_started",
+            "label": "Insulin infusion or subcutaneous insulin"
+          },
+          {
+            "value": "potassium_phosphate_replacement",
+            "label": "Potassium or phosphate replacement"
+          },
+          {
+            "value": "dextrose_added",
+            "label": "Dextrose added"
+          },
+          {
+            "value": "bicarbonate_or_antibiotics",
+            "label": "Bicarbonate or antibiotics given"
+          },
+          {
+            "value": "monitored_setting",
+            "label": "Monitored setting"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -919,16 +1095,36 @@
         "label": "Older adult, glucose near/above 600 mg/dL, profound dehydration, neurologic symptoms, high effective/total osmolality, or suspected mixed DKA/HHS?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_hhs_feature",
+            "label": "No HHS feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "older_adult",
+            "label": "Older adult"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "glucose_600_or_more",
+            "label": "Glucose near or above 600"
+          },
+          {
+            "value": "profound_dehydration",
+            "label": "Profound dehydration"
+          },
+          {
+            "value": "neurologic_symptom",
+            "label": "Neurologic symptom"
+          },
+          {
+            "value": "high_osmolality",
+            "label": "High osmolality"
+          },
+          {
+            "value": "mixed_dka_hhs",
+            "label": "Mixed DKA-HHS concern"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "when": {
@@ -980,16 +1176,32 @@
         "label": "If infection or ischemia is possible, what source is most likely: urinary, pulmonary, skin/foot, line, abdomen, dental, MI, stroke, pancreatitis, or other?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_source_identified",
+            "label": "No source identified"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "urinary_source",
+            "label": "Urinary source"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "pulmonary_source",
+            "label": "Pulmonary source"
+          },
+          {
+            "value": "skin_foot_line_source",
+            "label": "Skin, foot, or line source"
+          },
+          {
+            "value": "abdominal_or_dental_source",
+            "label": "Abdominal or dental source"
+          },
+          {
+            "value": "mi_stroke_pancreatitis_trigger",
+            "label": "MI, stroke, or pancreatitis trigger"
+          },
+          {
+            "value": "other_source",
+            "label": "Other source ___"
           }
         ],
         "when": {
@@ -1006,7 +1218,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1045,16 +1300,36 @@
         "label": "Before discharge planning: insulin/supply access, ketone strips, glucagon, sick-day plan, mental health/substance use, food/housing insecurity, and follow-up arranged?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_discharge_barrier",
+            "label": "No discharge barrier"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "insulin_supply_access_problem",
+            "label": "Insulin or supply access problem"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "ketone_strips_or_glucagon_missing",
+            "label": "Ketone strips or glucagon missing"
+          },
+          {
+            "value": "sick_day_plan_gap",
+            "label": "Sick-day plan gap"
+          },
+          {
+            "value": "mental_health_substance_barrier",
+            "label": "Mental health or substance-use barrier"
+          },
+          {
+            "value": "food_housing_insecurity",
+            "label": "Food or housing insecurity"
+          },
+          {
+            "value": "followup_not_arranged",
+            "label": "Follow-up not arranged"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "when": {
@@ -1069,7 +1344,45 @@
           "answersAny": [
             {
               "id": "dka_missed_insulin",
-              "value": "yes"
+              "value": [
+                "yes",
+                "missed_reduced_insulin",
+                "pump_infusion_failure",
+                "empty_or_expired_insulin",
+                "access_affordability_issue",
+                "recent_dose_change",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "taking_as_prescribed",
+                  "label": "Taking as prescribed"
+                },
+                {
+                  "value": "missed_reduced_insulin",
+                  "label": "Missed or reduced insulin"
+                },
+                {
+                  "value": "pump_infusion_failure",
+                  "label": "Pump or infusion-set failure"
+                },
+                {
+                  "value": "empty_or_expired_insulin",
+                  "label": "Empty reservoir or expired insulin"
+                },
+                {
+                  "value": "access_affordability_issue",
+                  "label": "Access or affordability issue"
+                },
+                {
+                  "value": "recent_dose_change",
+                  "label": "Recent dose change"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1610,7 +1923,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1673,7 +2029,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1736,7 +2135,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1797,7 +2239,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1859,7 +2344,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1919,7 +2447,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1981,7 +2552,50 @@
           "answersAny": [
             {
               "id": "dka_infection_trigger",
-              "value": "yes"
+              "value": [
+                "yes",
+                "fever_infection",
+                "urinary_symptom",
+                "respiratory_symptom",
+                "skin_wound_line_dental",
+                "ischemia_or_pancreatitis",
+                "steroid_medication_trigger",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_trigger_symptom",
+                  "label": "No trigger symptom"
+                },
+                {
+                  "value": "fever_infection",
+                  "label": "Fever or infection symptom"
+                },
+                {
+                  "value": "urinary_symptom",
+                  "label": "Urinary symptom"
+                },
+                {
+                  "value": "respiratory_symptom",
+                  "label": "Respiratory symptom"
+                },
+                {
+                  "value": "skin_wound_line_dental",
+                  "label": "Skin, wound, line, or dental symptom"
+                },
+                {
+                  "value": "ischemia_or_pancreatitis",
+                  "label": "Chest pain, stroke, or pancreatitis symptom"
+                },
+                {
+                  "value": "steroid_medication_trigger",
+                  "label": "Steroid or medication trigger"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -2041,7 +2655,45 @@
           "answersAny": [
             {
               "id": "dka_mental_status_question",
-              "value": "yes"
+              "value": [
+                "yes",
+                "confusion",
+                "somnolent",
+                "seizure",
+                "severe_weakness",
+                "unable_participate",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "baseline_mental_status",
+                  "label": "Baseline mental status"
+                },
+                {
+                  "value": "confusion",
+                  "label": "Confusion"
+                },
+                {
+                  "value": "somnolent",
+                  "label": "Sleepy or somnolent"
+                },
+                {
+                  "value": "seizure",
+                  "label": "Seizure"
+                },
+                {
+                  "value": "severe_weakness",
+                  "label": "Severe weakness"
+                },
+                {
+                  "value": "unable_participate",
+                  "label": "Unable to participate in care"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -2422,11 +3074,92 @@
           "answersAny": [
             {
               "id": "dka_hhs_features",
-              "value": "yes"
+              "value": [
+                "yes",
+                "older_adult",
+                "glucose_600_or_more",
+                "profound_dehydration",
+                "neurologic_symptom",
+                "high_osmolality",
+                "mixed_dka_hhs",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_hhs_feature",
+                  "label": "No HHS feature"
+                },
+                {
+                  "value": "older_adult",
+                  "label": "Older adult"
+                },
+                {
+                  "value": "glucose_600_or_more",
+                  "label": "Glucose near or above 600"
+                },
+                {
+                  "value": "profound_dehydration",
+                  "label": "Profound dehydration"
+                },
+                {
+                  "value": "neurologic_symptom",
+                  "label": "Neurologic symptom"
+                },
+                {
+                  "value": "high_osmolality",
+                  "label": "High osmolality"
+                },
+                {
+                  "value": "mixed_dka_hhs",
+                  "label": "Mixed DKA-HHS concern"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             },
             {
               "id": "dka_mental_status_question",
-              "value": "yes"
+              "value": [
+                "yes",
+                "confusion",
+                "somnolent",
+                "seizure",
+                "severe_weakness",
+                "unable_participate",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "baseline_mental_status",
+                  "label": "Baseline mental status"
+                },
+                {
+                  "value": "confusion",
+                  "label": "Confusion"
+                },
+                {
+                  "value": "somnolent",
+                  "label": "Sleepy or somnolent"
+                },
+                {
+                  "value": "seizure",
+                  "label": "Seizure"
+                },
+                {
+                  "value": "severe_weakness",
+                  "label": "Severe weakness"
+                },
+                {
+                  "value": "unable_participate",
+                  "label": "Unable to participate in care"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -2518,7 +3251,45 @@
           "answersAny": [
             {
               "id": "dka_sglt2_pregnancy",
-              "value": "yes"
+              "value": [
+                "yes",
+                "sglt2_inhibitor",
+                "pregnancy_postpartum",
+                "fasting_low_carb",
+                "alcohol_toxin",
+                "recent_surgery",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_euglycemic_risk_exposure",
+                  "label": "No euglycemic-risk exposure"
+                },
+                {
+                  "value": "sglt2_inhibitor",
+                  "label": "SGLT2 inhibitor"
+                },
+                {
+                  "value": "pregnancy_postpartum",
+                  "label": "Pregnancy or postpartum"
+                },
+                {
+                  "value": "fasting_low_carb",
+                  "label": "Fasting or low-carb intake"
+                },
+                {
+                  "value": "alcohol_toxin",
+                  "label": "Alcohol or toxin exposure"
+                },
+                {
+                  "value": "recent_surgery",
+                  "label": "Recent surgery"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -2560,7 +3331,50 @@
           "answersAny": [
             {
               "id": "dka_hhs_features",
-              "value": "yes"
+              "value": [
+                "yes",
+                "older_adult",
+                "glucose_600_or_more",
+                "profound_dehydration",
+                "neurologic_symptom",
+                "high_osmolality",
+                "mixed_dka_hhs",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_hhs_feature",
+                  "label": "No HHS feature"
+                },
+                {
+                  "value": "older_adult",
+                  "label": "Older adult"
+                },
+                {
+                  "value": "glucose_600_or_more",
+                  "label": "Glucose near or above 600"
+                },
+                {
+                  "value": "profound_dehydration",
+                  "label": "Profound dehydration"
+                },
+                {
+                  "value": "neurologic_symptom",
+                  "label": "Neurologic symptom"
+                },
+                {
+                  "value": "high_osmolality",
+                  "label": "High osmolality"
+                },
+                {
+                  "value": "mixed_dka_hhs",
+                  "label": "Mixed DKA-HHS concern"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },

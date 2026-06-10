@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
-import { buildLocalChecklistFromWorkup } from "../checklist.js";
+import {
+  buildLocalChecklistFromWorkup,
+  hasGenericOnlyChecklistOptions,
+  parseChecklist
+} from "../checklist.js";
 import {
   complaintModules,
   complaintSourceRegistry,
@@ -185,6 +189,182 @@ function assertTraceableComplaintItem(module, item, group) {
   );
 }
 
+const checklistOptionSourceGroups = [
+  ["requiredQuestions", "bedside"],
+  ["conditionalQuestions", "bedside"],
+  ["requiredExam", "exam"],
+  ["conditionalExam", "exam"],
+  ["safetyChecks", "exam"]
+];
+
+function optionControlValue(item = {}) {
+  return item.options
+    || item.answer_options
+    || item.answerOptions
+    || item.findings_options
+    || item.findingsOptions
+    || "";
+}
+
+function hasOptionControl(value) {
+  return Array.isArray(value) ? value.length > 0 : String(value || "").trim().length > 0;
+}
+
+function optionControlEntries(value = "") {
+  if (Array.isArray(value)) {
+    return value
+      .map((option) => ({
+        value: typeof option === "string" ? option : option?.value || option?.label || "",
+        label: typeof option === "string" ? option : option?.label || option?.value || ""
+      }))
+      .map((option) => ({
+        value: String(option.value || "").trim(),
+        label: String(option.label || "").replace(/\s+/g, " ").trim()
+      }))
+      .filter((option) => option.label);
+  }
+  return String(value || "")
+    .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
+    .map((label) => String(label || "").replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .map((label) => ({ value: label, label }));
+}
+
+function optionControlLabelText(value = "") {
+  return optionControlEntries(value).map((option) => option.label).join(" / ");
+}
+
+function normalizedOptionLabel(value = "") {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/_{2,3}/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function assertNoGenericSourceOptionModifiers(modules = complaintModules) {
+  const failures = [];
+  modules.forEach((module) => {
+    checklistOptionSourceGroups.forEach(([group, kind]) => {
+      (module[group] || []).forEach((item) => {
+        const value = optionControlValue(item);
+        if (!hasOptionControl(value)) {
+          return;
+        }
+        if (hasGenericOnlyChecklistOptions(value, kind)) {
+          failures.push(`${module.id}.${group}.${item.id || item.label}: ${optionControlLabelText(value)}`);
+        }
+      });
+    });
+  });
+  assert.deepEqual(failures, [], "source checklist option modifiers should be item-specific, not generic-only");
+}
+
+function walkObject(value, visit) {
+  if (!value || typeof value !== "object") {
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((entry) => walkObject(entry, visit));
+    return;
+  }
+  visit(value);
+  Object.values(value).forEach((entry) => walkObject(entry, visit));
+}
+
+function conditionalTriggerTerms(module = {}) {
+  const terms = new Set();
+  walkObject(module, (item) => {
+    [...(item.when?.termsAny || []), ...(item.when?.termsAll || [])].forEach((term) => {
+      if (String(term || "").trim()) {
+        terms.add(String(term).trim());
+      }
+    });
+  });
+  return Array.from(terms);
+}
+
+function firstPositiveAnswerValue(item = {}) {
+  const entry = optionControlEntries(optionControlValue(item)).find((option) => {
+    const key = normalizedOptionLabel(option.label);
+    return key
+      && !/^(?:no|none|not possible|not applicable|unknown|unsure|not sure|other|baseline|resolved|taking as prescribed)\b/.test(key)
+      && !/\bmissing$/.test(key);
+  });
+  return entry?.value || "";
+}
+
+function positiveAnswerMapForModule(module = {}) {
+  const answers = {};
+  [...(module.requiredQuestions || []), ...(module.conditionalQuestions || [])].forEach((item) => {
+    const value = firstPositiveAnswerValue(item);
+    if (item.id && value) {
+      answers[item.id] = value;
+    }
+  });
+  return answers;
+}
+
+function generatedChecklistGenericFailures(module = {}, scenarioName = "", contextText = "", answers = {}) {
+  const result = evaluateComplaintCds(contextText, answers, { module });
+  const text = buildLocalChecklistFromWorkup({ complaintResult: result });
+  const failures = [];
+  parseChecklist(text).forEach((section) => {
+    (section.items || []).forEach((item) => {
+      const kind = item.category || section.category;
+      const value = item.rawValue || item.options;
+      if (hasGenericOnlyChecklistOptions(value, kind)) {
+        failures.push(`${module.id}.${scenarioName}.${kind}.${item.label}: ${optionControlLabelText(value)}`);
+      }
+    });
+  });
+  return failures;
+}
+
+function generatedChecklistBundledLabelFailures(module = {}, scenarioName = "", contextText = "", answers = {}) {
+  const result = evaluateComplaintCds(contextText, answers, { module });
+  const text = buildLocalChecklistFromWorkup({ complaintResult: result });
+  const failures = [];
+  parseChecklist(text).forEach((section) => {
+    (section.items || []).forEach((item) => {
+      const kind = item.category || section.category;
+      const label = String(item.label || "").replace(/\s+/g, " ").trim();
+      const canonicalSourceDomain = /^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|CNS, joint, spine, or rapid-worsening danger symptoms)\?$/i.test(label);
+      if (canonicalSourceDomain) {
+        return;
+      }
+      const commaCount = (label.match(/,/g) || []).length;
+      const andOrCount = (label.match(/\b(?:and|or)\b/gi) || []).length;
+      const slashCount = (label.match(/\//g) || []).length;
+      const bundled = kind === "exam"
+        ? andOrCount >= 1 || slashCount >= 1
+        : commaCount >= 2 || andOrCount >= 3 || slashCount >= 2 || label.length > 150;
+      if (bundled) {
+        failures.push(`${module.id}.${scenarioName}.${kind}.${label}`);
+      }
+    });
+  });
+  return failures;
+}
+
+function assertNoGenericGeneratedChecklistModifiers(module = {}) {
+  const maxTriggerContext = [
+    module.label,
+    ...conditionalTriggerTerms(module)
+  ].filter(Boolean).join(" ");
+  const scenarios = [
+    ["base", module.label || module.id, {}],
+    ["max-trigger", maxTriggerContext || module.label || module.id, positiveAnswerMapForModule(module)]
+  ];
+  const failures = scenarios.flatMap(([name, contextText, answers]) => generatedChecklistGenericFailures(module, name, contextText, answers));
+  assert.deepEqual(failures, [], `${module.id} generated checklist modifiers should be item-specific in base and max-trigger scenarios`);
+  const bundledFailures = scenarios.flatMap(([name, contextText, answers]) => generatedChecklistBundledLabelFailures(module, name, contextText, answers));
+  assert.deepEqual(bundledFailures, [], `${module.id} generated checklist labels should be atomized in base and max-trigger scenarios`);
+}
+
+assertNoGenericSourceOptionModifiers();
+
 function answerMap(entries) {
   return Object.fromEntries(entries);
 }
@@ -312,6 +492,27 @@ assert.ok(!/measure blood pressure|measure heart rate|measure respiratory rate|m
 assertHas(chestPain.initialTests, /ecg|troponin|ct pulmonary|d-dimer|chest x-ray/, "chest pain should recommend immediate tests");
 assertHas(chestPain.dispositionRules, /emergency|structured chest pain/, "chest pain should include disposition cues");
 assert.ok(chestPain.sources.every((source) => source.url.startsWith("http")), "sources should include URLs");
+const chestPainChecklist = buildLocalChecklistFromWorkup({ complaintResult: chestPain }, { maxBedsideQuestions: 18 });
+assert.match(
+  chestPainChecklist,
+  /What does the chest discomfort feel like\?: Pressure or heaviness \/ Sharp or pleuritic \/ Burning or reflux-like \/ Tight or crushing \/ Other quality ___ \/ Unsure/i,
+  "source-backed chest pain checklist should atomize quality into item-specific controls"
+);
+assert.match(
+  chestPainChecklist,
+  /Where is the chest discomfort located\?: Central or left chest \/ Right chest \/ Epigastric \/ Back \/ Diffuse \/ Other location ___ \/ Unsure/i,
+  "source-backed chest pain checklist should atomize location into item-specific controls"
+);
+assert.match(
+  chestPainChecklist,
+  /Does the chest discomfort radiate\?: No radiation \/ Arm radiation \/ Jaw radiation \/ Back radiation \/ Shoulder radiation \/ Multiple sites \/ Other ___/i,
+  "source-backed chest pain checklist should atomize radiation into item-specific controls"
+);
+assert.doesNotMatch(
+  chestPainChecklist,
+  /What does it feel like, where is it|What does it feel like present|Any it radiate to arm|Jaw present|No known known CAD/i,
+  "source-backed chest pain checklist should not keep bundled rows or generic fragment controls"
+);
 
 const suspectedPeIntent = getClinicalIntentById("suspected_pe_v1");
 const suspectedPeModule = complaintModules.find((module) => module.id === suspectedPeIntent.complaint_module_id);
@@ -391,6 +592,32 @@ assert.doesNotMatch(dkaSkinTurgor.findings_options.join(" "), /wound|drainage|ul
 assertHas(dka.initialTests, /point-of-care glucose|beta-hydroxybutyrate|metabolic panel|blood gas|osmolality|ecg|cbc|a1c/, "DKA should recommend immediate crisis labs/tests");
 assertHas(dka.dispositionRules, /urgent|icu|high-acuity|potassium|basal overlap|discharge/, "DKA should include high-acuity and transition/discharge cues");
 assertHas(dka.differentialBuckets, /glucose >=200|beta-hydroxybutyrate >=3.0|glucose >=600|osmolality >300|mixed dka\/hhs/, "DKA/HHS differential should include current diagnostic thresholds");
+const dkaChecklist = buildLocalChecklistFromWorkup({ complaintResult: dka }, { maxBedsideQuestions: 18 });
+assert.match(
+  dkaChecklist,
+  /What type of diabetes does the patient have\?: Type 1 \/ Type 2 \/ Other \/ Unknown/i,
+  "source-backed DKA checklist should atomize diabetes type controls"
+);
+assert.match(
+  dkaChecklist,
+  /Any insulin pump use\?: No pump \/ Pump in use \/ Pump stopped or removed \/ Pump malfunction concern \/ Unknown \/ Other ___/i,
+  "source-backed DKA checklist should atomize pump-use controls"
+);
+assert.match(
+  dkaChecklist,
+  /Any CGM use\?: No CGM \/ CGM in use \/ CGM unavailable \/ CGM reading concern \/ Unknown \/ Other ___/i,
+  "source-backed DKA checklist should atomize CGM-use controls"
+);
+assert.match(
+  dkaChecklist,
+  /Any missed or reduced insulin\?: Taking as prescribed \/ Missed insulin \/ Reduced dose \/ Unable to obtain insulin \/ Unsure \/ Other ___/i,
+  "source-backed DKA checklist should atomize missed-insulin controls"
+);
+assert.doesNotMatch(
+  dkaChecklist,
+  /Known diabetes type, duration, insulin regimen|Missed or reduced insulin, pump\/infusion-set failure|Any missed or reduced insulin\?: No missed|Any polyuria\?: .*present.*worse than baseline|Any confusion\?: .*present.*worse than baseline/i,
+  "source-backed DKA checklist should not keep bundled rows or generic present/worse controls"
+);
 
 const fever = evaluateComplaintCds(
   "Adult clinic fever with chills, cough, sputum, possible pneumonia, dysuria, flank pain, rash, and no clear source yet",
@@ -542,6 +769,7 @@ assert.ok(suspectedPeGapReport.includes("auth validated_clinical_intent"), "sele
 complaintModules.forEach((module) => {
   const result = evaluateComplaintCds(module.label, {}, { module });
   assert.equal(result.matched, true, `${module.id} should evaluate directly by module`);
+  assertNoGenericGeneratedChecklistModifiers(module);
   [
     ["redFlags", result.redFlags || []],
     ["safetyChecks", result.safetyChecks || []],

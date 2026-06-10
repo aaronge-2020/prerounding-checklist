@@ -400,20 +400,32 @@
         "text": "How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes growth-hormone excess probability, IGF-1 interpretation, pituitary imaging priority, and screening for sleep apnea, cardiometabolic, joint, and colon-polyp complications.",
@@ -432,51 +444,6 @@
       },
       {
         "id": "question_02",
-        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ES_ACROMEGALY_2014",
-          "source_section": "Gigantism curated endocrine workup: required clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2014",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Gigantism.",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Gigantism needs urgent evaluation today.",
-        "when_to_ask": "Ask when Gigantism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gigantism needs urgent evaluation today.",
-        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Gigantism.",
-        "tags": [
-          "pituitary_gland_disorders",
-          "gigantism",
-          "headache",
-          "vision"
-        ],
-        "source_seed": "Accelerated linear growth, headache/vision, puberty timing, family heights."
-      },
-      {
-        "id": "question_03",
         "label": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
         "item_type": "history_question",
         "source": {
@@ -491,20 +458,36 @@
         "text": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "loud_snoring",
+            "label": "Loud snoring"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "witnessed_apneas",
+            "label": "Witnessed apneas"
+          },
+          {
+            "value": "morning_headaches",
+            "label": "Morning headaches"
+          },
+          {
+            "value": "daytime_sleepiness",
+            "label": "Daytime sleepiness"
+          },
+          {
+            "value": "resistant_hypertension",
+            "label": "Resistant hypertension"
+          },
+          {
+            "value": "cpap",
+            "label": "CPAP"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes growth-hormone excess probability, IGF-1 interpretation, pituitary imaging priority, and screening for sleep apnea, cardiometabolic, joint, and colon-polyp complications.",
@@ -521,7 +504,7 @@
         "source_seed": "Sweating, sleep apnea, joint pain."
       },
       {
-        "id": "question_04",
+        "id": "question_03",
         "label": "Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?",
         "item_type": "history_question",
         "source": {
@@ -536,20 +519,36 @@
         "text": "Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Gigantism screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
@@ -572,6 +571,65 @@
         "source_seed": "Which medications, supplements, missed doses, recent procedures, acute illnesses, pregnancy/fertility context, or assay-interfering factors could change interpretation?"
       },
       {
+        "id": "question_04",
+        "label": "Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_ACROMEGALY_2014",
+          "source_section": "Gigantism curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2014",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?",
+        "options": [
+          {
+            "value": "no_eye_vision_symptom",
+            "label": "No eye/vision symptom"
+          },
+          {
+            "value": "eye_pain_redness",
+            "label": "Eye pain/redness"
+          },
+          {
+            "value": "light_sensitivity",
+            "label": "Light sensitivity"
+          },
+          {
+            "value": "bulging_proptosis",
+            "label": "Bulging/proptosis"
+          },
+          {
+            "value": "double_vision",
+            "label": "Double vision"
+          },
+          {
+            "value": "reduced_or_peripheral_vision_change",
+            "label": "Reduced or peripheral vision change"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
+          }
+        ],
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Gigantism.",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Gigantism needs urgent evaluation today.",
+        "when_to_ask": "Ask when Gigantism is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gigantism needs urgent evaluation today.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Gigantism.",
+        "tags": [
+          "pituitary_gland_disorders",
+          "gigantism",
+          "visual",
+          "field",
+          "loss",
+          "diplopia"
+        ],
+        "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
+      },
+      {
         "id": "question_05",
         "label": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "item_type": "history_question",
@@ -587,20 +645,36 @@
         "text": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Gigantism.",
@@ -631,20 +705,32 @@
         "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Gigantism.",

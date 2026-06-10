@@ -13,6 +13,22 @@
       "age_group": "adult",
       "setting": "clinician support"
     },
+    "applicability": {
+      "age_group": "adult",
+      "setting": "clinician support",
+      "review_owner": "endocrine_content_review",
+      "last_reviewed": "2026-06-06",
+      "sex_or_reproductive_context": "pregnancy-capable patient who is currently pregnant",
+      "pregnancy_status_required": "pregnant",
+      "use_when": [
+        "Use for diabetes screening, diagnosis, or management questions during an active pregnancy.",
+        "Use when gestational age, prior gestational diabetes, fetal growth, medication safety, or obstetric monitoring changes the workup."
+      ],
+      "do_not_use_when": [
+        "Do not use for a nonpregnant patient with type 1 or type 2 diabetes; use the corresponding diabetes module.",
+        "Do not use for postpartum diabetes follow-up unless the clinical question is explicitly pregnancy-related."
+      ]
+    },
     "triggers": [
       "Gestational Diabetes",
       "GDM",
@@ -509,20 +525,36 @@
         "text": "How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
@@ -553,20 +585,36 @@
         "text": "Any history of prior gestational diabetes or macrosomia that changes Gestational Diabetes risk, test interpretation, or treatment safety?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
@@ -597,20 +645,32 @@
         "text": "Any pre-pregnancy diabetes, prior A1c/glucose abnormality, PCOS, obesity, steroid exposure, or strong family history that changes gestational diabetes classification or treatment intensity?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "known_reviewed",
+            "label": "Known/reviewed"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "hyperglycemia",
+            "label": "Hyperglycemia"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "ketones_elevated",
+            "label": "Ketones elevated"
           },
           {
-            "value": "other",
-            "label": "Other"
+            "value": "acidosis_or_anion_gap",
+            "label": "Acidosis or anion gap"
+          },
+          {
+            "value": "potassium_abnormal",
+            "label": "Potassium abnormal"
+          },
+          {
+            "value": "renal_osmolality_concern",
+            "label": "Renal/osmolality concern"
+          },
+          {
+            "value": "not_available",
+            "label": "Not available"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gestational Diabetes.",
@@ -646,20 +706,32 @@
         "text": "What is the current home glucose pattern if available, and how has it changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes whether glucose data can safely guide medication adjustment, education, device troubleshooting, or escalation for Gestational Diabetes.",
@@ -693,20 +765,36 @@
         "text": "Have fetal growth, estimated fetal weight, amniotic fluid, or obstetric ultrasound findings raised concern for hyperglycemia-related risk?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
@@ -739,20 +827,32 @@
         "text": "What is the current obstetric plan, gestational age, fetal surveillance plan, delivery timing, and maternal-fetal medicine involvement?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Gestational Diabetes screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.",
@@ -787,20 +887,32 @@
         "text": "Are meal timing, carbohydrate access, food insecurity, nausea/vomiting, work schedule, or diabetes nutrition counseling limiting safe glucose targets?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support nutrition access, vomiting, or glucose-management barriers. A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for Gestational Diabetes.",
@@ -846,27 +958,43 @@
         "text": "Any headache, visual symptoms, right upper quadrant pain, swelling, high blood pressure, proteinuria, or prior preeclampsia concern?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
-        "action": "Ask when the history or modifiers support adrenergic spells, resistant hypertension, or hypokalemia. A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
+        "action": "Ask when the history or modifiers support adrenergic spells, resistant hypertension, or hypokalemia. A positive answer changes urgency to obstetric blood-pressure/proteinuria assessment, fetal-safety review, maternal-fetal surveillance, and coordinated endocrine/OB escalation for Gestational Diabetes.",
         "rationale": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
         "when_to_ask": "Ask when patient context includes adrenergic spells, resistant hypertension, or hypokalemia.",
         "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Gestational Diabetes needs urgent evaluation today.",
-        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Gestational Diabetes.",
+        "management_implication": "A positive answer changes urgency to obstetric blood-pressure/proteinuria assessment, fetal-safety review, maternal-fetal surveillance, and coordinated endocrine/OB escalation for Gestational Diabetes.",
         "tags": [
           "diabetes_and_blood_sugar_disorders",
           "gestational_diabetes",

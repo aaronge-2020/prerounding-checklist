@@ -8,11 +8,34 @@ const outputPath = path.join(repoRoot, "medical-knowledge-db.js");
 const databaseSchemaVersion = "medical_knowledge_database_v1";
 const placeholderExamTechniquePattern = /\bperform the named (?:bedside item|maneuver) directly\b/i;
 const placeholderDiagnosticTargetPattern = /\bfocused bedside finding relevant to\b|^\s*$/i;
-const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
+const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status|intake|oral intake|fluid intake|urine output|wet napp(?:y|ies))\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection|intake and urine output|intake\/output)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
 const bundledExamPattern = /[,;:]|\/|\band\s*\/\s*or\b|\b(?:focused exam|acuity screen|add repeat vitals|trigger exam|work-of-breathing|screen|assessment|vital signs including|cardiac exam|pulmonary exam|perfusion and pulses|volume status)\b/i;
 const vagueExamActionPattern = /^(?:Check|Assess|Evaluate|Screen|Review|Document|Perform)\b/i;
 const weakSafetyCheckLabelPattern = /^(?:Assess|Check|Evaluate)\b|^(?:Mental status|General appearance)$/i;
 const staleGeneratedProvenancePattern = /\bgenerated endocrine workup\b|Generated from guideline-backed endocrine workup automation/i;
+const sourceGovernanceCurrencyStatuses = new Set([
+  "reviewed_current_for_scope",
+  "reviewed_legacy_active",
+  "review_due",
+  "retired"
+]);
+const structuredApplicabilityModuleIds = new Set([
+  "amenorrhea_v1",
+  "erectile_dysfunction_v1",
+  "gestational_diabetes_v1",
+  "gynecomastia_v1",
+  "hirsutism_v1",
+  "hypogonadism_v1",
+  "infertility_v1",
+  "menopause_premature_ovarian_insufficiency_v1",
+  "polycystic_ovary_syndrome_v1"
+]);
+const pregnancyStatusApplicabilityValues = new Set([
+  "pregnant",
+  "must_assess",
+  "not_required_but_must_consider",
+  "not_applicable"
+]);
 
 function readJson(relativeOrAbsolutePath) {
   const absolutePath = path.isAbsolute(relativeOrAbsolutePath)
@@ -269,6 +292,25 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
         issues.push(`${source.id} is missing ${field}`);
       }
     }
+    for (const field of ["review_owner", "reviewed_by_role", "last_reviewed", "next_review_due", "currency_status"]) {
+      if (!source[field]) {
+        issues.push(`${source.id} is missing source governance field ${field}`);
+      }
+    }
+    for (const field of ["date_accessed", "last_reviewed", "next_review_due"]) {
+      if (source[field] && !/^\d{4}-\d{2}-\d{2}$/.test(String(source[field]))) {
+        issues.push(`${source.id} source ${field} must use YYYY-MM-DD`);
+      }
+    }
+    if (source.last_reviewed && source.date_accessed && source.last_reviewed < source.date_accessed) {
+      issues.push(`${source.id} source last_reviewed must be on or after date_accessed`);
+    }
+    if (source.next_review_due && source.last_reviewed && source.next_review_due <= source.last_reviewed) {
+      issues.push(`${source.id} source next_review_due must be later than last_reviewed`);
+    }
+    if (source.currency_status && !sourceGovernanceCurrencyStatuses.has(source.currency_status)) {
+      issues.push(`${source.id} source currency_status must be one of ${Array.from(sourceGovernanceCurrencyStatuses).join(", ")}`);
+    }
   }
 
   const moduleIds = new Set();
@@ -284,6 +326,28 @@ export function validateMedicalKnowledgeDatabase(database = loadMedicalKnowledge
     for (const field of ["schema_version", "label", "version", "status", "triggers"]) {
       if (!module[field] || (Array.isArray(module[field]) && !module[field].length)) {
         issues.push(`${module.id} is missing ${field}`);
+      }
+    }
+    if (structuredApplicabilityModuleIds.has(module.id)) {
+      const applicability = module.applicability || {};
+      for (const field of ["sex_or_reproductive_context", "pregnancy_status_required", "review_owner", "last_reviewed"]) {
+        if (!applicability[field]) {
+          issues.push(`${module.id} applicability missing ${field}`);
+        }
+      }
+      if (!pregnancyStatusApplicabilityValues.has(applicability.pregnancy_status_required)) {
+        issues.push(`${module.id} applicability pregnancy_status_required must be one of ${Array.from(pregnancyStatusApplicabilityValues).join(", ")}`);
+      }
+      for (const field of ["use_when", "do_not_use_when"]) {
+        if (!Array.isArray(applicability[field]) || !applicability[field].length) {
+          issues.push(`${module.id} applicability missing ${field}`);
+        }
+      }
+      if (applicability.last_reviewed && !/^\d{4}-\d{2}-\d{2}$/.test(String(applicability.last_reviewed))) {
+        issues.push(`${module.id} applicability last_reviewed must use YYYY-MM-DD`);
+      }
+      if (module.id === "gestational_diabetes_v1" && applicability.pregnancy_status_required !== "pregnant") {
+        issues.push("gestational_diabetes_v1 applicability must require active pregnancy");
       }
     }
     for (const { group, item } of collectModuleItems(module)) {

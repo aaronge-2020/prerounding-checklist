@@ -443,20 +443,32 @@
         "text": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
@@ -488,20 +500,32 @@
         "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
@@ -532,20 +556,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Addison's Disease.",
@@ -577,20 +613,32 @@
         "text": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
@@ -621,20 +669,36 @@
         "text": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Addison's Disease.",
@@ -666,20 +730,32 @@
         "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Addison's Disease.",
@@ -712,20 +788,32 @@
         "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
+            "value": "no_measured_fever",
+            "label": "No measured fever"
+          },
+          {
+            "value": "less_than_39_c",
+            "label": "Less than 39 C"
+          },
+          {
+            "value": "39_c_or_higher",
+            "label": "39 C or higher"
+          },
+          {
+            "value": "chills_or_rigors",
+            "label": "Chills or rigors"
+          },
+          {
+            "value": "hypothermia_toxic_appearance",
+            "label": "Hypothermia/toxic appearance"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
@@ -757,20 +845,32 @@
         "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptoms",
+            "label": "No respiratory symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cough",
+            "label": "Cough"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "sputum",
+            "label": "Sputum"
+          },
+          {
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
+          },
+          {
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "hypoxemia_or_oxygen_need",
+            "label": "Hypoxemia or oxygen need"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",
@@ -802,20 +902,36 @@
         "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Addison's Disease pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -848,20 +964,32 @@
         "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_skin_or_line_concern",
+            "label": "No skin or line concern"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "redness",
+            "label": "Redness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "drainage",
+            "label": "Drainage"
+          },
+          {
+            "value": "wound_or_ulcer",
+            "label": "Wound or ulcer"
+          },
+          {
+            "value": "line_device_concern",
+            "label": "Line/device concern"
+          },
+          {
+            "value": "procedure_site_concern",
+            "label": "Procedure-site concern"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Addison's Disease.",

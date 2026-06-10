@@ -7,6 +7,16 @@ node_modules/
 
 # Generated/local outputs
 benchmark-results/
+qa-screenshots/
+archive/
+UI Design/
+reports/design-qa/
+reports/*.json
+reports/*.md
+!reports/README.md
+!reports/endocrine-workups-2026-06-06.json
+!reports/endocrine-workups-2026-06-06.md
+!reports/endocrine-workup-completion-2026-06-06.md
 coverage/
 .nyc_output/
 dist/

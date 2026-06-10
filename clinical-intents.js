@@ -1,4 +1,4 @@
-import { complaintModules as installedComplaintModules } from "./medical-knowledge-db.js?v=20260608-fever-source-floor";
+import { complaintModules as installedComplaintModules } from "./medical-knowledge-db.js?v=20260609-peds-rash";
 
 export const clinicalIntentSchemaVersion = "clinical-intent-registry-v1";
 
@@ -137,9 +137,47 @@ const curatedClinicalIntentRegistry = [
     gold_case_ids: ["dka_hhs", "hyperglycemia_possible_dka"]
   }),
   intent({
+    intent_id: "pediatric_dka_hhs_hyperglycemia_v1",
+    label: "Pediatric DKA, HHS, or hyperglycemic crisis",
+    aliases: ["pediatric dka", "paediatric dka", "child dka", "child diabetic ketoacidosis", "pediatric diabetic ketoacidosis", "child high blood sugar ketones", "child ketones diabetes", "child vomiting diabetes", "diabetes vomiting child", "missed insulin child", "pump failure child", "insulin pump failure child", "new diabetes dka child", "pediatric hyperglycemic crisis", "pediatric hyperglycaemic crisis", "child hyperglycemia crisis", "pediatric hhs", "child hhs", "hyperosmolar hyperglycemic state child", "euglycemic dka child", "adolescent euglycemic dka sglt2", "adolescent sglt2 dka", "teen euglycemic dka", "sglt2 dka adolescent"],
+    intent_type: "diagnosis",
+    source_ids: ["RCH_DKA_CHILD", "NICE_NG18_DKA_CHILD", "ISPAD_DKA_HHS_2022", "CHQ_DKA_HHS_CHILD_2024"],
+    evidence_tags: ["pediatric", "child", "adolescent", "dka", "diabetic_ketoacidosis", "hhs", "hyperosmolar", "hyperglycemic_crisis", "ketones", "acidosis", "euglycemic_dka", "sGLT2", "insulin_omission", "pump_failure", "dehydration", "cerebral_edema", "osmolality", "potassium", "vitals", "baseline_safety", "fluid_balance"],
+    complaint_module_id: "pediatric_dka_hhs_hyperglycemia_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_dka_hhs_hyperglycemia"],
+    required_domains: [
+      "pediatric age band, current weight, diabetes type/regimen, and adult-pathway exclusion",
+      "baseline pediatric vitals, oxygen saturation, neurologic status, bedside glucose/ketones, intake, urine output, and fluid balance",
+      "atomic history for hyperglycemia/ketones/acidosis, insulin or pump interruption, vomiting/hydration, source-localizing infection, cerebral edema warning signs, HHS/osmolality features, and psychosocial recurrence risk",
+      "individual bedside maneuvers for capillary refill, mucous membranes, skin turgor, Kussmaul breathing, pupils/eye movements, abdominal focality, and targeted infection-source exam",
+      "pediatric DKA/HHS thresholds, VBG, glucose/ketones, electrolytes/potassium/corrected sodium/osmolality, source-directed infection tests, fluid/insulin/potassium/bicarbonate limitations, cerebral edema treatment, HHS specialist route, and diabetes-team recurrence prevention"
+    ],
+    avoid_labels: ["Adult DKA/HHS protocol", "Adult ADA hyperglycemic crisis thresholds", "Adult large-volume fluid bolus", "Insulin bolus", "Routine bicarbonate", "Generic focused exam", "Vital signs as physical exam", "Adult HHS insulin timing", "Routine infection testing from leukocytosis alone"],
+    gold_case_ids: ["pediatric_dka_hhs_hyperglycemia", "pediatric_dka", "pediatric_hhs", "adolescent_euglycemic_dka"]
+  }),
+  intent({
+    intent_id: "pediatric_hematology_anemia_bleeding_v1",
+    label: "Pediatric pallor, anemia, bruising, bleeding, or petechiae",
+    aliases: ["pediatric anemia", "paediatric anaemia", "child anemia", "child anaemia", "pediatric pallor", "child pallor", "pale child", "fatigue anemia child", "child easy bruising", "child bruising", "child bleeding", "bleeding gums child", "nosebleed child", "epistaxis child", "child petechiae pallor", "child bruising petechiae", "child purpura bruising", "child thrombocytopenia", "pediatric thrombocytopenia", "child low platelets", "pediatric ITP", "child ITP", "heavy period teen anemia", "adolescent heavy menstrual bleeding anemia", "pediatric leukemia concern", "child leukemia symptoms", "child lymphadenopathy pallor bruising", "child bone pain bruising", "child transfusion anemia"],
+    intent_type: "syndrome",
+    source_ids: ["RCH_ANAEMIA_CHILD", "RCH_IRON_DEFICIENCY_CHILD", "RCH_ITP_CHILD", "RCH_BLOOD_PRODUCT_CHILD", "RCH_PETECHIAE_PURPURA_CHILD", "NICE_NG12_SUSPECTED_CANCER_2026"],
+    evidence_tags: ["pediatric", "child", "adolescent", "hematology", "anemia", "anaemia", "pallor", "fatigue", "bruising", "bleeding", "petechiae", "purpura", "thrombocytopenia", "itp", "iron_deficiency", "ferritin", "hemolysis", "transfusion", "leukemia", "lymphoma", "lymphadenopathy", "splenomegaly", "bone_pain", "vitals", "baseline_safety"],
+    complaint_module_id: "pediatric_hematology_anemia_bleeding_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_hematology_anemia_bleeding"],
+    required_domains: [
+      "pediatric age band, growth, nutrition, baseline hematology, and adult-pathway exclusion",
+      "baseline vitals, oxygen saturation, mental status, weight, and active bleeding burden as safety data",
+      "atomic history for anemia symptoms, bleeding source, bruising/petechiae pattern, iron and nutrition risk, hemolysis, medication/family history, and leukemia/lymphoma red flags",
+      "individual bedside maneuvers for conjunctival pallor, petechiae distribution, oral mucosal bleeding, cervical lymph nodes, liver edge, and spleen tip",
+      "CBC/FBE, blood film, reticulocytes, ferritin, coagulation studies, hemolysis labs, transfusion readiness, ITP exclusion, iron therapy, RBC transfusion thresholds, and urgent leukemia/lymphoma referral routing"
+    ],
+    avoid_labels: ["Adult GI bleed pathway", "Adult anticoagulation reversal only", "Adult cancer referral pathway", "Generic focused exam", "Vital signs as physical exam", "Platelet count alone determines treatment", "Reassurance before CBC for unexplained pallor bruising or petechiae"],
+    gold_case_ids: ["pediatric_anemia_bleeding", "pediatric_itp", "pediatric_leukemia_red_flags", "adolescent_heavy_menses_anemia"]
+  }),
+  intent({
     intent_id: "suspected_pe_v1",
     label: "Suspected pulmonary embolism",
-    aliases: ["suspected pe", "suspected pulmonary embolism", "pulmonary embolism", "pe dyspnea", "dvt pe dyspnea", "dyspnea with dvt", "shortness of breath with dvt", "pleuritic chest pain", "vte", "dvt with dyspnea", "hypoxia with leg swelling", "unilateral leg swelling with shortness of breath"],
+    aliases: ["suspected pe", "suspected pulmonary embolism", "pulmonary embolism", "pe dyspnea", "dvt pe dyspnea", "dyspnea with dvt", "shortness of breath with dvt", "pleuritic chest pain", "vte", "dvt with dyspnea", "hypoxia with leg swelling", "unilateral leg swelling with shortness of breath", "swollen painful calf with shortness of breath", "pleuritic chest pain and hemoptysis"],
     intent_type: "diagnosis",
     source_ids: ["ESC_PE_2019", "ACEP_VTE_POLICY", "ASH_VTE_DIAGNOSIS", "CDC_VTE_DIAGNOSIS", "JAMA_RCE", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["dyspnea", "hypoxia", "chest_pain", "cardiopulmonary", "perfusion", "shock", "vitals", "vital_signs", "lower_extremity", "vascular_exam", "dvt", "vte", "edema", "pulmonary_embolism", "d_dimer", "ctpa", "vq_scan", "clinical_probability", "anticoagulation_safety"],
@@ -165,7 +203,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "dyspnea_hf_v1",
     label: "Dyspnea / heart failure or volume overload",
-    aliases: ["shortness of breath", "dyspnea", "sob", "can't breathe", "cant breathe", "orthopnea", "pnd", "heart failure", "volume overload", "pulmonary edema", "leg swelling with dyspnea"],
+    aliases: ["shortness of breath", "dyspnea", "sob", "can't breathe", "cant breathe", "can't catch my breath", "cant catch my breath", "can not catch my breath", "can't breathe lying flat", "orthopnea", "pnd", "heart failure", "volume overload", "pulmonary edema", "leg swelling with dyspnea"],
     intent_type: "syndrome",
     source_ids: ["AHA_ACC_HFSA_HF_2022", "ESC_HF_2021", "JAMA_RCE", "SM25", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["dyspnea", "hypoxia", "heart_failure", "acute_heart_failure", "volume_overload", "cardiopulmonary", "pulmonary_exam", "perfusion", "vitals", "vital_signs", "edema", "bnp", "nt_probnp", "cxr", "ecg", "troponin", "renal_function", "electrolytes", "red_flag"],
@@ -177,7 +215,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "sleep_apnea_snoring_v1",
     label: "Snoring or suspected obstructive sleep apnea",
-    aliases: ["snoring", "sleep apnea", "obstructive sleep apnea", "osa", "witnessed apnea", "daytime sleepiness", "waking choking", "morning headaches with snoring", "drowsy driving", "resistant hypertension with snoring"],
+    aliases: ["snoring", "sleep apnea", "obstructive sleep apnea", "osa", "witnessed apnea", "stops breathing during sleep", "stops breathing in sleep", "partner says stops breathing", "wakes up gasping", "daytime sleepiness", "waking choking", "morning headaches with snoring", "drowsy driving", "resistant hypertension with snoring"],
     intent_type: "complaint",
     source_ids: ["AASM_OSA_DIAGNOSTIC_2017", "MCGEE_EBPD", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["sleep_apnea", "snoring", "upper_airway", "heent", "hypertension", "cardiometabolic", "vitals", "vital_signs"],
@@ -189,7 +227,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "abdominal_pain_cramping_v1",
     label: "Abdominal pain or cramping",
-    aliases: ["abdominal pain", "abd pain", "stomach cramps", "belly cramps", "stomach pain", "belly pain", "tummy ache", "nausea", "vomiting", "diarrhea", "constipation", "bloating"],
+    aliases: ["abdominal pain", "abd pain", "stomach cramps", "belly cramps", "stomach pain", "belly pain", "tummy ache", "nausea", "vomiting", "diarrhea", "constipation", "bloating", "right upper quadrant pain", "ruq pain", "right lower quadrant pain", "rlq pain", "yellow eyes and belly pain", "jaundice and abdominal pain"],
     intent_type: "complaint",
     source_ids: ["AAFP_ACUTE_ABD_PAIN_2023", "ACR_RLQ_PAIN_2022", "ACR_RUQ_PAIN_2022", "JAMA_RCE", "MCGEE_EBPD", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["abdominal_pain", "abdomen", "abdominal_exam", "gi_gu_exam", "vitals", "vital_signs", "infection", "hypovolemia", "peritonitis", "acute_abdomen", "appendicitis", "biliary_disease", "pancreatitis", "obstruction", "gi_bleed", "pregnancy", "ectopic", "urinary", "flank_pain", "diagnostic_test", "red_flag"],
@@ -201,7 +239,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "pelvic_menstrual_pain_v1",
     label: "Pelvic, menstrual, or lower-abdominal pain",
-    aliases: ["period cramps", "menstrual cramps", "dysmenorrhea", "pelvic pain", "lower belly cramps", "lower abdominal cramps", "cramps on period"],
+    aliases: ["period cramps", "menstrual cramps", "dysmenorrhea", "pelvic pain", "lower belly cramps", "lower abdominal cramps", "cramps on period", "missed period and lower abdominal pain", "pregnant with pelvic pain", "pregnant with pelvic pain and shoulder pain", "positive pregnancy test with pelvic pain"],
     intent_type: "complaint",
     source_ids: ["ACOG_ENDOMETRIOSIS_DIAGNOSIS_2026", "CDC_STI_2021", "ACOG_ECTOPIC_FAQ", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["pelvic_pain", "abdominal_pain", "abdomen", "abdominal_exam", "gynecology", "pregnancy", "PID", "ectopic", "vitals", "diagnostic_test", "red_flag"],
@@ -213,7 +251,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "gu_renal_dysuria_v1",
     label: "Dysuria, flank pain, pyelonephritis, or AKI/hypovolemia",
-    aliases: ["dysuria", "burning pee", "burning urination", "painful urination", "uti", "pyelonephritis", "flank pain", "hematuria", "oliguria", "aki", "rising creatinine", "renal colic"],
+    aliases: ["dysuria", "burning pee", "burning when I pee", "burning urination", "painful urination", "uti", "pyelonephritis", "flank pain", "hematuria", "oliguria", "aki", "rising creatinine", "renal colic", "kidney stone colic", "kidney stone pain", "renal stone colic"],
     intent_type: "syndrome",
     source_ids: ["IDSA_CUTI_2025", "EAU_URO_INFECTIONS", "ACOG_UTI_PREGNANCY_2023", "NICE_RENAL_STONES", "JAMA_RCE", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["dysuria", "UTI", "pyelonephritis", "flank_pain", "AKI", "hypovolemia", "renal_colic", "vitals", "vital_signs", "abdominal_pain", "cva_tenderness", "urinalysis", "urine_culture", "pregnancy", "urosepsis", "obstruction", "renal_function", "diagnostic_test", "red_flag"],
@@ -225,7 +263,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "genital_discharge_sti_v1",
     label: "Genital discharge or STI-source evaluation",
-    aliases: ["penile discharge", "urethral discharge", "genital discharge", "sti symptoms", "sexually transmitted infection", "genital sores", "urethritis"],
+    aliases: ["penile discharge", "urethral discharge", "genital discharge", "sti symptoms", "sexually transmitted infection", "genital sores", "genital ulcer", "painful genital ulcer", "pus from penis", "vaginal discharge after new partner", "discharge after new partner", "urethritis"],
     intent_type: "syndrome",
     source_ids: ["CDC_STI_2021", "AHRQ_CALIBRATE_DX", "MCGEE_EBPD"],
     evidence_tags: ["genital_discharge", "sti", "gu", "dysuria", "infection", "urethritis", "genital_exam", "inguinal_nodes", "vitals", "red_flag"],
@@ -237,7 +275,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "acute_scrotal_pain_v1",
     label: "Acute scrotal pain, swelling, or torsion concern",
-    aliases: ["scrotal pain", "scrotal swelling", "testicular pain", "testicular torsion", "acute scrotum", "high riding testis", "testicle pain"],
+    aliases: ["scrotal pain", "scrotal swelling", "testicular pain", "testicular torsion", "acute scrotum", "high riding testis", "testicle pain", "sudden testicle pain", "sudden testicle pain with nausea", "testicular swelling and high riding"],
     intent_type: "syndrome",
     source_ids: ["AUA_ACUTE_SCROTUM", "EAU_ACUTE_SCROTUM", "AHRQ_CALIBRATE_DX", "MCGEE_EBPD"],
     evidence_tags: ["acute_scrotum", "testicular_torsion", "scrotal_pain", "gu", "abdominal_pain", "infection", "gi_gu_exam", "vitals", "red_flag"],
@@ -269,9 +307,162 @@ const curatedClinicalIntentRegistry = [
     gold_case_ids: ["fever_sepsis"]
   }),
   intent({
+    intent_id: "pediatric_fever_sepsis_v1",
+    label: "Pediatric fever, infection, or sepsis",
+    aliases: ["pediatric fever", "paediatric fever", "child fever", "fever in child", "febrile child", "infant fever", "baby fever", "toddler fever", "adolescent fever", "teen fever", "pediatric sepsis", "paediatric sepsis", "sepsis in child", "infection in child", "febrile infant"],
+    intent_type: "syndrome",
+    source_ids: ["SSC_PEDIATRIC_SEPSIS_2026", "NICE_SEPSIS_UNDER16_2025", "NICE_FEVER_UNDER5_NG143", "AAP_FEBRILE_INFANT_2021"],
+    evidence_tags: ["pediatric", "child", "infant", "adolescent", "fever", "infection", "sepsis", "serious_bacterial_infection", "vitals", "vital_signs", "perfusion", "shock", "hypoxemia", "respiratory", "rash", "source_localizing", "febrile_infant", "pregnancy_applicability"],
+    complaint_module_id: "pediatric_fever_sepsis_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_fever_sepsis"],
+    required_domains: [
+      "pediatric age band and febrile infant eligibility",
+      "baseline pediatric vitals and mental status",
+      "source-localizing pediatric fever history",
+      "work of breathing, skin, perfusion, and lung maneuvers",
+      "pediatric sepsis labs, cultures, antibiotics, fluids, and escalation",
+      "adolescent pregnancy or postpartum routing when applicable"
+    ],
+    avoid_labels: ["PMI", "Vibration sense", "Visual acuity", "Adult pneumonia severity scores", "Adult sepsis qSOFA-only screen"],
+    gold_case_ids: ["pediatric_fever_sepsis", "febrile_infant"]
+  }),
+  intent({
+    intent_id: "pediatric_respiratory_wheeze_v1",
+    label: "Pediatric respiratory distress, wheeze, or bronchiolitis",
+    aliases: ["pediatric respiratory distress", "child respiratory distress", "child shortness of breath", "child sob", "child can't breathe", "child cant breathe", "child wheeze", "wheezing child", "pediatric wheeze", "infant wheeze", "baby wheezing", "bronchiolitis", "viral induced wheeze", "pediatric asthma attack", "child asthma exacerbation", "trouble breathing child", "retractions child", "pediatric hypoxemia"],
+    intent_type: "syndrome",
+    source_ids: ["NICE_BRONCHIOLITIS_NG9", "GINA_ASTHMA_2025", "NHLBI_NAEPP_ASTHMA_2020", "NICE_SEPSIS_UNDER16_2025"],
+    evidence_tags: ["pediatric", "child", "infant", "adolescent", "respiratory_distress", "dyspnea", "wheeze", "bronchiolitis", "asthma", "viral_wheeze", "hypoxemia", "oxygen_saturation", "respiratory_rate", "feeding", "hydration", "pneumonia", "foreign_body", "sepsis"],
+    complaint_module_id: "pediatric_respiratory_wheeze_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_respiratory_wheeze"],
+    required_domains: [
+      "pediatric age band and bronchiolitis versus asthma-like wheeze routing",
+      "baseline respiratory safety data including oxygen saturation, respiratory rate, weight, alertness, and intake/urine output",
+      "atomic history for coryzal prodrome, recurrent wheeze/atopy, feeding, sudden choking, and pneumonia/sepsis cues",
+      "individual bedside maneuvers for retractions, nasal flaring, lung auscultation, and central color",
+      "testing limits for bronchiolitis, focal/severe imaging triggers, asthma reassessment, controller/trigger review, and safety-net disposition"
+    ],
+    avoid_labels: ["PMI", "JVP", "Adult heart failure BNP pathway", "Adult PE Wells pathway", "Routine bronchiolitis antibiotics", "Routine bronchiolitis chest X-ray"],
+    gold_case_ids: ["pediatric_respiratory_wheeze", "bronchiolitis", "pediatric_asthma_exacerbation"]
+  }),
+  intent({
+    intent_id: "pediatric_abdominal_pain_vomiting_v1",
+    label: "Pediatric abdominal pain, vomiting, or acute abdomen",
+    aliases: ["pediatric abdominal pain", "paediatric abdominal pain", "child abdominal pain", "child belly pain", "child stomach pain", "tummy ache child", "pediatric vomiting", "child vomiting", "infant vomiting", "green vomit child", "bilious vomiting child", "pediatric acute abdomen", "child right lower quadrant pain", "child rlq pain", "teen lower abdominal pain", "adolescent pelvic pain", "child diarrhea and vomiting", "pediatric dehydration vomiting", "child uti abdominal pain"],
+    intent_type: "syndrome",
+    source_ids: ["IDSA_APPENDICITIS_IMAGING_2024", "ACEP_APPENDICITIS_2023", "NICE_UTI_UNDER16_NG224", "NICE_GASTROENTERITIS_UNDER5_CG84", "NICE_ECTOPIC_MISCARRIAGE_NG126", "RCH_ACUTE_ABDOMINAL_PAIN", "RCH_VOMITING_CHILD", "NICE_SEPSIS_UNDER16_2025"],
+    evidence_tags: ["pediatric", "child", "infant", "adolescent", "abdominal_pain", "vomiting", "diarrhea", "dehydration", "appendicitis", "acute_abdomen", "ultrasound", "uti", "pregnancy", "ectopic", "scrotal_pain", "torsion", "obstruction", "red_flag"],
+    complaint_module_id: "pediatric_abdominal_pain_vomiting_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_abdominal_pain_vomiting"],
+    required_domains: [
+      "pediatric age band and abdominal/vomiting applicability",
+      "baseline safety data including pediatric vitals, current weight, mental status, intake/urine output, and bedside glucose when indicated",
+      "atomic history for pain trajectory, bilious/bloody vomiting, stool/exposure features, dehydration risk, urinary symptoms, adolescent pregnancy context, and scrotal symptoms",
+      "individual abdominal, hydration, and conditional scrotal bedside maneuvers",
+      "appendicitis ultrasound-first imaging with equivocal-ultrasound pathway, UTI urine testing, pregnancy testing, stool testing triggers, ORS thresholds, and surgical red flags"
+    ],
+    avoid_labels: ["Adult CT-first appendicitis pathway", "Adult abdominal pain source rows", "Generic focused abdominal exam", "Routine stool testing for all vomiting", "Adult sepsis qSOFA-only screen"],
+    gold_case_ids: ["pediatric_abdominal_pain_vomiting", "pediatric_appendicitis", "adolescent_pelvic_pain"]
+  }),
+  intent({
+    intent_id: "pediatric_chest_pain_syncope_v1",
+    label: "Pediatric chest pain, syncope, or palpitations",
+    aliases: ["pediatric chest pain", "paediatric chest pain", "child chest pain", "chest pain child", "teen chest pain", "adolescent chest pain", "child fainting", "child fainted", "pediatric syncope", "paediatric syncope", "child syncope", "teen syncope", "child palpitations", "pediatric palpitations", "adolescent palpitations", "exertional chest pain child", "exertional syncope child", "fainted during exercise child", "chest pain with palpitations child", "chest pain after exercise child"],
+    intent_type: "syndrome",
+    source_ids: ["RCH_CHEST_PAIN_CHILD", "RCH_SYNCOPE_CHILD", "RCH_PEDIATRIC_ECG", "CHOP_PEDS_CHEST_PAIN_2025", "JHACH_CHEST_PAIN_2018"],
+    evidence_tags: ["pediatric", "child", "adolescent", "chest_pain", "syncope", "near_syncope", "palpitations", "exertional", "ecg", "arrhythmia", "long_qt", "wpw", "myocarditis", "pericarditis", "pneumothorax", "pulmonary_embolus", "musculoskeletal", "cardiac_red_flag", "testing_stewardship"],
+    complaint_module_id: "pediatric_chest_pain_syncope_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_chest_pain_syncope"],
+    required_domains: [
+      "pediatric age band and chest pain/syncope/palpitations applicability",
+      "baseline safety data including pediatric vitals, oxygen saturation, orthostatic blood pressure when syncope/presyncope is present, and pain score",
+      "atomic history for pain character/timing, exertional symptoms, syncope/palpitations, family/personal cardiac risk, respiratory/PE features, recent illness/vaccination/drugs, reproducible musculoskeletal pain, and adolescent pregnancy context",
+      "individual bedside maneuvers for heart sounds, peripheral pulses, lung fields, work of breathing, chest-wall palpation, perfusion, liver edge, and aortopathy features",
+      "ECG indications and pediatric ECG review, targeted CXR/troponin/lab use, syncope glucose/anemia/pregnancy testing, cardiology escalation, activity restriction, and low-risk testing restraint"
+    ],
+    avoid_labels: ["Adult HEART score", "Adult ACS troponin-only pathway", "Adult chest pain source rows", "Adult CT coronary or ACS pathway", "Generic focused cardiopulmonary exam", "Routine pediatric troponin for all chest pain", "Routine pediatric chest X-ray for all chest pain"],
+    gold_case_ids: ["pediatric_chest_pain_syncope", "pediatric_exertional_syncope", "adolescent_palpitations"]
+  }),
+  intent({
+    intent_id: "pediatric_urinary_uti_pyelonephritis_v1",
+    label: "Pediatric urinary symptoms, UTI, or pyelonephritis",
+    aliases: ["pediatric uti", "paediatric uti", "child uti", "uti child", "pediatric urinary symptoms", "child urinary symptoms", "child dysuria", "burning pee child", "burning when peeing child", "child urinary frequency", "child urinary urgency", "child new wetting", "bedwetting and dysuria child", "child malodorous urine", "cloudy urine child", "hematuria child", "febrile uti child", "fever without source uti child", "infant uti", "baby uti", "child pyelonephritis", "pediatric pyelonephritis", "child flank pain", "child loin pain", "recurrent uti child", "catheter uti child", "child kidney infection"],
+    intent_type: "syndrome",
+    source_ids: ["NICE_UTI_UNDER16_NG224", "RCH_UTI_CHILD", "CHQ_PEDS_UTI_2024"],
+    evidence_tags: ["pediatric", "child", "infant", "adolescent", "uti", "dysuria", "urinary_frequency", "urinary_urgency", "hematuria", "malodorous_urine", "fever_without_focus", "pyelonephritis", "flank_pain", "loin_pain", "urine_collection", "dipstick", "microscopy", "urine_culture", "renal_ultrasound", "recurrent_uti", "atypical_uti", "catheter", "renal_anomaly", "sti", "pregnancy", "urosepsis"],
+    complaint_module_id: "pediatric_urinary_uti_pyelonephritis_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_urinary_uti_pyelonephritis"],
+    required_domains: [
+      "pediatric age band and infant/febrile UTI applicability",
+      "baseline pediatric vitals, blood pressure, mental status, intake/urine output, and current weight",
+      "atomic urinary, infant nonspecific, upper-tract, risk-factor, and mimic history with adolescent STI/pregnancy and catheter/anomaly add-ons",
+      "individual suprapubic, loin, hydration, and clinically indicated consented external-genitalia maneuvers with conditional mass and lower-limb neuro checks",
+      "urine collection method, dipstick/microscopy/culture interpretation, upper-tract labs/imaging, age-based imaging schedule, STI/pregnancy tests, infant/urosepsis escalation, culture follow-up, and stewardship"
+    ],
+    avoid_labels: ["Adult pyelonephritis CT-first pathway", "Adult dysuria source rows", "Adult complicated UTI stewardship rows", "Generic focused GU exam", "Routine renal ultrasound for every first pediatric UTI", "Bag urine culture as definitive UTI diagnosis"],
+    gold_case_ids: ["pediatric_urinary_uti_pyelonephritis", "pediatric_febrile_uti", "adolescent_dysuria_sti_mimic"]
+  }),
+  intent({
+    intent_id: "pediatric_rash_skin_v1",
+    label: "Pediatric rash, urticaria, petechiae, or skin infection",
+    aliases: ["pediatric rash", "paediatric rash", "child rash", "rash child", "fever and rash child", "pediatric hives", "child hives", "pediatric urticaria", "child urticaria", "child petechiae", "child purpura", "non blanching rash child", "pediatric petechiae", "pediatric purpura", "child cellulitis", "pediatric cellulitis", "child abscess", "pediatric abscess", "skin infection child", "pediatric skin infection", "kawasaki concern", "kawasaki child", "prolonged fever rash child"],
+    intent_type: "syndrome",
+    source_ids: ["NICE_FEVER_UNDER5_NG143", "RCH_PETECHIAE_PURPURA_CHILD", "RCH_KAWASAKI_DISEASE", "RCH_URTICARIA_CHILD", "JHACH_SSTI_CHILD_2023"],
+    evidence_tags: ["pediatric", "child", "infant", "adolescent", "rash", "urticaria", "hives", "angioedema", "anaphylaxis", "petechiae", "purpura", "non_blanching", "fever", "kawasaki", "cellulitis", "abscess", "skin_infection", "ssti", "mucosal", "conjunctivitis", "lymphadenopathy", "hematology", "vasculitis", "safeguarding", "safety_net"],
+    complaint_module_id: "pediatric_rash_skin_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_rash_skin"],
+    required_domains: [
+      "pediatric age band, immunization, immune risk, and infant applicability",
+      "baseline pediatric vitals, oxygen saturation, blood pressure when systemic, mental status, and weight",
+      "atomic rash morphology, fever danger, anaphylaxis, Kawasaki, SSTI, and bleeding history",
+      "individual rash distribution, blanching test, oral mucosa, conjunctiva, skin infection, cervical node, liver/spleen, and palm/sole/perineum maneuvers",
+      "non-blanching rash escalation, anaphylaxis treatment, Kawasaki labs/ECG/echo, SSTI culture/imaging/source control, bleeding/vasculitis testing, and safe discharge constraints"
+    ],
+    avoid_labels: ["Adult dermatology source rows", "Generic full skin survey", "Generic focused skin exam", "Adult cellulitis-only pathway", "Reassurance before non-blanching/anaphylaxis/Kawasaki screening"],
+    gold_case_ids: ["pediatric_rash_skin", "pediatric_nonblanching_rash", "pediatric_kawasaki_rash", "pediatric_urticaria_anaphylaxis", "pediatric_cellulitis_abscess"]
+  }),
+  intent({
+    intent_id: "pediatric_msk_limp_hot_joint_v1",
+    label: "Pediatric limp, hot joint, injury, or non-weight bearing",
+    aliases: ["pediatric limp", "paediatric limp", "child limp", "limping child", "child cannot walk", "child can't walk", "child cant walk", "child refuses to walk", "non weight bearing child", "child non weight bearing", "pediatric non weight bearing", "child hot joint", "child swollen joint", "child hot swollen joint", "red swollen joint child", "hot swollen knee child", "child hot swollen knee cannot bear weight", "child hot swollen joint cannot bear weight", "child hot swollen knee can't bear weight", "pediatric septic arthritis", "child septic arthritis", "pediatric osteomyelitis", "child bone infection", "child limb pain", "child knee pain", "child hip pain", "adolescent hip pain", "child ankle injury", "child cannot bear weight after injury", "toddler fracture concern"],
+    intent_type: "complaint",
+    source_ids: ["RCH_LIMPING_CHILD", "RCH_BONE_JOINT_INFECTION", "CHQ_LIMP_CHILD_2026", "CHQ_BONE_JOINT_INFECTION_2025", "ACR_ACUTELY_LIMPING_CHILD_2018"],
+    evidence_tags: ["pediatric", "child", "adolescent", "limp", "non_weight_bearing", "hot_joint", "joint_swelling", "septic_arthritis", "osteomyelitis", "fracture", "trauma", "safeguarding", "gait", "hip", "knee_pain", "xray", "ultrasound", "mri", "orthopedics", "red_flag"],
+    complaint_module_id: "pediatric_msk_limp_hot_joint_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_msk_limp_hot_joint"],
+    required_domains: [
+      "pediatric age band and baseline walking status",
+      "baseline pediatric vitals, mental status, oxygen saturation when unwell, and pain score safety data",
+      "joint pain range of motion history and localization",
+      "individual gait, limb-position, bony-tenderness, active-motion, and passive-motion maneuvers",
+      "testing restraint for low-risk comfortable limp, site-specific X-ray, infection labs/cultures, ultrasound effusion route, MRI localization, orthopaedic escalation, and safe discharge constraints"
+    ],
+    avoid_labels: ["Adult monoarthritis source rows", "Adult low-back-pain pathway", "Generic focused musculoskeletal exam", "Routine CT for pediatric limp", "Reassurance before weight-bearing or septic-joint screening"],
+    gold_case_ids: ["pediatric_msk_limp_hot_joint", "pediatric_septic_arthritis", "pediatric_non_weight_bearing_injury", "adolescent_hip_pain"]
+  }),
+  intent({
+    intent_id: "pediatric_neuro_headache_seizure_ams_v1",
+    label: "Pediatric headache, seizure, altered mental status, or focal neurologic concern",
+    aliases: ["pediatric headache", "paediatric headache", "child headache", "headache child", "headache wakes child from sleep", "morning headache child", "child headache vomiting", "child headache ataxia", "child headache papilledema", "child seizure", "pediatric seizure", "paediatric seizure", "first seizure child", "afebrile seizure child", "febrile seizure child", "status epilepticus child", "child still seizing", "child blackout seizure", "child altered mental status", "child altered conscious state", "pediatric altered mental status", "child confusion", "child lethargic confused", "child focal weakness", "child face droop", "child aphasia", "child stroke symptoms", "child new focal neurologic deficit"],
+    intent_type: "syndrome",
+    source_ids: ["RCH_HEADACHE_CHILD", "RCH_SEIZURES_ACUTE_2025", "RCH_ALTERED_CONSCIOUS_STATE_2022", "NICE_NG127_CHILD_NEURO_2019", "NICE_NG217_EPILEPSY_2025", "CHQ_STATUS_EPILEPTICUS_CHILD"],
+    evidence_tags: ["pediatric", "child", "adolescent", "headache", "seizure", "status_epilepticus", "altered_mental_status", "altered_conscious_state", "gcs", "avpu", "bedside_glucose", "focal_neurologic_deficit", "stroke", "papilledema", "raised_icp", "meningitis", "encephalitis", "head_injury", "toxin", "metabolic", "neuroimaging", "eeg", "red_flag"],
+    complaint_module_id: "pediatric_neuro_headache_seizure_ams_v1",
+    clinical_bundle_ids: ["installed_guideline_module", "pediatric_neuro_headache_seizure_ams"],
+    required_domains: [
+      "pediatric age band, neurodevelopment baseline, and caregiver baseline change",
+      "baseline pediatric vitals, oxygen saturation, AVPU/GCS, bedside glucose, and current weight",
+      "atomic headache red flags, seizure event, recovery, focal-deficit, infection, trauma, toxin, and metabolic history",
+      "individual pupil, eye-movement, limb-strength, coordination or gait, fundoscopy, meningism, skin, trauma, and head-circumference maneuvers when indicated",
+      "testing restraint for low-risk headache, glucose and metabolic labs when indicated, ECG for seizure mimics, conditional imaging, EEG/referral timing, CNS infection testing with LP safety, and emergency seizure/altered-conscious-state disposition"
+    ],
+    avoid_labels: ["Adult NIHSS-only stroke pathway", "Adult thrombolysis scoring", "Adult headache CT-first pathway", "Generic broad neurologic exam", "Routine CT for typical established epilepsy seizure", "EEG used to exclude epilepsy", "Lumbar puncture in reduced GCS"],
+    gold_case_ids: ["pediatric_neuro_headache_seizure_ams", "pediatric_status_epilepticus", "pediatric_headache_red_flags", "pediatric_first_seizure", "pediatric_altered_conscious_state"]
+  }),
+  intent({
     intent_id: "stroke_focal_neuro_v1",
     label: "Stroke or focal neurologic deficit",
-    aliases: ["stroke", "tia", "facial droop", "face droop", "face weakness", "aphasia", "weakness", "hemiparesis", "numbness", "diplopia", "ataxia", "seizure", "vertigo with focal symptoms"],
+    aliases: ["stroke", "tia", "facial droop", "face droop", "face weakness", "slurred speech", "word finding difficulty", "one sided weakness", "arm weakness and slurred speech", "aphasia", "weakness", "hemiparesis", "numbness", "diplopia", "ataxia", "seizure", "vertigo with focal symptoms"],
     intent_type: "syndrome",
     source_ids: ["AHA_ASA_STROKE_2019", "JAMA_RCE", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["stroke", "weakness", "vision_change", "cranial_nerve_exam", "neuro", "focal_neurologic_deficit", "gait", "vitals", "glucose", "neuroimaging", "red_flag"],
@@ -283,7 +474,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "spine_cord_compression_v1",
     label: "Back pain, incontinence, or cord compression red flags",
-    aliases: ["cord compression", "cauda equina", "saddle anesthesia", "saddle numbness", "urinary incontinence with back pain", "urinary retention with back pain", "back pain weakness", "myelopathy"],
+    aliases: ["cord compression", "cauda equina", "saddle anesthesia", "saddle numbness", "urinary incontinence with back pain", "urinary retention with back pain", "cannot urinate with back pain", "can't urinate with back pain", "can not urinate with back pain", "unable to urinate with back pain", "back pain weakness", "myelopathy"],
     intent_type: "syndrome",
     source_ids: ["ACP_LOW_BACK_PAIN_2017", "AHRQ_CALIBRATE_DX", "MCGEE_EBPD"],
     evidence_tags: ["cord_compression", "cauda_equina", "saddle_sensation", "weakness", "gait", "neuro", "vitals", "MRI", "red_flag"],
@@ -413,7 +604,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "bleeding_anemia_v1",
     label: "Bleeding, bruising, pallor, anemia, or GI bleed",
-    aliases: ["easy bruising", "petechiae", "pallor", "bleeding gums", "nosebleeds", "epistaxis", "anemia", "fatigue with anemia", "black stool", "melena", "hematochezia", "vomiting blood", "hematemesis", "blood in stool"],
+    aliases: ["easy bruising", "petechiae", "pallor", "bleeding gums", "nosebleeds", "epistaxis", "anemia", "fatigue with anemia", "black stool", "black tarry stool", "tarry stool", "melena", "coffee ground emesis", "coffee ground vomit", "hematochezia", "vomiting blood", "hematemesis", "blood in stool"],
     intent_type: "syndrome",
     source_ids: ["ACG_UGIB_2021", "JAMA_RCE", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["anemia", "bleeding", "pallor", "gi_bleed", "melena", "hematochezia", "vitals", "abdominal_pain", "heent", "skin", "CBC", "type_screen", "red_flag"],
@@ -425,7 +616,7 @@ const curatedClinicalIntentRegistry = [
   intent({
     intent_id: "focused_msk_v1",
     label: "Focused musculoskeletal joint, back, neck, or injury concern",
-    aliases: ["joint pain", "arthralgia", "joint swelling", "back pain", "neck pain", "shoulder pain", "knee pain", "ankle pain", "hand pain", "morning stiffness", "muscle pain", "trauma", "sprain"],
+    aliases: ["joint pain", "arthralgia", "joint swelling", "red swollen joint", "red swollen joint with fever", "hot swollen joint", "hot knee swelling", "septic arthritis", "cannot bear weight after injury", "unable to bear weight after injury", "back pain", "neck pain", "shoulder pain", "knee pain", "ankle pain", "hand pain", "morning stiffness", "muscle pain", "trauma", "sprain"],
     intent_type: "complaint",
     source_ids: ["AAFP_MONOARTHRITIS_2025", "ACP_LOW_BACK_PAIN_2017", "JAMA_RCE", "AHRQ_CALIBRATE_DX"],
     evidence_tags: ["msk_exam", "pain", "joint_pain", "back_pain", "weakness", "gait", "vitals", "septic_arthritis", "fracture", "imaging", "red_flag"],
@@ -685,9 +876,22 @@ function allowShortQueryContainedInLongerAlias(context, alias) {
   return false;
 }
 
+function hasPediatricContextSignal(context = "") {
+  return /\b(?:pediatric|paediatric|child|children|adolescent|teen|infant|baby|toddler|minor)\b/.test(context);
+}
+
 function scoreClinicalIntent(intentRow, query) {
   const context = normalizeClinicalIntentText(query);
   if (!context) {
+    return 0;
+  }
+  if (
+    (
+      intentRow.intent_id === "pediatric_dka_hhs_hyperglycemia_v1"
+      || intentRow.intent_id === "pediatric_hematology_anemia_bleeding_v1"
+    )
+    && !hasPediatricContextSignal(context)
+  ) {
     return 0;
   }
   let score = 0;
@@ -905,6 +1109,7 @@ export function sanitizeUnsupportedClinicalIntentGapText(value = "") {
     .replace(/\b(?:MRN|CSN|SSN)\s*[:#]?\s*[\w-]+\b/gi, "[identifier]")
     .replace(/\bFIN\s*[:#]\s*[\w-]+\b/gi, "[identifier]")
     .replace(/\b(?:patient|pt|name)\s*(?:is|named|[:#])?\s*[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2}\b/gi, "[name]")
+    .replace(/\b(for|about|regarding)\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2}\b/g, "$1 [name]")
     .replace(/\b(?:room|rm|bed)\s*[:#]?\s*[A-Za-z]?\d+[A-Za-z]?\b/gi, "[location]")
     .replace(/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g, "[date]")
     .replace(/\b\d{4}-\d{2}-\d{2}\b/g, "[date]")

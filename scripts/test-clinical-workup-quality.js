@@ -1300,7 +1300,7 @@ assert.ok(
   "concise workup copy should include a start-here section that summarizes the minimum bedside workup"
 );
 assert.ok(
-  feverStartHereIndex < feverConciseReport.indexOf("Basic bedside data / safety checks"),
+  feverStartHereIndex < feverConciseReport.indexOf("Baseline vitals / safety data"),
   "start-here summary should appear before routine safety metadata in copied workups"
 );
 const feverStartHereExcerpt = feverConciseReport.slice(feverStartHereIndex, feverStartHereIndex + 4200);
@@ -1417,6 +1417,86 @@ assert.doesNotMatch(
   dkaInfectionHistoryLabels,
   /pregnancy and ectopic|infection-source symptoms - .*mouth|rash danger features.*new cough|urinary symptoms.*respiratory source/i,
   "DKA with infectious modifiers should not leak pelvic, respiratory, urinary, or rash labels across unrelated source questions"
+);
+const routineType2DiabetesRecommendation = recommendationForIntent(
+  ["type_2_diabetes_mellitus_intent_v1"],
+  "routine type 2 diabetes follow-up A1c medications kidney foot retinal screening"
+);
+const routineType2DiabetesHistoryText = (routineType2DiabetesRecommendation.focusedHistoryQuestions || [])
+  .map((question) => [
+    question.label,
+    question.text,
+    question.fullQuestion,
+    question.action,
+    question.management_implication,
+    question.reason
+  ].filter(Boolean).join(" "))
+  .join(" | ");
+assert.doesNotMatch(
+  routineType2DiabetesHistoryText,
+  /pituitary|sellar|parasellar|visual-field review|neurosurgical|diabetes insipidus|water deprivation|copeptin|serum\/urine osmolality/i,
+  "routine type 2 diabetes history should not leak pituitary or diabetes-insipidus prompts from broad endocrine vision/polyuria wording"
+);
+const type2DiabetesModule = complaintModules.find((module) => module.id === "type_2_diabetes_mellitus_v1");
+const type2DiabetesModuleHistoryText = JSON.stringify([
+  ...(type2DiabetesModule?.requiredQuestions || []),
+  ...(type2DiabetesModule?.conditionalQuestions || [])
+]);
+assert.match(
+  type2DiabetesModuleHistoryText,
+  /blurred vision|retinopathy|dilated-eye|dilated eye/i,
+  "type 2 diabetes module should preserve diabetes eye/retinopathy history"
+);
+assert.doesNotMatch(
+  type2DiabetesModuleHistoryText,
+  /pituitary|sellar|parasellar|visual-field review|neurosurgical|diabetes insipidus|water deprivation|copeptin|serum\/urine osmolality/i,
+  "type 2 diabetes module history should not leak pituitary or diabetes-insipidus prompts from broad endocrine vision/polyuria wording"
+);
+const gestationalDiabetesModule = complaintModules.find((module) => module.id === "gestational_diabetes_v1");
+const gestationalPreeclampsiaHistoryText = JSON.stringify([
+  ...(gestationalDiabetesModule?.requiredQuestions || []),
+  ...(gestationalDiabetesModule?.conditionalQuestions || [])
+].filter((question) => /preeclampsia|high blood pressure|right upper quadrant|proteinuria/i.test(JSON.stringify(question))));
+assert.match(
+  gestationalPreeclampsiaHistoryText,
+  /obstetric blood-pressure\/proteinuria|fetal-safety|coordinated endocrine\/OB/i,
+  "gestational diabetes preeclampsia history should explain obstetric BP, proteinuria, fetal-safety, and OB/endocrine escalation consequences"
+);
+assert.doesNotMatch(
+  gestationalPreeclampsiaHistoryText,
+  /pituitary|sellar|parasellar|visual-field review|neurosurgical|water deprivation|copeptin/i,
+  "gestational diabetes headache/visual-symptom history should not be interpreted as pituitary leakage"
+);
+const routineType2DiabetesExportRun = buildRun(loadCatalog(), {
+  diagnosis: "",
+  intentIds: ["type_2_diabetes_mellitus_intent_v1"],
+  allMatches: false,
+  modifiers: "routine type 2 diabetes follow-up A1c medications kidney foot retinal screening",
+  setting: "General medicine",
+  population: "Adult",
+  maxCandidates: 80,
+  maxCoreItems: 24,
+  maxConditionalItems: 36,
+  limit: 0
+});
+const routineType2DiabetesExportHistoryText = (routineType2DiabetesExportRun.results[0]?.history || [])
+  .map((entry) => [
+    entry.label,
+    entry.fullQuestion,
+    entry.reason,
+    entry.action,
+    entry.managementChange
+  ].filter(Boolean).join(" "))
+  .join(" | ");
+assert.match(
+  routineType2DiabetesExportHistoryText,
+  /blurred vision|retinopathy|dilated-eye|dilated eye/i,
+  "installed type 2 diabetes workup export should preserve diabetes eye/retinopathy history"
+);
+assert.doesNotMatch(
+  routineType2DiabetesExportHistoryText,
+  /pituitary|sellar|parasellar|visual-field review|neurosurgical|diabetes insipidus|water deprivation|copeptin|serum\/urine osmolality/i,
+  "installed type 2 diabetes export should not leak pituitary or diabetes-insipidus prompts from broad endocrine vision/polyuria wording"
 );
 const type2DiabetesInfectionRecommendation = recommendationForIntent(
   ["type_2_diabetes_mellitus_intent_v1"],
@@ -1587,17 +1667,16 @@ const feverConciseClinicalReport = formatConciseClinicalWorkupReport({
 [
   "Unified Clinical Workup",
   "Validated Bedside Workup",
-  "Basic bedside data / safety checks",
+  "Baseline vitals / safety data",
+  "Vitals and basic measurements are baseline clinical data; they are not physical exam maneuvers.",
   "Focused history questions",
   "Core physical exam maneuvers",
   "Conditional exam add-ons",
   "Initial tests and reference thresholds",
   "Red flags and escalation cues",
   "Management-changing findings",
-  "Evidence/LR metadata",
   "Limitations and interpretation cautions",
-  "Suppressed/not-recommended items",
-  "Catalog gaps needing review",
+  "Compact audit footer",
   "Ask respiratory infection-source symptoms",
   "Ask skin/line infection-source symptoms",
   "Auscultate posterior lung fields",
@@ -1609,9 +1688,10 @@ const feverConciseClinicalReport = formatConciseClinicalWorkupReport({
   "LR interpretation:",
   "Feasibility:",
   "Limitations:",
-  "Tags:",
-  "Citation:",
-  "Intent trace:",
+  "Trace IDs:",
+  "Source IDs:",
+  "Source currency:",
+  "Reviewer-only omitted:",
   "Reviewer audit: use Copy review audit"
 ].forEach((requiredText) => {
   assert.ok(
@@ -1623,14 +1703,43 @@ assert.ok(
   feverConciseExamReport.includes("Raw retrieval candidates, score/debug detail, and supporting module dumps are available only in Copy review audit"),
   "Concise exam recommendation report should explicitly separate user-facing recommendations from reviewer-only retrieval/debug detail"
 );
+assert.match(
+  feverConciseClinicalReport,
+  /Source currency:[\s\S]*(?:AHRQ_CALIBRATE_DX|SSC_SEPSIS_2026|ATS_CAP_2025)[\s\S]*accessed \d{4}-\d{2}-\d{2}[\s\S]*reviewed \d{4}-\d{2}-\d{2}[\s\S]*next review due \d{4}-\d{2}-\d{2}[\s\S]*status reviewed_/i,
+  "Concise copied workup should display source currency/access/review metadata for registry-backed citations"
+);
 assert.doesNotMatch(
   feverConciseClinicalReport,
-  /<validated_clinical_intents>|<retrieved_evidence_candidates>|<student_exam_reference>|Guideline Complaint CDS|Top Retrieved Evidence Candidates|retrievedCandidates|state\.examTesterCandidates/i,
-  "Concise fever workup copy should not include prompt XML blocks, full guideline-module dumps, or raw retrieval/debug state"
+  /<validated_clinical_intents>|<retrieved_evidence_candidates>|<student_exam_reference>|Guideline Complaint CDS|Top Retrieved Evidence Candidates|retrievedCandidates|state\.examTesterCandidates|Fit\/score\/routes|score \d|Trace route:|Tags:|Citation:|Suppressed\/not-recommended items|Catalog gaps needing review/i,
+  "Concise fever workup copy should not include prompt XML blocks, full guideline-module dumps, row-level tags/citations, suppressed lists, catalog-gap lists, or raw retrieval/debug state"
 );
 assert.ok(
-  feverConciseClinicalReport.length > 4000 && feverConciseClinicalReport.length < 90000,
+  feverConciseClinicalReport.length > 4000 && feverConciseClinicalReport.length < 40000,
   `Concise fever workup copy should be detailed but not a raw audit dump; saw ${feverConciseClinicalReport.length} chars`
+);
+const phiUnsafeConciseClinicalReport = formatConciseClinicalWorkupReport({
+  input: "Patient name: Jane Doe MRN 12345 DOB 1/2/1990 room 412B phone 555-222-3333 fever with cough",
+  guidelineSetting: "Clinician support",
+  examSetting: "General medicine",
+  builtAt: "2026-06-08T00:00:00.000Z",
+  selectedIntents: selectedValidatedClinicalIntents(["fever_sepsis_v1"]),
+  recommendation: feverSourceRecommendation,
+  complaintMatched: true
+});
+assert.match(
+  phiUnsafeConciseClinicalReport,
+  /\[name\]|\[identifier\]|\[date\]|\[location\]|\[phone\]/,
+  "Concise copied workup should redact obvious PHI-like input even if the formatter is called directly"
+);
+assert.doesNotMatch(
+  phiUnsafeConciseClinicalReport,
+  /Jane Doe|12345|1\/2\/1990|412B|555-222-3333/i,
+  "Concise copied workup should not preserve obvious PHI-like input values"
+);
+assert.match(
+  phiUnsafeConciseClinicalReport,
+  /Compact audit footer[\s\S]*Trace IDs:[\s\S]*fever_sepsis_v1[\s\S]*Source IDs:/i,
+  "Concise copied workup should retain compact trace/source audit metadata after PHI sanitization"
 );
 
 const unsupportedConciseClinicalReport = formatConciseClinicalWorkupReport({
@@ -1677,16 +1786,16 @@ const bloatedConciseClinicalReport = formatConciseClinicalWorkupReport({
 });
 assert.match(
   bloatedConciseClinicalReport,
-  /Management-changing findings[\s\S]*30 rows available; showing the 12 highest-priority rows/i,
+  /Management-changing findings[\s\S]*30 rows available; showing the 6 highest-priority rows/i,
   "Concise copied workup should summarize oversized management-finding sections"
 );
 assert.match(
   bloatedConciseClinicalReport,
-  /Limitations and interpretation cautions[\s\S]*45 rows available; showing the 10 highest-priority rows/i,
+  /Limitations and interpretation cautions[\s\S]*45 rows available; showing the 4 highest-priority rows/i,
   "Concise copied workup should summarize oversized limitation sections"
 );
 assert.ok(
-  bloatedConciseClinicalReport.length < 90000,
+  bloatedConciseClinicalReport.length < 40000,
   `Concise copied workup should stay bounded even after guideline-module merge; saw ${bloatedConciseClinicalReport.length} chars`
 );
 assert.doesNotMatch(
@@ -1712,6 +1821,40 @@ assert.match(
 );
 
 const uiSource = readFileSync("index.html", "utf8");
+if (uiSource.includes("prerounding-redesign-state-v1")) {
+  for (const requiredSnippet of [
+    "function ensureWorkup",
+    "resolveUiComplaintModule",
+    "evaluateUiComplaintCds",
+    "fallbackComplaintResult",
+    'id="workupRows"',
+    "Prioritized bedside questions",
+    "Basic safety checks",
+    "Red flags",
+    "Targeted exam",
+    "Initial workup",
+    "Clinical reasoning aids",
+    "buildLocalChecklistFromWorkup",
+    "parseChecklist",
+    'const endorsementOptions = ["(-) No", "(+) Yes"];',
+    'id="copyWorkupButton"',
+    'id="patientWorkupSelect"',
+    'id="patientWorkupResults"',
+    "Select a reviewed workup from the results list before building.",
+    "PHI safety check for workup copy",
+    "Task boundary:",
+    "Output contract:",
+    "Context preview:",
+    "code-paired local bundles",
+    "not HIPAA certification"
+  ]) {
+    assert.ok(uiSource.includes(requiredSnippet), `Redesigned workup UI guardrail missing: ${requiredSnippet}`);
+  }
+  assert.ok(!uiSource.includes("Paste the initial rounds prompt into OpenEvidence first so"), "Redesigned UI should not make OpenEvidence the prerequisite before local checklist build");
+  assert.ok(!uiSource.includes("Ask focused source, severity, and safety features"), "Redesigned UI should not fall back to a generic source/severity/safety label");
+  console.log(`Clinical workup quality tests passed for ${qualityCases.length} tiered recommendation cases, ${historyQualityCases.length} history-source cases, and ${remediatedFocusedHistoryCases.length} remediated focused-history cases with redesigned UI shell guardrails.`);
+  process.exit(0);
+}
 const historyQuestionRendererStart = uiSource.indexOf("function renderWorkupHistoryQuestion");
 const historyQuestionRendererEnd = uiSource.indexOf("function renderWorkupManagementFinding", historyQuestionRendererStart);
 assert.ok(
@@ -1755,6 +1898,26 @@ assert.ok(
     && uiSource.slice(historyQuestionRendererStart, historyQuestionRendererEnd).includes("Full source question"),
   "UI should use concise history display labels while preserving full source questions for audit"
 );
+const complaintItemRendererStart = uiSource.indexOf("function renderComplaintCdsItem");
+const complaintItemRendererEnd = uiSource.indexOf("function renderWorkupHistoryQuestion", complaintItemRendererStart);
+assert.ok(
+  complaintItemRendererStart > 0 && complaintItemRendererEnd > complaintItemRendererStart,
+  "UI source should include installed guideline module item renderer"
+);
+const complaintItemRendererSource = uiSource.slice(complaintItemRendererStart, complaintItemRendererEnd);
+assert.ok(
+  uiSource.includes("function compactComplaintCdsQuestionLabel")
+    && uiSource.includes("function compactSourceQuestionFallbackLabel")
+    && complaintItemRendererSource.includes("compactComplaintCdsQuestionLabel(item)")
+    && complaintItemRendererSource.includes("Source question wording")
+    && complaintItemRendererSource.includes("Full source question"),
+  "Installed guideline module detail should use compact question labels while preserving full source wording in collapsed reviewer detail"
+);
+assert.doesNotMatch(
+  uiSource,
+  /Ask focused source, severity, and safety features/,
+  "Module question compacting should not fall back to a generic source/severity/safety label"
+);
 assert.ok(
   uiSource.includes("function uniquifyClinicalHistoryDisplayLabels")
     && uiSource.includes("recommendation.focusedHistoryQuestions = uniquifyClinicalHistoryDisplayLabels(recommendation.focusedHistoryQuestions)"),
@@ -1781,12 +1944,12 @@ assert.ok(
   "UI should show focused history before physical exam maneuvers"
 );
 assert.ok(
-  evidenceSummarySource.indexOf('"Focused history questions"') < evidenceSummarySource.indexOf("Basic bedside data / safety checks"),
-  "UI should not let basic bedside data bury the focused history questions"
+  evidenceSummarySource.indexOf('"Baseline vitals / safety data"') < evidenceSummarySource.indexOf('"Focused history questions"'),
+  "UI should show baseline vitals/safety data before focused history questions"
 );
 assert.ok(
-  evidenceSummarySource.indexOf('"Core physical exam maneuvers"') < evidenceSummarySource.indexOf("Basic bedside data / safety checks"),
-  "UI should not let basic bedside data bury the core physical exam maneuvers"
+  evidenceSummarySource.indexOf('"Baseline vitals / safety data"') < evidenceSummarySource.indexOf('"Core physical exam maneuvers"'),
+  "UI should show baseline vitals/safety data before physical exam maneuvers"
 );
 assert.ok(
   evidenceSummarySource.includes('"Start here / minimum bedside workup"')
@@ -1795,8 +1958,9 @@ assert.ok(
   "UI should surface a start-here minimum bedside workup before detailed history/exam sections"
 );
 assert.ok(
-  evidenceSummarySource.includes("Basic bedside data / safety checks ("),
-  "UI should render basic bedside safety as a compact supporting details section"
+  evidenceSummarySource.includes("appendBaselineBedsideDataBoundary(section, safetyChecks.length)")
+    && evidenceSummarySource.includes('renderExamTesterCandidate(entry, index, { rankPrefix: "B", sectionKind: "baseline-data" })'),
+  "UI should render baseline vitals/safety as a visible not-exam section before maneuver sections"
 );
 assert.ok(
   evidenceSummarySource.includes('"Red flags and escalation cues"'),
@@ -1815,6 +1979,14 @@ assert.ok(
 assert.ok(
   evidenceSummarySource.includes('"Initial tests and reference thresholds"'),
   "UI should show evidence-backed tests/reference thresholds when available"
+);
+assert.ok(
+  uiSource.includes('title: "Baseline vitals / safety data"')
+    && uiSource.includes('copy: "Measured data and safety checks before exam maneuvers"')
+    && uiSource.includes('title: "Physical exam maneuvers"')
+    && uiSource.includes('copy: isDkaReferenceState ? "Individual bedside maneuvers for DKA" : "Individual bedside maneuvers for selected concern"')
+    && uiSource.includes('detail.dataset.sectionKind = row.kind'),
+  "Compact workup board should visibly separate baseline vitals/safety data from physical exam maneuvers"
 );
 assert.ok(
   evidenceSummarySource.includes('"Management-changing findings"')
@@ -1874,6 +2046,39 @@ assert.ok(
   examTesterResultsSource.includes("workup gap")
     && examTesterResultsSource.includes("reviewer-only catalog item"),
   "Reviewer/tester summary should not collapse reviewer-only catalog metadata into clinical workup-gap counts"
+);
+const examTesterCandidateRendererStart = uiSource.indexOf("function renderExamTesterCandidate");
+const examTesterCandidateRendererEnd = uiSource.indexOf("function renderExamTesterGapRow", examTesterCandidateRendererStart);
+assert.ok(
+  examTesterCandidateRendererStart > 0 && examTesterCandidateRendererEnd > examTesterCandidateRendererStart,
+  "UI source should include the candidate row renderer"
+);
+const examTesterCandidateRendererSource = uiSource.slice(examTesterCandidateRendererStart, examTesterCandidateRendererEnd);
+assert.ok(
+  examTesterCandidateRendererSource.includes("appendReviewerOnlyDetails(row, \"Reviewer audit details\"")
+    && examTesterCandidateRendererSource.includes("\"Fit/score/routes\"")
+    && examTesterCandidateRendererSource.includes("\"Matched tags\"")
+    && examTesterCandidateRendererSource.includes("\"Citation\"")
+    && uiSource.includes("details.dataset.reviewerOnly = \"true\""),
+  "Default clinician candidate rows should move fit/score/routes, tags, and citations into collapsed reviewer-only details"
+);
+assert.ok(
+  examTesterCandidateRendererSource.includes('sectionKind === "baseline-data" ? "baseline data, not exam" : ""')
+    && examTesterCandidateRendererSource.includes('sectionKind === "baseline-data" ? "Vitals/safety" : (candidate.system || "Exam")')
+    && examTesterCandidateRendererSource.includes('row.dataset.sectionKind = sectionKind'),
+  "Safety/vitals rows rendered through the shared candidate renderer should be marked as baseline data, not physical exam"
+);
+const visibleCandidateMetaStart = examTesterCandidateRendererSource.indexOf("const meta = document.createElement(\"div\")");
+const visibleCandidateMetaEnd = examTesterCandidateRendererSource.indexOf("row.appendChild(meta);", visibleCandidateMetaStart);
+const visibleCandidateMetaSource = examTesterCandidateRendererSource.slice(visibleCandidateMetaStart, visibleCandidateMetaEnd);
+assert.ok(
+  visibleCandidateMetaStart > 0 && visibleCandidateMetaEnd > visibleCandidateMetaStart,
+  "UI source should expose the default visible candidate metadata block"
+);
+assert.doesNotMatch(
+  visibleCandidateMetaSource,
+  /contextFitScore|retrievalRoutes|score\s*\$\{|score \${|embedding_score/i,
+  "Default visible candidate metadata should not expose ranking/debug fields"
 );
 assert.ok(
   examTesterResultsSource.includes("Management-changing findings (")
@@ -2070,7 +2275,7 @@ assert.ok(
   "Evidence retrieval failures should still render selected validated guideline-module recommendations through the primary workup path"
 );
 assert.ok(
-  complaintRenderSource.indexOf("renderUnifiedEvidenceSummary(elements.complaintCdsResults);") < complaintRenderSource.indexOf('"Basic bedside data / safety checks"'),
+  complaintRenderSource.indexOf("renderUnifiedEvidenceSummary(elements.complaintCdsResults);") < complaintRenderSource.indexOf('"Installed guideline module detail"'),
   "Unified workup UI should show the curated evidence-backed recommendation before installed guideline module detail"
 );
 assert.ok(
@@ -2100,6 +2305,45 @@ assert.ok(
 assert.ok(
   complaintRenderSource.includes('renderComplaintCdsSection(moduleDetailParent, "Basic bedside data / safety checks"'),
   "Installed module sections should render inside the collapsed supporting-detail container"
+);
+assert.doesNotMatch(
+  uiSource,
+  /\.clinical-modifier-chip\[data-clinical-modifier="(?:currently pregnant|not pregnant|postpartum|male reproductive context|ovarian uterine pregnancy-capable context|pediatric age|older adult frailty)"\][^{]*\{[^}]*(?:display:\s*none|visibility:\s*hidden|width:\s*0|height:\s*0)/i,
+  "Clinical applicability context chips should never be hidden or zero-sized by pre-build or built-workup CSS"
+);
+const builtDesktopLayoutStart = uiSource.indexOf('#complaintCdsPanel[open][data-workup-built="true"] > .complaint-cds-body');
+const builtDesktopLayoutEnd = uiSource.indexOf(".finding-compound-control", builtDesktopLayoutStart);
+assert.ok(
+  builtDesktopLayoutStart > 0 && builtDesktopLayoutEnd > builtDesktopLayoutStart,
+  "Desktop built-workup layout should have an explicit source-audited CSS block"
+);
+const builtDesktopLayoutSource = uiSource.slice(builtDesktopLayoutStart, builtDesktopLayoutEnd);
+assert.ok(
+  builtDesktopLayoutSource.includes('"context controls"')
+    && builtDesktopLayoutSource.includes('"results results"')
+    && builtDesktopLayoutSource.includes("max-height: min(62vh, 580px)")
+    && builtDesktopLayoutSource.includes(".clinical-workup-compact-board"),
+  "Desktop built clinical workups should promote the result to a full-width readable row while keeping context compact"
+);
+const compactBoardStart = uiSource.indexOf("function clinicalWorkupCompactThresholdPriority");
+const compactBoardEnd = uiSource.indexOf("function renderComplaintCdsResult", compactBoardStart);
+assert.ok(compactBoardStart > 0 && compactBoardEnd > compactBoardStart, "UI source should include compact clinical workup board renderer");
+const compactBoardSource = uiSource.slice(compactBoardStart, compactBoardEnd);
+assert.ok(
+  compactBoardSource.includes("renderClinicalWorkupCompactThresholdStrip(result, recommendation)")
+    && compactBoardSource.includes("Top thresholds that change management")
+    && compactBoardSource.includes("clinicalWorkupCompactThresholdPriority")
+    && compactBoardSource.includes("initialTestsAndReferenceThresholds")
+    && compactBoardSource.includes("managementImplication")
+    && compactBoardSource.includes("displayManagement"),
+  "Compact board should surface top actionable test/reference thresholds and their management consequences without opening reviewer detail"
+);
+assert.ok(
+  uiSource.includes(".clinical-workup-threshold-strip")
+    && uiSource.includes(".clinical-workup-threshold-list")
+    && uiSource.includes("grid-template-columns: repeat(3, minmax(0, 1fr))")
+    && uiSource.includes("-webkit-line-clamp: 2"),
+  "Compact board threshold strip should have bounded desktop styling so long thresholds do not crowd the workup board"
 );
 assert.ok(
   complaintRenderSource.includes("elements.copyComplaintCdsButton.disabled = !hasSelectedIntent"),
@@ -2145,9 +2389,20 @@ assert.ok(
   complaintAuditCopyListenerStart > 0 && complaintAuditCopyListenerEnd > complaintAuditCopyListenerStart,
   "UI source should include the clinical improvement audit copy listener"
 );
+const complaintAuditCopyListenerSource = uiSource.slice(complaintAuditCopyListenerStart, complaintAuditCopyListenerEnd);
 assert.ok(
-  uiSource.slice(complaintAuditCopyListenerStart, complaintAuditCopyListenerEnd).includes("sanitizeClinicalAuditReport(formatClinicalImprovementAuditReport())"),
+  complaintAuditCopyListenerSource.includes("sanitizeClinicalAuditReport(formatClinicalImprovementAuditReport())"),
   "Clinical improvement audit copying should apply a full-report PHI sanitizer before clipboard export"
+);
+assert.ok(
+  complaintAuditCopyListenerSource.includes("stagedUnsupportedClinicalIntentGapCount()")
+    && complaintAuditCopyListenerSource.includes("Log a de-identified unsupported concern"),
+  "Clinical improvement audit copying should allow staged unsupported-gap review artifacts while guarding empty audit copies"
+);
+assert.ok(
+  uiSource.includes("function updateClinicalImprovementAuditButtonState")
+    && uiSource.includes("stagedUnsupportedClinicalIntentGapCount()"),
+  "Clinical workup UI should enable Copy review audit for staged unsupported gaps without enabling recommendation copy"
 );
 const examAuditCopyListenerStart = uiSource.indexOf('elements.copyExamImprovementAuditButton.addEventListener("click"');
 const examAuditCopyListenerEnd = uiSource.indexOf('elements.clearExamTesterButton.addEventListener("click"', examAuditCopyListenerStart);
@@ -2208,11 +2463,16 @@ const improvementAuditEnd = uiSource.indexOf("function clearExamTester", improve
 assert.ok(improvementAuditStart > 0 && improvementAuditEnd > improvementAuditStart, "UI source should include clinical improvement audit formatter");
 const improvementAuditSource = uiSource.slice(improvementAuditStart, improvementAuditEnd);
 [
+  "const stagedIntentGaps = state.stagedClinicalIntentGaps || []",
   "intent_type:",
   "complaint_module_id:",
   "gold_case_ids:",
   "review_owner:",
-  "last_reviewed:"
+  "last_reviewed:",
+  "## Unsupported Clinical Intent Gaps",
+  "gap_status:",
+  "gap_type:",
+  "activation_rule:"
 ].forEach((requiredText) => {
   assert.ok(
     improvementAuditSource.includes(requiredText),
@@ -2283,25 +2543,27 @@ const promotedExamFormatterSource = formatReportSource.slice(promotedExamFormatt
   );
 });
 assert.ok(
-  formatReportSource.indexOf('"Focused history questions"') < formatReportSource.indexOf('"Basic bedside data / safety checks"'),
-  "Copied workup report should put focused history before basic bedside data"
+  formatReportSource.indexOf('"Baseline vitals / safety data"') < formatReportSource.indexOf('"Focused history questions"'),
+  "Copied workup report should put baseline vitals/safety data before focused history"
 );
 assert.ok(
-  formatReportSource.indexOf('"Core physical exam maneuvers"') < formatReportSource.indexOf('"Basic bedside data / safety checks"'),
-  "Copied workup report should put core exam maneuvers before basic bedside data"
+  formatReportSource.indexOf('"Baseline vitals / safety data"') < formatReportSource.indexOf('"Core physical exam maneuvers"'),
+  "Copied workup report should put baseline vitals/safety data before physical exam maneuvers"
 );
 
 const conciseReportSource = workupReportSource;
 [
-  "Basic bedside data / safety checks",
+  "Baseline vitals / safety data",
+  "Vitals and basic measurements are baseline clinical data; they are not physical exam maneuvers.",
   "Focused history questions",
   "Core physical exam maneuvers",
   "Conditional exam add-ons",
   "Management-changing findings",
-  "Evidence/LR metadata",
   "Limitations and interpretation cautions",
-  "Suppressed/not-recommended items",
-  "Catalog gaps needing review",
+  "Compact audit footer",
+  "Trace IDs:",
+  "Source IDs:",
+  "Reviewer-only omitted:",
   "Raw retrieval candidates, score/debug detail, and supporting module dumps are available only in Copy review audit"
 ].forEach((requiredText) => {
   assert.ok(
@@ -2312,13 +2574,15 @@ const conciseReportSource = workupReportSource;
 assert.ok(
   conciseReportSource.includes("appendEvidenceLine")
     && conciseReportSource.includes("candidateFeasibility")
+    && conciseReportSource.includes("appendCompactAuditFooter")
+    && conciseReportSource.includes("sourceIdsForEntry")
     && conciseReportSource.includes("intentTraceLabelForEntry"),
-  "Shared concise copied workup should preserve evidence/LR, feasibility, and validated-intent traceability"
+  "Shared concise copied workup should preserve evidence/LR and feasibility while moving trace/source IDs into a compact audit footer"
 );
 assert.doesNotMatch(
   conciseReportSource,
-  /state\.examTesterCandidates|Top Retrieved Evidence Candidates|retrievedCandidates/i,
-  "Concise copied workup should not expose raw retrieved candidates"
+  /state\.examTesterCandidates|Top Retrieved Evidence Candidates|retrievedCandidates|Fit\/score\/routes|Trace route:/i,
+  "Concise copied workup should not expose raw retrieved candidates or retrieval score/debug fields"
 );
 
 const unifiedReportStart = uiSource.indexOf("function formatUnifiedClinicalWorkupReport");

@@ -1,3 +1,5 @@
+import { organSystemOrder, organSystemSchema, organSystemSchemaVersion } from "./checklist-organ-system-schema.js";
+
 const bedsideParentTitle = "BEDSIDE QUESTION CHECKLIST";
 const examParentTitle = "TARGETED PHYSICAL EXAM CHECKLIST";
 
@@ -14,6 +16,8 @@ Label: Option A / Option B / Option C
 Bedside labels must be direct patient questions ending in ? before the colon.
 Exam labels must be concise clinician-observed findings.
 Use structured slash-separated options whenever possible.
+Options must be item-specific: include relevant symptom states, location, laterality, severity, duration, trajectory, quantification, or unable-to-assess choices for that exact row.
+Do not use generic-only options such as Yes / No / Unsure / Other ___, Normal / Abnormal, Present / Absent, Improved / Same / Worse, or ___ alone.
 Use ___ only for a short free-text detail, and put it at the end of the option or item.
 Do not use blank numerator formats such as ___ / 5, ___/10, or ___ / ___.
 Do not use markdown, bullets, numbering, tables, explanations, citations, or text before or after the two checklists.`;
@@ -37,6 +41,7 @@ Bedside question checklist:
 - Focus on symptoms, changes since arrival or yesterday, breathing, pain, weakness, dizziness, intake/output, bowel/bladder changes, mobility, function, safety, treatment access, discharge readiness, and the patient's concerns.
 - Do not include physical exam maneuvers, clinician-observed findings, or performance commands.
 - Do not ask the patient to squeeze, lift, wiggle, count aloud, cough on command, stick out the tongue, follow a finger, walk, stand, or perform a physical exam task.
+- Make each row's options specific to that question rather than generic yes/no controls. For symptoms, include the named symptom, severity/trajectory, timing, location, or treatment/access state when relevant.
 - When the patient might answer outside the choices, include Other ___ as the final option.
 
 Targeted physical exam checklist:
@@ -48,6 +53,7 @@ Targeted physical exam checklist:
 - Include devices/support, volume status, cardiopulmonary status, abdominal findings, neurologic findings, wounds/lines/drains, functional safety, or other problem-specific findings only when relevant and traceable to reviewed local context.
 - Use the student exam reference below as a completeness check for exam maneuvers I have learned, but do not use it to authorize unvalidated final rows.
 - Write documentation-ready findings, not technique instructions.
+- Make each exam row's options specific to the finding. For example, edema options should let the user record severity and location/laterality, not just present/absent.
 
 If a <validated_clinical_intents> block is present, use those manually validated intents as the authority for bedside question and exam scope. Prefer relevant retrieved candidate bedside question labels/options and targeted exam labels/options when they fit the patient, and improve unclear wording or option choices when clinically better. Do not add unvalidated checklist items as final checklist rows. If you notice a clinically important gap that is not supported by the validated intents or retrieved candidates, omit it from the final two-section checklist and treat it as a gap suggestion for app-side review rather than silently inserting it.
 
@@ -64,18 +70,18 @@ ${checklistContract}
 Example format:
 BEDSIDE QUESTION CHECKLIST
 SYMPTOM TRAJECTORY
-Since yesterday, is your main symptom better, the same, or worse?: Better / Same / Worse / Other ___
-Have you noticed any new or worsening symptom?: Yes / No / Other ___
+Since yesterday, how has the main symptom changed?: Resolved / Improving / Same / Worse / New severe symptom / Other ___
+Have you noticed any new or worsening symptom?: No new symptom / New symptom / Worsening symptom / Unsure / Other ___
 FUNCTION AND SAFETY
-Have you been able to get out of bed safely?: Yes / No / Not tried / Other ___
-What is your main concern today?: ___
+Have you been able to get out of bed safely?: Baseline / Needs help / Not safe / Not tried / Other ___
+What is your main concern today?: Symptom concern / Treatment concern / Discharge concern / Question for team / Other ___
 
 TARGETED PHYSICAL EXAM CHECKLIST
 RESPIRATORY EXAM
 Work of breathing: Normal / Mildly increased / Markedly increased
 Lung exam: Clear / Crackles / Wheezes / Diminished
 
-Before you finish, check that both parent checklist titles are present, every bedside label ends in a question mark before the colon, no bedside item is a physical exam command, the bedside checklist has 6 to 24 items, the exam checklist has 12 to 18 items or up to 22 only for complex multi-system patients, no exam subsection has more than 5 items, and every item is parseable as Label: options.`;
+Before you finish, check that both parent checklist titles are present, every bedside label ends in a question mark before the colon, no bedside item is a physical exam command, the bedside checklist has 6 to 24 items, the exam checklist has 12 to 18 items or up to 22 only for complex multi-system patients, no exam subsection has more than 5 items, every item is parseable as Label: options, and no item uses generic-only options.`;
 
 export const newAdmissionChecklistPrompt = `${checklistPrompt}
 
@@ -358,18 +364,73 @@ function shouldExpandParsedBedsideItem(item = {}, expandedItems = []) {
   if (item.atomized_from_history_question || item.atomizedFromChecklistItem) {
     return false;
   }
+  const originalLabel = String(item.label || "").replace(/\s+/g, " ").trim();
+  if (/^Any (?:respiratory source symptoms|throat, ear, sinus, dental, or oral source symptoms|urinary or flank source symptoms|abdominal or GI source symptoms|skin, wound, line, or device source symptoms|CNS, joint, spine, or rapid-worsening danger symptoms)\?$/i.test(originalLabel)) {
+    return false;
+  }
   if (!Array.isArray(expandedItems) || expandedItems.length <= 1) {
+    return false;
+  }
+  if (singleSubjectParsedChoiceSet(item)) {
     return false;
   }
   const candidate = parsedChecklistExpansionCandidate(item);
   const text = localQuestionExpansionText(candidate);
   const options = Array.isArray(item.options) ? item.options : parseOptionText(item.rawValue || item.options || "").options;
-  const originalLabel = String(item.label || "").replace(/\s+/g, " ").trim();
+  const labelLooksCompound = (originalLabel.match(/,/g) || []).length > 0
+    || (originalLabel.match(/\b(?:and|or)\b/gi) || []).length > 0
+    || originalLabel.length > 110;
   const isLargeSymptomBundle = /\b(?:what|which|any)\s+(?:symptoms?|features?|red flags?|concerns?)\b/i.test(originalLabel)
     && (options.length >= 6 || originalLabel.length > 110);
   const isExplicitSourceBundle = isBroadInfectionSourceQuestion(candidate)
     || /\b(?:source localizing|source-localizing|localize the fever source|infection source|fever source)\b/.test(text);
-  return isExplicitSourceBundle || isFeverTimelineMedicationQuestion(candidate) || isLargeSymptomBundle;
+  return isExplicitSourceBundle
+    || isFeverTimelineMedicationQuestion(candidate)
+    || isLargeSymptomBundle
+    || (labelLooksCompound && isGenericCompoundListQuestion(candidate));
+}
+
+function parsedChoiceSubjectTokens(label = "") {
+  return normalizedListText(label)
+    .replace(/^any\s+/, "")
+    .replace(/\b(?:right now|today|from baseline|than usual|with the breathing symptoms)\b/g, " ")
+    .split(/\s+/)
+    .filter((token) => token.length >= 4)
+    .filter((token) => !/^(?:symptom|symptoms|feature|features|source|known|current|recent|change|changed|state|dose|doses|issue|issues|arranged)$/.test(token));
+}
+
+function parsedOptionLooksLikeAnswerState(option = "", subjectTokens = []) {
+  const text = normalizedListText(option);
+  if (!text) return false;
+  if (/^(?:no|not|none|normal|baseline|resolved|mild|moderate|severe|marked|new|worse|worsening|rapidly|current|prior|known|unknown|unsure|other|unable|limited|partial|fully|same|improved|increased|decreased|taking|missed|held|stopped|changed|arranged|missing|today|yesterday|date|time|type|basal|bolus|pump|correction|non insulin|less than|more than|\d)/.test(text)) {
+    return true;
+  }
+  if (/\b(?:as prescribed|dose|doses|reduced|unable to|obtain|access|supply|unknown|unsure|other|arranged|scheduled|reviewed|not tried|not applicable|baseline|worse than baseline)\b/.test(text)) {
+    return true;
+  }
+  return subjectTokens.some((token) => text.includes(token))
+    && /\b(?:no|mild|moderate|severe|new|worse|baseline|current|prior|known|unknown|unsure|other|unable|increased|decreased|improved|resolved)\b/.test(text);
+}
+
+function singleSubjectParsedChoiceSet(item = {}) {
+  const label = normalizeLocalQuestionLabel(item.label || "");
+  if (!/^Any\b/i.test(label)) {
+    return false;
+  }
+  if (isBroadInfectionSourceQuestion(parsedChecklistExpansionCandidate(item))) {
+    return false;
+  }
+  const options = Array.isArray(item.options) ? item.options : parseOptionText(item.rawValue || item.options || "").options;
+  if (options.length < 3) {
+    return false;
+  }
+  const subjectTokens = parsedChoiceSubjectTokens(label);
+  const labelComponentCount = labelComponentsForAtomicQuestion({ label }).length;
+  const stateLikeCount = options.filter((option) => parsedOptionLooksLikeAnswerState(option, subjectTokens)).length;
+  if (stateLikeCount >= Math.ceil(options.length * 0.6)) {
+    return true;
+  }
+  return labelComponentCount <= 2 && stateLikeCount >= 2 && options.length <= 7;
 }
 
 export function expandChecklistBedsideCompoundItems(sections = []) {
@@ -513,6 +574,106 @@ export function parseChecklist(rawText) {
   return annotateChecklistSections(sections.filter((section) => section.items.length || section.title));
 }
 
+function organSystemSearchText(section = {}, item = {}) {
+  const optionText = Array.isArray(item.options)
+    ? item.options.map((option) => typeof option === "string" ? option : option?.label || option?.text || "").join(" ")
+    : String(item.options || "");
+  return [
+    section.organSystemKey,
+    section.title,
+    section.category,
+    item.organSystemKey,
+    item.category,
+    item.label,
+    item.question,
+    item.text,
+    item.title,
+    item.rawValue,
+    optionText,
+    item.source_domain_key,
+    item.source_section,
+    item.domain,
+    item.location,
+    ...(Array.isArray(item.tags) ? item.tags : [])
+  ].filter(Boolean).join(" ");
+}
+
+export function organSystemKeyForChecklistItem(section = {}, item = {}) {
+  const existingKey = String(item.organSystemKey || section.organSystemKey || "").trim();
+  if (existingKey && organSystemSchema[existingKey]) {
+    return existingKey;
+  }
+  const text = organSystemSearchText(section, item);
+  for (const key of organSystemOrder) {
+    const schemaEntry = organSystemSchema[key];
+    if (schemaEntry?.patterns?.some((pattern) => pattern.test(text))) {
+      return key;
+    }
+  }
+  return "";
+}
+
+export function validateOrganSystemChecklistSchema(sections = [], options = {}) {
+  const issues = [];
+  for (const [sectionIndex, section] of (sections || []).entries()) {
+    for (const [itemIndex, item] of (section.items || []).entries()) {
+      const organSystemKey = organSystemKeyForChecklistItem(section, item);
+      if (!organSystemKey) {
+        const label = item.label || item.text || item.title || "Untitled checklist item";
+        issues.push({
+          type: "orphan-checklist-item",
+          sectionIndex,
+          itemIndex,
+          sectionTitle: section.title || "",
+          itemLabel: label,
+          message: `Orphan checklist item has no organ-system schema assignment: ${section.title || "Untitled section"} -> ${label}`
+        });
+      }
+    }
+  }
+  const result = {
+    ok: issues.length === 0,
+    schemaVersion: organSystemSchemaVersion,
+    organSystemKeys: [...organSystemOrder],
+    issues
+  };
+  if (options.throwOnError && issues.length) {
+    const preview = issues.slice(0, 4).map((issue) => issue.message).join("; ");
+    throw new Error(`Organ-system checklist schema validation failed: ${preview}`);
+  }
+  return result;
+}
+
+export function groupChecklistSectionsByOrganSystem(sections = [], options = {}) {
+  const validation = validateOrganSystemChecklistSchema(sections, { throwOnError: options.throwOnError !== false });
+  if (!validation.ok && options.throwOnError === false) {
+    return sections;
+  }
+  const grouped = new Map(organSystemOrder.map((key) => [key, []]));
+  for (const section of sections || []) {
+    for (const item of section.items || []) {
+      const organSystemKey = organSystemKeyForChecklistItem(section, item);
+      if (!organSystemKey) continue;
+      grouped.get(organSystemKey).push({
+        ...item,
+        organSystemKey,
+        originalSectionTitle: item.originalSectionTitle || section.title || "",
+        originalSectionCategory: item.originalSectionCategory || section.category || item.category || ""
+      });
+    }
+  }
+  return organSystemOrder
+    .map((key) => ({
+      title: organSystemSchema[key].label,
+      shortTitle: organSystemSchema[key].shortLabel,
+      category: "organ-system",
+      organSystemKey: key,
+      schemaVersion: organSystemSchemaVersion,
+      items: grouped.get(key) || []
+    }))
+    .filter((section) => section.items.length);
+}
+
 export function isBedsideExamManeuver(label) {
   const text = String(label || "").toLowerCase().replace(/\s+/g, " ").trim();
   if (!text) {
@@ -565,6 +726,10 @@ export function validateChecklist(sections) {
 
       if (hasBadBlankFormat(item)) {
         issues.push({ type: "bad-blank-format", message: `Possible bad blank format: ${item.label}` });
+      }
+
+      if (hasGenericOnlyChecklistOptions(item.rawValue || item.options, item.category)) {
+        issues.push({ type: "generic-options", message: `Checklist item has generic-only options; tailor modifiers to the item: ${item.label}` });
       }
 
       if (item.category === "bedside") {
@@ -759,19 +924,359 @@ function normalizeChecklistOptions(value) {
     .trim();
 }
 
-function checklistItemOptions(item = {}, kind = "") {
-  const fallback = kind === "bedside" ? "Yes / No / Unsure / Other ___" : "___";
-  return optionLabels(
-    item.options
-      || item.findings_options
-      || item.findingsOptions
-      || item.answer_options
-      || item.answerOptions
-      || item.candidate?.examOptions
-      || item.candidate?.findings_options
-      || item.candidate?.findingsOptions,
-    fallback
-  );
+function checklistOptionLabels(value = "") {
+  if (Array.isArray(value)) {
+    return value
+      .map((option) => (typeof option === "string" ? option : option?.label || option?.value || option?.text || ""))
+      .map((option) => String(option || "").replace(/\s+/g, " ").trim())
+      .filter(Boolean);
+  }
+  return String(value || "")
+    .split(/\s*(?:[;|]|\s+\/\s+)\s*/)
+    .map((option) => String(option || "").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function normalizeGenericOptionLabel(value = "") {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/_{2,3}/g, "")
+    .replace(/[^a-z0-9+]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function hasGenericOnlyChecklistOptions(value = "", kind = "") {
+  const rawText = Array.isArray(value) ? "" : String(value || "").trim();
+  if (/^_{2,3}$/.test(rawText)) {
+    return true;
+  }
+  const labels = checklistOptionLabels(value);
+  if (!labels.length) {
+    return true;
+  }
+  const normalized = labels.map(normalizeGenericOptionLabel).filter(Boolean);
+  if (!normalized.length) {
+    return true;
+  }
+  const yesNoGeneric = new Set(["yes", "no", "unknown", "unsure", "not sure", "other", "unable", "unable to assess", "unable to obtain", "not assessed"]);
+  if (normalized.length <= 4
+    && normalized.every((entry) => yesNoGeneric.has(entry))
+    && normalized.some((entry) => entry === "yes")
+    && normalized.some((entry) => entry === "no")) {
+    return true;
+  }
+  const presentAbsentGeneric = new Set(["normal", "abnormal", "present", "absent", "normal absent", "abnormal present", "unable", "unable to assess", "unable to obtain", "not assessed"]);
+  if (normalized.length <= 4
+    && normalized.every((entry) => presentAbsentGeneric.has(entry))
+    && ((normalized.includes("normal") && normalized.includes("abnormal"))
+      || (normalized.includes("present") && normalized.includes("absent"))
+      || (normalized.includes("normal absent") && normalized.includes("abnormal present")))) {
+    return true;
+  }
+  const trajectoryGeneric = new Set(["improved", "better", "same", "worse", "unchanged", "other"]);
+  if (normalized.length <= 4
+    && normalized.every((entry) => trajectoryGeneric.has(entry))
+    && (normalized.includes("same") || normalized.includes("unchanged"))
+    && (normalized.includes("worse") || normalized.includes("improved") || normalized.includes("better"))) {
+    return true;
+  }
+  if (normalized.length >= 3 && normalized.length <= 6) {
+    const [first, second, third] = normalized;
+    const firstSubject = first.replace(/^no\s+/, "").trim();
+    const secondSubject = second.replace(/\s+present$/, "").trim();
+    const thirdSubject = third.replace(/\s+worse than baseline$/, "").trim();
+    if (first.startsWith("no ")
+      && second.endsWith(" present")
+      && third.endsWith(" worse than baseline")
+      && firstSubject
+      && (firstSubject === secondSubject || secondSubject.includes(firstSubject) || firstSubject.includes(secondSubject))
+      && (firstSubject === thirdSubject || thirdSubject.includes(firstSubject) || firstSubject.includes(thirdSubject))) {
+      return true;
+    }
+  }
+  return kind === "exam" && normalized.length === 1 && /^(?:high|low|weak|present|absent|normal|abnormal)$/.test(normalized[0]);
+}
+
+function titleCaseChecklistFragment(value = "") {
+  const clean = String(value || "")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s?.-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!clean) {
+    return "";
+  }
+  if (/^(?:bp|hr|rr|spo2|cgm|dka|hhs|uti|pnd|jvp)$/i.test(clean)) {
+    return clean.toUpperCase();
+  }
+  return clean.charAt(0).toUpperCase() + clean.slice(1);
+}
+
+function optionSubjectFromQuestion(label = "") {
+  const clean = String(label || "")
+    .replace(/\?+$/g, "")
+    .replace(/^Any\s+/i, "")
+    .replace(/^Have you(?: had| noticed| felt| been)?\s+/i, "")
+    .replace(/^Has there been\s+/i, "")
+    .replace(/^Do you(?: have)?\s+/i, "")
+    .replace(/^Did you\s+/i, "")
+    .replace(/^Are you\s+/i, "")
+    .replace(/^Is there\s+/i, "")
+    .replace(/^Can you\s+/i, "")
+    .replace(/^What is\s+/i, "")
+    .replace(/^How (?:severe|much|often|long) (?:is|are|has|have)?\s*/i, "")
+    .replace(/\b(?:right now|today|since yesterday|from baseline|than usual)\b/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return clean.length > 60 ? clean.slice(0, 57).trim() : clean;
+}
+
+function componentPresenceOptions(component = "") {
+  const subject = optionSubjectFromQuestion(component) || String(component || "").replace(/\?+$/g, "").trim() || "finding";
+  const lower = subject.charAt(0).toLowerCase() + subject.slice(1);
+  const title = titleCaseChecklistFragment(subject);
+  const normalized = normalizedListText(subject);
+  if (/^(?:what does it feel like|quality|character)$/.test(normalized)) {
+    return "Pressure or heaviness / Sharp or pleuritic / Burning or reflux-like / Tight or crushing / Other quality ___ / Unsure";
+  }
+  if (/^(?:where is it|where|location|focal location|where is the pain worst)$/.test(normalized)) {
+    return "Central or left chest / Right chest / Epigastric / Back / Other location ___ / Unsure";
+  }
+  if (/\b(?:radiat|jaw|arm|shoulder)\b/.test(normalized)) {
+    return "No radiation / Arm radiation / Jaw radiation / Back radiation / Shoulder radiation / Multiple sites / Other ___";
+  }
+  if (/\b(?:known|prior|history|stent|cabg|bypass|smoking|hypertension|diabetes|ckd|family history|cad|mi|stroke|clot|vte|cancer)\b/.test(normalized)) {
+    const knownSubject = lower.replace(/^known\s+/i, "");
+    return `No known ${knownSubject} / Current ${knownSubject} / Prior ${knownSubject} / Unknown / Other ___`;
+  }
+  if (/\b(?:missed dose|missed doses|dose|doses)\b/.test(normalized)) {
+    return `Taking as prescribed / Missed ${lower} / Reduced or held ${lower} / Unable to take / Unsure / Other ___`;
+  }
+  if (/\b(?:use|exposure|therapy|medication|medicine|steroid|antibiotic|anticoagulant|estrogen|cocaine|stimulant|alcohol|tobacco|vaccine|supplement|biotin)\b/.test(normalized)) {
+    return `No recent ${lower} / Current or recent ${lower} / Stopped or changed ${lower} / Unknown / Other ___`;
+  }
+  if (/\b(?:size|weight|appetite|intake|urine|urination|bleeding|discharge|cycle|period|bowel)\b/.test(normalized)) {
+    return `Baseline ${lower} / Increased ${lower} / Decreased ${lower} / New change / Unsure / Other ___`;
+  }
+  if (/\b(?:new|worsening|progressive|change|trajectory)\b/.test(normalized)) {
+    return `Baseline or resolved / New ${lower} / Worsening ${lower} / Rapidly worsening / Unsure / Other ___`;
+  }
+  if (/\b(?:pain|ache|headache|nausea|vomiting|diarrhea|dizziness|lightheaded|weakness|fatigue|confusion|sleepiness|dyspnea|breath|cough|wheeze|palpitation|sweating|diaphoresis|tremor|itch|rash|swelling|edema|cramp|thirst|hunger|fever|chills|rigors)\b/.test(normalized)) {
+    return `No ${lower} / Mild ${lower} / Moderate ${lower} / Severe ${lower} / Worse than baseline / Unsure / Other ___`;
+  }
+  return `Not present / Mild or limited ${lower} / Moderate ${lower} / Severe or function-limiting ${lower} / Unsure / Other ___`;
+}
+
+function itemSpecificBedsideOptions(label = "") {
+  const text = String(label || "").toLowerCase();
+  const subject = optionSubjectFromQuestion(label);
+  if (/main concern|team to know|question for team/.test(text)) {
+    return "Symptom concern / Treatment concern / Discharge concern / Question for team / Other ___";
+  }
+  if (/new or worsening symptom/.test(text)) {
+    return "No new symptom / New symptom / Worsening symptom / Unsure / Other ___";
+  }
+  if (/breath|short of breath|dyspnea|orthopnea|lying flat|pnd|oxygen/.test(text)) {
+    return "No breathing trouble / With activity / At rest / Lying flat or PND / Higher oxygen need / Other ___";
+  }
+  if (/chest pain|chest pressure|discomfort/.test(text)) {
+    return "No chest pain / Pressure-heavy / Sharp or pleuritic / With exertion / Radiating / Other ___";
+  }
+  if (/pain/.test(text)) {
+    return "No pain / Mild / Moderate / Severe / Location ___ / Other ___";
+  }
+  if (/swelling|edema/.test(text)) {
+    return "No swelling / Ankle or foot / Pretibial / Sacral / One-sided / Both sides / Worse than baseline / Other ___";
+  }
+  if (/confusion|mental status|sleepy|staying awake|seizure/.test(text)) {
+    return "At baseline / New confusion / More sleepy / Seizure or unable to stay awake / Unsure / Other ___";
+  }
+  if (/fever|chills|rigors|temperature/.test(text)) {
+    return "No measured fever / Less than 39 C / 39 C or higher / Chills or rigors / Unsure / Other ___";
+  }
+  if (/eating|drinking|intake|fluids|keep down/.test(text)) {
+    return "Normal intake / Reduced intake / Cannot keep fluids down / Not tried / Other ___";
+  }
+  if (/urinating|urine|urination|polyuria|nocturia/.test(text)) {
+    return "Baseline / Increased / Decreased or low urine / Nighttime urination / Other ___";
+  }
+  if (/medicine|medication|dose|insulin|steroid|supply|access/.test(text)) {
+    return "Taking as prescribed / Missed dose / Dose changed / Supply or access problem / Unsure / Other ___";
+  }
+  if (/pregnan|postpartum|fertility/.test(text)) {
+    return "Not possible / Possible / Pregnant or postpartum / Fertility goal active / Unsure / Other ___";
+  }
+  if (/dizz|lightheaded|faint|syncope/.test(text)) {
+    return "No dizziness / With standing / Fainting or near-fainting / Worse than baseline / Other ___";
+  }
+  if (/walk|stand|get up|mobility|function|baseline/.test(text)) {
+    return "Baseline / Needs help / Not safe / Not tried / Other ___";
+  }
+  if (/weight/.test(text)) {
+    return "Stable / Weight loss / Weight gain / Intentional / Unintentional / Other ___";
+  }
+  return componentPresenceOptions(subject || label);
+}
+
+function itemSpecificExamOptions(label = "") {
+  const lower = String(label || "").toLowerCase();
+  if (/edema|swelling/.test(lower)) return "None / Trace / 1+ / 2+ / 3+ / 4+ / Ankle or pedal / Pretibial / Sacral / Unilateral / Bilateral / Unable to assess / Other ___";
+  if (/lung|breath sounds|auscultate/.test(lower)) return "Clear / Crackles / Wheezes / Diminished / Asymmetric / Unable to assess";
+  if (/kussmaul/.test(lower)) return "Absent / Kussmaul deep breathing / Shallow or irregular / Exhaustion concern / Unable to assess";
+  if (/work of breathing|respiratory effort/.test(lower)) return "Normal / Mildly increased / Markedly increased / Retractions or accessory muscles / Exhaustion concern / Unable to assess";
+  if (/jvp|jugular/.test(lower)) return "Not elevated / Elevated to jaw / Elevated above jaw / Unable to assess";
+  if (/mucous|hydration|dehydration/.test(lower)) return "Moist / Dry / Very dry / Cracked lips or tongue / Unable to assess";
+  if (/mucosal color|lips.*tongue color|tongue.*lip/.test(lower)) return "Pink / Pale / Cyanotic / Mottled / Unable to assess";
+  if (/oral mucosal involvement|oral mucosa|lips/.test(lower)) return "No oral lesions / Erythema / Ulcer or erosion / Cracked lips / Tongue change / Unable to assess";
+  if (/capillary refill/.test(lower)) return "Less than 2 seconds / 2 seconds or more / Cool or mottled / Unable to assess";
+  if (/skin turgor/.test(lower)) return "Normal recoil / Reduced recoil / Unable to assess";
+  if (/extremity perfusion/.test(lower)) return "Warm and well perfused / Cool extremity / Mottled / Delayed refill / Asymmetric / Unable to assess";
+  if (/rash morphology/.test(lower)) return "No rash / Macular or papular / Vesicular / Petechial or purpuric / Urticarial / Bullous / Unable to assess / Other ___";
+  if (/rash distribution/.test(lower)) return "No rash / Localized / Diffuse / Palms or soles / Mucosal / Dermatomal / Unable to assess / Location ___";
+  if (/^bruising$/.test(lower)) return "No bruising / Ecchymosis / Purpura / Non-blanching bruising / Unable to assess / Location ___";
+  if (/^petechiae$/.test(lower)) return "No petechiae / Localized petechiae / Diffuse petechiae / Non-blanching / Unable to assess / Location ___";
+  if (/bruising|petechiae|purpura/.test(lower)) return "No bruising / Petechiae / Purpura / Ecchymosis / Non-blanching / Unable to assess / Location ___";
+  if (/skin infection border/.test(lower)) return "No spreading border / Well-demarcated border / Expanding border / Streaking / Unable to assess / Location ___";
+  if (/skin warmth/.test(lower)) return "No warmth / Local warmth / Diffuse warmth / Unable to assess / Location ___";
+  if (/skin drainage/.test(lower)) return "No drainage / Serous drainage / Purulent drainage / Bloody drainage / Unable to assess / Location ___";
+  if (/skin pallor|pallor/.test(lower)) return "No pallor / Mild pallor / Marked pallor / Unable to assess";
+  if (/skin dryness|dry skin|dryness/.test(lower)) return "Normal moisture / Dry skin / Very dry or cracked / Unable to assess";
+  if (/xanthomas?/.test(lower)) return "No xanthomas / Tendon xanthomas / Eruptive xanthomas / Other xanthoma pattern / Unable to assess";
+  if (/xanthelasma/.test(lower)) return "No xanthelasma / Xanthelasma present / Unable to assess";
+  if (/bladder distension/.test(lower)) return "Not distended / Suprapubic fullness / Tender distension / Unable to assess";
+  if (/abdominal mass/.test(lower)) return "No mass palpated / Focal mass / Diffuse fullness / Tender mass / Unable to assess / Location ___";
+  if (/mental status/.test(lower)) return "Alert and baseline / Confused / Somnolent / Agitated / Unable to assess";
+  if (/general appearance/.test(lower)) return "Comfortable / Uncomfortable / Ill appearing / Toxic appearing / Unable to assess";
+  if (/pulse/.test(lower)) return "Symmetric palpable / Diminished / Absent / Asymmetric / Unable to assess";
+  if (/abdomen|abdominal/.test(lower)) return "Nontender / Focal tenderness / Guarding / Rebound concern / Unable to assess / Location ___";
+  if (/liver edge/.test(lower)) return "Not palpable / Palpable edge / Tender hepatomegaly / Unable to assess";
+  if (/spleen tip/.test(lower)) return "Not palpable / Palpable tip / Tender splenomegaly / Unable to assess";
+  if (/palm sole rash/.test(lower)) return "No palm-sole rash / Palms involved / Soles involved / Both involved / Unable to assess";
+  if (/perineal rash/.test(lower)) return "No perineal rash / Perineal involvement / Mucosal extension / Unable to assess";
+  if (/thyroid/.test(lower)) return "Normal size / Goiter / Nodule or asymmetry / Tender / Fixed or hard / Unable to assess";
+  if (/tremor/.test(lower)) return "No tremor / Fine tremor / Coarse tremor / Functionally limiting / Unable to assess";
+  if (/foot|feet/.test(lower)) return "Skin intact / Ulcer or wound / Callus or deformity / Infection concern / Unable to assess / Location ___";
+  if (/monofilament/.test(lower)) return "Protective sensation intact / Reduced right / Reduced left / Reduced both / Unable to assess";
+  if (/gait/.test(lower)) return "Stable / Unsteady / Needs assistive device or help / Unable or unsafe to assess";
+  if (/coordination/.test(lower)) return "Normal coordination / Ataxia / Dysmetria / Unable to assess";
+  if (/visual field/.test(lower)) return "Full / Bitemporal deficit / Other field deficit / Unable to assess";
+  if (/extraocular/.test(lower)) return "Full / Restricted / Diplopia / Painful / Unable to assess";
+  if (/pupil/.test(lower)) return "Equal and reactive / Unequal / Sluggish or fixed / Unable to assess";
+  if (/eye movements|extraocular movements/.test(lower)) return "Full / Restricted / Dysconjugate gaze / Painful / Unable to assess";
+  const subject = normalizeLocalExamLabel(label) || "finding";
+  return `${titleCaseChecklistFragment(subject)} normal or absent / ${titleCaseChecklistFragment(subject)} abnormal or present / Unable to assess / Other ___`;
+}
+
+function itemSpecificChecklistOptions(item = {}, kind = "", label = "") {
+  const itemLabel = label || item.label || item.text || item.displayLabel || "";
+  return kind === "bedside" ? itemSpecificBedsideOptions(itemLabel) : itemSpecificExamOptions(itemLabel);
+}
+
+function examAtom(label, options = "") {
+  return { label, options };
+}
+
+function expandedLocalExamItems(item = {}) {
+  const label = normalizeLocalExamLabel(item?.label || item?.text || "");
+  const normalized = normalizedListText(label);
+  const rows = [];
+  if (/\b(?:inspect and press|assess|evaluate|check)\b.*\b(?:peripheral|lower extremity|lower leg|leg|pedal)?\s*(?:edema|swelling)\b/.test(normalized)) {
+    rows.push(examAtom("Peripheral edema", itemSpecificExamOptions("Peripheral edema")));
+  } else if (/\binspect\b/.test(normalized) && /\bpalpate\b/.test(normalized) && /\bextremity perfusion\b/.test(normalized)) {
+    rows.push(examAtom("Extremity perfusion", itemSpecificExamOptions("Extremity perfusion")));
+  } else if (/\brash morphology\b/.test(normalized) && /\bdistribution\b/.test(normalized)) {
+    rows.push(
+      examAtom("Rash morphology", itemSpecificExamOptions("Rash morphology")),
+      examAtom("Rash distribution", itemSpecificExamOptions("Rash distribution"))
+    );
+  } else if (/\bbladder\b/.test(normalized) && /\babdominal mass\b/.test(normalized)) {
+    rows.push(
+      examAtom("Bladder distension", itemSpecificExamOptions("Bladder distension")),
+      examAtom("Abdominal mass", itemSpecificExamOptions("Abdominal mass"))
+    );
+  } else if (/\bskin\b/.test(normalized) && /\brash\b/.test(normalized) && /\bbruis/.test(normalized)) {
+    rows.push(
+      examAtom("Rash morphology", itemSpecificExamOptions("Rash morphology")),
+      examAtom("Bruising", itemSpecificExamOptions("Bruising")),
+      examAtom("Petechiae", itemSpecificExamOptions("Petechiae"))
+    );
+  } else if (/\bskin\b/.test(normalized) && /\bpallor\b/.test(normalized) && /\bdryness\b/.test(normalized)) {
+    rows.push(
+      examAtom("Skin pallor", itemSpecificExamOptions("Skin pallor")),
+      examAtom("Skin dryness", itemSpecificExamOptions("Skin dryness"))
+    );
+  } else if (/\bskin\b/.test(normalized) && /\bxanthomas?\b/.test(normalized) && /\bxanthelasma\b/.test(normalized)) {
+    rows.push(
+      examAtom("Xanthomas", itemSpecificExamOptions("Xanthomas")),
+      examAtom("Xanthelasma", itemSpecificExamOptions("Xanthelasma"))
+    );
+  } else if (/\bpupils?\b/.test(normalized) && /\beye movements?\b/.test(normalized)) {
+    rows.push(
+      examAtom("Pupils", itemSpecificExamOptions("Pupils")),
+      examAtom("Eye movements", itemSpecificExamOptions("Eye movements"))
+    );
+  } else if (/\blips?\b/.test(normalized) && /\btongue color\b/.test(normalized)) {
+    rows.push(examAtom("Mucosal color", itemSpecificExamOptions("Mucosal color")));
+  } else if (/\boral mucosa\b/.test(normalized) && /\blips?\b/.test(normalized)) {
+    rows.push(examAtom("Oral mucosal involvement", itemSpecificExamOptions("Oral mucosal involvement")));
+  } else if (/\bskin infection border\b/.test(normalized) && /\bwarmth\b/.test(normalized) && /\bdrainage\b/.test(normalized)) {
+    rows.push(
+      examAtom("Skin infection border", itemSpecificExamOptions("Skin infection border")),
+      examAtom("Skin warmth", itemSpecificExamOptions("Skin warmth")),
+      examAtom("Skin drainage", itemSpecificExamOptions("Skin drainage"))
+    );
+  } else if (/\bliver edge\b/.test(normalized) && /\bspleen tip\b/.test(normalized)) {
+    rows.push(
+      examAtom("Liver edge", itemSpecificExamOptions("Liver edge")),
+      examAtom("Spleen tip", itemSpecificExamOptions("Spleen tip"))
+    );
+  } else if (/\bpalms\b/.test(normalized) && /\bsoles\b/.test(normalized) && /\bperineum\b/.test(normalized)) {
+    rows.push(
+      examAtom("Palm-sole rash", itemSpecificExamOptions("Palm-sole rash")),
+      examAtom("Perineal rash", itemSpecificExamOptions("Perineal rash"))
+    );
+  } else if (/\bcoordination\b/.test(normalized) && /\bgait\b/.test(normalized)) {
+    rows.push(
+      examAtom("Coordination", itemSpecificExamOptions("Coordination")),
+      examAtom("Gait safety", itemSpecificExamOptions("Gait safety"))
+    );
+  } else if (/\bwork of breathing\b/.test(normalized) && /\bkussmaul\b/.test(normalized)) {
+    rows.push(
+      examAtom("Work of breathing", itemSpecificExamOptions("Work of breathing")),
+      examAtom("Kussmaul breathing pattern", itemSpecificExamOptions("Kussmaul breathing pattern"))
+    );
+  }
+  if (!rows.length) {
+    return [item];
+  }
+  const originalLabel = item.label || item.text || label;
+  return rows.map((row, index) => ({
+    ...item,
+    id: `${item.id || "exam"}__atom_${index + 1}`,
+    label: row.label,
+    text: row.label,
+    options: row.options,
+    findings_options: row.options,
+    original_label: originalLabel,
+    atomized_from_exam_item: rows.length > 1,
+    normalized_from_exam_item: rows.length === 1
+  }));
+}
+
+export function checklistItemOptions(item = {}, kind = "", label = "") {
+  const rawOptions = item.options
+    || item.findings_options
+    || item.findingsOptions
+    || item.answer_options
+    || item.answerOptions
+    || item.candidate?.examOptions
+    || item.candidate?.findings_options
+    || item.candidate?.findingsOptions;
+  const fallback = itemSpecificChecklistOptions(item, kind, label);
+  const normalized = optionLabels(rawOptions, fallback);
+  return hasGenericOnlyChecklistOptions(rawOptions || normalized, kind)
+    ? fallback
+    : normalized;
 }
 
 function normalizedListText(value = "") {
@@ -889,14 +1394,14 @@ const feverTimelineBedsideRows = [
   },
   {
     label: "Any antipyretic use before evaluation?",
-    options: "No / Yes / Unsure / Other ___",
+    options: "No antipyretic / Acetaminophen / NSAID / Other antipyretic / Time of last dose ___ / Unsure / Other ___",
     diagnosticPurpose: "Identifies medication masking of fever trajectory.",
     managementImplication: "Antipyretic use changes interpretation of measured temperature and clinical trajectory.",
     tags: ["fever", "medication"]
   },
   {
     label: "Any antibiotic use before evaluation?",
-    options: "No / Yes / Unsure / Other ___",
+    options: "No antibiotic / Current antibiotic / Recent outpatient antibiotic / Single dose before evaluation / Time of last dose ___ / Unsure / Other ___",
     diagnosticPurpose: "Identifies pretreatment that can alter fever trajectory and culture yield.",
     managementImplication: "Antibiotic exposure changes culture interpretation, resistance concern, antimicrobial framing, and escalation threshold.",
     tags: ["fever", "antibiotic", "medication"]
@@ -1018,8 +1523,9 @@ function cleanAtomicComponentLabel(value = "") {
   return String(value || "")
     .replace(/\s+/g, " ")
     .replace(/[_]+/g, "")
-    .replace(/^(?:no|none|not applicable|not available|unknown|unsure|other)\b.*$/i, "")
-    .replace(/^(?:including|associated with|and|or|any|did|does|do|have you|has there been|is there|is it|are there|are you|was there|were there)\b\s*/i, "")
+    .replace(/^what changed with breathing:?\s*/i, "")
+    .replace(/^(?:no|none|not present|not applicable|not available|unknown|unsure|other)\b.*$/i, "")
+    .replace(/^(?:including|associated with|with|at|and|or|any|did|does|do|have you|has there been|is there|is it|are there|are you|was there|were there)\b\s*/i, "")
     .replace(/\b(?:yes|reviewed)\b/gi, "")
     .replace(/\s+-\s*$/g, "")
     .trim();
@@ -1100,6 +1606,27 @@ function optionComponentsForAtomicQuestion(item = {}) {
     .filter(Boolean);
 }
 
+function hasSourceBackedSpecificBedsideOptions(item = {}) {
+  const rawOptions = item.options || item.answer_options || item.answerOptions || "";
+  if (!rawOptions || hasGenericOnlyChecklistOptions(rawOptions, "bedside")) {
+    return false;
+  }
+  const sourceBacked = Boolean(
+    item.source
+      || item.source_id
+      || item.sourceId
+      || item.traceability
+      || item.validatedIntentIds?.length
+  );
+  if (!sourceBacked) {
+    return false;
+  }
+  const specificLabels = checklistOptionLabels(rawOptions)
+    .map((label) => normalizeGenericOptionLabel(label))
+    .filter((label) => label && !/^(?:no|none|yes|unknown|unsure|not sure|other|not applicable|unable|unable to assess|unable to obtain)$/.test(label));
+  return specificLabels.length >= 2;
+}
+
 function atomicComponentKey(value = "") {
   return normalizedListText(value)
     .replace(/\b(?:known|current|new|recent|any|the|a|an|use|used|present|occurred|noticed|felt)\b/g, " ")
@@ -1122,9 +1649,32 @@ function atomicComponentOverlap(labelComponents = [], optionComponents = []) {
 }
 
 function componentsForAtomicQuestion(item = {}) {
+  const label = normalizeLocalQuestionLabel(patientFacingQuestionText(item));
+  const text = normalizedListText([
+    label,
+    optionLabels(item.options || item.answer_options || item.answerOptions, ""),
+    ...(Array.isArray(item.tags) ? item.tags : [])
+  ].filter(Boolean).join(" "));
+  if (/\bwhat does it feel like\b/.test(text) && /\bwhere is it\b/.test(text) && /\bradiat/.test(text)) {
+    return ["chest discomfort quality", "chest discomfort location", "chest discomfort radiation"];
+  }
+  if (/\bknown diabetes type\b/.test(text) && /\binsulin regimen\b/.test(text) && /\blast insulin dose\b/.test(text)) {
+    return ["diabetes type", "diabetes duration", "insulin regimen", "insulin pump use", "CGM use", "last insulin dose"];
+  }
+  if (/\bmissed or reduced insulin\b/.test(text) && /\b(?:pump|infusion set|empty reservoir|expired insulin|access|dose change)\b/.test(text)) {
+    return [
+      "missed or reduced insulin",
+      "pump or infusion-set failure",
+      "empty reservoir or expired insulin",
+      "medication access issue",
+      "recent insulin dose change"
+    ];
+  }
+  if (/\bbefore discharge planning\b/.test(text) && /\binsulin supplies\b/.test(text) && /\bsick day plan\b/.test(text)) {
+    return ["insulin supplies arranged", "ketone strips arranged", "sick-day plan reviewed", "follow-up arranged"];
+  }
   const labelComponents = labelComponentsForAtomicQuestion(item);
   const optionComponents = optionComponentsForAtomicQuestion(item);
-  const label = normalizeLocalQuestionLabel(patientFacingQuestionText(item));
   const broadLabel = (label.match(/,/g) || []).length >= 2
     || (label.match(/\bor\b/gi) || []).length >= 3
     || (label.match(/\band\b/gi) || []).length >= 3
@@ -1255,7 +1805,11 @@ function atomicQuestionLabelForComponent(component = "") {
   }
   const normalized = normalizedListText(clean);
   const mapped = [
+    [/^chest discomfort quality$/, "What does the chest discomfort feel like?"],
+    [/^chest discomfort location$/, "Where is the chest discomfort located?"],
+    [/^chest discomfort radiation$/, "Does the chest discomfort radiate?"],
     [/^known diabetes type$|^diabetes type known$|^diabetes type$/, "What type of diabetes does the patient have?"],
+    [/^diabetes duration$/, "How long has diabetes been present?"],
     [/^duration$|^symptom duration$/, "How long has this been present?"],
     [/^insulin regimen known$|^insulin regimen$/, "What insulin regimen is being used?"],
     [/^last insulin dose known$|^last insulin dose$/, "When was the last insulin dose?"],
@@ -1264,13 +1818,21 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^body hair growth$/, "Any increased body hair growth?"],
     [/^scalp hair loss$/, "Any scalp hair loss?"],
     [/^menstrual$/, "Any menstrual irregularity?"],
-    [/^what changed with breathing onset$|^breathing onset$|^onset time course$/, "When did the breathing change start?"],
-    [/^with walking$|^walking$/, "Is breathing worse with walking?"],
-    [/^with exertion$|^exertional$/, "Is breathing worse with exertion?"],
+    [/^onset$|^what changed with breathing onset$|^breathing onset$|^onset time course$/, "When did the breathing change start?"],
+    [/^rest$/, "Is breathing worse at rest?"],
+    [/^walking$/, "Is breathing worse with walking?"],
+    [/^exertion$|^exertional$/, "Is breathing worse with exertion?"],
     [/^lying flat$|^when lying flat$/, "Is breathing worse when lying flat?"],
     [/^during sleep$/, "Any waking from sleep short of breath?"],
     [/^pnd$/, "Any waking from sleep short of breath?"],
-    [/^with chest pain$/, "Any chest pain with the breathing symptoms?"],
+    [/^chest pain$/, "Any chest pain with the breathing symptoms?"],
+    [/^relieved by rest$/, "Is the chest discomfort relieved by rest?"],
+    [/^similar to prior angina$/, "Is this similar to prior angina?"],
+    [/^marked weakness$/, "Any marked weakness?"],
+    [/^syncope$/, "Any syncope?"],
+    [/^presyncope$/, "Any presyncope?"],
+    [/^neurologic symptoms$/, "Any neurologic symptoms?"],
+    [/^sudden maximal pain$/, "Any sudden maximal chest pain?"],
     [/^menstrual periods never start by the expected age$|^menstrual periods never start by expected age$/, "Did menstrual periods never start by the expected age?"],
     [/^previously present periods stop$/, "Did previously present periods stop?"],
     [/^what is the approximate 24 hour urine volume$|^approximate 24 hour urine volume$/, "What is the approximate 24-hour urine volume?"],
@@ -1300,6 +1862,17 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^cgm use$|^cgm$/, "Any CGM use?"],
     [/^missed$|^missed insulin$|^missed or reduced insulin$/, "Any missed or reduced insulin?"],
     [/^reduced insulin$/, "Any reduced insulin dose?"],
+    [/^pump or infusion set failure$/, "Any pump or infusion-set failure?"],
+    [/^empty reservoir or expired insulin$/, "Any empty reservoir or expired insulin?"],
+    [/^medication access issue$/, "Any insulin supply or medication access issue?"],
+    [/^recent insulin dose change$/, "Any recent insulin dose change?"],
+    [/^insulin supplies arranged$/, "Are insulin supplies arranged?"],
+    [/^ketone strips arranged$/, "Are ketone strips arranged?"],
+    [/^sick day plan$|^sick day plan reviewed$/, "Has the sick-day plan been reviewed?"],
+    [/^follow up arranged$/, "Is follow-up arranged?"],
+    [/^missed steroid doses$/, "Any missed steroid doses?"],
+    [/^missed doses$/, "Any missed doses?"],
+    [/^missed diuretics$/, "Any missed diuretic doses?"],
     [/^pregnancy postpartum state$|^pregnancy postpartum$/, "Any pregnancy or recent postpartum state?"],
     [/^less urine$|^low urine$/, "Any less urine than usual?"],
     [/^very thirsty$/, "Any severe thirst?"],
@@ -1308,9 +1881,13 @@ function atomicQuestionLabelForComponent(component = "") {
     [/^trouble breathing$|^dyspnea$/, "Any trouble breathing?"],
     [/^mental status baseline$/, "Is mental status at baseline?"],
     [/^focal$/, "Any focal pain?"],
+    [/^poor oral intake$/, "Any poor oral intake?"],
     [/^unusual sleepiness$/, "Any unusual sleepiness?"],
     [/^trouble staying awake$/, "Any trouble staying awake?"],
     [/^unable to keep fluids down$|^inability to keep fluids down$/, "Any inability to keep fluids down?"],
+    [/^severe weakness$/, "Any severe weakness?"],
+    [/^seizure$/, "Any seizure?"],
+    [/^inability to participate in care$/, "Any inability to participate in care?"],
     [/^eating$/, "Are you eating normally?"],
     [/^drinking$/, "Are you drinking normally?"],
     [/^urinating$/, "Are you urinating normally?"],
@@ -1329,33 +1906,83 @@ function atomicQuestionLabelForComponent(component = "") {
 function atomicQuestionOptionsForComponent(component = "") {
   const normalized = normalizedListText(component);
   const mapped = [
+    [/^chest discomfort quality$/, "Pressure or heaviness / Sharp or pleuritic / Burning or reflux-like / Tight or crushing / Other quality ___ / Unsure"],
+    [/^chest discomfort location$/, "Central or left chest / Right chest / Epigastric / Back / Diffuse / Other location ___ / Unsure"],
+    [/^chest discomfort radiation$/, "No radiation / Arm radiation / Jaw radiation / Back radiation / Shoulder radiation / Multiple sites / Other ___"],
     [/^known diabetes type$|^diabetes type known$|^diabetes type$/, "Type 1 / Type 2 / Other / Unknown"],
+    [/^diabetes duration$/, "New diagnosis / Less than 5 years / 5 years or more / Unknown / Other ___"],
     [/^duration$|^symptom duration$|^how long$/, "Today / Days / Weeks / Months-years / Unknown / Other ___"],
     [/^insulin regimen known$|^insulin regimen$/, "Basal / Bolus / Pump / Correction only / Non-insulin / Unknown / Other ___"],
     [/^last insulin dose known$|^last insulin dose$/, "Today / Yesterday / More than 24 hours / Unknown / Other ___"],
     [/^last known well$|^last known well ___$/, "Time ___ / Less than 4.5 hours / Today / Yesterday / Unknown"],
-    [/^onset$|^time course$|^onset time course$/, "Sudden / Gradual / Intermittent / Constant / Unknown / Other ___"],
+    [/^(?:what changed with breathing\s*)?onset$|^time course$|^onset time course$/, "Sudden / Gradual / Intermittent / Constant / Unknown / Other ___"],
+    [/^walking$/, "No walking dyspnea / Mild with walking / Stops to rest / Unable to walk because of breathing / Unsure / Other ___"],
+    [/^exertion$|^exertional$|^exertional dyspnea$/, "No exertional dyspnea / Mild with exertion / Limits usual activity / Occurs with minimal activity / Unsure / Other ___"],
+    [/^orthopnea$|^lying flat$|^when lying flat$/, "No orthopnea / Uses extra pillows / Cannot lie flat / Wakes short of breath / Unsure / Other ___"],
+    [/^pnd$|^during sleep$|^waking from sleep short of breath$/, "No PND / Wakes short of breath / Multiple episodes overnight / Needs to sit upright / Unsure / Other ___"],
+    [/^rest$|^at rest$|^rest dyspnea$|^is breathing worse at rest$/, "No dyspnea at rest / Mild at rest / Moderate at rest / Severe at rest / Unsure / Other ___"],
+    [/^chest pain$/, "No chest pain / Mild chest pain / Moderate chest pain / Severe chest pain / Pressure or pleuritic quality / Other ___"],
+    [/^relieved by rest$/, "Not relieved by rest / Partially relieved / Fully relieved / Unsure / Other ___"],
+    [/^similar to prior angina$/, "No prior angina / Similar to prior angina / Different from prior angina / Unsure / Other ___"],
+    [/^marked weakness$/, "No marked weakness / New marked weakness / Unable to stand or walk safely / Worse than baseline / Unsure / Other ___"],
+    [/^syncope$/, "No syncope / Syncope today / Recurrent syncope / With exertion / Unsure / Other ___"],
+    [/^presyncope$/, "No presyncope / Near-syncope / Recurrent episodes / With exertion / Unsure / Other ___"],
+    [/^neurologic symptoms$/, "No neurologic symptoms / Focal weakness or numbness / Speech or vision change / Confusion / Unsure / Other ___"],
+    [/^sudden maximal pain$/, "No sudden maximal pain / Sudden maximal at onset / Tearing or ripping quality / Severe persistent pain / Unsure / Other ___"],
+    [/^known cad$/, "No known CAD / Known CAD / Prior MI or revascularization / Unknown / Other ___"],
     [/^where is the pain worst$|^focal location$|^location$/, "Location ___ / Diffuse / Localized / Moved / Unknown"],
     [/^weight change$|^weight changed from baseline$|^how has weight changed from baseline$/, "Loss / Gain / Stable / Intentional / Unintentional / Unknown / Other ___"],
-    [/^menstrual periods never start by the expected age$|^menstrual periods never start by expected age$|^previously present periods stop$/, "No / Yes / Unsure / Other ___"],
+    [/^menstrual periods never start by the expected age$|^menstrual periods never start by expected age$|^previously present periods stop$/, "Periods started / Never started / Previously stopped / Unsure / Other ___"],
     [/^last menstrual period$|^when was the last menstrual period$/, "Date ___ / Not applicable / Unknown"],
     [/^how regular are cycles$|^cycles regular$|^regular cycles$/, "Regular / Irregular / Not applicable / Unknown"],
-    [/^bleeding changed from baseline$|^bleeding change$/, "No / Heavier / Lighter / Irregular / Not applicable / Unknown"],
+    [/^bleeding changed from baseline$|^bleeding change$/, "Baseline bleeding / Heavier / Lighter / Irregular / Not applicable / Unknown"],
     [/^what is the approximate 24 hour urine volume$|^approximate 24 hour urine volume$|^24 hour urine volume$/, "Less than 3 L / 3 L or more / Unknown / Other ___"],
     [/^how many times do you urinate overnight$/, "0 / 1-2 / 3 or more / Unknown / Other ___"],
-    [/^this new$/, "No / Yes / Unsure / Other ___"],
+    [/^this new$/, "Not new / New today / New this week / Unsure / Other ___"],
+    [/^recent treatment changes(?:\s+could\b.*)?$/, "No recent treatment changes / Dose increased / Dose decreased or stopped / New treatment started / Unsure / Other ___"],
     [/^current prior fna bethesda category$|^what is the current prior fna bethesda category$/, "Bethesda I-II / Bethesda III-IV / Bethesda V-VI / Unknown / Other ___"],
     [/^how has it changed from baseline$/, "Stable / Increased risk / Decreased risk / Unknown / Other ___"],
     [/^how much are you drinking$/, "Less than usual / Usual / More than usual / Cannot keep up / Unknown / Other ___"],
     [/^thirst intensity$/, "Mild / Moderate / Severe / Unable to satisfy thirst / Unknown / Other ___"],
     [/^how long has conception been attempted$/, "Less than 6 months / 6-12 months / More than 12 months / Unknown / Other ___"],
-    [/^(?:are )?fertility goals$|^treatment choices relevant to the timing$/, "No / Yes / Unsure / Other ___"],
+    [/^(?:are )?fertility goals$|^treatment choices relevant to the timing$/, "No current fertility goal / Fertility goal active / Treatment timing concern / Unsure / Other ___"],
     [/^approximate 24 hour urine volume$|^24 hour urine volume$/, "Less than 3 L / 3 L or more / Unknown / Other ___"],
-    [/^urine output changed from baseline$|^urine output changed$/, "No / Increased / Decreased / Unknown / Other ___"],
+    [/^urine output changed from baseline$|^urine output changed$/, "Baseline urine output / Increased / Decreased / Very low urine / Unknown / Other ___"],
     [/^access to water$/, "Reliable / Limited / Unable to access safely / Unknown / Other ___"],
-    [/^eating$|^drinking$|^urinating$|^taking needed medicines as expected$/, "Yes / No / Partially / Unable / Other ___"]
+    [/^pump use$|^insulin pump use$|^pump$/, "No pump / Pump in use / Pump stopped or removed / Pump malfunction concern / Unknown / Other ___"],
+    [/^cgm use$|^cgm$/, "No CGM / CGM in use / CGM unavailable / CGM reading concern / Unknown / Other ___"],
+    [/^missed$|^missed insulin$|^missed or reduced insulin$/, "Taking as prescribed / Missed insulin / Reduced dose / Unable to obtain insulin / Unsure / Other ___"],
+    [/^reduced insulin$/, "Taking as prescribed / Reduced dose / Insulin held / Unsure / Other ___"],
+    [/^pump or infusion set failure$/, "No pump failure concern / Infusion-set failure / Pump malfunction / Site problem / Unsure / Other ___"],
+    [/^empty reservoir or expired insulin$/, "No supply problem / Empty reservoir / Expired insulin / Insulin unavailable / Unsure / Other ___"],
+    [/^medication access issue$/, "No access issue / Supply unavailable / Cost or affordability issue / Pharmacy delay / Unsure / Other ___"],
+    [/^recent insulin dose change$/, "No recent dose change / Dose reduced / Dose increased / Insulin stopped / Unsure / Other ___"],
+    [/^insulin supplies arranged$/, "Arranged / Missing insulin / Missing needles or pump supplies / Cost or pharmacy barrier / Unsure / Other ___"],
+    [/^ketone strips arranged$/, "Arranged / Missing ketone strips / Expired strips / Needs prescription / Unsure / Other ___"],
+    [/^sick day plan$|^sick day plan reviewed$/, "Reviewed and understood / Needs review / Caregiver needs plan / Written plan missing / Unsure / Other ___"],
+    [/^follow up arranged$/, "Follow-up scheduled / Needs appointment / Needs diabetes education / Transportation or access barrier / Unsure / Other ___"],
+    [/^biotin$/, "No biotin / Current biotin / Stopped within last week / Unsure / Other ___"],
+    [/^missed steroid doses$/, "Taking as prescribed / Missed steroid dose / Unable to keep down dose / Needs stress dosing / Unsure / Other ___"],
+    [/^missed doses$/, "No missed doses / Missed one dose / Multiple missed doses / Unable to take / Unsure / Other ___"],
+    [/^missed diuretics$/, "Taking as prescribed / Missed diuretic dose / Held dose / Supply or access issue / Unsure / Other ___"],
+    [/^medications$/, "No recent medication change / Taking medication as prescribed / New medication / Stopped or missed medication / Unsure / Other ___"],
+    [/^supplements$/, "No supplement use / Current supplement / Recently stopped supplement / Unsure / Other ___"],
+    [/^poor oral intake$/, "Normal intake / Reduced intake / Minimal intake / Unable to take PO / Unsure / Other ___"],
+    [/^unable to keep fluids down$|^inability to keep fluids down$/, "Keeping fluids down / Some fluids tolerated / Cannot keep fluids down / Vomits medicines / Unsure / Other ___"],
+    [/^inability to keep down stress dose steroids$/, "Able to keep steroids down / Vomited dose / Cannot keep steroids down / Needs injectable stress dose / Unsure / Other ___"],
+    [/^polyuria$/, "No polyuria / Increased urination / Marked polyuria / Improved from baseline / Unsure / Other ___"],
+    [/^polydipsia$/, "No polydipsia / Mild thirst / Severe thirst / Unable to satisfy thirst / Unsure / Other ___"],
+    [/^weight loss$/, "No weight loss / Recent unintentional loss / Intentional loss / Unknown / Other ___"],
+    [/^dehydration$/, "No dehydration symptoms / Mild dehydration symptoms / Moderate dehydration symptoms / Severe dehydration concern / Unsure / Other ___"],
+    [/^very dry mouth$/, "No dry mouth / Mild dry mouth / Very dry mouth / Unable to drink enough / Unsure / Other ___"],
+    [/^severe weakness$/, "No severe weakness / New severe weakness / Unable to stand or walk safely / Worse than baseline / Unsure / Other ___"],
+    [/^seizure$/, "No seizure / Possible seizure / Witnessed seizure / Recurrent seizure / Postictal concern / Unsure / Other ___"],
+    [/^inability to participate in care$/, "Participating normally / Needs help / Unable to participate / Fluctuating / Unsure / Other ___"],
+    [/^eating$|^drinking$/, "Normal / Reduced / None or unable / Not tried / Other ___"],
+    [/^urinating$/, "Baseline / Increased / Decreased / Very low urine / Other ___"],
+    [/^taking needed medicines as expected$/, "Taking as prescribed / Missed dose / Dose changed / Unable to take / Other ___"]
   ].find(([pattern]) => pattern.test(normalized));
-  return mapped ? mapped[1] : "No / Yes / Unsure / Other ___";
+  return mapped ? mapped[1] : componentPresenceOptions(component);
 }
 
 function expandedGenericAnyQuestionItems(item = {}) {
@@ -1397,29 +2024,36 @@ export function expandedLocalBedsideQuestionItems(item = {}) {
   if (isFeverTimelineMedicationQuestion(item)) {
     return expandedFeverTimelineItems(item);
   }
-  if (!isBroadInfectionSourceQuestion(item)) {
-    return expandedGenericAnyQuestionItems(item);
+  if (isBroadInfectionSourceQuestion(item)) {
+    const originalLabel = item.label || item.text || "Source-localizing infection symptoms";
+    return infectionSourceBedsideRows.map((row, index) => ({
+      ...item,
+      id: `${item.id || "infection_source_history"}__bedside_${index + 1}`,
+      label: row.label,
+      text: row.label,
+      options: row.options,
+      original_label: originalLabel,
+      original_tags: Array.isArray(item.tags) ? item.tags : [],
+      original_diagnostic_purpose: item.diagnosticPurpose || item.diagnostic_purpose || "",
+      original_management_implication: item.managementImplication || item.management_implication || "",
+      diagnosticPurpose: row.diagnosticPurpose,
+      diagnostic_purpose: row.diagnosticPurpose,
+      managementImplication: row.managementImplication,
+      management_implication: row.managementImplication,
+      source_domain_key: row.sourceDomainKey,
+      trace_labels: [originalLabel, item.text, row.label].filter(Boolean),
+      atomized_from_history_question: true,
+      tags: Array.from(new Set([...(row.tags || []), "atomic_bedside_history", "source_localizing_history"]))
+    }));
   }
-  const originalLabel = item.label || item.text || "Source-localizing infection symptoms";
-  return infectionSourceBedsideRows.map((row, index) => ({
-    ...item,
-    id: `${item.id || "infection_source_history"}__bedside_${index + 1}`,
-    label: row.label,
-    text: row.label,
-    options: row.options,
-    original_label: originalLabel,
-    original_tags: Array.isArray(item.tags) ? item.tags : [],
-    original_diagnostic_purpose: item.diagnosticPurpose || item.diagnostic_purpose || "",
-    original_management_implication: item.managementImplication || item.management_implication || "",
-    diagnosticPurpose: row.diagnosticPurpose,
-    diagnostic_purpose: row.diagnosticPurpose,
-    managementImplication: row.managementImplication,
-    management_implication: row.managementImplication,
-    source_domain_key: row.sourceDomainKey,
-    trace_labels: [originalLabel, item.text, row.label].filter(Boolean),
-    atomized_from_history_question: true,
-    tags: Array.from(new Set([...(row.tags || []), "atomic_bedside_history", "source_localizing_history"]))
-  }));
+  const expandedGenericItems = expandedGenericAnyQuestionItems(item);
+  if (expandedGenericItems.length > 1) {
+    return expandedGenericItems;
+  }
+  if (hasSourceBackedSpecificBedsideOptions(item)) {
+    return [item];
+  }
+  return expandedGenericItems;
 }
 
 function localChecklistKey(label) {
@@ -1566,7 +2200,15 @@ function addUniqueChecklistItem(items, seen, item, kind) {
     });
     return;
   }
-  const effectiveKind = kind === "bedside-single" ? "bedside" : kind;
+  if (kind === "exam") {
+    const expandedExamItems = expandedLocalExamItems(item);
+    if (expandedExamItems.length > 1) {
+      expandedExamItems.forEach((expandedItem) => addUniqueChecklistItem(items, seen, expandedItem, "exam-single"));
+      return;
+    }
+    item = expandedExamItems[0] || item;
+  }
+  const effectiveKind = kind === "bedside-single" ? "bedside" : kind === "exam-single" ? "exam" : kind;
   const label = effectiveKind === "bedside"
     ? normalizeLocalQuestionLabel(patientFacingQuestionText(item))
     : normalizeLocalExamLabel(item?.label || item?.text);
@@ -1589,7 +2231,7 @@ function addUniqueChecklistItem(items, seen, item, kind) {
   seen.add(labelKey);
   items.push({
     label,
-    options: checklistItemOptions(item, kind)
+    options: checklistItemOptions(item, effectiveKind, label)
   });
 }
 
@@ -1616,12 +2258,12 @@ function appendChecklistSection(lines, title, items, maxPerSection = 5) {
 }
 
 const genericLocalBedsideQuestions = [
-  { label: "Since yesterday, is your main symptom better, the same, or worse?", options: "Better / Same / Worse / Other ___" },
-  { label: "Have you noticed any new or worsening symptom?", options: "No / Yes / Other ___" },
+  { label: "How has the main symptom changed since yesterday or since it started?", options: "Resolved / Improving / Same / Worse / New severe symptom / Other ___" },
+  { label: "Have you noticed any new or worsening symptom?", options: "No new symptom / New symptom / Worsening symptom / Unsure / Other ___" },
   { label: "Are you eating and drinking enough?", options: "Yes / Some / No / Other ___" },
   { label: "Have you been able to get out of bed safely?", options: "Yes / No / Not tried / Other ___" },
   { label: "Any pain, dizziness, breathing trouble, weakness, or confusion?", options: "No / Pain / Dizziness / Breathing trouble / Weakness / Confusion / Other ___" },
-  { label: "What is your main concern today?", options: "___" }
+  { label: "What is your main concern today?", options: "Symptom concern / Treatment concern / Discharge concern / Question for team / Other ___" }
 ];
 
 const genericLocalExamItems = [
@@ -1914,7 +2556,7 @@ function contextualBackfillQuestions(workup = {}, options = {}) {
     { label: "Any new trouble breathing, chest pain, fainting, confusion, severe weakness, or uncontrolled pain?", options: "No / Trouble breathing / Chest pain / Fainting / Confusion / Severe weakness / Uncontrolled pain / Other ___" },
     { label: "Are you eating, drinking, urinating, and taking needed medicines as expected?", options: "Yes / Poor intake / Low urine / Missed medicines / Cannot keep medicines down / Other ___" },
     { label: "Have you been able to get up, walk, and function safely compared with baseline?", options: "Baseline / Needs help / Not safe / Not tried / Other ___" },
-    { label: "What is the most important change or concern you want the team to know today?", options: "___" }
+    { label: "What is the most important change or concern you want the team to know today?", options: "Symptom concern / Treatment concern / Discharge concern / Safety concern / Question for team / Other ___" }
   ].map((question, index) => genericLocalQuestionWithMetadata(question, index));
   return [...selected, ...universal];
 }
@@ -1930,13 +2572,16 @@ export function localChecklistTraceEntriesFromWorkup(workup = {}, options = {}) 
     ...(allowContextualBackfill ? contextualBackfillQuestions(workup, options) : []),
     ...(options.allowGenericFallbacks ? genericLocalBedsideQuestions.map(genericLocalQuestionWithMetadata) : [])
   ].flatMap((entry) => expandedLocalBedsideQuestionItems(entry));
-  return [
-    ...questionEntries,
+  const examEntries = [
     ...(complaintResult.focusedExam || []),
     ...(complaintResult.requiredExam || []),
     ...(complaintResult.conditionalExam || []),
     ...(recommendation.corePhysicalExamManeuvers || recommendation.coreItems || []),
     ...(recommendation.conditionalPhysicalExamManeuvers || recommendation.conditionalItems || [])
+  ].map((entry) => entry.candidate ? recommendationExamItem(entry) : entry).flatMap((entry) => expandedLocalExamItems(entry));
+  return [
+    ...questionEntries,
+    ...examEntries
   ];
 }
 

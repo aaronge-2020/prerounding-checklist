@@ -13,6 +13,22 @@
       "age_group": "adult",
       "setting": "clinician support"
     },
+    "applicability": {
+      "age_group": "adult",
+      "setting": "clinician support",
+      "review_owner": "endocrine_content_review",
+      "last_reviewed": "2026-06-06",
+      "sex_or_reproductive_context": "patient with male gonadal/androgen or erectile/breast-tissue physiology relevant to the complaint",
+      "pregnancy_status_required": "not_applicable",
+      "use_when": [
+        "Use when erectile symptoms, androgen deficiency, testicular function, gynecomastia, or male reproductive endocrine context is the selected concern.",
+        "Use when medication, fertility, breast mass, pituitary, or testosterone-safety context materially changes testing and management."
+      ],
+      "do_not_use_when": [
+        "Do not use as a generic breast, fertility, or fatigue workup when male gonadal/androgen physiology is not the clinical question.",
+        "Do not use for pregnancy-capable or ovarian-context reproductive complaints unless the module is explicitly selected for a relevant partner or anatomy-specific concern."
+      ]
+    },
     "triggers": [
       "Gynecomastia (Enlarged male breast tissue)",
       "Gynecomastia",
@@ -450,20 +466,32 @@
         "text": "How long has breast tissue enlargement or tenderness been present, is it unilateral or bilateral, and have rapid growth, discrete mass, skin change, or nipple discharge occurred?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Gynecomastia (Enlarged male breast tissue) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -494,20 +522,36 @@
         "text": "Any breast tenderness, discrete mass, nipple discharge, testicular pain or mass, fertility change, libido change, medication exposure, liver/kidney disease, alcohol, or cannabis use?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Gynecomastia (Enlarged male breast tissue).",
@@ -541,20 +585,36 @@
         "text": "Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Gynecomastia (Enlarged male breast tissue).",
@@ -586,20 +646,32 @@
         "text": "How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Gynecomastia (Enlarged male breast tissue).",
@@ -633,20 +705,32 @@
         "text": "Any weight loss, eating restriction, intense exercise, psychosocial stress, or change in energy balance that could suppress reproductive hormones?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_endocrine_symptom",
+            "label": "No endocrine symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "heat_intolerance_sweating",
+            "label": "Heat intolerance/sweating"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "cold_intolerance_dry_skin",
+            "label": "Cold intolerance/dry skin"
+          },
+          {
+            "value": "palpitations_tremor",
+            "label": "Palpitations/tremor"
+          },
+          {
+            "value": "bowel_change",
+            "label": "Bowel change"
+          },
+          {
+            "value": "weight_change",
+            "label": "Weight change"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Gynecomastia (Enlarged male breast tissue).",
@@ -693,20 +777,36 @@
         "text": "Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gonadal_breast_symptom",
+            "label": "No gonadal/breast symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "libido_change",
+            "label": "Libido change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "erectile_or_ejaculation_change",
+            "label": "Erectile or ejaculation change"
+          },
+          {
+            "value": "testicular_symptom",
+            "label": "Testicular symptom"
+          },
+          {
+            "value": "breast_tenderness_tissue",
+            "label": "Breast tenderness/tissue"
+          },
+          {
+            "value": "nipple_discharge",
+            "label": "Nipple discharge"
+          },
+          {
+            "value": "fertility_concern",
+            "label": "Fertility concern"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Gynecomastia (Enlarged male breast tissue) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",

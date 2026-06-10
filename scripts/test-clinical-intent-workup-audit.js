@@ -37,6 +37,7 @@ const overlayRows = parseCsv(readFileSync("data/evidence/exam_evidence_overlay.c
 const legacyRows = parseCsv(readFileSync("data/physical-exam/physical_exam_evidence_overlay.csv", "utf8"));
 const acceptedCatalogAdditionRows = parseCsv(readFileSync("data/evidence/accepted_exam_catalog_additions.csv", "utf8"));
 const sourceRows = parseCsv(readFileSync("data/evidence/source_registry.csv", "utf8"));
+const appSource = readFileSync("index.html", "utf8");
 const registeredSourceIds = new Set([
   ...sourceRows.map((row) => row.source_id).filter(Boolean),
   ...complaintSourceRegistry.map((row) => row.id || row.source_id).filter(Boolean)
@@ -53,6 +54,203 @@ const catalog = joinEvidenceCatalog(
 assert.ok(
   catalog.some((candidate) => candidate.exam_id === "EXAM-DERM-SKIN-INSPECTION" && candidate.acceptedCatalogAddition),
   "clinical intent audit should use the same accepted catalog additions as the app evidence loader"
+);
+assert.doesNotMatch(
+  appSource,
+  /moduleDetailParent\.open\s*=\s*true/,
+  "installed guideline module audit detail should stay collapsed in the default clinician workup view"
+);
+assert.match(
+  appSource,
+  /Full recommendation detail/,
+  "expanded recommendation detail should be explicitly labeled as review detail instead of rendering inline by default"
+);
+assert.match(
+  appSource,
+  /clinicalWorkupHistoryCountLabel/,
+  "clinician workup UI should distinguish source history questions from atomic response components"
+);
+assert.match(
+  appSource,
+  /advancedWorkupOpen[\s\S]+clinicalIntentResults\.hidden\s*=\s*true/,
+  "local bedside workup mirroring should hide the advanced intent-result copy unless advanced tools are open"
+);
+assert.match(
+  appSource,
+  /localMirrorHidden/,
+  "local bedside workup mirroring should not copy the advanced copy's hidden state back onto bedside results"
+);
+assert.match(
+  appSource,
+  /simplifyLocalWorkupResultList[\s\S]+exam-result-text[\s\S]+remove/,
+  "local bedside workup results should have a simplified clinician-facing renderer instead of exposing raw audit metadata"
+);
+assert.match(
+  appSource,
+  /moduleApplicabilitySummary[\s\S]+moduleApplicabilityAsLimitation/,
+  "installed module applicability constraints should be visible in search rows and preserved in generated workup cautions"
+);
+assert.match(
+  appSource,
+  /selectedApplicabilityContextSignals[\s\S]+active_pregnancy_unconfirmed[\s\S]+runComplaintCdsButton\.disabled\s*=\s*!selected\.length\s*\|\|\s*Boolean\(applicabilityIssue\?\.blocking\)/,
+  "active-pregnancy-required modules should block build controls until patient context confirms applicability"
+);
+assert.match(
+  appSource,
+  /active_pregnancy_unconfirmed[\s\S]+Open Advanced workup tools[\s\S]+refreshClinicalApplicabilityControls/,
+  "applicability blockers should tell clinicians where to add context and refresh local/advanced build controls after modifier edits"
+);
+assert.match(
+  appSource,
+  /data-clinical-modifier="currently pregnant"[\s\S]+data-clinical-modifier="not pregnant"[\s\S]+data-clinical-modifier="postpartum"[\s\S]+data-clinical-modifier="male reproductive context"[\s\S]+data-clinical-modifier="ovarian uterine pregnancy-capable context"[\s\S]+data-clinical-modifier="pediatric age"[\s\S]+data-clinical-modifier="older adult frailty"/,
+  "patient-context chips should explicitly capture pregnancy, postpartum, reproductive physiology, pediatric age, and older-adult/frailty context"
+);
+assert.match(
+  appSource,
+  /pediatric_age_not_supported[\s\S]+pregnancy_status_unassessed[\s\S]+male_context_unconfirmed[\s\S]+ovarian_context_unconfirmed/,
+  "applicability gating should block adult/pediatric, pregnancy-status, and reproductive-context ambiguity before recommendations"
+);
+assert.match(
+  appSource,
+  /pediatricAlternativeIntentByAdultIntent[\s\S]+dka_hhs_v1[\s\S]+pediatric_dka_hhs_hyperglycemia_v1/,
+  "adult DKA/HHS should be blocked by pediatric-age applicability context with a concrete pediatric DKA/HHS alternative"
+);
+assert.match(
+  appSource,
+  /pediatricAlternativeIntentByAdultIntent[\s\S]+bleeding_anemia_v1[\s\S]+pediatric_hematology_anemia_bleeding_v1/,
+  "adult bleeding/anemia should be blocked by pediatric-age applicability context with a concrete pediatric hematology alternative"
+);
+assert.match(
+  appSource,
+  /olderAdultAge/,
+  "applicability context should recognize older-adult and frailty modifiers before recommendations"
+);
+assert.match(
+  appSource,
+  /active_pregnancy_postpartum_context[\s\S]+nonpregnant diabetes or prediabetes workup[\s\S]+4-12 week 75-g OGTT/i,
+  "postpartum context should route active-pregnancy GDM requests to nonpregnant diabetes follow-up rather than generic pregnancy contradiction"
+);
+assert.match(
+  appSource,
+  /clinical-modifier-body label[\s\S]+display:\s*block !important[\s\S]+clinical-modifier-input[\s\S]+display:\s*block !important/,
+  "clinical modifier details input should remain visible in the clinical workup panel for exact non-PHI applicability context"
+);
+assert.match(
+  appSource,
+  /copyComplaintCdsButton[\s\S]+selectedWorkupApplicabilityIssue\(\)[\s\S]+applicabilityIssue\.message/,
+  "copy/export controls should refuse workups blocked by applicability conflicts"
+);
+assert.match(
+  appSource,
+  /secondaryIntentSuggestionRules[\s\S]+pediatric_dka_hhs_hyperglycemia_v1[\s\S]+pediatric_hematology_anemia_bleeding_v1[\s\S]+abdominal_pain_cramping_v1[\s\S]+dka_hhs_v1[\s\S]+excludeModifier:[\s\S]+gestational_diabetes_intent_v1/,
+  "acute modifier chips should map to concrete validated secondary-intent prompts instead of remaining decorative"
+);
+assert.match(
+  appSource,
+  /Modifier prompt:[\s\S]+Add validated workup[\s\S]+add\.dataset\.intentSelectId[\s\S]+elements\.clinicalIntentSelection\.addEventListener[\s\S]+closest\?\.\("\[data-intent-select-id\]"\)[\s\S]+selectClinicalIntent\(selectIntentId\)[\s\S]+elements\.localWorkupSelection\.addEventListener[\s\S]+closest\?\.\("\[data-intent-select-id\]"\)[\s\S]+selectClinicalIntent\(selectIntentId\)/,
+  "secondary-intent prompts should let clinicians add the suggested validated workup"
+);
+
+function htmlAttributes(tag = "") {
+  const attributes = {};
+  [...String(tag || "").matchAll(/\s([a-zA-Z0-9_-]+)="([^"]*)"/g)].forEach(([, name, value]) => {
+    attributes[name] = value;
+  });
+  return attributes;
+}
+
+const modifierChipTags = [...appSource.matchAll(/<button\b[^>]*class="clinical-modifier-chip"[^>]*data-clinical-modifier="[^"]+"[^>]*>/g)]
+  .map((match) => match[0]);
+const hiddenModifierChipTags = modifierChipTags
+  .filter((tag) => /\s(?:hidden\b|aria-hidden="true")/i.test(tag))
+  .map((tag) => tag.match(/data-clinical-modifier="([^"]+)"/)?.[1] || tag);
+assert.deepEqual(
+  hiddenModifierChipTags,
+  [],
+  "Clinical modifier chips must not be hidden from clinicians or assistive technology"
+);
+const modifierChips = modifierChipTags.map((tag) => htmlAttributes(tag));
+assert.ok(modifierChips.length, "clinical modifier materiality audit should find visible modifier chips");
+const validatedIntentIds = new Set(clinicalIntentRegistry.filter((row) => row.status === "validated").map((row) => row.intent_id));
+const secondaryRuleSource = appSource.match(/const secondaryIntentSuggestionRules = \[([\s\S]*?)\];/)?.[1] || "";
+const secondaryRuleIntentIds = new Set([...secondaryRuleSource.matchAll(/intentId:\s*"([^"]+)"/g)].map((match) => match[1]));
+const selectedApplicabilitySignalSource = appSource.match(/function selectedApplicabilityContextSignals\(\) \{([\s\S]*?)\n    \}/)?.[1] || "";
+const allowedModifierEffects = new Set(["secondary-intent", "applicability-context", "primary-output-diff"]);
+const primaryOutputDiffRegressionIntentIds = new Set([
+  "type_1_diabetes_mellitus_intent_v1",
+  "type_2_diabetes_mellitus_intent_v1",
+  "prediabetes_intent_v1",
+  "fever_sepsis_v1",
+  "suspected_pe_v1",
+  "dka_hhs_v1"
+]);
+const modifierMaterialityIssues = [];
+modifierChips.forEach((chip) => {
+  const modifier = chip["data-clinical-modifier"] || "(missing modifier)";
+  const effects = String(chip["data-modifier-effect"] || "").split(/\s+/).filter(Boolean);
+  if (!effects.length) {
+    modifierMaterialityIssues.push(`${modifier}: missing data-modifier-effect`);
+  }
+  effects.forEach((effect) => {
+    if (!allowedModifierEffects.has(effect)) {
+      modifierMaterialityIssues.push(`${modifier}: unknown modifier effect ${effect}`);
+    }
+  });
+  if (!chip.title) {
+    modifierMaterialityIssues.push(`${modifier}: missing clinician-facing title explaining what changes`);
+  }
+  if (effects.includes("secondary-intent")) {
+    const secondaryIds = String(chip["data-secondary-intent-ids"] || "").split(/\s+/).filter(Boolean);
+    if (!secondaryIds.length) {
+      modifierMaterialityIssues.push(`${modifier}: secondary-intent effect missing data-secondary-intent-ids`);
+    }
+    secondaryIds.forEach((intentId) => {
+      if (!validatedIntentIds.has(intentId)) {
+        modifierMaterialityIssues.push(`${modifier}: secondary intent ${intentId} is not validated`);
+      }
+      if (!secondaryRuleIntentIds.has(intentId)) {
+        modifierMaterialityIssues.push(`${modifier}: secondary intent ${intentId} is not represented in secondaryIntentSuggestionRules`);
+      }
+    });
+  }
+  if (effects.includes("applicability-context")) {
+    const signals = String(chip["data-applicability-signals"] || "").split(/\s+/).filter(Boolean);
+    if (!signals.length) {
+      modifierMaterialityIssues.push(`${modifier}: applicability-context effect missing data-applicability-signals`);
+    }
+    signals.forEach((signal) => {
+      assert.match(
+        selectedApplicabilitySignalSource,
+        new RegExp(`\\b${signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`),
+        `${modifier}: applicability signal ${signal} should be produced by selectedApplicabilityContextSignals`
+      );
+    });
+  }
+  if (effects.includes("primary-output-diff")) {
+    const diffIntentIds = String(chip["data-primary-output-diff-intent-ids"] || "").split(/\s+/).filter(Boolean);
+    if (!diffIntentIds.length) {
+      modifierMaterialityIssues.push(`${modifier}: primary-output-diff effect missing data-primary-output-diff-intent-ids`);
+    }
+    diffIntentIds.forEach((intentId) => {
+      if (!validatedIntentIds.has(intentId)) {
+        modifierMaterialityIssues.push(`${modifier}: primary-output-diff intent ${intentId} is not validated`);
+      }
+      if (!primaryOutputDiffRegressionIntentIds.has(intentId)) {
+        modifierMaterialityIssues.push(`${modifier}: primary-output-diff intent ${intentId} is not covered by modifier regression tests`);
+      }
+    });
+    if (!/\b(?:primary|adds|changes|threshold|follow-up|escalation)\b/i.test(chip.title || "")) {
+      modifierMaterialityIssues.push(`${modifier}: primary-output-diff title should tell clinicians what changes in the primary output`);
+    }
+  }
+  if (!effects.some((effect) => ["secondary-intent", "applicability-context", "primary-output-diff"].includes(effect))) {
+    modifierMaterialityIssues.push(`${modifier}: visible chip does not declare a material workup effect`);
+  }
+});
+assert.deepEqual(
+  modifierMaterialityIssues,
+  [],
+  `visible clinical modifier chips should declare and prove a material effect:\n${modifierMaterialityIssues.join("\n")}`
 );
 
 const bundledLabelPattern = /[,;]|\b(?:and|plus)\b.*\b(?:and|plus)\b/i;
@@ -1934,6 +2132,197 @@ const highIssueRows = iterationRun.results.flatMap((result) => (
     .map((issue) => `${result.intent_id}: ${issue.type} - ${issue.detail}`)
 ));
 assert.deepEqual(highIssueRows, [], highIssueRows.join("\n"));
+
+function comparatorFieldText(value) {
+  if (Array.isArray(value)) {
+    return value.map(comparatorFieldText).filter(Boolean).join(" ");
+  }
+  if (value && typeof value === "object") {
+    return Object.values(value).map(comparatorFieldText).filter(Boolean).join(" ");
+  }
+  return String(value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function comparatorEntryText(entry = {}) {
+  return [
+    entry.label,
+    entry.text,
+    entry.full_question,
+    entry.reason,
+    entry.diagnostic_purpose,
+    entry.diagnostic_target,
+    entry.management_implication,
+    entry.management_change,
+    entry.action,
+    entry.options,
+    entry.tags,
+    entry.limitations,
+    entry.source
+  ].map(comparatorFieldText).filter(Boolean).join(" ");
+}
+
+function comparatorSectionText(result = {}, sections = []) {
+  return sections
+    .flatMap((section) => result[section] || [])
+    .map(comparatorEntryText)
+    .join(" | ");
+}
+
+function assertUniqueComparatorLabels(result = {}, sections = []) {
+  const duplicates = [];
+  sections.forEach((section) => {
+    const seen = new Set();
+    (result[section] || []).forEach((entry) => {
+      const label = normalizedLabel(entry.label || entry.text || entry.exam_id || "");
+      if (!label) {
+        return;
+      }
+      if (seen.has(label)) {
+        duplicates.push(`${section}: ${entry.label}`);
+      }
+      seen.add(label);
+    });
+  });
+  assert.deepEqual(
+    duplicates,
+    [],
+    `${result.intent_id}: competent-clinician comparator expects duplicate-free visible section labels`
+  );
+}
+
+function assertCompetentClinicianComparator(iterationResults = []) {
+  const resultsByIntent = new Map(iterationResults.map((result) => [result.intent_id, result]));
+  const allClinicalSections = ["safety", "history", "core", "conditional", "tests", "red_flags", "management_changes"];
+  const representativeRubric = [
+    {
+      intent_id: "type_2_diabetes_mellitus_intent_v1",
+      domain: "endocrine",
+      requirements: [
+        ["history", /polyuria|polydipsia|dehydration|retinopathy|dilated eye|ASCVD|heart failure|foot wound|neuropathy/i, "diabetes symptom, complication, and ASCVD/HF history"],
+        ["core", /Inspect feet[\s\S]*Palpate pedal pulses[\s\S]*monofilament|monofilament[\s\S]*Inspect feet[\s\S]*Palpate pedal pulses/i, "diabetes foot inspection, pulses, and monofilament"],
+        ["tests", /A1c[\s\S]*(?:fasting plasma glucose|OGTT)[\s\S]*(?:CMP|eGFR)[\s\S]*(?:UACR|albumin)[\s\S]*(?:lipid|ketone|anion gap)/i, "diagnostic glucose criteria and complication/safety labs"],
+        ["red_flags", /DKA|HHS|altered mental|dehydration|vomiting/i, "DKA/HHS escalation"],
+        ["management_changes", /UACR|eGFR|ketosis|kidney-protective|treatment intensity/i, "management-changing diabetes thresholds"],
+        ["all", /pituitary|diabetes insipidus|water deprivation|copeptin/i, "pituitary/DI leakage", "absent"]
+      ]
+    },
+    {
+      intent_id: "dyspnea_hf_v1",
+      domain: "cardiopulmonary",
+      requirements: [
+        ["safety", /blood pressure[\s\S]*heart rate[\s\S]*respiratory rate[\s\S]*oxygen[\s\S]*temperature/i, "cardiopulmonary safety data"],
+        ["history", /orthopnea|PND|cough|wheeze|chest pain|leg swelling|oxygen need|missed diuretics/i, "HF/dyspnea source and severity history"],
+        ["core", /posterior lung fields[\s\S]*heart sounds[\s\S]*(?:jugular venous pressure|JVP)[\s\S]*edema[\s\S]*work of breathing/i, "lung, heart, JVP, edema, and work-of-breathing exam"],
+        ["tests", /(?:BNP|NT-proBNP|CXR|chest radiograph|ECG|troponin|renal|electrolyte|diuresis|respiratory-support)/i, "HF/dyspnea tests and treatment-safety review"],
+        ["red_flags", /respiratory failure|shock|acute heart-failure|hypotension|hypoxemia/i, "respiratory failure and shock escalation"],
+        ["management_changes", /diuresis|oxygen|ventilatory support|telemetry|ECG|echo|disposition/i, "dyspnea management consequences"]
+      ]
+    },
+    {
+      intent_id: "fever_sepsis_v1",
+      domain: "infectious",
+      requirements: [
+        ["safety", /temperature[\s\S]*mental status|mental status[\s\S]*temperature/i, "temperature and mental-status acuity"],
+        ["history", /(?=[\s\S]*cough)(?=[\s\S]*(?:dysuria|flank))(?=[\s\S]*(?:rash|wound|line))(?=[\s\S]*(?:exposure|immunosuppression|pregnancy|host))/i, "source-localizing infection history"],
+        ["core", /work of breathing[\s\S]*posterior lung fields[\s\S]*skin[\s\S]*oropharynx[\s\S]*radial pulses/i, "source and perfusion exam"],
+        ["tests", /sepsis severity labs[\s\S]*source-directed infection studies[\s\S]*respiratory source imaging/i, "sepsis labs and source-directed tests"],
+        ["red_flags", /shock|CNS|airway|purpura|necrotizing|high-risk host/i, "sepsis and danger-pattern escalation"],
+        ["management_changes", /escalate unstable fever|suspected sepsis|outpatient follow-up|safety net/i, "escalation and safety-net consequences"]
+      ]
+    },
+    {
+      intent_id: "abdominal_pain_cramping_v1",
+      domain: "GI",
+      requirements: [
+        ["history", /pain worst|changed over time|vomiting|diarrhea|blood|black stool|jaundice|urinary|flank|pregnancy|syncope|stool\/gas/i, "abdominal pain localization and red-flag history"],
+        ["core", /Inspect abdomen[\s\S]*Percuss abdomen[\s\S]*Auscultate bowel sounds[\s\S]*Palpate abdomen/i, "atomic abdominal exam sequence"],
+        ["conditional", /rebound tenderness|Murphy sign/i, "conditional peritoneal/biliary maneuvers"],
+        ["tests", /Abdominal pain initial tests|CBC|CMP|lipase|urinalysis|pregnancy|Abdominal imaging pathway/i, "abdominal labs and imaging pathway"],
+        ["red_flags", /acute abdomen|surgical|pregnancy|vascular|extra-abdominal/i, "acute abdomen and dangerous mimic escalation"],
+        ["management_changes", /imaging|surgical consultation|NPO|analgesia|antibiotics|serial abdominal exams/i, "abdominal management consequences"],
+        ["history", /DKA\/HHS|hypothyroid/i, "metabolic/endocrine label leakage", "absent"]
+      ]
+    },
+    {
+      intent_id: "genital_discharge_sti_v1",
+      domain: "GU",
+      requirements: [
+        ["history", /discharge|dysuria|lesion|exposure|groin|inguinal|ectopic|PID|bleeding/i, "STI/GU exposure and complication history"],
+        ["core", /Inspect genital area[\s\S]*Palpate inguinal lymph nodes/i, "consented genital inspection and inguinal nodes"],
+        ["tests", /STI and urethritis\/cervicitis diagnostic pathway|NAAT|gonorrhea|chlamydia|HIV|syphilis/i, "STI diagnostic pathway"],
+        ["red_flags", /Complicated STI\/GU|PID|ectopic|torsion|systemic|fever/i, "complicated GU/STI escalation"],
+        ["management_changes", /partner counseling|empiric treatment|testing|torsion|epididymitis|follow-up/i, "STI management and partner consequences"]
+      ]
+    },
+    {
+      intent_id: "stroke_focal_neuro_v1",
+      domain: "neuro",
+      requirements: [
+        ["history", /last known well|face droop|speech|weakness|numbness|vision loss|diplopia|ataxia|anticoagulant|hypoglycemia|seizure|trauma/i, "stroke timeline, localization, mimic, and anticoagulant history"],
+        ["core", /pronator drift[\s\S]*visual fields[\s\S]*pupillary[\s\S]*extraocular[\s\S]*facial/i, "focal neurologic bedside maneuvers"],
+        ["conditional", /finger-to-nose|rapid alternating|heel-to-shin|facial light touch|sharp sensation/i, "conditional coordination and sensory localization"],
+        ["tests", /Stroke initial tests|CT|CTA|glucose|coag|thrombolysis|thrombectomy|timing/i, "stroke imaging, glucose, and treatment-timing pathway"],
+        ["red_flags", /Stroke alert|neurologic danger|hemorrhage|reperfusion/i, "stroke alert escalation"],
+        ["management_changes", /stroke|neuro escalation|imaging|thrombolysis|thrombectomy|fall precautions/i, "stroke management consequences"],
+        ["history", /red-eye|eye redness|conjunctivitis/i, "red-eye history leakage", "absent"]
+      ]
+    },
+    {
+      intent_id: "focused_msk_v1",
+      domain: "MSK",
+      requirements: [
+        ["history", /exact joint|body area|trauma|bear weight|hot swollen joint|neurologic deficit|bowel or bladder|anticoagulant/i, "site, trauma, infection, neuro, and fracture history"],
+        ["core", /Inspect painful site[\s\S]*Palpate painful site[\s\S]*(?:range of motion|ROM)/i, "site-specific inspection, palpation, and ROM"],
+        ["tests", /Focused MSK tests|imaging|aspiration|CBC|inflammatory|radiograph/i, "MSK test and imaging pathway"],
+        ["red_flags", /MSK infection|fracture|neurologic|septic arthritis|neurovascular/i, "MSK infection/fracture/neuro red flags"],
+        ["management_changes", /immobilization|aspiration|urgent referral|orthopedic|neurosurgical|activity restriction|imaging/i, "MSK management consequences"],
+        ["history", /UTI|rash danger/i, "unrelated UTI/rash label leakage", "absent"]
+      ]
+    },
+    {
+      intent_id: "rash_skin_v1",
+      domain: "derm",
+      requirements: [
+        ["history", /fever|mucosal|facial|tongue|trouble breathing|skin pain|blistering|purpura|new medication|wound drainage|travel|bite|immunocompromise/i, "rash danger, systemic, mucosal, and exposure history"],
+        ["core", /Inspect skin/i, "skin morphology and distribution inspection"],
+        ["conditional", /Inspect mucosa|mucosal/i, "mucosal inspection when indicated"],
+        ["tests", /Dermatology source-directed tests|CBC|wound culture|KOH|scabies|viral PCR|biopsy|dermatology referral/i, "skin testing/biopsy pathway"],
+        ["red_flags", /anaphylaxis|severe cutaneous|necrotizing|purpura|sepsis|immunocompromised|skin cancer/i, "dangerous rash escalation"],
+        ["management_changes", /isolation|medication-stop|antimicrobial|allergy|biopsy|referral|escalation/i, "dermatology management consequences"]
+      ]
+    },
+    {
+      intent_id: "bleeding_anemia_v1",
+      domain: "hematology",
+      requirements: [
+        ["history", /hematemesis|melena|hematochezia|bruising|petechiae|gum|nose bleeding|anticoagulant|syncope|dyspnea|chest pain|heavy menses|coagulopathy/i, "bleeding source, instability, medication, and coagulopathy history"],
+        ["core", /sclerae and conjunctivae[\s\S]*oral mucosa[\s\S]*Inspect abdomen[\s\S]*bowel sounds[\s\S]*Palpate abdomen/i, "pallor/mucosa and GI bleed abdominal exam"],
+        ["tests", /CBC|hemoglobin|platelets|PT\/INR|PTT|fibrinogen|type and screen|Hgb <7/i, "bleeding/anemia lab and transfusion thresholds"],
+        ["red_flags", /hypotension|tachycardia|syncope|chest pain|dyspnea|altered mental|brisk bleeding|anticoagulant|pregnancy/i, "bleeding instability red flags"],
+        ["management_changes", /transfusion|reversal|endoscopy|admission|iron|B12|medication holds|GI referral/i, "bleeding/anemia management consequences"]
+      ]
+    }
+  ];
+
+  representativeRubric.forEach(({ intent_id, domain, requirements }) => {
+    const result = resultsByIntent.get(intent_id);
+    assert.ok(result, `competent-clinician comparator missing ${domain} representative intent ${intent_id}`);
+    assert.equal(result.status, "validated", `${intent_id}: comparator requires a validated intent`);
+    assert.ok(result.complete_validated_workup, `${intent_id}: comparator target should be complete-ready`);
+    assertUniqueComparatorLabels(result, ["history", "core", "conditional", "tests", "red_flags"]);
+    requirements.forEach(([section, pattern, label, mode]) => {
+      const sections = section === "all" ? allClinicalSections : [section];
+      const sectionText = comparatorSectionText(result, sections);
+      if (mode === "absent") {
+        assert.doesNotMatch(sectionText, pattern, `${intent_id}: competent-clinician comparator should not show ${label}`);
+      } else {
+        assert.match(sectionText, pattern, `${intent_id}: competent-clinician comparator missing ${label}`);
+      }
+    });
+  });
+}
+
+assertCompetentClinicianComparator(iterationRun.results);
 const canonicalExportRequiredFields = {
   safety: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "difficulty", "time_burden_minutes", "management_implication", "diagnostic_purpose", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
   history: ["label", "source", "LR_plus", "LR_minus", "likelihood_ratio_note", "diagnostic_purpose", "management_implication", "when_to_ask", "traceability", "intent_trace", "source_ids", "authorized_by", "trace_item_id", "retrieval_routes"],
@@ -2100,6 +2489,1128 @@ assert.match(
   /Sepsis or shock physiology[\s\S]*(?:CNS|airway|purpura)|(?:CNS|airway|purpura)[\s\S]*Sepsis or shock physiology/i,
   "fever/sepsis should include sepsis/shock and CNS/airway/purpura escalation cues"
 );
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_fever_sepsis_v1"),
+  "pediatric fever/sepsis should be a complete validated readiness row after adding age-band routing"
+);
+const pediatricFeverRow = iterationRun.results.find((result) => result.intent_id === "pediatric_fever_sepsis_v1");
+assert.ok(pediatricFeverRow, "pediatric fever/sepsis iteration row should exist");
+assert.equal(pediatricFeverRow.complete_validated_workup, true, "pediatric fever/sepsis should be complete and not left as staged review text");
+[
+  "SSC_PEDIATRIC_SEPSIS_2026",
+  "NICE_SEPSIS_UNDER16_2025",
+  "NICE_FEVER_UNDER5_NG143",
+  "AAP_FEBRILE_INFANT_2021"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricFeverRow.source_ids.includes(sourceId),
+    `pediatric fever/sepsis should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricFeverRow.source_ids.includes("SSC_SEPSIS_2026") && !pediatricFeverRow.source_ids.includes("ATS_CAP_2025"),
+  "pediatric fever/sepsis should not inherit adult sepsis or adult pneumonia source rows"
+);
+const pediatricSafetyText = (pediatricFeverRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricHistoryText = (pediatricFeverRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricExamText = [...(pediatricFeverRow.core || []), ...(pediatricFeverRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricTestsText = (pediatricFeverRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRedFlagText = (pediatricFeverRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricManagementText = (pediatricFeverRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricSafetyText,
+  /Measure temperature[\s\S]*Measure respiratory rate[\s\S]*Measure oxygen saturation[\s\S]*Measure heart rate[\s\S]*Measure blood pressure[\s\S]*Document mental status/i,
+  "pediatric fever/sepsis should keep pediatric vitals and mental status in baseline safety data"
+);
+assert.match(
+  pediatricHistoryText,
+  /(?=[\s\S]*8 to 60 days)(?=[\s\S]*cough)(?=[\s\S]*(?:dysuria|flank))(?=[\s\S]*(?:abdominal|vomiting|diarrhea))(?=[\s\S]*(?:rash|wound|line))(?=[\s\S]*(?:neck|confusion|seizure))(?=[\s\S]*pregnancy)/i,
+  "pediatric fever/sepsis should ask age-band, respiratory, urinary, GI, skin/line, CNS, and pregnancy-sensitive host/applicability history"
+);
+assert.match(
+  pediatricExamText,
+  /work of breathing[\s\S]*skin rash[\s\S]*capillary refill[\s\S]*lung sounds/i,
+  "pediatric fever/sepsis should render individual core pediatric bedside maneuvers, not a generic focused pediatric exam"
+);
+assert.match(
+  pediatricTestsText,
+  /lactate[\s\S]*blood cultures[\s\S]*1 hour[\s\S]*3 hours[\s\S]*8 to 60 day/i,
+  "pediatric fever/sepsis should include lactate/cultures/antibiotic timing and febrile-infant pathway tests"
+);
+assert.match(
+  pediatricRedFlagText,
+  /under 3 months[\s\S]*(?:shock|danger physiology)[\s\S]*(?:non-blanching|meningitis|CNS)/i,
+  "pediatric fever/sepsis should include infant, shock, and meningitis/purpura escalation cues"
+);
+assert.match(
+  pediatricManagementText,
+  /escalate[\s\S]*10 to 20 mL\/kg[\s\S]*40 to 60 mL\/kg[\s\S]*(?:safety net|follow-up)[\s\S]*(?:pregnant|postpartum)/i,
+  "pediatric fever/sepsis should show escalation, pediatric fluid reassessment, safety-net, and pregnancy/postpartum routing consequences"
+);
+const pediatricFeverTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_fever_sepsis_v1"],
+  allMatches: false,
+  modifiers: "febrile infant 8 to 60 days sore throat neck stiffness adolescent pregnancy",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 80,
+  maxCoreItems: 24,
+  maxConditionalItems: 36,
+  limit: 0
+});
+const pediatricFeverTriggeredRow = pediatricFeverTriggeredRun.results.find((result) => result.intent_id === "pediatric_fever_sepsis_v1");
+assert.ok(pediatricFeverTriggeredRow, "triggered pediatric fever/sepsis audit row should exist");
+const pediatricTriggeredHistoryText = (pediatricFeverTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricTriggeredExamText = [...(pediatricFeverTriggeredRow.core || []), ...(pediatricFeverTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricTriggeredHistoryText,
+  /well-appearing infant 8 to 60 days[\s\S]*(?:pregnancy possible|recent postpartum|pregnancy-specific)/i,
+  "pediatric fever/sepsis conditional history should activate for infant and adolescent pregnancy trigger terms"
+);
+assert.match(
+  pediatricTriggeredExamText,
+  /Inspect oropharynx[\s\S]*(?:Test passive neck flexion|neck flexion)/i,
+  "pediatric fever/sepsis conditional exam add-ons should activate for HEENT and meningitis trigger terms"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_respiratory_wheeze_v1"),
+  "pediatric respiratory distress/wheeze should be a complete validated readiness row after adding pediatric cardiopulmonary routing"
+);
+const pediatricRespRow = iterationRun.results.find((result) => result.intent_id === "pediatric_respiratory_wheeze_v1");
+assert.ok(pediatricRespRow, "pediatric respiratory distress/wheeze iteration row should exist");
+assert.equal(pediatricRespRow.complete_validated_workup, true, "pediatric respiratory distress/wheeze should be complete and not left as staged review text");
+[
+  "NICE_BRONCHIOLITIS_NG9",
+  "GINA_ASTHMA_2025",
+  "NHLBI_NAEPP_ASTHMA_2020",
+  "NICE_SEPSIS_UNDER16_2025"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricRespRow.source_ids.includes(sourceId),
+    `pediatric respiratory distress/wheeze should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricRespRow.source_ids.includes("AHA_ACC_HFSA_HF_2022") && !pediatricRespRow.source_ids.includes("ESC_HF_2021"),
+  "pediatric respiratory distress/wheeze should not inherit adult heart failure source rows"
+);
+const pediatricRespSafetyText = (pediatricRespRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricRespHistoryText = (pediatricRespRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricRespExamText = [...(pediatricRespRow.core || []), ...(pediatricRespRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRespTestsText = (pediatricRespRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRespRedFlagText = (pediatricRespRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRespManagementText = (pediatricRespRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricRespSafetyText,
+  /Measure oxygen saturation[\s\S]*Measure respiratory rate[\s\S]*Measure temperature[\s\S]*Measure current weight[\s\S]*Document mental status[\s\S]*Document intake and urine output/i,
+  "pediatric respiratory distress/wheeze should keep SpO2, respiratory rate, temperature, weight, alertness, and intake/urine in baseline safety data"
+);
+assert.match(
+  pediatricRespHistoryText,
+  /(?=[\s\S]*under 6 weeks)(?=[\s\S]*(?:coryzal|runny nose))(?=[\s\S]*recurrent episodic wheeze)(?=[\s\S]*(?:feeding|drinking))(?=[\s\S]*(?:choking|aspiration))(?=[\s\S]*(?:fever over 39|focal))/i,
+  "pediatric respiratory distress/wheeze should ask age-band, bronchiolitis-pattern, asthma/atopy, feeding, foreign-body, and pneumonia/sepsis history"
+);
+assert.match(
+  pediatricRespExamText,
+  /Observe chest retractions[\s\S]*Inspect nasal flaring[\s\S]*Auscultate lung fields[\s\S]*Inspect lips and tongue color/i,
+  "pediatric respiratory distress/wheeze should render individual respiratory bedside maneuvers, not a generic pulmonary exam"
+);
+assert.doesNotMatch(
+  pediatricRespExamText,
+  /oxygen saturation|respiratory rate|current weight|Document mental status/i,
+  "pediatric respiratory distress/wheeze should not leak baseline safety data into physical exam maneuvers"
+);
+assert.match(
+  pediatricRespTestsText,
+  /Bronchiolitis testing limits[\s\S]*(?:do not routinely order blood tests or chest X-ray)[\s\S]*Chest imaging when focal or severe[\s\S]*Asthma response reassessment[\s\S]*Controller and trigger review/i,
+  "pediatric respiratory distress/wheeze should include bronchiolitis testing limits, focal/severe imaging triggers, asthma response reassessment, and controller/trigger review"
+);
+assert.match(
+  pediatricRespRedFlagText,
+  /Apnea or central cyanosis[\s\S]*Exhaustion or poor respiratory effort[\s\S]*Severe respiratory distress[\s\S]*Poor intake or no urine/i,
+  "pediatric respiratory distress/wheeze should include respiratory failure and hydration escalation red flags"
+);
+assert.match(
+  pediatricRespManagementText,
+  /Emergency pediatric respiratory escalation[\s\S]*Bronchiolitis supportive plan[\s\S]*Asthma acute plan[\s\S]*Respiratory home safety net/i,
+  "pediatric respiratory distress/wheeze should show emergency escalation, bronchiolitis supportive care, asthma acute plan, and home safety-net consequences"
+);
+const pediatricRespTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_respiratory_wheeze_v1"],
+  allMatches: false,
+  modifiers: "bronchiolitis infant wheeze under 2 years poor intake dehydration no wet nappy asthma albuterol prior ICU",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 80,
+  maxCoreItems: 24,
+  maxConditionalItems: 36,
+  limit: 0
+});
+const pediatricRespTriggeredRow = pediatricRespTriggeredRun.results.find((result) => result.intent_id === "pediatric_respiratory_wheeze_v1");
+assert.ok(pediatricRespTriggeredRow, "triggered pediatric respiratory audit row should exist");
+const pediatricRespTriggeredHistoryText = (pediatricRespTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricRespTriggeredExamText = [...(pediatricRespTriggeredRow.core || []), ...(pediatricRespTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricRespTriggeredHistoryText,
+  /Which bronchiolitis severe-disease risk features[\s\S]*Has the child had ICU care/i,
+  "pediatric respiratory conditional history should activate bronchiolitis high-risk and prior severe asthma rows"
+);
+assert.match(
+  pediatricRespTriggeredExamText,
+  /Inspect oral mucosa/i,
+  "pediatric respiratory conditional exam should activate oral mucosa inspection for dehydration/poor intake triggers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_abdominal_pain_vomiting_v1"),
+  "pediatric abdominal pain/vomiting should be a complete validated readiness row after adding pediatric GI/GU routing"
+);
+const pediatricAbdRow = iterationRun.results.find((result) => result.intent_id === "pediatric_abdominal_pain_vomiting_v1");
+assert.ok(pediatricAbdRow, "pediatric abdominal pain/vomiting iteration row should exist");
+assert.equal(pediatricAbdRow.complete_validated_workup, true, "pediatric abdominal pain/vomiting should be complete and not left as staged review text");
+[
+  "IDSA_APPENDICITIS_IMAGING_2024",
+  "ACEP_APPENDICITIS_2023",
+  "NICE_UTI_UNDER16_NG224",
+  "NICE_GASTROENTERITIS_UNDER5_CG84",
+  "NICE_ECTOPIC_MISCARRIAGE_NG126",
+  "RCH_ACUTE_ABDOMINAL_PAIN",
+  "RCH_VOMITING_CHILD"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricAbdRow.source_ids.includes(sourceId),
+    `pediatric abdominal pain/vomiting should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricAbdRow.source_ids.includes("AAFP_ACUTE_ABD_PAIN_2023") && !pediatricAbdRow.source_ids.includes("ACR_RLQ_PAIN_2022"),
+  "pediatric abdominal pain/vomiting should not inherit adult abdominal pain source rows"
+);
+const pediatricAbdSafetyText = (pediatricAbdRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricAbdHistoryText = (pediatricAbdRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricAbdExamText = [...(pediatricAbdRow.core || []), ...(pediatricAbdRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricAbdTestsText = (pediatricAbdRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricAbdRedFlagText = (pediatricAbdRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricAbdManagementText = (pediatricAbdRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricAbdSafetyText,
+  /Measure blood pressure[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Measure temperature[\s\S]*Measure current weight[\s\S]*Document mental status[\s\S]*Document intake and urine output[\s\S]*Measure bedside glucose/i,
+  "pediatric abdominal pain/vomiting should keep vitals, weight, mental status, intake/urine output, and bedside glucose in baseline safety data"
+);
+assert.match(
+  pediatricAbdHistoryText,
+  /(?=[\s\S]*under 6 weeks)(?=[\s\S]*pain now)(?=[\s\S]*bilious green)(?=[\s\S]*blood or mucus)(?=[\s\S]*more than 5 diarrheal stools)(?=[\s\S]*dysuria)(?=[\s\S]*pregnancy possible)(?=[\s\S]*testicular pain)/i,
+  "pediatric abdominal pain/vomiting should ask age-band, pain trajectory, vomiting character, stool/exposure, dehydration, urinary, pregnancy, and scrotal history"
+);
+assert.match(
+  pediatricAbdExamText,
+  /Inspect abdomen[\s\S]*Auscultate bowel sounds[\s\S]*Palpate abdomen for focal tenderness[\s\S]*Test rebound tenderness[\s\S]*Test capillary refill/i,
+  "pediatric abdominal pain/vomiting should render individual abdominal and hydration maneuvers, not a generic focused exam"
+);
+assert.doesNotMatch(
+  pediatricAbdExamText,
+  /Measure blood pressure|Measure heart rate|Measure respiratory rate|Measure temperature|Measure current weight|Measure bedside glucose|Document intake and urine output/i,
+  "pediatric abdominal pain/vomiting should not leak baseline safety data into physical exam maneuvers"
+);
+assert.match(
+  pediatricAbdTestsText,
+  /Right lower quadrant ultrasound first[\s\S]*Equivocal ultrasound appendicitis pathway[\s\S]*Urinalysis with urine culture[\s\S]*Pregnancy test for pregnancy-capable adolescent[\s\S]*Stool microbiology when indicated[\s\S]*Oral rehydration therapy threshold/i,
+  "pediatric abdominal pain/vomiting should include ultrasound-first appendicitis logic, equivocal-US pathway, urine testing, pregnancy testing, stool triggers, and ORS threshold"
+);
+assert.match(
+  pediatricAbdTestsText,
+  /LR\+ about 14\.4[\s\S]*LR- about 0\.23|LR\+ about 14\.4[\s\S]*LR- about 0\.23/i,
+  "pediatric abdominal pain/vomiting should expose available ultrasound likelihood-ratio context when available"
+);
+assert.match(
+  pediatricAbdRedFlagText,
+  /Bilious green vomiting[\s\S]*Peritonitis[\s\S]*Shock dehydration[\s\S]*ectopic pregnancy[\s\S]*testicular torsion/i,
+  "pediatric abdominal pain/vomiting should include obstruction, peritonitis, dehydration/shock, ectopic, and torsion red flags"
+);
+assert.match(
+  pediatricAbdManagementText,
+  /Surgical or ED escalation[\s\S]*Appendicitis imaging disposition[\s\S]*Gastroenteritis oral rehydration safety net[\s\S]*UTI testing treatment[\s\S]*Adolescent pregnancy/i,
+  "pediatric abdominal pain/vomiting should show surgical escalation, appendicitis imaging disposition, ORS safety net, UTI route, and adolescent pregnancy route"
+);
+const pediatricAbdTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_abdominal_pain_vomiting_v1"],
+  allMatches: false,
+  modifiers: "right lower quadrant migration appendicitis equivocal ultrasound bilious green vomit obstruction currant jelly blood in stool outbreak travel dehydration no urine poor intake adolescent missed period pregnancy vaginal bleeding syncope shoulder tip rectal pressure testicular scrotal high riding torsion",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 90,
+  maxCoreItems: 28,
+  maxConditionalItems: 44,
+  limit: 0
+});
+const pediatricAbdTriggeredRow = pediatricAbdTriggeredRun.results.find((result) => result.intent_id === "pediatric_abdominal_pain_vomiting_v1");
+assert.ok(pediatricAbdTriggeredRow, "triggered pediatric abdominal audit row should exist");
+const pediatricAbdTriggeredHistoryText = (pediatricAbdTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricAbdTriggeredExamText = [...(pediatricAbdTriggeredRow.core || []), ...(pediatricAbdTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricAbdTriggeredHistoryText,
+  /Are right lower quadrant pain[\s\S]*Are bilious green vomiting[\s\S]*If pregnancy is possible[\s\S]*Are blood or mucus in stool[\s\S]*is there sudden testicular pain/i,
+  "pediatric abdominal conditional history should activate appendicitis, obstruction, ectopic, stool-testing, and torsion rows"
+);
+assert.match(
+  pediatricAbdTriggeredExamText,
+  /Percuss abdomen for peritoneal irritation[\s\S]*Inspect scrotum[\s\S]*Palpate testis position[\s\S]*Inspect oral mucosa/i,
+  "pediatric abdominal conditional exam should activate peritoneal, scrotal, testis-position, and dehydration maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_chest_pain_syncope_v1"),
+  "pediatric chest pain/syncope should be a complete validated readiness row after adding pediatric cardiopulmonary routing"
+);
+const pediatricChestRow = iterationRun.results.find((result) => result.intent_id === "pediatric_chest_pain_syncope_v1");
+assert.ok(pediatricChestRow, "pediatric chest pain/syncope iteration row should exist");
+assert.equal(pediatricChestRow.complete_validated_workup, true, "pediatric chest pain/syncope should be complete and not left as staged review text");
+[
+  "RCH_CHEST_PAIN_CHILD",
+  "RCH_SYNCOPE_CHILD",
+  "RCH_PEDIATRIC_ECG",
+  "CHOP_PEDS_CHEST_PAIN_2025",
+  "JHACH_CHEST_PAIN_2018"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricChestRow.source_ids.includes(sourceId),
+    `pediatric chest pain/syncope should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricChestRow.source_ids.includes("AHA_ACC_CHEST_PAIN_2021") && !pediatricChestRow.source_ids.includes("ESC_ACS_NSTE"),
+  "pediatric chest pain/syncope should not inherit adult ACS source rows"
+);
+const pediatricChestSafetyText = (pediatricChestRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricChestHistoryText = (pediatricChestRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricChestExamText = [...(pediatricChestRow.core || []), ...(pediatricChestRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricChestTestsText = (pediatricChestRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricChestRedFlagText = (pediatricChestRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricChestManagementText = (pediatricChestRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricChestSafetyText,
+  /Measure blood pressure[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Measure oxygen saturation[\s\S]*Measure temperature[\s\S]*Measure orthostatic blood pressure[\s\S]*Measure pain score/i,
+  "pediatric chest pain/syncope should keep vitals, oxygen saturation, orthostatics, and pain score in baseline safety data"
+);
+assert.match(
+  pediatricChestHistoryText,
+  /(?=[\s\S]*under 6 weeks)(?=[\s\S]*crushing)(?=[\s\S]*syncope)(?=[\s\S]*family)(?=[\s\S]*dyspnea)(?=[\s\S]*hemoptysis)(?=[\s\S]*vaccination)(?=[\s\S]*reproducible)/i,
+  "pediatric chest pain/syncope should ask age-band, pain character, syncope/palpitations, cardiac family history, respiratory/PE, illness/vaccine/drug, and reproducible pain history"
+);
+assert.match(
+  pediatricChestExamText,
+  /Auscultate heart sounds[\s\S]*Palpate peripheral pulses[\s\S]*Auscultate lung fields[\s\S]*Observe work of breathing[\s\S]*Palpate chest wall/i,
+  "pediatric chest pain/syncope should render individual heart, pulse, lung, work-of-breathing, and chest-wall maneuvers"
+);
+assert.doesNotMatch(
+  pediatricChestExamText,
+  /Measure blood pressure|Measure heart rate|Measure respiratory rate|Measure oxygen saturation|Measure temperature|Measure orthostatic blood pressure|Measure pain score/i,
+  "pediatric chest pain/syncope should not leak baseline safety data into physical exam maneuvers"
+);
+assert.match(
+  pediatricChestTestsText,
+  /ECG when cardiac risk or syncope is present[\s\S]*Chest X-ray only when indicated[\s\S]*Troponin and inflammatory labs when indicated[\s\S]*Syncope ECG glucose anemia and pregnancy tests[\s\S]*Echo Holter or exercise testing after review/i,
+  "pediatric chest pain/syncope should include pediatric ECG indications, targeted CXR/troponin/labs, syncope testing, and post-review advanced testing"
+);
+assert.match(
+  pediatricChestTestsText,
+  /Guideline pathways do not provide one ECG LR[\s\S]*LR is not attached to CXR selection|LR is not attached to CXR selection[\s\S]*Guideline pathways do not provide one ECG LR/i,
+  "pediatric chest pain/syncope should state when LR data are unavailable and fall back to source-specific indications"
+);
+assert.match(
+  pediatricChestRedFlagText,
+  /Exertional chest pain or syncope[\s\S]*Abnormal cardiac exam or poor perfusion[\s\S]*Family history of early sudden death[\s\S]*Hypoxia respiratory distress or hemoptysis[\s\S]*Abnormal pediatric ECG/i,
+  "pediatric chest pain/syncope should include exertional, cardiac exam, family history, respiratory, and ECG red flags"
+);
+assert.match(
+  pediatricChestManagementText,
+  /Emergency pediatric cardiology escalation[\s\S]*Low-risk chest pain testing restraint[\s\S]*Syncope consultation and discharge route[\s\S]*Respiratory or PE route[\s\S]*Activity restriction and return precautions/i,
+  "pediatric chest pain/syncope should show cardiology escalation, low-risk testing restraint, syncope disposition, respiratory/PE route, and activity restriction"
+);
+const pediatricChestTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_chest_pain_syncope_v1"],
+  allMatches: false,
+  modifiers: "syncope fainting passed out during exercise no prodrome sudden onset palpitations fast irregular rhythm svt family sudden death long qt wpw hemoptysis hypoxia estrogen pregnancy postpartum marfan cardiomyopathy myocarditis orthopnea gallop hypotension poor perfusion",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 90,
+  maxCoreItems: 28,
+  maxConditionalItems: 44,
+  limit: 0
+});
+const pediatricChestTriggeredRow = pediatricChestTriggeredRun.results.find((result) => result.intent_id === "pediatric_chest_pain_syncope_v1");
+assert.ok(pediatricChestTriggeredRow, "triggered pediatric chest pain/syncope audit row should exist");
+const pediatricChestTriggeredHistoryText = (pediatricChestTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricChestTriggeredExamText = [...(pediatricChestTriggeredRow.core || []), ...(pediatricChestTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricChestTriggeredHistoryText,
+  /For syncope or near-syncope[\s\S]*For palpitations[\s\S]*If PE is possible[\s\S]*pregnancy-capable adolescent/i,
+  "pediatric chest conditional history should activate syncope, palpitations, PE-risk, and adolescent pregnancy rows"
+);
+assert.match(
+  pediatricChestTriggeredExamText,
+  /Inspect skin perfusion[\s\S]*Palpate liver edge[\s\S]*Inspect aortopathy features/i,
+  "pediatric chest conditional exam should activate perfusion, liver-edge, and aortopathy maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_urinary_uti_pyelonephritis_v1"),
+  "pediatric urinary/UTI should be a complete validated readiness row after adding pediatric GU routing"
+);
+const pediatricUtiRow = iterationRun.results.find((result) => result.intent_id === "pediatric_urinary_uti_pyelonephritis_v1");
+assert.ok(pediatricUtiRow, "pediatric urinary/UTI iteration row should exist");
+assert.equal(pediatricUtiRow.complete_validated_workup, true, "pediatric urinary/UTI should be complete and not left as staged review text");
+[
+  "NICE_UTI_UNDER16_NG224",
+  "RCH_UTI_CHILD",
+  "CHQ_PEDS_UTI_2024"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricUtiRow.source_ids.includes(sourceId),
+    `pediatric urinary/UTI should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricUtiRow.source_ids.includes("IDSA_CUTI_2025") && !pediatricUtiRow.source_ids.includes("EAU_URO_INFECTIONS"),
+  "pediatric urinary/UTI should not inherit adult GU/pyelonephritis source rows"
+);
+const pediatricUtiSafetyText = (pediatricUtiRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricUtiHistoryText = (pediatricUtiRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricUtiExamText = [...(pediatricUtiRow.core || []), ...(pediatricUtiRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricUtiTestsText = (pediatricUtiRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricUtiRedFlagText = (pediatricUtiRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricUtiManagementText = (pediatricUtiRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricUtiSafetyText,
+  /Measure temperature[\s\S]*Measure blood pressure[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Document mental status[\s\S]*Document intake and urine output[\s\S]*Measure current weight/i,
+  "pediatric urinary/UTI should keep temperature, blood pressure, vitals, mental status, intake/urine output, and weight in baseline safety data"
+);
+assert.match(
+  pediatricUtiHistoryText,
+  /(?=[\s\S]*under 28 days)(?=[\s\S]*painful urination)(?=[\s\S]*poor feeding)(?=[\s\S]*loin)(?=[\s\S]*previous confirmed UTI)(?=[\s\S]*nappy rash)/i,
+  "pediatric urinary/UTI should ask age-band, classic urinary, infant nonspecific, upper-tract, risk-factor, and mimic history"
+);
+assert.match(
+  pediatricUtiExamText,
+  /Palpate suprapubic area[\s\S]*Palpate loin tenderness[\s\S]*Inspect oral mucosa[\s\S]*Inspect external genitalia when indicated/i,
+  "pediatric urinary/UTI should render individual suprapubic, loin, hydration, and indicated external-genitalia maneuvers"
+);
+assert.doesNotMatch(
+  pediatricUtiExamText,
+  /Measure temperature|Measure blood pressure|Measure heart rate|Measure respiratory rate|Document mental status|Document intake and urine output|Measure current weight/i,
+  "pediatric urinary/UTI should not leak baseline safety data into physical exam maneuvers"
+);
+assert.match(
+  pediatricUtiTestsText,
+  /Urine sample before antibiotics when feasible[\s\S]*Dipstick microscopy and culture interpretation[\s\S]*Upper-tract labs and renal ultrasound when indicated[\s\S]*Age-based UTI imaging schedule[\s\S]*Adolescent STI and pregnancy tests when indicated/i,
+  "pediatric urinary/UTI should include urine collection validity, dipstick/culture interpretation, upper-tract tests, age-based imaging, and adolescent STI/pregnancy tests"
+);
+assert.match(
+  pediatricUtiTestsText,
+  /Guidelines do not provide one universal LR[\s\S]*LR is not applicable to guideline imaging schedules|LR is not applicable to guideline imaging schedules[\s\S]*Guidelines do not provide one universal LR/i,
+  "pediatric urinary/UTI should explain unavailable LR data and use source-defined testing thresholds"
+);
+assert.match(
+  pediatricUtiRedFlagText,
+  /Suspected UTI in baby under 3 months[\s\S]*Toxic appearance or sepsis physiology[\s\S]*Upper UTI or pyelonephritis features[\s\S]*Atypical or recurrent UTI[\s\S]*Contaminated sample, bag culture, chronic catheter, or colonization risk/i,
+  "pediatric urinary/UTI should include infant, sepsis, upper-tract, atypical/recurrent, and contamination/catheter red flags"
+);
+assert.match(
+  pediatricUtiManagementText,
+  /Infant or sepsis escalation[\s\S]*Uncomplicated outpatient UTI route[\s\S]*Upper or complex UTI route[\s\S]*Imaging and follow-up stewardship[\s\S]*Culture follow-up, return precautions, and recurrence prevention/i,
+  "pediatric urinary/UTI should show infant/sepsis escalation, outpatient route, complex route, imaging stewardship, and culture follow-up consequences"
+);
+const pediatricUtiTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_urinary_uti_pyelonephritis_v1"],
+  allMatches: false,
+  modifiers: "urine sample collected clean catch bag specimen sexually active pregnancy possible sti symptoms long-term catheter recent instrumentation known colonization known resistant organism mitrofanoff neurogenic bladder prophylactic antibiotics poor urine flow raised creatinine non e coli not responding 48 hours bladder mass atypical uti recurrent uti criteria urinary retention leg weakness saddle",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 90,
+  maxCoreItems: 28,
+  maxConditionalItems: 44,
+  limit: 0
+});
+const pediatricUtiTriggeredRow = pediatricUtiTriggeredRun.results.find((result) => result.intent_id === "pediatric_urinary_uti_pyelonephritis_v1");
+assert.ok(pediatricUtiTriggeredRow, "triggered pediatric urinary/UTI audit row should exist");
+const pediatricUtiTriggeredHistoryText = (pediatricUtiTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricUtiTriggeredExamText = [...(pediatricUtiTriggeredRow.core || []), ...(pediatricUtiTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricUtiTriggeredHistoryText,
+  /Which urine collection method[\s\S]*adolescent with urinary symptoms[\s\S]*catheter\/anomaly\/prophylaxis[\s\S]*Atypical or recurrent UTI/i,
+  "pediatric urinary/UTI conditional history should activate collection, adolescent STI/pregnancy, catheter/anomaly, and atypical/recurrent rows"
+);
+assert.match(
+  pediatricUtiTriggeredExamText,
+  /Palpate abdomen for bladder or abdominal mass[\s\S]*Test lower-limb reflex symmetry/i,
+  "pediatric urinary/UTI conditional exam should activate bladder/mass and neurologic-bladder maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_rash_skin_v1"),
+  "pediatric rash/skin should be a complete validated readiness row after adding pediatric derm routing"
+);
+const pediatricRashRow = iterationRun.results.find((result) => result.intent_id === "pediatric_rash_skin_v1");
+assert.ok(pediatricRashRow, "pediatric rash/skin iteration row should exist");
+assert.equal(pediatricRashRow.complete_validated_workup, true, "pediatric rash/skin should be complete and not left as staged review text");
+[
+  "NICE_FEVER_UNDER5_NG143",
+  "RCH_PETECHIAE_PURPURA_CHILD",
+  "RCH_KAWASAKI_DISEASE",
+  "RCH_URTICARIA_CHILD",
+  "JHACH_SSTI_CHILD_2023"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricRashRow.source_ids.includes(sourceId),
+    `pediatric rash/skin should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricRashRow.source_ids.includes("AHRQ_CALIBRATE_DX") && !pediatricRashRow.source_ids.includes("MCGEE_EBPD"),
+  "pediatric rash/skin should not inherit adult generic dermatology source rows"
+);
+const pediatricRashSafetyText = (pediatricRashRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricRashHistoryText = (pediatricRashRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricRashExamText = [...(pediatricRashRow.core || []), ...(pediatricRashRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRashTestsText = (pediatricRashRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricRashRedFlagText = (pediatricRashRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricRashManagementText = (pediatricRashRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricRashSafetyText,
+  /Measure temperature[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Measure oxygen saturation[\s\S]*Measure blood pressure[\s\S]*Document mental status[\s\S]*Measure current weight/i,
+  "pediatric rash/skin should keep vitals, mental status, and weight in baseline safety data"
+);
+assert.match(
+  pediatricRashHistoryText,
+  /Ask pediatric rash age and vulnerability[\s\S]*Ask rash morphology and progression[\s\S]*Ask fever and systemic danger symptoms[\s\S]*Ask hives and anaphylaxis symptoms[\s\S]*Ask Kawasaki fever and feature history[\s\S]*Ask skin infection and source-control history[\s\S]*Ask bleeding trauma and vasculitis clues/i,
+  "pediatric rash/skin should ask age/vulnerability, morphology, systemic danger, anaphylaxis, Kawasaki, SSTI, and bleeding/vasculitis history"
+);
+assert.doesNotMatch(
+  pediatricRashHistoryText,
+  /urinary and flank infection-source symptoms|skin\/line infection-source symptoms/i,
+  "pediatric rash/skin history labels should not be generic infection-source labels"
+);
+assert.match(
+  pediatricRashExamText,
+  /Inspect rash morphology and distribution[\s\S]*Test rash blanching with clear pressure[\s\S]*Inspect oral mucosa and lips[\s\S]*Inspect conjunctival injection[\s\S]*Inspect skin infection border warmth and drainage/i,
+  "pediatric rash/skin should render individual rash, blanching, mucosal, conjunctival, and SSTI maneuvers"
+);
+assert.doesNotMatch(
+  pediatricRashExamText,
+  /Measure temperature|Measure heart rate|Measure respiratory rate|Measure oxygen saturation|Measure blood pressure|Document mental status|Measure current weight|generic focused skin exam/i,
+  "pediatric rash/skin should not leak baseline safety data or generic focused exam labels into physical exam maneuvers"
+);
+assert.match(
+  pediatricRashTestsText,
+  /Non-blanching rash senior-review tests[\s\S]*Kawasaki labs ECG and echocardiography route[\s\S]*SSTI culture imaging and source control route[\s\S]*Anaphylaxis immediate treatment route[\s\S]*Bleeding vasculitis and hematology screen/i,
+  "pediatric rash/skin should include non-blanching/sepsis tests, Kawasaki ECG/echo route, SSTI source control, anaphylaxis action, and heme/vasculitis tests"
+);
+assert.match(
+  pediatricRashTestsText,
+  /Guidelines do not provide one universal LR[\s\S]*LR is not applicable to the Kawasaki testing route|LR is not applicable to the Kawasaki testing route[\s\S]*Guidelines do not provide one universal LR/i,
+  "pediatric rash/skin should explain unavailable LR data and fall back to source-defined thresholds"
+);
+assert.match(
+  pediatricRashRedFlagText,
+  /Non-blanching rash with fever or unwell child[\s\S]*Urticaria with airway breathing circulation or GI symptoms[\s\S]*Prolonged fever with Kawasaki features[\s\S]*Severe skin infection or necrotizing features[\s\S]*Purpura with bleeding abdominal joint or hematology features/i,
+  "pediatric rash/skin should include non-blanching, anaphylaxis, Kawasaki, severe SSTI, and bleeding/heme red flags"
+);
+assert.match(
+  pediatricRashManagementText,
+  /Immediate sepsis or meningococcal route[\s\S]*Anaphylaxis observation and discharge route[\s\S]*Kawasaki senior review and cardiac route[\s\S]*SSTI outpatient observation or admission route[\s\S]*Low-risk rash discharge and return precautions/i,
+  "pediatric rash/skin should show sepsis, anaphylaxis, Kawasaki, SSTI, and low-risk discharge consequences"
+);
+const pediatricRashTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_rash_skin_v1"],
+  allMatches: false,
+  modifiers: "chronic urticaria hives more than 6 weeks teen pregnancy possible new medicine rash recent travel rash measles exposure cervical lymph node bruising with rash hepatosplenomegaly kawasaki hands feet palms soles rash desquamation perineal rash",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 90,
+  maxCoreItems: 28,
+  maxConditionalItems: 44,
+  limit: 0
+});
+const pediatricRashTriggeredRow = pediatricRashTriggeredRun.results.find((result) => result.intent_id === "pediatric_rash_skin_v1");
+assert.ok(pediatricRashTriggeredRow, "triggered pediatric rash/skin audit row should exist");
+const pediatricRashTriggeredHistoryText = (pediatricRashTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricRashTriggeredExamText = [...(pediatricRashTriggeredRow.core || []), ...(pediatricRashTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricRashTriggeredHistoryText,
+  /Ask chronic urticaria duration and systemic features[\s\S]*Ask adolescent pregnancy and medication context[\s\S]*Ask travel outbreak and contact exposure/i,
+  "pediatric rash/skin conditional history should activate chronic urticaria, adolescent medication/pregnancy, and exposure rows"
+);
+assert.match(
+  pediatricRashTriggeredExamText,
+  /Palpate cervical lymph node size[\s\S]*Palpate liver edge and spleen tip[\s\S]*Inspect palms soles and perineum/i,
+  "pediatric rash/skin conditional exam should activate lymph-node, liver/spleen, and palms/soles/perineal maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_msk_limp_hot_joint_v1"),
+  "pediatric MSK limp/hot-joint should be a complete validated readiness row after adding pediatric orthopaedic routing"
+);
+const pediatricMskRow = iterationRun.results.find((result) => result.intent_id === "pediatric_msk_limp_hot_joint_v1");
+assert.ok(pediatricMskRow, "pediatric MSK limp/hot-joint iteration row should exist");
+assert.equal(pediatricMskRow.complete_validated_workup, true, "pediatric MSK limp/hot-joint should be complete and not left as staged review text");
+[
+  "RCH_LIMPING_CHILD",
+  "RCH_BONE_JOINT_INFECTION",
+  "CHQ_LIMP_CHILD_2026",
+  "CHQ_BONE_JOINT_INFECTION_2025",
+  "ACR_ACUTELY_LIMPING_CHILD_2018"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricMskRow.source_ids.includes(sourceId),
+    `pediatric MSK limp/hot-joint should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricMskRow.source_ids.includes("AAFP_MONOARTHRITIS_2025") && !pediatricMskRow.source_ids.includes("ACP_LOW_BACK_PAIN_2017"),
+  "pediatric MSK limp/hot-joint should not inherit adult monoarthritis or adult low-back-pain source rows"
+);
+const pediatricMskSafetyText = (pediatricMskRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricMskHistoryText = (pediatricMskRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricMskExamText = [...(pediatricMskRow.core || []), ...(pediatricMskRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricMskTestsText = (pediatricMskRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricMskRedFlagText = (pediatricMskRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricMskManagementText = (pediatricMskRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricMskSafetyText,
+  /Measure temperature[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Measure blood pressure[\s\S]*Measure oxygen saturation[\s\S]*Document mental status[\s\S]*Measure current weight[\s\S]*Measure pain score/i,
+  "pediatric MSK limp/hot-joint should keep pediatric vitals, mental status, weight, and pain score in baseline safety data"
+);
+assert.match(
+  pediatricMskHistoryText,
+  /Ask pediatric MSK age and walking baseline[\s\S]*Ask current weight-bearing ability[\s\S]*Ask onset and injury mechanism[\s\S]*Ask pain location and referred pain[\s\S]*Ask fever and infection symptoms[\s\S]*Ask swelling and motion limitation[\s\S]*Ask systemic and malignancy clues/i,
+  "pediatric MSK limp/hot-joint should ask age/baseline, weight-bearing, mechanism, localization, infection, swelling/motion, and systemic-red-flag history"
+);
+assert.match(
+  pediatricMskHistoryText,
+  /Multi-select:[\s\S]*Endorsed able to walk comfortably[\s\S]*Denied unable to bear weight/i,
+  "pediatric MSK limp/hot-joint should expose explicit multi-select and endorsed/denied controls"
+);
+assert.match(
+  pediatricMskExamText,
+  /Observe gait[\s\S]*Inspect affected limb position[\s\S]*Palpate focal bony tenderness[\s\S]*Test active joint motion[\s\S]*Test passive joint motion/i,
+  "pediatric MSK limp/hot-joint should render individual gait, inspection, palpation, active-motion, and passive-motion maneuvers"
+);
+assert.doesNotMatch(
+  pediatricMskExamText,
+  /Measure temperature|Measure heart rate|Measure respiratory rate|Measure blood pressure|Measure oxygen saturation|Document mental status|Measure current weight|Measure pain score|generic focused musculoskeletal exam/i,
+  "pediatric MSK limp/hot-joint should not leak baseline safety data or generic focused exam labels into physical exam maneuvers"
+);
+assert.match(
+  pediatricMskTestsText,
+  /No routine tests for low-risk comfortable limp[\s\S]*X-ray localized pain or injury area[\s\S]*Infection labs and blood culture route[\s\S]*Ultrasound hip effusion route[\s\S]*MRI for osteomyelitis localization/i,
+  "pediatric MSK limp/hot-joint should include low-risk testing restraint, site-specific X-ray, infection labs/cultures, ultrasound effusion route, and MRI localization"
+);
+assert.match(
+  pediatricMskTestsText,
+  /no laboratory test or combination is specific[\s\S]*no single LR is encoded|no single LR is encoded[\s\S]*no laboratory test or combination is specific/i,
+  "pediatric MSK limp/hot-joint should explain unavailable LR data and fall back to guideline/source rationale"
+);
+assert.match(
+  pediatricMskRedFlagText,
+  /Unable to walk or weight bear[\s\S]*Fever with hot swollen limited joint[\s\S]*Systemically unwell or sepsis physiology[\s\S]*Night pain weight loss pallor bruising[\s\S]*Safeguarding concern or inconsistent injury/i,
+  "pediatric MSK limp/hot-joint should include non-weight-bearing, septic-joint, sepsis, malignancy/systemic, and safeguarding red flags"
+);
+assert.match(
+  pediatricMskManagementText,
+  /Immediate orthopedic route for septic arthritis[\s\S]*Bone infection admission and antibiotic route[\s\S]*Low-risk discharge only when walking comfortably[\s\S]*Persistent limp or negative X-ray route[\s\S]*Referred or systemic cause route/i,
+  "pediatric MSK limp/hot-joint should show orthopaedic, bone-infection, low-risk discharge, persistent-limp, and referred/systemic management consequences"
+);
+const pediatricMskTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_msk_limp_hot_joint_v1"],
+  allMatches: false,
+  modifiers: "hip pain septic arthritis transient synovitis joint effusion fever adolescent groin pain thigh pain scfe fall unwitnessed delayed presentation bruising inconsistent history back pain weakness urinary retention numbness fracture dislocation cool limb wound puncture",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 90,
+  maxCoreItems: 28,
+  maxConditionalItems: 44,
+  limit: 0
+});
+const pediatricMskTriggeredRow = pediatricMskTriggeredRun.results.find((result) => result.intent_id === "pediatric_msk_limp_hot_joint_v1");
+assert.ok(pediatricMskTriggeredRow, "triggered pediatric MSK limp/hot-joint audit row should exist");
+const pediatricMskTriggeredHistoryText = (pediatricMskTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricMskTriggeredExamText = [...(pediatricMskTriggeredRow.core || []), ...(pediatricMskTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricMskTriggeredHistoryText,
+  /Ask septic hip predictor context[\s\S]*Ask adolescent hip slip symptoms[\s\S]*Ask safeguarding and injury consistency[\s\S]*Ask back neurologic and bladder symptoms/i,
+  "pediatric MSK conditional history should activate septic-hip, adolescent-hip, safeguarding, and back-neuro rows"
+);
+assert.match(
+  pediatricMskTriggeredExamText,
+  /Palpate joint effusion[\s\S]*Inspect open wounds[\s\S]*Palpate distal pulses[\s\S]*Inspect injury pattern/i,
+  "pediatric MSK conditional exam should activate effusion, wound, distal-pulse, and injury-pattern maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_neuro_headache_seizure_ams_v1"),
+  "pediatric neuro headache/seizure/AMS should be a complete validated readiness row after adding pediatric neuro routing"
+);
+const pediatricNeuroRow = iterationRun.results.find((result) => result.intent_id === "pediatric_neuro_headache_seizure_ams_v1");
+assert.ok(pediatricNeuroRow, "pediatric neuro headache/seizure/AMS iteration row should exist");
+assert.equal(pediatricNeuroRow.complete_validated_workup, true, "pediatric neuro headache/seizure/AMS should be complete and not left as staged review text");
+[
+  "RCH_HEADACHE_CHILD",
+  "RCH_SEIZURES_ACUTE_2025",
+  "RCH_ALTERED_CONSCIOUS_STATE_2022",
+  "NICE_NG127_CHILD_NEURO_2019",
+  "NICE_NG217_EPILEPSY_2025",
+  "CHQ_STATUS_EPILEPTICUS_CHILD"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricNeuroRow.source_ids.includes(sourceId),
+    `pediatric neuro headache/seizure/AMS should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricNeuroRow.source_ids.includes("AHA_ASA_STROKE_2019"),
+  "pediatric neuro headache/seizure/AMS should not inherit the adult stroke guideline source"
+);
+const pediatricNeuroSafetyText = (pediatricNeuroRow.safety || []).map((entry) => entry.label).join(" | ");
+const pediatricNeuroHistoryText = (pediatricNeuroRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricNeuroExamText = [...(pediatricNeuroRow.core || []), ...(pediatricNeuroRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricNeuroTestsText = (pediatricNeuroRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.reference_range_or_threshold, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricNeuroRedFlagText = (pediatricNeuroRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+const pediatricNeuroManagementText = (pediatricNeuroRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricNeuroSafetyText,
+  /Measure temperature[\s\S]*Measure heart rate[\s\S]*Measure respiratory rate[\s\S]*Measure blood pressure[\s\S]*Measure oxygen saturation[\s\S]*Document mental status with AVPU or pediatric GCS[\s\S]*Measure bedside glucose[\s\S]*Measure current weight/i,
+  "pediatric neuro should keep pediatric vitals, mental status/GCS, bedside glucose, and weight in baseline safety data"
+);
+assert.match(
+  pediatricNeuroHistoryText,
+  /Ask pediatric neuro age and baseline[\s\S]*Ask headache pattern and triggers[\s\S]*Ask headache-associated danger features[\s\S]*Ask seizure or blackout event details[\s\S]*Ask recovery and focal deficit status[\s\S]*Ask fever and CNS infection features[\s\S]*Ask trauma toxin and metabolic context/i,
+  "pediatric neuro should ask age/baseline, headache, red flags, seizure event, recovery/focal deficit, CNS infection, and trauma/toxin/metabolic history"
+);
+assert.match(
+  pediatricNeuroHistoryText,
+  /Multi-select:[\s\S]*still seizing[\s\S]*full recovery[\s\S]*unable to obtain/i,
+  "pediatric neuro should expose explicit multi-select seizure/recovery documentation controls"
+);
+assert.match(
+  pediatricNeuroExamText,
+  /Inspect pupils[\s\S]*Inspect eye movements[\s\S]*Test limb strength[\s\S]*Test coordination or gait when safe[\s\S]*Inspect optic discs by fundoscopy/i,
+  "pediatric neuro should render individual pupil, eye-movement, strength, coordination/gait, and fundoscopy maneuvers"
+);
+assert.doesNotMatch(
+  pediatricNeuroExamText,
+  /Measure temperature|Measure heart rate|Measure respiratory rate|Measure blood pressure|Measure oxygen saturation|Measure bedside glucose|Measure current weight|generic broad neurologic exam|NIHSS-only/i,
+  "pediatric neuro should not leak baseline safety data, adult NIHSS-only scoring, or generic broad neuro exam labels into physical exam maneuvers"
+);
+assert.match(
+  pediatricNeuroTestsText,
+  /Do not order routine tests for low-risk headache[\s\S]*Point-of-care glucose[\s\S]*Seizure metabolic labs when indicated[\s\S]*12-lead ECG when seizure mimic or first seizure assessment[\s\S]*Neuroimaging when indicated[\s\S]*EEG and urgent first-seizure referral[\s\S]*CNS infection testing with LP safety check/i,
+  "pediatric neuro should include low-risk headache testing restraint, glucose, conditional metabolic labs, ECG, imaging, EEG/referral, and CNS infection/LP-safety routes"
+);
+assert.match(
+  pediatricNeuroTestsText,
+  /EEG should support diagnosis but should not be used alone to exclude epilepsy[\s\S]*Reduced GCS: do not perform LP|Reduced GCS: do not perform LP[\s\S]*EEG should support diagnosis but should not be used alone to exclude epilepsy/i,
+  "pediatric neuro should explain unavailable LR/evidence limits and include EEG and LP safety limitations"
+);
+assert.match(
+  pediatricNeuroRedFlagText,
+  /Seizure over 5 minutes or repeated without recovery[\s\S]*Persistent altered conscious state[\s\S]*Pediatric headache red flags[\s\S]*Focal deficit, papilledema, or raised-ICP signs[\s\S]*CNS infection, trauma, toxin, or safeguarding concern/i,
+  "pediatric neuro should include status, altered-state, headache, focal/ICP, and infection/trauma/toxin/safeguarding red flags"
+);
+assert.match(
+  pediatricNeuroManagementText,
+  /Active seizure emergency route[\s\S]*Persistent altered conscious state admission or transfer[\s\S]*Headache red flag senior review route[\s\S]*First seizure follow-up route[\s\S]*Low-risk headache discharge constraints/i,
+  "pediatric neuro should show emergency seizure, altered-state, headache-red-flag, first-seizure follow-up, and low-risk discharge consequences"
+);
+const pediatricNeuroTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_neuro_headache_seizure_ams_v1"],
+  allMatches: false,
+  modifiers: "under 4 infant head circumference fontanelle sunsetting known epilepsy seizure plan rescue medication missed antiseizure adolescent pregnancy possible postpartum estrogen medication overuse self-harm vp shunt neurosurgery bleeding disorder sickle cell immunosuppression head injury fall safeguarding toxin fever photophobia rash",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 120,
+  maxCoreItems: 30,
+  maxConditionalItems: 60,
+  limit: 0
+});
+const pediatricNeuroTriggeredRow = pediatricNeuroTriggeredRun.results.find((result) => result.intent_id === "pediatric_neuro_headache_seizure_ams_v1");
+assert.ok(pediatricNeuroTriggeredRow, "triggered pediatric neuro audit row should exist");
+const pediatricNeuroTriggeredHistoryText = (pediatricNeuroTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricNeuroTriggeredExamText = [...(pediatricNeuroTriggeredRow.core || []), ...(pediatricNeuroTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricNeuroTriggeredHistoryText,
+  /Ask under-4 head size and raised-ICP context[\s\S]*Ask known epilepsy and rescue plan[\s\S]*Ask adolescent confidential neuro context[\s\S]*Ask shunt bleeding and immune-risk context/i,
+  "pediatric neuro conditional history should activate under-4 ICP, known epilepsy, adolescent, and shunt/bleeding/immune-risk rows"
+);
+assert.match(
+  pediatricNeuroTriggeredExamText,
+  /Test neck stiffness[\s\S]*Inspect skin for rash or bruising[\s\S]*Inspect head for trauma signs[\s\S]*Measure head circumference/i,
+  "pediatric neuro conditional exam should activate meningism, rash/bruising, head-trauma, and head-circumference maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_dka_hhs_hyperglycemia_v1"),
+  "pediatric DKA/HHS should be a complete validated readiness row after adding child-specific hyperglycemic-crisis routing"
+);
+const pediatricDkaRow = iterationRun.results.find((result) => result.intent_id === "pediatric_dka_hhs_hyperglycemia_v1");
+assert.ok(pediatricDkaRow, "pediatric DKA/HHS iteration row should exist");
+assert.equal(pediatricDkaRow.complete_validated_workup, true, "pediatric DKA/HHS should be complete and not left as staged review text");
+[
+  "RCH_DKA_CHILD",
+  "NICE_NG18_DKA_CHILD",
+  "ISPAD_DKA_HHS_2022",
+  "CHQ_DKA_HHS_CHILD_2024"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricDkaRow.source_ids.includes(sourceId),
+    `pediatric DKA/HHS should be traceable to ${sourceId}`
+  );
+});
+assert.ok(
+  !pediatricDkaRow.source_ids.includes("ADA_HYPERGLYCEMIC_CRISES_2024") && !pediatricDkaRow.source_ids.includes("ADA_STANDARDS_HOSPITAL_2026"),
+  "pediatric DKA/HHS should not inherit adult hyperglycemic-crisis source rows"
+);
+const pediatricDkaSafetyText = (pediatricDkaRow.safety || []).map((entry) => [entry.label, entry.options, entry.management_change].join(" ")).join(" | ");
+const pediatricDkaHistoryText = (pediatricDkaRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, entry.likelihood_ratio_note, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricDkaExamText = [...(pediatricDkaRow.core || []), ...(pediatricDkaRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricDkaTestsText = (pediatricDkaRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.reference_range_or_threshold, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricDkaRedFlagText = (pediatricDkaRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricDkaManagementText = (pediatricDkaRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.limitations].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricDkaSafetyText,
+  /Measure temperature[\s\S]*Measure heart rate and blood pressure[\s\S]*Measure respiratory rate and oxygen saturation[\s\S]*Document mental status with AVPU or modified GCS[\s\S]*Measure current weight[\s\S]*Measure bedside glucose and point-of-care ketones[\s\S]*Document intake, urine output, and fluid balance/i,
+  "pediatric DKA/HHS should keep vitals, neurologic status, weight, glucose/ketones, and fluid balance in baseline safety data"
+);
+assert.match(
+  pediatricDkaHistoryText,
+  /Ask age weight and diabetes context[\s\S]*Ask hyperglycemia ketone and acidosis symptoms[\s\S]*Ask insulin doses pump CGM and access barriers[\s\S]*Ask vomiting intake and dehydration trajectory[\s\S]*Ask source-localizing infection and precipitant symptoms[\s\S]*Ask cerebral edema and neurologic warning symptoms[\s\S]*Ask HHS dehydration and osmolality features[\s\S]*Ask recurrent DKA psychosocial and safety context/i,
+  "pediatric DKA/HHS should ask age/diabetes, DKA symptoms, insulin/device/access, hydration, precipitant, cerebral edema, HHS, and recurrence history"
+);
+assert.match(
+  pediatricDkaHistoryText,
+  /Multi-select:[\s\S]*missed basal[\s\S]*pump failure[\s\S]*doses taken as prescribed[\s\S]*unable to obtain/i,
+  "pediatric DKA/HHS should expose multi-select controls that allow endorsed, denied, and unable-to-obtain insulin/device documentation"
+);
+assert.match(
+  pediatricDkaHistoryText,
+  /Likelihood ratios are not available|Question-level LR\+\/LR- is not available|source-defined biochemical confirmation/i,
+  "pediatric DKA/HHS should explain when LR data are unavailable and fall back to source thresholds"
+);
+assert.match(
+  pediatricDkaExamText,
+  /Test central capillary refill[\s\S]*Inspect mucous membranes[\s\S]*Test skin turgor[\s\S]*Observe work of breathing and Kussmaul pattern[\s\S]*Inspect pupils and eye movements[\s\S]*Palpate abdomen for focal tenderness/i,
+  "pediatric DKA/HHS should render individual capillary refill, mucosa, turgor, Kussmaul, pupil/eye, and abdominal maneuvers"
+);
+assert.doesNotMatch(
+  pediatricDkaExamText,
+  /Measure temperature|Measure heart rate|Measure respiratory rate|Measure blood pressure|Measure current weight|Measure bedside glucose|Document neurologic status|fluid balance|generic focused exam|Adult DKA/i,
+  "pediatric DKA/HHS should not leak vitals, weight, bedside labs, fluid balance, generic labels, or adult DKA language into physical exam maneuvers"
+);
+assert.match(
+  pediatricDkaTestsText,
+  /Venous blood gas and acid-base status[\s\S]*Glucose and blood ketone thresholds[\s\S]*Electrolytes, urea, creatinine, corrected sodium, and potassium[\s\S]*Effective osmolality for HHS or mixed DKA\/HHS[\s\S]*12-lead ECG when potassium risk or severe illness[\s\S]*New diabetes baseline labs and autoimmune\/celiac screen[\s\S]*Source-directed infection tests only when indicated/i,
+  "pediatric DKA/HHS should include VBG, glucose/ketones, electrolytes/corrected sodium/potassium, osmolality, ECG, new-diabetes labs, and source-directed infection testing"
+);
+assert.match(
+  pediatricDkaTestsText,
+  /(?=[\s\S]*BGL >11 mmol\/L)(?=[\s\S]*pH <7\.3)(?=[\s\S]*bicarbonate <18)(?=[\s\S]*BGL >33\.3 mmol\/L)(?=[\s\S]*ketones <1\.1 mmol\/L)(?=[\s\S]*effective osmolality >320)(?=[\s\S]*plasma glucose <14 mmol\/L)/i,
+  "pediatric DKA/HHS should show pediatric DKA, HHS, and dextrose-addition thresholds"
+);
+assert.match(
+  pediatricDkaTestsText,
+  /40 mmol\/L KCl[\s\S]*(?:anuria|potassium above normal)[\s\S]*hypokalemia|hypokalemia[\s\S]*40 mmol\/L KCl[\s\S]*(?:anuria|potassium above normal)/i,
+  "pediatric DKA/HHS should show potassium concentration and exception thresholds"
+);
+assert.match(
+  pediatricDkaRedFlagText,
+  /Cerebral edema or oedema signs[\s\S]*Severe DKA or high-risk age[\s\S]*Shock, cardiovascular compromise, or repeated fluid bolus need[\s\S]*Potassium danger or anuria[\s\S]*Pediatric HHS or mixed DKA\/HHS concern/i,
+  "pediatric DKA/HHS should include cerebral edema, severe/young-age, shock, potassium/anuria, and HHS red flags"
+);
+assert.match(
+  pediatricDkaManagementText,
+  /Emergency ABCD and senior escalation route[\s\S]*Pediatric fluid and dextrose route[\s\S]*Insulin after fluids with no bolus[\s\S]*Potassium-safe fluid route[\s\S]*Avoid bicarbonate except specialist emergency indication[\s\S]*Cerebral edema emergency treatment route[\s\S]*Pediatric HHS specialist route[\s\S]*Diabetes team, education, and recurrence prevention route/i,
+  "pediatric DKA/HHS should show emergency route, fluid/dextrose, insulin no-bolus, potassium, bicarbonate limitation, cerebral edema treatment, HHS route, and diabetes-team recurrence consequences"
+);
+assert.match(
+  pediatricDkaManagementText,
+  /10 mL\/kg[\s\S]*0\.9% sodium chloride[\s\S]*1 hour[\s\S]*0\.05 to 0\.1 units\/kg\/hour[\s\S]*never give an IV or IM insulin bolus/i,
+  "pediatric DKA/HHS should show pediatric bolus, fluid, delayed insulin, dose, and no-bolus rules"
+);
+const pediatricDkaTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_dka_hhs_hyperglycemia_v1"],
+  allMatches: false,
+  modifiers: "adolescent sglt2 euglycemic near normal glucose fasting pregnancy hypernatremia hyperosmolality osmolality anuria hyperkalemia recurrent dka insulin omission body image self harm pump infusion site fever cough cerebral oedema headache bradycardia hypertension cranial nerve falling gcs severe dehydration hhs shock",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 120,
+  maxCoreItems: 30,
+  maxConditionalItems: 60,
+  limit: 0
+});
+const pediatricDkaTriggeredRow = pediatricDkaTriggeredRun.results.find((result) => result.intent_id === "pediatric_dka_hhs_hyperglycemia_v1");
+assert.ok(pediatricDkaTriggeredRow, "triggered pediatric DKA/HHS audit row should exist");
+const pediatricDkaTriggeredHistoryText = (pediatricDkaTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricDkaTriggeredExamText = [...(pediatricDkaTriggeredRow.core || []), ...(pediatricDkaTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricDkaTriggeredHistoryText,
+  /Ask euglycemic DKA and adolescent context[\s\S]*Ask hypernatremia anuria and potassium safety context[\s\S]*Ask recurrent DKA insulin omission confidentially/i,
+  "pediatric DKA/HHS conditional history should activate euglycemic/adolescent, sodium-potassium-renal, and recurrence/confidential rows"
+);
+assert.match(
+  pediatricDkaTriggeredExamText,
+  /Auscultate lungs for infection source[\s\S]*Inspect insulin pump infusion site[\s\S]*Palpate peripheral pulses[\s\S]*Inspect pupils for neurologic deterioration/i,
+  "pediatric DKA/HHS conditional exam should activate source-localizing lung/site, pulse, and cerebral edema maneuvers"
+);
+assert.ok(
+  readyRows.some((result) => result.intent_id === "pediatric_hematology_anemia_bleeding_v1"),
+  "pediatric hematology should be a complete validated readiness row after adding child-specific anemia/bleeding routing"
+);
+const pediatricHemeRow = iterationRun.results.find((result) => result.intent_id === "pediatric_hematology_anemia_bleeding_v1");
+assert.ok(pediatricHemeRow, "pediatric hematology iteration row should exist");
+assert.equal(pediatricHemeRow.complete_validated_workup, true, "pediatric hematology should be complete and not left as staged review text");
+[
+  "RCH_ANAEMIA_CHILD",
+  "RCH_IRON_DEFICIENCY_CHILD",
+  "RCH_ITP_CHILD",
+  "RCH_BLOOD_PRODUCT_CHILD",
+  "RCH_PETECHIAE_PURPURA_CHILD",
+  "NICE_NG12_SUSPECTED_CANCER_2026"
+].forEach((sourceId) => {
+  assert.ok(
+    pediatricHemeRow.source_ids.includes(sourceId),
+    `pediatric hematology should be traceable to ${sourceId}`
+  );
+});
+const pediatricHemeSafetyText = (pediatricHemeRow.safety || [])
+  .map((entry) => [entry.label, entry.options, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricHemeHistoryText = (pediatricHemeRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.full_question, entry.reason, entry.management_change, entry.options, entry.likelihood_ratio_note, ...(entry.detail_prompts || [])].join(" "))
+  .join(" | ");
+const pediatricHemeExamText = [...(pediatricHemeRow.core || []), ...(pediatricHemeRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricHemeTestsText = (pediatricHemeRow.tests || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.reference_range_or_threshold, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricHemeRedFlagText = (pediatricHemeRow.red_flags || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.likelihood_ratio_note].join(" "))
+  .join(" | ");
+const pediatricHemeManagementText = (pediatricHemeRow.management_changes || [])
+  .map((entry) => [entry.label, entry.action, entry.reason, entry.management_change, entry.reference_range_or_threshold, entry.limitations].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricHemeSafetyText,
+  /Measure temperature[\s\S]*Measure heart rate and blood pressure[\s\S]*Measure respiratory rate and oxygen saturation[\s\S]*Measure current weight[\s\S]*Document active bleeding burden and mental status/i,
+  "pediatric hematology should keep temperature, cardiopulmonary vitals, weight, bleeding burden, and mental status in baseline safety data"
+);
+assert.match(
+  pediatricHemeHistoryText,
+  /Ask age growth and baseline hematology context[\s\S]*Ask anemia symptoms and instability history[\s\S]*Ask bleeding source and severity history[\s\S]*Ask bruising petechiae and trauma pattern[\s\S]*Ask iron nutrition and blood loss risk[\s\S]*Ask hemolysis jaundice and dark urine history[\s\S]*Ask leukemia lymphoma and marrow red flags[\s\S]*Ask medication anticoagulant and family bleeding history/i,
+  "pediatric hematology should ask distinct age/baseline, anemia, bleeding, bruising, iron, hemolysis, malignancy, and medication/family history at baseline"
+);
+assert.match(
+  pediatricHemeHistoryText,
+  /Multi-select:[\s\S]*epistaxis[\s\S]*heavy menstrual bleeding[\s\S]*none endorsed[\s\S]*unable to assess/i,
+  "pediatric hematology should expose multi-select controls that allow endorsed, denied, and unable-to-assess symptom documentation"
+);
+assert.doesNotMatch(
+  pediatricHemeHistoryText,
+  /adrenal insufficiency|PID and pelvic infection|urinary and flank infection-source|ectopic\/PID danger|bleeding medication, coagulopathy/i,
+  "pediatric hematology history labels should not borrow unrelated endocrine, pelvic, urinary, or adult bleeding labels"
+);
+assert.match(
+  pediatricHemeExamText,
+  /Inspect conjunctival pallor[\s\S]*Inspect petechiae distribution[\s\S]*Inspect oral mucosal bleeding[\s\S]*Palpate cervical lymph nodes[\s\S]*Palpate liver edge[\s\S]*Palpate spleen tip/i,
+  "pediatric hematology should render individual pallor, petechiae, mucosal bleeding, cervical node, liver, and spleen maneuvers"
+);
+assert.doesNotMatch(
+  pediatricHemeExamText,
+  /Measure temperature|Measure heart rate|Measure respiratory rate|Measure blood pressure|Measure current weight|mental status|generic focused exam|Adult/i,
+  "pediatric hematology should not leak vitals, weight, mental status, generic focused exam, or adult language into physical exam maneuvers"
+);
+assert.match(
+  pediatricHemeTestsText,
+  /Full blood examination film and reticulocyte count[\s\S]*Ferritin and iron deficiency assessment[\s\S]*Coagulation and fibrinogen tests[\s\S]*Group screen and crossmatch when transfusion possible[\s\S]*Hemolysis bilirubin LDH haptoglobin DAT and urine tests[\s\S]*B12 folate renal liver and inflammatory tests when indicated[\s\S]*Pregnancy test when adolescent bleeding or anemia context applies/i,
+  "pediatric hematology should include CBC/film/retic, ferritin, coagulation, crossmatch, hemolysis, targeted B12/renal/liver/inflammatory tests, and adolescent pregnancy testing"
+);
+assert.match(
+  `${pediatricHemeTestsText} ${pediatricHemeManagementText}`,
+  /platelet count <100 x 10\^9\/L[\s\S]*Hb <70 g\/L[\s\S]*Hb 70-90 g\/L[\s\S]*Ferritin <20 microgram\/L[\s\S]*Hb >90 g\/L/i,
+  "pediatric hematology should show platelet, Hb transfusion, and ferritin thresholds in exported audit rows"
+);
+assert.match(
+  pediatricHemeRedFlagText,
+  /Active bleeding with shock or altered state[\s\S]*Petechiae or purpura with fever or unwell appearance[\s\S]*Unexplained petechiae bruising pallor fatigue fever infection or bone pain[\s\S]*Lymphadenopathy or splenomegaly with systemic features[\s\S]*ITP concern with abnormal film cytopenias systemic features or major bleeding[\s\S]*Severe anemia or symptomatic Hb below transfusion range/i,
+  "pediatric hematology should include bleeding instability, febrile petechiae, leukemia, lymphoma, ITP exclusion, and severe anemia red flags"
+);
+assert.match(
+  pediatricHemeManagementText,
+  /Emergency stabilization route[\s\S]*RBC transfusion threshold route[\s\S]*Iron therapy and diet route[\s\S]*ITP observation treatment and precautions route[\s\S]*Leukemia lymphoma urgent referral route[\s\S]*Hematology handoff and review owner route/i,
+  "pediatric hematology should show emergency, transfusion, iron, ITP, cancer-referral, and hematology-handoff management consequences"
+);
+assert.match(
+  pediatricHemeManagementText,
+  /Do not include patient identifiers|keep source IDs and clinical facts only/i,
+  "pediatric hematology should keep copy/export handoff PHI-safe and auditable"
+);
+const pediatricHemeTriggeredRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+  diagnosis: "",
+  intentIds: ["pediatric_hematology_anemia_bleeding_v1"],
+  allMatches: false,
+  modifiers: "adolescent heavy menstrual pregnancy postpartum self harm itp low platelets thrombocytopenia fever bone pain lymphadenopathy hepatosplenomegaly transfusion thalassemia sickle chemotherapy transplant epistaxis hemarthrosis joint swelling",
+  setting: "General medicine",
+  population: "Pediatric",
+  maxCandidates: 120,
+  maxCoreItems: 30,
+  maxConditionalItems: 60,
+  limit: 0
+});
+const pediatricHemeTriggeredRow = pediatricHemeTriggeredRun.results.find((result) => result.intent_id === "pediatric_hematology_anemia_bleeding_v1");
+assert.ok(pediatricHemeTriggeredRow, "triggered pediatric hematology audit row should exist");
+const pediatricHemeTriggeredHistoryText = (pediatricHemeTriggeredRow.history || [])
+  .map((entry) => [entry.label, entry.text, entry.reason, entry.management_change, entry.options].join(" "))
+  .join(" | ");
+const pediatricHemeTriggeredExamText = [...(pediatricHemeTriggeredRow.core || []), ...(pediatricHemeTriggeredRow.conditional || [])]
+  .map((entry) => [entry.label, entry.technique, entry.options, entry.management_change].join(" "))
+  .join(" | ");
+assert.match(
+  pediatricHemeTriggeredHistoryText,
+  /Ask adolescent confidential bleeding and pregnancy context[\s\S]*Ask ITP exclusion and low-risk context[\s\S]*Ask transfusion and specialty protocol context/i,
+  "pediatric hematology conditional history should activate adolescent, ITP-exclusion, and transfusion/specialty rows"
+);
+assert.match(
+  pediatricHemeTriggeredExamText,
+  /Inspect anterior nares[\s\S]*Palpate axillary lymph nodes[\s\S]*Palpate inguinal lymph nodes[\s\S]*Inspect target joint swelling/i,
+  "pediatric hematology conditional exam should activate epistaxis, lymphoma-node, and hemarthrosis/joint maneuvers"
+);
 const dkaHhsRow = iterationRun.results.find((result) => result.intent_id === "dka_hhs_v1");
 assert.ok(dkaHhsRow, "DKA/HHS iteration row should exist");
 const dkaSafetyText = (dkaHhsRow.safety || []).map((entry) => entry.label).join(" | ");
@@ -2179,6 +3690,316 @@ assert.match(
   /Inspect skin wounds|Inspect skin for infection source|Inspect line sites/i,
   "fever modifier should activate skin/wound/line source inspection in DKA/HHS"
 );
+const pregnancyDiabetesPrimaryOutputIntentIds = [
+  "type_1_diabetes_mellitus_intent_v1",
+  "type_2_diabetes_mellitus_intent_v1",
+  "prediabetes_intent_v1"
+];
+pregnancyDiabetesPrimaryOutputIntentIds.forEach((intentId) => {
+  const pregnancyRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+    diagnosis: "",
+    intentIds: [intentId],
+    allMatches: false,
+    modifiers: "currently pregnant",
+    setting: "General medicine",
+    population: "Adult",
+    maxCandidates: 80,
+    maxCoreItems: 24,
+    maxConditionalItems: 36,
+    limit: 0
+  });
+  const pregnancyRow = pregnancyRun.results.find((result) => result.intent_id === intentId);
+  assert.ok(pregnancyRow, `${intentId}: active pregnancy modifier audit row should exist`);
+  assert.ok(
+    (pregnancyRow.active_bundles || []).some((bundleId) => /pregnancy_diabetes_context/.test(bundleId)),
+    `${intentId}: active pregnancy should activate the pregnancy-specific diabetes primary-output add-on`
+  );
+  const pregnancyHistoryText = (pregnancyRow.history || [])
+    .map((entry) => [entry.label, entry.text, ...(entry.detail_prompts || [])].join(" "))
+    .join(" | ");
+  const pregnancyTestsText = (pregnancyRow.tests || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.management_implication].join(" "))
+    .join(" | ");
+  const pregnancyRedFlagText = (pregnancyRow.red_flags || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.management_implication].join(" "))
+    .join(" | ");
+  const pregnancyManagementText = (pregnancyRow.management_changes || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.management_implication].join(" "))
+    .join(" | ");
+  assert.match(
+    pregnancyHistoryText,
+    /gestational-age history|gestational age, dating, and obstetric context|pregnancy dating/i,
+    `${intentId}: active pregnancy should add gestational-age and dating history to the primary diabetes workup`
+  );
+  assert.match(
+    pregnancyHistoryText,
+    /preexisting-risk history|prior gestational diabetes|prior gdm|macrosomia|pre-pregnancy diabetes/i,
+    `${intentId}: active pregnancy should add prior GDM, macrosomia, and preexisting-risk history`
+  );
+  assert.match(
+    pregnancyHistoryText,
+    /fetal-obstetric plan history|fetal surveillance|delivery timing|maternal-fetal medicine|fetal growth/i,
+    `${intentId}: active pregnancy should add fetal and obstetric-plan context`
+  );
+  assert.match(
+    pregnancyTestsText,
+    /OGTT threshold pathway|75-g OGTT|fasting\s*>?=?92|1-hour\s*>?=?180|2-hour\s*>?=?153|Carpenter-Coustan/i,
+    `${intentId}: active pregnancy should add pregnancy-specific OGTT threshold interpretation`
+  );
+  assert.match(
+    pregnancyTestsText,
+    /safety-test pathway|ketones|anion gap|acid-base|preeclampsia/i,
+    `${intentId}: active pregnancy should add pregnancy diabetes safety tests`
+  );
+  assert.match(
+    pregnancyRedFlagText,
+    /urgent cues|reduced fetal movement|preeclampsia|severe hyperglycemia|ketones/i,
+    `${intentId}: active pregnancy should add pregnancy-specific urgent cues`
+  );
+  assert.match(
+    pregnancyManagementText,
+    /postpartum follow-up plan|postpartum 75-g OGTT|4-12 weeks|long-term prevention/i,
+    `${intentId}: active pregnancy should add postpartum diabetes follow-up`
+  );
+  const baselineRow = iterationRun.results.find((result) => result.intent_id === intentId);
+  if (baselineRow) {
+    const baselineText = [
+      ...(baselineRow.history || []),
+      ...(baselineRow.tests || []),
+      ...(baselineRow.red_flags || []),
+      ...(baselineRow.management_changes || [])
+    ].map((entry) => entry.label).join(" | ");
+    assert.doesNotMatch(
+      baselineText,
+      /Pregnancy diabetes gestational-age history|Pregnancy diabetes OGTT threshold pathway|Pregnancy diabetes postpartum follow-up plan/i,
+      `${intentId}: pregnancy-specific primary-output add-on should not leak into baseline output without the active pregnancy modifier`
+    );
+  }
+});
+
+const postpartumDiabetesFollowUpIntentIds = [
+  "type_2_diabetes_mellitus_intent_v1",
+  "prediabetes_intent_v1"
+];
+postpartumDiabetesFollowUpIntentIds.forEach((intentId) => {
+  const postpartumRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+    diagnosis: "",
+    intentIds: [intentId],
+    allMatches: false,
+    modifiers: "postpartum after gestational diabetes",
+    setting: "General medicine",
+    population: "Adult",
+    maxCandidates: 80,
+    maxCoreItems: 24,
+    maxConditionalItems: 36,
+    limit: 0
+  });
+  const postpartumRow = postpartumRun.results.find((result) => result.intent_id === intentId);
+  assert.ok(postpartumRow, `${intentId}: postpartum modifier audit row should exist`);
+  assert.ok(
+    (postpartumRow.active_bundles || []).some((bundleId) => /postpartum_gdm_follow_up_primary_output/.test(bundleId)),
+    `${intentId}: postpartum modifier should activate the postpartum GDM follow-up primary-output add-on`
+  );
+  const postpartumHistoryText = (postpartumRow.history || [])
+    .map((entry) => [entry.label, entry.text, ...(entry.detail_prompts || [])].join(" "))
+    .join(" | ");
+  const postpartumTestsText = (postpartumRow.tests || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.management_implication, entry.action].join(" "))
+    .join(" | ");
+  const postpartumManagementText = (postpartumRow.management_changes || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.management_implication, entry.action].join(" "))
+    .join(" | ");
+  assert.match(
+    postpartumHistoryText,
+    /Postpartum GDM follow-up timing|weeks postpartum|75-g OGTT already been completed|pregnancy-associated dysglycemia/i,
+    `${intentId}: postpartum modifier should add postpartum GDM follow-up timing history`
+  );
+  assert.match(
+    postpartumTestsText,
+    /Postpartum GDM 75-g OGTT pathway|4-12 weeks postpartum|nonpregnancy diagnostic criteria|OGTT preferred over A1c/i,
+    `${intentId}: postpartum modifier should add postpartum 75-g OGTT testing with nonpregnancy criteria`
+  );
+  assert.match(
+    postpartumManagementText,
+    /long-term diabetes screening handoff|every 1-3 years|primary-care or endocrine follow-up|future pregnancy planning/i,
+    `${intentId}: postpartum modifier should add long-term diabetes screening and handoff`
+  );
+  const activePregnancyLeakText = [
+    ...(postpartumRow.history || []),
+    ...(postpartumRow.tests || []),
+    ...(postpartumRow.red_flags || []),
+    ...(postpartumRow.management_changes || [])
+  ].map((entry) => [entry.label, entry.text, entry.action].join(" ")).join(" | ");
+  assert.doesNotMatch(
+    activePregnancyLeakText,
+    /Pregnancy diabetes gestational-age history|Pregnancy diabetes urgent cues|reduced fetal movement/i,
+    `${intentId}: postpartum modifier should not activate active-pregnancy GDM urgent-cue output`
+  );
+});
+
+const postpartumMaternalSafetyIntentIds = [
+  "fever_sepsis_v1",
+  "suspected_pe_v1"
+];
+postpartumMaternalSafetyIntentIds.forEach((intentId) => {
+  const postpartumRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+    diagnosis: "",
+    intentIds: [intentId],
+    allMatches: false,
+    modifiers: "postpartum recent delivery",
+    setting: "General medicine",
+    population: "Adult",
+    maxCandidates: 90,
+    maxCoreItems: 28,
+    maxConditionalItems: 44,
+    limit: 0
+  });
+  const postpartumRow = postpartumRun.results.find((result) => result.intent_id === intentId);
+  assert.ok(postpartumRow, `${intentId}: postpartum maternal-safety modifier audit row should exist`);
+  assert.ok(
+    (postpartumRow.active_bundles || []).some((bundleId) => /postpartum_maternal_safety_primary_output/.test(bundleId)),
+    `${intentId}: postpartum modifier should activate the maternal safety primary-output add-on`
+  );
+  const postpartumHistoryText = (postpartumRow.history || [])
+    .map((entry) => [entry.label, entry.text, entry.reason, ...(entry.detail_prompts || [])].join(" "))
+    .join(" | ");
+  const postpartumTestsText = (postpartumRow.tests || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action, entry.options].join(" "))
+    .join(" | ");
+  const postpartumRedFlagText = (postpartumRow.red_flags || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action, entry.options].join(" "))
+    .join(" | ");
+  const postpartumManagementText = (postpartumRow.management_changes || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action, entry.options].join(" "))
+    .join(" | ");
+  if (intentId === "fever_sepsis_v1") {
+    assert.match(
+      postpartumHistoryText,
+      /Postpartum infection source and warning-sign screen|fever >=100\.4|uterine|lochia|wound|breast|urinary/i,
+      `${intentId}: postpartum fever/sepsis should add postpartum infection-source and warning-sign history`
+    );
+    assert.match(
+      postpartumTestsText,
+      /Postpartum sepsis lactate, cultures, and source-control pathway|lactate|blood cultures|antibiotics|source-control/i,
+      `${intentId}: postpartum fever/sepsis should add maternal sepsis lactate/culture/source-control pathway`
+    );
+  } else {
+    assert.match(
+      postpartumHistoryText,
+      /Postpartum VTE symptoms and risk history|dyspnea|pleuritic|unilateral leg|cesarean|anticoagulation|breastfeeding/i,
+      `${intentId}: postpartum PE should add postpartum VTE symptom/risk and anticoagulation-safety history`
+    );
+    assert.match(
+      postpartumTestsText,
+      /Postpartum PE\/DVT diagnostic and anticoagulation-safety pathway|compression ultrasound|chest imaging|anticoagulation|breastfeeding/i,
+      `${intentId}: postpartum PE should add postpartum VTE diagnostic and anticoagulation-safety pathway`
+    );
+  }
+  assert.match(
+    postpartumRedFlagText,
+    /Postpartum urgent maternal warning cues|fever >=100\.4|dyspnea|chest pain|syncope|severe headache|vision/i,
+    `${intentId}: postpartum modifier should add urgent maternal warning cues`
+  );
+  assert.match(
+    postpartumManagementText,
+    /Postpartum OB\/MFM safety handoff|postpartum timing|delivery type|lactation|OB or MFM|return precautions/i,
+    `${intentId}: postpartum modifier should add OB/MFM safety handoff consequences`
+  );
+  assert.doesNotMatch(
+    [...(postpartumRow.core || []), ...(postpartumRow.conditional || [])].map((entry) => entry.label).join(" | "),
+    /Postpartum urgent maternal warning cues|Postpartum infection source|Postpartum VTE symptoms/i,
+    `${intentId}: postpartum maternal-safety add-on should not appear as physical exam maneuvers`
+  );
+  const baselineRow = iterationRun.results.find((result) => result.intent_id === intentId);
+  const baselineText = [
+    ...(baselineRow?.history || []),
+    ...(baselineRow?.tests || []),
+    ...(baselineRow?.red_flags || []),
+    ...(baselineRow?.management_changes || [])
+  ].map((entry) => entry.label).join(" | ");
+  assert.doesNotMatch(
+    baselineText,
+    /Postpartum infection source|Postpartum VTE symptoms|Postpartum urgent maternal warning cues|Postpartum OB\/MFM safety handoff/i,
+    `${intentId}: postpartum maternal-safety add-on should not leak into baseline output without postpartum context`
+  );
+});
+
+const olderAdultSafetyIntentIds = [
+  "fever_sepsis_v1",
+  "suspected_pe_v1",
+  "dka_hhs_v1"
+];
+olderAdultSafetyIntentIds.forEach((intentId) => {
+  const olderAdultRun = buildClinicalWorkupIterationRun(loadClinicalWorkupIterationCatalog(), {
+    diagnosis: "",
+    intentIds: [intentId],
+    allMatches: false,
+    modifiers: "older adult frailty age 75 recent fall polypharmacy",
+    setting: "General medicine",
+    population: "Adult",
+    maxCandidates: 90,
+    maxCoreItems: 28,
+    maxConditionalItems: 44,
+    limit: 0
+  });
+  const olderAdultRow = olderAdultRun.results.find((result) => result.intent_id === intentId);
+  assert.ok(olderAdultRow, `${intentId}: older-adult modifier audit row should exist`);
+  assert.ok(
+    (olderAdultRow.active_bundles || []).some((bundleId) => /older_adult_safety_primary_output/.test(bundleId)),
+    `${intentId}: older-adult modifier should activate the geriatric safety primary-output add-on`
+  );
+  const olderAdultSafetyText = (olderAdultRow.safety || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action, entry.options].join(" "))
+    .join(" | ");
+  const olderAdultHistoryText = (olderAdultRow.history || [])
+    .map((entry) => [entry.label, entry.text, entry.reason, ...(entry.detail_prompts || [])].join(" "))
+    .join(" | ");
+  const olderAdultTestsText = (olderAdultRow.tests || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action].join(" "))
+    .join(" | ");
+  const olderAdultRedFlagText = (olderAdultRow.red_flags || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action].join(" "))
+    .join(" | ");
+  const olderAdultManagementText = (olderAdultRow.management_changes || [])
+    .map((entry) => [entry.label, entry.reason, entry.management_change, entry.action].join(" "))
+    .join(" | ");
+  assert.match(
+    olderAdultSafetyText,
+    /Measure orthostatic blood pressure|Systolic drop >=20|fall|syncope|medication/i,
+    `${intentId}: older-adult modifier should add orthostatic BP as baseline safety data`
+  );
+  assert.match(
+    olderAdultHistoryText,
+    /Older-adult baseline function, cognition, and falls|baseline cognition|recent falls|caregiver|delirium/i,
+    `${intentId}: older-adult modifier should add baseline function/cognition/fall history`
+  );
+  assert.match(
+    olderAdultHistoryText,
+    /Older-adult medication fall and delirium risk|polypharmacy|renal-dose|sedatives|anticholinergics|anticoagulants/i,
+    `${intentId}: older-adult modifier should add medication/fall/delirium risk history`
+  );
+  assert.match(
+    olderAdultTestsText,
+    /Older-adult medication and renal-dose safety review|anticholinergic|sedative|opioid|renal function|pharmacy/i,
+    `${intentId}: older-adult modifier should add medication and renal-dose review`
+  );
+  assert.match(
+    olderAdultRedFlagText,
+    /Older-adult delirium, fall, and unsafe-disposition cues|acute confusion|Cannot ambulate safely|Anticoagulated fall|Unsafe home/i,
+    `${intentId}: older-adult modifier should add delirium/fall/unsafe-disposition escalation cues`
+  );
+  assert.match(
+    olderAdultManagementText,
+    /function, falls, and medication-safety handoff|PT\/OT|Medication changes reviewed|Caregiver\/home support/i,
+    `${intentId}: older-adult modifier should add disposition and handoff consequences`
+  );
+  assert.doesNotMatch(
+    [...(olderAdultRow.core || []), ...(olderAdultRow.conditional || [])].map((entry) => entry.label).join(" | "),
+    /orthostatic blood pressure/i,
+    `${intentId}: older-adult orthostatic data should stay out of physical exam maneuvers`
+  );
+});
+
 const thyroidCrisisRow = iterationRun.results.find((result) => result.intent_id === "thyroid_crisis_v1");
 assert.ok(thyroidCrisisRow, "thyroid crisis iteration row should exist");
 const thyroidCrisisSafetyText = (thyroidCrisisRow.safety || []).map((entry) => entry.label).join(" | ");
@@ -2208,7 +4029,7 @@ assert.ok(
 const genitalDischargeRow = iterationRun.results.find((result) => result.intent_id === "genital_discharge_sti_v1");
 const genitalCoreLabels = (genitalDischargeRow?.core || []).map((entry) => entry.label).join("; ");
 const genitalHistoryLabels = (genitalDischargeRow?.history || []).map((entry) => entry.label).join("; ");
-assert.match(genitalHistoryLabels, /discharge, dysuria, genital lesions, and STI exposure/i, "genital discharge should label discharge/dysuria/exposure history as local GU/STI context");
+assert.match(genitalHistoryLabels, /GU\/STI discharge\/dysuria, lesions, and exposure/i, "genital discharge should label discharge/dysuria/exposure history as local GU/STI context");
 assert.match(genitalHistoryLabels, /groin nodes, genital lesions, and skin infection features/i, "genital discharge should label groin-node/lesion history separately from urinary source history");
 assert.doesNotMatch(genitalHistoryLabels, /urinary\/flank symptoms/i, "genital discharge history labels should not borrow urinary/flank suffixes");
 assert.match(genitalCoreLabels, /Inspect genital area/i, "genital discharge should include the accepted atomic genital exam, not a broad mucosal substitute");
@@ -2329,6 +4150,19 @@ assert.match(
   gestationalDiabetesHistoryLabels,
   /fetal-growth and obstetric ultrasound concerns/i,
   "gestational diabetes should label fetal-growth/polyhydramnios concerns as a distinct obstetric-ultrasound history domain"
+);
+const gestationalDiabetesLimitations = (iterationRun.results.find((result) => result.intent_id === "gestational_diabetes_intent_v1")?.limitations || [])
+  .map((entry) => `${entry.label} ${entry.limitations || ""}`)
+  .join("; ");
+assert.match(
+  gestationalDiabetesLimitations,
+  /applicability limits/i,
+  "gestational diabetes should surface module applicability as a limitation/caution"
+);
+assert.match(
+  gestationalDiabetesLimitations,
+  /pregnancy/i,
+  "gestational diabetes applicability caution should name active pregnancy context"
 );
 const genericHighScoreSuppressedNotes = iterationRun.results.flatMap((result) => (
   (result.review_notes || [])

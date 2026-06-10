@@ -444,20 +444,32 @@
         "text": "Any resistant or early-onset hypertension, hypokalemia, cramps or weakness, adrenal incidentaloma, OSA, or medications that could affect the aldosterone-renin ratio (ARR)?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hyperaldosteronism (Conn's Syndrome).",
@@ -490,20 +502,32 @@
         "text": "Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "known_reviewed",
+            "label": "Known/reviewed"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "hyperglycemia",
+            "label": "Hyperglycemia"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "ketones_elevated",
+            "label": "Ketones elevated"
           },
           {
-            "value": "other",
-            "label": "Other"
+            "value": "acidosis_or_anion_gap",
+            "label": "Acidosis or anion gap"
+          },
+          {
+            "value": "potassium_abnormal",
+            "label": "Potassium abnormal"
+          },
+          {
+            "value": "renal_osmolality_concern",
+            "label": "Renal/osmolality concern"
+          },
+          {
+            "value": "not_available",
+            "label": "Not available"
           }
         ],
         "action": "The answer changes autoimmune polyglandular screening, thyroid/adrenal sequencing safety, cortisol-thyroid replacement timing, and associated-endocrinopathy follow-up for Hyperaldosteronism (Conn's Syndrome).",
@@ -534,20 +558,32 @@
         "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Hyperaldosteronism (Conn's Syndrome).",
@@ -578,20 +614,32 @@
         "text": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -622,20 +670,36 @@
         "text": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Hyperaldosteronism (Conn's Syndrome).",
@@ -653,7 +717,7 @@
       },
       {
         "id": "question_06",
-        "label": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
+        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "item_type": "history_question",
         "source": {
           "source_id": "ES_PRIMARY_ALDO_2025",
@@ -664,34 +728,48 @@
           "clinical_owner": "endocrine_content_review",
           "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
         },
-        "text": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
+        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Hyperaldosteronism (Conn's Syndrome).",
-        "rationale": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hyperaldosteronism (Conn's Syndrome).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Hyperaldosteronism (Conn's Syndrome) needs urgent evaluation today.",
         "when_to_ask": "Ask when Hyperaldosteronism (Conn's Syndrome) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines the patient-specific context needed to interpret endocrine tests, avoid common mimics, and choose the safest next step for Hyperaldosteronism (Conn's Syndrome).",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Hyperaldosteronism (Conn's Syndrome) needs urgent evaluation today.",
         "management_implication": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Hyperaldosteronism (Conn's Syndrome).",
         "tags": [
           "adrenal_gland_disorders",
           "hyperaldosteronism",
-          "autoimmune"
+          "adrenal",
+          "pituitary",
+          "surgery"
         ],
         "source_seed": "Clarify exogenous glucocorticoids including injections/creams/inhalers, adrenal/pituitary surgery, autoimmune disease, MEN/VHL/NF1/SDHx history, pregnancy, and acute infection."
       },
@@ -711,20 +789,32 @@
         "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
+            "value": "no_measured_fever",
+            "label": "No measured fever"
+          },
+          {
+            "value": "less_than_39_c",
+            "label": "Less than 39 C"
+          },
+          {
+            "value": "39_c_or_higher",
+            "label": "39 C or higher"
+          },
+          {
+            "value": "chills_or_rigors",
+            "label": "Chills or rigors"
+          },
+          {
+            "value": "hypothermia_toxic_appearance",
+            "label": "Hypothermia/toxic appearance"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -756,20 +846,32 @@
         "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptoms",
+            "label": "No respiratory symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cough",
+            "label": "Cough"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "sputum",
+            "label": "Sputum"
+          },
+          {
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
+          },
+          {
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "hypoxemia_or_oxygen_need",
+            "label": "Hypoxemia or oxygen need"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -801,20 +903,36 @@
         "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Hyperaldosteronism (Conn's Syndrome) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -847,20 +965,32 @@
         "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_skin_or_line_concern",
+            "label": "No skin or line concern"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "redness",
+            "label": "Redness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "drainage",
+            "label": "Drainage"
+          },
+          {
+            "value": "wound_or_ulcer",
+            "label": "Wound or ulcer"
+          },
+          {
+            "value": "line_device_concern",
+            "label": "Line/device concern"
+          },
+          {
+            "value": "procedure_site_concern",
+            "label": "Procedure-site concern"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -898,20 +1028,32 @@
         "text": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -957,20 +1099,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hyperaldosteronism (Conn's Syndrome).",
@@ -1012,20 +1166,32 @@
         "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Hyperaldosteronism (Conn's Syndrome).",
@@ -1079,8 +1245,14 @@
           "1+",
           "2+",
           "3+",
-          "Asymmetric",
-          "Unable to assess"
+          "4+",
+          "Ankle or pedal",
+          "Pretibial",
+          "Sacral",
+          "Unilateral",
+          "Bilateral",
+          "Unable to assess",
+          "Other ___"
         ],
         "when_to_perform": "When hypertension, renal disease, or medication effects could affect volume status",
         "diagnostic_target": "volume overload, venous disease, or medication/renal-cardiac complication",

@@ -16,6 +16,11 @@
       "url_or_doi": "https://www.idsociety.org/practice-guideline/complicated-urinary-tract-infections/",
       "date_accessed": "2026-06-07",
       "license_or_access_notes": "Public IDSA guideline page; use according to site terms and local citation policy.",
+      "review_owner": "example_clinical_reviewer",
+      "reviewed_by_role": "clinician_content_reviewer",
+      "last_reviewed": "2026-06-07",
+      "next_review_due": "2027-06-07",
+      "currency_status": "reviewed_current_for_scope",
       "preferred_citation": "Infectious Diseases Society of America. 2025 Guideline Update on Complicated Urinary Tract Infections."
     }
   ],
@@ -54,6 +59,18 @@
       "gold_case_ids": [
         "example_burning_pee"
       ],
+      "applicability": {
+        "age_group": "adult",
+        "setting": "clinician support",
+        "sex_or_reproductive_context": "adult dysuria patient; pregnancy status must be assessed when medication, imaging, or disposition safety could change",
+        "pregnancy_status_required": "must_assess",
+        "use_when": [
+          "Use for adult dysuria, urinary frequency, flank pain, fever, or possible pyelonephritis workups."
+        ],
+        "do_not_use_when": [
+          "Do not use as a pediatric UTI workup or as pregnancy-specific obstetric care without separate reviewed guidance."
+        ]
+      },
       "last_reviewed": "2026-06-06",
       "review_owner": "example_clinical_reviewer"
     }

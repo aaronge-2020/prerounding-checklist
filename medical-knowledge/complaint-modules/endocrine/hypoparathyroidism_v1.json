@@ -393,20 +393,28 @@
         "text": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "childhood_head_neck_radiation",
+            "label": "Childhood head/neck radiation"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "therapeutic_radiation",
+            "label": "Therapeutic radiation"
+          },
+          {
+            "value": "occupational_exposure",
+            "label": "Occupational exposure"
+          },
+          {
+            "value": "family_thyroid_cancer_risk_factor",
+            "label": "Family thyroid cancer risk factor"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Localizing symptoms change imaging, antibody or thyroid-function interpretation, airway/eye risk assessment, and specialty referral timing for Hypoparathyroidism.",
@@ -440,20 +448,32 @@
         "text": "Any muscle cramps, weakness, palpitations, constipation, paresthesias, or paralysis suggesting potassium, calcium, adrenal, or neuromuscular severity?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "known_reviewed",
+            "label": "Known/reviewed"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "hyperglycemia",
+            "label": "Hyperglycemia"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "ketones_elevated",
+            "label": "Ketones elevated"
           },
           {
-            "value": "other",
-            "label": "Other"
+            "value": "acidosis_or_anion_gap",
+            "label": "Acidosis or anion gap"
+          },
+          {
+            "value": "potassium_abnormal",
+            "label": "Potassium abnormal"
+          },
+          {
+            "value": "renal_osmolality_concern",
+            "label": "Renal/osmolality concern"
+          },
+          {
+            "value": "not_available",
+            "label": "Not available"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -484,20 +504,44 @@
         "text": "Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "perioral_numbness",
+            "label": "Perioral numbness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "tingling",
+            "label": "Tingling"
+          },
+          {
+            "value": "cramps",
+            "label": "Cramps"
+          },
+          {
+            "value": "tetany",
+            "label": "Tetany"
+          },
+          {
+            "value": "carpopedal_spasm",
+            "label": "Carpopedal spasm"
+          },
+          {
+            "value": "seizure",
+            "label": "Seizure"
+          },
+          {
+            "value": "laryngospasm",
+            "label": "Laryngospasm"
+          },
+          {
+            "value": "arrhythmia_symptoms",
+            "label": "Arrhythmia symptoms"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -528,20 +572,36 @@
         "text": "What is the usual calcium and vitamin D intake, supplement use, diet pattern, and sun exposure?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_bone_mineral_symptom",
+            "label": "No bone/mineral symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "low_trauma_fracture",
+            "label": "Low-trauma fracture"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "bone_or_back_pain",
+            "label": "Bone or back pain"
+          },
+          {
+            "value": "height_loss",
+            "label": "Height loss"
+          },
+          {
+            "value": "falls_gait_instability",
+            "label": "Falls/gait instability"
+          },
+          {
+            "value": "kidney_stones",
+            "label": "Kidney stones"
+          },
+          {
+            "value": "malabsorption_risk",
+            "label": "Malabsorption risk"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -575,20 +635,36 @@
         "text": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -619,20 +695,36 @@
         "text": "Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -663,20 +755,36 @@
         "text": "Any prior neck, thyroid, or parathyroid surgery, radiation, or postoperative calcium problems?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_bone_mineral_symptom",
+            "label": "No bone/mineral symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "low_trauma_fracture",
+            "label": "Low-trauma fracture"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "bone_or_back_pain",
+            "label": "Bone or back pain"
+          },
+          {
+            "value": "height_loss",
+            "label": "Height loss"
+          },
+          {
+            "value": "falls_gait_instability",
+            "label": "Falls/gait instability"
+          },
+          {
+            "value": "kidney_stones",
+            "label": "Kidney stones"
+          },
+          {
+            "value": "malabsorption_risk",
+            "label": "Malabsorption risk"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",
@@ -708,20 +816,32 @@
         "text": "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Hypoparathyroidism.",

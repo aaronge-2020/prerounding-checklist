@@ -400,20 +400,32 @@
         "text": "Do you have trouble rising from a chair, climbing stairs, lifting overhead, or getting up from the floor?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Vitamin D Deficiency / Osteomalacia pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -445,20 +457,36 @@
         "text": "Any malabsorption, bariatric surgery, inflammatory bowel disease, celiac disease, pancreatic disease, or chronic diarrhea affecting nutrient or medication absorption?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",
@@ -491,20 +519,36 @@
         "text": "Any chronic kidney disease, liver disease, malabsorption, bariatric surgery, or other condition that could alter vitamin D, calcium, phosphorus, or PTH interpretation?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_bone_mineral_symptom",
+            "label": "No bone/mineral symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "low_trauma_fracture",
+            "label": "Low-trauma fracture"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "bone_or_back_pain",
+            "label": "Bone or back pain"
+          },
+          {
+            "value": "height_loss",
+            "label": "Height loss"
+          },
+          {
+            "value": "falls_gait_instability",
+            "label": "Falls/gait instability"
+          },
+          {
+            "value": "kidney_stones",
+            "label": "Kidney stones"
+          },
+          {
+            "value": "malabsorption_risk",
+            "label": "Malabsorption risk"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",
@@ -535,20 +579,36 @@
         "text": "Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",
@@ -579,20 +639,36 @@
         "text": "Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes fracture risk, calcium/vitamin D/PTH interpretation, imaging threshold, replacement urgency, and fall-prevention planning for Vitamin D Deficiency / Osteomalacia.",

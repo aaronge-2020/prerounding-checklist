@@ -13,6 +13,22 @@
       "age_group": "adult",
       "setting": "clinician support"
     },
+    "applicability": {
+      "age_group": "adult",
+      "setting": "clinician support",
+      "review_owner": "endocrine_content_review",
+      "last_reviewed": "2026-06-06",
+      "sex_or_reproductive_context": "patient with ovarian/uterine or pregnancy-capable reproductive physiology relevant to the complaint",
+      "pregnancy_status_required": "not_required_but_must_consider",
+      "use_when": [
+        "Use when menstrual, ovulatory, androgen-excess, ovarian insufficiency, menopause, or pregnancy-exclusion context changes testing and counseling.",
+        "Use when local history confirms the reproductive physiology or anatomy relevant to the selected module."
+      ],
+      "do_not_use_when": [
+        "Do not use as a generic endocrine workup when menstrual or ovarian physiology is not clinically applicable.",
+        "Do not use when pregnancy, postpartum state, prior hysterectomy/oophorectomy, or gender-affirming care changes the appropriate pathway without documenting that modifier."
+      ]
+    },
     "triggers": [
       "Hirsutism (Excessive hair growth)",
       "Hirsutism",
@@ -447,20 +463,36 @@
         "text": "Any new or rapidly progressive facial/body hair growth, acne, scalp hair loss, deepening voice, clitoromegaly, or menstrual irregularity?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
@@ -491,20 +523,32 @@
         "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
@@ -536,20 +580,36 @@
         "text": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hirsutism (Excessive hair growth) interpretation or safety?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
@@ -580,20 +640,32 @@
         "text": "Are fertility goals, pregnancy possibility, partner factors, or treatment choices relevant to the timing and safety of this endocrine workup?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes reproductive-axis localization, pregnancy or fertility safety, androgen/prolactin/gonadal testing, and referral urgency for Hirsutism (Excessive hair growth).",
@@ -625,20 +697,36 @@
         "text": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for Hirsutism (Excessive hair growth).",
@@ -671,20 +759,32 @@
         "text": "How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support puberty, timing, height, velocity. The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Hirsutism (Excessive hair growth).",
@@ -728,20 +828,32 @@
         "text": "Any weight loss, eating restriction, intense exercise, psychosocial stress, or change in energy balance that could suppress reproductive hormones?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_endocrine_symptom",
+            "label": "No endocrine symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "heat_intolerance_sweating",
+            "label": "Heat intolerance/sweating"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "cold_intolerance_dry_skin",
+            "label": "Cold intolerance/dry skin"
+          },
+          {
+            "value": "palpitations_tremor",
+            "label": "Palpitations/tremor"
+          },
+          {
+            "value": "bowel_change",
+            "label": "Bowel change"
+          },
+          {
+            "value": "weight_change",
+            "label": "Weight change"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hirsutism (Excessive hair growth).",
@@ -788,20 +900,32 @@
         "text": "Any chemotherapy, radiation, pelvic/cranial surgery, gonadal surgery, or cancer treatment that could affect endocrine function?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "chemotherapy",
+            "label": "Chemotherapy"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "radiation",
+            "label": "Radiation"
+          },
+          {
+            "value": "pelvic_cranial_surgery",
+            "label": "Pelvic/cranial surgery"
+          },
+          {
+            "value": "gonadal_surgery",
+            "label": "Gonadal surgery"
+          },
+          {
+            "value": "cancer_treatment_that_could_affect_endocrine_function",
+            "label": "Cancer treatment that could affect endocrine function"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support chemotherapy, radiation, surgery, pelvic. The answer changes the leading Hirsutism (Excessive hair growth) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",

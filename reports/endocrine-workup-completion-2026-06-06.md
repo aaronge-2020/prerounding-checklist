@@ -1,6 +1,6 @@
 # Endocrine Workup Completion Report
 
-Generated: 2026-06-08T22:16:03.121Z
+Generated: 2026-06-09T03:13:10.383Z
 Completed modules: 37
 Source registry entries: 50
 
@@ -11,7 +11,7 @@ Status: mvp. These modules are active guideline-backed endocrine workups with lo
 1. Type 2 Diabetes Mellitus (type_2_diabetes_mellitus_v1)
    - Category: Diabetes and Blood Sugar Disorders
    - Sources: ADA_SOC_2026; ADA_DIAGNOSIS_2026
-   - Required questions: 10; conditional question add-ons: 3; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 13; red flags: 4; management rules: 6
+   - Required questions: 10; conditional question add-ons: 2; safety checks: 4; required exams: 3; conditional exam add-ons: 7; tests/reference anchors: 13; red flags: 4; management rules: 6
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/type_2_diabetes_mellitus_v1.json
 
@@ -200,7 +200,7 @@ Status: mvp. These modules are active guideline-backed endocrine workups with lo
 28. Amenorrhea (Absence of menstruation) (amenorrhea_v1)
    - Category: Reproductive and Gonadal Disorders
    - Sources: ASRM_AMENORRHEA_2024
-   - Required questions: 9; conditional question add-ons: 4; safety checks: 4; required exams: 5; conditional exam add-ons: 4; tests/reference anchors: 15; red flags: 3; management rules: 5
+   - Required questions: 8; conditional question add-ons: 4; safety checks: 4; required exams: 5; conditional exam add-ons: 4; tests/reference anchors: 15; red flags: 3; management rules: 5
    - Quality issues: none
    - File: medical-knowledge/complaint-modules/endocrine/amenorrhea_v1.json
 

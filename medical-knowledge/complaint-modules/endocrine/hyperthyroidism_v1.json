@@ -457,20 +457,32 @@
         "text": "Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_endocrine_symptom",
+            "label": "No endocrine symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "heat_intolerance_sweating",
+            "label": "Heat intolerance/sweating"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "cold_intolerance_dry_skin",
+            "label": "Cold intolerance/dry skin"
+          },
+          {
+            "value": "palpitations_tremor",
+            "label": "Palpitations/tremor"
+          },
+          {
+            "value": "bowel_change",
+            "label": "Bowel change"
+          },
+          {
+            "value": "weight_change",
+            "label": "Weight change"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises concern for thyroid hormone excess or thyroid storm and changes beta-blocker need, thyroid testing urgency, trigger search, and emergency endocrine escalation for Hyperthyroidism (Overactive Thyroid).",
@@ -501,20 +513,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Hyperthyroidism (Overactive Thyroid).",
@@ -546,20 +570,36 @@
         "text": "Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hyperthyroidism (Overactive Thyroid) interpretation or safety?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Positive exposure changes whether to hold interfering agents, repeat testing, adjust treatment, or use a safer Hyperthyroidism (Overactive Thyroid) pathway.",
@@ -591,20 +631,32 @@
         "text": "Do you have anterior neck pain or thyroid tenderness, painful swallowing, recent viral illness, fever, or postpartum timing suggesting thyroiditis?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises concern for thyroid hormone excess or thyroid storm and changes beta-blocker need, thyroid testing urgency, trigger search, and emergency endocrine escalation for Hyperthyroidism (Overactive Thyroid).",
@@ -636,20 +688,32 @@
         "text": "Any eye pain, redness, gritty sensation, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_eye_vision_symptom",
+            "label": "No eye/vision symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "eye_pain_redness",
+            "label": "Eye pain/redness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "light_sensitivity",
+            "label": "Light sensitivity"
+          },
+          {
+            "value": "bulging_proptosis",
+            "label": "Bulging/proptosis"
+          },
+          {
+            "value": "double_vision",
+            "label": "Double vision"
+          },
+          {
+            "value": "reduced_or_peripheral_vision_change",
+            "label": "Reduced or peripheral vision change"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Graves orbitopathy severity assessment, urgent eye-protection steps, smoking counseling, and ophthalmology referral timing for Hyperthyroidism (Overactive Thyroid).",
@@ -679,20 +743,36 @@
         "text": "Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises concern for thyroid hormone deficiency or myxedema physiology and changes TSH/free T4 interpretation, replacement planning, and emergency-risk screening for Hyperthyroidism (Overactive Thyroid).",
@@ -723,20 +803,32 @@
         "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Hyperthyroidism (Overactive Thyroid) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -768,20 +860,32 @@
         "text": "Any neck swelling, thyroid pain or tenderness, pressure, hoarseness, trouble swallowing, positional shortness of breath, or rapidly enlarging neck mass?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptoms",
+            "label": "No respiratory symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cough",
+            "label": "Cough"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "sputum",
+            "label": "Sputum"
+          },
+          {
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
+          },
+          {
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "hypoxemia_or_oxygen_need",
+            "label": "Hypoxemia or oxygen need"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Hyperthyroidism (Overactive Thyroid).",
@@ -812,20 +916,28 @@
         "text": "Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "childhood_head_neck_radiation",
+            "label": "Childhood head/neck radiation"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "therapeutic_radiation",
+            "label": "Therapeutic radiation"
+          },
+          {
+            "value": "occupational_exposure",
+            "label": "Occupational exposure"
+          },
+          {
+            "value": "family_thyroid_cancer_risk_factor",
+            "label": "Family thyroid cancer risk factor"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for Hyperthyroidism (Overactive Thyroid).",

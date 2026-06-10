@@ -303,16 +303,36 @@
         "label": "When did the chest discomfort start, and is it ongoing?",
         "options": [
           {
+            "value": "new_today_or_acute",
+            "label": "New today or acute onset"
+          },
+          {
+            "value": "one_to_two_days",
+            "label": "1-2 days"
+          },
+          {
+            "value": "three_or_more_days",
+            "label": "3 or more days"
+          },
+          {
+            "value": "ongoing_now",
+            "label": "Ongoing now"
+          },
+          {
+            "value": "resolved",
+            "label": "Resolved"
+          },
+          {
+            "value": "recurrent_episodes",
+            "label": "Recurrent episodes"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -349,16 +369,32 @@
         "label": "What does it feel like, where is it, and does it radiate to arm, jaw, back, or shoulder?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "pressure_heaviness",
+            "label": "Pressure or heaviness"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "sharp_pleuritic",
+            "label": "Sharp or pleuritic"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "burning_reflux_like",
+            "label": "Burning or reflux-like"
+          },
+          {
+            "value": "central_or_left_chest",
+            "label": "Central or left chest"
+          },
+          {
+            "value": "radiates_arm_jaw_back_shoulder",
+            "label": "Radiates to arm, jaw, back, or shoulder"
+          },
+          {
+            "value": "no_radiation",
+            "label": "No radiation"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -397,16 +433,32 @@
         "label": "Is it exertional, relieved by rest, or similar to prior angina?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "exertional",
+            "label": "Exertional"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "relieved_by_rest",
+            "label": "Relieved by rest"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "similar_prior_angina",
+            "label": "Similar to prior angina"
+          },
+          {
+            "value": "non_exertional",
+            "label": "Non-exertional"
+          },
+          {
+            "value": "at_rest",
+            "label": "At rest"
+          },
+          {
+            "value": "not_sure",
+            "label": "Not sure"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -445,16 +497,32 @@
         "label": "Any shortness of breath, pleuritic pain, cough, hemoptysis, or oxygen requirement?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptom",
+            "label": "No respiratory symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "cough",
+            "label": "Cough"
+          },
+          {
+            "value": "hemoptysis",
+            "label": "Hemoptysis"
+          },
+          {
+            "value": "new_oxygen_need",
+            "label": "New oxygen need"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -493,16 +561,32 @@
         "label": "Any diaphoresis, nausea/vomiting, palpitations, or marked weakness?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_associated_symptom",
+            "label": "No associated symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "diaphoresis",
+            "label": "Diaphoresis"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea_vomiting",
+            "label": "Nausea or vomiting"
+          },
+          {
+            "value": "palpitations",
+            "label": "Palpitations"
+          },
+          {
+            "value": "marked_weakness",
+            "label": "Marked weakness"
+          },
+          {
+            "value": "multiple_associated_symptoms",
+            "label": "Multiple associated symptoms"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -539,16 +623,32 @@
         "label": "Any syncope, presyncope, neurologic symptoms, or sudden maximal pain?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_high_risk_symptom",
+            "label": "No high-risk symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "syncope",
+            "label": "Syncope"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "presyncope",
+            "label": "Presyncope"
+          },
+          {
+            "value": "new_neurologic_symptom",
+            "label": "New neurologic symptom"
+          },
+          {
+            "value": "sudden_maximal_pain",
+            "label": "Sudden maximal pain"
+          },
+          {
+            "value": "ongoing_severe_symptom",
+            "label": "Ongoing severe symptom"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -586,16 +686,32 @@
         "label": "Known CAD, prior MI/stent/CABG, diabetes, CKD, smoking, hypertension, or strong family history?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_known_cad_risk_factor",
+            "label": "No known CAD risk factor"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "known_cad_or_prior_revascularization",
+            "label": "Known CAD or prior MI, stent, or CABG"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "diabetes_or_ckd",
+            "label": "Diabetes or CKD"
+          },
+          {
+            "value": "smoking",
+            "label": "Smoking"
+          },
+          {
+            "value": "hypertension",
+            "label": "Hypertension"
+          },
+          {
+            "value": "strong_family_history",
+            "label": "Strong family history"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -635,16 +751,28 @@
         "label": "Recent cocaine/stimulant use, anticoagulants, estrogen therapy, or medication changes?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cocaine_or_stimulant_use",
+            "label": "Cocaine or stimulant use"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "anticoagulant_use",
+            "label": "Anticoagulant use"
+          },
+          {
+            "value": "estrogen_therapy",
+            "label": "Estrogen therapy"
+          },
+          {
+            "value": "recent_medication_change",
+            "label": "Recent medication change"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "source": {
@@ -686,16 +814,32 @@
         "label": "Any unilateral leg swelling, recent surgery/immobility, cancer, prior VTE, pregnancy/postpartum state, or estrogen exposure?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_vte_risk_feature",
+            "label": "No VTE risk feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "unilateral_leg_swelling",
+            "label": "Unilateral leg swelling"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "recent_surgery_immobility_travel",
+            "label": "Recent surgery, immobility, or long travel"
+          },
+          {
+            "value": "cancer_or_prior_vte",
+            "label": "Cancer or prior VTE"
+          },
+          {
+            "value": "pregnancy_postpartum",
+            "label": "Pregnancy or postpartum"
+          },
+          {
+            "value": "estrogen_exposure",
+            "label": "Estrogen exposure"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "when": {
@@ -710,7 +854,45 @@
           "answersAny": [
             {
               "id": "cp_dyspnea",
-              "value": "yes"
+              "value": [
+                "yes",
+                "shortness_of_breath",
+                "pleuritic_pain",
+                "cough",
+                "hemoptysis",
+                "new_oxygen_need",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_respiratory_symptom",
+                  "label": "No respiratory symptom"
+                },
+                {
+                  "value": "shortness_of_breath",
+                  "label": "Shortness of breath"
+                },
+                {
+                  "value": "pleuritic_pain",
+                  "label": "Pleuritic pain"
+                },
+                {
+                  "value": "cough",
+                  "label": "Cough"
+                },
+                {
+                  "value": "hemoptysis",
+                  "label": "Hemoptysis"
+                },
+                {
+                  "value": "new_oxygen_need",
+                  "label": "New oxygen need"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -751,16 +933,28 @@
         "label": "If relevant, is pregnancy possible or is the patient postpartum?",
         "options": [
           {
+            "value": "not_possible",
+            "label": "Not possible"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant",
+            "label": "Pregnant"
+          },
+          {
+            "value": "postpartum",
+            "label": "Postpartum"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "when": {
@@ -806,16 +1000,28 @@
         "label": "Is the pain reproducible with movement, palpation, position, or meals?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "not_reproducible",
+            "label": "Not reproducible"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "reproducible_with_palpation",
+            "label": "Reproducible with palpation"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "reproducible_with_movement_or_position",
+            "label": "Reproducible with movement or position"
+          },
+          {
+            "value": "meal_or_reflux_associated",
+            "label": "Meal or reflux-associated"
+          },
+          {
+            "value": "different_from_prior_pain",
+            "label": "Different from prior pain"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
           }
         ],
         "when": {
@@ -1193,7 +1399,45 @@
           "answersAny": [
             {
               "id": "cp_dyspnea",
-              "value": "yes"
+              "value": [
+                "yes",
+                "shortness_of_breath",
+                "pleuritic_pain",
+                "cough",
+                "hemoptysis",
+                "new_oxygen_need",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_respiratory_symptom",
+                  "label": "No respiratory symptom"
+                },
+                {
+                  "value": "shortness_of_breath",
+                  "label": "Shortness of breath"
+                },
+                {
+                  "value": "pleuritic_pain",
+                  "label": "Pleuritic pain"
+                },
+                {
+                  "value": "cough",
+                  "label": "Cough"
+                },
+                {
+                  "value": "hemoptysis",
+                  "label": "Hemoptysis"
+                },
+                {
+                  "value": "new_oxygen_need",
+                  "label": "New oxygen need"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1254,7 +1498,45 @@
           "answersAny": [
             {
               "id": "cp_dyspnea",
-              "value": "yes"
+              "value": [
+                "yes",
+                "shortness_of_breath",
+                "pleuritic_pain",
+                "cough",
+                "hemoptysis",
+                "new_oxygen_need",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_respiratory_symptom",
+                  "label": "No respiratory symptom"
+                },
+                {
+                  "value": "shortness_of_breath",
+                  "label": "Shortness of breath"
+                },
+                {
+                  "value": "pleuritic_pain",
+                  "label": "Pleuritic pain"
+                },
+                {
+                  "value": "cough",
+                  "label": "Cough"
+                },
+                {
+                  "value": "hemoptysis",
+                  "label": "Hemoptysis"
+                },
+                {
+                  "value": "new_oxygen_need",
+                  "label": "New oxygen need"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1317,7 +1599,39 @@
           "answersAny": [
             {
               "id": "cp_reproducible_tenderness",
-              "value": "yes"
+              "value": [
+                "yes",
+                "reproducible_with_palpation",
+                "reproducible_with_movement_or_position",
+                "meal_or_reflux_associated",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "not_reproducible",
+                  "label": "Not reproducible"
+                },
+                {
+                  "value": "reproducible_with_palpation",
+                  "label": "Reproducible with palpation"
+                },
+                {
+                  "value": "reproducible_with_movement_or_position",
+                  "label": "Reproducible with movement or position"
+                },
+                {
+                  "value": "meal_or_reflux_associated",
+                  "label": "Meal or reflux-associated"
+                },
+                {
+                  "value": "different_from_prior_pain",
+                  "label": "Different from prior pain"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1378,7 +1692,45 @@
           "answersAny": [
             {
               "id": "cp_vte_risk",
-              "value": "yes"
+              "value": [
+                "yes",
+                "unilateral_leg_swelling",
+                "recent_surgery_immobility_travel",
+                "cancer_or_prior_vte",
+                "pregnancy_postpartum",
+                "estrogen_exposure",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_vte_risk_feature",
+                  "label": "No VTE risk feature"
+                },
+                {
+                  "value": "unilateral_leg_swelling",
+                  "label": "Unilateral leg swelling"
+                },
+                {
+                  "value": "recent_surgery_immobility_travel",
+                  "label": "Recent surgery, immobility, or long travel"
+                },
+                {
+                  "value": "cancer_or_prior_vte",
+                  "label": "Cancer or prior VTE"
+                },
+                {
+                  "value": "pregnancy_postpartum",
+                  "label": "Pregnancy or postpartum"
+                },
+                {
+                  "value": "estrogen_exposure",
+                  "label": "Estrogen exposure"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1441,7 +1793,45 @@
           "answersAny": [
             {
               "id": "cp_vte_risk",
-              "value": "yes"
+              "value": [
+                "yes",
+                "unilateral_leg_swelling",
+                "recent_surgery_immobility_travel",
+                "cancer_or_prior_vte",
+                "pregnancy_postpartum",
+                "estrogen_exposure",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_vte_risk_feature",
+                  "label": "No VTE risk feature"
+                },
+                {
+                  "value": "unilateral_leg_swelling",
+                  "label": "Unilateral leg swelling"
+                },
+                {
+                  "value": "recent_surgery_immobility_travel",
+                  "label": "Recent surgery, immobility, or long travel"
+                },
+                {
+                  "value": "cancer_or_prior_vte",
+                  "label": "Cancer or prior VTE"
+                },
+                {
+                  "value": "pregnancy_postpartum",
+                  "label": "Pregnancy or postpartum"
+                },
+                {
+                  "value": "estrogen_exposure",
+                  "label": "Estrogen exposure"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1675,7 +2065,45 @@
           "answersAny": [
             {
               "id": "cp_vte_risk",
-              "value": "yes"
+              "value": [
+                "yes",
+                "unilateral_leg_swelling",
+                "recent_surgery_immobility_travel",
+                "cancer_or_prior_vte",
+                "pregnancy_postpartum",
+                "estrogen_exposure",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "no_vte_risk_feature",
+                  "label": "No VTE risk feature"
+                },
+                {
+                  "value": "unilateral_leg_swelling",
+                  "label": "Unilateral leg swelling"
+                },
+                {
+                  "value": "recent_surgery_immobility_travel",
+                  "label": "Recent surgery, immobility, or long travel"
+                },
+                {
+                  "value": "cancer_or_prior_vte",
+                  "label": "Cancer or prior VTE"
+                },
+                {
+                  "value": "pregnancy_postpartum",
+                  "label": "Pregnancy or postpartum"
+                },
+                {
+                  "value": "estrogen_exposure",
+                  "label": "Estrogen exposure"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },
@@ -1711,7 +2139,39 @@
           "answersAny": [
             {
               "id": "cp_repro_pregnancy",
-              "value": "yes"
+              "value": [
+                "yes",
+                "pregnancy_possible",
+                "pregnant",
+                "postpartum",
+                "other"
+              ],
+              "options": [
+                {
+                  "value": "not_possible",
+                  "label": "Not possible"
+                },
+                {
+                  "value": "pregnancy_possible",
+                  "label": "Pregnancy possible"
+                },
+                {
+                  "value": "pregnant",
+                  "label": "Pregnant"
+                },
+                {
+                  "value": "postpartum",
+                  "label": "Postpartum"
+                },
+                {
+                  "value": "unknown",
+                  "label": "Unknown"
+                },
+                {
+                  "value": "other",
+                  "label": "Other ___"
+                }
+              ]
             }
           ]
         },

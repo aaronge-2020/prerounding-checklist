@@ -15,15 +15,16 @@ Privacy-first browser app for inpatient pre-rounding. The app helps turn pasted 
 
 - `index.html`: the browser app UI and workflow wiring.
 - `deid.js`, `deid-worker.js`: local de-identification pipeline.
-- `labs.js`, `checklist.js`, `continuity.js`, `census.js`: shared workflow modules.
+- `labs.js`, `checklist.js`, `continuity.js`: shared workflow modules.
 - `clinical-intents.js`: validated and partial clinical intent registry.
 - `complaint-cds.js`: complaint/workup selection and formatting logic.
 - `evidence.js`: evidence catalog ranking and recommended bedside checklist logic.
 - `data/`: CSV reference data for physical exam maneuvers, evidence retrieval, source rows, and evidence evaluation.
+- `docs/`: maintainer notes that should stay reviewable and hand-edited.
 - `medical-knowledge/`: reviewed source-of-truth clinical knowledge JSON.
 - `medical-knowledge-db.js`: generated app bundle built from `medical-knowledge/`.
 - `scripts/`: tests, generators, validators, and build helpers.
-- `reports/`: generated review reports for clinical workup expansion.
+- `reports/`: validation/provenance reports that need to stay with the repo; routine generated reports are ignored.
 
 ## Medical Knowledge Workflow
 
@@ -60,11 +61,11 @@ npm run test:medical-knowledge
 npm run test:endocrine-knowledge
 ```
 
-Use `npm run test:evidence-suite` when touching `data/evidence/` or evidence ranking, and `npm run test:core` when touching de-identification, labs, checklist parsing, census storage, or continuity.
+Use `npm run test:evidence-suite` when touching `data/evidence/` or evidence ranking, and `npm run test:core` when touching de-identification, labs, checklist parsing, vault storage, or continuity.
 
 ## Security And Privacy
 
-The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, no cloud backend receives patient data by default, and saved vault records are encrypted de-identified case workspaces. Raw chart text, admission intake text, patient names, MRNs, room numbers, and obvious roster identifiers are not persisted in the vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
+The app is local-first by default: structured-only de-identification runs without model downloads, no analytics/tracking scripts are included, no cloud backend receives patient data by default, and saved vault records are encrypted browser-local patient workspaces. Raw chart text is not saved to the vault. See `SECURITY.md` and `PRIVACY.md` before using or deploying the app with real patient information.
 
 This app can reduce PHI exposure, but it does not by itself certify HIPAA de-identification or satisfy HIPAA obligations for an external AI workflow. Institutional policy, approved tool use, required Business Associate Agreements, and documented risk analysis still govern.
 

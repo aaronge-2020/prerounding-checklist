@@ -47,6 +47,14 @@ assert.ok(
     && uiSource.includes("Select the intended workup before building recommendations"),
   "clinical workup UI should distinguish ambiguous validated intent matches from unsupported search gaps"
 );
+assert.ok(
+  uiSource.includes("function renderUnsupportedClinicalIntentResult")
+    && uiSource.includes("Unsupported concern blocked")
+    && uiSource.includes("recommendations blocked")
+    && uiSource.includes("dataset.unsupportedIntentGap")
+    && uiSource.includes("No validated local intent matched"),
+  "unsupported free-text searches should render an explicit blocked-state result instead of an authoritative or empty recommendation state"
+);
 assert.ok(knownClinicalSourceIds.has("SSC_SEPSIS_2026"), "source registry should cite the current Surviving Sepsis Campaign adult guideline year");
 assert.ok(knownClinicalSourceIds.has("ATS_CAP_2025"), "source registry should cite the current adult CAP guideline update");
 assert.ok(knownClinicalSourceIds.has("IDSA_CAP_PATHWAY_2019"), "source registry should cite the CAP pathway used for fever/pneumonia bedside findings");
@@ -240,10 +248,119 @@ assert.equal(topIntent("DVT PE dyspnea"), "suspected_pe_v1");
 assert.equal(topIntent("PE dyspnea with hypoxia"), "suspected_pe_v1");
 assert.equal(topIntent("thyroid storm with fever and agitation"), "thyroid_crisis_v1");
 assert.equal(topIntent("fever with possible pneumonia or infection source"), "fever_sepsis_v1");
+assert.equal(topIntent("pediatric fever"), "pediatric_fever_sepsis_v1");
+assert.equal(topIntent("child fever sepsis"), "pediatric_fever_sepsis_v1");
+assert.equal(topIntent("febrile infant"), "pediatric_fever_sepsis_v1");
+assert.equal(topIntent("child wheeze"), "pediatric_respiratory_wheeze_v1");
+assert.equal(topIntent("bronchiolitis"), "pediatric_respiratory_wheeze_v1");
+assert.equal(topIntent("pediatric respiratory distress"), "pediatric_respiratory_wheeze_v1");
+assert.equal(topIntent("child abdominal pain"), "pediatric_abdominal_pain_vomiting_v1");
+assert.equal(topIntent("child vomiting green"), "pediatric_abdominal_pain_vomiting_v1");
+assert.equal(topIntent("pediatric acute abdomen"), "pediatric_abdominal_pain_vomiting_v1");
+assert.equal(topIntent("child chest pain"), "pediatric_chest_pain_syncope_v1");
+assert.equal(topIntent("child fainting"), "pediatric_chest_pain_syncope_v1");
+assert.equal(topIntent("pediatric syncope"), "pediatric_chest_pain_syncope_v1");
+assert.equal(topIntent("child palpitations"), "pediatric_chest_pain_syncope_v1");
+assert.equal(topIntent("child dysuria"), "pediatric_urinary_uti_pyelonephritis_v1");
+assert.equal(topIntent("pediatric UTI"), "pediatric_urinary_uti_pyelonephritis_v1");
+assert.equal(topIntent("child pyelonephritis"), "pediatric_urinary_uti_pyelonephritis_v1");
+assert.equal(topIntent("febrile UTI child"), "pediatric_urinary_uti_pyelonephritis_v1");
+assert.equal(topIntent("child rash"), "pediatric_rash_skin_v1");
+assert.equal(topIntent("child petechiae"), "pediatric_rash_skin_v1");
+assert.equal(topIntent("non blanching rash child"), "pediatric_rash_skin_v1");
+assert.equal(topIntent("kawasaki concern"), "pediatric_rash_skin_v1");
+assert.equal(topIntent("child anemia"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("child anaemia"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("pale child"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("child low platelets"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("child ITP"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("heavy period teen anemia"), "pediatric_hematology_anemia_bleeding_v1");
+assert.equal(topIntent("anemia"), "bleeding_anemia_v1");
+assert.equal(topIntent("child limp"), "pediatric_msk_limp_hot_joint_v1");
+assert.equal(topIntent("limping child"), "pediatric_msk_limp_hot_joint_v1");
+assert.equal(topIntent("non weight bearing child"), "pediatric_msk_limp_hot_joint_v1");
+assert.equal(topIntent("hot swollen knee child"), "pediatric_msk_limp_hot_joint_v1");
+assert.equal(topIntent("child septic arthritis"), "pediatric_msk_limp_hot_joint_v1");
+assert.equal(topIntent("child headache vomiting"), "pediatric_neuro_headache_seizure_ams_v1");
+assert.equal(topIntent("child seizure"), "pediatric_neuro_headache_seizure_ams_v1");
+assert.equal(topIntent("child altered mental status"), "pediatric_neuro_headache_seizure_ams_v1");
+assert.equal(topIntent("child face droop"), "pediatric_neuro_headache_seizure_ams_v1");
+assert.equal(topIntent("status epilepticus child"), "pediatric_neuro_headache_seizure_ams_v1");
 assert.equal(topIntent("penile discharge and dysuria after STI exposure"), "genital_discharge_sti_v1");
 assert.equal(topIntent("acute scrotal pain with nausea and high riding testis"), "acute_scrotal_pain_v1");
 assert.equal(topIntent("routine thyroid disease evaluation"), "routine_thyroid_disease_v1");
 assert.equal(topIntent("Graves disease palpitations heat intolerance"), "graves_disease_intent_v1");
+
+[
+  ["can not catch my breath", "dyspnea_hf_v1"],
+  ["can't catch my breath", "dyspnea_hf_v1"],
+  ["child shortness of breath", "pediatric_respiratory_wheeze_v1"],
+  ["infant wheeze", "pediatric_respiratory_wheeze_v1"],
+  ["baby wheezing", "pediatric_respiratory_wheeze_v1"],
+  ["child asthma exacerbation", "pediatric_respiratory_wheeze_v1"],
+  ["child belly pain", "pediatric_abdominal_pain_vomiting_v1"],
+  ["green vomit child", "pediatric_abdominal_pain_vomiting_v1"],
+  ["teen lower abdominal pain", "pediatric_abdominal_pain_vomiting_v1"],
+  ["child uti abdominal pain", "pediatric_abdominal_pain_vomiting_v1"],
+  ["teen chest pain", "pediatric_chest_pain_syncope_v1"],
+  ["adolescent palpitations", "pediatric_chest_pain_syncope_v1"],
+  ["exertional syncope child", "pediatric_chest_pain_syncope_v1"],
+  ["fainted during exercise child", "pediatric_chest_pain_syncope_v1"],
+  ["burning pee child", "pediatric_urinary_uti_pyelonephritis_v1"],
+  ["child urinary frequency", "pediatric_urinary_uti_pyelonephritis_v1"],
+  ["child flank pain", "pediatric_urinary_uti_pyelonephritis_v1"],
+  ["recurrent uti child", "pediatric_urinary_uti_pyelonephritis_v1"],
+  ["catheter uti child", "pediatric_urinary_uti_pyelonephritis_v1"],
+  ["fever and rash child", "pediatric_rash_skin_v1"],
+  ["child hives", "pediatric_rash_skin_v1"],
+  ["child cellulitis", "pediatric_rash_skin_v1"],
+  ["prolonged fever rash child", "pediatric_rash_skin_v1"],
+  ["child bruising pallor", "pediatric_hematology_anemia_bleeding_v1"],
+  ["adolescent heavy menstrual bleeding anemia", "pediatric_hematology_anemia_bleeding_v1"],
+  ["child leukemia symptoms", "pediatric_hematology_anemia_bleeding_v1"],
+  ["child cannot walk", "pediatric_msk_limp_hot_joint_v1"],
+  ["child refuses to walk", "pediatric_msk_limp_hot_joint_v1"],
+  ["child swollen joint", "pediatric_msk_limp_hot_joint_v1"],
+  ["pediatric osteomyelitis", "pediatric_msk_limp_hot_joint_v1"],
+  ["toddler fracture concern", "pediatric_msk_limp_hot_joint_v1"],
+  ["headache wakes child from sleep", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["morning headache child", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["child headache ataxia", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["first seizure child", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["child still seizing", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["child focal weakness", "pediatric_neuro_headache_seizure_ams_v1"],
+  ["stops breathing during sleep", "sleep_apnea_snoring_v1"],
+  ["coffee ground emesis", "bleeding_anemia_v1"],
+  ["tarry stool and lightheaded", "bleeding_anemia_v1"],
+  ["right upper quadrant pain after fatty food", "abdominal_pain_cramping_v1"],
+  ["missed period and lower abdominal pain", "pelvic_menstrual_pain_v1"],
+  ["pregnant with pelvic pain and shoulder pain", "pelvic_menstrual_pain_v1"],
+  ["kidney stone colic", "gu_renal_dysuria_v1"],
+  ["pus from penis", "genital_discharge_sti_v1"],
+  ["vaginal discharge after new partner", "genital_discharge_sti_v1"],
+  ["genital ulcer painful", "genital_discharge_sti_v1"],
+  ["can not urinate with back pain", "spine_cord_compression_v1"],
+  ["red swollen joint with fever", "focused_msk_v1"],
+  ["cannot bear weight after injury", "focused_msk_v1"],
+  ["hot knee swelling", "focused_msk_v1"]
+].forEach(([query, expectedIntentId]) => {
+  const resolved = resolveClinicalIntents(query, clinicalIntentRegistry, { limit: 4 });
+  assert.equal(
+    resolved.validatedMatches[0]?.intent_id,
+    expectedIntentId,
+    `${query} should route to the validated ${expectedIntentId} intent`
+  );
+  assert.equal(resolved.unsupported, false, `${query} should not be treated as an unsupported free-text gap`);
+});
+
+[
+  "purple fingernails after eating mango while juggling",
+  "my left eyebrow twitches after espresso"
+].forEach((query) => {
+  const resolved = resolveClinicalIntents(query, clinicalIntentRegistry, { limit: 4 });
+  assert.equal(resolved.unsupported, true, `${query} should remain unsupported despite broader synonym coverage`);
+  assert.equal(resolved.validatedMatches.length, 0, `${query} should not produce validated intent matches`);
+});
 
 const routineGraves = resolveClinicalIntents("Graves disease palpitations heat intolerance");
 assert.equal(routineGraves.validatedMatches[0]?.intent_id, "graves_disease_intent_v1", "exact Graves disease should authorize the specific module-backed Graves intent");
@@ -271,6 +388,69 @@ assert.ok(
   !pneumoniaFever.validatedMatches.some((intentRow) => intentRow.intent_id === "thyroid_crisis_v1"),
   "fever with pneumonia context should not offer thyroid crisis unless thyroid features are present"
 );
+const pediatricFever = resolveClinicalIntents("child fever with possible sepsis");
+assert.equal(
+  pediatricFever.validatedMatches[0]?.intent_id,
+  "pediatric_fever_sepsis_v1",
+  "child fever should route to the pediatric fever/sepsis validated intent"
+);
+assert.ok(
+  pediatricFever.validatedMatches.some((intentRow) => intentRow.intent_id === "fever_sepsis_v1"),
+  "child fever should still expose adult fever as a lower-ranked alternative only for deliberate selection and applicability gating"
+);
+const pediatricRespiratory = resolveClinicalIntents("child shortness of breath with wheeze");
+assert.equal(
+  pediatricRespiratory.validatedMatches[0]?.intent_id,
+  "pediatric_respiratory_wheeze_v1",
+  "child shortness of breath with wheeze should route to the pediatric respiratory validated intent"
+);
+assert.ok(
+  pediatricRespiratory.validatedMatches.some((intentRow) => intentRow.intent_id === "dyspnea_hf_v1"),
+  "child respiratory distress should still expose adult dyspnea/HF only as a lower-ranked deliberate alternative with pediatric gating"
+);
+const pediatricMsk = resolveClinicalIntents("child hot swollen knee cannot bear weight");
+assert.equal(
+  pediatricMsk.validatedMatches[0]?.intent_id,
+  "pediatric_msk_limp_hot_joint_v1",
+  "child hot swollen joint with inability to bear weight should route to the pediatric MSK validated intent"
+);
+assert.ok(
+  pediatricMsk.validatedMatches.some((intentRow) => intentRow.intent_id === "focused_msk_v1"),
+  "child MSK concern should still expose adult focused MSK only as a lower-ranked deliberate alternative with pediatric gating"
+);
+const pediatricNeuro = resolveClinicalIntents("child face droop and aphasia");
+assert.equal(
+  pediatricNeuro.validatedMatches[0]?.intent_id,
+  "pediatric_neuro_headache_seizure_ams_v1",
+  "child focal neurologic symptoms should route to the pediatric neuro validated intent"
+);
+assert.ok(
+  pediatricNeuro.validatedMatches.some((intentRow) => intentRow.intent_id === "stroke_focal_neuro_v1"),
+  "child focal neurologic symptoms should still expose adult stroke/focal neuro only as a lower-ranked deliberate alternative with pediatric gating"
+);
+const pediatricDkaQueries = [
+  "child dka",
+  "child diabetic ketoacidosis",
+  "child high blood sugar ketones",
+  "child vomiting diabetes",
+  "pediatric HHS",
+  "adolescent euglycemic dka sglt2"
+];
+pediatricDkaQueries.forEach((query) => {
+  const pediatricDka = resolveClinicalIntents(query);
+  assert.equal(
+    pediatricDka.validatedMatches[0]?.intent_id,
+    "pediatric_dka_hhs_hyperglycemia_v1",
+    `${query} should route to the pediatric DKA/HHS validated intent`
+  );
+  const adultDkaIndex = pediatricDka.validatedMatches.findIndex((intentRow) => intentRow.intent_id === "dka_hhs_v1");
+  if (adultDkaIndex >= 0) {
+    assert.ok(
+      adultDkaIndex > 0,
+      `${query} should expose adult DKA/HHS only as a lower-ranked deliberate alternative with pediatric gating`
+    );
+  }
+});
 const explicitThyroidCrisis = resolveClinicalIntents("thyroid storm fever agitation");
 assert.equal(
   explicitThyroidCrisis.validatedMatches[0]?.intent_id,
@@ -346,13 +526,18 @@ unvalidatedIntentsForGate.forEach((intentRow) => {
 const sanitizedUnsupportedGapText = sanitizeUnsupportedClinicalIntentGapText(
   "Patient name: John Smith MRN 12345 DOB 1/2/1990 room 412B phone 555-222-3333 has purple fingernails after eating mango"
 );
+const contextualNameGapText = sanitizeUnsupportedClinicalIntentGapText(
+  "purple fingernails for Alice Nguyen after eating mango"
+);
 assert.match(sanitizedUnsupportedGapText, /\[name\]/, "unsupported gap sanitizer should redact labeled names");
+assert.match(contextualNameGapText, /for \[name\]/, "unsupported gap sanitizer should redact contextual names after for/about/regarding");
 assert.match(sanitizedUnsupportedGapText, /\[identifier\]/, "unsupported gap sanitizer should redact identifiers");
 assert.match(sanitizedUnsupportedGapText, /\[date\]/, "unsupported gap sanitizer should redact dates");
 assert.match(sanitizedUnsupportedGapText, /\[location\]/, "unsupported gap sanitizer should redact room/bed locations");
 assert.match(sanitizedUnsupportedGapText, /\[phone\]/, "unsupported gap sanitizer should redact phone numbers");
 assert.match(sanitizedUnsupportedGapText, /purple fingernails after eating mango/i, "unsupported gap sanitizer should preserve clinical concern terms");
 assert.doesNotMatch(sanitizedUnsupportedGapText, /John Smith|12345|1\/2\/1990|412B|555-222-3333/i, "unsupported gap sanitizer should not preserve obvious PHI");
+assert.doesNotMatch(contextualNameGapText, /Alice Nguyen/i, "unsupported gap sanitizer should not preserve contextual names");
 
 const stagedUnsupportedGap = buildUnsupportedClinicalIntentGap({
   query: "Name: Jane Doe MRN 999 purple fingernails after eating mango",

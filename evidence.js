@@ -3429,6 +3429,160 @@ const clinicalRecommendationProfiles = [
     ]
   },
   {
+    id: "pregnancy_diabetes_context",
+    name: "Pregnancy-specific diabetes context",
+    context: /\b__pregnancy_diabetes_primary_output_add_on__\b/,
+    requiredItems: [
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-gestational-age-history",
+        type: "history_question",
+        label: "Pregnancy diabetes gestational-age history",
+        options: "Not documented / Gestational age known / Dating uncertain / Fetal growth concern / Polyhydramnios / MFM or OB plan available / Other ___",
+        domain: "Pregnancy Diabetes History",
+        role: "conditional",
+        reason: "Active pregnancy changes diabetes screening timing, glucose interpretation, medication safety, maternal-fetal monitoring, and postpartum follow-up.",
+        diagnosticTarget: "Pregnancy-specific diabetes context: gestational age, pregnancy dating reliability, fetal growth or polyhydramnios concern, and obstetric-care plan.",
+        management: "Gestational age or dating uncertainty changes whether early risk testing, 24-28 week OGTT strategy, home glucose monitoring, medication safety review, fetal surveillance, or postpartum follow-up is the next management step.",
+        bedsideQuestion: "How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?",
+        bedsideQuestionOptions: "Not documented / Gestational age known / Dating uncertain / Fetal growth concern / Polyhydramnios / MFM or OB plan available / Other ___",
+        source: "ADA_SOC_2026; ADA_DIAGNOSIS_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; ADA diagnosis and classification guidance; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "history_question", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes gestational-age history|gestational age|pregnancy dating|fetal growth|polyhydramnios|obstetric context)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-risk-history",
+        type: "history_question",
+        label: "Pregnancy diabetes preexisting-risk history",
+        options: "No / Prior GDM / Prior macrosomia / Pre-pregnancy diabetes / Prior A1c or glucose abnormality / PCOS / Obesity / Steroid exposure / Strong family history / Other ___",
+        domain: "Pregnancy Diabetes History",
+        role: "conditional",
+        reason: "Preexisting diabetes risk and prior gestational diabetes history change classification, risk stratification, and follow-up intensity when diabetes care overlaps active pregnancy.",
+        diagnosticTarget: "Pregnancy diabetes risk context: prior gestational diabetes, macrosomia, pre-pregnancy diabetes, prior abnormal A1c or glucose, PCOS, obesity, steroid exposure, or strong family history.",
+        management: "A positive risk history changes early testing threshold, classification as overt diabetes versus GDM, nutrition and glucose-monitoring intensity, maternal-fetal medicine involvement, and postpartum prevention follow-up.",
+        bedsideQuestion: "Any prior gestational diabetes, macrosomia, pre-pregnancy diabetes, prior A1c or glucose abnormality, PCOS, obesity, steroid exposure, or strong family history?",
+        bedsideQuestionOptions: "No / Prior GDM / Prior macrosomia / Pre-pregnancy diabetes / Prior abnormal A1c-glucose / PCOS / Obesity / Steroid exposure / Strong family history / Other ___",
+        source: "ADA_SOC_2026; ADA_DIAGNOSIS_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; ADA diagnosis and classification guidance; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "none",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "risk_factor", "history_question", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes preexisting-risk history|prior gestational diabetes|prior gdm|macrosomia|pre-pregnancy diabetes|pcos|steroid exposure|family history)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-fetal-obstetric-history",
+        type: "history_question",
+        label: "Pregnancy diabetes fetal-obstetric plan history",
+        options: "No fetal concern documented / Fetal growth concern / Polyhydramnios / Ultrasound concern / Fetal surveillance planned / Delivery timing plan known / MFM involved / Other ___",
+        domain: "Pregnancy Diabetes History",
+        role: "conditional",
+        reason: "Fetal growth, ultrasound context, and the obstetric plan determine whether diabetes findings should trigger maternal-fetal surveillance or care coordination.",
+        diagnosticTarget: "Pregnancy diabetes obstetric context: fetal growth, estimated fetal weight, amniotic fluid, ultrasound concern, fetal surveillance plan, delivery timing, and MFM involvement.",
+        management: "Fetal growth or obstetric-plan concerns change maternal-fetal monitoring, nutrition and medication escalation, care-team coordination, delivery planning, and postpartum follow-up.",
+        bedsideQuestion: "Have fetal growth, estimated fetal weight, amniotic fluid, ultrasound findings, fetal surveillance, delivery timing, or maternal-fetal medicine involvement changed the diabetes plan?",
+        bedsideQuestionOptions: "No fetal concern documented / Fetal growth concern / Polyhydramnios / Ultrasound concern / Fetal surveillance planned / Delivery timing known / MFM involved / Other ___",
+        source: "ADA_SOC_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "chart review",
+        patient_cooperation_required: "low",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "fetal_surveillance", "history_question", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes fetal-obstetric plan history|fetal surveillance|delivery timing|maternal-fetal medicine|estimated fetal weight|amniotic fluid|ultrasound)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-ogtt-thresholds",
+        type: "diagnostic_test",
+        label: "Pregnancy diabetes OGTT threshold pathway",
+        options: "Early risk testing if high risk / 24-28 week one-step 75-g OGTT / Local two-step strategy / One-step GDM threshold fasting >=92 mg/dL / 1-hour >=180 mg/dL / 2-hour >=153 mg/dL / Two-step 50-g screen often >=130-140 mg/dL / 100-g Carpenter-Coustan fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL / Usually 2 abnormal 100-g values / Other ___",
+        domain: "Tests / Pregnancy Diabetes",
+        role: "conditional",
+        reason: "Pregnancy changes diabetes diagnostic thresholds, screening timing, and interpretation of glucose and A1c results.",
+        diagnosticTarget: "Pregnancy diabetes test pathway: early risk testing when high risk and gestational-age-appropriate one-step or two-step OGTT interpretation.",
+        management: "Crossing OGTT thresholds changes maternal-fetal monitoring, nutrition therapy, glucose-monitoring intensity, medication escalation, delivery planning, and postpartum follow-up.",
+        source: "ADA_SOC_2026; ADA_DIAGNOSIS_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; ADA diagnosis and classification guidance; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "lab order/result review",
+        patient_cooperation_required: "moderate",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "ogtt", "diagnostic_test", "reference_threshold", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes ogtt threshold pathway|75-g ogtt|one-step|two-step|fasting\s*>?=?92|1-hour\s*>?=?180|2-hour\s*>?=?153|carpenter-coustan|postpartum ogtt)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-safety-tests",
+        type: "diagnostic_test",
+        label: "Pregnancy diabetes safety-test pathway",
+        options: "Review home glucose pattern / Ketones for vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms / Electrolytes and anion gap / Creatinine / Acid-base status / Blood pressure and urine protein context when preeclampsia features present / Other ___",
+        domain: "Tests / Pregnancy Diabetes",
+        role: "conditional",
+        reason: "Active pregnancy lowers tolerance for missed ketosis, dehydration, severe hyperglycemia, and hypertensive disease in a diabetes workup.",
+        diagnosticTarget: "Pregnancy diabetes safety testing: glucose pattern, ketones, electrolytes/anion gap, creatinine, acid-base status, and hypertensive/preeclampsia context when symptomatic.",
+        management: "Ketones, acidosis, renal dysfunction, severe hyperglycemia, or preeclampsia features change urgency to obstetric/endocrine evaluation, monitored care, medication adjustment, and maternal-fetal surveillance.",
+        source: "ADA_SOC_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "1",
+        equipment_needed: "lab order/result review",
+        patient_cooperation_required: "low",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "ketones", "preeclampsia", "diagnostic_test", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes safety-test pathway|ketones|anion gap|acid-base|preeclampsia|home glucose pattern)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-urgent-cues",
+        type: "red_flag",
+        label: "Pregnancy diabetes urgent cues",
+        options: "Ketones / Vomiting or dehydration / Severe hyperglycemia / Altered mental status / Acidosis or anion gap concern / Hypertension or preeclampsia features / Reduced fetal movement / Hemodynamic instability / Other ___",
+        domain: "Red Flags / Pregnancy Diabetes",
+        role: "conditional",
+        reason: "Diabetes plus active pregnancy needs explicit escalation cues because ketosis, severe hyperglycemia, hypertensive disease, and fetal-movement concerns can change disposition quickly.",
+        diagnosticTarget: "Urgent pregnancy diabetes danger pattern: ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, acidosis, hypertensive/preeclampsia features, reduced fetal movement, or instability.",
+        management: "These cues change disposition to urgent obstetric/endocrine evaluation, monitored care, DKA/HHS rule-out, fetal assessment, blood-pressure/proteinuria assessment, and medication safety review.",
+        source: "ADA_SOC_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "0.5",
+        equipment_needed: "none",
+        patient_cooperation_required: "low",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "red_flag", "ketones", "preeclampsia", "fetal_movement", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes urgent cues|ketones|reduced fetal movement|preeclampsia|severe hyperglycemia|altered mental status)\b/
+      }),
+      bundleFloorItem({
+        exam_id: "REQ-diabetes-pregnancy-postpartum-follow-up",
+        type: "management_change",
+        label: "Pregnancy diabetes postpartum follow-up plan",
+        options: "Postpartum 75-g OGTT at 4-12 weeks / Long-term diabetes prevention / Primary care or endocrine follow-up / Breastfeeding and medication safety review when relevant / Not applicable because still pregnant and immediate obstetric plan pending / Other ___",
+        domain: "Management / Pregnancy Diabetes",
+        role: "conditional",
+        reason: "Pregnancy-associated dysglycemia changes follow-up even after delivery, so postpartum testing and prevention cannot be buried in generic diabetes counseling.",
+        diagnosticTarget: "Postpartum diabetes risk and prevention pathway after pregnancy-associated dysglycemia or diabetes care during pregnancy.",
+        management: "A postpartum 75-g OGTT at 4-12 weeks and long-term prevention plan change follow-up timing, counseling, medication safety review, and handoff to primary care or endocrinology.",
+        source: "ADA_SOC_2026; AHRQ_CALIBRATE_DX",
+        source_citation: "ADA Standards of Care in Diabetes-2026; AHRQ Calibrate Dx",
+        evidenceTier: "Guideline",
+        difficulty: "easy",
+        time_burden_minutes: "0.5",
+        equipment_needed: "follow-up plan",
+        patient_cooperation_required: "low",
+        matchedTags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "postpartum", "management_change", "primary_output_diff"],
+        satisfiedBy: /\b(?:pregnancy diabetes postpartum follow-up plan|postpartum 75-g ogtt|4-12 weeks|long-term prevention)\b/
+      })
+    ],
+    suppress: []
+  },
+  {
     id: "diabetes_foot_neuropathy",
     name: "Diabetes foot, neuropathy, wound, or discharge-risk exam",
     context: /\b(?:neuropathy|numb feet|burning toes|foot ulcer|diabetic foot|diabetes foot|foot wound|non healing foot|poor perfusion|discharge planning|protective sensation)\b/,
@@ -5072,6 +5226,23 @@ const crossIntentSafetyProfileRules = [
     warning: "Fever or infection symptoms were entered as modifiers outside the selected fever/sepsis intent. This adds source-localizing infection questions and conditional source exams, but select the validated fever/infection intent if infection is the primary problem."
   },
   {
+    profileId: "pregnancy_diabetes_context",
+    trigger: /\b(?:currently pregnant|pregnant now|active pregnancy|pregnant patient|gestational age|weeks pregnant|wks pregnant|in pregnancy)\b/,
+    selectedContext: /\b(?:diabetes|diabetic|diabetes_mellitus|type[_\s-]*1|type[_\s-]*2|prediabetes|glucose|glycemic|hyperglyc|a1c|inpatient_diabetes)\b/,
+    includeSourceCoreAsConditional: false,
+    requiredItemRole: "conditional",
+    requiredItemIds: [
+      "REQ-diabetes-pregnancy-gestational-age-history",
+      "REQ-diabetes-pregnancy-risk-history",
+      "REQ-diabetes-pregnancy-fetal-obstetric-history",
+      "REQ-diabetes-pregnancy-ogtt-thresholds",
+      "REQ-diabetes-pregnancy-safety-tests",
+      "REQ-diabetes-pregnancy-urgent-cues",
+      "REQ-diabetes-pregnancy-postpartum-follow-up"
+    ],
+    warning: "Active pregnancy was entered as a modifier on a diabetes workup. This adds pregnancy-specific diabetes history, OGTT thresholds, maternal-fetal safety checks, urgent cues, and postpartum follow-up to the primary diabetes output; select the gestational diabetes workup when pregnancy diabetes is the primary question."
+  },
+  {
     profileId: "neuro_red_flags",
     trigger: /\b(?:stroke|tia|focal(?: neurologic| neuro)?(?: deficit| weakness)?|facial droop|facial weakness|face weakness|face droop|aphasia|hemiparesis|hemiplegia|new unilateral weakness|new weakness on one side|slurred speech|seizure|ataxia|diplopia)\b/,
     warning: "Focal neurologic symptoms were entered as modifiers but the selected validated intent is not a neuro intent. Treat the current workup as incomplete until a validated stroke/focal-neuro intent is added or urgent neurologic evaluation is addressed.",
@@ -5148,11 +5319,13 @@ function crossIntentSafetyProfiles(context, validatedBundleIds) {
     return [];
   }
   const modifierContext = normalizeEvidenceText(patientModifierContextText(context));
+  const fullContext = normalizeEvidenceText(context);
   if (!modifierContext) {
     return [];
   }
   return crossIntentSafetyProfileRules
     .filter((rule) => !validatedBundleIds.has(rule.profileId) && rule.trigger.test(modifierContext))
+    .filter((rule) => !rule.selectedContext || rule.selectedContext.test(fullContext))
     .map((rule) => {
       const sourceProfile = clinicalRecommendationProfiles.find((profile) => profile.id === rule.profileId);
       if (!sourceProfile) {
@@ -5203,7 +5376,10 @@ function activeRecommendationProfiles(context, rawContext = "") {
   if (validatedBundleIds.size) {
     const selectedProfiles = clinicalRecommendationProfiles.filter((profile) => validatedBundleIds.has(profile.id));
     if (!selectedProfiles.length && validatedBundleIds.has("installed_guideline_module")) {
-      return clinicalRecommendationProfiles.filter((profile) => unvalidatedProfileMatches(profile, context));
+      return [
+        ...clinicalRecommendationProfiles.filter((profile) => unvalidatedProfileMatches(profile, context)),
+        ...crossIntentSafetyProfiles(context, validatedBundleIds)
+      ];
     }
     return [
       ...selectedProfiles,
@@ -7579,7 +7755,38 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (earlyDiabetesInsipidusContext && /how much are you drinking and urinating|fluid intake|polyuria|polydipsia|overnight urination|thirst intensity|dehydration|confusion/.test(normalized)) {
     return "Ask DI thirst, polyuria, and hydration symptoms";
   }
-  const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
+  const preliminaryAbdominalPainContext = /\b(?:abdominal_pain|abdominal pain|acute_abdomen|acute abdomen|abdominal_exam|abdominal exam|gi_gu_exam|gi gu exam)\b/.test(allText);
+  const pediatricHemeHistoryContext = /\b(?:pediatric|paediatric|child|adolescent|teen)\b/.test(allText)
+    && /\b(?:hematology|haematology|anemia|anaemia|pallor|bleeding|bruising|petechiae|purpura|thrombocytopenia|itp|hemoglobinopathy|transfusion|ferritin|hemolysis|leukemia|lymphoma)\b/.test(allText);
+  if (pediatricHemeHistoryContext) {
+    if (/chronic transfusion|thalassemia|sickle cell disease|congenital anemia|congenital heart disease|chemotherapy|transplant|irradiated-product|prior transfusion reaction|consent barrier/.test(normalized)) return "Ask transfusion and specialty protocol context";
+    if (/for an adolescent|heavy or prolonged periods|intermenstrual bleeding|possible pregnancy|postpartum state|sexual activity|eating disorder concern|self-harm|substance use|confidential safety/.test(normalized)) return "Ask adolescent confidential bleeding and pregnancy context";
+    if (/if itp is suspected|otherwise well, with no fever|abnormal film|neutropenia|major bleeding|safeguarding concern/.test(normalized)) return "Ask ITP exclusion and low-risk context";
+    if (/child's age|childs age|growth trajectory|baseline energy|recent weight change|prior cbc pattern|known hemoglobinopathy|hematology follow-up/.test(normalized)) return "Ask age growth and baseline hematology context";
+    if (/fatigue, pallor, dizziness|exertional dyspnea|chest pain|palpitations|poor feeding|lethargy|exercise intolerance|heart failure symptoms/.test(normalized)) return "Ask anemia symptoms and instability history";
+    if (/epistaxis|gum bleeding|oral bleeding|hematemesis|melena|hematochezia|hematuria|heavy menstrual bleeding|prolonged bleeding after procedures|recurrent bleeding episodes/.test(normalized)) return "Ask bleeding source and severity history";
+    if (/bruises|petechiae|purpura|non-blanching spots|rapidly spreading lesions|mucosal bleeding|inconsistent injury story|mechanical causes such as coughing or vomiting/.test(normalized)) return "Ask bruising petechiae and trauma pattern";
+    if (/excess cow's milk|excess cows milk|low iron diet|vegetarian or vegan diet|poor intake|pica|prematurity|rapid growth|chronic inflammation|poor response to prior iron/.test(normalized)) return "Ask iron nutrition and blood loss risk";
+    if (/jaundice|scleral icterus|dark urine|episodic pallor|gallstones|splenectomy|ethnic\/family hemoglobinopathy|hemoglobinopathy risk/.test(normalized)) return "Ask hemolysis jaundice and dark urine history";
+    if (/unexplained petechiae|unexplained bruising|persistent fatigue|recurrent infections|weight loss|night sweats|pruritus|bone pain|limp|lymph node swelling|abdominal fullness|parental concern/.test(normalized)) return "Ask leukemia lymphoma and marrow red flags";
+    if (/anticoagulants|antiplatelets|nsaids|steroids|chemotherapy|antiepileptics|antibiotics|herbal medicines|toxins|supplements|family history of heavy bleeding|early gallstones|consanguinity/.test(normalized)) return "Ask medication anticoagulant and family bleeding history";
+  }
+  const pediatricDkaHistoryContext = /\b(?:peds[_ ]dka|pediatric[_ ]dka|pediatric[_ ]dka[_ ]hhs[_ ]hyperglycemia|pediatric dka|child dka|chq[_ ]dka[_ ]hhs[_ ]child|rch[_ ]dka[_ ]child|nice[_ ]ng18[_ ]dka[_ ]child|ispad[_ ]dka[_ ]hhs)\b/.test(allText);
+  if (pediatricDkaHistoryContext) {
+    if (/exact age|measured or estimated weight|known diabetes type if any|usual insulin or pump regimen/.test(normalized)) return "Ask age weight and diabetes context";
+    if (/polyuria|polydipsia|weight loss|fatigue|vomiting|abdominal pain|deep breathing|fruity breath/.test(normalized)) return "Ask hyperglycemia ketone and acidosis symptoms";
+    if (/basal or bolus insulin doses missed|pump\/cgm failure|infusion-site problem|sick-day plan/.test(normalized)) return "Ask insulin doses pump CGM and access barriers";
+    if (/how many times has the child vomited|last intake|urine output is present|worsening dehydration/.test(normalized)) return "Ask vomiting intake and dehydration trajectory";
+    if (/fever, cough, work-of-breathing|urinary symptoms|line or pump-site infection|recent steroids/.test(normalized)) return "Ask source-localizing infection and precipitant symptoms";
+    if (/headache, recurrent vomiting|altered or fluctuating conscious state|cranial nerve symptoms|abnormal posturing/.test(normalized)) return "Ask cerebral edema and neurologic warning symptoms";
+    if (/extreme thirst|very high glucose|severe dehydration|low\/absent ketone/.test(normalized)) return "Ask HHS dehydration and osmolality features";
+    if (/recurrent dka|recent admissions|insulin restriction|housing\/food insecurity/.test(normalized)) return "Ask recurrent DKA psychosocial and safety context";
+    if (/pregnancy possibility|fasting|sglt2 inhibitor|near-normal glucose/.test(normalized)) return "Ask euglycemic DKA and adolescent context";
+    if (/hypernatremia|hyperosmolality|anuria|potassium above normal|ecg change/.test(normalized)) return "Ask hypernatremia anuria and potassium safety context";
+    if (/asked separately|body image|self-harm|school support barrier/.test(normalized)) return "Ask recurrent DKA insulin omission confidentially";
+  }
+  const earlyDkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText)
+    && !preliminaryAbdominalPainContext;
   if (earlyDkaContext && /known diabetes type|diabetes type|duration|insulin regimen|pump\/cgm|pump cgm|last insulin dose/.test(normalized)) {
     return "Ask diabetes history, insulin regimen, and last insulin dose";
   }
@@ -7601,8 +7808,54 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (earlyDkaContext && /heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses|electrolyte monitoring/.test(normalized)) {
     return "Ask fluid-resuscitation and electrolyte-safety modifiers";
   }
+  const pediatricNeuroHistoryContext = /\b(?:peds[_ ]neuro|pediatric[_ ]neuro|pediatric_neuro_headache_seizure_ams|pediatric headache|child headache|pediatric seizure|child seizure|altered conscious|altered mental|status epilepticus|raised[_ ]icp|papilledema)\b/.test(allText);
+  if (pediatricNeuroHistoryContext) {
+    if (/exact age|neurodevelopmental baseline|communication baseline|usual mobility|usual behavior|baseline_neuro/.test(allText)) return "Ask pediatric neuro age and baseline";
+    if (/under-4 head size|head circumference|fontanelle|sunsetting|raised-icp context/.test(allText)) return "Ask under-4 head size and raised-ICP context";
+    if (/known epilepsy|seizure management plan|rescue plan|missed antiseizure|more frequent or uncontrolled/.test(allText)) return "Ask known epilepsy and rescue plan";
+    if (/vp shunt|neurosurgery|bleeding disorder|prothrombotic|sickle cell|immune-risk/.test(allText)) return "Ask shunt bleeding and immune-risk context";
+    if (/when did it start|where is it located|how severe|acute recurrent|chronic\/progressive|triggers or relieves|headache pattern/.test(allText)) return "Ask headache pattern and triggers";
+    if (/vomiting without another clear cause|papilledema|upward-gaze|visual change|shunt|malignancy|immunosuppression|bleeding tendency|anticoagulant|headache-associated danger/.test(allText)) return "Ask headache-associated danger features";
+    if (/how did it start|how long did it last|full recovery between events|rescue medicines|still seizing|seizure event/.test(allText)) return "Ask seizure or blackout event details";
+    if (/after the event|returned to their usual baseline|persistent weakness|facial droop|aphasia|diplopia|behavior change|recovery and focal deficit/.test(allText)) return "Ask recovery and focal deficit status";
+    if (/neck stiffness|photophobia|petechiae|severe irritability|immunization gap|sick contacts|meningitis|encephalitis|fever_meningitis/.test(allText)) return "Ask fever and CNS infection features";
+    if (/head injury|possible non-accidental injury|poisoning|drug exposure|diabetes|poor intake|dehydration|renal\/hepatic|metabolic condition|trauma_toxin/.test(allText)) return "Ask trauma toxin and metabolic context";
+    if (/adolescent confidential|pregnancy possible|postpartum|estrogen therapy|substance use|medication overuse|self-harm/.test(allText)) return "Ask adolescent confidential neuro context";
+  }
   if (/how high was the fever|how was it measured|when did it start|maximum temperature|document maximum temperature|antipyretics/.test(normalized)) {
     return "Ask fever timeline, measurement, and medication exposure";
+  }
+  if (/\bpeds rash\b|pediatric rash|pediatric_rash_skin|pediatric rash, urticaria|rash morphology and progression|kawasaki fever and feature/i.test(allText)) {
+    if (/peds rash age context|exact age band|immunization status|under 6 months|infant under 12 months/.test(allText)) {
+      return "Ask pediatric rash age and vulnerability";
+    }
+    if (/peds rash fever systemic danger|rigors|poor feeding|neck stiffness|bulging fontanelle|non-weight bearing/.test(allText)) {
+      return "Ask fever and systemic danger symptoms";
+    }
+    if (/peds rash anaphylaxis context|tongue or lip swelling|voice change|wheeze|stridor|epinephrine already given/.test(allText)) {
+      return "Ask hives and anaphylaxis symptoms";
+    }
+    if (/peds rash kawasaki features|fever lasted 4 to 5 days|bilateral non-exudative conjunctivitis|strawberry tongue|swollen red hands/.test(allText)) {
+      return "Ask Kawasaki fever and feature history";
+    }
+    if (/peds rash ssti source history|skin infection and source-control history|painful red warm area|rapidly spreading border|prior mrsa|failed oral treatment|periorbital location/.test(allText)) {
+      return "Ask skin infection and source-control history";
+    }
+    if (/peds rash morphology onset|petechial|purpuric|non-blanching|urticarial wheals|lesion type|rash morphology/.test(allText)) {
+      return "Ask rash morphology and progression";
+    }
+    if (/peds rash bleeding trauma vasculitis|mucosal bleeding|gum bleeding|difficulty mobilizing|safeguarding concern/.test(allText)) {
+      return "Ask bleeding trauma and vasculitis clues";
+    }
+    if (/peds rash chronic urticaria|persisted or recurred for more than 6 weeks|urticarial vasculitis/.test(allText)) {
+      return "Ask chronic urticaria duration and systemic features";
+    }
+    if (/peds rash adolescent pregnancy|new medicines|anticonvulsants|isotretinoin|genital lesions/.test(allText)) {
+      return "Ask adolescent pregnancy and medication context";
+    }
+    if (/peds rash imported infection exposure|measles|varicella|daycare|school outbreak|tick or animal/.test(allText)) {
+      return "Ask travel outbreak and contact exposure";
+    }
   }
   const sourceSpecificInfectionContext = /\b(?:source[_ ]localizing[_ ]history|respiratory[_ ]source|heent[_ ]source|dental[_ ]source|oral[_ ]source|urinary[_ ]source|abdominal[_ ]source|gi[_ ]source|biliary[_ ]source|skin[_ ]source|wound[_ ]source|line[_ ]source|cns[_ ]infection|joint[_ ]source|spine[_ ]infection|host[_ ]risk|exposure[_ ]history|severity[_ ]history)\b/.test(sourceSignalText);
   if (sourceSpecificInfectionContext && /what symptoms localize|localize the fever source|localizing symptoms|most likely[^.?!]*source|what source|which source/.test(normalized)) {
@@ -7632,6 +7885,22 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (sourceSpecificInfectionContext && (/severity[_ ]history/.test(sourceSignalText) || /poor intake|inability to keep fluids|dehydration|dizziness|fainting|confusion|sleepiness|low urine|severe weakness|rapid worsening|hypotension|shock|perfusion|mottled|oxygen/.test(normalized))) {
     return "Ask sepsis severity, hydration, and perfusion symptoms";
   }
+  if (!/\b(?:peds[_ ]rash|pediatric[_ ]rash|pediatric_rash_skin|rash|kawasaki|urticaria|hives|anaphylaxis|petechiae|purpura|ssti|skin[_ ]infection)\b/.test(allText)
+    && /\b(?:pediatric|paediatric|child|adolescent|teen|limp|non[-_ ]?weight[-_ ]?bearing|hot[_ ]joint|septic[_ ]arthritis|osteomyelitis|bone[_ ]infection|toddler[_ ]fracture|baseline[_ ]mobility|safeguarding)\b/.test(allText)
+    && /\b(?:limp|walk|walking|weight[-_ ]?bearing|joint|limb|bone|hip|knee|ankle|fracture|trauma|safeguarding|osteomyelitis|septic|back|neck|bladder|weakness|numbness|saddle)\b/.test(allText)) {
+    if (/septic hip predictor|elevated inflammatory markers|severe passive-motion|severe passive motion|transient synovitis/.test(allText)) return "Ask septic hip predictor context";
+    if (/for an adolescent|adolescent hip slip|slipped upper femoral epiphysis|scfe|sufe/.test(allText)) return "Ask adolescent hip slip symptoms";
+    if (/developmental ability|caregiver explanations|injury consistency|delayed presentation|inconsistent history/.test(allText)) return "Ask safeguarding and injury consistency";
+    if (/urinary retention|saddle sensory|bowel dysfunction|back neurologic|bladder symptoms/.test(allText)) return "Ask back neurologic and bladder symptoms";
+    if (/exact age|usual walking|mobility baseline|baseline[_ ]mobility|age[_ ]band/.test(allText)) return "Ask pediatric MSK age and walking baseline";
+    if (/walk or bear weight now|unable to bear weight|can the child walk|weight[-_ ]bearing ability|non[-_ ]?weight[-_ ]?bearing/.test(allText)) return "Ask current weight-bearing ability";
+    if (!/recent bacterial infection|fever and infection|infection-source|source-localizing|reduced limb use without clear trauma/.test(allText)
+      && /witnessed fall|twist|direct blow|puncture|other injury|injury mechanism|mechanism localize/.test(allText)) return "Ask onset and injury mechanism";
+    if (/best localized|pain location|hip, groin, thigh|hip groin thigh|referred pain|child cannot localize/.test(allText)) return "Ask pain location and referred pain";
+    if (/recent bacterial infection|skin wound|puncture injury|reduced limb use without clear trauma|fever and infection|source-localizing/.test(allText)) return "Ask fever and infection symptoms";
+    if (/visible swelling|redness, warmth|severe pain with movement|reduced active use|swelling and motion/.test(allText)) return "Ask swelling and motion limitation";
+    if (/night pain|weight loss|pallor|bruising|morning stiffness|recurrent fevers|systemic and malignancy/.test(allText)) return "Ask systemic and malignancy clues";
+  }
   const dkaContext = /\b(?:dka|hhs|hyperglycemic|ketotic|ketones?|beta hydroxybutyrate|anion gap|insulin|sglt2)\b/.test(allText);
   const thyroidContext = /\b(?:thyroid|graves|hashimoto|thyrotoxicosis|hyperthyroid|hypothyroid|goiter|nodule|tsh|antithyroid|amiodarone|lithium|biotin)\b/.test(allText);
   const infectionContext = /\b(?:fever|infection|sepsis|pneumonia|source-localizing|source localizing|source control|cellulitis|abscess|line infection)\b/.test(allText);
@@ -7642,8 +7911,39 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   const dermRashContext = /\b(?:dermatology|rash|skin_ulcer|skin ulcer|wound|mucosal|drug_eruption|drug eruption|severe_rash|severe rash|diabetes_foot|diabetes foot|foot ulcer|skin_inspection|skin inspection|cellulitis|abscess)\b/.test(allText);
   const boneMineralContext = /\b(?:bone_and_parathyroid|bone and parathyroid|vitamin_d|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|bone density|fragility fracture|kidney stones|nephrocalcinosis)\b/.test(allText);
   const pelvicPregnancyContext = /\b(?:pelvic_pain|pelvic pain|menstrual|period|missed period|ectopic|pid|gynecology|dyspareunia|purulent discharge|heavy bleeding|shoulder pain)\b/.test(allText);
+  const abdominalPainContext = /\b(?:abdominal_pain|abdominal pain|acute_abdomen|acute abdomen|peritonitis|biliary_disease|biliary disease|appendicitis|abdominal_exam|abdominal exam)\b/.test(allText);
+  const mskContext = /\b(?:focused_msk|focused msk|msk_exam|msk exam|musculoskeletal|joint_pain|joint pain|back_pain|back pain|septic_arthritis|septic arthritis|fracture|cord_compression|cord compression|site_specific|site specific)\b/.test(allText);
+  const strokeContext = /\b(?:focal_neurologic_deficit|focal neurologic deficit|neuro_red_flags|neuro red flags|last-known-well|last known well|wake-up stroke|thrombectomy|aphasia|face droop|facial droop|diplopia|ataxia)\b/.test(allText);
   const diabetesContext = /\b(?:diabetes_and_blood_sugar|diabetes and blood sugar|type_1_diabetes|type_2_diabetes|gestational_diabetes|prediabetes|metabolic_syndrome|diabetes mellitus|blood sugar|glycemic|glucose|a1c|retinopathy|neuropathy)\b/.test(allText);
   const pituitaryAdrenalContext = /\b(?:pituitary_gland|pituitary gland|adrenal_gland|adrenal gland|cushing|cortisol|addison|adrenal_insufficiency|pheochromocytoma|hyperaldosteronism|hypopituitarism|prolactinoma|acromegaly|gigantism)\b/.test(allText);
+  const reproductiveContext = /\b(?:reproductive_and_gonadal|reproductive and gonadal|amenorrhea|hypogonadism|menopause|premature ovarian insufficiency|infertility|gynecomastia|hirsutism|erectile dysfunction|libido|puberty|fertility|galactorrhea|vasomotor|genitourinary)\b/.test(allText);
+  if (strokeContext && /anticoagulant use|recent surgery|prior intracranial hemorrhage|seizure at onset|hypoglycemia symptoms|migraine pattern|rapidly resolving/.test(allText)) {
+    return "Ask stroke mimics, anticoagulants, and reperfusion timing";
+  }
+  if (strokeContext && /last[- ]known[- ]well|face droop|speech trouble|arm\/leg weakness|vision loss|diplopia|ataxia|severe headache/.test(allText)) {
+    return "Ask focal neurologic symptom timeline and localization";
+  }
+  if (abdominalPainContext && /what changed over time|severe\/worsening focal pain|blood or black stool|jaundice|pregnancy possibility|inability to pass stool\/gas|obstipation/.test(allText)) {
+    return "Ask abdominal pain location, trajectory, and red flags";
+  }
+  if (abdominalPainContext && /where is the pain worst[\s\S]*associated with vomiting|associated with vomiting|diarrhea|constipation|urinary symptoms|fever|bleeding/.test(allText)) {
+    return "Ask abdominal associated GI/GU symptoms and bleeding";
+  }
+  if (mskContext && /exact joint|body area|which exact joint/.test(allText)) {
+    return "Ask pain location, trauma, and inflammatory red flags";
+  }
+  if (mskContext && /inability to bear weight|hot swollen joint|injection drug use|cancer history|neurologic deficit|bowel or bladder|anticoagulant/.test(allText)) {
+    return "Ask MSK red flags and trauma history";
+  }
+  if (dermRashContext && /new medicine|rapid spread|wound drainage|travel\/bite exposure/.test(allText)) {
+    return "Ask rash danger features and exposure history";
+  }
+  if (dermRashContext && /mouth sores eye pain|genital sores blistering|mucosal sores/.test(allText)) {
+    return "Ask mucosal, ocular, and severe-rash warning features";
+  }
+  if (dermRashContext && /mucosal lesions|facial or tongue swelling|trouble breathing|blistering|purpura|rapidly spreading redness|tick or travel exposure/.test(allText)) {
+    return "Ask severe rash and systemic warnings";
+  }
   const endocrineWeightSystemicQuestion = /^how has weight changed|weight changed from baseline|intentional weight|appetite|fluid status|systemic symptoms/.test(allText);
   if (!infectionContext && (diabetesContext || pituitaryAdrenalContext || boneMineralContext) && endocrineWeightSystemicQuestion) {
     return "Ask weight trajectory and systemic symptoms";
@@ -7666,9 +7966,23 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (eyeVisionContext && /vision loss|eye pain|photophobia|trauma|contact lens|discharge|severe headache|diplopia|neurologic|immunocompromise/.test(allText)) {
     return "Ask vision-threatening red-eye symptoms";
   }
-  if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`)) {
+  if (reproductiveContext && /height|growth velocity|family height|puberty timing/.test(allText)) {
+    return "Ask growth velocity and puberty timing";
+  }
+  if (reproductiveContext && /breast tenderness|discrete mass|nipple discharge|testicular pain|testicular mass|liver\/kidney disease|alcohol|cannabis|gynecomastia/.test(allText)) {
+    return "Ask breast/testicular symptoms and exposure risks";
+  }
+  if (pelvicPregnancyContext && /ectopic|\bpid\b|pelvic inflammatory|purulent discharge|dyspareunia|heavy bleeding|severe unilateral|missed period|positive pregnancy|shoulder pain/.test(allText)) {
+    return "Ask ectopic/PID danger and bleeding features";
+  }
+  if (dermRashContext && /^(?:any )?(?:mouth sores|eye pain|eye redness|genital sores|skin pain|blisters|blistering|purpura)\b|high-risk medication/.test(normalized)) {
+    return "Ask mucosal, ocular, and severe-rash warning features";
+  }
+  const acuteScrotalSourceText = `${normalized} ${tagText}`;
+  if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(acuteScrotalSourceText)
+    && !/\b(?:genital_discharge|genital discharge|penile discharge|vaginal discharge)\b/.test(acuteScrotalSourceText)) {
     if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
-      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+      return "Ask torsion nausea/swelling, urinary, and trauma features";
     }
     if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
       return "Ask scrotal pain onset and torsion features";
@@ -7679,7 +7993,7 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     return "Ask groin nodes, genital lesions, and skin infection features";
   }
   if (guStiContext && /\b(?:dysuria|urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
-    return "Ask discharge, dysuria, genital lesions, and STI exposure";
+    return "Ask GU/STI discharge/dysuria, lesions, and exposure";
   }
   if (guRenalContext
     && !boneMineralContext
@@ -7779,6 +8093,9 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   if (boneMineralContext && /usual calcium|vitamin d intake|supplement use|diet pattern|sun exposure/.test(allText)) {
     return "Ask calcium/vitamin D intake and sun exposure";
   }
+  if (boneMineralContext && /family history of men|familial hypocalciuric|parathyroid disease|pituitary tumors|pancreatic neuroendocrine|jaw tumors/.test(allText)) {
+    return "Ask hereditary hyperparathyroidism/FHH and MEN history";
+  }
   if (boneMineralContext && /nephrocalcinosis|hematuria|flank|recurrent utis|renal-function changes affecting calcium|affecting calcium\/pth interpretation/.test(allText)) {
     return "Ask kidney-stone and renal calcium/PTH complications";
   }
@@ -7790,9 +8107,6 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
   }
   if (boneMineralContext && /malabsorption|bariatric|celiac|inflammatory bowel|pancreatic|chronic diarrhea|nutrient|absorption/.test(allText)) {
     return "Ask malabsorption and nutrient-absorption risks";
-  }
-  if (boneMineralContext && /family history of men|familial hypocalciuric|parathyroid disease|pituitary tumors|pancreatic neuroendocrine|jaw tumors/.test(allText)) {
-    return "Ask hereditary hyperparathyroidism/FHH and MEN history";
   }
   if (boneMineralContext && /antiseizure|enzyme-inducing|anticonvulsant/.test(allText)) {
     return "Review antiseizure and vitamin D metabolism medications";
@@ -8048,9 +8362,12 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     && /\b(?:fever|urinary|renal|pyelonephritis|uti|infection)\b/.test(`${normalized} ${tagText}`)) {
     return "Ask urinary and renal-source symptoms";
   }
+  if (reproductiveContext && /height|growth velocity|family height|puberty timing/.test(allText)) {
+    return "Ask growth velocity and puberty timing";
+  }
   if (/\b(?:acute_scrotum|scrotal pain|scrotal_pain|testicular torsion|testicular_torsion|torsion|high-riding|cremasteric|solitary testis|urgent urology|urology care)\b/.test(`${normalized} ${tagText}`)) {
     if (/^was onset sudden|was onset sudden|urinary symptoms fever trauma or sti exposure/.test(normalized)) {
-      return "Ask torsion-associated nausea, swelling, urinary, and trauma features";
+      return "Ask torsion nausea/swelling, urinary, and trauma features";
     }
     if (/when exactly|sudden|severe|high-riding|high riding|nausea|vomiting|swelling/.test(allText)) {
       return "Ask scrotal pain onset and torsion features";
@@ -8061,7 +8378,7 @@ function historyQuestionDisplayLabel(text = "", tags = []) {
     return "Ask groin nodes, genital lesions, and skin infection features";
   }
   if (guStiContext && /\b(?:urethral|vaginal|genital|\bsti\b|new partners|syphilis|hiv|pelvic pain|testicular pain|discharge|ulcer|lesion)\b/.test(allText)) {
-    return "Ask discharge, dysuria, genital lesions, and STI exposure";
+    return "Ask GU/STI discharge/dysuria, lesions, and exposure";
   }
   if (/\b(?:foot ulcer|foot wound|drainage|protective sensation|prior amputation|offload|footwear|wound-care supplies)\b/.test(`${normalized} ${tagText}`)) {
     return "Ask diabetic foot wound, neuropathy, and self-care risk";
@@ -8099,6 +8416,7 @@ function historyQuestionDisplayLabelSuffix(question = {}) {
   const allText = `${fullQuestion} ${tagText}`;
   const detailText = normalizeEvidenceLabel((question.detail_prompts || question.detailPrompts || []).join(" "));
   const boneMineralContext = /\b(?:bone and parathyroid|vitamin d|osteomalacia|osteoporosis|osteopenia|hypoparathyroidism|hyperparathyroidism|parathyroid|calcium|pth|phosphorus|kidney stones|nephrocalcinosis)\b/.test(allText);
+  const guStiContext = /\b(?:\bsti\b|sexually transmitted|urethritis|cervicitis|genital discharge|penile discharge|vaginal discharge|new partners|syphilis|hiv|gonorrhea|chlamydia|testicular pain|scrotal pain|pelvic pain)\b/.test(allText);
   if (boneMineralContext && /perioral numbness|tingling|tetany|carpopedal|laryngospasm|arrhythmia/.test(fullQuestion)) return "perioral/tetany symptoms";
   if (boneMineralContext && /muscle cramps|paresthesias|paralysis|palpitations|neuromuscular/.test(fullQuestion)) return "cramps/neuromuscular symptoms";
   if (boneMineralContext && /nephrocalcinosis|hematuria|flank pain|recurrent utis/.test(fullQuestion)) return "kidney stones";
@@ -8109,6 +8427,7 @@ function historyQuestionDisplayLabelSuffix(question = {}) {
   if (/recent glucose|beta hydroxybutyrate|anion gap|bicarbonate|osmolality|ketones/.test(fullQuestion)) return "labs and severity";
   if (/sglt2|fasting|low carb|alcohol|toxin/.test(fullQuestion)) return "SGLT2/fasting risks";
   if (/heart failure|ckd|eskd|frailty|cirrhosis|smaller fluid boluses/.test(fullQuestion)) return "fluid-risk comorbidities";
+  if (/height|growth velocity|family height|puberty timing/.test(fullQuestion)) return "growth/puberty history";
   if (/childhood head|neck radiation|therapeutic radiation|occupational exposure|family thyroid cancer/.test(fullQuestion)) return "radiation/family cancer risk";
   if (/personal or family history of men|vhl|nf1|sdhx|medullary thyroid|pheochromocytoma|paraganglioma/.test(fullQuestion)) return "hereditary endocrine syndromes";
   if (/\b(?:thyroid|goiter|nodule|neck mass)\b/.test(allText)
@@ -8124,6 +8443,8 @@ function historyQuestionDisplayLabelSuffix(question = {}) {
   if (/foot ulcer|wound|skin redness|drainage|indwelling line|procedure-site|skin infection/.test(fullQuestion)) return "skin/line source";
   if (/numbness|tingling|burning pain|loss of protective sensation|falls|ulcers|neuropathy/.test(fullQuestion)) return "neuropathy symptoms";
   if (/immunosuppression|transplant|chemotherapy|high dose steroids|biologics|asplenia|frailty|travel|outdoor|sick contacts|sexual exposure|injection drug|new medications?/.test(detailText)) return "host/exposure risk";
+  if (/mouth sores|eye pain|eye redness|genital sores|skin pain|blistering|purpura|mucosal/.test(detailText)) return "mucosal/ocular warning signs";
+  if (guStiContext && /dysuria|urethral|vaginal|discharge|genital|sti|new partner|syphilis|hiv|pelvic|testicular|ulcer|lesion/.test(detailText)) return "GU/STI symptoms and exposure";
   if (/dysuria|frequency|urgency|hematuria|suprapubic|flank pain|catheter|prior resistant|reduced urine output|renal dysfunction/.test(detailText)) return "urinary/flank symptoms";
   if (/pregnancy is possible|fertility goals?|postpartum|partner factors|medications change safety/.test(detailText)) return "pregnancy/fertility safety";
   if (/urine volume|nocturia|urinary frequency|thirst intensity|access to water|dehydration|confusion/.test(detailText)) return "polyuria/thirst details";

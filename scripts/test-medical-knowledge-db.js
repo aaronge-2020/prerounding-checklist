@@ -141,33 +141,89 @@ complaintModules.forEach((module) => {
 const moduleIds = new Set(complaintModules.map((module) => module.id));
 assert.ok(moduleIds.has("chest_pain_v1"), "database should include chest pain module");
 assert.ok(moduleIds.has("hyperglycemia_possible_dka_v1"), "database should include DKA/HHS module");
+const structuredApplicabilityModules = new Set([
+  "amenorrhea_v1",
+  "erectile_dysfunction_v1",
+  "gestational_diabetes_v1",
+  "gynecomastia_v1",
+  "hirsutism_v1",
+  "hypogonadism_v1",
+  "infertility_v1",
+  "menopause_premature_ovarian_insufficiency_v1",
+  "polycystic_ovary_syndrome_v1"
+]);
+structuredApplicabilityModules.forEach((moduleId) => {
+  const module = complaintModules.find((row) => row.id === moduleId);
+  assert.ok(module?.applicability?.sex_or_reproductive_context, `${moduleId}: should declare sex/reproductive applicability context`);
+  assert.ok(module?.applicability?.use_when?.length, `${moduleId}: should declare when to use the module`);
+  assert.ok(module?.applicability?.do_not_use_when?.length, `${moduleId}: should declare when not to use the module`);
+  assert.ok(module?.applicability?.review_owner, `${moduleId}: should declare applicability review owner`);
+});
+assert.equal(
+  complaintModules.find((module) => module.id === "gestational_diabetes_v1")?.applicability?.pregnancy_status_required,
+  "pregnant",
+  "gestational diabetes should explicitly require active pregnancy context"
+);
 
 const dkaSource = complaintSourceRegistry.find((source) => source.id === "ADA_HYPERGLYCEMIC_CRISES_2024");
 assert.ok(dkaSource?.url?.startsWith("https://"), "DKA source should retain URL provenance");
 const atsCapSource = complaintSourceRegistry.find((source) => source.id === "ATS_CAP_2025");
-assert.ok(atsCapSource, "medical knowledge source registry should include the 2025 ATS adult CAP guideline update");
+assert.ok(atsCapSource, "medical knowledge source registry should include the ATS adult CAP guideline");
 assert.equal(
   atsCapSource.url,
   "https://academic.oup.com/ajrccm/article/212/1/24/8435770",
   "ATS_CAP_2025 should retain the canonical article URL"
 );
+assert.equal(
+  atsCapSource.version,
+  "2026",
+  "ATS_CAP_2025 stable source id should carry the publication-year version shown in its citation"
+);
 assert.match(
   atsCapSource.citation,
   /Am J Respir Crit Care Med\. 2026;212\(1\):24-44/i,
-  "ATS_CAP_2025 citation should distinguish the 2025-approved ATS update from the older ATS/IDSA 2019 guideline"
+  "ATS_CAP_2025 citation should distinguish the 2026 ATS guideline from the older ATS/IDSA 2019 guideline"
 );
-const sourceAuditDate = "2026-06-08";
+const sourceAuditDate = "2026-06-09";
+const allowedSourceCurrencyStatuses = new Set([
+  "reviewed_current_for_scope",
+  "reviewed_legacy_active",
+  "review_due",
+  "retired"
+]);
 complaintSourceRegistry.forEach((source) => {
   assert.match(source.date_accessed || "", /^\d{4}-\d{2}-\d{2}$/, `${source.id}: source access date should use YYYY-MM-DD`);
+  assert.match(source.last_reviewed || "", /^\d{4}-\d{2}-\d{2}$/, `${source.id}: source last_reviewed should use YYYY-MM-DD`);
+  assert.match(source.next_review_due || "", /^\d{4}-\d{2}-\d{2}$/, `${source.id}: source next_review_due should use YYYY-MM-DD`);
+  assert.ok(source.review_owner, `${source.id}: source should include review_owner`);
+  assert.ok(source.reviewed_by_role, `${source.id}: source should include reviewed_by_role`);
+  assert.ok(allowedSourceCurrencyStatuses.has(source.currency_status), `${source.id}: source should include recognized currency_status`);
   assert.ok(
     source.date_accessed <= sourceAuditDate,
     `${source.id}: source access date ${source.date_accessed} should not be later than audit date ${sourceAuditDate}`
+  );
+  assert.ok(
+    source.last_reviewed >= source.date_accessed,
+    `${source.id}: source last_reviewed ${source.last_reviewed} should be on or after access date ${source.date_accessed}`
+  );
+  assert.ok(
+    source.next_review_due > source.last_reviewed,
+    `${source.id}: source next_review_due ${source.next_review_due} should be later than last_reviewed ${source.last_reviewed}`
   );
   const sourceYear = String(source.id || "").match(/(?:^|_)(20\d{2})(?:_|$)/)?.[1];
   if (sourceYear) {
     assert.ok(
       Number(sourceYear) <= Number(String(source.date_accessed || "").slice(0, 4)),
       `${source.id}: source ID claims ${sourceYear} but source was accessed on ${source.date_accessed}`
+    );
+  }
+  const versionYear = String(source.version || "").match(/20\d{2}/)?.[0];
+  const publicationYear = Number(versionYear || sourceYear || 0);
+  if (publicationYear && publicationYear < 2021) {
+    assert.equal(
+      source.currency_status,
+      "reviewed_legacy_active",
+      `${source.id}: legacy sources should be explicitly marked reviewed_legacy_active`
     );
   }
 });
@@ -355,6 +411,8 @@ assert.match(badBuildValidation.issues.join("\n"), /invalid time_burden_minutes/
 assert.match(badBuildValidation.issues.join("\n"), /invalid difficulty/, "build validation should reject invalid difficulty metadata");
 assert.match(badBuildValidation.issues.join("\n"), /invalid patient_cooperation_required/, "build validation should reject invalid cooperation metadata");
 assert.match(badBuildValidation.issues.join("\n"), /source provenance uses stale generated-workup wording/, "build validation should reject stale generated-workup provenance in user-visible source metadata");
+assert.match(badBuildValidation.issues.join("\n"), /missing source governance field review_owner/, "build validation should reject source registry rows without review owner governance");
+assert.match(badBuildValidation.issues.join("\n"), /missing source governance field next_review_due/, "build validation should reject source registry rows without next-review governance");
 assert.match(badBuildValidation.issues.join("\n"), /bad_question missing likelihood_ratio_note/, "build validation should reject history questions without LR interpretation notes");
 assert.match(badBuildValidation.issues.join("\n"), /synthetic_blank_lr_note_exam missing likelihood_ratio_note/, "build validation should reject whitespace-only LR interpretation notes");
 assert.match(badBuildValidation.issues.join("\n"), /sparse_red_flag missing action/, "build validation should reject red flags without action/rationale/tags");
@@ -368,6 +426,47 @@ assert.match(badBuildValidation.issues.join("\n"), /sparse_test missing limitati
 assert.match(badBuildValidation.issues.join("\n"), /sparse_management missing action/, "build validation should reject management rules without action/rationale/tags");
 assert.match(badBuildValidation.issues.join("\n"), /sparse_management missing management_change/, "build validation should reject management rules without explicit management-change metadata");
 assert.match(badBuildValidation.issues.join("\n"), /sparse_frame missing diagnostic_target/, "build validation should reject diagnostic frames without diagnostic target");
+
+const missingApplicabilityValidation = validateMedicalKnowledgeDatabase({
+  manifest: {
+    schema_version: "medical_knowledge_database_v1",
+    database_id: "synthetic",
+    title: "Synthetic",
+    version: "0"
+  },
+  sourceRegistry: {
+    schema_version: "medical_knowledge_database_v1",
+    sources: [
+      {
+        id: "SYNTHETIC_GDM_2026",
+        title: "Synthetic source",
+        source: "Synthetic",
+        version: "2026",
+        url: "https://example.org",
+        date_accessed: "2026-06-07",
+        review_owner: "test_reviewer",
+        reviewed_by_role: "clinician_content_reviewer",
+        last_reviewed: "2026-06-07",
+        next_review_due: "2027-06-07",
+        currency_status: "reviewed_current_for_scope",
+        citation: "Synthetic"
+      }
+    ]
+  },
+  complaintModules: [
+    {
+      id: "gestational_diabetes_v1",
+      schema_version: "complaint-cds-artifact-v1",
+      label: "Gestational Diabetes",
+      version: "0",
+      status: "draft",
+      triggers: ["gestational diabetes"]
+    }
+  ]
+});
+assert.equal(missingApplicabilityValidation.ok, false, "build validation should reject missing structured applicability");
+assert.match(missingApplicabilityValidation.issues.join("\n"), /gestational_diabetes_v1 applicability missing sex_or_reproductive_context/);
+assert.match(missingApplicabilityValidation.issues.join("\n"), /gestational_diabetes_v1 applicability must require active pregnancy/);
 
 const genericEndocrineSafetyTestPattern = /Check safety labs that change immediate management when clinically relevant/i;
 complaintModules

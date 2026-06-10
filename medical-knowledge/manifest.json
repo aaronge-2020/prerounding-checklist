@@ -44,7 +44,17 @@
     "medical-knowledge/complaint-modules/endocrine/type_2_diabetes_mellitus_v1.json",
     "medical-knowledge/complaint-modules/endocrine/vitamin_d_deficiency_osteomalacia_v1.json",
     "medical-knowledge/complaint-modules/fever_infection_sepsis_v1.json",
-    "medical-knowledge/complaint-modules/hyperglycemia_possible_dka_v1.json"
+    "medical-knowledge/complaint-modules/hyperglycemia_possible_dka_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_dka_hhs_hyperglycemia_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_fever_sepsis_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_respiratory_wheeze_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_abdominal_pain_vomiting_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_chest_pain_syncope_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_urinary_uti_pyelonephritis_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_rash_skin_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_msk_limp_hot_joint_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_neuro_headache_seizure_ams_v1.json",
+    "medical-knowledge/complaint-modules/pediatric_hematology_anemia_bleeding_v1.json"
   ],
   "notes": "Source of truth for curated, reviewed clinical decision support artifacts. Build generated app modules with npm run build:medical-knowledge."
 }

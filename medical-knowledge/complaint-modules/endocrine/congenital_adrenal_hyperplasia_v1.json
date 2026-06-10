@@ -446,20 +446,36 @@
         "text": "Any neonatal ambiguous genitalia, salt-wasting episode, early pubarche, rapid growth, virilization, menstrual/fertility issue, or family CAH history?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
@@ -494,20 +510,32 @@
         "text": "How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes pregnancy or reproductive safety, assay interpretation, medication choice, imaging timing, or referral urgency for Congenital Adrenal Hyperplasia (CAH).",
@@ -538,20 +566,44 @@
         "text": "Any personal or family autoimmune thyroid disease, type 1 diabetes, celiac disease, pernicious anemia, adrenal disease, pituitary disease, or polyglandular autoimmune syndrome?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "personal",
+            "label": "Personal"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "family_autoimmune_thyroid_disease",
+            "label": "Family autoimmune thyroid disease"
+          },
+          {
+            "value": "type_1_diabetes",
+            "label": "Type 1 diabetes"
+          },
+          {
+            "value": "celiac_disease",
+            "label": "Celiac disease"
+          },
+          {
+            "value": "pernicious_anemia",
+            "label": "Pernicious anemia"
+          },
+          {
+            "value": "adrenal_disease",
+            "label": "Adrenal disease"
+          },
+          {
+            "value": "pituitary_disease",
+            "label": "Pituitary disease"
+          },
+          {
+            "value": "polyglandular_autoimmune_syndrome",
+            "label": "Polyglandular autoimmune syndrome"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes central endocrine localization, pituitary MRI or visual-field review, axis testing, and neurosurgical or ophthalmology escalation for Congenital Adrenal Hyperplasia (CAH).",
@@ -582,20 +634,32 @@
         "text": "Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?",
         "options": [
           {
+            "value": "no_measured_fever",
+            "label": "No measured fever"
+          },
+          {
+            "value": "less_than_39_c",
+            "label": "Less than 39 C"
+          },
+          {
+            "value": "39_c_or_higher",
+            "label": "39 C or higher"
+          },
+          {
+            "value": "chills_or_rigors",
+            "label": "Chills or rigors"
+          },
+          {
+            "value": "hypothermia_toxic_appearance",
+            "label": "Hypothermia/toxic appearance"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -627,20 +691,32 @@
         "text": "Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -671,20 +747,32 @@
         "text": "Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -716,20 +804,32 @@
         "text": "Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?",
         "options": [
           {
+            "value": "no_measured_fever",
+            "label": "No measured fever"
+          },
+          {
+            "value": "less_than_39_c",
+            "label": "Less than 39 C"
+          },
+          {
+            "value": "39_c_or_higher",
+            "label": "39 C or higher"
+          },
+          {
+            "value": "chills_or_rigors",
+            "label": "Chills or rigors"
+          },
+          {
+            "value": "hypothermia_toxic_appearance",
+            "label": "Hypothermia/toxic appearance"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -761,20 +861,32 @@
         "text": "Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_respiratory_symptoms",
+            "label": "No respiratory symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cough",
+            "label": "Cough"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "sputum",
+            "label": "Sputum"
+          },
+          {
+            "value": "shortness_of_breath",
+            "label": "Shortness of breath"
+          },
+          {
+            "value": "pleuritic_pain",
+            "label": "Pleuritic pain"
+          },
+          {
+            "value": "hypoxemia_or_oxygen_need",
+            "label": "Hypoxemia or oxygen need"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -806,20 +918,36 @@
         "text": "Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_urinary_symptoms",
+            "label": "No urinary symptoms"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "dysuria",
+            "label": "Dysuria"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "frequency_or_urgency",
+            "label": "Frequency or urgency"
+          },
+          {
+            "value": "suprapubic_pain",
+            "label": "Suprapubic pain"
+          },
+          {
+            "value": "hematuria",
+            "label": "Hematuria"
+          },
+          {
+            "value": "flank_pain",
+            "label": "Flank pain"
+          },
+          {
+            "value": "reduced_urine",
+            "label": "Reduced urine"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Congenital Adrenal Hyperplasia (CAH) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -852,20 +980,32 @@
         "text": "Any wound, skin redness, drainage, tenderness, indwelling line/device, or procedure-site concern suggesting infection?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_skin_or_line_concern",
+            "label": "No skin or line concern"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "redness",
+            "label": "Redness"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "drainage",
+            "label": "Drainage"
+          },
+          {
+            "value": "wound_or_ulcer",
+            "label": "Wound or ulcer"
+          },
+          {
+            "value": "line_device_concern",
+            "label": "Line/device concern"
+          },
+          {
+            "value": "procedure_site_concern",
+            "label": "Procedure-site concern"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",
@@ -903,20 +1043,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change. The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Congenital Adrenal Hyperplasia (CAH).",
@@ -958,20 +1110,32 @@
         "text": "Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support weight, appetite, fluid, or systemic-symptom change; adrenal-crisis or volume-depletion symptoms. A positive answer changes adrenal-crisis risk, stress-dose steroid urgency, volume strategy, electrolyte/glucose testing, infection search, and monitored-care threshold for Congenital Adrenal Hyperplasia (CAH).",

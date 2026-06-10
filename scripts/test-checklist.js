@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { complaintModules, evaluateComplaintCds } from "../complaint-cds.js";
 import {
   auditChecklistTraceability,
   buildCleanupPrompt,
   buildLocalChecklistFromWorkup,
   checklistPrompt,
   expandedLocalBedsideQuestionItems,
+  groupChecklistSectionsByOrganSystem,
+  hasGenericOnlyChecklistOptions,
   mergeChecklistAuditResults,
   newAdmissionChecklistPrompt,
   normalizeChecklistText,
+  validateOrganSystemChecklistSchema,
   parseChecklist,
   validateChecklist
 } from "../checklist.js";
@@ -33,11 +37,11 @@ Are you still feeling more thirsty than usual or urinating a lot?: No / Yes, thi
 
 GLYCEMIC SAFETY
 
-Have you felt shaky, sweaty, or lightheaded at any point since yesterday?: No / Yes / Other ___
+Have you felt shaky, sweaty, or lightheaded at any point since yesterday?: No hypoglycemia symptom / Shaky / Sweaty / Lightheaded / Other ___
 
 DISCHARGE READINESS
 
-Were you able to bring your insulin pen box from home?: Yes / No / Other ___
+Were you able to bring your insulin pen box from home?: Brought pen box / Forgot or unavailable / Someone can bring it / No access to supplies / Other ___
 
 Do you have ketone test strips and a glucagon kit at home?: Yes, both / Ketone strips only / Glucagon only / Neither / Not sure / Other ___
 
@@ -45,15 +49,15 @@ SICK DAY KNOWLEDGE AND CONCERNS
 
 If you get sick again and cannot eat, do you know what to do with your long-acting insulin?: Keep taking it / Stop it / Not sure / Other ___
 
-What is your biggest concern about going home?: ___
+What is your biggest concern about going home?: Symptom concern / Treatment concern / Discharge concern / Question for team / Other ___
 
 TARGETED PHYSICAL EXAM CHECKLIST
 
-VITAL SIGNS AND SUPPORT
+RESPIRATORY STATUS
 
-Heart rate: ___
+Work of breathing: Normal / Mildly increased / Markedly increased
 
-Blood pressure: ___
+Kussmaul breathing: Absent / Deep or labored / Respiratory distress / Unable to assess
 
 Oxygen support: Room air / Nasal cannula / Other ___
 
@@ -87,10 +91,34 @@ Foot skin integrity: Intact / Ulcer or wound present, location ___`;
 
 const dkaSections = parseChecklist(dkaChecklist);
 const dkaAudit = validateChecklist(dkaSections);
-assert.equal(itemsByCategory(dkaSections, "bedside").length, 8, "DKA sample should parse 8 bedside questions");
+const dkaOrganAudit = validateOrganSystemChecklistSchema(dkaSections, { throwOnError: true });
+assert.ok(dkaOrganAudit.ok, "DKA sample should assign every checklist row to an organ system");
+const dkaOrganSections = groupChecklistSectionsByOrganSystem(dkaSections, { throwOnError: true });
+assert.ok(
+  ["CARDIOPULMONARY", "ENDOCRINE / METABOLIC", "ABDOMEN / GU", "FUNCTION / SAFETY"].every((title) => dkaOrganSections.some((section) => section.title === title)),
+  "organ-system grouping should preserve a clinically scannable system sweep"
+);
+assert.ok(
+  dkaOrganSections.every((section) => section.items.every((item) => item.organSystemKey && item.originalSectionTitle)),
+  "grouped organ-system items should keep schema keys and original checklist subsection labels"
+);
+const orphanOrganSections = parseChecklist(`BEDSIDE QUESTION CHECKLIST
+FOCUSED HISTORY
+Invented sparkle sign?: Glitter / Flash / Other ___
+
+TARGETED PHYSICAL EXAM CHECKLIST
+FOCUSED EXAM
+Moonbeam resonance: Low / High / Other ___`);
+assert.throws(
+  () => validateOrganSystemChecklistSchema(orphanOrganSections, { throwOnError: true }),
+  /orphan checklist item/i,
+  "organ-system schema validation should throw on orphan checklist rows"
+);
+assert.equal(itemsByCategory(dkaSections, "bedside").length, 12, "DKA sample should atomize compound bedside questions");
 assert.equal(itemsByCategory(dkaSections, "exam").length, 13, "DKA sample has 13 targeted exam item lines");
 assert.ok(!issueTypes(dkaAudit).includes("bedside-count-low"), "DKA sample must not warn that bedside questions are zero");
 assert.ok(dkaAudit.ok, "DKA sample should pass checklist quality validation");
+assert.ok(!dkaSections.flatMap((section) => section.items).some((item) => hasGenericOnlyChecklistOptions(item.rawValue || item.options, item.category)), "DKA sample should not contain generic-only checklist options");
 
 const trailingColonChecklist = `BEDSIDE QUESTION CHECKLIST:
 SYMPTOM TRAJECTORY:
@@ -232,11 +260,47 @@ Upper extremity strength: ___ / 5`;
 const badBlankAudit = validateChecklist(parseChecklist(badBlankChecklist));
 assert.ok(issueTypes(badBlankAudit).includes("bad-blank-format"), "bad blank fraction formats should still warn");
 
+const badGenericOptionsChecklist = `BEDSIDE QUESTION CHECKLIST
+FOCUSED HISTORY
+Any swelling?: Yes / No / Unsure / Other ___
+What is your main concern today?: ___
+How is the symptom trajectory?: Improved / Same / Worse
+Are you eating and drinking enough?: Yes / Some / No / Other ___
+Have you been able to get out of bed safely?: Baseline / Needs help / Not safe / Other ___
+
+TARGETED PHYSICAL EXAM CHECKLIST
+VOLUME EXAM
+Peripheral edema: Present / Absent
+General appearance: Normal / Abnormal
+Lung sounds: Clear / Crackles / Wheezes / Diminished`;
+const badGenericOptionsAudit = validateChecklist(parseChecklist(badGenericOptionsChecklist));
+assert.ok(
+  issueTypes(badGenericOptionsAudit).filter((type) => type === "generic-options").length >= 5,
+  "history, exam, free-text-only, and trajectory-only generic modifiers should fail validation"
+);
+
 const normalized = normalizeChecklistText("BEDSIDE QUESTION CHECKLIST:\n- How are you? Better / Worse / Other ___");
 assert.ok(normalized.includes("How are you?: Better / Worse / Other ___"), "normalization should recover question-plus-options lines");
 
 const unsupportedLocalChecklist = buildLocalChecklistFromWorkup({});
 assert.equal(unsupportedLocalChecklist, "", "local checklist generation should block unsupported/no-intent workups instead of emitting generic defaults");
+
+const generatedBadAtomicLabels = [];
+for (const module of complaintModules) {
+  const result = evaluateComplaintCds(module.label || module.title || module.id, {}, { module });
+  const checklist = buildLocalChecklistFromWorkup(
+    { complaintResult: result, recommendation: result.recommendation },
+    { allowGenericFallbacks: true, maxBedsideQuestions: 24, maxExamItems: 22, includeSafetyInExamChecklist: true }
+  );
+  for (const section of parseChecklist(checklist)) {
+    for (const item of section.items || []) {
+      if (/^Any not present\?$/i.test(item.label || "")) {
+        generatedBadAtomicLabels.push(`${module.id}: ${item.label}`);
+      }
+    }
+  }
+}
+assert.deepEqual(generatedBadAtomicLabels, [], "generated local checklists should not turn generic option text into patient questions");
 
 const broadFeverSourceQuestion = {
   id: "REQ-infection-source-severity-history",
@@ -354,8 +418,29 @@ assert.doesNotMatch(
 );
 assert.match(
   locallyGeneratedChecklist,
-  /Any confusion\?: No \/ Yes \/ Unsure \/ Other ___/i,
-  "local checklist should atomize broad symptom-list questions into one symptom per row"
+  /Any confusion\?: No confusion \/ Mild confusion \/ Moderate confusion \/ Severe confusion \/ Worse than baseline \/ Unsure \/ Other ___/i,
+  "local checklist should atomize broad symptom-list questions into one symptom per row with item-specific modifiers"
+);
+
+const peripheralEdemaChecklist = buildLocalChecklistFromWorkup({
+  recommendation: {
+    focusedHistoryQuestions: [
+      { label: "Any new or worse swelling in the legs?", options: "Yes / No / Unsure / Other ___" }
+    ],
+    corePhysicalExamManeuvers: [
+      { label: "Assess peripheral edema", options: "___" }
+    ]
+  }
+}, { allowContextualBackfill: false });
+assert.match(
+  peripheralEdemaChecklist,
+  /Peripheral edema: None \/ Trace \/ 1\+ \/ 2\+ \/ 3\+ \/ 4\+ \/ Ankle or pedal \/ Pretibial \/ Sacral \/ Unilateral \/ Bilateral \/ Unable to assess \/ Other ___/i,
+  "peripheral edema checklist rows should expose severity, location, and laterality controls"
+);
+assert.doesNotMatch(
+  peripheralEdemaChecklist,
+  /Assess peripheral edema: (?:___|Present \/ Absent|Normal \/ Abnormal)/i,
+  "peripheral edema should not fall back to generic exam modifiers"
 );
 
 const dyspneaAtomicLocalChecklist = buildLocalChecklistFromWorkup({
@@ -391,12 +476,12 @@ const dyspneaAtomicLocalChecklist = buildLocalChecklistFromWorkup({
 }, { maxBedsideQuestions: 18 });
 assert.match(
   dyspneaAtomicLocalChecklist,
-  /Any exertional dyspnea\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  /Any exertional dyspnea\?: No exertional dyspnea \/ Mild with exertion \/ Limits usual activity \/ Occurs with minimal activity \/ Unsure \/ Other ___/i,
   "dyspnea local checklist should keep atomic dyspnea symptom questions"
 );
 assert.match(
   dyspneaAtomicLocalChecklist,
-  /Is breathing worse when lying flat\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  /Is breathing worse when lying flat\?: No orthopnea \/ Uses extra pillows \/ Cannot lie flat \/ Wakes short of breath \/ Unsure \/ Other ___/i,
   "dyspnea local checklist should turn position fragments into askable questions"
 );
 assert.doesNotMatch(
@@ -423,12 +508,13 @@ const residualOrAtomicChecklist = buildLocalChecklistFromWorkup({
     ]
   }
 }, { maxBedsideQuestions: 8, allowContextualBackfill: false });
-["heat intolerance", "sweating", "cold intolerance", "dry change"].forEach((term) => {
-  assert.match(
-    residualOrAtomicChecklist,
-    new RegExp(`Any ${term}\\?: No / Yes / Unsure / Other ___`, "i"),
-    `local checklist should split residual or-list component for ${term}`
-  );
+[
+  [/Any heat intolerance\?: Not present \/ Mild or limited heat intolerance \/ Moderate heat intolerance \/ Severe or function-limiting heat intolerance \/ Unsure \/ Other ___/i, "heat intolerance"],
+  [/Any sweating\?: No sweating \/ Mild sweating \/ Moderate sweating \/ Severe sweating \/ Worse than baseline \/ Unsure \/ Other ___/i, "sweating"],
+  [/Any cold intolerance\?: Not present \/ Mild or limited cold intolerance \/ Moderate cold intolerance \/ Severe or function-limiting cold intolerance \/ Unsure \/ Other ___/i, "cold intolerance"],
+  [/Any dry change\?: Baseline or resolved \/ New dry change \/ Worsening dry change \/ Rapidly worsening \/ Unsure \/ Other ___/i, "dry change"]
+].forEach(([pattern, term]) => {
+  assert.match(residualOrAtomicChecklist, pattern, `local checklist should split residual or-list component for ${term}`);
 });
 
 const stiSourceWordIntent = {
@@ -488,12 +574,12 @@ assert.doesNotMatch(
 );
 assert.match(
   nonThyroidMedicationExposureChecklist,
-  /Any biotin\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  /Any biotin\?: No biotin \/ Current biotin \/ Stopped within last week \/ Unsure \/ Other ___/i,
   "non-thyroid medication exposure atomization should keep generally relevant medication/supplement questions"
 );
 assert.match(
   nonThyroidMedicationExposureChecklist,
-  /Any recent treatment changes\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  /Any recent treatment changes\?: No recent treatment changes \/ Dose increased \/ Dose decreased or stopped \/ New treatment started \/ Unsure \/ Other ___/i,
   "generic endocrine medication rows should render recent treatment changes as an askable question"
 );
 
@@ -531,7 +617,7 @@ const adrenalSteroidCrisisChecklist = buildLocalChecklistFromWorkup({
 }, { maxBedsideQuestions: 12, allowContextualBackfill: false });
 assert.match(
   adrenalSteroidCrisisChecklist,
-  /Any missed steroid doses\?: No \/ Yes \/ Unsure \/ Other ___/i,
+  /Any missed steroid doses\?: Taking as prescribed \/ Missed steroid dose \/ Unable to keep down dose \/ Needs stress dosing \/ Unsure \/ Other ___/i,
   "missed steroid dose questions should remain adrenal-specific bedside questions"
 );
 assert.doesNotMatch(
@@ -742,139 +828,78 @@ function truncatePromptField(value, maxLength = 120) {
 assert.ok(examReferenceCsv.includes("exam_id"), "physical exam base CSV should expose stable exam_id keys");
 assert.ok(examEvidenceOverlayCsv.includes("retrieval_tags"), "evidence overlay should include retrieval tags");
 assert.ok(examEvidenceOverlayCsv.includes("cardiopulmonary_vascular_exam_neck_jvp"), "evidence overlay should include high-yield JVP metadata");
-assert.ok(appHtml.includes("studentExamEvidenceOverlayUrl"), "app should load the exam evidence overlay");
-assert.ok(appHtml.includes("formatStudentExamEvidencePhrase"), "app should append compact evidence phrases to selected exam rows");
-assert.ok(appHtml.includes("When evidence metadata appears"), "student exam reference prompt should scope evidence metadata");
-assert.ok(appHtml.includes("studentExamReferenceMaxRows = 30"), "exam reference prompt should keep the existing row cap for prompt budget");
-assert.ok(appHtml.includes("evidenceFileUrls"), "app should know the requested evidence CSV file set");
-assert.ok(appHtml.includes("addEvidenceOrStudentReferenceToPrompt"), "app should try evidence retrieval before legacy exam reference fallback");
-assert.ok(appHtml.includes("renderEvidenceMeta"), "app should render evidence rationale chips for matched checklist rows");
-assert.ok(appHtml.includes("evidenceReviewStorageKey"), "app should persist expert review feedback locally");
 assert.ok(evidenceModule.includes("retrieved_evidence_candidates"), "evidence module should inject retrieved evidence candidates");
-assert.ok(appHtml.includes('id="localWorkupStep"'), "main workflow should include an inline local workup selection step");
-assert.ok(appHtml.includes("Choose diagnosis or bedside workup"), "workflow should explicitly ask the user to choose a diagnosis/workup");
-assert.ok(appHtml.includes("Build selected workup / guidelines"), "workflow should expose local guideline/workup generation before checklist build");
-assert.ok(appHtml.includes("localWorkupBuiltResults"), "workflow should show selected local workup/guideline detail inline, not only in tools");
-assert.ok(appHtml.includes('syncLocalWorkupSearchInput("DKA")'), "demo note should prefill DKA search without silently selecting a workup");
-assert.ok(appHtml.includes('action: "focus-workup"'), "guided next action should focus the local workup selector");
-assert.ok(appHtml.includes('action: "build-local-workup"'), "guided next action should build selected local workup/guidelines");
+assert.ok(appHtml.includes('id="workupConcernInput"'), "main workflow should expose a diagnosis/workup search input");
+assert.ok(appHtml.includes('id="patientWorkupSelect"'), "patient workspace should expose an explicit validated-workup selector");
+assert.ok(appHtml.includes("selectedWorkupModuleId"), "patient workup selection should persist as first-class state");
+assert.ok(appHtml.includes("patientWorkupSelections"), "patient workup selections should persist per patient instead of globally");
+assert.ok(appHtml.includes('id="patientWorkupResults"') && appHtml.includes("workup-result-row"), "patient workspace should render selectable workup result rows from the search surface");
+assert.ok(!appHtml.includes("Validated workup to use"), "patient workup UI should not show a separate dropdown label next to the search control");
+assert.ok(appHtml.includes("No validated workup selected"), "unsupported patient concerns should render an explicit no-workup-selected state");
+assert.ok(appHtml.includes("reviewedSourceContextText"), "OpenEvidence and phone handoffs should use reviewed selected-patient context");
+const sampleContextToken = "SAMPLE" + "_CONTEXT";
+assert.ok(!appHtml.includes(`state.scrubbedText || ${sampleContextToken}`), "patient evidence handoffs should not fall back directly to the DKA sample context");
+assert.ok(appHtml.includes("Validated intent"), "workflow should explicitly show the selected validated diagnosis/workup");
+assert.ok(appHtml.includes('id="buildChecklistButton"'), "workflow should expose local guideline/workup generation before checklist build");
+assert.ok(appHtml.includes('id="workupRows"'), "workflow should show selected local workup/guideline detail inline");
+assert.ok(appHtml.includes("resolveUiComplaintModule"), "UI workup generation should resolve an explicit local module before checklist build");
+assert.ok(appHtml.includes("evaluateUiComplaintCds"), "UI workup generation should use a guarded complaint-CDS path");
 assert.ok(!appHtml.includes("Paste the initial rounds prompt into OpenEvidence first so"), "main guided flow should not make OpenEvidence the prerequisite before local checklist build");
-assert.ok(appHtml.includes("elements.scrubAndCopyButton.disabled = isPrior && (!hasReviewedPriorContext || !hasSelectedWorkup);"), "prior-note local checklist build should require reviewed local context and a selected validated workup, not an OpenEvidence prompt first");
-assert.ok(appHtml.includes("elements.copySummaryChecklistPromptButton.disabled = !summaryChecklistContextReady || !hasSelectedWorkup;"), "summary local checklist build should require a selected validated workup without being gated by initial OpenEvidence context");
-assert.ok(appHtml.includes("Choose a validated local diagnosis/workup before building the bedside checklist."), "local checklist generator should block until a validated workup is explicitly selected");
-assert.ok(/function\s+clinicalIntentsForLocalChecklist[\s\S]*?return selected;[\s\S]*?\}/.test(appHtml), "local checklist generation should use only explicitly selected validated intents, not silent text inference");
-assert.ok(appHtml.includes("const selectedIntentKnowledgeModule = complaintModuleForSelectedIntents(initialSelectedIntents);"), "local checklist build should resolve an explicitly selected diagnosis/workup before text matching");
-assert.ok(appHtml.includes("const contextKnowledgeModule = explicitKnowledgeModule || selectedIntentKnowledgeModule;"), "selected workup should be the local checklist module source");
-assert.ok(!appHtml.includes("selectedIntentKnowledgeModule || selectComplaintModule(contextText"), "local checklist build should not silently fall back to free-text diagnosis matching");
-assert.ok(appHtml.includes('const complaintCdsReport = needsChecklistRefinementContext ? "" : fullComplaintCdsReport;'), "OpenEvidence checklist improvement prompt should not include the full local guideline report");
+assert.ok(appHtml.includes("buildLocalChecklistFromWorkup"), "local checklist generation should use the shared checklist builder");
+assert.ok(appHtml.includes("parseChecklist"), "app should parse local checklist sections before rendering bedside rows");
 assert.ok(appHtml.includes("checklist_improvement_review"), "app should expose optional OpenEvidence checklist improvement review");
-assert.ok(appHtml.includes("Copy review prompt"), "checklist screen should offer optional prompt copy instead of making OpenEvidence the generator");
+assert.ok(appHtml.includes('id="copyPromptButton"'), "checklist screen should offer optional prompt copy instead of making OpenEvidence the generator");
 assert.ok(
-  /taskId:\s*"checklist_improvement_review"[\s\S]*?filterLikelyFalsePositiveWarnings:\s*true/.test(appHtml),
-  "checklist improvement prompt copy should one-click through likely clinical false-positive name warnings"
+  appHtml.includes("checklistOptionsForItem")
+    && appHtml.includes("splitChecklistOptions")
+    && appHtml.includes("answer-chip")
+    && appHtml.includes("aria-pressed"),
+  "bedside checklist response controls should render item-specific option chips with accessible pressed state"
 );
 assert.ok(
-  appHtml.includes('} from "./checklist.js?v=20260608-history-response-controls";'),
-  "app should load the current checklist atomizer/control module instead of a stale cached build"
+  appHtml.includes('id="evidenceReviewCard"')
+    && appHtml.includes('id="evidenceSupportedCount"')
+    && appHtml.includes('id="evidenceNeedsReviewCount"')
+    && appHtml.includes('id="evidenceNoSourceCount"')
+    && appHtml.includes('id="evidenceReviewItems"'),
+  "bedside checklist should expose a first-class evidence review card with counts and supported-item rows"
 );
 assert.ok(
-  /\.finding-symptom-response-part,\s*body\[data-screen="checklistScreen"\] \.finding-symptom-response-part/.test(appHtml),
-  "positive/negative symptom controls should be styled by component class, not only the checklistScreen body state"
+  appHtml.includes('id="exportPhoneContextButton"')
+    && appHtml.includes('id="importPhoneFindingsButton"')
+    && appHtml.includes("code-paired local bundles"),
+  "desktop-to-phone checklist handoff should be explicit and local-first"
 );
 assert.ok(
-  appHtml.includes('content: "(-)" !important;')
-    && appHtml.includes('content: "(+)" !important;')
-    && appHtml.includes("grid-template-columns: 58px minmax(0, 1fr) 58px !important;"),
-  "mobile checklist response controls should visibly expose left denied (-) and right endorsed (+) buttons"
-);
-assert.ok(
-  appHtml.includes('negativeButton.textContent = "(-) No";')
-    && appHtml.includes('positiveButton.textContent = "(+) Yes";')
-    && appHtml.includes(".complaint-component-answer-actions")
-    && appHtml.includes("grid-template-columns: repeat(2, minmax(0, 1fr)) !important;")
-    && appHtml.includes("left (-) denied, right (+) endorsed")
-    && appHtml.includes("Component responses")
-    && appHtml.includes("Multiple components can be marked."),
-  "clinical-workup component response controls should expose explicit paired (-) no and (+) yes actions"
-);
-assert.ok(
-  appHtml.includes("const splitCandidates = /[\\/,]|\\b(?:and|or)\\b/i.test(clean)")
-    && appHtml.includes("clean.split(/\\s*(?:\\/|,|\\band\\b|\\bor\\b)\\s*/gi)"),
-  "clinical-workup component splitting should preserve hyphenated descriptors such as reflux-like and non-exertional"
-);
-assert.ok(
-  appHtml.includes("function historyQuestionOptionChoices")
-    && appHtml.includes("const splitLabels = splitSymptomResponseOption(label);")
-    && appHtml.includes('appendExamTesterText(row, "Selectable components"'),
-  "focused-history cards should split grouped source options into selectable components before rendering/copying"
-);
-assert.ok(
-  appHtml.includes("grid-template-areas:")
-    && appHtml.includes('"label label"')
-    && appHtml.includes('"denied endorsed"')
-    && appHtml.includes('>(-) Denied</button>')
-    && appHtml.includes('>(+) Endorsed</button>')
-    && appHtml.includes("mode === \"questions\" && usesSymptomResponseAnswers(item)")
-    && appHtml.includes("phoneConceptSymptomResponseControls(item)")
-    && appHtml.includes("Use left (-) Denied and right (+) Endorsed for each symptom."),
-  "phone bedside component controls should show readable denied/endorsed actions instead of symbol-only buttons"
-);
-assert.ok(
-  appHtml.includes("complaintCdsComponentAnswers: {}")
-    && appHtml.includes("function renderComplaintComponentAnswerBoard")
-    && appHtml.includes("data-complaint-component-answer")
-    && appHtml.includes("complaint-component-answer-actions")
-    && appHtml.includes("function aggregateComplaintComponentAnswer"),
-  "compound installed-workup questions should render label-first per-component answer controls instead of only a single select"
-);
-assert.ok(
-  /control\.appendChild\(labelEl\);[\s\S]*actions\.appendChild\(negativeButton\);[\s\S]*actions\.appendChild\(positiveButton\);[\s\S]*control\.appendChild\(actions\);/.test(appHtml)
-    && appHtml.includes("grid-template-columns: minmax(0, 1fr) minmax(156px, auto) !important;")
-    && appHtml.includes("grid-template-columns: minmax(0, 1fr) !important;")
-    && appHtml.includes("font-size: 0.72rem !important;"),
-  "compound installed-workup controls should keep each component label with grouped denied/endorsed actions and stack readably on mobile"
-);
-assert.ok(
-  appHtml.includes('closest?.("[data-intent-select-id]")')
-    && appHtml.includes("max-height: 148px !important;")
-    && appHtml.includes("z-index: 2 !important;"),
-  "validated clinical intent rows should keep their Select buttons reachable in the compact desktop workup drawer"
-);
-assert.ok(
-  appHtml.includes(":has(#toolsDrawer[open] #complaintCdsPanel[open])")
-    && !appHtml.includes(":has(#complaintCdsPanel[open])"),
-  "clinical workup drawer concept CSS should only take over the desktop shell while the tools drawer is open"
-);
-assert.ok(
-  appHtml.includes('id="complaintCdsContextSummary"')
-    && appHtml.includes("function renderComplaintCdsContextSummary")
-    && !appHtml.includes("Concern: DKA / hyperglycemic crisis"),
-  "desktop clinical context summary should be rendered from current workup state, not hard-coded to a DKA reference scenario"
-);
-assert.ok(
-  appHtml.includes("function formatOpenEvidencePromptPreview")
-    && appHtml.includes("openEvidenceTaskDetailCopy")
-    && appHtml.includes("openEvidencePromptPreviewMeta")
-    && appHtml.includes("characters in copied prompt"),
+  appHtml.includes('"Task boundary:"')
+    && appHtml.includes('"Output contract:"')
+    && appHtml.includes('"Context preview:"'),
   "desktop OpenEvidence handoff should show a readable prompt preview while preserving copied prompt length metadata"
 );
 assert.ok(
-  appHtml.includes('id="openEvidenceSidebarProgress"')
-    && appHtml.includes("function renderOpenEvidenceSidebarProgress")
-    && appHtml.includes("visibleOpenEvidenceHubTasks")
-    && appHtml.includes("openEvidenceTaskVisualStatus")
-    && appHtml.includes("elements.openEvidenceTaskTotal.textContent")
-    && (appHtml.includes("card.dataset.openEvidenceTaskStatus = visualStatus")
-      || appHtml.includes('card.setAttribute("data-open-evidence-task-status", visualStatus)')),
+  appHtml.includes('id="evidenceTaskStrip"')
+    && appHtml.includes("renderTaskStrip")
+    && appHtml.includes("taskLabel")
+    && appHtml.includes("taskDescription"),
   "desktop OpenEvidence handoff should render task progress and card status from real task state rather than static concept chrome"
 );
 assert.ok(
-  appHtml.includes('data-sidebar-action="evidence"')
-    && appHtml.includes("function openOpenEvidenceHubFromSidebar")
-    && appHtml.includes("handleWorkspaceSidebarAction(button.dataset.sidebarAction)")
-    && appHtml.includes('showScreen("pasteScreen")')
-    && appHtml.includes("selectOpenEvidenceTask(preferredTaskId"),
-  "desktop workspace sidebar Evidence action should open the functional OpenEvidence handoff hub"
+  appHtml.includes('data-patient-tab="checklist"')
+    && appHtml.indexOf('data-patient-tab="checklist"') < appHtml.indexOf('data-patient-tab="findings"'),
+  "patient workspace tabs should put Checklist before Findings"
+);
+assert.ok(
+  appHtml.includes('data-patient-tab="evidence"')
+    && appHtml.includes('id="patientEvidenceTaskStrip"')
+    && appHtml.includes('id="patientEvidencePromptPreview"')
+    && appHtml.includes("renderTaskStrip(elements.patientEvidenceTaskStrip"),
+  "desktop patient workspace should expose OpenEvidence prompts as a first-class patient tab"
+);
+assert.ok(
+  appHtml.includes('id="workspaceFindingsGateNotice"')
+    && appHtml.includes("Answer at least one bedside checklist item before recording findings here")
+    && appHtml.includes("findingsUnlocked"),
+  "patient findings should be gated behind checklist-derived findings"
 );
 
 const baseExamRows = parseCsv(examReferenceCsv);

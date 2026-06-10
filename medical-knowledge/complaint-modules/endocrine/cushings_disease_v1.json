@@ -407,20 +407,32 @@
         "text": "Have you noticed easy bruising, proximal muscle weakness, wide purple stretch marks, facial rounding, new hypertension, new diabetes, or recurrent infections?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -438,51 +450,6 @@
       },
       {
         "id": "question_02",
-        "label": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
-        "item_type": "history_question",
-        "source": {
-          "source_id": "ES_CUSHING_DX_2008",
-          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) curated endocrine workup: required clinical questions",
-          "evidence_strength": "guideline/consensus",
-          "version_date": "2008",
-          "last_reviewed": "2026-06-06",
-          "clinical_owner": "endocrine_content_review",
-          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
-        },
-        "text": "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?",
-        "options": [
-          {
-            "value": "unknown",
-            "label": "Unknown"
-          },
-          {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
-            "value": "other",
-            "label": "Other"
-          }
-        ],
-        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
-        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Disease (Pituitary-dependent Cushing's) needs urgent evaluation today.",
-        "when_to_ask": "Ask when Cushing's Disease (Pituitary-dependent Cushing's) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
-        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Disease (Pituitary-dependent Cushing's) needs urgent evaluation today.",
-        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
-        "tags": [
-          "pituitary_gland_disorders",
-          "cushings_disease",
-          "headache",
-          "vision"
-        ],
-        "source_seed": "Cushing phenotype plus headache/vision symptoms."
-      },
-      {
-        "id": "question_03",
         "label": "Do symptoms occur in episodes or cycles, and are there symptom-free intervals, repeated abnormal labs, or triggers that suggest cyclic hormone excess?",
         "item_type": "history_question",
         "source": {
@@ -497,20 +464,28 @@
         "text": "Do symptoms occur in episodes or cycles, and are there symptom-free intervals, repeated abnormal labs, or triggers that suggest cyclic hormone excess?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "symptoms_occur_in_episodes",
+            "label": "Symptoms occur in episodes"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "cycles",
+            "label": "Cycles"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "symptom_free_intervals",
+            "label": "Symptom-free intervals"
+          },
+          {
+            "value": "repeated_abnormal_labs",
+            "label": "Repeated abnormal labs"
+          },
+          {
+            "value": "triggers",
+            "label": "Triggers"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes the leading Cushing's Disease (Pituitary-dependent Cushing's) pathway by refining severity, mimics, confirmatory testing, treatment safety, and follow-up timing.",
@@ -526,7 +501,7 @@
         "source_seed": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
       },
       {
-        "id": "question_04",
+        "id": "question_03",
         "label": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "item_type": "history_question",
         "source": {
@@ -541,20 +516,36 @@
         "text": "Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -572,7 +563,7 @@
         "source_seed": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
       },
       {
-        "id": "question_05",
+        "id": "question_04",
         "label": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "item_type": "history_question",
         "source": {
@@ -587,20 +578,32 @@
         "text": "When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes pituitary-gonadal axis testing, hypopituitarism assessment, fertility counseling, and pituitary treatment timing for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -615,6 +618,65 @@
           "hypogonadal"
         ],
         "source_seed": "Cyclic symptoms, exogenous steroid exclusion, menstrual/hypogonadal symptoms."
+      },
+      {
+        "id": "question_05",
+        "label": "Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?",
+        "item_type": "history_question",
+        "source": {
+          "source_id": "ES_CUSHING_DX_2008",
+          "source_section": "Cushing's Disease (Pituitary-dependent Cushing's) curated endocrine workup: required clinical questions",
+          "evidence_strength": "guideline/consensus",
+          "version_date": "2008",
+          "last_reviewed": "2026-06-06",
+          "clinical_owner": "endocrine_content_review",
+          "implementation_notes": "Guideline-backed endocrine workup content curated into the local knowledge schema; schema, source, PHI, and regression tests run on 2026-06-06."
+        },
+        "text": "Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?",
+        "options": [
+          {
+            "value": "no_eye_vision_symptom",
+            "label": "No eye/vision symptom"
+          },
+          {
+            "value": "eye_pain_redness",
+            "label": "Eye pain/redness"
+          },
+          {
+            "value": "light_sensitivity",
+            "label": "Light sensitivity"
+          },
+          {
+            "value": "bulging_proptosis",
+            "label": "Bulging/proptosis"
+          },
+          {
+            "value": "double_vision",
+            "label": "Double vision"
+          },
+          {
+            "value": "reduced_or_peripheral_vision_change",
+            "label": "Reduced or peripheral vision change"
+          },
+          {
+            "value": "other",
+            "label": "Other ___"
+          }
+        ],
+        "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "rationale": "Defines symptom severity, tempo, complications, and whether Cushing's Disease (Pituitary-dependent Cushing's) needs urgent evaluation today.",
+        "when_to_ask": "Ask when Cushing's Disease (Pituitary-dependent Cushing's) is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.",
+        "diagnostic_purpose": "Defines symptom severity, tempo, complications, and whether Cushing's Disease (Pituitary-dependent Cushing's) needs urgent evaluation today.",
+        "management_implication": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
+        "tags": [
+          "pituitary_gland_disorders",
+          "cushings_disease",
+          "visual",
+          "field",
+          "loss",
+          "diplopia"
+        ],
+        "source_seed": "Ask about headache, visual field loss/diplopia, pituitary surgery/radiation/apoplexy, galactorrhea, libido/fertility/cycle changes, polyuria/polydipsia, growth/acral changes, and adrenal/thyroid symptoms."
       },
       {
         "id": "question_06",
@@ -632,20 +694,36 @@
         "text": "Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_relevant_exposure",
+            "label": "No relevant exposure"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "medication_change",
+            "label": "Medication change"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "supplement_use",
+            "label": "Supplement use"
+          },
+          {
+            "value": "missed_doses",
+            "label": "Missed doses"
+          },
+          {
+            "value": "steroid_or_hormone_exposure",
+            "label": "Steroid or hormone exposure"
+          },
+          {
+            "value": "biotin",
+            "label": "Biotin"
+          },
+          {
+            "value": "iodine_contrast_exposure",
+            "label": "Iodine/contrast exposure"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, pituitary hormone testing, and neurosurgical or ophthalmology escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -676,20 +754,32 @@
         "text": "How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_gi_volume_symptom",
+            "label": "No GI/volume symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "vomiting",
+            "label": "Vomiting"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "nausea",
+            "label": "Nausea"
+          },
+          {
+            "value": "abdominal_pain",
+            "label": "Abdominal pain"
+          },
+          {
+            "value": "poor_intake",
+            "label": "Poor intake"
+          },
+          {
+            "value": "cannot_keep_fluids_meds_down",
+            "label": "Cannot keep fluids/meds down"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "A positive answer raises acuity and can change same-day labs, imaging, monitored setting, or urgent endocrine escalation for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -721,20 +811,32 @@
         "text": "Have ring size, shoe size, facial features, jaw spacing, sweating, sleep apnea, joint pain, or headaches changed over time?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_endocrine_symptom",
+            "label": "No endocrine symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "heat_intolerance_sweating",
+            "label": "Heat intolerance/sweating"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "cold_intolerance_dry_skin",
+            "label": "Cold intolerance/dry skin"
+          },
+          {
+            "value": "palpitations_tremor",
+            "label": "Palpitations/tremor"
+          },
+          {
+            "value": "bowel_change",
+            "label": "Bowel change"
+          },
+          {
+            "value": "weight_change",
+            "label": "Weight change"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -766,20 +868,32 @@
         "text": "Any adrenal symptoms such as orthostasis, salt craving, hyperpigmentation, unexplained weight loss, or thyroid symptoms such as palpitations, tremor, heat/cold intolerance, bowel change, or neck swelling?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_orthostatic_symptom",
+            "label": "No orthostatic symptom"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "salt_craving",
+            "label": "Salt craving"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "lightheaded_standing",
+            "label": "Lightheaded standing"
+          },
+          {
+            "value": "fainting_near_fainting",
+            "label": "Fainting/near-fainting"
+          },
+          {
+            "value": "severe_weakness",
+            "label": "Severe weakness"
+          },
+          {
+            "value": "improves_with_fluids_salt",
+            "label": "Improves with fluids/salt"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Cushing's Disease (Pituitary-dependent Cushing's).",
@@ -811,20 +925,32 @@
         "text": "Do you have reliable access to water, and are thirst, intake, or mental status limiting safe hydration?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "baseline_intake_urine",
+            "label": "Baseline intake/urine"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "excess_thirst",
+            "label": "Excess thirst"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "polyuria",
+            "label": "Polyuria"
+          },
+          {
+            "value": "nocturia",
+            "label": "Nocturia"
+          },
+          {
+            "value": "cannot_keep_up_with_thirst",
+            "label": "Cannot keep up with thirst"
+          },
+          {
+            "value": "limited_water_access",
+            "label": "Limited water access"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The pattern changes fluid-sodium interpretation, urine testing priority, desmopressin or hydration safety, and monitoring needs for Cushing's Disease (Pituitary-dependent Cushing's).",

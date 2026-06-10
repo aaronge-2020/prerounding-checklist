@@ -77,13 +77,20 @@ function sourceOrganization(id) {
 
 function sourceRegistryRow(id, tuple) {
   const [title, url] = tuple;
+  const version = sourceVersion(id, title);
+  const publicationYear = Number(String(version).match(/20\d{2}/)?.[0] || 0);
   return {
     id,
     title,
     source: sourceOrganization(id),
-    version: sourceVersion(id, title),
+    version,
     url,
     date_accessed: lastReviewed,
+    review_owner: clinicalOwner,
+    reviewed_by_role: "clinician_content_reviewer",
+    last_reviewed: lastReviewed,
+    next_review_due: "2027-06-06",
+    currency_status: publicationYear && publicationYear < 2021 ? "reviewed_legacy_active" : "reviewed_current_for_scope",
     citation: title
   };
 }
@@ -100,6 +107,77 @@ function sourceReference(sourceId, section, strength = "guideline/consensus") {
   };
 }
 
+function applicabilityForEndocrineWorkup(row) {
+  const diagnosis = String(row.diagnosis || "").toLowerCase();
+  const base = {
+    age_group: "adult",
+    setting: "clinician support",
+    review_owner: clinicalOwner,
+    last_reviewed: lastReviewed
+  };
+  if (/gestational diabetes/.test(diagnosis)) {
+    return {
+      ...base,
+      sex_or_reproductive_context: "pregnancy-capable patient who is currently pregnant",
+      pregnancy_status_required: "pregnant",
+      use_when: [
+        "Use for diabetes screening, diagnosis, or management questions during an active pregnancy.",
+        "Use when gestational age, prior gestational diabetes, fetal growth, medication safety, or obstetric monitoring changes the workup."
+      ],
+      do_not_use_when: [
+        "Do not use for a nonpregnant patient with type 1 or type 2 diabetes; use the corresponding diabetes module.",
+        "Do not use for postpartum diabetes follow-up unless the clinical question is explicitly pregnancy-related."
+      ]
+    };
+  }
+  if (/amenorrhea|hirsutism|polycystic ovary|menopause|premature ovarian insufficiency/.test(diagnosis)) {
+    return {
+      ...base,
+      sex_or_reproductive_context: "patient with ovarian/uterine or pregnancy-capable reproductive physiology relevant to the complaint",
+      pregnancy_status_required: /amenorrhea|polycystic ovary/.test(diagnosis) ? "must_assess" : "not_required_but_must_consider",
+      use_when: [
+        "Use when menstrual, ovulatory, androgen-excess, ovarian insufficiency, menopause, or pregnancy-exclusion context changes testing and counseling.",
+        "Use when local history confirms the reproductive physiology or anatomy relevant to the selected module."
+      ],
+      do_not_use_when: [
+        "Do not use as a generic endocrine workup when menstrual or ovarian physiology is not clinically applicable.",
+        "Do not use when pregnancy, postpartum state, prior hysterectomy/oophorectomy, or gender-affirming care changes the appropriate pathway without documenting that modifier."
+      ]
+    };
+  }
+  if (/erectile dysfunction|hypogonadism|gynecomastia/.test(diagnosis)) {
+    return {
+      ...base,
+      sex_or_reproductive_context: "patient with male gonadal/androgen or erectile/breast-tissue physiology relevant to the complaint",
+      pregnancy_status_required: "not_applicable",
+      use_when: [
+        "Use when erectile symptoms, androgen deficiency, testicular function, gynecomastia, or male reproductive endocrine context is the selected concern.",
+        "Use when medication, fertility, breast mass, pituitary, or testosterone-safety context materially changes testing and management."
+      ],
+      do_not_use_when: [
+        "Do not use as a generic breast, fertility, or fatigue workup when male gonadal/androgen physiology is not the clinical question.",
+        "Do not use for pregnancy-capable or ovarian-context reproductive complaints unless the module is explicitly selected for a relevant partner or anatomy-specific concern."
+      ]
+    };
+  }
+  if (/infertility/.test(diagnosis)) {
+    return {
+      ...base,
+      sex_or_reproductive_context: "patient or couple with fertility-context physiology documented before endocrine testing",
+      pregnancy_status_required: "must_assess",
+      use_when: [
+        "Use when infertility, ovulation, semen/androgen, menstrual, pregnancy, or partner-factor context changes the endocrine workup.",
+        "Use only after documenting which patient physiology or partner context the recommendation applies to."
+      ],
+      do_not_use_when: [
+        "Do not use as a generic endocrine screen without a documented fertility question.",
+        "Do not apply pregnancy-unsafe testing or treatment advice without pregnancy status and patient-specific reproductive context."
+      ]
+    };
+  }
+  return null;
+}
+
 function standardOptions() {
   return [
     { value: "unknown", label: "Unknown" },
@@ -107,6 +185,174 @@ function standardOptions() {
     { value: "no", label: "No" },
     { value: "other", label: "Other" }
   ];
+}
+
+function optionObjects(labels = []) {
+  return uniqueList(labels)
+    .map((label) => String(label || "").replace(/\s+/g, " ").trim())
+    .filter(Boolean)
+    .map((label) => ({
+      value: slug(label).replace(/_{2,}/g, "_") || "option",
+      label
+    }));
+}
+
+function titleCaseOptionFragment(fragment = "") {
+  const cleaned = String(fragment || "")
+    .replace(/\s+/g, " ")
+    .replace(/^[,;:/\s?.-]+|[,;:/\s?.-]+$/g, "")
+    .trim();
+  if (!cleaned) {
+    return "";
+  }
+  if (/^(?:cad|mi|cabg|ckd|cgm|dka|hhs|uti|bp|hr|rr|ecg|ekg|men|vhl|nf1|sdhx|fna|osa|arr|pco?s)$/i.test(cleaned)) {
+    return cleaned.toUpperCase();
+  }
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+function cleanQuestionOptionFragment(fragment = "") {
+  return String(fragment || "")
+    .replace(/\?+$/g, "")
+    .replace(/^(?:or|and)\s+/i, "")
+    .replace(/^Any\s+/i, "")
+    .replace(/^What\s+symptoms?\s+localize[^:]*:\s*/i, "")
+    .replace(/^Which\s+/i, "")
+    .replace(/^What\s+(?:is|are|was|were)\s+/i, "")
+    .replace(/^Have you(?: had| noticed| felt)?\s+/i, "")
+    .replace(/^Do you(?: have| currently have)?\s+/i, "")
+    .replace(/^Do\s+/i, "")
+    .replace(/^Did you\s+/i, "")
+    .replace(/^Are you\s+/i, "")
+    .replace(/^Are there\s+/i, "")
+    .replace(/^Is there\s+/i, "")
+    .replace(/\b(?:if|when)\s+known\b/gi, "")
+    .replace(/\bif\s+.+$/i, "")
+    .replace(/\b(?:suggesting|affecting|that suggest|that suggests|that changes|that could change|including)\b.*$/i, "")
+    .replace(/\b(?:have you taken|use|known)\b$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function splitQuestionOptionFragments(text = "") {
+  return String(text || "")
+    .replace(/\?+$/g, "")
+    .replace(/\band\s+what\s+/gi, ", ")
+    .replace(/\band\s+has\s+/gi, ", ")
+    .replace(/\band\s+is\s+/gi, ", ")
+    .split(/\s*,\s*|\s+\/\s+|\s+\bor\s+|\s+\band\s+/i)
+    .map(cleanQuestionOptionFragment)
+    .filter((fragment) => fragment.length >= 3)
+    .filter((fragment) => !/^(?:and|or|if|when|any|known|recent|other|unknown|yes|no)$/i.test(fragment));
+}
+
+function genericQuestionOptionLabels(labels = []) {
+  const normalized = labels
+    .map((label) => String(label || "").toLowerCase().replace(/[_-]{2,}/g, "").trim())
+    .filter(Boolean);
+  return normalized.length <= 4
+    && normalized.every((label) => /^(?:unknown|yes|no|other|not sure|unsure|unable)$/.test(label))
+    && normalized.includes("yes")
+    && normalized.includes("no");
+}
+
+function questionOptionLabelsForText(text = "", phrase = "", row = {}) {
+  const normalized = `${text || ""} ${phrase || ""} ${row.category || ""} ${row.diagnosis || ""}`.toLowerCase();
+  const patternOptions = [
+    {
+      pattern: /\b(?:start|onset|duration|how long|when did|timing|trajectory|changed from baseline)\b/,
+      values: ["Today or acute onset", "Days", "Weeks to months", "Chronic or baseline", "Worse today", "Unknown", "Other ___"]
+    },
+    {
+      pattern: /\b(?:chest|discomfort)\b.*\b(?:quality|radiate|radiation|arm|jaw|back|shoulder|pressure|pleuritic)\b/,
+      values: ["Pressure/heaviness", "Sharp or pleuritic", "Burning/reflux-like", "Radiates to arm/jaw/back/shoulder", "Reproducible with movement/palpation", "Other ___"]
+    },
+    {
+      pattern: /\b(?:exertional|relieved by rest|prior angina)\b/,
+      values: ["Exertional", "Relieved by rest", "Similar to prior angina", "Non-exertional", "Not sure", "Other ___"]
+    },
+    {
+      pattern: /\b(?:diabetes type|insulin regimen|pump|cgm|last insulin)\b/,
+      values: ["Diabetes type known", "Basal/bolus regimen", "Pump or CGM use", "Last insulin dose known", "Missed or reduced insulin", "Unknown", "Other ___"]
+    },
+    {
+      pattern: /\b(?:glucose|beta hydroxybutyrate|ketones|anion gap|bicarbonate|ph|potassium|creatinine|osmolality)\b/,
+      values: ["Known/reviewed", "Hyperglycemia", "Ketones elevated", "Acidosis or anion gap", "Potassium abnormal", "Renal/osmolality concern", "Not available"]
+    },
+    {
+      pattern: /\b(?:fever|rigors|hypothermia|toxic appearance)\b/,
+      values: ["No measured fever", "Less than 39 C", "39 C or higher", "Chills or rigors", "Hypothermia/toxic appearance", "Unknown", "Other ___"]
+    },
+    {
+      pattern: /\b(?:cough|sputum|dyspnea|shortness of breath|pleuritic|hypoxemia|oxygen|pneumonia|respiratory infection)\b/,
+      values: ["No respiratory symptoms", "Cough", "Sputum", "Shortness of breath", "Pleuritic pain", "Hypoxemia or oxygen need", "Other ___"]
+    },
+    {
+      pattern: /\b(?:dysuria|urinary frequency|urinary urgency|suprapubic|hematuria|flank|uti|pyelonephritis)\b/,
+      values: ["No urinary symptoms", "Dysuria", "Frequency or urgency", "Suprapubic pain", "Hematuria", "Flank pain", "Reduced urine", "Other ___"]
+    },
+    {
+      pattern: /\b(?:wound|skin redness|drainage|line|device|procedure site|cellulitis|foot ulcer)\b/,
+      values: ["No skin or line concern", "Redness", "Drainage", "Wound or ulcer", "Line/device concern", "Procedure-site concern", "Other ___"]
+    },
+    {
+      pattern: /\b(?:medication|medications|supplements|missed doses|biotin|iodine|contrast|hormone therapy|recent treatment changes|assay interference|steroid|glucocorticoid|amiodarone|lithium)\b/,
+      values: ["No relevant exposure", "Medication change", "Supplement use", "Missed doses", "Steroid or hormone exposure", "Biotin", "Iodine/contrast exposure", "Other ___"]
+    },
+    {
+      pattern: /\b(?:pregnan|postpartum|fertility|menses|menstrual|cycle|ovulation|gestational)\b/,
+      values: ["Not applicable", "Pregnancy possible", "Pregnant/postpartum", "Cycle irregularity", "Fertility goal active", "Timing known", "Unknown", "Other ___"]
+    },
+    {
+      pattern: /\b(?:vomiting|nausea|abdominal pain|poor intake|keep down|dehydration)\b/,
+      values: ["No GI/volume symptom", "Vomiting", "Nausea", "Abdominal pain", "Poor intake", "Cannot keep fluids/meds down", "Other ___"]
+    },
+    {
+      pattern: /\b(?:salt craving|orthostasis|lightheaded|faint|hypotension|weakness)\b/,
+      values: ["No orthostatic symptom", "Salt craving", "Lightheaded standing", "Fainting/near-fainting", "Severe weakness", "Improves with fluids/salt", "Other ___"]
+    },
+    {
+      pattern: /\b(?:polyuria|polydipsia|thirst|overnight urination|access to water)\b/,
+      values: ["Baseline intake/urine", "Excess thirst", "Polyuria", "Nocturia", "Cannot keep up with thirst", "Limited water access", "Other ___"]
+    },
+    {
+      pattern: /\b(?:eye pain|redness|light sensitivity|bulging eyes|double vision|reduced vision|eyelids|visual field|peripheral vision)\b/,
+      values: ["No eye/vision symptom", "Eye pain/redness", "Light sensitivity", "Bulging/proptosis", "Double vision", "Reduced or peripheral vision change", "Other ___"]
+    },
+    {
+      pattern: /\b(?:heat intolerance|cold intolerance|palpitations|tremor|sweating|diarrhea|constipation|dry skin|hoarse voice|weight)\b/,
+      values: ["No endocrine symptom", "Heat intolerance/sweating", "Cold intolerance/dry skin", "Palpitations/tremor", "Bowel change", "Weight change", "Other ___"]
+    },
+    {
+      pattern: /\b(?:fracture|bone pain|height loss|falls|gait instability|kidney stones|malabsorption|vitamin d|calcium)\b/,
+      values: ["No bone/mineral symptom", "Low-trauma fracture", "Bone or back pain", "Height loss", "Falls/gait instability", "Kidney stones", "Malabsorption risk", "Other ___"]
+    },
+    {
+      pattern: /\b(?:libido|erectile|morning erections|ejaculation|orgasm|testicular|gynecomastia|breast tenderness|nipple discharge)\b/,
+      values: ["No gonadal/breast symptom", "Libido change", "Erectile or ejaculation change", "Testicular symptom", "Breast tenderness/tissue", "Nipple discharge", "Fertility concern", "Other ___"]
+    }
+  ];
+  const matched = patternOptions.find((entry) => entry.pattern.test(normalized));
+  if (matched) {
+    return matched.values;
+  }
+  const fragments = splitQuestionOptionFragments(text)
+    .map(titleCaseOptionFragment)
+    .filter(Boolean)
+    .filter((fragment) => !/^(?:unknown|yes|no|other)$/i.test(fragment));
+  if (fragments.length >= 2) {
+    const prefix = /^any\b/i.test(String(text || "").trim()) ? ["No matching feature"] : [];
+    return [...prefix, ...uniqueList(fragments).slice(0, 8), "Other ___"];
+  }
+  const subject = titleCaseOptionFragment(cleanQuestionOptionFragment(text || phrase)) || "Feature";
+  return [`No ${subject.toLowerCase()}`, `${subject} present`, `${subject} worse than baseline`, "Unknown", "Other ___"];
+}
+
+function questionOptionsForText(text = "", phrase = "", row = {}) {
+  const labels = questionOptionLabelsForText(text, phrase, row);
+  return optionObjects(genericQuestionOptionLabels(labels)
+    ? [`No ${titleCaseOptionFragment(cleanQuestionOptionFragment(text || phrase)).toLowerCase()}`, `${titleCaseOptionFragment(cleanQuestionOptionFragment(text || phrase))} present`, `${titleCaseOptionFragment(cleanQuestionOptionFragment(text || phrase))} worse`, "Unknown", "Other ___"]
+    : labels);
 }
 
 function uniqueList(items = []) {
@@ -324,7 +570,10 @@ function questionAction(label, row) {
   if (category.thyroid && /\b(?:neck swelling|hoarseness|trouble swallowing|dysphagia|positional shortness of breath|thyroid cancer|men2|bethesda|fna|childhood head\/neck radiation|family thyroid cancer)\b/.test(lower)) {
     return `The answer changes thyroid ultrasound/FNA urgency, compressive-symptom escalation, cancer-risk framing, and endocrine or surgical referral timing for ${diagnosis}.`;
   }
-  if (category.diabetes && /\b(?:polyuria|polydipsia|blurry vision|weight loss|infection symptoms|high glucose|ketones|vomiting|abdominal pain|deep or labored breathing|dehydration|missed insulin|pump failure)\b/.test(lower)) {
+  if (category.diabetes && /\b(?:blurred vision|blurry vision|vision changes?|retinopathy|dilated eye|dilated-eye|eye injections?|laser)\b/.test(lower)) {
+    return `The answer changes diabetes eye-complication triage, dilated-eye exam referral timing, medication safety, and follow-up intensity for ${diagnosis}.`;
+  }
+  if (category.diabetes && /\b(?:polyuria|polydipsia|blurred vision|blurry vision|weight loss|infection symptoms|high glucose|ketones|vomiting|abdominal pain|deep or labored breathing|dehydration|missed insulin|pump failure)\b/.test(lower)) {
     return `A positive answer changes urgency from routine diabetes assessment to same-day hyperglycemia, ketosis, dehydration, infection, or insulin-delivery evaluation for ${diagnosis}.`;
   }
   if (category.boneParathyroid && /\b(?:fracture|falls|bone pain|height loss|back pain|calcium|vitamin d|kidney stones|malabsorption|bariatric|hypocalcemia|tetany|paresthesias)\b/.test(lower)) {
@@ -338,6 +587,10 @@ function questionAction(label, row) {
   }
   if (/\b(?:gestational age|weeks pregnant|pregnancy dating|fetal growth|polyhydramnios|obstetric|postpartum)\b/.test(lower)) {
     return `The answer changes ${diagnosis} screening timing, glucose-monitoring intensity, maternal-fetal surveillance, medication choice, and postpartum diabetes follow-up.`;
+  }
+  if (/gestational diabetes/.test(diagnosisLower)
+    && /\b(?:preeclampsia|high blood pressure|proteinuria|right upper quadrant|reduced fetal movement|visual symptoms|headache)\b/.test(lower)) {
+    return `A positive answer changes urgency to obstetric blood-pressure/proteinuria assessment, fetal-safety review, maternal-fetal surveillance, and coordinated endocrine/OB escalation for ${diagnosis}.`;
   }
   if (/\b(?:nutrition|meal pattern|carbohydrate|food access|missed meal)\b/.test(lower)) {
     return `The answer changes nutrition therapy, medication timing, hypoglycemia prevention, glucose targets, and whether social-support or diabetes-education help is needed for ${diagnosis}.`;
@@ -357,7 +610,7 @@ function questionAction(label, row) {
   if (/\b(?:easy bruising|purple striae|proximal weakness|facial rounding|recurrent infection|glucocorticoid|steroid)\b/.test(lower)) {
     return `The answer changes Cushing phenotype probability, exogenous steroid exclusion, screening-test selection, and urgency of complication management for ${diagnosis}.`;
   }
-  if (/\b(?:headache|peripheral vision|visual field|double vision|pituitary|apoplexy|galactorrhea|prolactin)\b/.test(lower)) {
+  if (/\b(?:peripheral vision|visual field|double vision|pituitary|apoplexy|galactorrhea|prolactin|sellar|parasellar)\b/.test(lower)) {
     return `A positive answer changes pituitary mass-effect urgency, MRI/visual-field review, prolactin interpretation, and neurosurgical or ophthalmology escalation for ${diagnosis}.`;
   }
   if (/\b(?:medication|supplement|steroid|glucocorticoid|amiodarone|lithium|biotin|iodine|contrast|opioid|psychotropic|metoclopramide|cannabis|alcohol)\b/.test(lower)) {
@@ -434,6 +687,9 @@ function mappedQuestionText(phrase, row) {
   }
   if (category.diabetes && /barriers to prevention|prevention barrier|follow-up barrier/.test(lower)) {
     return "What barriers could limit nutrition changes, physical activity, medication access, weight-management support, glucose monitoring, or follow-up for cardiometabolic risk reduction?";
+  }
+  if (category.diabetes && /\b(?:blurred vision|blurry vision|vision changes?|retinopathy|dilated eye|dilated-eye|eye injections?|laser)\b/.test(lower)) {
+    return "Any blurred vision, known retinopathy, eye injections/laser, or overdue dilated eye examination?";
   }
   if (/diabetes insipidus/.test(diagnosisLower)
     && /\b(?:medication|medications|supplements|missed doses|amiodarone|lithium|biotin|iodine|contrast|thyroid hormone|antithyroid)\b/.test(lower)) {
@@ -580,7 +836,7 @@ function mappedQuestionText(phrase, row) {
     [/hypocalcemia|tetany|chvostek|trousseau/, "Any perioral numbness, tingling, cramps, tetany, carpopedal spasm, seizure, laryngospasm, or arrhythmia symptoms?"],
     [/^(?:paresthesias|seizures)$/i, "Any perioral numbness, tingling, cramps, carpopedal spasm, seizure, laryngospasm, palpitations, or QT-risk symptoms suggesting hypocalcemia?"],
     [/hypercalcemia|kidney stone|nephrolithiasis/, "Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?"],
-    [/headache|vision|visual field|diplopia|pituitary|apoplexy/, "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?"],
+    [/mass-effect symptoms|peripheral vision|visual field|diplopia|pituitary|sellar|parasellar|apoplexy/, "Any new headache, peripheral vision loss, double vision, eye movement pain, sudden severe headache, nausea, or pituitary surgery/radiation history?"],
     [/enlarging hands|ring or shoe size|facial changes|acral/, "Have ring size, shoe size, facial features, jaw spacing, sweating, sleep apnea, joint pain, or headaches changed over time?"],
     [/^(?:sweating|arthralgia|joint pain|colon polyps)$/i, "Any sweating, enlarged hands/feet, ring or shoe-size change, jaw/facial change, joint pain, sleep apnea, headaches, diabetes, hypertension, or colon-polyp history suggesting acromegaly complications?"],
     [/sleep apnea|snoring/, "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?"],
@@ -688,13 +944,16 @@ function questionSemanticBucket(text = "", row = {}) {
   if (/\b(?:pregnancy|postpartum|breastfeeding|fertility goals|partner factors)\b/.test(lower)) {
     return "reproductive_safety_context";
   }
+  if (category.diabetes && /\b(?:blurred vision|blurry vision|retinopathy|dilated eye|eye injections?|laser)\b/.test(lower)) {
+    return "diabetes_eye_complication_context";
+  }
   if (/\b(?:breast tissue|breast tenderness|nipple discharge|testicular|gynecomastia)\b/.test(lower)) {
     return "breast_gonadal_context";
   }
   if (/\b(?:low-trauma fracture|height loss|back pain|falls|gait instability|bone pain|kidney stones|malabsorption|calcium|vitamin d)\b/.test(lower)) {
     return "bone_mineral_context";
   }
-  if (/\b(?:headache|peripheral vision|double vision|pituitary|mass effect|galactorrhea|prolactin)\b/.test(lower)) {
+  if (/\b(?:peripheral vision|visual field|double vision|pituitary|mass effect|galactorrhea|prolactin|sellar|parasellar)\b/.test(lower)) {
     return "pituitary_mass_or_prolactin_context";
   }
   if (/\b(?:hirsutism|hyperandrogenism|virilization|acne|scalp hair|clitoromegaly)\b/.test(lower)) {
@@ -708,7 +967,15 @@ function questionSemanticBucket(text = "", row = {}) {
 
 function questionCompatibleWithDiagnosis(text = "", phrase = "", row = {}) {
   const diagnosis = String(row.diagnosis || "").toLowerCase();
+  const category = endocrineCategoryFlags(row.category);
   const question = `${text || ""} ${phrase || ""}`.toLowerCase();
+  const phraseText = String(phrase || "").toLowerCase();
+  if (category.diabetes
+    && !/diabetes insipidus/.test(diagnosis)
+    && /\b(?:pituitary surgery|pituitary radiation|pituitary mri|visual-field review|sellar|parasellar)\b/.test(question)
+    && !/\b(?:pituitary|sellar|parasellar|cranial radiation|traumatic brain injury)\b/.test(phraseText)) {
+    return false;
+  }
   if (/diabetes insipidus/.test(diagnosis)
     && !/\b(?:urine|urinating|polyuria|nocturia|thirst|water|hydration|dehydration|sodium|desmopressin|pituitary|headache|peripheral vision|visual field|double vision|cranial radiation|neurosurgery|traumatic brain injury|lithium|kidney|calcium|hypercalcemia)\b/.test(question)) {
     return false;
@@ -863,7 +1130,7 @@ function questionAtom(phrase, row, sourceSeed = phrase) {
     label: text,
     text,
     source_seed: sourceSeed,
-    options: standardOptions(),
+    options: questionOptionsForText(text, phrase, row),
     when_to_ask: `Ask when ${row.diagnosis} is the selected validated clinical intent or when this feature would change endocrine test interpretation, urgency, or treatment safety.`,
     diagnostic_purpose: clinicalRationale("question", text, row),
     management_implication: questionAction(text, row),
@@ -1455,7 +1722,7 @@ function findingsOptionsForExam(label) {
   if (/gallop/.test(lower)) return ["No gallop", "S3", "S4", "Unable to assess"];
   if (/lung/.test(lower)) return ["Clear", "Crackles", "Wheeze", "Diminished/asymmetric", "Unable to assess"];
   if (/jvp|jugular/.test(lower)) return ["Not elevated", "Elevated", "Unable to assess"];
-  if (/edema/.test(lower)) return ["None", "Trace", "1+", "2+", "3+", "Asymmetric", "Unable to assess"];
+  if (/edema/.test(lower)) return ["None", "Trace", "1+", "2+", "3+", "4+", "Ankle or pedal", "Pretibial", "Sacral", "Unilateral", "Bilateral", "Unable to assess", "Other ___"];
   if (/mental status/.test(lower)) return ["Alert/oriented baseline", "Confused", "Somnolent", "Agitated", "Unable to assess"];
   if (/mucous|dehydration/.test(lower)) return ["Moist", "Dry", "Very dry", "Unable to assess"];
   if (/capillary refill/.test(lower)) return ["Brisk", "Delayed", "Mottled/cool", "Unable to assess"];
@@ -1956,6 +2223,7 @@ function moduleFromWorkup(row) {
     ...decisionItemMetadata("management", managementChange, row, managementChange),
     tags: questionTagsForPhrase(managementChange, row)
   }));
+  const applicability = applicabilityForEndocrineWorkup(row);
 
   return {
     schema_version: schemaVersion,
@@ -1972,6 +2240,7 @@ function moduleFromWorkup(row) {
         age_group: "adult",
         setting: "clinician support"
       },
+      ...(applicability ? { applicability } : {}),
       triggers: triggerTerms(row),
       differentialBuckets: [
         item("differential", 0, `${row.diagnosis}: diagnostic frame from guideline-sourced endocrine workup`, primarySourceId, `${sourceSectionPrefix}: diagnostic frame`, {

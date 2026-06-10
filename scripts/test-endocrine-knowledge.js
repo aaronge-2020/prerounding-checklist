@@ -129,6 +129,21 @@ function assertAtomicExamItem(module, group, item) {
   assert.ok(item.tags?.length, `${module.id}.${group}.${item.id} should include tags`);
 }
 
+function questionOptionLabels(value = []) {
+  return (Array.isArray(value) ? value : String(value || "").split(/\s*(?:[;|]|\s+\/\s+)\s*/))
+    .map((option) => (typeof option === "string" ? option : option?.label || option?.value || ""))
+    .map((option) => String(option || "").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function genericQuestionOptions(value = []) {
+  const labels = questionOptionLabels(value).map((option) => option.toLowerCase().replace(/_{2,3}/g, "").trim());
+  return labels.length <= 4
+    && labels.every((option) => /^(?:unknown|yes|no|other|not sure|unsure|unable)$/.test(option))
+    && labels.includes("yes")
+    && labels.includes("no");
+}
+
 for (const module of endocrineModules) {
   const lowExamCardiometabolicWorkup = /\b(?:prediabetes|metabolic syndrome|gestational diabetes)\b/i.test(module.label || "");
   assert.equal(module.status, "mvp", `${module.id} should be active mvp`);
@@ -261,8 +276,8 @@ for (const module of endocrineModules) {
     assert.ok(item.diagnostic_purpose, `${module.id}.${item.id} should include diagnostic purpose metadata`);
     assert.ok(item.management_implication, `${module.id}.${item.id} should include management implication metadata`);
     assert.ok(item.tags?.length, `${module.id}.${item.id} should include retrieval/clinical tags`);
-    assert.ok(item.options?.some((option) => option.value === "yes"), `${module.id}.${item.id} should be answerable`);
-    assert.ok(item.options?.some((option) => option.value === "no"), `${module.id}.${item.id} should be answerable`);
+    assert.ok(questionOptionLabels(item.options).length >= 3, `${module.id}.${item.id} should include structured answer options`);
+    assert.ok(!genericQuestionOptions(item.options), `${module.id}.${item.id} should use question-specific answer options`);
   });
   module.endocrine_metadata.source_ids.forEach((sourceId) => {
     const source = complaintSourceRegistry.find((row) => row.id === sourceId);

@@ -5,7 +5,7 @@ This folder contains build helpers, generators, benchmarks, audits, and tests.
 ## Common Commands
 
 - `npm test`: run the main grouped regression suite.
-- `npm run test:core`: syntax, de-identification, labs, checklist, vault, census, and continuity checks.
+- `npm run test:core`: syntax, de-identification, labs, checklist, vault state, and continuity checks.
 - `npm run test:clinical`: clinical intents, medical knowledge, complaint CDS, OpenEvidence, endocrine knowledge, and embedding recall checks.
 - `npm run test:evidence-suite`: evidence overlay, evaluation, and adversarial evidence checks.
 - `npm run build`: rebuild the generated medical knowledge bundle.

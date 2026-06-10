@@ -612,6 +612,13 @@ const knowledgePackIntentTypes = new Set([
   "syndrome",
   "management_scenario"
 ]);
+const knowledgePackPregnancyApplicabilityStatuses = new Set([
+  "pregnant",
+  "must_assess",
+  "not_required_but_must_consider",
+  "not_applicable",
+  "not_limited"
+]);
 const legacyKnowledgePackKindToItemType = {
   question: "history_question",
   exam: "physical_exam_maneuver",
@@ -945,6 +952,40 @@ function requireKnowledgePackLikelihoodRatioNote(issues, item, label, typePrefix
   }
 }
 
+function validateKnowledgePackIntentApplicability(intent = {}, label, issues) {
+  const applicability = intent.applicability;
+  if (!applicability || typeof applicability !== "object" || Array.isArray(applicability)) {
+    issues.push({
+      type: "intent-applicability",
+      message: `${label} needs applicability metadata with age_group, setting, sex_or_reproductive_context, pregnancy_status_required, use_when, and do_not_use_when.`
+    });
+    return;
+  }
+  requirePackFields(
+    issues,
+    applicability,
+    ["age_group", "setting", "sex_or_reproductive_context", "pregnancy_status_required", "use_when", "do_not_use_when"],
+    `${label}.applicability`,
+    "intent-applicability"
+  );
+  if (applicability.pregnancy_status_required
+    && !knowledgePackPregnancyApplicabilityStatuses.has(String(applicability.pregnancy_status_required))) {
+    issues.push({
+      type: "intent-applicability-pregnancy_status_required",
+      message: `${label}.applicability pregnancy_status_required must be pregnant, must_assess, not_required_but_must_consider, not_applicable, or not_limited.`
+    });
+  }
+  ["use_when", "do_not_use_when"].forEach((field) => {
+    const value = applicability[field];
+    if (!Array.isArray(value) || !value.map((entry) => String(entry || "").trim()).filter(Boolean).length) {
+      issues.push({
+        type: `intent-applicability-${field}`,
+        message: `${label}.applicability ${field} must contain at least one concrete clinician-facing scope statement.`
+      });
+    }
+  });
+}
+
 function validateKnowledgePackLikelihoodRatioValues(item, label, issues, typePrefix) {
   if (item.LR_plus && !validKnowledgePackLikelihoodRatio(item.LR_plus)) {
     issues.push({ type: `${typePrefix}-LR_plus-format`, message: `${label} LR_plus must be n/a, not available, pending, a number, or a numeric range.` });
@@ -1226,12 +1267,23 @@ function validateKnowledgePackSourceRegistry(pack, issues) {
     requirePackFields(
       issues,
       source,
-      ["source_type", "url_or_doi", "date_accessed", "license_or_access_notes"],
+      ["source_type", "url_or_doi", "date_accessed", "license_or_access_notes", "review_owner", "reviewed_by_role", "last_reviewed", "next_review_due", "currency_status"],
       label,
       "source"
     );
-    if (source.date_accessed && !/^\d{4}-\d{2}-\d{2}$/.test(String(source.date_accessed))) {
-      issues.push({ type: "source-date_accessed-format", message: `${label} date_accessed must use YYYY-MM-DD.` });
+    ["date_accessed", "last_reviewed", "next_review_due"].forEach((field) => {
+      if (source[field] && !/^\d{4}-\d{2}-\d{2}$/.test(String(source[field]))) {
+        issues.push({ type: `source-${field}-format`, message: `${label} ${field} must use YYYY-MM-DD.` });
+      }
+    });
+    if (source.last_reviewed && source.date_accessed && source.last_reviewed < source.date_accessed) {
+      issues.push({ type: "source-last_reviewed-order", message: `${label} last_reviewed must be on or after date_accessed.` });
+    }
+    if (source.next_review_due && source.last_reviewed && source.next_review_due <= source.last_reviewed) {
+      issues.push({ type: "source-next_review_due-order", message: `${label} next_review_due must be later than last_reviewed.` });
+    }
+    if (source.currency_status && !["reviewed_current_for_scope", "reviewed_legacy_active", "review_due", "retired"].includes(String(source.currency_status))) {
+      issues.push({ type: "source-currency_status", message: `${label} currency_status must be reviewed_current_for_scope, reviewed_legacy_active, review_due, or retired.` });
     }
     if (source.url_or_doi && !validKnowledgePackSourceUrlOrDoi(source.url_or_doi)) {
       issues.push({ type: "source-url_or_doi-format", message: `${label} url_or_doi must be an http(s) URL, doi:10.xxxx/... identifier, or bare DOI.` });
@@ -1594,10 +1646,11 @@ export function validateClinicalKnowledgePack(pack, options = {}) {
     requirePackFields(
       issues,
       intent,
-      ["aliases", "intent_type", "source_ids", "evidence_tags", "clinical_bundle_ids", "required_domains", "avoid_labels", "gold_case_ids", "last_reviewed", "review_owner"],
+      ["aliases", "intent_type", "source_ids", "evidence_tags", "clinical_bundle_ids", "required_domains", "avoid_labels", "gold_case_ids", "applicability", "last_reviewed", "review_owner"],
       label,
       "intent"
     );
+    validateKnowledgePackIntentApplicability(intent, label, issues);
     if (intent.last_reviewed && !/^\d{4}-\d{2}-\d{2}$/.test(String(intent.last_reviewed))) {
       issues.push({ type: "intent-last_reviewed-format", message: `${label} last_reviewed must use YYYY-MM-DD.` });
     }

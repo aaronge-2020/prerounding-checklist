@@ -468,20 +468,32 @@
         "text": "How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -512,20 +524,24 @@
         "text": "What is the usual physical activity level, and has it changed recently because of symptoms, function, or treatment barriers?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "the_usual_physical_activity_level",
+            "label": "The usual physical activity level"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "it_changed_recently_because_of_symptoms",
+            "label": "It changed recently because of symptoms"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "function",
+            "label": "Function"
+          },
+          {
+            "value": "treatment_barriers",
+            "label": "Treatment barriers"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -556,20 +572,36 @@
         "text": "Any family history of type 2 diabetes, gestational diabetes, premature ASCVD, dyslipidemia, hypertension, or obesity that changes cardiometabolic risk?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -600,20 +632,36 @@
         "text": "Any history of prior gestational diabetes that changes Prediabetes risk, test interpretation, or treatment safety?",
         "options": [
           {
+            "value": "not_applicable",
+            "label": "Not applicable"
+          },
+          {
+            "value": "pregnancy_possible",
+            "label": "Pregnancy possible"
+          },
+          {
+            "value": "pregnant_postpartum",
+            "label": "Pregnant/postpartum"
+          },
+          {
+            "value": "cycle_irregularity",
+            "label": "Cycle irregularity"
+          },
+          {
+            "value": "fertility_goal_active",
+            "label": "Fertility goal active"
+          },
+          {
+            "value": "timing_known",
+            "label": "Timing known"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -643,20 +691,36 @@
         "text": "Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "loud_snoring",
+            "label": "Loud snoring"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "witnessed_apneas",
+            "label": "Witnessed apneas"
+          },
+          {
+            "value": "morning_headaches",
+            "label": "Morning headaches"
+          },
+          {
+            "value": "daytime_sleepiness",
+            "label": "Daytime sleepiness"
+          },
+          {
+            "value": "resistant_hypertension",
+            "label": "Resistant hypertension"
+          },
+          {
+            "value": "cpap",
+            "label": "CPAP"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -688,20 +752,44 @@
         "text": "Any known fatty liver disease, elevated liver enzymes, central adiposity, dyslipidemia, hypertension, insulin resistance, alcohol use, or cardiometabolic treatment history?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "known_fatty_liver_disease",
+            "label": "Known fatty liver disease"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "elevated_liver_enzymes",
+            "label": "Elevated liver enzymes"
+          },
+          {
+            "value": "central_adiposity",
+            "label": "Central adiposity"
+          },
+          {
+            "value": "dyslipidemia",
+            "label": "Dyslipidemia"
+          },
+          {
+            "value": "hypertension",
+            "label": "Hypertension"
+          },
+          {
+            "value": "insulin_resistance",
+            "label": "Insulin resistance"
+          },
+          {
+            "value": "alcohol",
+            "label": "Alcohol"
+          },
+          {
+            "value": "cardiometabolic_treatment_history",
+            "label": "Cardiometabolic treatment history"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -733,20 +821,24 @@
         "text": "Any history of PCOS that changes Prediabetes risk, test interpretation, or treatment safety?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "history_of_pcos",
+            "label": "History of PCOS"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "test_interpretation",
+            "label": "Test interpretation"
+          },
+          {
+            "value": "treatment_safety",
+            "label": "Treatment safety"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -777,20 +869,32 @@
         "text": "What is the current weight trajectory, and how has it changed from baseline?",
         "options": [
           {
+            "value": "today_or_acute_onset",
+            "label": "Today or acute onset"
+          },
+          {
+            "value": "days",
+            "label": "Days"
+          },
+          {
+            "value": "weeks_to_months",
+            "label": "Weeks to months"
+          },
+          {
+            "value": "chronic_or_baseline",
+            "label": "Chronic or baseline"
+          },
+          {
+            "value": "worse_today",
+            "label": "Worse today"
+          },
+          {
             "value": "unknown",
             "label": "Unknown"
           },
           {
-            "value": "yes",
-            "label": "Yes"
-          },
-          {
-            "value": "no",
-            "label": "No"
-          },
-          {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -822,20 +926,36 @@
         "text": "Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "no_matching_feature",
+            "label": "No matching feature"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "history_of_ascvd",
+            "label": "History of ASCVD"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "heart_failure",
+            "label": "Heart failure"
+          },
+          {
+            "value": "stroke_tia",
+            "label": "Stroke/TIA"
+          },
+          {
+            "value": "peripheral_arterial_disease",
+            "label": "Peripheral arterial disease"
+          },
+          {
+            "value": "claudication",
+            "label": "Claudication"
+          },
+          {
+            "value": "vascular_procedures",
+            "label": "Vascular procedures"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "The answer changes cardiometabolic risk stratification, prevention intensity, complication screening, and follow-up interval for Prediabetes.",
@@ -870,20 +990,32 @@
         "text": "Do you currently smoke or recently smoke, and does tobacco exposure change cardiovascular, metabolic, bone, or treatment-safety risk?",
         "options": [
           {
-            "value": "unknown",
-            "label": "Unknown"
+            "value": "currently_smoke",
+            "label": "Currently smoke"
           },
           {
-            "value": "yes",
-            "label": "Yes"
+            "value": "recently_smoke",
+            "label": "Recently smoke"
           },
           {
-            "value": "no",
-            "label": "No"
+            "value": "does_tobacco_exposure_change_cardiovascular",
+            "label": "Does tobacco exposure change cardiovascular"
+          },
+          {
+            "value": "metabolic",
+            "label": "Metabolic"
+          },
+          {
+            "value": "bone",
+            "label": "Bone"
+          },
+          {
+            "value": "treatment_safety_risk",
+            "label": "Treatment-safety risk"
           },
           {
             "value": "other",
-            "label": "Other"
+            "label": "Other ___"
           }
         ],
         "action": "Ask when the history or modifiers support smoking, currently, smoke, recently. Complication history changes risk staging, prevention priorities, medication selection, and follow-up intensity for Prediabetes.",
@@ -979,8 +1111,14 @@
           "1+",
           "2+",
           "3+",
-          "Asymmetric",
-          "Unable to assess"
+          "4+",
+          "Ankle or pedal",
+          "Pretibial",
+          "Sacral",
+          "Unilateral",
+          "Bilateral",
+          "Unable to assess",
+          "Other ___"
         ],
         "when_to_perform": "When dyspnea, kidney disease, heart failure, medication effect, or volume overload symptoms are present",
         "diagnostic_target": "volume overload, venous disease, or medication/renal-cardiac complication",

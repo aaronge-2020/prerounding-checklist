@@ -1,0 +1,1221 @@
+{
+  "schema_version": "medical_knowledge_database_v1",
+  "artifact_type": "complaint_cds_module",
+  "complaint_cds_schema_version": "complaint-cds-artifact-v1",
+  "module": {
+    "id": "pediatric_respiratory_wheeze_v1",
+    "schema_version": "complaint-cds-artifact-v1",
+    "label": "Pediatric respiratory distress, wheeze, or bronchiolitis",
+    "complaint_group": "cardiopulmonary",
+    "version": "1.0.0",
+    "status": "mvp",
+    "population": {
+      "age_group": "pediatric",
+      "setting": "clinician support"
+    },
+    "applicability": {
+      "age_group": "pediatric",
+      "sex_or_reproductive_context": "any",
+      "pregnancy_status_required": "not_required_but_must_consider",
+      "setting": "clinician support",
+      "review_owner": "general_medicine_content_review",
+      "last_reviewed": "2026-06-09",
+      "use_when": [
+        "Infant, child, or adolescent with respiratory distress, wheeze, suspected bronchiolitis, asthma exacerbation, or viral-induced wheeze.",
+        "Pediatric breathing workup needs age-band routing, baseline respiratory safety data, individual bedside maneuvers, and source-backed escalation criteria."
+      ],
+      "do_not_use_when": [
+        "Adult patient; use adult dyspnea, chest pain, pulmonary embolism, heart failure, or pneumonia pathway as appropriate.",
+        "Neonate or unstable infant with apnea, cyanosis, exhaustion, or poor respiratory effort; escalate immediately using local pediatric or neonatal emergency pathway.",
+        "Primary fever or suspected sepsis without a respiratory complaint; use pediatric fever, infection, or sepsis pathway.",
+        "Pregnant or recently pregnant adolescent; add pregnancy/postpartum respiratory and obstetric escalation guidance."
+      ]
+    },
+    "triggers": [
+      "pediatric respiratory distress",
+      "child shortness of breath",
+      "child sob",
+      "child wheeze",
+      "pediatric wheeze",
+      "wheezing child",
+      "infant wheeze",
+      "baby wheezing",
+      "bronchiolitis",
+      "pediatric asthma attack",
+      "child asthma exacerbation",
+      "viral induced wheeze",
+      "trouble breathing child",
+      "retractions child",
+      "pediatric hypoxemia"
+    ],
+    "differentialBuckets": [
+      {
+        "id": "peds_bronchiolitis_under2",
+        "label": "Bronchiolitis in a child under 2 years with coryzal prodrome, persistent cough, tachypnea or chest recession, and wheeze or crackles",
+        "action": "Route infants and young children with bronchiolitis pattern to oxygen, feeding, hydration, apnea, and respiratory-failure assessment; avoid routine chest X-ray, blood tests, antibiotics, bronchodilators, or steroids unless another diagnosis is suspected.",
+        "rationale": "Bronchiolitis is primarily a clinical diagnosis in young children; over-testing and asthma-style treatment can mislead management while missing apnea, hypoxemia, hydration, or respiratory-failure risks.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "assessment, diagnosis, referral, admission, management, and safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Apply bronchiolitis framing only in the clinical pattern and age scope; use local pediatric pathway for exact oxygen delivery and admission logistics."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Bronchiolitis in a child under 2 years with compatible prodrome and lower respiratory signs.",
+        "management_change": "Changes oxygen thresholds, feeding and hydration plan, suction consideration, discharge safety-netting, and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, and blood tests.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not attached to this diagnostic-frame row; use NICE clinical pattern, age scope, oxygenation, feeding, and trajectory.",
+        "limitations": "Do not use bronchiolitis logic for older recurrent wheeze, focal pneumonia signs, sudden choking, congenital heart disease decompensation, sepsis, or toxic appearance.",
+        "tags": [
+          "pediatric",
+          "bronchiolitis",
+          "infant",
+          "wheeze",
+          "cough",
+          "respiratory_distress"
+        ]
+      },
+      {
+        "id": "peds_asthma_viral_wheeze",
+        "label": "Asthma exacerbation or viral-induced wheeze with recurrent episodes, atopy, prior asthma plan, or older-child wheeze pattern",
+        "action": "Route to pediatric asthma severity assessment with oxygen saturation, work of breathing, reliever response, prior severe-exacerbation risk, controller/adherence review, and local acute asthma treatment pathway.",
+        "rationale": "Asthma-like wheeze management differs from bronchiolitis; reliever therapy, systemic steroid consideration, controller planning, and follow-up can change outcomes.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "children with asthma symptoms, exacerbation assessment, oxygen, reliever treatment, and follow-up principles",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with local pediatric acute asthma pathway and NHLBI focused updates for recurrent wheeze/controller decisions."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Pediatric asthma exacerbation, viral-induced wheeze, or recurrent wheeze requiring severity grading and treatment response assessment.",
+        "management_change": "Changes bronchodilator/oxygen/steroid pathway, monitoring intensity, discharge action plan, controller review, and follow-up timing.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not attached to this broad asthma-like wheeze frame; use source-backed history, exam, response, and objective measures.",
+        "limitations": "Do not diagnose chronic asthma from one acute viral episode alone; do not treat a bronchiolitis-pattern infant as asthma unless older-age or recurrent/atopic pattern supports it.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "viral_wheeze",
+          "wheeze",
+          "atopy",
+          "reliever_response"
+        ]
+      },
+      {
+        "id": "peds_pneumonia_sepsis_foreign_body",
+        "label": "Pneumonia, sepsis, aspiration, foreign body, anaphylaxis, cardiac disease, or other dangerous mimic of wheeze",
+        "action": "Screen for high fever, focal crackles, sudden choking, asymmetric breath sounds, toxic appearance, poor perfusion, anaphylaxis, chest pain, or cardiac history before anchoring on bronchiolitis or asthma.",
+        "rationale": "Dangerous mimics change imaging, antibiotics, airway management, epinephrine, sepsis escalation, specialty consultation, and disposition.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "pneumonia, viral-induced wheeze, asthma, severe distress, and referral differential considerations",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use pediatric sepsis guidance when perfusion, mental status, oxygenation, or infection risk criteria are present."
+        },
+        "item_type": "diagnostic_frame",
+        "diagnostic_target": "Dangerous respiratory or systemic mimics of bronchiolitis and asthma-like wheeze.",
+        "management_change": "Changes imaging, antibiotics, airway/foreign-body response, anaphylaxis treatment, sepsis pathway, monitoring, and escalation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Likelihood ratios are not attached to this safety-frame row; use source-specific findings and escalation criteria.",
+        "limitations": "This frame prevents premature closure; it does not confirm pneumonia, foreign body, anaphylaxis, sepsis, or cardiac disease without source-specific evaluation.",
+        "tags": [
+          "pediatric",
+          "pneumonia",
+          "sepsis",
+          "foreign_body",
+          "aspiration",
+          "anaphylaxis",
+          "cardiac"
+        ]
+      }
+    ],
+    "safetyChecks": [
+      {
+        "id": "peds_resp_measure_oxygen_saturation",
+        "label": "Measure oxygen saturation",
+        "action": "Measure oxygen saturation on room air when safe and document oxygen device, flow, probe fit, motion, perfusion, and trend.",
+        "rationale": "Oxygen saturation changes bronchiolitis admission/discharge thresholds, asthma severity, oxygen therapy, monitoring, and escalation.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "pulse oximetry, oxygen saturation thresholds, admission, oxygen therapy, and discharge",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use pediatric probe and interpret borderline readings cautiously, including device and skin-pigmentation limitations."
+        },
+        "item_type": "safety_check",
+        "management_change": "Persistent low oxygen saturation changes oxygen, monitoring, admission, discharge readiness, and respiratory support decisions.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "pulse oximeter",
+        "patient_cooperation_required": "low",
+        "limitations": "Motion, poor perfusion, wrong probe size, oxygen device context, or device bias can distort readings.",
+        "likelihood_ratio_note": "LR is not applicable to oxygen saturation as baseline safety data; management is threshold- and trajectory-driven.",
+        "tags": [
+          "pediatric",
+          "oxygen_saturation",
+          "spo2",
+          "bronchiolitis",
+          "asthma",
+          "baseline_data"
+        ]
+      },
+      {
+        "id": "peds_resp_measure_respiratory_rate",
+        "label": "Measure respiratory rate",
+        "action": "Count respiratory rate for a full minute when feasible and compare with age-adjusted concern thresholds and the child clinical state.",
+        "rationale": "Respiratory rate helps identify bronchiolitis severity, acute asthma severity, sepsis risk, and need for escalation.",
+        "source": {
+          "source_id": "NICE_SEPSIS_UNDER16_2025",
+          "source_section": "age-adjusted respiratory rate risk features for suspected sepsis under 16",
+          "evidence_strength": "guideline",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use age-specific thresholds; fever, crying, pain, bronchodilators, and anxiety can affect rate."
+        },
+        "item_type": "safety_check",
+        "management_change": "Tachypnea for age changes oxygen need, bronchiolitis referral/admission consideration, asthma severity, sepsis concern, and monitoring.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "watch/timer or bedside monitor",
+        "patient_cooperation_required": "low",
+        "limitations": "Reassess after calming when possible and interpret with oxygen saturation, work of breathing, and trajectory.",
+        "likelihood_ratio_note": "LR is not applicable to respiratory rate as baseline clinical data; use age-adjusted guideline thresholds and clinical trajectory.",
+        "tags": [
+          "pediatric",
+          "respiratory_rate",
+          "tachypnea",
+          "baseline_data"
+        ]
+      },
+      {
+        "id": "peds_resp_measure_temperature",
+        "label": "Measure temperature",
+        "action": "Measure temperature and document method, timing, antipyretic use, and fever trend.",
+        "rationale": "High fever or fever trajectory changes concern for pneumonia, sepsis, influenza/COVID, and non-bronchiolitis infection source.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "bronchiolitis diagnosis and pneumonia consideration when fever is high",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "NICE bronchiolitis guidance notes high fever should prompt pneumonia consideration rather than automatic bronchiolitis anchoring."
+        },
+        "item_type": "safety_check",
+        "management_change": "High fever changes pneumonia/sepsis source evaluation, testing, antibiotics consideration, and disposition.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "thermometer",
+        "patient_cooperation_required": "low",
+        "limitations": "Temperature alone does not diagnose pneumonia, bronchiolitis, or sepsis; combine with respiratory signs and overall appearance.",
+        "likelihood_ratio_note": "LR is not applicable to temperature as baseline clinical data; management depends on age, source, and physiologic status.",
+        "tags": [
+          "pediatric",
+          "temperature",
+          "fever",
+          "baseline_data"
+        ]
+      },
+      {
+        "id": "peds_resp_measure_current_weight",
+        "label": "Measure current weight",
+        "action": "Measure or verify current weight in kilograms before weight-based bronchodilator, steroid, oxygen-flow, fluid, or escalation decisions.",
+        "rationale": "Pediatric respiratory treatments and fluids are weight-sensitive; undocumented weight can cause under- or overdosing.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "children and exacerbation management principles requiring age- and child-appropriate treatment",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use measured weight when feasible; emergency dosing may use institutional length/weight systems when immediate treatment cannot wait."
+        },
+        "item_type": "safety_check",
+        "management_change": "Weight changes medication dosing, fluid planning, oxygen-flow protocols, and transfer handoff.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "scale or verified recent weight",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Do not delay emergency treatment solely to obtain a weight when the child is unstable; use local emergency dosing process.",
+        "likelihood_ratio_note": "LR is not applicable to weight as baseline medication-safety data.",
+        "tags": [
+          "pediatric",
+          "weight",
+          "medication_safety",
+          "baseline_data"
+        ]
+      },
+      {
+        "id": "peds_resp_record_alertness",
+        "label": "Document mental status",
+        "action": "Document whether the child is alert, listless, confused, exhausted, wakes only with prolonged stimulation, or has decreased respiratory effort.",
+        "rationale": "Altered responsiveness or exhaustion can signal impending respiratory failure, severe asthma, hypoxemia, sepsis, or unsafe discharge.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "impending respiratory failure, exhaustion, and home red flag safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document alertness as baseline safety data, not as a physical exam maneuver."
+        },
+        "item_type": "safety_check",
+        "management_change": "Exhaustion, confusion, listlessness, or reduced effort changes urgency, respiratory support, monitored setting, and transfer.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Sleep, fever, medications, developmental baseline, and caregiver report affect interpretation; reassess with oxygenation and perfusion.",
+        "likelihood_ratio_note": "LR is not applicable to alertness as baseline safety data; use it for acuity and respiratory-failure risk.",
+        "findings_options": [
+          "alert and interactive",
+          "listless",
+          "confused",
+          "exhausted",
+          "wakes only with prolonged stimulation",
+          "decreased respiratory effort",
+          "unable to assess"
+        ],
+        "tags": [
+          "pediatric",
+          "alertness",
+          "respiratory_failure",
+          "baseline_data"
+        ]
+      },
+      {
+        "id": "peds_resp_record_intake_and_urine",
+        "label": "Document intake and urine output",
+        "action": "Document percent of usual intake, ability to breastfeed or drink, vomiting, wet nappies or urine output, and caregiver concern about dehydration.",
+        "rationale": "Poor intake and reduced urine output change bronchiolitis referral/admission, fluid route, discharge safety, and monitoring.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "feeding, hydration, referral, admission, fluids, and home safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document intake relative to normal for the child and urine/wet-nappy timing."
+        },
+        "item_type": "safety_check",
+        "management_change": "Poor intake or low urine output changes oral/NG/IV fluid plan, admission, discharge readiness, and safety-net advice.",
+        "difficulty": "easy",
+        "time_burden_minutes": 2,
+        "equipment_needed": "caregiver report and intake/output record when available",
+        "patient_cooperation_required": "low",
+        "limitations": "Caregiver estimates vary; pair with mucosa, perfusion, weight trend, and clinical trajectory.",
+        "likelihood_ratio_note": "LR is not applicable to intake/output as baseline safety data; use guideline thresholds and trajectory.",
+        "findings_options": [
+          "usual intake and urine output",
+          "50% to 75% usual intake",
+          "less than 50% usual intake",
+          "feeding limited by breathing",
+          "no wet nappy or markedly reduced urine",
+          "vomiting with poor intake",
+          "unable to assess"
+        ],
+        "tags": [
+          "pediatric",
+          "feeding",
+          "hydration",
+          "urine_output",
+          "baseline_data"
+        ]
+      }
+    ],
+    "requiredQuestions": [
+      {
+        "id": "peds_resp_exact_age_band",
+        "label": "Exact pediatric respiratory age band",
+        "text": "What is the child exact age band: under 6 weeks, 6 weeks to under 3 months, 3 to 11 months, 12 to 23 months, 2 to 4 years, 5 to 11 years, or 12 to 15 years?",
+        "options": [
+          "under 6 weeks",
+          "6 weeks to under 3 months",
+          "3 to 11 months",
+          "12 to 23 months",
+          "2 to 4 years",
+          "5 to 11 years",
+          "12 to 15 years",
+          "unknown"
+        ],
+        "when_to_ask": "Ask at the start of every pediatric respiratory distress or wheeze workup.",
+        "diagnostic_purpose": "Determines bronchiolitis age scope, asthma-like wheeze likelihood, oxygen thresholds, and sepsis respiratory-rate threshold interpretation.",
+        "management_implication": "Age band changes bronchiolitis applicability, oxygen thresholds, respiratory-rate interpretation, treatment selection, admission criteria, and discharge safety.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "bronchiolitis age scope and oxygen saturation thresholds",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use age band before applying bronchiolitis, asthma, or sepsis pathway logic."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available because age band is a pathway-eligibility and threshold variable.",
+        "tags": [
+          "pediatric",
+          "age_band",
+          "bronchiolitis",
+          "asthma",
+          "threshold"
+        ]
+      },
+      {
+        "id": "peds_resp_coryza_before_cough",
+        "label": "Coryzal prodrome before cough and lower respiratory signs",
+        "text": "Did runny nose or coryzal symptoms start 1 to 3 days before persistent cough and the current wheeze, crackles, tachypnea, or chest recession?",
+        "options": [
+          "coryza 1-3 days before cough or wheeze",
+          "coryza concurrent with cough or wheeze",
+          "cough or wheeze without coryzal prodrome",
+          "unclear prodrome timing",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask when bronchiolitis, viral respiratory illness, or first-episode infant wheeze is possible.",
+        "diagnostic_purpose": "Localizes the pattern toward bronchiolitis or viral respiratory illness instead of isolated asthma, pneumonia, or foreign body.",
+        "management_implication": "A bronchiolitis pattern supports supportive-care thresholds and avoidance of routine bronchodilators, steroids, antibiotics, chest X-ray, or blood tests unless another diagnosis is suspected.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "bronchiolitis assessment and diagnosis",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Interpret with age, auscultation, oxygenation, and trajectory."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this exact source-localizing history item; use it to support or move away from bronchiolitis framing.",
+        "tags": [
+          "pediatric",
+          "coryza",
+          "cough",
+          "bronchiolitis",
+          "viral_respiratory"
+        ]
+      },
+      {
+        "id": "peds_resp_recurrent_wheeze_or_atopy",
+        "label": "Recurrent wheeze asthma or atopy pattern",
+        "text": "Has the child had recurrent episodic wheeze, a prior asthma diagnosis or action plan, interval symptoms, eczema or allergic rhinitis, or a family history of atopy?",
+        "options": [
+          "prior asthma diagnosis or action plan",
+          "recurrent episodic wheeze",
+          "interval cough or wheeze symptoms",
+          "eczema or allergic rhinitis",
+          "family history of atopy",
+          "no asthma or atopy pattern",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask when wheeze is present, especially in older infants, preschool children, school-age children, or adolescents.",
+        "diagnostic_purpose": "Distinguishes asthma-like or viral-induced wheeze from bronchiolitis-pattern infant illness.",
+        "management_implication": "A positive answer changes reliever/steroid/controller review, action-plan update, discharge education, and follow-up planning.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "viral-induced wheeze or early-onset asthma considerations",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "NICE notes these features support viral-induced wheeze or early asthma rather than bronchiolitis in older infants and young children."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this exact history item; use it to route between bronchiolitis and asthma-like pathways.",
+        "tags": [
+          "pediatric",
+          "wheeze",
+          "asthma",
+          "atopy",
+          "recurrent_wheeze"
+        ]
+      },
+      {
+        "id": "peds_resp_feeding_less_than_usual",
+        "label": "Reduced feeding or drinking",
+        "text": "Is the child taking less than usual by mouth, struggling to feed because of breathing, vomiting, or having fewer wet nappies or less urine?",
+        "options": [
+          "normal intake and usual wet nappies or urine",
+          "50% to 75% usual intake",
+          "less than 50% usual intake",
+          "feeding limited by breathing",
+          "vomiting with poor intake",
+          "fewer wet nappies or low urine",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask in every pediatric respiratory distress, bronchiolitis, or wheeze workup.",
+        "diagnostic_purpose": "Identifies hydration and feeding safety issues that can change admission, fluids, and discharge safety.",
+        "management_implication": "Poor intake, feeding difficulty, vomiting, or low urine changes referral/admission, oral versus NG/IV fluids, and safety-net instructions.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "feeding, hydration, referral, admission, fluids, and home safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with intake/output safety check; ask as an endorsed/denied history item."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available; this history changes hydration and disposition rather than diagnosing one respiratory condition.",
+        "tags": [
+          "pediatric",
+          "feeding",
+          "hydration",
+          "bronchiolitis",
+          "disposition"
+        ]
+      },
+      {
+        "id": "peds_resp_sudden_choking",
+        "label": "Sudden choking or aspiration onset",
+        "text": "Did breathing trouble or wheeze start suddenly after choking, eating, small-object exposure, vomiting, or possible aspiration?",
+        "options": [
+          "gradual viral onset without choking",
+          "sudden choking episode",
+          "started while eating or drinking",
+          "small-object exposure",
+          "vomiting or aspiration event",
+          "unclear onset",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask when onset is abrupt, unilateral findings are present, fever is absent, or the story does not fit bronchiolitis or asthma.",
+        "diagnostic_purpose": "Screens for foreign body, aspiration, or airway event before anchoring on bronchiolitis or asthma.",
+        "management_implication": "A positive answer changes airway/foreign-body evaluation, imaging/bronchoscopy consideration, monitoring, and emergency escalation.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "differential diagnosis and when bronchiolitis pattern is not sufficient",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local airway and foreign-body pathway when suspicion is present."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this exact screening item; the finding redirects workup to airway/foreign-body evaluation.",
+        "tags": [
+          "pediatric",
+          "foreign_body",
+          "aspiration",
+          "sudden_onset",
+          "airway"
+        ]
+      },
+      {
+        "id": "peds_resp_high_fever_or_focal_symptoms",
+        "label": "High fever or focal pneumonia symptoms",
+        "text": "Does the child have fever over 39 C, pleuritic chest pain, focal chest pain, toxic appearance, or persistent focal respiratory symptoms?",
+        "options": [
+          "no high fever or focal pneumonia symptoms",
+          "fever over 39 C",
+          "pleuritic or focal chest pain",
+          "toxic appearance",
+          "persistent focal respiratory symptoms",
+          "sepsis concern",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask when pneumonia, sepsis, or bacterial infection could explain respiratory symptoms.",
+        "diagnostic_purpose": "Screens for pneumonia or systemic infection that changes testing, antibiotic, and escalation decisions.",
+        "management_implication": "A positive answer changes chest imaging consideration, antimicrobial pathway, sepsis screening, and disposition.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "consider pneumonia with high fever or persistently focal crackles",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with auscultation and pediatric sepsis risk criteria."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this exact item; use it to trigger source-specific pneumonia or sepsis evaluation.",
+        "tags": [
+          "pediatric",
+          "pneumonia",
+          "fever",
+          "sepsis",
+          "focal_symptoms"
+        ]
+      }
+    ],
+    "conditionalQuestions": [
+      {
+        "id": "peds_resp_bronchiolitis_high_risk_multi_select",
+        "label": "Bronchiolitis high-risk features multi-select",
+        "text": "Which bronchiolitis severe-disease risk features are present: age under 3 months, prematurity under 32 weeks, chronic lung disease, significant congenital heart disease, neuromuscular disorder, immunodeficiency, or none?",
+        "options": [
+          "age under 3 months",
+          "prematurity under 32 weeks",
+          "chronic lung disease",
+          "significant congenital heart disease",
+          "neuromuscular disorder",
+          "immunodeficiency",
+          "none",
+          "unknown"
+        ],
+        "when_to_ask": "Ask when bronchiolitis is possible or the child is under 2 years with lower respiratory signs.",
+        "when": {
+          "termsAny": [
+            "under 2 years",
+            "under 3 months",
+            "prematurity",
+            "premature",
+            "chronic lung disease",
+            "congenital heart",
+            "neuromuscular",
+            "immunodeficiency"
+          ]
+        },
+        "diagnostic_purpose": "Identifies children at higher risk of severe bronchiolitis and unsafe outpatient management.",
+        "management_implication": "Risk features change referral/admission threshold, oxygen threshold interpretation, caregiver safety-netting, and follow-up urgency.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "risk factors for more severe bronchiolitis",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This is explicitly multi-select because several risk factors may coexist."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not applicable to this multi-select risk feature list; use it to change threshold and disposition.",
+        "tags": [
+          "pediatric",
+          "bronchiolitis",
+          "risk_factor",
+          "multi_select"
+        ]
+      },
+      {
+        "id": "peds_resp_prior_severe_asthma",
+        "label": "Prior severe asthma risk",
+        "text": "Has the child had ICU care, intubation, recent emergency visit, hospitalization, frequent reliever use, or oral steroid use for asthma or wheeze?",
+        "options": [
+          "no prior severe asthma risk",
+          "prior ICU care or intubation",
+          "recent emergency visit or hospitalization",
+          "frequent reliever use",
+          "recent oral steroid use",
+          "asthma action plan concern",
+          "unable to obtain"
+        ],
+        "when_to_ask": "Ask when asthma, viral-induced wheeze, or recurrent wheeze is possible.",
+        "when": {
+          "termsAny": [
+            "prior ICU",
+            "intubation",
+            "recent emergency visit",
+            "hospitalization",
+            "frequent reliever",
+            "oral steroid",
+            "reliever",
+            "albuterol",
+            "salbutamol"
+          ]
+        },
+        "diagnostic_purpose": "Identifies higher-risk asthma exacerbation history and treatment failure risk.",
+        "management_implication": "Prior severe exacerbation history changes escalation threshold, systemic steroid consideration, monitoring, discharge planning, and follow-up.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "risk factors, exacerbation assessment, treatment response, and follow-up",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use with local pediatric acute asthma pathway for exact treatment doses and observation thresholds."
+        },
+        "item_type": "history_question",
+        "likelihood_ratio_note": "Question-level LR+/LR- is not available for this exact risk history; it changes severity and disposition planning.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "severe_exacerbation",
+          "risk"
+        ]
+      }
+    ],
+    "requiredExam": [
+      {
+        "id": "peds_resp_observe_chest_retractions",
+        "label": "Observe chest retractions",
+        "technique": "Watch the child at rest for intercostal, subcostal, suprasternal, or marked chest wall recession while minimizing distress.",
+        "findings_options": [
+          "no retractions",
+          "mild retractions",
+          "marked chest recession",
+          "unable to feed or speak due to effort",
+          "unable to assess"
+        ],
+        "when_to_perform": "Perform in every pediatric respiratory distress, wheeze, or bronchiolitis workup.",
+        "diagnostic_target": "Increased work of breathing from bronchiolitis, asthma-like wheeze, pneumonia, sepsis, or respiratory failure.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "tachypnea, chest recession, severe respiratory distress, and red flag safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Document separately from respiratory rate and oxygen saturation, which are baseline safety data."
+        },
+        "item_type": "physical_exam_maneuver",
+        "LR_plus": "not available",
+        "LR_minus": "not available",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available across pediatric age bands for chest retractions; use as severity and escalation evidence.",
+        "management_change": "Marked recession changes referral/admission, oxygen, respiratory support, asthma treatment intensity, and monitoring.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Crying, fever, positioning, and baseline neuromuscular disease can affect interpretation.",
+        "tags": [
+          "pediatric",
+          "retractions",
+          "respiratory_distress",
+          "bronchiolitis",
+          "asthma"
+        ]
+      },
+      {
+        "id": "peds_resp_inspect_nasal_flaring",
+        "label": "Inspect nasal flaring",
+        "technique": "Observe the nares and face for nasal flaring, grunting, head bobbing, or visible distress without forcing positioning.",
+        "findings_options": [
+          "no nasal flaring",
+          "nasal flaring",
+          "grunting",
+          "head bobbing",
+          "unable to assess"
+        ],
+        "when_to_perform": "Perform when respiratory distress, hypoxemia, bronchiolitis, pneumonia, sepsis, or asthma-like wheeze is possible.",
+        "diagnostic_target": "Respiratory distress and possible impending deterioration in a child.",
+        "source": {
+          "source_id": "NICE_SEPSIS_UNDER16_2025",
+          "source_section": "respiratory high-risk and moderate-to-high-risk features under 16",
+          "evidence_strength": "guideline",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Pair with oxygen saturation, respiratory rate, perfusion, and overall appearance."
+        },
+        "item_type": "physical_exam_maneuver",
+        "LR_plus": "not available",
+        "LR_minus": "not available",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available for nasal flaring across pediatric respiratory diagnoses; use as guideline-supported severity evidence.",
+        "management_change": "Nasal flaring, grunting, or head bobbing changes respiratory support, sepsis concern, and level-of-care decisions.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "none",
+        "patient_cooperation_required": "low",
+        "limitations": "Findings may fluctuate with agitation, crying, fever, or recent treatment.",
+        "tags": [
+          "pediatric",
+          "nasal_flaring",
+          "grunting",
+          "respiratory_distress",
+          "sepsis"
+        ]
+      },
+      {
+        "id": "peds_resp_auscultate_lung_fields",
+        "label": "Auscultate lung fields",
+        "technique": "Auscultate anterior and posterior lung fields when feasible and compare sides for wheeze, crackles, focality, air entry, or silent chest.",
+        "findings_options": [
+          "clear bilateral air entry",
+          "diffuse wheeze",
+          "crackles",
+          "focal crackles",
+          "reduced air entry",
+          "silent chest",
+          "asymmetric breath sounds",
+          "unable to assess"
+        ],
+        "when_to_perform": "Perform in every pediatric respiratory distress, wheeze, or bronchiolitis workup unless immediate airway intervention is needed.",
+        "diagnostic_target": "Bronchiolitis, asthma-like wheeze, pneumonia, pneumothorax, foreign body, or severe airflow limitation.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "wheeze, crackles, focal crackles, pneumonia consideration, and asthma/wheeze differential",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Focal crackles or asymmetric findings should prompt source-specific evaluation rather than routine bronchiolitis pathway."
+        },
+        "item_type": "physical_exam_maneuver",
+        "LR_plus": "not available",
+        "LR_minus": "not available",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available for this broad auscultation row; interpret with age, history, oxygenation, and focality.",
+        "management_change": "Wheeze, focal crackles, reduced air entry, or silent chest changes bronchodilator pathway, imaging, pneumonia/foreign-body concern, and escalation.",
+        "difficulty": "moderate",
+        "time_burden_minutes": 2,
+        "equipment_needed": "stethoscope",
+        "patient_cooperation_required": "moderate",
+        "limitations": "A normal or nonspecific exam does not exclude early pneumonia, asthma, bronchiolitis, hypoxemia, or foreign body; reassess after treatment and trend.",
+        "tags": [
+          "pediatric",
+          "auscultation",
+          "wheeze",
+          "crackles",
+          "silent_chest"
+        ]
+      },
+      {
+        "id": "peds_resp_inspect_lips_tongue_color",
+        "label": "Inspect lips and tongue color",
+        "technique": "Inspect lips, tongue, and visible mucosa for central cyanosis while considering lighting, baseline pigmentation, and oxygen device context.",
+        "findings_options": [
+          "no central cyanosis",
+          "central cyanosis",
+          "peripheral color change only",
+          "mottled or ashen appearance",
+          "unable to assess"
+        ],
+        "when_to_perform": "Perform when respiratory distress, hypoxemia, bronchiolitis, asthma, sepsis, or shock is possible.",
+        "diagnostic_target": "Central cyanosis or poor perfusion in a child with respiratory distress.",
+        "source": {
+          "source_id": "NICE_SEPSIS_UNDER16_2025",
+          "source_section": "cyanosis and mottled or ashen appearance as high-risk criteria",
+          "evidence_strength": "guideline",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use as bedside escalation evidence and confirm with oxygen saturation when possible."
+        },
+        "item_type": "physical_exam_maneuver",
+        "LR_plus": "not available",
+        "LR_minus": "not available",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available for cyanosis inspection across pediatric causes; treat as a high-risk bedside sign.",
+        "management_change": "Central cyanosis or mottled/ashen appearance changes oxygen, sepsis/shock escalation, monitored setting, and emergency transfer.",
+        "difficulty": "easy",
+        "time_burden_minutes": 1,
+        "equipment_needed": "adequate light",
+        "patient_cooperation_required": "low",
+        "limitations": "Lighting, anemia, skin pigmentation, peripheral vasoconstriction, and observer variation can affect detection; do not delay oxygen or escalation when clinically concerned.",
+        "tags": [
+          "pediatric",
+          "cyanosis",
+          "color",
+          "hypoxemia",
+          "sepsis"
+        ]
+      }
+    ],
+    "conditionalExam": [
+      {
+        "id": "peds_resp_inspect_oral_mucosa",
+        "label": "Inspect oral mucosa",
+        "technique": "Inspect lips, tongue, and oral mucosa for dryness while avoiding distress and airway risk.",
+        "findings_options": [
+          "moist mucosa",
+          "dry mucosa",
+          "cracked lips",
+          "drooling",
+          "unable to assess"
+        ],
+        "when_to_perform": "Perform when poor intake, vomiting, dehydration concern, drooling, or unsafe discharge is possible.",
+        "when": {
+          "termsAny": [
+            "poor intake",
+            "dehydration",
+            "vomiting",
+            "dry mouth",
+            "no wet nappy",
+            "less urine"
+          ]
+        },
+        "diagnostic_target": "Hydration status and airway concern in a child with respiratory illness.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "hydration assessment, feeding difficulty, fluids, and safety-netting",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This supplements intake/output safety data; do not force exam in a severely distressed child."
+        },
+        "item_type": "physical_exam_maneuver",
+        "LR_plus": "not available",
+        "LR_minus": "not available",
+        "likelihood_ratio_note": "No maneuver-specific LR+/LR- is available; use mucosa findings with intake/output and perfusion to guide fluids and disposition.",
+        "management_change": "Dry mucosa, drooling, or inability to assess safely changes fluid route, airway escalation, admission, and discharge safety.",
+        "difficulty": "moderate",
+        "time_burden_minutes": 1,
+        "equipment_needed": "light",
+        "patient_cooperation_required": "moderate",
+        "limitations": "Mucosa findings alone do not define dehydration severity; interpret with intake, urine output, perfusion, weight, and trajectory.",
+        "tags": [
+          "pediatric",
+          "mucosa",
+          "hydration",
+          "feeding",
+          "bronchiolitis"
+        ]
+      }
+    ],
+    "initialTests": [
+      {
+        "id": "peds_resp_bronchiolitis_testing_limits",
+        "label": "Bronchiolitis testing limits",
+        "action": "When the presentation fits uncomplicated bronchiolitis, do not routinely order blood tests or chest X-ray; consider chest X-ray if intensive care is being proposed or another diagnosis is suspected.",
+        "rationale": "Routine tests can create misleading pneumonia-like X-ray interpretation and unnecessary antibiotics without improving typical bronchiolitis care.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "blood tests and chest X-ray recommendations",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This is a testing-limitation row, not a prohibition when pneumonia, sepsis, foreign body, or ICU-level illness is suspected."
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Uncomplicated bronchiolitis versus respiratory illness requiring source-specific testing.",
+        "management_change": "Prevents unnecessary testing/antibiotics in typical bronchiolitis while preserving imaging for ICU-level illness or alternate diagnosis.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a guideline testing-limitation rule rather than a diagnostic test with LR.",
+        "limitations": "Do not apply to toxic appearance, focal findings, high fever, suspected sepsis, aspiration, pneumothorax, or foreign body concern.",
+        "tags": [
+          "pediatric",
+          "bronchiolitis",
+          "chest_xray",
+          "blood_tests",
+          "testing_limits"
+        ]
+      },
+      {
+        "id": "peds_resp_chest_imaging_when_focal",
+        "label": "Chest imaging when focal or severe",
+        "action": "Consider chest imaging when there are persistently focal crackles, high fever, asymmetric breath sounds, suspected foreign body, pneumothorax concern, ICU-level illness, or another diagnosis that would change treatment.",
+        "rationale": "Focal or severe findings move the child out of routine bronchiolitis-only care and can change antibiotics, airway, or transfer decisions.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "pneumonia consideration and chest X-ray exception when intensive care is proposed",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local pediatric imaging and radiation-safety policy."
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Pneumonia, foreign body, pneumothorax, severe bronchiolitis complication, or alternate respiratory diagnosis.",
+        "management_change": "Imaging result can change antibiotics, airway/foreign-body pathway, respiratory support, isolation, and disposition.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Imaging likelihood depends on clinical indication and result; this row describes when imaging changes management.",
+        "limitations": "A nonspecific bronchiolitis X-ray can mimic pneumonia; do not use routine imaging alone to justify antibiotics.",
+        "tags": [
+          "pediatric",
+          "chest_imaging",
+          "pneumonia",
+          "foreign_body",
+          "severe_respiratory"
+        ]
+      },
+      {
+        "id": "peds_resp_asthma_response_reassessment",
+        "label": "Asthma response reassessment",
+        "action": "For asthma-like wheeze, reassess symptoms, oxygen saturation, work of breathing, air entry, ability to speak or feed, and need for repeat reliever or steroid pathway after initial treatment per local pediatric protocol.",
+        "rationale": "Response to treatment changes severity, observation time, escalation, discharge readiness, and action-plan updates.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "exacerbation assessment, reliever treatment, oxygen, response, and follow-up",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local acute asthma pathway for exact medication doses and timing."
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Treatment response and ongoing severity in pediatric asthma-like wheeze.",
+        "management_change": "Poor response changes repeat bronchodilator, systemic steroid, magnesium/ICU pathway consideration, monitoring, and transfer decisions.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "Treatment response is a management and severity reassessment, not a diagnostic LR test.",
+        "limitations": "Do not rely on improved wheeze alone; silent chest or exhaustion can indicate worsening despite less audible wheeze.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "reassessment",
+          "reliever_response",
+          "severity"
+        ]
+      },
+      {
+        "id": "peds_resp_controller_and_trigger_review",
+        "label": "Controller and trigger review",
+        "action": "For recurrent wheeze or asthma, review current controller, reliever access, spacer technique, adherence, triggers, smoke exposure, action plan, and follow-up need.",
+        "rationale": "Controller and trigger review reduces recurrent exacerbation risk and turns an acute visit into a safer longitudinal plan.",
+        "source": {
+          "source_id": "NHLBI_NAEPP_ASTHMA_2020",
+          "source_section": "focused updates for recurrent wheezing, inhaled corticosteroids, triggers, and shared decision-making",
+          "evidence_strength": "guideline",
+          "version_date": "2020",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This row does not prescribe a full stepwise plan; it prompts source-backed follow-up and medication-safety review."
+        },
+        "item_type": "diagnostic_test",
+        "diagnostic_target": "Recurrent wheeze or asthma risk modification, medication access, and follow-up planning.",
+        "management_change": "Findings change discharge medication plan, spacer teaching, trigger mitigation, action plan, and follow-up timing.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a management-review row, not a diagnostic test with LR.",
+        "limitations": "Use age-specific asthma guidance and local formulary; avoid diagnosing persistent asthma solely from one viral episode.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "controller",
+          "triggers",
+          "follow_up"
+        ]
+      }
+    ],
+    "redFlags": [
+      {
+        "id": "peds_resp_apnea_or_cyanosis",
+        "label": "Apnea or central cyanosis",
+        "action": "Treat observed or reported apnea, recurrent apnea, or central cyanosis as an emergency and escalate to pediatric emergency care.",
+        "rationale": "Apnea or central cyanosis can signal impending respiratory failure, severe bronchiolitis, hypoxemia, sepsis, or airway compromise.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "emergency referral, admission, respiratory failure, and home red flags",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Do not wait for complete routine workup before escalation."
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Emergency respiratory compromise in an infant or child.",
+        "management_change": "Immediate oxygen, airway/respiratory support, monitoring, and emergency transfer or pediatric escalation.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is an emergency criterion rather than a diagnostic LR test.",
+        "limitations": "Caregiver-reported apnea should still change triage even if not witnessed in clinic.",
+        "tags": [
+          "pediatric",
+          "apnea",
+          "cyanosis",
+          "red_flag",
+          "respiratory_failure"
+        ]
+      },
+      {
+        "id": "peds_resp_exhaustion_or_poor_effort",
+        "label": "Exhaustion or poor respiratory effort",
+        "action": "Escalate immediately when the child is exhausted, listless, confused, wakes only with prolonged stimulation, has silent chest, or has decreased respiratory effort.",
+        "rationale": "Reduced effort or exhaustion may indicate life-threatening asthma, impending respiratory failure, hypoxemia, or sepsis.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "acute exacerbation severity and urgent care escalation principles",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Silent chest or reduced effort can be more dangerous than audible wheeze."
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Impending respiratory failure or life-threatening asthma-like exacerbation.",
+        "management_change": "Immediate senior/pediatric emergency review, oxygen/airway planning, continuous monitoring, and higher-level care consideration.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a severity red flag; likelihood ratios are not applicable.",
+        "limitations": "Sedatives, sleep, baseline neurodevelopmental conditions, or caregiver report can complicate assessment; do not down-triage when respiratory effort is falling.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "silent_chest",
+          "exhaustion",
+          "red_flag"
+        ]
+      },
+      {
+        "id": "peds_resp_severe_distress",
+        "label": "Severe respiratory distress",
+        "action": "Escalate urgently for grunting, marked chest recession, severe tachypnea, inability to speak or feed because of breathlessness, or persistent oxygen need.",
+        "rationale": "Severe distress changes oxygen, respiratory support, bronchiolitis referral/admission, asthma treatment intensity, and sepsis concern.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "emergency referral, admission criteria, and red flag safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local age-adjusted respiratory-rate charts and pediatric escalation process."
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Severe respiratory distress in pediatric bronchiolitis, asthma-like wheeze, pneumonia, or sepsis.",
+        "management_change": "Urgent referral/admission, oxygen, respiratory support, monitoring, and treatment escalation become time-sensitive.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a severity red flag; likelihood ratios are not applicable.",
+        "limitations": "A child may deteriorate after initially mild signs; reassess trajectory and caregiver concern.",
+        "tags": [
+          "pediatric",
+          "severe_distress",
+          "tachypnea",
+          "oxygen",
+          "red_flag"
+        ]
+      },
+      {
+        "id": "peds_resp_poor_intake_or_no_urine",
+        "label": "Poor intake or no urine",
+        "action": "Escalate or admit when intake is inadequate for the child, feeding is limited by breathlessness, clinical dehydration is present, or there has been no wet nappy or markedly reduced urine.",
+        "rationale": "Hydration failure changes fluid route, admission threshold, discharge safety, and respiratory support planning.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "feeding, hydration, referral, admission, fluids, and home safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local definitions for intake percentage and urine output by age."
+        },
+        "item_type": "red_flag",
+        "diagnostic_target": "Unsafe hydration or feeding status during pediatric respiratory illness.",
+        "management_change": "Changes oral versus NG/IV fluids, admission/discharge, follow-up, and caregiver safety-net plan.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a disposition and hydration red flag; likelihood ratios are not applicable.",
+        "limitations": "Caregiver estimates vary; combine intake, urine, mucosa, perfusion, weight, and trajectory.",
+        "tags": [
+          "pediatric",
+          "hydration",
+          "feeding",
+          "urine_output",
+          "red_flag"
+        ]
+      }
+    ],
+    "dispositionRules": [
+      {
+        "id": "peds_resp_emergency_transfer",
+        "label": "Emergency pediatric respiratory escalation",
+        "action": "For apnea, cyanosis, severe respiratory distress, exhaustion, silent chest, poor effort, persistent hypoxemia, shock features, or caregiver/clinician concern, activate local pediatric emergency pathway and arrange monitored transfer or higher-level care.",
+        "rationale": "These findings are time-sensitive markers of respiratory failure, severe asthma, bronchiolitis deterioration, sepsis, or dangerous mimic.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "emergency referral and admission criteria",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Escalate first; complete detailed source localization after stabilization."
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Pediatric respiratory emergency or impending respiratory failure.",
+        "management_change": "Changes disposition to emergency pediatric pathway, continuous monitoring, oxygen/airway plan, and transfer.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a treatment/disposition rule; likelihood ratios are not applicable.",
+        "limitations": "Do not use outpatient reassurance when caregiver concern or trajectory suggests deterioration despite borderline objective data.",
+        "tags": [
+          "pediatric",
+          "respiratory_emergency",
+          "transfer",
+          "escalation"
+        ]
+      },
+      {
+        "id": "peds_resp_bronchiolitis_supportive_plan",
+        "label": "Bronchiolitis supportive plan",
+        "action": "For bronchiolitis-pattern illness, prioritize oxygen when threshold is met, feeding/hydration support, suction only when secretions impair breathing or feeding, and clear red-flag safety-netting; avoid routine salbutamol, ipratropium, steroids, antibiotics, hypertonic saline, montelukast, or chest physiotherapy unless comorbidity or another diagnosis supports it.",
+        "rationale": "Source-backed bronchiolitis care prevents unnecessary asthma-style treatment while focusing on oxygen, hydration, respiratory support, and safe discharge.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "management of bronchiolitis and key safety information",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use local protocol for oxygen delivery, NG/IV fluids, and admission/discharge logistics."
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Bronchiolitis-pattern respiratory illness in a baby or child.",
+        "management_change": "Changes treatment toward supportive care, avoids routine ineffective therapies, and requires red-flag caregiver instructions.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a treatment/disposition rule; likelihood ratios are not applicable.",
+        "limitations": "Do not apply when asthma-like recurrent wheeze, pneumonia, sepsis, foreign body, anaphylaxis, or cardiac disease is more likely.",
+        "tags": [
+          "pediatric",
+          "bronchiolitis",
+          "supportive_care",
+          "oxygen",
+          "hydration",
+          "safety_net"
+        ]
+      },
+      {
+        "id": "peds_resp_asthma_acute_plan",
+        "label": "Asthma acute plan",
+        "action": "For asthma-like wheeze, use local pediatric acute asthma pathway for reliever therapy, oxygen as needed, systemic steroid consideration for severe or high-risk exacerbation, response reassessment, discharge action plan, controller review, and follow-up.",
+        "rationale": "Asthma exacerbation management changes rapidly based on severity and response; discharge without action-plan/controller review increases recurrence risk.",
+        "source": {
+          "source_id": "GINA_ASTHMA_2025",
+          "source_section": "acute exacerbation treatment, oxygen, reliever therapy, risk assessment, and follow-up",
+          "evidence_strength": "guideline/strategy report",
+          "version_date": "2025",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "This module does not encode medication doses; use local pediatric pathway, formulary, and age-specific recommendations."
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Pediatric asthma exacerbation or viral-induced wheeze requiring acute treatment and follow-up planning.",
+        "management_change": "Changes medication pathway, oxygen target, reassessment interval, observation/admission, discharge action plan, and controller/follow-up review.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a treatment/disposition rule; likelihood ratios are not applicable.",
+        "limitations": "Avoid diagnosing chronic asthma from one isolated infant viral episode; avoid withholding escalation because oxygen saturation is normal if work of breathing or air entry is concerning.",
+        "tags": [
+          "pediatric",
+          "asthma",
+          "acute_plan",
+          "reliever",
+          "controller",
+          "follow_up"
+        ]
+      },
+      {
+        "id": "peds_resp_home_safety_net",
+        "label": "Respiratory home safety net",
+        "action": "If managed at home or discharged, give concise caregiver instructions to seek urgent help for worsening work of breathing, grunting, nasal flaring, marked recession, poor intake or no urine, apnea, cyanosis, exhaustion, or reduced responsiveness, and document follow-up arrangements.",
+        "rationale": "Pediatric respiratory illness can worsen after initial assessment; explicit red-flag instructions and follow-up reduce unsafe reassurance.",
+        "source": {
+          "source_id": "NICE_BRONCHIOLITIS_NG9",
+          "source_section": "key safety information for looking after a baby or child at home",
+          "evidence_strength": "guideline",
+          "version_date": "2021",
+          "last_reviewed": "2026-06-09",
+          "clinical_owner": "general_medicine_content_review",
+          "implementation_notes": "Use caregiver language and document that instructions are PHI-safe and concise."
+        },
+        "item_type": "management_change",
+        "diagnostic_target": "Home monitoring safety after pediatric bronchiolitis, wheeze, or respiratory distress evaluation.",
+        "management_change": "Changes discharge readiness, caregiver education, follow-up, and return precautions.",
+        "LR_plus": "n/a",
+        "LR_minus": "n/a",
+        "likelihood_ratio_note": "This is a safety-net and disposition rule; likelihood ratios are not applicable.",
+        "limitations": "Do not discharge if objective findings, trajectory, caregiver concern, or social context makes home monitoring unsafe.",
+        "tags": [
+          "pediatric",
+          "safety_net",
+          "discharge",
+          "caregiver",
+          "follow_up"
+        ]
+      }
+    ]
+  }
+}

@@ -258,7 +258,7 @@ function complaintTraceContext(inputText = "", module = {}, options = {}) {
   };
 }
 
-const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status)\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
+const basicBedsideDataPattern = /\b(?:measure|check|document|calculate|obtain|record)\s+(?:blood pressure|bp|heart rate|hr|respiratory rate|rr|oxygen saturation|spo2|pulse oximetry|temperature|temp|current weight|weight|body mass index|bmi|waist circumference|orthostatic|bedside glucose|point-of-care glucose|fingerstick glucose|pain score|mental status|intake|oral intake|fluid intake|urine output|wet napp(?:y|ies))\b|\b(?:assess|document|observe)\s+(?:general appearance|mental status|ability to protect airway|airway protection|intake and urine output|intake\/output)\b|\b(?:check|document|verify)\s+(?:ability to protect airway|airway protection)\b|^\s*mental status\s*$/i;
 
 export function isBasicBedsideDataItem(item = {}) {
   const text = `${item.id || ""} ${item.label || ""} ${item.action || ""}`;
@@ -1801,6 +1801,9 @@ function infectionModifierHistoryFloorActive(contextText = "", module = {}) {
   if (module?.id === "fever_infection_sepsis_v1") {
     return false;
   }
+  if (module?.modifier_add_on_policy?.suppress_generic_infection_modifier_history_floor === true) {
+    return false;
+  }
   const normalized = normalizeComplaintText(contextText);
   if (!normalized || negatedStandaloneInfectionModifierPattern.test(normalized)) {
     return false;
@@ -1872,6 +1875,683 @@ function infectionModifierHistoryFloorQuestions(module = {}, existingQuestions =
     });
 }
 
+const pregnancyDiabetesPrimaryOutputModuleIds = new Set([
+  "type_1_diabetes_mellitus_v1",
+  "type_2_diabetes_mellitus_v1",
+  "prediabetes_v1"
+]);
+
+const postpartumDiabetesFollowUpModuleIds = new Set([
+  "type_2_diabetes_mellitus_v1",
+  "prediabetes_v1"
+]);
+
+const postpartumMaternalSafetyIntentIds = new Set([
+  "fever_sepsis_v1",
+  "suspected_pe_v1"
+]);
+
+const activePregnancyModifierPattern = /\b(?:currently pregnant|pregnant now|active pregnancy|pregnant patient|gestational age|weeks pregnant|wks pregnant|in pregnancy)\b/i;
+const nonActivePregnancyModifierPattern = /\b(?:not pregnant|nonpregnant|not currently pregnant|pregnancy test negative|negative pregnancy test|postpartum|delivered)\b/i;
+const postpartumModifierPattern = /\b(?:postpartum|post partum|post-delivery|post delivery|postnatal|recent delivery|delivered)\b/i;
+const olderAdultModifierPattern = /\b(?:older adult|geriatric|elderly|frail|frailty|age(?:d)?\s*(?:6[5-9]|[789]\d|1\d{2})|(?:6[5-9]|[789]\d|1\d{2})\s*(?:yo|y\/o|year(?:s)?\s*old))\b/i;
+
+const pregnancyDiabetesSource = {
+  source_id: "ADA_SOC_2026",
+  source_section: "Pregnancy-specific diabetes modifier add-on from gestational diabetes knowledge pack",
+  evidence_strength: "guideline/consensus",
+  version_date: "2026",
+  last_reviewed: "2026-06-06",
+  clinical_owner: "endocrine_content_review",
+  implementation_notes: "Modifier-triggered primary-output add-on; use with validated diabetes intents when active pregnancy is entered, and select the gestational diabetes workup when pregnancy diabetes is the primary question."
+};
+
+const pregnancyDiabetesPrimaryOutputDefinitions = {
+  conditionalQuestions: [
+    {
+      id_suffix: "pregnancy_diabetes_gestational_age_history",
+      label: "Pregnancy diabetes gestational-age history",
+      text: "How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?",
+      options: "Not documented / Gestational age known / Dating uncertain / Fetal growth concern / Polyhydramnios / MFM or OB plan available / Other ___",
+      when_to_ask: "Ask when active pregnancy is entered as a modifier on Type 1 diabetes, Type 2 diabetes, or prediabetes.",
+      diagnostic_purpose: "Clarifies pregnancy-specific diabetes context: gestational age, pregnancy dating reliability, fetal growth or polyhydramnios concern, and obstetric-care plan.",
+      management_implication: "Gestational age or dating uncertainty changes whether early risk testing, 24-28 week OGTT strategy, home glucose monitoring, medication safety review, fetal surveillance, or postpartum follow-up is the next management step.",
+      diagnostic_target: "Pregnancy-specific diabetes context: gestational age, pregnancy dating reliability, fetal growth or polyhydramnios concern, and obstetric-care plan.",
+      management_change: "Gestational age or dating uncertainty changes screening timing, glucose-monitoring intensity, medication safety, fetal surveillance, and postpartum diabetes follow-up.",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "history_question", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for this pregnancy modifier prompt; use it to route guideline thresholds, safety testing, and obstetric coordination rather than diagnose diabetes by history alone."
+    },
+    {
+      id_suffix: "pregnancy_diabetes_preexisting_risk_history",
+      label: "Pregnancy diabetes preexisting-risk history",
+      text: "Any prior gestational diabetes, macrosomia, pre-pregnancy diabetes, prior A1c or glucose abnormality, PCOS, obesity, steroid exposure, or strong family history?",
+      options: "No / Prior GDM / Prior macrosomia / Pre-pregnancy diabetes / Prior abnormal A1c-glucose / PCOS / Obesity / Steroid exposure / Strong family history / Other ___",
+      when_to_ask: "Ask when active pregnancy is entered as a modifier on a validated diabetes workup.",
+      diagnostic_purpose: "Separates prior GDM, macrosomia, and preexisting diabetes risk from current diabetes symptoms so classification and testing timing are auditable.",
+      management_implication: "A positive risk history changes early testing threshold, classification as overt diabetes versus GDM, nutrition and glucose-monitoring intensity, maternal-fetal medicine involvement, and postpartum prevention follow-up.",
+      diagnostic_target: "Pregnancy diabetes risk context: prior gestational diabetes, macrosomia, pre-pregnancy diabetes, prior abnormal A1c or glucose, PCOS, obesity, steroid exposure, or strong family history.",
+      management_change: "Risk history changes early testing, classification, monitoring intensity, maternal-fetal medicine involvement, and postpartum prevention follow-up.",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "risk_factor", "history_question", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for this risk-history prompt; interpret with guideline criteria, glucose data, and obstetric context."
+    },
+    {
+      id_suffix: "pregnancy_diabetes_fetal_obstetric_history",
+      label: "Pregnancy diabetes fetal-obstetric plan history",
+      text: "Have fetal growth, estimated fetal weight, amniotic fluid, ultrasound findings, fetal surveillance, delivery timing, or maternal-fetal medicine involvement changed the diabetes plan?",
+      options: "No fetal concern documented / Fetal growth concern / Polyhydramnios / Ultrasound concern / Fetal surveillance planned / Delivery timing known / MFM involved / Other ___",
+      when_to_ask: "Ask when active pregnancy is entered as a modifier on a validated diabetes workup.",
+      diagnostic_purpose: "Clarifies fetal growth, ultrasound, surveillance, delivery-planning, and MFM context that changes diabetes management during pregnancy.",
+      management_implication: "Fetal growth or obstetric-plan concerns change maternal-fetal monitoring, nutrition and medication escalation, care-team coordination, delivery planning, and postpartum follow-up.",
+      diagnostic_target: "Pregnancy diabetes obstetric context: fetal growth, estimated fetal weight, amniotic fluid, ultrasound concern, fetal surveillance plan, delivery timing, and MFM involvement.",
+      management_change: "Fetal growth or obstetric-plan concerns change surveillance, nutrition and medication escalation, delivery planning, and postpartum follow-up.",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "fetal_surveillance", "history_question", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for fetal-obstetric plan context; use it to coordinate guideline-backed maternal-fetal monitoring and escalation."
+    }
+  ],
+  initialTests: [
+    {
+      id_suffix: "pregnancy_diabetes_ogtt_threshold_pathway",
+      label: "Pregnancy diabetes OGTT threshold pathway",
+      item_type: "diagnostic_test",
+      action: "Route diabetes testing by gestational age: early risk testing when high risk and 24-28 week one-step 75-g OGTT or local two-step strategy when appropriate.",
+      rationale: "Pregnancy changes diabetes diagnostic thresholds, screening timing, and interpretation of glucose and A1c results.",
+      diagnostic_target: "Pregnancy diabetes test pathway: early risk testing when high risk and gestational-age-appropriate one-step or two-step OGTT interpretation.",
+      management_change: "Crossing OGTT thresholds changes maternal-fetal monitoring, nutrition therapy, glucose-monitoring intensity, medication escalation, delivery planning, and postpartum follow-up.",
+      options: "Early risk testing if high risk / 24-28 week one-step 75-g OGTT / Local two-step strategy / One-step GDM threshold fasting >=92 mg/dL / 1-hour >=180 mg/dL / 2-hour >=153 mg/dL / Two-step 50-g screen often >=130-140 mg/dL / 100-g Carpenter-Coustan fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL / Usually 2 abnormal 100-g values / Other ___",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "ogtt", "diagnostic_test", "reference_threshold", "primary_output_diff"],
+      source: { ...pregnancyDiabetesSource, source_id: "ADA_DIAGNOSIS_2026" },
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for these guideline threshold rows; use the cited diagnostic criteria, local assay characteristics, and pretest probability."
+    },
+    {
+      id_suffix: "pregnancy_diabetes_safety_test_pathway",
+      label: "Pregnancy diabetes safety-test pathway",
+      item_type: "diagnostic_test",
+      action: "Review home glucose pattern when available and check ketones, electrolytes/anion gap, creatinine, and acid-base status when vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms are present.",
+      rationale: "Active pregnancy lowers tolerance for missed ketosis, dehydration, severe hyperglycemia, and hypertensive disease in a diabetes workup.",
+      diagnostic_target: "Pregnancy diabetes safety testing: glucose pattern, ketones, electrolytes/anion gap, creatinine, acid-base status, and hypertensive/preeclampsia context when symptomatic.",
+      management_change: "Ketones, acidosis, renal dysfunction, severe hyperglycemia, or preeclampsia features change urgency to obstetric/endocrine evaluation, monitored care, medication adjustment, and maternal-fetal surveillance.",
+      options: "Home glucose pattern / Ketones / Electrolytes and anion gap / Creatinine / Acid-base status / Blood pressure and urine protein context when preeclampsia features present / Other ___",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "ketones", "preeclampsia", "diagnostic_test", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for this safety-test bundle; use guideline rationale, labs, vitals, and obstetric context."
+    }
+  ],
+  redFlags: [
+    {
+      id_suffix: "pregnancy_diabetes_urgent_cues",
+      label: "Pregnancy diabetes urgent cues",
+      item_type: "red_flag",
+      action: "Screen for ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, acidosis or anion-gap concern, hypertension or preeclampsia features, reduced fetal movement, and hemodynamic instability.",
+      rationale: "Diabetes plus active pregnancy needs explicit escalation cues because ketosis, severe hyperglycemia, hypertensive disease, and fetal-movement concerns can change disposition quickly.",
+      diagnostic_target: "Urgent pregnancy diabetes danger pattern: ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, acidosis, hypertensive/preeclampsia features, reduced fetal movement, or instability.",
+      management_change: "These cues change disposition to urgent obstetric/endocrine evaluation, monitored care, DKA/HHS rule-out, fetal assessment, blood-pressure/proteinuria assessment, and medication safety review.",
+      options: "Ketones / Vomiting or dehydration / Severe hyperglycemia / Altered mental status / Acidosis or anion gap concern / Hypertension or preeclampsia features / Reduced fetal movement / Hemodynamic instability / Other ___",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "red_flag", "ketones", "preeclampsia", "fetal_movement", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this escalation row; use it to identify urgency and safety risk rather than diagnostic probability.",
+      triggered: false,
+      included: true
+    }
+  ],
+  dispositionRules: [
+    {
+      id_suffix: "pregnancy_diabetes_postpartum_follow_up",
+      label: "Pregnancy diabetes postpartum follow-up plan",
+      item_type: "management_change",
+      action: "Plan postpartum 75-g OGTT at 4-12 weeks when pregnancy-associated dysglycemia or diabetes care during pregnancy is present, then hand off long-term diabetes prevention and follow-up.",
+      rationale: "Pregnancy-associated dysglycemia changes follow-up even after delivery, so postpartum testing and prevention cannot be buried in generic diabetes counseling.",
+      diagnostic_target: "Postpartum diabetes risk and prevention pathway after pregnancy-associated dysglycemia or diabetes care during pregnancy.",
+      management_change: "A postpartum 75-g OGTT at 4-12 weeks and long-term prevention plan change follow-up timing, counseling, medication safety review, and handoff to primary care or endocrinology.",
+      options: "Postpartum 75-g OGTT at 4-12 weeks / Long-term diabetes prevention / Primary care or endocrine follow-up / Breastfeeding and medication safety review when relevant / Not applicable because still pregnant and immediate obstetric plan pending / Other ___",
+      tags: ["diabetes_mellitus", "pregnancy", "gestational_diabetes", "postpartum", "management_change", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this management-change row; use it to connect pregnancy diabetes context to follow-up and prevention decisions."
+    }
+  ]
+};
+
+const postpartumDiabetesFollowUpDefinitions = {
+  conditionalQuestions: [
+    {
+      id_suffix: "postpartum_gdm_follow_up_timing",
+      label: "Postpartum GDM follow-up timing",
+      text: "How many weeks postpartum are you, was gestational diabetes or pregnancy-associated dysglycemia diagnosed, and has a postpartum 75-g OGTT already been completed?",
+      options: "Delivery date/timing unknown / <4 weeks postpartum / 4-12 weeks postpartum / >12 weeks postpartum / GDM or pregnancy dysglycemia documented / OGTT completed / OGTT not completed / Prior type 2 diabetes already diagnosed / Other ___",
+      when_to_ask: "Ask when postpartum context is entered with Type 2 diabetes or prediabetes workups after pregnancy-associated dysglycemia or GDM concern.",
+      diagnostic_purpose: "Separates postpartum follow-up after GDM or pregnancy-associated dysglycemia from active-pregnancy GDM screening so testing criteria and handoff are auditable.",
+      management_implication: "Postpartum timing and prior GDM status change whether to schedule a 4-12 week 75-g OGTT, interpret results with nonpregnancy criteria, route confirmed diabetes/prediabetes treatment, or hand off long-term screening.",
+      diagnostic_target: "Postpartum diabetes follow-up context: weeks since delivery, prior GDM or pregnancy-associated dysglycemia, prior postpartum OGTT completion, and existing diabetes diagnosis.",
+      management_change: "Changes follow-up timing, OGTT ordering, nonpregnancy diagnostic interpretation, prevention/treatment handoff, and long-term diabetes surveillance.",
+      tags: ["diabetes_mellitus", "gestational_diabetes", "postpartum", "history_question", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for postpartum follow-up routing; use this item to route source-backed testing and handoff rather than diagnose diabetes by history alone."
+    }
+  ],
+  initialTests: [
+    {
+      id_suffix: "postpartum_gdm_ogtt_pathway",
+      label: "Postpartum GDM 75-g OGTT pathway",
+      item_type: "diagnostic_test",
+      action: "For prior GDM or pregnancy-associated dysglycemia, confirm or schedule a fasting 75-g 2-hour OGTT at 4-12 weeks postpartum using clinically appropriate nonpregnancy diagnostic criteria; prefer OGTT over A1c in this early postpartum window.",
+      rationale: "Postpartum follow-up after GDM is a distinct pathway from active-pregnancy GDM screening because early postpartum A1c can be affected by pregnancy and delivery physiology.",
+      diagnostic_target: "Persistent diabetes or prediabetes after GDM or pregnancy-associated dysglycemia, tested with postpartum 75-g OGTT and nonpregnancy diagnostic criteria.",
+      management_change: "An abnormal postpartum OGTT changes diagnosis, prevention or treatment intensity, medication safety review, primary-care/endocrine handoff, and counseling before future pregnancies.",
+      options: "4-12 week postpartum 75-g OGTT / Use nonpregnancy criteria / OGTT preferred over A1c in early postpartum window / If already >12 weeks postpartum, arrange catch-up diabetes testing / Other ___",
+      tags: ["diabetes_mellitus", "gestational_diabetes", "postpartum", "ogtt", "diagnostic_test", "reference_threshold", "primary_output_diff"],
+      source: { ...pregnancyDiabetesSource, source_id: "ADA_DIAGNOSIS_2026", source_section: "Postpartum testing after gestational diabetes" },
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for this postpartum testing pathway; use ADA diagnostic criteria and local laboratory methods."
+    }
+  ],
+  dispositionRules: [
+    {
+      id_suffix: "postpartum_gdm_long_term_screening",
+      label: "Postpartum GDM long-term diabetes screening handoff",
+      item_type: "management_change",
+      action: "If the 4-12 week postpartum OGTT is normal, document lifelong diabetes screening every 1-3 years; if prediabetes or diabetes is present, route prevention/treatment, medication safety review, and primary-care or endocrine follow-up.",
+      rationale: "A history of GDM remains a long-term diabetes-risk state even when the initial postpartum OGTT is normal.",
+      diagnostic_target: "Long-term diabetes risk after GDM or pregnancy-associated dysglycemia.",
+      management_change: "Changes follow-up interval, prevention counseling, medication review, future pregnancy planning, and responsibility for longitudinal surveillance.",
+      options: "Normal postpartum OGTT: screen every 1-3 years / Prediabetes: prevention program and follow-up / Diabetes: treatment and primary-care or endocrine handoff / Future pregnancy planning / Other ___",
+      tags: ["diabetes_mellitus", "gestational_diabetes", "postpartum", "long_term_screening", "management_change", "primary_output_diff"],
+      source: pregnancyDiabetesSource,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this follow-up handoff row; use it to ensure source-backed surveillance after GDM is not lost."
+    }
+  ]
+};
+
+const postpartumMaternalSafetySources = {
+  sepsis: {
+    source_id: "SMFM_MATERNAL_SEPSIS_2023",
+    source_section: "Pregnant and postpartum sepsis recognition, evaluation, cultures/lactate, broad-spectrum antibiotics, source control, fluids, vasopressors, VTE prophylaxis, and survivor support",
+    evidence_strength: "specialty society consult/guideline",
+    version_date: "2023",
+    last_reviewed: "2026-06-08",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Modifier-triggered postpartum sepsis add-on; use with validated fever/sepsis output and local maternal sepsis protocols."
+  },
+  warningSigns: {
+    source_id: "CDC_HEAR_HER_WARNING_SIGNS_2024",
+    source_section: "Urgent maternal warning signs during pregnancy and within 1 year after delivery",
+    evidence_strength: "public health warning-sign guidance",
+    version_date: "2024",
+    last_reviewed: "2026-06-08",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Use as warning-sign and escalation context; not a diagnostic rule."
+  },
+  rcogVte: {
+    source_id: "RCOG_VTE_PUERPERIUM_2015",
+    source_section: "Immediate investigation and management of suspected venous thromboembolism during pregnancy or the puerperium",
+    evidence_strength: "guideline",
+    version_date: "2015",
+    last_reviewed: "2026-06-08",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Use to keep suspected postpartum PE/DVT in a validated VTE pathway; review local imaging and anticoagulation protocols."
+  },
+  ashVte: {
+    source_id: "ASH_VTE_PREGNANCY_2018",
+    source_section: "Diagnosis, prevention, and treatment of VTE during and after pregnancy",
+    evidence_strength: "guideline",
+    version_date: "2018",
+    last_reviewed: "2026-06-08",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Use for pregnancy/postpartum VTE context and anticoagulation risk framing; apply local protocols for imaging and treatment."
+  }
+};
+
+const postpartumMaternalSafetyDefinitions = {
+  conditionalQuestions: [
+    {
+      id_suffix: "postpartum_infection_source_warning_history",
+      intent_ids: ["fever_sepsis_v1"],
+      label: "Postpartum infection source and warning-sign screen",
+      text: "Postpartum multi-select: how many days or weeks since delivery, and are there fever >=100.4 F, uterine or pelvic pain, foul lochia, C-section or perineal wound symptoms, breast pain/redness, urinary symptoms, severe headache or vision change, dyspnea, chest pain, dizziness, or fainting?",
+      options: "Timing unknown / <7 days postpartum / 1-6 weeks postpartum / 6 weeks-1 year postpartum / Fever >=100.4 F / Uterine or pelvic pain / Foul lochia / C-section or perineal wound concern / Breast pain or redness / Dysuria or flank pain / Severe headache or vision change / Dyspnea or chest pain / Dizziness or fainting / Other ___",
+      when_to_ask: "Ask when postpartum context is entered with a validated fever, infection, or sepsis workup.",
+      diagnostic_purpose: "Localizes postpartum infection source and urgent maternal warning signs without treating postpartum status as a generic fever modifier.",
+      management_implication: "Positive uterine, wound, breast, urinary, cardiopulmonary, neurologic, or syncope warning signs change source workup, urgency, maternal sepsis protocol activation, OB/MFM contact, and disposition.",
+      diagnostic_target: "Postpartum infection source and urgent maternal warning-sign context after recent delivery.",
+      management_change: "Changes microbiologic testing, lactate/source-control urgency, empiric antibiotic urgency, OB/MFM handoff, and disposition.",
+      tags: ["postpartum", "maternal_sepsis", "infection_source", "warning_sign", "history_question", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.warningSigns,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for this postpartum warning-sign screen; use it to localize source and escalation needs, then apply sepsis criteria, cultures, lactate, and source control."
+    },
+    {
+      id_suffix: "postpartum_vte_symptom_risk_history",
+      intent_ids: ["suspected_pe_v1"],
+      label: "Postpartum VTE symptoms and risk history",
+      text: "Postpartum multi-select: how many days or weeks since delivery, and are there sudden dyspnea, pleuritic chest pain, hemoptysis, syncope, unilateral leg symptoms, cesarean delivery, immobility, hemorrhage/transfusion, preeclampsia, thrombophilia, prior VTE, current anticoagulation, or breastfeeding medication-safety needs?",
+      options: "Timing unknown / <7 days postpartum / 1-6 weeks postpartum / 6 weeks-1 year postpartum / Sudden dyspnea / Pleuritic chest pain / Hemoptysis / Syncope or presyncope / Unilateral leg swelling or pain / Cesarean delivery / Immobility / Hemorrhage or transfusion / Preeclampsia / Thrombophilia or prior VTE / Current anticoagulation / Breastfeeding medication-safety need / Other ___",
+      when_to_ask: "Ask when postpartum context is entered with a validated suspected PE workup.",
+      diagnostic_purpose: "Separates postpartum VTE symptoms, provoking factors, bleeding/anticoagulation state, and lactation medication-safety context from generic PE history.",
+      management_implication: "Positive PE/DVT symptoms or postpartum risk factors change imaging threshold, compression-ultrasound use when leg symptoms are present, anticoagulation safety review, OB/MFM or hematology contact, and disposition.",
+      diagnostic_target: "Postpartum pulmonary embolism or DVT risk and anticoagulation-safety context.",
+      management_change: "Changes VTE diagnostic pathway, anticoagulation planning, breastfeeding-safe medication review, consultation, and disposition.",
+      tags: ["postpartum", "puerperium", "vte", "pulmonary_embolism", "dvt", "anticoagulation_safety", "history_question", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.rcogVte,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for this postpartum VTE screen; use it to set pretest concern, bleeding risk, and diagnostic pathway rather than rule PE in or out."
+    }
+  ],
+  initialTests: [
+    {
+      id_suffix: "postpartum_sepsis_lactate_culture_source_control",
+      intent_ids: ["fever_sepsis_v1"],
+      label: "Postpartum sepsis lactate, cultures, and source-control pathway",
+      item_type: "diagnostic_test",
+      action: "For postpartum suspected sepsis, obtain lactate and evaluate infectious and noninfectious organ dysfunction; obtain blood and source-directed cultures before antibiotics when this will not delay treatment; rapidly identify or exclude an anatomic source and source-control need.",
+      rationale: "SMFM recommends maternal sepsis be treated as a medical emergency in pregnant or postpartum patients, with lactate, cultures when feasible, timely broad-spectrum antibiotics, and rapid anatomic source evaluation.",
+      diagnostic_target: "Maternal sepsis or septic shock after delivery, including uterine, wound, urinary, breast, respiratory, retained-product, or noninfectious organ-dysfunction mimics.",
+      management_change: "Positive lactate, organ dysfunction, suspected uterine/source-control need, or high likelihood of sepsis changes urgency to maternal sepsis protocol, broad-spectrum antibiotics ideally within 1 hour, fluids/vasopressors per protocol, and OB/MFM escalation.",
+      options: "Serum lactate / Blood cultures before antibiotics if no delay / Source-directed cultures / CBC and CMP / Urinalysis and urine culture / Wound or breast source evaluation / Imaging for source control when indicated / Broad-spectrum antibiotics ideally within 1 hour if high likelihood or shock / Other ___",
+      tags: ["postpartum", "maternal_sepsis", "lactate", "blood_culture", "source_control", "diagnostic_test", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.sepsis,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for this pathway row; use guideline sepsis criteria, lactate, cultures, organ dysfunction, and source-control findings."
+    },
+    {
+      id_suffix: "postpartum_vte_diagnostic_pathway",
+      intent_ids: ["suspected_pe_v1"],
+      label: "Postpartum PE/DVT diagnostic and anticoagulation-safety pathway",
+      item_type: "diagnostic_test",
+      action: "For postpartum suspected PE, keep the patient in a validated VTE pathway: assess hemodynamics and oxygenation, evaluate DVT symptoms with compression ultrasound when present, select chest imaging per local pregnancy/postpartum protocol, and review anticoagulation, bleeding, neuraxial, procedure, and breastfeeding safety before treatment decisions.",
+      rationale: "Pregnancy and the puerperium are reviewed VTE contexts; suspected postpartum PE needs immediate investigation rather than reassurance from nonspecific postpartum symptoms.",
+      diagnostic_target: "Postpartum pulmonary embolism or DVT and treatment safety constraints.",
+      management_change: "Positive DVT imaging, high PE concern, hypoxemia, hemodynamic compromise, or anticoagulation contraindication changes imaging, monitoring level, anticoagulation route, consultation, and disposition.",
+      options: "Hemodynamic and oxygenation assessment / Compression ultrasound when leg symptoms present / Chest imaging per local protocol / Anticoagulation contraindication review / Recent neuraxial or procedure timing / Bleeding or hemorrhage risk / Breastfeeding medication-safety review / OB/MFM or hematology contact / Other ___",
+      tags: ["postpartum", "puerperium", "vte", "pulmonary_embolism", "dvt", "diagnostic_test", "anticoagulation_safety", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.ashVte,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for this postpartum VTE pathway row; interpret imaging and clinical probability with cited guideline context and local protocol."
+    }
+  ],
+  redFlags: [
+    {
+      id_suffix: "postpartum_urgent_maternal_warning_cues",
+      intent_ids: ["fever_sepsis_v1", "suspected_pe_v1"],
+      label: "Postpartum urgent maternal warning cues",
+      item_type: "red_flag",
+      action: "Escalate immediately for fever >=100.4 F, dyspnea, chest pain, syncope or persistent dizziness, severe headache, vision changes, extreme face/hand swelling, altered mental status, hypotension, hypoxemia, uterine/pelvic pain with systemic illness, or concern that something is seriously wrong within 1 year after delivery.",
+      rationale: "CDC warning signs and maternal sepsis/VTE guidance emphasize that pregnancy-related complications can occur after delivery and may be life-threatening.",
+      diagnostic_target: "Postpartum warning-sign pattern requiring urgent maternal evaluation, including sepsis, PE/DVT, hypertensive disease, cardiopulmonary disease, hemorrhage, or neurologic danger.",
+      management_change: "These cues change disposition to urgent evaluation or monitored care, maternal sepsis/VTE/hypertensive pathway selection, OB/MFM communication, and explicit return precautions.",
+      options: "Fever >=100.4 F / Dyspnea / Chest pain / Syncope or persistent dizziness / Severe headache / Vision change / Extreme face or hand swelling / Altered mental status / Hypotension or hypoxemia / Uterine or pelvic pain with systemic illness / Patient says something is seriously wrong / Other ___",
+      tags: ["postpartum", "maternal_warning_sign", "sepsis", "pulmonary_embolism", "hypertensive_disorder", "red_flag", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.warningSigns,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this warning-sign row; use it to avoid delayed recognition and to route urgent evaluation."
+    }
+  ],
+  dispositionRules: [
+    {
+      id_suffix: "postpartum_ob_mfm_handoff",
+      intent_ids: ["fever_sepsis_v1", "suspected_pe_v1"],
+      label: "Postpartum OB/MFM safety handoff",
+      item_type: "management_change",
+      action: "Document postpartum timing, delivery type, delivery complications, lactation or medication-safety needs, warning signs reviewed, maternal sepsis/VTE pathway decisions, OB/MFM or hematology contacts, and follow-up or return precautions.",
+      rationale: "Postpartum status changes safety handoff even when the presenting syndrome is fever or PE; delayed recognition and poor handoff contribute to preventable maternal harm.",
+      diagnostic_target: "Postpartum disposition readiness and maternal safety follow-up after fever/sepsis or suspected PE evaluation.",
+      management_change: "Changes consultation, medication selection, breastfeeding safety review, monitoring, discharge readiness, and return precautions.",
+      options: "Postpartum timing documented / Delivery type documented / Delivery complications documented / Lactation medication-safety review / OB or MFM contacted / Hematology contacted for VTE / Return precautions reviewed / Follow-up arranged / Monitored disposition needed / Other ___",
+      tags: ["postpartum", "maternal_safety", "handoff", "ob_mfm", "vte", "sepsis", "management_change", "primary_output_diff"],
+      source: postpartumMaternalSafetySources.warningSigns,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this handoff row; use it to make postpartum safety consequences explicit."
+    }
+  ]
+};
+
+const olderAdultSafetySources = {
+  steadi: {
+    source_id: "CDC_STEADI_2025",
+    source_section: "Older adult fall-risk screening, functional assessment, orthostatic blood pressure, and medication review resources",
+    evidence_strength: "public health/clinical implementation guidance",
+    version_date: "2025",
+    last_reviewed: "2026-06-09",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Modifier-triggered older-adult safety add-on; use to adjust bedside risk assessment, not to diagnose the presenting syndrome."
+  },
+  beers: {
+    source_id: "AGS_BEERS_2023",
+    source_section: "Potentially inappropriate medication use in older adults, disease/syndrome interactions, renal dosing, and medication combinations",
+    evidence_strength: "expert consensus/guideline",
+    version_date: "2023",
+    last_reviewed: "2026-06-09",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Use as medication-safety review support; do not use as an automatic stop-order without patient-specific clinician judgment."
+  },
+  delirium: {
+    source_id: "NICE_DELIRIUM_CG103",
+    source_section: "Delirium risk factors and prevention in hospital or long-term care, including age 65 years or older",
+    evidence_strength: "guideline",
+    version_date: "2023 surveillance",
+    last_reviewed: "2026-06-09",
+    clinical_owner: "general_medicine_content_review",
+    implementation_notes: "Use to surface delirium risk, cognitive baseline, severe illness, and reversible contributor assessment."
+  }
+};
+
+const olderAdultSafetyAddOnDefinitions = {
+  safetyChecks: [
+    {
+      id_suffix: "older_adult_orthostatic_bp",
+      label: "Measure orthostatic blood pressure",
+      item_type: "safety_check",
+      action: "Measure supine or seated and standing blood pressure and heart-rate response when safe, especially with falls, syncope, dizziness, dehydration, antihypertensives, sedatives, or acute illness.",
+      rationale: "Orthostatic hypotension is a modifiable older-adult fall and syncope risk and can change medication, fluid, monitoring, and disposition decisions.",
+      diagnostic_target: "Orthostatic hypotension, volume depletion, medication effect, autonomic dysfunction, and fall/syncope risk in older adults.",
+      management_change: "A positive or unsafe orthostatic assessment changes fall precautions, medication review, fluid strategy, PT/OT needs, and discharge safety planning.",
+      options: "Normal / Systolic drop >=20 or diastolic drop >=10 / Symptomatic / Unable unsafe / Not indicated now / Other ___",
+      tags: ["older_adult", "geriatric", "fall_risk", "orthostatic_hypotension", "safety_check", "primary_output_diff"],
+      source: olderAdultSafetySources.steadi,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for this safety check; use it as fall/syncope risk and medication-safety assessment rather than disease diagnosis."
+    }
+  ],
+  conditionalQuestions: [
+    {
+      id_suffix: "older_adult_baseline_function_cognition_falls",
+      label: "Older-adult baseline function, cognition, and falls",
+      text: "What is baseline cognition and function, and are there recent falls, mobility changes, caregiver gaps, sensory impairment, or new delirium concerns?",
+      options: "Baseline independent / Needs ADL help / Cognitive impairment or dementia / Acute confusion from baseline / Recent fall / Fear of falling / Uses walker/cane / Caregiver or home-safety gap / Hearing/vision barrier / Other ___",
+      when_to_ask: "Ask when older-adult, geriatric, frailty, or age >=65 context is entered with a validated adult workup.",
+      diagnostic_purpose: "Separates baseline function and cognition from acute symptoms so delirium, fall risk, and discharge safety are not missed.",
+      management_implication: "New confusion, recent fall, functional decline, or unsafe support changes delirium workup, fall precautions, medication review, PT/OT, caregiver planning, and disposition.",
+      diagnostic_target: "Older-adult vulnerability context: baseline cognition, ADLs, mobility, falls, sensory barriers, caregiver support, and acute delirium concern.",
+      management_change: "Changes risk stratification, safety precautions, consult needs, medication review, and discharge planning.",
+      tags: ["older_adult", "geriatric", "frailty", "delirium", "fall_risk", "history_question", "primary_output_diff"],
+      source: olderAdultSafetySources.delirium,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Question-level LR+/LR- is not available for this older-adult routing prompt; use it to identify delirium/fall/disposition modifiers and then apply condition-specific diagnostic criteria."
+    },
+    {
+      id_suffix: "older_adult_medication_fall_delirium_risk",
+      label: "Older-adult medication fall and delirium risk",
+      text: "Any high-risk medicines, recent dose changes, polypharmacy, renal-dose concerns, hypoglycemia risk, anticoagulants, sedatives, anticholinergics, opioids, or alcohol/substance exposure?",
+      options: "No high-risk medicine identified / >=4 medicines / Recent medication change / Anticoagulant or antiplatelet / Benzodiazepine or sedative-hypnotic / Opioid / Anticholinergic / Insulin or sulfonylurea / Renal-dose concern / Alcohol or substance exposure / Other ___",
+      when_to_ask: "Ask when older-adult, geriatric, frailty, or age >=65 context is entered with a validated adult workup.",
+      diagnostic_purpose: "Identifies medication contributors to falls, delirium, bleeding, hypoglycemia, orthostasis, sedation, and renal toxicity.",
+      management_implication: "High-risk medicines or renal-dose mismatch changes medication reconciliation, deprescribing/substitution review, monitoring, antidote/reversal planning, and discharge safety.",
+      diagnostic_target: "Medication-related fall, delirium, bleeding, hypoglycemia, orthostatic, sedation, or renal-dose risk in older adults.",
+      management_change: "Changes medication reconciliation, pharmacy review, monitoring intensity, and discharge medication plan.",
+      tags: ["older_adult", "geriatric", "beers_criteria", "polypharmacy", "medication_safety", "history_question", "primary_output_diff"],
+      source: olderAdultSafetySources.beers,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not available for this medication-safety screen; use AGS Beers/source rationale and patient-specific clinician judgment."
+    }
+  ],
+  initialTests: [
+    {
+      id_suffix: "older_adult_medication_renal_dose_review",
+      label: "Older-adult medication and renal-dose safety review",
+      item_type: "diagnostic_test",
+      action: "Review the active medication list, recent dose changes, anticholinergic/sedative/opioid burden, anticoagulation, hypoglycemia-risk drugs, and renal function before finalizing testing or disposition.",
+      rationale: "Older adults have higher risk from medication adverse effects, drug-disease interactions, combinations, and reduced kidney function; medication review changes interpretation and safety.",
+      diagnostic_target: "Medication-related delirium, fall, bleeding, hypoglycemia, sedation, orthostasis, and renal-dose risk.",
+      management_change: "Abnormal review changes drug holds/substitution, renal dosing, monitoring, reversal planning, pharmacy consultation, and safe discharge medication instructions.",
+      options: "Medication reconciliation complete / Recent dose change / Anticholinergic burden / Sedative or opioid / Anticoagulant bleeding risk / Insulin-sulfonylurea hypoglycemia risk / eGFR dose issue / Pharmacy review needed / Other ___",
+      tags: ["older_adult", "geriatric", "beers_criteria", "medication_safety", "renal_dosing", "diagnostic_test", "primary_output_diff"],
+      source: olderAdultSafetySources.beers,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not encoded for medication review; use this source-backed safety step to change management, monitoring, and discharge planning."
+    }
+  ],
+  redFlags: [
+    {
+      id_suffix: "older_adult_delirium_fall_escalation_cues",
+      label: "Older-adult delirium, fall, and unsafe-disposition cues",
+      item_type: "red_flag",
+      action: "Escalate or broaden evaluation for acute confusion from baseline, inability to ambulate safely, fall with head trauma or anticoagulation, syncope, suspected dehydration, severe illness, uncontrolled pain, or absent safe caregiver/home support.",
+      rationale: "Older adults may present with functional decline or delirium rather than classic symptoms, and falls or unsafe support can change disposition even when the disease-specific workup is otherwise routine.",
+      diagnostic_target: "Delirium, serious injury, severe illness, unsafe mobility, medication toxicity, or unsafe discharge context.",
+      management_change: "These cues change monitoring level, imaging/lab threshold, medication review, PT/OT or pharmacy consultation, caregiver planning, and disposition.",
+      options: "Acute confusion / Cannot ambulate safely / Fall with head trauma / Anticoagulated fall / Syncope / Dehydration concern / Severe illness / Unsafe home or caregiver gap / Other ___",
+      tags: ["older_adult", "geriatric", "delirium", "fall_risk", "unsafe_disposition", "red_flag", "primary_output_diff"],
+      source: olderAdultSafetySources.delirium,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this escalation row; use it to avoid missing disposition-changing geriatric safety risk."
+    }
+  ],
+  dispositionRules: [
+    {
+      id_suffix: "older_adult_discharge_safety_handoff",
+      label: "Older-adult function, falls, and medication-safety handoff",
+      item_type: "management_change",
+      action: "Document baseline function/cognition, fall risk, orthostatic findings, high-risk medicines, renal-dose concerns, caregiver support, and PT/OT/pharmacy follow-up needs before discharge or outpatient handoff.",
+      rationale: "Older-adult safety modifiers often change the next clinician's plan even when the presenting diagnosis is unchanged.",
+      diagnostic_target: "Disposition readiness and longitudinal safety after an acute adult workup in an older adult.",
+      management_change: "Changes discharge readiness, medication plan, PT/OT or pharmacy referral, caregiver instructions, follow-up timing, and need for monitored care.",
+      options: "Baseline function documented / Delirium risk documented / Fall precautions or PT/OT / Medication changes reviewed / Renal-dose follow-up / Caregiver/home support confirmed / Monitored disposition needed / Other ___",
+      tags: ["older_adult", "geriatric", "fall_risk", "medication_safety", "disposition", "management_change", "primary_output_diff"],
+      source: olderAdultSafetySources.steadi,
+      LR_plus: "n/a",
+      LR_minus: "n/a",
+      likelihood_ratio_note: "Likelihood ratios are not applicable to this management handoff row; use it to make safety consequences explicit."
+    }
+  ]
+};
+
+function pregnancyDiabetesPrimaryOutputActive(contextText = "", module = {}) {
+  const normalized = normalizeComplaintText(contextText);
+  return pregnancyDiabetesPrimaryOutputModuleIds.has(module?.id)
+    && activePregnancyModifierPattern.test(normalized)
+    && !nonActivePregnancyModifierPattern.test(normalized);
+}
+
+function postpartumDiabetesFollowUpActive(contextText = "", module = {}) {
+  const normalized = normalizeComplaintText(contextText);
+  return postpartumDiabetesFollowUpModuleIds.has(module?.id)
+    && postpartumModifierPattern.test(normalized)
+    && !activePregnancyModifierPattern.test(normalized);
+}
+
+function postpartumMaternalSafetyAddOnActive(contextText = "", module = {}, traceContext = {}) {
+  const normalized = normalizeComplaintText(contextText);
+  const intentIds = (traceContext.intentTrace || []).map((intentRow) => intentRow.intent_id).filter(Boolean);
+  return postpartumModifierPattern.test(normalized)
+    && !activePregnancyModifierPattern.test(normalized)
+    && intentIds.some((intentId) => postpartumMaternalSafetyIntentIds.has(intentId));
+}
+
+function olderAdultSafetyAddOnActive(contextText = "", module = {}) {
+  const normalized = normalizeComplaintText(contextText);
+  const moduleAgeGroup = normalizeComplaintText(module?.applicability?.age_group || module?.population?.age_group || "");
+  return olderAdultModifierPattern.test(normalized)
+    && (moduleAgeGroup.includes("adult") || !moduleAgeGroup);
+}
+
+function tracedPregnancyDiabetesAddOnItem(definition = {}, module = {}, group = "", traceContext = {}) {
+  const item = {
+    ...definition,
+    id: `${module.id || "diabetes_module"}_${definition.id_suffix}`,
+    modifier_add_on_id: "pregnancy_diabetes_context_primary_output",
+    activated_by_modifier: "currently pregnant"
+  };
+  const normalized = group === "conditionalQuestions"
+    ? normalizeEvaluatedQuestionItem(item, group)
+    : item;
+  return traceComplaintCdsItem(normalized, module, group, traceContext.intentTrace, traceContext.authorizedBy);
+}
+
+function tracedPostpartumDiabetesAddOnItem(definition = {}, module = {}, group = "", traceContext = {}) {
+  const item = {
+    ...definition,
+    id: `${module.id || "diabetes_module"}_${definition.id_suffix}`,
+    modifier_add_on_id: "postpartum_gdm_follow_up_primary_output",
+    activated_by_modifier: "postpartum"
+  };
+  const normalized = group === "conditionalQuestions"
+    ? normalizeEvaluatedQuestionItem(item, group)
+    : item;
+  return traceComplaintCdsItem(normalized, module, group, traceContext.intentTrace, traceContext.authorizedBy);
+}
+
+function tracedPostpartumMaternalSafetyAddOnItem(definition = {}, module = {}, group = "", traceContext = {}) {
+  const item = {
+    ...definition,
+    id: `${module.id || "postpartum_module"}_${definition.id_suffix}`,
+    modifier_add_on_id: "postpartum_maternal_safety_primary_output",
+    activated_by_modifier: "postpartum"
+  };
+  const normalized = group === "conditionalQuestions"
+    ? normalizeEvaluatedQuestionItem(item, group)
+    : item;
+  return traceComplaintCdsItem(normalized, module, group, traceContext.intentTrace, traceContext.authorizedBy);
+}
+
+function tracedOlderAdultSafetyAddOnItem(definition = {}, module = {}, group = "", traceContext = {}) {
+  const item = {
+    ...definition,
+    id: `${module.id || "adult_module"}_${definition.id_suffix}`,
+    modifier_add_on_id: "older_adult_safety_primary_output",
+    activated_by_modifier: "older adult"
+  };
+  const normalized = group === "conditionalQuestions"
+    ? normalizeEvaluatedQuestionItem(item, group)
+    : item;
+  return traceComplaintCdsItem(normalized, module, group, traceContext.intentTrace, traceContext.authorizedBy);
+}
+
+function pregnancyDiabetesPrimaryOutputAddOns(module = {}, conditionalContext = "", traceContext = {}) {
+  if (!pregnancyDiabetesPrimaryOutputActive(conditionalContext, module)) {
+    return {
+      active: false,
+      activeClinicalAddOns: [],
+      safetyChecks: [],
+      conditionalQuestions: [],
+      initialTests: [],
+      redFlags: [],
+      dispositionRules: []
+    };
+  }
+  const mapGroup = (group) => pregnancyDiabetesPrimaryOutputDefinitions[group]
+    .map((definition) => tracedPregnancyDiabetesAddOnItem(definition, module, group, traceContext));
+  return {
+    active: true,
+    activeClinicalAddOns: ["pregnancy_diabetes_context_primary_output"],
+    safetyChecks: [],
+    conditionalQuestions: mapGroup("conditionalQuestions"),
+    initialTests: mapGroup("initialTests"),
+    redFlags: mapGroup("redFlags"),
+    dispositionRules: mapGroup("dispositionRules")
+  };
+}
+
+function postpartumDiabetesFollowUpAddOns(module = {}, conditionalContext = "", traceContext = {}) {
+  if (!postpartumDiabetesFollowUpActive(conditionalContext, module)) {
+    return {
+      active: false,
+      activeClinicalAddOns: [],
+      safetyChecks: [],
+      conditionalQuestions: [],
+      initialTests: [],
+      redFlags: [],
+      dispositionRules: []
+    };
+  }
+  const mapGroup = (group) => postpartumDiabetesFollowUpDefinitions[group]
+    .map((definition) => tracedPostpartumDiabetesAddOnItem(definition, module, group, traceContext));
+  return {
+    active: true,
+    activeClinicalAddOns: ["postpartum_gdm_follow_up_primary_output"],
+    safetyChecks: [],
+    conditionalQuestions: mapGroup("conditionalQuestions"),
+    initialTests: mapGroup("initialTests"),
+    redFlags: [],
+    dispositionRules: mapGroup("dispositionRules")
+  };
+}
+
+function postpartumMaternalSafetyAddOns(module = {}, conditionalContext = "", traceContext = {}) {
+  if (!postpartumMaternalSafetyAddOnActive(conditionalContext, module, traceContext)) {
+    return {
+      active: false,
+      activeClinicalAddOns: [],
+      safetyChecks: [],
+      conditionalQuestions: [],
+      initialTests: [],
+      redFlags: [],
+      dispositionRules: []
+    };
+  }
+  const intentIds = new Set((traceContext.intentTrace || []).map((intentRow) => intentRow.intent_id).filter(Boolean));
+  const forActiveIntent = (definition = {}) => {
+    const allowed = definition.intent_ids || [];
+    return !allowed.length || allowed.some((intentId) => intentIds.has(intentId));
+  };
+  const mapGroup = (group) => postpartumMaternalSafetyDefinitions[group]
+    .filter(forActiveIntent)
+    .map((definition) => tracedPostpartumMaternalSafetyAddOnItem(definition, module, group, traceContext));
+  return {
+    active: true,
+    activeClinicalAddOns: ["postpartum_maternal_safety_primary_output"],
+    safetyChecks: [],
+    conditionalQuestions: mapGroup("conditionalQuestions"),
+    initialTests: mapGroup("initialTests"),
+    redFlags: mapGroup("redFlags"),
+    dispositionRules: mapGroup("dispositionRules")
+  };
+}
+
+function olderAdultSafetyAddOns(module = {}, conditionalContext = "", traceContext = {}) {
+  if (!olderAdultSafetyAddOnActive(conditionalContext, module)) {
+    return {
+      active: false,
+      activeClinicalAddOns: [],
+      safetyChecks: [],
+      conditionalQuestions: [],
+      initialTests: [],
+      redFlags: [],
+      dispositionRules: []
+    };
+  }
+  const mapGroup = (group) => olderAdultSafetyAddOnDefinitions[group]
+    .map((definition) => tracedOlderAdultSafetyAddOnItem(definition, module, group, traceContext));
+  return {
+    active: true,
+    activeClinicalAddOns: ["older_adult_safety_primary_output"],
+    safetyChecks: mapGroup("safetyChecks"),
+    conditionalQuestions: mapGroup("conditionalQuestions"),
+    initialTests: mapGroup("initialTests"),
+    redFlags: mapGroup("redFlags"),
+    dispositionRules: mapGroup("dispositionRules")
+  };
+}
+
 export function evaluateComplaintCds(inputText = "", answers = {}, options = {}) {
   const module = options.module || selectComplaintModule(inputText, options.modules || complaintModules);
   const sources = options.sources || complaintSourceRegistry;
@@ -1905,12 +2585,20 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
 
   const traceContext = complaintTraceContext(inputText, module, options);
   const conditionalContext = patientFactContextForConditionalItems(inputText, options);
+  const pregnancyDiabetesAddOns = pregnancyDiabetesPrimaryOutputAddOns(module, conditionalContext, traceContext);
+  const postpartumDiabetesAddOns = postpartumDiabetesFollowUpAddOns(module, conditionalContext, traceContext);
+  const postpartumMaternalAddOns = postpartumMaternalSafetyAddOns(module, conditionalContext, traceContext);
+  const olderAdultAddOns = olderAdultSafetyAddOns(module, conditionalContext, traceContext);
   const includedRequiredQuestions = includeItems(module.requiredQuestions, conditionalContext, answers, "requiredQuestions", traceContext);
   const includedConditionalQuestions = includeItems(module.conditionalQuestions, conditionalContext, answers, "conditionalQuestions", traceContext);
   const promotedQuestions = promoteIntentActivatedConditionalQuestions(includedRequiredQuestions, includedConditionalQuestions, traceContext);
   const atomizedRequiredQuestionCandidates = atomizeBroadHistoryQuestions(promotedQuestions.requiredQuestions, "requiredQuestions");
   const atomizedConditionalQuestionCandidates = atomizeBroadHistoryQuestions([
     ...promotedQuestions.conditionalQuestions,
+    ...pregnancyDiabetesAddOns.conditionalQuestions,
+    ...postpartumDiabetesAddOns.conditionalQuestions,
+    ...postpartumMaternalAddOns.conditionalQuestions,
+    ...olderAdultAddOns.conditionalQuestions,
     ...infectionModifierHistoryFloorQuestions(
       module,
       [...atomizedRequiredQuestionCandidates, ...promotedQuestions.conditionalQuestions],
@@ -1921,7 +2609,10 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
   const dedupedQuestions = dedupeHistoryQuestionsByDomain(atomizedRequiredQuestionCandidates, atomizedConditionalQuestionCandidates);
   const requiredQuestions = dedupedQuestions.requiredQuestions;
   const conditionalQuestions = dedupedQuestions.conditionalQuestions;
-  const explicitSafetyChecks = includeItems(module.safetyChecks, conditionalContext, answers, "safetyChecks", traceContext);
+  const explicitSafetyChecks = [
+    ...includeItems(module.safetyChecks, conditionalContext, answers, "safetyChecks", traceContext),
+    ...olderAdultAddOns.safetyChecks
+  ];
   const explicitSafetyGroups = partitionExplicitSafetyChecks(explicitSafetyChecks);
   const includedRequiredExam = includeItems(module.requiredExam, conditionalContext, answers, "requiredExam", traceContext);
   const includedConditionalExam = includeItems(module.conditionalExam, conditionalContext, answers, "conditionalExam", traceContext);
@@ -1931,10 +2622,27 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
   const conditionalSafetyChecks = [...explicitSafetyGroups.conditionalSafetyChecks, ...conditionalExamGroups.safetyChecks];
   const requiredExam = requiredExamGroups.examManeuvers;
   const conditionalExam = conditionalExamGroups.examManeuvers;
-  const initialTests = includeItems(module.initialTests, conditionalContext, answers, "initialTests", traceContext);
-  const dispositionRules = includeItems(module.dispositionRules, conditionalContext, answers, "dispositionRules", traceContext);
-  const redFlags = evaluateRedFlags(module.redFlags, conditionalContext, answers)
-    .map((item) => traceComplaintCdsItem(item, module, "redFlags", traceContext.intentTrace, traceContext.authorizedBy));
+  const initialTests = [
+    ...includeItems(module.initialTests, conditionalContext, answers, "initialTests", traceContext),
+    ...pregnancyDiabetesAddOns.initialTests,
+    ...postpartumDiabetesAddOns.initialTests,
+    ...postpartumMaternalAddOns.initialTests,
+    ...olderAdultAddOns.initialTests
+  ];
+  const dispositionRules = [
+    ...includeItems(module.dispositionRules, conditionalContext, answers, "dispositionRules", traceContext),
+    ...pregnancyDiabetesAddOns.dispositionRules,
+    ...postpartumDiabetesAddOns.dispositionRules,
+    ...postpartumMaternalAddOns.dispositionRules,
+    ...olderAdultAddOns.dispositionRules
+  ];
+  const redFlags = [
+    ...evaluateRedFlags(module.redFlags, conditionalContext, answers)
+      .map((item) => traceComplaintCdsItem(item, module, "redFlags", traceContext.intentTrace, traceContext.authorizedBy)),
+    ...pregnancyDiabetesAddOns.redFlags,
+    ...postpartumMaternalAddOns.redFlags,
+    ...olderAdultAddOns.redFlags
+  ];
   const triggeredRedFlags = redFlags.filter((item) => item.triggered);
   const differentialBuckets = (module.differentialBuckets || [])
     .map((item) => traceComplaintCdsItem(item, module, "differentialBuckets", traceContext.intentTrace, traceContext.authorizedBy));
@@ -1997,6 +2705,12 @@ export function evaluateComplaintCds(inputText = "", answers = {}, options = {})
     catalogGapsNeedingReview,
     catalogGaps: catalogGapsNeedingReview,
     differentialBuckets,
+    activeClinicalAddOns: [
+      ...pregnancyDiabetesAddOns.activeClinicalAddOns,
+      ...postpartumDiabetesAddOns.activeClinicalAddOns,
+      ...postpartumMaternalAddOns.activeClinicalAddOns,
+      ...olderAdultAddOns.activeClinicalAddOns
+    ],
     sourceIds: resultSourceIds,
     sources: resultSourceIds.map((id) => sources.find((sourceRow) => sourceRow.id === id)).filter(Boolean),
     plannedModules: plannedComplaintModules
@@ -2121,7 +2835,10 @@ export function examSemanticConsistencyIssues(moduleId, group, item = {}) {
   if (/\bhyperpigmentation\b/.test(labelText) && /\b(?:cushing|glucocorticoid excess|bruising|striae)\b/.test(targetText)) {
     add("exam semantic mismatch: hyperpigmentation findings must not inherit Cushing/bruising/striae metadata");
   }
-  if (/\b(?:bruising|purple striae|supraclavicular fullness)\b/.test(labelText)
+  const cushingPhenotypeLabel = /\b(?:purple striae|supraclavicular fullness)\b/.test(labelText)
+    || (/\bbruising\b/.test(labelText)
+      && /\b(?:cushing|hypercortisol|glucocorticoid|steroid|cortisol|cushingoid)\b/.test(`${supportText} ${moduleText}`));
+  if (cushingPhenotypeLabel
     && !/\b(?:cushing|hypercortisol|glucocorticoid|steroid|cortisol)\b/.test(targetText)) {
     add("exam semantic mismatch: Cushing phenotype maneuvers must target hypercortisolism or glucocorticoid excess");
   }
