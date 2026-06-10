@@ -114,6 +114,21 @@ assert.throws(
   /orphan checklist item/i,
   "organ-system schema validation should throw on orphan checklist rows"
 );
+const cushingModule = complaintModules.find((module) => module.id === "cushings_syndrome_v1");
+assert.ok(cushingModule, "Cushing syndrome workup module should be bundled");
+const cushingWorkup = evaluateComplaintCds("Cushing syndrome", {}, { module: cushingModule, modules: [cushingModule] });
+const cushingChecklist = buildLocalChecklistFromWorkup(
+  { complaintResult: cushingWorkup, recommendation: cushingWorkup?.recommendation },
+  { allowGenericFallbacks: true, maxBedsideQuestions: 18, maxExamItems: 15, includeSafetyInExamChecklist: true }
+);
+const cushingSections = parseChecklist(cushingChecklist).filter((section) => Array.isArray(section.items) && section.items.length);
+const cushingOrganSections = groupChecklistSectionsByOrganSystem(cushingSections, { throwOnError: true });
+const cushingOrganItems = cushingOrganSections.flatMap((section) => section.items.map((item) => item.label || item.text || ""));
+assert.ok(
+  cushingOrganItems.some((label) => /limiting hypertension/i.test(label))
+    && cushingOrganItems.some((label) => /supraclavicular fullness/i.test(label)),
+  "Cushing checklist should classify hypertension and supraclavicular-fullness rows without orphaning them"
+);
 assert.equal(itemsByCategory(dkaSections, "bedside").length, 12, "DKA sample should atomize compound bedside questions");
 assert.equal(itemsByCategory(dkaSections, "exam").length, 13, "DKA sample has 13 targeted exam item lines");
 assert.ok(!issueTypes(dkaAudit).includes("bedside-count-low"), "DKA sample must not warn that bedside questions are zero");
@@ -900,6 +915,21 @@ assert.ok(
     && appHtml.includes("Answer at least one bedside checklist item before recording findings here")
     && appHtml.includes("findingsUnlocked"),
   "patient findings should be gated behind checklist-derived findings"
+);
+assert.ok(
+  appHtml.includes('id="workspaceOpenBedsideChecklistButton"')
+    && appHtml.includes('id="workspaceChecklistSecondaryButton"')
+    && appHtml.includes("Build checklist from workup")
+    && appHtml.includes("Select workup first")
+    && appHtml.includes("Answer bedside checklist")
+    && appHtml.includes("Checklist rows appear here after building."),
+  "patient checklist panel should expose one stateful primary action plus one contextual secondary action"
+);
+assert.ok(
+  !appHtml.includes('id="workspaceBuildChecklistFromPanelButton"')
+    && !appHtml.includes('id="workspaceCopyWorkupButton"')
+    && !appHtml.includes('id="workspaceEvidenceReviewButton"'),
+  "patient checklist panel should not show duplicate build, copy-workup, or OpenEvidence buttons"
 );
 
 const baseExamRows = parseCsv(examReferenceCsv);

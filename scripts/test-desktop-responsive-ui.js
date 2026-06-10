@@ -219,6 +219,16 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   rosterText = await page.textContent("#patientList");
   assert(rosterText.includes("Room 12"), "clearing patient search should restore the roster without freezing");
 
+  await page.click('[data-patient-tab="checklist"]');
+  let checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `unbuilt checklist panel should expose one build path, got ${checklistPanelButtons.join("|")}`);
+  let checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
+  assert(checklistPrimaryEnabled, "checklist build primary should be enabled for the selected workup");
+  await page.click("#workspaceChecklistSecondaryButton");
+  await page.waitForFunction(() => document.querySelector('[data-patient-tab="workup"]')?.getAttribute("aria-selected") === "true");
+  const focusedWorkupControl = await page.evaluate(() => document.activeElement?.id || "");
+  assert(focusedWorkupControl === "patientWorkupConcernInput", `change-workup action should focus the workup search, got ${focusedWorkupControl}`);
+
   await page.click('[data-patient-tab="findings"]');
   const findingsGateText = await page.textContent("#workspaceFindingsGateNotice");
   assert(/Build the bedside checklist|Answer at least one bedside checklist/.test(findingsGateText), `findings tab should gate on checklist answers, got ${findingsGateText}`);
@@ -240,6 +250,16 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   await page.waitForFunction((moduleId) => document.querySelector("#patientWorkupSelect")?.value === moduleId, chestPainId);
   const selectedLabel = await page.textContent("#patientValidatedIntentLabel");
   assert(/chest pain/i.test(selectedLabel), `selecting a workup result should update the patient workup, got ${selectedLabel}`);
+
+  await page.click('[data-patient-tab="checklist"]');
+  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Build checklist from workup|Change workup", `selected-workup checklist panel should show one build path, got ${checklistPanelButtons.join("|")}`);
+  checklistPrimaryEnabled = await page.locator("#workspaceOpenBedsideChecklistButton").isEnabled();
+  assert(checklistPrimaryEnabled, "checklist build primary should be enabled after selecting a validated workup");
+  await page.click("#workspaceOpenBedsideChecklistButton");
+  await page.waitForFunction(() => /items built/.test(document.querySelector("#workspaceChecklistStatus")?.textContent || ""));
+  checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
+  assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Rebuild from workup", `built checklist panel should switch to answer/rebuild actions, got ${checklistPanelButtons.join("|")}`);
 
   await page.click("#dischargePatientButton");
   rosterText = await page.textContent("#patientList");

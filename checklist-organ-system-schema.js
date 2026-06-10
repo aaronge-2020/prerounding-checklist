@@ -17,14 +17,14 @@ export const organSystemSchema = {
     label: "CARDIOPULMONARY",
     shortLabel: "Cardio-pulm",
     patterns: [
-      /\b(?:cardio|heart|cardiac|cad|angina|murmurs?|gallop|chest|pressure|pleuritic|breath|breathing|dyspnea|shortness of breath|sob|work of breathing|respiratory|lung|crackles?|wheez|cough|sputum|oxygen|hypoxia|room air|nasal cannula|orthopnea|pnd|palpitation|syncope|faint|near-faint|calf pain|clot|dvt|pe\b|hemoptysis|jvp|edema|pedal pulses?|radial pulses?|peripheral pulses?|distal extremity warmth|extremity warmth|perfusion|cyanosis)\b/i
+      /\b(?:cardio|heart|cardiac|cad|angina|murmurs?|gallop|chest|pressure|pleuritic|breath|breathing|dyspnea|shortness of breath|sob|work of breathing|respiratory|lung|crackles?|wheez|cough|sputum|oxygen|hypoxia|room air|nasal cannula|orthopnea|pnd|palpitation|syncope|faint|near-faint|calf pain|clot|dvt|pe\b|hemoptysis|jvp|edema|blood pressure|hypertension|hypertensive|pedal pulses?|radial pulses?|peripheral pulses?|distal extremity warmth|extremity warmth|perfusion|cyanosis)\b/i
     ]
   },
   endocrine_metabolic: {
     label: "ENDOCRINE / METABOLIC",
     shortLabel: "Endocrine",
     patterns: [
-      /\b(?:diabetes|dka|hhs|glucose|glycemic|hypoglycemia|hyperglycemia|insulin|glucagon|ketone|polyuria|polydipsia|thirst|shaky|sweaty|sweating|tremor|weight loss|weight gain|steroid|adrenal|cortisol|thyroid|pituitary|calcium|sodium|electrolyte|dehydration|mucous membranes?|skin turgor|capillary refill|monofilament|foot screen|foot wound|foot skin|supplies)\b/i
+      /\b(?:diabetes|dka|hhs|glucose|glycemic|hypoglycemia|hyperglycemia|insulin|glucagon|ketone|polyuria|polydipsia|thirst|shaky|sweaty|sweating|tremor|weight loss|weight gain|steroid|glucocorticoid|adrenal|cortisol|hypercortisol|cushing|cushingoid|striae|supraclavicular fullness|proximal myopathy|thyroid|pituitary|calcium|sodium|electrolyte|dehydration|mucous membranes?|skin turgor|capillary refill|monofilament|foot screen|foot wound|foot skin|supplies)\b/i
     ]
   },
   abdominal_gu: {

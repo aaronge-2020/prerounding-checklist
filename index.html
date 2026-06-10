@@ -4757,10 +4757,8 @@
                 </div>
                 <div class="notice success" id="workspaceChecklistReadyNotice">Build a patient-scoped checklist, then answer it on the bedside checklist screen.</div>
                 <div class="checklist-command-grid">
-                  <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Answer bedside checklist</button>
-                  <button class="btn btn-primary" id="workspaceBuildChecklistFromPanelButton" type="button">Build history and exam checklist</button>
-                  <button class="btn btn-secondary" id="workspaceCopyWorkupButton" type="button">Copy workup</button>
-                  <button class="btn btn-secondary" id="workspaceEvidenceReviewButton" type="button">Open evidence review</button>
+                  <button class="btn btn-primary" id="workspaceOpenBedsideChecklistButton" type="button">Build checklist from workup</button>
+                  <button class="btn btn-secondary" id="workspaceChecklistSecondaryButton" type="button">Choose workup</button>
                 </div>
                 <ul class="compact-list" id="workspaceChecklistPreviewList"></ul>
               </section>
@@ -5662,6 +5660,8 @@
       patientSelectedWorkupVersion: $("#patientSelectedWorkupVersion"),
       workspaceChecklistReadyNotice: $("#workspaceChecklistReadyNotice"),
       workspaceChecklistPreviewList: $("#workspaceChecklistPreviewList"),
+      workspaceOpenBedsideChecklistButton: $("#workspaceOpenBedsideChecklistButton"),
+      workspaceChecklistSecondaryButton: $("#workspaceChecklistSecondaryButton"),
       deidPreview: $("#deidPreview"),
       deidCounts: $("#deidCounts"),
       deidModelStatus: $("#deidModelStatus"),
@@ -6765,7 +6765,6 @@
         "#buildChecklistButton",
         "#deidBuildChecklistButton",
         "#workspaceBuildChecklistButton",
-        "#workspaceBuildChecklistFromPanelButton",
         "#patientBuildChecklistButton",
         "#patientOverviewChecklistButton",
         "#workspaceOpenBedsideChecklistButton",
@@ -6786,6 +6785,7 @@
       if (state.activePatientTab === "evidence") {
         renderOpenEvidence();
       }
+      renderPatientWorkspace();
       if (announce) setStatus(`${activePatient().title} ${state.activePatientTab} tab opened.`);
       saveState();
     }
@@ -6946,6 +6946,12 @@
       elements.workspaceHistoryFindingInput.value = draft.historyFindings || "";
       elements.workspaceExamFindingInput.value = draft.examFindings || "";
       const checklistBuilt = state.sections.length > 0;
+      const selectedWorkupReady = Boolean(moduleById(state.selectedWorkupModuleId));
+      const primaryRoundsLabel = checklistBuilt ? "Open checklist" : "Build checklist";
+      const workspaceBuildButton = $("#workspaceBuildChecklistButton");
+      const overviewChecklistButton = $("#patientOverviewChecklistButton");
+      if (workspaceBuildButton) workspaceBuildButton.textContent = hasPatient ? primaryRoundsLabel : "Build checklist";
+      if (overviewChecklistButton) overviewChecklistButton.textContent = hasPatient ? primaryRoundsLabel : "Build checklist";
       const findingsUnlocked = answeredChecklistCount() > 0
         || Boolean(state.importedFindings)
         || Boolean(draft.historyFindings || draft.examFindings);
@@ -6964,17 +6970,35 @@
         elements.findingsOpenChecklistButton.disabled = !checklistBuilt;
       }
       elements.workspaceChecklistStatus.textContent = state.sections.length ? `${checklistTotalCount()} items built` : "Not built";
+      if (elements.workspaceOpenBedsideChecklistButton) {
+        elements.workspaceOpenBedsideChecklistButton.textContent = checklistBuilt
+          ? "Answer bedside checklist"
+          : selectedWorkupReady
+            ? "Build checklist from workup"
+            : "Select workup first";
+        elements.workspaceOpenBedsideChecklistButton.disabled = !hasPatient || (!checklistBuilt && !selectedWorkupReady);
+      }
+      if (elements.workspaceChecklistSecondaryButton) {
+        elements.workspaceChecklistSecondaryButton.textContent = checklistBuilt
+          ? "Rebuild from workup"
+          : selectedWorkupReady
+            ? "Change workup"
+            : "Select workup";
+        elements.workspaceChecklistSecondaryButton.disabled = !hasPatient || (checklistBuilt && !selectedWorkupReady);
+      }
       if (elements.workspaceChecklistReadyNotice) {
-        elements.workspaceChecklistReadyNotice.textContent = state.sections.length
-          ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Use Answer bedside checklist to record findings.`
-          : `No checklist is built for ${patient.title} yet. Build from the selected workup first.`;
+        elements.workspaceChecklistReadyNotice.textContent = checklistBuilt
+          ? `${checklistTotalCount()} checklist items are built for ${patient.title}. Answer the bedside checklist to record findings.`
+          : selectedWorkupReady
+            ? `No checklist is built for ${patient.title} yet. Build it from the selected workup first.`
+            : `No checklist is built for ${patient.title} yet. Select a validated workup first.`;
       }
       if (elements.workspaceChecklistPreviewList) {
         elements.workspaceChecklistPreviewList.innerHTML = "";
         const previewItems = state.sections.flatMap((section) => section.items || []).slice(0, 6);
         if (!previewItems.length) {
           const li = document.createElement("li");
-          li.textContent = "No checklist rows built yet.";
+          li.textContent = selectedWorkupReady ? "Checklist rows appear here after building." : "Choose a validated workup to build checklist rows.";
           elements.workspaceChecklistPreviewList.appendChild(li);
         } else {
           for (const item of previewItems) {
@@ -7884,7 +7908,7 @@
       const options = {
         module,
         modules: module ? [module] : undefined,
-        validatedIntents: uiValidatedIntentsForModule(module),
+        validatedIntents: selectedClinicalIntents(module),
         modifiers: state.modifiers.join(", "),
         setting: state.setting,
         population: state.population,
@@ -8796,9 +8820,6 @@
     }
 
     function renderChecklist() {
-      if (!state.sections.length && state.selectedWorkupModuleId) {
-        buildChecklistFromWorkup({ navigate: false });
-      }
       elements.checklistSections.innerHTML = "";
       if (!activeChecklistKey && state.sections[0]?.items?.length) {
         activeChecklistKey = answerKey(0, 0);
@@ -9389,11 +9410,8 @@
         });
       }
       $("#configurePromptButton")?.addEventListener("click", () => setStatus("Prompt defaults configured for general medicine learner workflow."));
-      $("#workspaceCopyWorkupButton").addEventListener("click", () => $("#copyWorkupButton").click());
-      $("#workspaceEvidenceReviewButton").addEventListener("click", () => showView("evidence"));
       $("#workspaceBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
       elements.dischargePatientButton?.addEventListener("click", () => dischargePatient());
-      $("#workspaceBuildChecklistFromPanelButton").addEventListener("click", buildPatientChecklistInWorkspace);
       $("#patientBuildChecklistButton").addEventListener("click", buildPatientChecklistInWorkspace);
       $("#patientCopyWorkupButton").addEventListener("click", () => $("#copyWorkupButton").click());
       $("#patientOverviewContextButton").addEventListener("click", () => setPatientTab("context"));
@@ -9403,10 +9421,19 @@
       });
       $("#workspaceOpenBedsideChecklistButton").addEventListener("click", () => {
         saveSelectedPatientDrafts();
-        if (!state.sections.length) {
-          buildChecklistFromWorkup({ navigate: false });
+        if (state.sections.length) {
+          showView("bedside");
+          return;
         }
-        showView("bedside");
+        buildPatientChecklistInWorkspace();
+      });
+      $("#workspaceChecklistSecondaryButton")?.addEventListener("click", () => {
+        if (state.sections.length) {
+          buildPatientChecklistInWorkspace();
+          return;
+        }
+        setPatientTab("workup");
+        requestAnimationFrame(() => elements.patientWorkupConcernInput?.focus());
       });
       $("#findingsOpenChecklistButton")?.addEventListener("click", () => {
         saveSelectedPatientDrafts();
