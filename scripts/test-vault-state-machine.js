@@ -149,10 +149,16 @@ async function testEncryptedSingletonVault(browser, baseUrl) {
   await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha")');
 
   await page.click('#patientList .patient-card:has-text("Patient Alpha") button:has-text("Discharge")');
-  await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha (discharged)")');
+  await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
+  await page.click("#cancelDischargeButton");
+  await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha")');
+  await page.click('#patientList .patient-card:has-text("Patient Alpha") button:has-text("Discharge")');
+  await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
+  await page.click("#confirmDischargeButton");
+  await page.waitForFunction(() => !(document.querySelector("#patientList")?.textContent || "").includes("Patient Alpha"));
   await waitForEncryptedSave(page);
   snapshot = await storageSnapshot(page);
-  assert(!joinedStorage(snapshot).includes("Patient Alpha"), "Discharged patient state must remain encrypted.");
+  assert(!joinedStorage(snapshot).includes("Patient Alpha"), "Removed patient state must not appear in localStorage plaintext.");
 
   await page.click("#lockVaultButton");
   await page.waitForSelector("#vaultAccessView", { state: "visible" });
@@ -181,9 +187,9 @@ async function testEncryptedSingletonVault(browser, baseUrl) {
   await page.fill("#vaultPasswordInput", "rounding-passphrase");
   await page.click("#openVaultButton");
   await page.waitForSelector("#appShell", { state: "visible" });
-  await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha (discharged)")');
-  await page.click('#patientList .patient-card:has-text("Patient Alpha (discharged)") button:has-text("Restore")');
-  await page.waitForSelector('#patientList .patient-card:has-text("Patient Alpha") button:has-text("Discharge")');
+  await page.waitForFunction(() => /No patients in this vault yet/.test(document.querySelector("#patientList")?.textContent || ""));
+  const reopenedRoster = await page.textContent("#patientList");
+  assert(!reopenedRoster.includes("Patient Alpha") && !reopenedRoster.includes("Restore"), "confirmed discharge should persist removal after vault unlock.");
   await context.close();
 }
 

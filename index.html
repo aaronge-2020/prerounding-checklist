@@ -617,6 +617,12 @@
       color: #714400;
     }
 
+    .btn-danger {
+      border-color: var(--danger);
+      background: var(--danger);
+      color: #ffffff;
+    }
+
     .status-chip {
       gap: 6px;
       min-height: 38px;
@@ -1106,6 +1112,90 @@
 
     .review-body {
       padding: 16px;
+    }
+
+    .evidence-workbench {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.38fr) minmax(0, 1fr);
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .evidence-nav,
+    .evidence-detail {
+      min-width: 0;
+    }
+
+    .evidence-nav {
+      border-right: 1px solid var(--line);
+      background: #fbfdfd;
+    }
+
+    .evidence-workbench header,
+    .patient-evidence-nav header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .evidence-detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.16fr) minmax(280px, 0.62fr);
+      gap: 14px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .evidence-detail-grid > div,
+    .evidence-review-column {
+      min-width: 0;
+    }
+
+    .evidence-review-column {
+      display: grid;
+      gap: 12px;
+    }
+
+    .evidence-workbench .task-strip,
+    .patient-evidence-grid .task-strip {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .evidence-workbench .task-card,
+    .patient-evidence-grid .task-card {
+      min-height: 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: #ffffff;
+      padding: 12px 14px;
+    }
+
+    .evidence-workbench .task-card:last-child,
+    .patient-evidence-grid .task-card:last-child {
+      border-bottom: 0;
+    }
+
+    .evidence-workbench .task-card .ready,
+    .patient-evidence-grid .task-card .ready {
+      margin-top: 6px;
+      font-size: 12px;
+    }
+
+    #openEvidencePromptPreview {
+      min-height: 420px;
+      max-height: min(58vh, 640px);
+      background: #ffffff;
+      font-size: 13px;
     }
 
     pre,
@@ -2281,29 +2371,66 @@
 
     .patient-evidence-grid {
       display: grid;
-      grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
-      gap: 12px;
+      grid-template-columns: minmax(260px, 0.36fr) minmax(0, 1fr);
+      gap: 0;
       min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #ffffff;
+      overflow: hidden;
     }
 
     .patient-evidence-grid > div {
       min-width: 0;
     }
 
+    .patient-evidence-nav {
+      border-right: 1px solid var(--line);
+      background: #fbfdfd;
+    }
+
+    .patient-evidence-preview {
+      padding: 14px;
+      min-width: 0;
+    }
+
     .patient-prompt-preview {
-      max-height: 300px;
+      min-height: 420px;
+      max-height: min(58vh, 640px);
       overflow: auto;
       border: 1px solid var(--line);
       border-radius: 7px;
       background: #ffffff;
-      padding: 10px;
-      font-size: 12px;
+      padding: 12px;
+      font-size: 13px;
       line-height: 1.45;
     }
 
     @media (max-width: 1500px) {
+      .evidence-detail-grid,
       .patient-evidence-grid {
         grid-template-columns: 1fr;
+      }
+
+      .patient-evidence-nav {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .evidence-workbench {
+        grid-template-columns: 1fr;
+      }
+
+      .evidence-nav {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      #openEvidencePromptPreview,
+      .patient-prompt-preview {
+        min-height: 300px;
       }
     }
 
@@ -4769,14 +4896,19 @@
                   <span class="meta-tag" id="patientEvidenceTaskCount">0 tasks</span>
                 </div>
                 <div class="patient-evidence-grid">
-                  <div>
+                  <div class="patient-evidence-nav">
+                    <header>
+                      <div>
+                        <h4 style="margin: 0;">Prompt list</h4>
+                      </div>
+                    </header>
                     <div class="task-strip" id="patientEvidenceTaskStrip" role="group" aria-label="Patient OpenEvidence prompts"></div>
-                    <div class="button-row" style="margin-top: 12px;">
+                    <div class="button-row" style="padding: 12px 14px;">
                       <button class="btn btn-primary" id="patientCopyOpenEvidencePromptButton" type="button">Copy reviewed prompt</button>
                       <button class="btn btn-secondary" id="patientOpenEvidenceBoardButton" type="button">Open full prompt board</button>
                     </div>
                   </div>
-                  <div>
+                  <div class="patient-evidence-preview">
                     <label for="patientEvidencePromptPreview">Selected prompt preview</label>
                     <pre class="patient-prompt-preview" id="patientEvidencePromptPreview" aria-label="Patient OpenEvidence prompt preview">Build or select a workup to create a patient-scoped prompt.</pre>
                   </div>
@@ -5094,8 +5226,8 @@
           </div>
           <button class="btn btn-primary" id="evidenceToHandoffButton" type="button">Phone handoff</button>
         </div>
-        <div class="grid-2">
-          <div class="review-panel">
+        <div class="evidence-workbench">
+          <aside class="evidence-nav" aria-label="OpenEvidence prompt task list">
             <header>
               <div>
                 <h2>Task board</h2>
@@ -5106,8 +5238,8 @@
             <div class="review-body">
               <div class="task-strip" id="evidenceTaskStrip" role="group" aria-label="OpenEvidence task board"></div>
             </div>
-          </div>
-          <div class="review-panel">
+          </aside>
+          <section class="evidence-detail" aria-label="Selected OpenEvidence prompt">
             <header>
               <div>
                 <h2 id="selectedTaskTitle">Concise rounds report</h2>
@@ -5115,21 +5247,26 @@
               </div>
               <span class="status-chip is-warning" id="promptPhiStatus">PHI review pending</span>
             </header>
-            <div class="review-body">
-              <label for="openEvidencePromptPreview">Prompt to copy</label>
-              <pre id="openEvidencePromptPreview" aria-label="Reviewed OpenEvidence prompt preview">Build a workup first to create a reviewed prompt.</pre>
-              <div class="button-row" style="margin-top: 12px;">
-                <button class="btn btn-primary" id="copyPromptButton" type="button">Copy reviewed prompt</button>
-                <button class="btn btn-secondary" id="openEvidenceButton" type="button">Open OpenEvidence</button>
+            <div class="review-body evidence-detail-grid">
+              <div>
+                <label for="openEvidencePromptPreview">Prompt to copy</label>
+                <pre id="openEvidencePromptPreview" aria-label="Reviewed OpenEvidence prompt preview">Build a workup first to create a reviewed prompt.</pre>
+                <div class="button-row" style="margin-top: 12px;">
+                  <button class="btn btn-primary" id="copyPromptButton" type="button">Copy reviewed prompt</button>
+                  <button class="btn btn-secondary" id="openEvidenceButton" type="button">Open OpenEvidence</button>
+                </div>
               </div>
-              <label for="openEvidenceAnswerInput" style="margin-top: 16px;">Paste answer for local review</label>
-              <textarea id="openEvidenceAnswerInput" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste OpenEvidence's answer here after PHI review. The app stores only structured reviewed summaries."></textarea>
-              <div class="button-row" style="margin-top: 12px;">
-                <button class="btn btn-secondary" id="saveOpenEvidenceSummaryButton" type="button">Save reviewed summary</button>
-                <button class="btn btn-secondary" id="rebuildLocalButton" type="button">Rebuild locally</button>
+              <div class="evidence-review-column">
+                <label for="openEvidenceAnswerInput">Paste answer for local review</label>
+                <textarea id="openEvidenceAnswerInput" maxlength="8000" aria-describedby="localTextEntryHelp" placeholder="Paste OpenEvidence's answer here after PHI review. The app stores only structured reviewed summaries."></textarea>
+                <div class="button-row">
+                  <button class="btn btn-secondary" id="saveOpenEvidenceSummaryButton" type="button">Save reviewed summary</button>
+                  <button class="btn btn-secondary" id="rebuildLocalButton" type="button">Rebuild locally</button>
+                </div>
+                <div class="notice warning">Review identifiers before anything leaves this device.</div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </section>
 
@@ -5351,6 +5488,23 @@
             </div>
             <div class="vault-status-line" id="patientAdmissionStatus" aria-live="polite"></div>
           </form>
+        </section>
+      </div>
+
+      <div class="modal-overlay" id="dischargeConfirmOverlay" hidden>
+        <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="dischargeConfirmTitle">
+          <div class="modal-head">
+            <div>
+              <h2 id="dischargeConfirmTitle">Discharge patient?</h2>
+              <p class="muted" id="dischargeConfirmCopy">Confirm discharge before removing this patient from the local roster.</p>
+            </div>
+            <button class="square-button" id="closeDischargeConfirmButton" type="button" aria-label="Close discharge confirmation">x</button>
+          </div>
+          <div class="notice warning">Confirmed discharge removes the patient row, drafts, selected workup, checklist answers, and phone payload from this local vault.</div>
+          <div class="button-row" style="margin-top: 14px;">
+            <button class="btn btn-secondary" id="cancelDischargeButton" type="button">Cancel</button>
+            <button class="btn btn-danger" id="confirmDischargeButton" type="button">Discharge and remove</button>
+          </div>
         </section>
       </div>
 
@@ -5616,6 +5770,9 @@
       patientWorkspaceTitle: $("#patientWorkspaceTitle"),
       patientWorkspaceOneLine: $("#patientWorkspaceOneLine"),
       dischargePatientButton: $("#dischargePatientButton"),
+      dischargeConfirmOverlay: $("#dischargeConfirmOverlay"),
+      dischargeConfirmCopy: $("#dischargeConfirmCopy"),
+      confirmDischargeButton: $("#confirmDischargeButton"),
       patientAdmissionOverlay: $("#patientAdmissionOverlay"),
       patientAdmissionForm: $("#patientAdmissionForm"),
       patientAdmissionTitle: $("#patientAdmissionTitle"),
@@ -5737,6 +5894,7 @@
     };
 
     let pendingPhiAction = null;
+    let pendingDischargePatientId = "";
     let quickDeidText = "";
     let checklistFilter = "all";
     let activeChecklistKey = "";
@@ -5898,7 +6056,7 @@
       if (lock) state.sessionMode = "locked";
       state.vaultName = String(state.vaultName || vaultMeta()?.name || "");
       state.patientSearch = String(state.patientSearch || "");
-      if (!["overview", "context", "workup", "findings", "checklist", "handoff"].includes(state.activePatientTab)) {
+      if (!["overview", "context", "workup", "findings", "checklist", "evidence", "handoff"].includes(state.activePatientTab)) {
         state.activePatientTab = "overview";
       }
       if (!state.patientDrafts || typeof state.patientDrafts !== "object" || Array.isArray(state.patientDrafts)) {
@@ -6239,26 +6397,51 @@
       });
     }
 
+    function closeDischargeConfirmation() {
+      pendingDischargePatientId = "";
+      if (elements.dischargeConfirmOverlay) elements.dischargeConfirmOverlay.hidden = true;
+    }
+
     function dischargePatient(patientId = state.activePatientId) {
       const patient = patientById(patientId);
       if (!patient || state.sessionMode === "single") return;
-      updatePatient(patient.id, (current) => ({ ...current, status: "discharged", dischargedAt: new Date().toISOString() }));
+      pendingDischargePatientId = patient.id;
+      if (elements.dischargeConfirmCopy) {
+        elements.dischargeConfirmCopy.textContent = `Remove ${patient.title} from this local roster after discharge confirmation.`;
+      }
+      if (elements.dischargeConfirmOverlay) elements.dischargeConfirmOverlay.hidden = false;
+      elements.confirmDischargeButton?.focus();
+    }
+
+    function confirmDischargePatient() {
+      const patient = patientById(pendingDischargePatientId);
+      if (!patient || state.sessionMode === "single") {
+        closeDischargeConfirmation();
+        return;
+      }
+      closeDischargeConfirmation();
+      state.patients = patientList({ includeDischarged: true }).filter((current) => current.id !== patient.id);
+      delete state.patientDrafts[patient.id];
+      delete state.patientWorkupSelections[patient.id];
       if (state.activePatientId === patient.id) {
         state.activePatientId = patientList()[0]?.id || "";
         resetWorkflowArtifacts();
+        if (state.activePatientId) {
+          selectPatient(state.activePatientId);
+        } else {
+          state.activePatientTab = "overview";
+          renderPatientRail();
+          renderPatientWorkspace();
+          renderChecklist();
+          renderOpenEvidence();
+          renderHandoff();
+          renderCaseStatus();
+        }
+      } else {
+        renderPatientRail();
       }
-      renderPatientRail();
       saveState();
-      setStatus(`${patient.title} discharged from the active roster.`);
-    }
-
-    function restorePatient(patientId) {
-      const patient = patientById(patientId);
-      if (!patient) return;
-      updatePatient(patient.id, (current) => ({ ...current, status: "active", dischargedAt: "" }));
-      selectPatient(patient.id);
-      saveState();
-      setStatus(`${patient.title} restored to the active roster.`);
+      setStatus(`${patient.title} discharged and removed from the local roster.`);
     }
 
     function showView(viewName) {
@@ -7098,15 +7281,15 @@
         const actions = document.createElement("div");
         actions.className = "patient-card-actions";
         if (isDischarged) {
-          const restore = document.createElement("button");
-          restore.className = "btn btn-secondary";
-          restore.type = "button";
-          restore.textContent = "Restore";
-          restore.addEventListener("click", (event) => {
+          const remove = document.createElement("button");
+          remove.className = "btn btn-secondary";
+          remove.type = "button";
+          remove.textContent = "Remove";
+          remove.addEventListener("click", (event) => {
             event.stopPropagation();
-            restorePatient(patient.id);
+            dischargePatient(patient.id);
           });
-          actions.appendChild(restore);
+          actions.appendChild(remove);
         } else {
           const open = document.createElement("button");
           open.className = patient.id === state.activePatientId ? "btn btn-primary" : "btn btn-secondary";
@@ -7132,7 +7315,7 @@
         row.append(main, actions);
         row.addEventListener("click", () => {
           if (isDischarged) {
-            setStatus(`${patient.title} is discharged. Restore the patient before reopening the workflow.`);
+            setStatus(`${patient.title} is discharged. Remove it from the roster or admit the patient again.`);
             return;
           }
           selectPatient(patient.id);
@@ -9170,7 +9353,24 @@
     }
 
     function createPhonePayload() {
-      if (!state.sections.length) buildChecklistFromWorkup({ navigate: false });
+      if (!activePatient().id) {
+        setStatus("Admit or open a patient before preparing a phone handoff.");
+        openAdmissionOverlay();
+        return null;
+      }
+      saveSelectedPatientDrafts({ announce: false });
+      if (!state.sections.length) {
+        const built = buildChecklistFromWorkup({ navigate: false });
+        if (!built || !state.sections.length) {
+          state.transferCode = "";
+          state.phonePayload = "";
+          renderHandoff();
+          setStatus(`Select a validated workup for ${activePatient().title} before preparing phone handoff.`);
+          saveState();
+          return null;
+        }
+      }
+      state.bedsideNote = elements.bedsideNoteInput.value;
       state.transferCode = randomCode();
       const payload = {
         version: "local-phone-handoff-v1",
@@ -9186,8 +9386,22 @@
       };
       state.phonePayload = encodePayload(payload);
       renderHandoff();
+      if (elements.handoffStatus) elements.handoffStatus.textContent = `Phone bundle ready for ${activePatient().title}.`;
       saveState();
       return payload;
+    }
+
+    function preparePhoneHandoff({ navigate = true } = {}) {
+      const payload = createPhonePayload();
+      if (!payload) {
+        setPatientTab("workup", { announce: false });
+        if (navigate) showView("workspace");
+        return false;
+      }
+      if (navigate) showView("handoff");
+      renderHandoff();
+      setStatus(`Phone handoff bundle generated for ${activePatient().title}.`);
+      return true;
     }
 
     function renderHandoff() {
@@ -9279,6 +9493,12 @@
       elements.patientAdmissionOverlay?.addEventListener("click", (event) => {
         if (event.target === elements.patientAdmissionOverlay) closeAdmissionOverlay();
       });
+      $("#closeDischargeConfirmButton")?.addEventListener("click", closeDischargeConfirmation);
+      $("#cancelDischargeButton")?.addEventListener("click", closeDischargeConfirmation);
+      elements.dischargeConfirmOverlay?.addEventListener("click", (event) => {
+        if (event.target === elements.dischargeConfirmOverlay) closeDischargeConfirmation();
+      });
+      elements.confirmDischargeButton?.addEventListener("click", confirmDischargePatient);
       for (const button of $$("[data-view-target]")) {
         button.addEventListener("click", () => showView(button.dataset.viewTarget));
       }
@@ -9456,23 +9676,17 @@
         showView("deid");
       });
       $("#workspaceSendPhoneButton").addEventListener("click", () => {
-        saveSelectedPatientDrafts();
-        buildChecklistFromWorkup({ navigate: false });
-        showView("handoff");
+        preparePhoneHandoff();
       });
       $("#workspaceHandoffButton").addEventListener("click", () => {
-        saveSelectedPatientDrafts();
-        buildChecklistFromWorkup({ navigate: false });
-        showView("handoff");
+        preparePhoneHandoff();
       });
       $("#workspaceFinalReviewButton").addEventListener("click", () => showView("final"));
       $("#workspaceHandoffRailButton").addEventListener("click", () => {
-        saveSelectedPatientDrafts();
-        buildChecklistFromWorkup({ navigate: false });
-        showView("handoff");
+        preparePhoneHandoff();
       });
       $("#seeAllTasksButton").addEventListener("click", () => showView("evidence"));
-      $("#evidenceToHandoffButton").addEventListener("click", () => showView("handoff"));
+      $("#evidenceToHandoffButton").addEventListener("click", () => preparePhoneHandoff());
       $("#copyPromptButton").addEventListener("click", () => {
         const { task, text } = getOpenEvidencePromptText();
         openPhiOverlay({
@@ -9514,7 +9728,7 @@
         });
       });
       $("#copyPhonePayloadButton").addEventListener("click", () => {
-        if (!state.phonePayload) createPhonePayload();
+        if (!state.phonePayload && !createPhonePayload()) return;
         openPhiOverlay({
           title: "PHI safety check for phone payload",
           copy: "Review the payload source before copying.",
@@ -9523,7 +9737,7 @@
         });
       });
       $("#downloadPhonePayloadButton").addEventListener("click", () => {
-        if (!state.phonePayload) createPhonePayload();
+        if (!state.phonePayload && !createPhonePayload()) return;
         downloadFile("pre-rounding-phone-handoff.json", JSON.stringify({ code: state.transferCode, payload: state.phonePayload }, null, 2), "application/json");
       });
       $("#importPhoneFindingsButton").addEventListener("click", importPhoneFindings);

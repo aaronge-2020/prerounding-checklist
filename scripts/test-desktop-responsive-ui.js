@@ -197,6 +197,7 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   const label = `${viewport.width}x${viewport.height}`;
   console.log(`Checking vault workspace at ${label}`);
   const { context, page } = await openFreshPage(browser, baseUrl, viewport);
+  const patientLabel = "Room 12";
   await assertNoLayoutBreakage(page, `vault access ${label}`);
   await createVault(page);
   await admitPatient(page);
@@ -261,12 +262,29 @@ async function testVaultWorkspaceAtViewport(browser, baseUrl, viewport) {
   checklistPanelButtons = await page.locator('#patientChecklistPanel:not([hidden]) .checklist-command-grid button').allTextContents();
   assert(checklistPanelButtons.join("|") === "Answer bedside checklist|Rebuild from workup", `built checklist panel should switch to answer/rebuild actions, got ${checklistPanelButtons.join("|")}`);
 
+  await page.click('[data-patient-tab="handoff"]');
+  await page.click("#workspaceHandoffButton");
+  await page.waitForSelector("#handoffView:not([hidden])");
+  await page.waitForFunction(() => document.querySelector("#phonePayload")?.value.length > 100);
+  const phoneCode = await page.textContent("#phoneTransferCode");
+  assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(phoneCode.trim()), `phone handoff should generate a pairing code, got ${phoneCode}`);
+
+  await page.evaluate(() => document.querySelector('[data-view-target="workspace"]')?.click());
+  await page.waitForSelector("#workspaceView:not([hidden])");
   await page.click("#dischargePatientButton");
+  await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
+  const pendingDischargeCopy = await page.textContent("#dischargeConfirmCopy");
+  assert(pendingDischargeCopy.includes(patientLabel), `discharge confirmation should name the patient, got ${pendingDischargeCopy}`);
+  await page.click("#cancelDischargeButton");
+  await page.waitForFunction(() => document.querySelector("#dischargeConfirmOverlay")?.hidden === true);
   rosterText = await page.textContent("#patientList");
-  assert(/discharged/i.test(rosterText) && rosterText.includes("Restore"), "discharge should archive the patient and expose Restore");
-  await page.getByRole("button", { name: "Restore" }).click();
+  assert(rosterText.includes(patientLabel), "canceling discharge should keep the patient in the roster");
+  await page.click("#dischargePatientButton");
+  await page.waitForSelector("#dischargeConfirmOverlay:not([hidden])");
+  await page.click("#confirmDischargeButton");
+  await page.waitForFunction((patient) => !(document.querySelector("#patientList")?.textContent || "").includes(patient), patientLabel);
   rosterText = await page.textContent("#patientList");
-  assert(rosterText.includes("Discharge") && !/discharged/i.test(rosterText), "restore should return the patient to the active roster");
+  assert(/No patients in this vault yet/.test(rosterText), `confirmed discharge should remove the patient, got ${rosterText}`);
 
   await waitForEncryptedSave(page);
   const snapshot = await storageSnapshot(page);
