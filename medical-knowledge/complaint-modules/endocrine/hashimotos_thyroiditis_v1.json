@@ -4695,7 +4695,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hashimoto's Thyroiditis: route by findings, risk, treatment safety, and follow-up",
+        "label": "Hashimoto's Thyroiditis: route by Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -4790,8 +4790,8 @@
           {
             "id": "hashimotos_thyroiditis_concurrent_data_bundle",
             "type": "action",
-            "label": "Hashimoto's Thyroiditis: assessment and key results",
-            "edgeLabel": "Collect Hashimoto's Thyroiditis history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Hashimoto's Thyroiditis: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Hashimoto's Thyroiditis: TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; Ultrasound only for nodule, goiter, or compressive symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Measure blood pressure",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4826,7 +4826,7 @@
               {
                 "id": "hashimotos_thyroiditis_classification_decision",
                 "type": "decision",
-                "label": "Hashimoto's Thyroiditis: classify risk and disposition",
+                "label": "Hashimoto's Thyroiditis: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Hashimoto's Thyroiditis with available result(s): 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
@@ -5825,7 +5825,7 @@
                       {
                         "id": "hashimotos_thyroiditis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hashimoto's Thyroiditis: treatment safety resolved?",
+                        "label": "Hashimoto's Thyroiditis: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
@@ -6008,8 +6008,8 @@
                           {
                             "id": "hashimotos_thyroiditis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hashimoto's Thyroiditis: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Hashimoto's Thyroiditis: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6047,7 +6047,7 @@
                             "id": "hashimotos_thyroiditis_monitoring_bundle",
                             "type": "action",
                             "label": "Hashimoto's Thyroiditis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hashimoto's Thyroiditis symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hashimoto's Thyroiditis symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6230,7 +6230,7 @@
                                 "id": "hashimotos_thyroiditis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis: reassessment escalation",
-                                "edgeLabel": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the active branch",
+                                "edgeLabel": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -7066,7 +7066,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7517,7 +7517,7 @@
                     "id": "hashimotos_thyroiditis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hashimoto's Thyroiditis: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -8395,7 +8395,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Hashimoto's Thyroiditis: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Hashimoto's Thyroiditis: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8435,7 +8435,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hashimotos_thyroiditis_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -8449,7 +8449,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hashimotos_thyroiditis_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -8465,7 +8465,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hashimotos_thyroiditis_worsening_endpoint",
-          "expected_active_branch": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the active branch",
+          "expected_active_branch": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",

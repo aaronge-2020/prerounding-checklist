@@ -6584,7 +6584,7 @@
         "pediatric_fever_sepsis_monitoring_bundle": {
           "rule_id": "pediatric_fever_sepsis_monitoring_bundle_criteria",
           "source": "criteria",
-          "description": "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the active branch and the pending results that could change treatment or disposition.",
+          "description": "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the pathway and the pending results that could change treatment or disposition.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -14586,7 +14586,7 @@
                     "criteria": {
                       "rule_id": "pediatric_fever_sepsis_monitoring_bundle_criteria",
                       "source": "criteria",
-                      "description": "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the active branch and the pending results that could change treatment or disposition.",
+                      "description": "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the pathway and the pending results that could change treatment or disposition.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

@@ -3981,7 +3981,7 @@
         "adult_chest_pain_reassessment_bundle": {
           "rule_id": "adult_chest_pain_reassessment_bundle_criteria",
           "source": "criteria",
-          "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the active branch.",
+          "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the pathway.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4683,7 +4683,7 @@
                     }
                   ]
                 },
-                "action": "Select the active branch: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
+                "action": "Select the chest-pain pathway: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
                 "children": [
                   {
                     "id": "adult_chest_pain_missing_acs_data_endpoint",
@@ -5466,7 +5466,7 @@
                     "criteria": {
                       "rule_id": "adult_chest_pain_reassessment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the active branch.",
+                      "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the pathway.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

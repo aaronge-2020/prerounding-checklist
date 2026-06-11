@@ -4462,7 +4462,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypothyroidism: route by findings, risk, treatment safety, and follow-up",
+        "label": "Hypothyroidism: route by Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -4553,8 +4553,8 @@
           {
             "id": "hypothyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hypothyroidism: assessment and key results",
-            "edgeLabel": "Collect Hypothyroidism history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Hypothyroidism: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Hypothyroidism: TSH and free T4.; TPO antibody for autoimmune etiology.; Pregnancy test when relevant; pituitary/adrenal evaluation if central pattern.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Measure blood pressure",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4585,7 +4585,7 @@
               {
                 "id": "hypothyroidism_classification_decision",
                 "type": "decision",
-                "label": "Hypothyroidism: classify risk and disposition",
+                "label": "Hypothyroidism: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Hypothyroidism with available result(s): 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
@@ -5568,7 +5568,7 @@
                       {
                         "id": "hypothyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hypothyroidism: treatment safety resolved?",
+                        "label": "Hypothyroidism: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
@@ -5747,8 +5747,8 @@
                           {
                             "id": "hypothyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hypothyroidism: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Hypothyroidism: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5782,7 +5782,7 @@
                             "id": "hypothyroidism_monitoring_bundle",
                             "type": "action",
                             "label": "Hypothyroidism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hypothyroidism symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hypothyroidism symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5961,7 +5961,7 @@
                                 "id": "hypothyroidism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypothyroidism: reassessment escalation",
-                                "edgeLabel": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the active branch",
+                                "edgeLabel": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6785,7 +6785,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7236,7 +7236,7 @@
                     "id": "hypothyroidism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hypothyroidism: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Hypothyroidism (Underactive Thyroid): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Hypothyroidism (Underactive Thyroid): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -8110,7 +8110,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Hypothyroidism: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Hypothyroidism: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8150,7 +8150,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hypothyroidism_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Hypothyroidism (Underactive Thyroid): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Hypothyroidism (Underactive Thyroid): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -8164,7 +8164,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypothyroidism_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",
@@ -8180,7 +8180,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypothyroidism_worsening_endpoint",
-          "expected_active_branch": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the active branch",
+          "expected_active_branch": "Hypothyroidism reassessment worsens or Myxedema coma features: hypothermia, bradycardia, hypotension, hypoventilation, hyponatremia, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH and free T4.; TPO antibody for autoimmune etiology. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "hypothyroidism_concurrent_data_bundle",

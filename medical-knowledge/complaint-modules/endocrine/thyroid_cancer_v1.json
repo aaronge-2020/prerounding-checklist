@@ -4755,7 +4755,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Cancer: route by findings, risk, treatment safety, and follow-up",
+        "label": "Thyroid Cancer: route by Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; >=1 cm; >=1.5 cm; >=2 cm; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.; Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -4850,8 +4850,8 @@
           {
             "id": "thyroid_cancer_concurrent_data_bundle",
             "type": "action",
-            "label": "Thyroid Cancer: assessment and key results",
-            "edgeLabel": "Collect Thyroid Cancer history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Thyroid Cancer: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Thyroid Cancer: Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.; >=1 cm; >=1.5 cm; >=2 cm; Measure blood pressure",
             "source_ids": [
               "ATA_THYROID_CANCER_2025",
               "ATA_THYROID_NODULE_DTC_2015",
@@ -4884,7 +4884,7 @@
               {
                 "id": "thyroid_cancer_classification_decision",
                 "type": "decision",
-                "label": "Thyroid Cancer: classify risk and disposition",
+                "label": "Thyroid Cancer: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Thyroid Cancer with available result(s): >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5939,7 +5939,7 @@
                       {
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Thyroid Cancer: treatment safety resolved?",
+                        "label": "Thyroid Cancer: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
@@ -6110,8 +6110,8 @@
                           {
                             "id": "thyroid_cancer_review_endpoint",
                             "type": "endpoint",
-                            "label": "Thyroid Cancer: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Thyroid Cancer: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ATA_HYPOTHYROIDISM_2014",
@@ -6149,7 +6149,7 @@
                             "id": "thyroid_cancer_monitoring_bundle",
                             "type": "action",
                             "label": "Thyroid Cancer: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Thyroid Cancer symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Thyroid Cancer symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ATA_THYROID_CANCER_2025",
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -6329,7 +6329,7 @@
                                 "id": "thyroid_cancer_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer: reassessment escalation",
-                                "edgeLabel": "Thyroid Cancer reassessment worsens or Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category. no longer fit the active branch",
+                                "edgeLabel": "Thyroid Cancer reassessment worsens or Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -7219,7 +7219,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7732,7 +7732,7 @@
                     "id": "thyroid_cancer_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Cancer: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -8698,7 +8698,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Thyroid Cancer: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Thyroid Cancer: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8738,7 +8738,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyroid_cancer_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -8752,7 +8752,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_cancer_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",
@@ -8768,7 +8768,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyroid_cancer_worsening_endpoint",
-          "expected_active_branch": "Thyroid Cancer reassessment worsens or Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category. no longer fit the active branch",
+          "expected_active_branch": "Thyroid Cancer reassessment worsens or Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "thyroid_cancer_concurrent_data_bundle",

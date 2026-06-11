@@ -1132,7 +1132,11 @@ function cleanGeneratedScaffoldText(value = "", fallback = "") {
     .replace(/\benough context\b/gi, "required context")
     .replace(/\bgather objective data\b/gi, "review measured findings")
     .replace(/\bobjective data\b/gi, "measured findings")
+    .replace(/\bobjective findings\b/gi, "measured findings")
     .replace(/\bdanger features?\b/gi, "high-risk findings")
+    .replace(/\bkey labs\/results\b/gi, "threshold labs/results")
+    .replace(/\bkey results\b/gi, "threshold results")
+    .replace(/\btargeted\b/gi, "focused")
     .replace(/\btraditional abnormal cutoff\b/gi, "traditional abnormal threshold");
   return dedupeSentences(text) || cleanText(fallback);
 }
@@ -1550,13 +1554,19 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const shortThresholdSummary = arrayText(thresholdExamples, thresholdSummary, 6);
   const redFlagSummary = visibleListLabels(redFlags, 3).join("; ");
   const safetySummary = visibleListLabels(safetyChecks, 5);
+  const compactRouteSummary = arrayText([
+    ...visibleListLabels(redFlags, 2),
+    ...thresholdExamples.slice(0, 3),
+    ...visibleListLabels(treatments, 2),
+    ...visibleListLabels(dispositions, 2)
+  ], `${displayLabel} diagnostic thresholds, acuity, medication safety, and disposition`, 7);
   const treatmentSummary = [...visibleListLabels(treatments, 3), ...visibleListLabels(dispositions, 2)].filter(Boolean).join("; ");
   const activationItems = firstItems(module, "requiredQuestions", 4, ["conditionalQuestions", "requiredExam"]);
   const activationSummary = arrayText([
     ...visibleListLabels(activationItems, 4),
     ...visibleListLabels(redFlags, 2),
     ...visibleListLabels(tests, 2)
-  ], `${displayLabel} symptoms, exam, vitals, and key results`, 7);
+  ], `${displayLabel} symptoms, exam, vitals, and threshold results`, 7);
   const diagnosticDataSummary = arrayText([
     ...visibleListLabels(tests, 5),
     ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 6),
@@ -1599,17 +1609,17 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     ...visibleListLabels(dispositions, 3)
   ], `${displayLabel} follow-up ownership and safety net`, 6);
   const edgeLabels = {
-    missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
-    diagnosticData: `Collect ${displayLabel} history/exam, vitals, key labs/results, medication safety, and major cutoffs`,
+    missingContext: `Missing ${displayLabel}: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access`,
+    diagnosticData: `Collect ${displayLabel}: ${arrayText([...visibleListLabels(tests, 4), ...thresholdExamples.slice(0, 3), ...safetySummary.slice(0, 2)], `${displayLabel} symptoms, exam, vitals, threshold labs/results, medication safety, and major cutoffs`, 8)}`,
     classification: `Classify ${displayLabel} with available result(s): ${arrayText(thresholdExamples.slice(0, 4), diagnosticDataSummary, 4)}`,
     missingCutoff: `Missing ${displayLabel} result(s): ${arrayText(exactDiagnosticData, `${displayLabel} threshold/result data`, 6)}`,
     urgent: `High-acuity threshold or monitored-care result present: ${arrayText([redFlagSummary, ...thresholdExamples.slice(0, 2)], redFlagBranchSummary, 4)}`,
     treatment: `Confirmed/high-risk ${displayLabel} branch has treatment-safety data available`,
-    alternate: `Objective findings favor mimic or alternate pathway: ${alternateBranchSummary}`,
+    alternate: `Mimic or alternate pathway favored: ${alternateBranchSummary}`,
     safetySelected: `Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan`,
-    review: `Contraindication, special population, conflicting guidance, or local protocol dependency`,
-    monitoring: `Trend ${displayLabel} symptoms, vitals, key results, adverse effects, and disposition readiness`,
-    worsening: `${displayLabel} reassessment worsens or ${reassessmentSummary} no longer fit the active branch`,
+    review: `Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care`,
+    monitoring: `Trend ${displayLabel} symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness`,
+    worsening: `${displayLabel} reassessment worsens or ${reassessmentSummary} no longer fit the selected pathway`,
     deescalate: `Measured response supports narrowing, stopping, tapering, or continuing ${displayLabel} care`,
     followup: `${displayLabel} stable enough for owned follow-up, pending results, and safety-netting`
   };
@@ -1654,14 +1664,14 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Reassess ${displayLabel} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
-    parallelActions: unique(["repeat vital signs", "trend key labs/results", "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...safetySummary]),
+    parallelActions: unique(["repeat vital signs", "trend threshold labs/results", "review treatment response and adverse effects", "assign disposition and follow-up clinician/service", ...safetySummary]),
     guidelineCutoffs: criteriaRows,
     children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
   });
 
   const reviewEndpoint = endpoint({
     id: `${prefix}_review_endpoint`,
-    label: `${displayLabel}: clinician review modifier`,
+    label: `${displayLabel}: reviewer handoff for contraindication or special population`,
     edgeLabel: edgeLabels.review,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_review_criteria`, `Use clinician review when ${label} treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
@@ -1672,7 +1682,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const safetyDecision = decision({
     id: `${prefix}_treatment_safety_decision`,
-    label: `${displayLabel}: treatment safety resolved?`,
+    label: `${displayLabel}: contraindications, dosing, pregnancy, and comorbidity modifiers`,
     edgeLabel: edgeLabels.safetySelected,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_safety_decision_criteria`, `Route ${label} management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
@@ -1686,7 +1696,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Start ${label} treatment or disposition only after the active diagnostic/severity thresholds and treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
-    action: treatmentSummary || `Treat ${displayLabel} according to the active branch, documented severity, and patient-specific safety data.`,
+    action: treatmentSummary || `Treat ${displayLabel} according to the selected pathway, documented severity, and patient-specific safety data.`,
     parallelActions: unique([...visibleListLabels(treatments, 5), ...visibleListLabels(dispositions, 3)]),
     guidelineCutoffs: criteriaRows,
     children: [safetyDecision]
@@ -1727,7 +1737,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${displayLabel}: classify risk and disposition`,
+    label: `${displayLabel}: classify thresholds, acuity, mimics, and disposition`,
     edgeLabel: edgeLabels.classification,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against cited thresholds and condition-specific rules: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
@@ -1739,7 +1749,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const dataBundle = actionNode({
     id: `${prefix}_concurrent_data_bundle`,
-    label: `${displayLabel}: assessment and key results`,
+    label: `${displayLabel}: assessment, thresholds, and treatment-safety inputs`,
     edgeLabel: edgeLabels.diagnosticData,
     sourceIds: testSources,
     criteria: criteria(`${prefix}_data_bundle_criteria`, `Obtain ${label} diagnostic/severity/treatment-safety data together rather than as a one-step chain.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status"], testSources),
@@ -1756,14 +1766,14 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     edgeLabel: edgeLabels.missingContext,
     sourceIds: genericSourceIds,
     criteria: criteria("missing_context_criteria", `Route here when the patient context needed to activate ${label} is absent or cannot be extracted.`, contextDomains, genericSourceIds, { missing_any: contextDomains }),
-    action: `Before choosing a non-emergency ${displayLabel} branch, document the presenting concern, onset/trajectory, focused exam, vital signs, key labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, current findings, and follow-up access.`,
+    action: `Before choosing a non-emergency ${displayLabel} branch, document the presenting concern, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, current findings, and follow-up access.`,
     endpointType: "missing_data_needed",
     missingDataNeeded: contextDomains
   });
 
   const root = decision({
     id: "root",
-    label: `${displayLabel}: route by findings, risk, treatment safety, and follow-up`,
+    label: `${displayLabel}: route by ${compactRouteSummary}`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
     action: `Route ${displayLabel} from documented symptoms, exam, vitals, results, medication/comorbidity modifiers, severity thresholds, treatment/disposition rules, reassessment, and safety-net needs.`,
@@ -4106,7 +4116,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const riskModifierEndpoint = endpoint({
     id: `${prefix}_risk_modifier_review_endpoint`,
-    label: isType1 ? "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need clinician review" : "Type 2 modifiers: CKD/albuminuria, ASCVD/HF, pregnancy, eGFR limits, hypoglycemia risk, or cost/access changes therapy",
+    label: isType1 ? "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need endocrinology/technology handoff" : "Type 2 modifiers: CKD/albuminuria, ASCVD/HF, pregnancy, eGFR limits, hypoglycemia risk, or cost/access changes therapy",
     edgeLabel: isType1
       ? "Modifier branch: pregnancy, recurrent severe hypoglycemia, pump/CGM failure, SGLT2-associated ketosis, low insulin access, or uncertain autoimmune classification"
       : "Modifier branch: UACR >=30, eGFR <60 or SGLT2 threshold review, ASCVD/HF, pregnancy, frailty, eGFR <30 metformin concern, hypoglycemia-prone regimen, or medication cost/access barrier",
@@ -5721,7 +5731,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
     label: "ED monitoring",
     edgeLabel: "Track erection response, PDE5 use timing, adverse effects, BP/CV symptoms, A1c/lipids, testosterone/prolactin results, PSA/Hct if testosterone used, and follow-up access",
     sourceIds,
-    criteria: criteria(`${prefix}_monitoring_criteria`, "Monitor ED by the same cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the active branch.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_monitoring_criteria`, "Monitor ED by the cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the pathway.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Reassess ED response, correct PDE5 use, BP/CV symptoms, A1c/glucose/lipids, testosterone/prolactin/TSH results, PSA/hematocrit when testosterone is used, adverse effects, pending-result ownership, and access barriers.",
     parallelActions: ["check PDE5 timing and response", "screen chest pain, syncope, dyspnea, claudication, neuro deficit, visual/hearing change, and priapism", "trend A1c/glucose/lipids and BP", "review testosterone/prolactin/TSH results", "monitor PSA/hematocrit when testosterone is used", "assign follow-up clinician/service and return precautions"],
     guidelineCutoffs: criteriaRows,
@@ -5744,7 +5754,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
     edgeLabel: "History, exam, vitals, metabolic labs, testosterone/prolactin/TSH when indicated, medication review, and therapy-safety data are available",
     sourceIds,
     criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify ED by emergency features, cardiovascular risk, diabetes/metabolic thresholds, hypogonadism confirmation, prolactin/pituitary thresholds, PDE5 contraindications, testosterone contraindications, and alternate causes.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
-    action: "Select the active branch: incomplete ED context, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
+    action: "Select the ED pathway: incomplete context, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingObjectiveEndpoint, emergencyEndpoint, pituitaryEndpoint, treatmentDecision]
@@ -6024,7 +6034,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     label: "Adult chest pain monitoring: serial symptoms, vital signs, ECG, troponin, oxygenation, and disposition readiness",
     edgeLabel: "Trend pain, vitals, oxygenation, ECG, troponin timing/delta, imaging results, adverse effects, and disposition readiness",
     sourceIds: aha,
-    criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
+    criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the pathway.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
     action: "Reassess symptoms, vitals, oxygenation, serial ECGs, serial troponin timing/delta, imaging/test results, treatment response, medication contraindications, and disposition readiness before closure.",
     parallelActions: unique(["repeat vital signs", "repeat ECG if symptoms persist or evolve", "serial troponin per hs-cTn 1-3 hour or conventional 3-6 hour timing", "review CXR/CTA/CCTA/stress results when ordered", "confirm follow-up and return precautions"]),
     guidelineCutoffs: acsRiskRows,
@@ -6037,7 +6047,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
     edgeLabel: "ECG, troponin assay/timing/delta, HEART/EDACS, aortic/PE screen, and test contraindications are available",
     sourceIds: aha,
     criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify adult chest pain by ECG, troponin timing/delta, structured risk score, vital stability, and life-threatening non-ACS features.", contextDomains, aha, { criteria_options: criteriaRows }),
-    action: "Select the active branch: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
+    action: "Select the chest-pain pathway: high-risk ACS emergency, aortic/PE/esophageal/pulmonary emergency, low-risk discharge, intermediate observation/testing, clinician-review modifier, reassessment, or documented alternate diagnosis.",
     clinicalCriteria: criteriaRows,
     guidelineCutoffs: criteriaRows,
     children: [missingAcsDataEndpoint, acsEmergencyEndpoint, lifeThreateningMimicEndpoint, lowRiskEndpoint, intermediateEndpoint, testingSafetyEndpoint, alternateEndpoint, reassessmentBundle]
@@ -6284,7 +6294,7 @@ function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
     label: "Monitor fever/sepsis response",
     edgeLabel: "After branch selection, reassess vitals, perfusion, urine, cultures, treatment response, and disposition",
     sourceIds,
-    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the active branch and the pending results that could change treatment or disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric fever/sepsis by reassessing the exact findings that selected the pathway and the pending results that could change treatment or disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Repeat age-banded vital signs, oxygen need, mental state, perfusion, CRT, pulses, urine output, source exam, lactate when sepsis/shock is possible, blood/urine/CSF culture status, UA/ANC/CRP/procalcitonin for infants, antibiotic administration time, fluid bolus response and overload signs, medication adverse effects, caregiver concern, and disposition readiness before closing the pathway.",
     parallelActions: unique(["repeat temperature, RR, HR, BP, SpO2, and oxygen delivery", "repeat mental state and social-response assessment", "repeat CRT, pulse quality, extremity temperature, and urine output", "track lactate and blood culture when sepsis is possible", "track UA, urine culture, CSF, ANC, CRP, and procalcitonin for febrile infants", "review antibiotic timing and allergy/adverse effects", "reassess after each fluid bolus and after the second bolus", "confirm pending-result owner and follow-up access", localEvidence.safety]),
     guidelineCutoffs: criteriaRows,
@@ -6535,11 +6545,11 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
-    label: "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and objective findings support benign or autonomic care",
+    label: "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and ECG, vitals, oxygenation, and event pattern support benign or autonomic care",
     edgeLabel: "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
     sourceIds,
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric chest pain/syncope has been reassessed and emergency cardiac/respiratory/seizure features remain absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
-    action: "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, objective findings are stable, and return precautions/follow-up are clear.",
+    action: "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, ECG/vitals/oxygenation and event pattern are stable, and return precautions/follow-up are clear.",
     endpointType: "deescalation_stopping",
     guidelineCutoffs: criteriaRows
   });
@@ -6560,7 +6570,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
     label: "Pediatric chest/syncope monitoring: vitals, oxygenation, ECG interpretation, orthostatic response, pain pattern, event recurrence, and disposition readiness",
     edgeLabel: "Monitoring branch after pediatric chest/syncope classification: trend pain, recurrence, exertional relationship, perfusion, oxygenation, ECG findings, orthostatic BP/HR, respiratory findings, and activity/follow-up constraints",
     sourceIds,
-    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric chest pain/syncope by trending the objective findings that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric chest pain/syncope by trending the ECG, orthostatic vital signs, oxygenation, respiratory findings, cardiac exam, and event pattern that selected the pathway.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Reassess pain pattern, exertional symptoms, syncope recurrence, palpitations, perfusion, oxygenation/work of breathing, ECG interpretation, orthostatic vitals, respiratory findings, and disposition readiness before closure.",
     parallelActions: unique(["repeat vital signs", "repeat oxygen saturation/work of breathing", "review ECG QRS/QTc/ST findings", "repeat orthostatic BP/HR when syncope/orthostatic symptoms persist", "confirm activity restriction and follow-up", evidenceLabels.safety]),
     guidelineCutoffs: criteriaRows,
@@ -6679,7 +6689,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
     label: "Missing data needed: weight-bearing after analgesia, temperature, inflammatory markers, culture, aspiration, X-ray, ultrasound, MRI, or follow-up plan",
     edgeLabel: "Cannot choose low-risk, infection, fracture, SUFE/Perthes, systemic-mimic, or admission branch until post-analgesia weight-bearing, temperature, ROM, pain localization, red flags, CRP/ESR/WBC/culture when infection is possible, and imaging/aspiration status are known",
     sourceIds,
-    criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when the patient has a pediatric limp or hot-joint presentation but the objective findings needed for guideline branch selection are missing.", contextDomains, sourceIds, { missing_any: ["weight-bearing after analgesia", "temperature", "focused range of motion", "pain localization", "CRP/ESR/WBC when infection possible", "blood culture before antibiotics when feasible", "X-ray/ultrasound/MRI/aspiration status when indicated", "follow-up plan"] }),
+    criteria: criteria(`${prefix}_missing_objective_criteria`, "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.", contextDomains, sourceIds, { missing_any: ["weight-bearing after analgesia", "temperature", "focused range of motion", "pain localization", "CRP/ESR/WBC when infection possible", "blood culture before antibiotics when feasible", "X-ray/ultrasound/MRI/aspiration status when indicated", "follow-up plan"] }),
     action: "Complete the branch-critical data: repeat analgesia-supported walking assessment, measure temperature and full vitals, document passive joint motion and severe pain with movement, localize hip versus knee/thigh/bone pain, obtain FBE/WBC, ESR, CRP, blood culture before antibiotics when infection is possible, discuss aspiration for suspected septic arthritis without delaying antibiotics, obtain localized X-ray for injury or hip disease, ultrasound for suspected hip effusion, MRI with contrast when osteomyelitis or deep infection remains possible, and document follow-up or transfer access before discharge.",
     endpointType: "missing_data_needed",
     missingDataNeeded: ["post-analgesia weight-bearing status", "temperature and full vitals", "passive joint range of motion", "pain localization", "CRP", "ESR", "WBC/FBE", "blood culture before antibiotics when feasible", "joint aspiration or orthopaedic plan when septic arthritis possible", "targeted X-ray when localized pain/injury/hip disease possible", "hip ultrasound effusion measurement when septic hip possible", "MRI plan/result when osteomyelitis or deep infection possible", "follow-up or transfer access"]
@@ -6811,7 +6821,7 @@ function buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById) {
     label: "Pediatric limp monitoring: pain, weight-bearing, fever, ROM, neurovascular status, cultures, CRP/ESR/WBC, imaging, antibiotic response, and discharge readiness",
     edgeLabel: "Monitoring branch after pediatric limp classification: trend post-analgesia walking, pain/night pain, temperature, perfusion, range of motion, swelling, neurovascular findings, culture status, CRP/ESR/WBC, imaging evolution, antibiotic tolerance, oral switch readiness, follow-up access, and return precautions",
     sourceIds,
-    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric limp or hot-joint management by reassessing the objective findings that selected the active branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric limp or hot-joint management by reassessing weight bearing, pain, temperature, joint exam, CRP/ESR/WBC, cultures, imaging, antibiotic response, and discharge readiness.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
     action: "Reassess pain control, night pain, ability to walk or weight bear, fever/systemic signs, joint motion, swelling/warmth, neurovascular status, blood culture/aspiration/imaging results, CRP/ESR/WBC trend when obtained, antibiotic response and adverse effects, operative drainage need, oral switch criteria, and disposition readiness before closing the pathway.",
     parallelActions: unique(["repeat vital signs and perfusion", "repeat post-analgesia weight-bearing assessment", "repeat focused joint and neurovascular exam", "trend CRP/ESR/WBC when infection is being treated", "track blood culture and aspirate results", "review X-ray/ultrasound/MRI result owner", "confirm antibiotic route/duration or no-test rationale", evidenceLabels.safety]),
     guidelineCutoffs: criteriaRows,

@@ -4797,7 +4797,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Menopause / Premature Ovarian Insufficiency: route by findings, risk, treatment safety, and follow-up",
+        "label": "Menopause / Premature Ovarian Insufficiency: route by Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; Use menopausal hormone therapy for bothersome vasomotor symptoms or POI replacement when benefits outweigh risks and contraindications are absent.; For POI, generally replace estrogen to the usual age of menopause with progestogen if uterus is present, plus bone/cardiovascular and fertility counseling.",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_AMENORRHEA_2024",
@@ -4892,8 +4892,8 @@
           {
             "id": "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
             "type": "action",
-            "label": "Menopause / Premature Ovarian Insufficiency: assessment and key results",
-            "edgeLabel": "Collect Menopause / Premature Ovarian Insufficiency history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Menopause / Premature Ovarian Insufficiency: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Menopause / Premature Ovarian Insufficiency: Pregnancy test if amenorrhea.; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty.; TSH/prolactin.; POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA as indicated.; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; Measure blood pressure",
             "source_ids": [
               "ESHRE_POI_2024",
               "ASRM_AMENORRHEA_2024",
@@ -4928,7 +4928,7 @@
               {
                 "id": "menopause_premature_ovarian_insufficiency_classification_decision",
                 "type": "decision",
-                "label": "Menopause / Premature Ovarian Insufficiency: classify risk and disposition",
+                "label": "Menopause / Premature Ovarian Insufficiency: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Menopause / Premature Ovarian Insufficiency with available result(s): 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; POI <40",
                 "source_ids": [
                   "ASRM_AMENORRHEA_2024",
@@ -5881,7 +5881,7 @@
                       {
                         "id": "menopause_premature_ovarian_insufficiency_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Menopause / Premature Ovarian Insufficiency: treatment safety resolved?",
+                        "label": "Menopause / Premature Ovarian Insufficiency: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ASRM_AMENORRHEA_2024",
@@ -6064,8 +6064,8 @@
                           {
                             "id": "menopause_premature_ovarian_insufficiency_review_endpoint",
                             "type": "endpoint",
-                            "label": "Menopause / Premature Ovarian Insufficiency: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Menopause / Premature Ovarian Insufficiency: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "ESHRE_POI_2024",
@@ -6103,7 +6103,7 @@
                             "id": "menopause_premature_ovarian_insufficiency_monitoring_bundle",
                             "type": "action",
                             "label": "Menopause / Premature Ovarian Insufficiency: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Menopause / Premature Ovarian Insufficiency symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Menopause / Premature Ovarian Insufficiency symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ESHRE_POI_2024",
                               "ASRM_AMENORRHEA_2024",
@@ -6286,7 +6286,7 @@
                                 "id": "menopause_premature_ovarian_insufficiency_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Menopause / Premature Ovarian Insufficiency: reassessment escalation",
-                                "edgeLabel": "Menopause / Premature Ovarian Insufficiency reassessment worsens or Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; POI <40; Pregnancy test if amenorrhea.; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty. no longer fit the active branch",
+                                "edgeLabel": "Menopause / Premature Ovarian Insufficiency reassessment worsens or Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; POI <40; Pregnancy test if amenorrhea.; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
                                   "ASRM_AMENORRHEA_2024",
@@ -7098,7 +7098,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7525,7 +7525,7 @@
                     "id": "menopause_premature_ovarian_insufficiency_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Menopause / Premature Ovarian Insufficiency: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Menopause / Premature Ovarian Insufficiency: diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Menopause / Premature Ovarian Insufficiency: diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ESHRE_POI_2024",
                       "ASRM_AMENORRHEA_2024",
@@ -8347,7 +8347,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Menopause / Premature Ovarian Insufficiency: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Menopause / Premature Ovarian Insufficiency: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8387,7 +8387,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Menopause / Premature Ovarian Insufficiency: diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Menopause / Premature Ovarian Insufficiency: diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -8401,7 +8401,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
@@ -8417,7 +8417,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "menopause_premature_ovarian_insufficiency_worsening_endpoint",
-          "expected_active_branch": "Menopause / Premature Ovarian Insufficiency reassessment worsens or Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; POI <40; Pregnancy test if amenorrhea.; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty. no longer fit the active branch",
+          "expected_active_branch": "Menopause / Premature Ovarian Insufficiency reassessment worsens or Pregnancy, heavy bleeding, pelvic mass symptoms, POI <40 needing bone/cardiovascular/fertility counseling.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; FSH commonly >25 IU/L; POI <40; Pregnancy test if amenorrhea.; FSH and estradiol for POI; FSH commonly >25 IU/L in context, repeat if uncertainty. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",

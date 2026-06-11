@@ -5313,7 +5313,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypoparathyroidism: route by findings, risk, treatment safety, and follow-up",
+        "label": "Hypoparathyroidism: route by Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Treat severe symptomatic hypocalcemia with IV calcium and telemetry per local protocol while correcting magnesium.; Use oral calcium plus active vitamin D such as calcitriol for chronic conventional therapy, targeting low-normal or just-below-normal calcium with symptom control.",
         "edgeLabel": "",
         "source_ids": [
           "HYPOPARA_TASK_FORCE_2022",
@@ -5402,8 +5402,8 @@
           {
             "id": "hypoparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hypoparathyroidism: assessment and key results",
-            "edgeLabel": "Collect Hypoparathyroidism history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Hypoparathyroidism: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Hypoparathyroidism: Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D.; 24-hour urine calcium during chronic treatment.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Measure blood pressure",
             "source_ids": [
               "HYPOPARA_TASK_FORCE_2022",
               "AHRQ_CALIBRATE_DX"
@@ -5432,7 +5432,7 @@
               {
                 "id": "hypoparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Hypoparathyroidism: classify risk and disposition",
+                "label": "Hypoparathyroidism: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Hypoparathyroidism with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "HYPOPARA_TASK_FORCE_2022",
@@ -6681,7 +6681,7 @@
                       {
                         "id": "hypoparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hypoparathyroidism: treatment safety resolved?",
+                        "label": "Hypoparathyroidism: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "HYPOPARA_TASK_FORCE_2022",
@@ -6928,8 +6928,8 @@
                           {
                             "id": "hypoparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hypoparathyroidism: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Hypoparathyroidism: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -6961,7 +6961,7 @@
                             "id": "hypoparathyroidism_monitoring_bundle",
                             "type": "action",
                             "label": "Hypoparathyroidism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hypoparathyroidism symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hypoparathyroidism symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "HYPOPARA_TASK_FORCE_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -7208,7 +7208,7 @@
                                 "id": "hypoparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypoparathyroidism: reassessment escalation",
-                                "edgeLabel": "Hypoparathyroidism reassessment worsens or Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D. no longer fit the active branch",
+                                "edgeLabel": "Hypoparathyroidism reassessment worsens or Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D. no longer fit the selected pathway",
                                 "source_ids": [
                                   "HYPOPARA_TASK_FORCE_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -8318,7 +8318,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -8920,7 +8920,7 @@
                     "id": "hypoparathyroidism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hypoparathyroidism: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Hypoparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Hypoparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "HYPOPARA_TASK_FORCE_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -10075,7 +10075,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Hypoparathyroidism: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Hypoparathyroidism: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -10115,7 +10115,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hypoparathyroidism_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Hypoparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Hypoparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",
@@ -10129,7 +10129,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypoparathyroidism_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",
@@ -10145,7 +10145,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypoparathyroidism_worsening_endpoint",
-          "expected_active_branch": "Hypoparathyroidism reassessment worsens or Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D. no longer fit the active branch",
+          "expected_active_branch": "Hypoparathyroidism reassessment worsens or Seizure, laryngospasm, arrhythmia/QT prolongation, severe symptomatic hypocalcemia.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Calcium plus PTH.; Phosphorus, magnesium, creatinine/eGFR, 25(OH)D. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "hypoparathyroidism_concurrent_data_bundle",

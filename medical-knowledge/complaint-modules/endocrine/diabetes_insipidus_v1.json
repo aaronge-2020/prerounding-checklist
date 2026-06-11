@@ -4806,7 +4806,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Diabetes Insipidus: route by findings, risk, treatment safety, and follow-up",
+        "label": "Diabetes Insipidus: route by Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; adult urine volume often >3; L/day or >40; 50 mL/kg; For central DI, use desmopressin with careful sodium monitoring and education to avoid hyponatremia.; For nephrogenic DI, remove offending drugs when possible, treat hypercalcemia/hypokalemia, use low-solute diet, and consider thiazide/NSAID/amiloride strategies under specialist guidance.",
         "edgeLabel": "",
         "source_ids": [
           "ENDOTEXT_DI_2026",
@@ -4897,8 +4897,8 @@
           {
             "id": "diabetes_insipidus_concurrent_data_bundle",
             "type": "action",
-            "label": "Diabetes Insipidus: assessment and key results",
-            "edgeLabel": "Collect Diabetes Insipidus history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Diabetes Insipidus: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Diabetes Insipidus: Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality.; Exclude osmotic diuresis: glucose, calcium, potassium, renal function.; Water deprivation/desmopressin or copeptin-based test.; adult urine volume often >3; L/day or >40; 50 mL/kg; Measure blood pressure",
             "source_ids": [
               "ENDOTEXT_DI_2026",
               "SFE_CDI_2018",
@@ -4929,7 +4929,7 @@
               {
                 "id": "diabetes_insipidus_classification_decision",
                 "type": "decision",
-                "label": "Diabetes Insipidus: classify risk and disposition",
+                "label": "Diabetes Insipidus: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Diabetes Insipidus with available result(s): adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg",
                 "source_ids": [
                   "ENDOTEXT_DI_2026",
@@ -6100,7 +6100,7 @@
                       {
                         "id": "diabetes_insipidus_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Diabetes Insipidus: treatment safety resolved?",
+                        "label": "Diabetes Insipidus: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ENDOTEXT_DI_2026",
@@ -6317,8 +6317,8 @@
                           {
                             "id": "diabetes_insipidus_review_endpoint",
                             "type": "endpoint",
-                            "label": "Diabetes Insipidus: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Diabetes Insipidus: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
                               "SFE_CDI_2018",
@@ -6352,7 +6352,7 @@
                             "id": "diabetes_insipidus_monitoring_bundle",
                             "type": "action",
                             "label": "Diabetes Insipidus: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Diabetes Insipidus symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Diabetes Insipidus symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
                               "SFE_CDI_2018",
@@ -6569,7 +6569,7 @@
                                 "id": "diabetes_insipidus_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Diabetes Insipidus: reassessment escalation",
-                                "edgeLabel": "Diabetes Insipidus reassessment worsens or Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality. no longer fit the active branch",
+                                "edgeLabel": "Diabetes Insipidus reassessment worsens or Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
                                   "SFE_CDI_2018",
@@ -7577,7 +7577,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -8136,7 +8136,7 @@
                     "id": "diabetes_insipidus_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Diabetes Insipidus: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Diabetes Insipidus: diagnostic assessment; Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Diabetes Insipidus: diagnostic assessment; Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
                       "SFE_CDI_2018",
@@ -9200,7 +9200,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Diabetes Insipidus: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Diabetes Insipidus: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9240,7 +9240,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "diabetes_insipidus_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Diabetes Insipidus: diagnostic assessment; Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Diabetes Insipidus: diagnostic assessment; Serum sodium normal about 135-145 mmol/L; SFE inpatient CDI guidance: 146-149 mild, 150-159 moderate, >160 severe hypernatremia. Urine osmolality <300 mOsm/kg is hypotonic; >800 often argues against DI.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -9254,7 +9254,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "diabetes_insipidus_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",
@@ -9270,7 +9270,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "diabetes_insipidus_worsening_endpoint",
-          "expected_active_branch": "Diabetes Insipidus reassessment worsens or Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality. no longer fit the active branch",
+          "expected_active_branch": "Diabetes Insipidus reassessment worsens or Hypernatremia, inability to drink, impaired consciousness, postoperative pituitary patient without desmopressin access.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg; Confirm hypotonic polyuria: adult urine volume often >3 L/day or >40-50 mL/kg/day with urine osmolality often <300 mOsm/kg.; Serum sodium/plasma osmolality. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "diabetes_insipidus_concurrent_data_bundle",

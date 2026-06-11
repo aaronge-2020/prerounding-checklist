@@ -3455,7 +3455,7 @@
         "pediatric_msk_limp_hot_joint_missing_objective_endpoint": {
           "rule_id": "pediatric_msk_limp_hot_joint_missing_objective_criteria",
           "source": "criteria",
-          "description": "Route here when the patient has a pediatric limp or hot-joint presentation but the objective findings needed for guideline branch selection are missing.",
+          "description": "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6302,7 +6302,7 @@
         "pediatric_msk_limp_hot_joint_monitoring_bundle": {
           "rule_id": "pediatric_msk_limp_hot_joint_monitoring_bundle_criteria",
           "source": "criteria",
-          "description": "Monitor pediatric limp or hot-joint management by reassessing the objective findings that selected the active branch.",
+          "description": "Monitor pediatric limp or hot-joint management by reassessing weight bearing, pain, temperature, joint exam, CRP/ESR/WBC, cultures, imaging, antibiotic response, and discharge readiness.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -8612,7 +8612,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_missing_objective_criteria",
                       "source": "criteria",
-                      "description": "Route here when the patient has a pediatric limp or hot-joint presentation but the objective findings needed for guideline branch selection are missing.",
+                      "description": "Route here when the patient has a pediatric limp or hot-joint presentation but weight-bearing, temperature, joint exam, inflammatory marker, culture, imaging/aspiration, or follow-up data needed for guideline branch selection are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -13936,7 +13936,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_monitoring_bundle_criteria",
                       "source": "criteria",
-                      "description": "Monitor pediatric limp or hot-joint management by reassessing the objective findings that selected the active branch.",
+                      "description": "Monitor pediatric limp or hot-joint management by reassessing weight bearing, pain, temperature, joint exam, CRP/ESR/WBC, cultures, imaging, antibiotic response, and discharge readiness.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

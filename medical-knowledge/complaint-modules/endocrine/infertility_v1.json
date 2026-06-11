@@ -5272,7 +5272,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Infertility: route by findings, risk, treatment safety, and follow-up",
+        "label": "Infertility: route by Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Treat thyroid disease, hyperprolactinemia, PCOS/anovulation, hypogonadism, or POI according to cause and pregnancy safety.; Use ovulation induction, typically letrozole for PCOS-related anovulation, in the appropriate reproductive pathway.",
         "edgeLabel": "",
         "source_ids": [
           "PCOS_GUIDELINE_2023",
@@ -5365,8 +5365,8 @@
           {
             "id": "infertility_concurrent_data_bundle",
             "type": "action",
-            "label": "Infertility: assessment and key results",
-            "edgeLabel": "Collect Infertility history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Infertility: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Infertility: Pregnancy test if amenorrhea.; TSH/prolactin.; FSH/estradiol/AMH/antral follicle count as indicated.; PCOS and androgen labs.; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Measure blood pressure",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "PCOS_GUIDELINE_2023",
@@ -5399,7 +5399,7 @@
               {
                 "id": "infertility_classification_decision",
                 "type": "decision",
-                "label": "Infertility: classify risk and disposition",
+                "label": "Infertility: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Infertility with available result(s): 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; POI <40",
                 "source_ids": [
                   "PCOS_GUIDELINE_2023",
@@ -6476,7 +6476,7 @@
                       {
                         "id": "infertility_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Infertility: treatment safety resolved?",
+                        "label": "Infertility: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "PCOS_GUIDELINE_2023",
@@ -6669,8 +6669,8 @@
                           {
                             "id": "infertility_review_endpoint",
                             "type": "endpoint",
-                            "label": "Infertility: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Infertility: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
                               "ASRM_AMENORRHEA_2024",
@@ -6706,7 +6706,7 @@
                             "id": "infertility_monitoring_bundle",
                             "type": "action",
                             "label": "Infertility: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Infertility symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Infertility symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "PCOS_GUIDELINE_2023",
@@ -6899,7 +6899,7 @@
                                 "id": "infertility_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Infertility: reassessment escalation",
-                                "edgeLabel": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; POI <40; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the active branch",
+                                "edgeLabel": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; POI <40; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "PCOS_GUIDELINE_2023",
@@ -7829,7 +7829,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -8356,7 +8356,7 @@
                     "id": "infertility_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Infertility: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Infertility (Hormonal causes): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Infertility (Hormonal causes): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "PCOS_GUIDELINE_2023",
@@ -9338,7 +9338,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Infertility: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Infertility: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9378,7 +9378,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "infertility_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Infertility (Hormonal causes): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Infertility (Hormonal causes): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -9392,7 +9392,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "infertility_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",
@@ -9408,7 +9408,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "infertility_worsening_endpoint",
-          "expected_active_branch": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; POI <40; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the active branch",
+          "expected_active_branch": "Infertility reassessment worsens or Amenorrhea with visual symptoms, POI <40, severe hyperandrogenism, recurrent pregnancy loss needing specialist workup.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; POI <40; Pregnancy test if amenorrhea.; TSH/prolactin. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "infertility_concurrent_data_bundle",

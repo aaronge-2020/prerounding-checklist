@@ -4334,7 +4334,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gynecomastia: route by findings, risk, treatment safety, and follow-up",
+        "label": "Gynecomastia: route by Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; <150 ng/dL; >4 ng/mL; >3 ng/mL; Stop or substitute causative medication/substance when feasible and treat underlying hypogonadism, thyroid, liver, kidney, or tumor cause.; Use reassurance and observation for mild recent physiologic gynecomastia without red flags.",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -4427,8 +4427,8 @@
           {
             "id": "gynecomastia_concurrent_data_bundle",
             "type": "action",
-            "label": "Gynecomastia: assessment and key results",
-            "edgeLabel": "Collect Gynecomastia history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Gynecomastia: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Gynecomastia: Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern.; TSH, prolactin, liver/kidney function.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; <150 ng/dL; >4 ng/mL; >3 ng/mL; Measure blood pressure",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -4461,7 +4461,7 @@
               {
                 "id": "gynecomastia_classification_decision",
                 "type": "decision",
-                "label": "Gynecomastia: classify risk and disposition",
+                "label": "Gynecomastia: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Gynecomastia with available result(s): <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
@@ -5458,7 +5458,7 @@
                       {
                         "id": "gynecomastia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Gynecomastia: treatment safety resolved?",
+                        "label": "Gynecomastia: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
@@ -5642,8 +5642,8 @@
                           {
                             "id": "gynecomastia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Gynecomastia: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Gynecomastia: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -5679,7 +5679,7 @@
                             "id": "gynecomastia_monitoring_bundle",
                             "type": "action",
                             "label": "Gynecomastia: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Gynecomastia symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Gynecomastia symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -5865,7 +5865,7 @@
                                 "id": "gynecomastia_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Gynecomastia: reassessment escalation",
-                                "edgeLabel": "Gynecomastia reassessment worsens or Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern. no longer fit the active branch",
+                                "edgeLabel": "Gynecomastia reassessment worsens or Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -6695,7 +6695,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7136,7 +7136,7 @@
                     "id": "gynecomastia_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Gynecomastia: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Gynecomastia (Enlarged male breast tissue): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Gynecomastia (Enlarged male breast tissue): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -8001,7 +8001,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Gynecomastia: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Gynecomastia: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8041,7 +8041,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "gynecomastia_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Gynecomastia (Enlarged male breast tissue): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Gynecomastia (Enlarged male breast tissue): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -8055,7 +8055,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gynecomastia_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",
@@ -8071,7 +8071,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gynecomastia_worsening_endpoint",
-          "expected_active_branch": "Gynecomastia reassessment worsens or Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern. no longer fit the active branch",
+          "expected_active_branch": "Gynecomastia reassessment worsens or Hard eccentric breast mass, nipple discharge, skin changes, nodes, testicular mass, rapid progression.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Total testosterone, LH, FSH, estradiol.; hCG if suspicious; consider AFP/testicular ultrasound if tumor concern. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "gynecomastia_concurrent_data_bundle",

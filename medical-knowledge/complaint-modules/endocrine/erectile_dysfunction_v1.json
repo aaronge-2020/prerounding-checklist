@@ -3010,7 +3010,7 @@
               "A1c/FPG and lipids.",
               "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and targeted androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
+              "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "erectile symptom duration",
               "rigidity/maintenance pattern",
@@ -3038,7 +3038,7 @@
               "source-directed imaging/ECG/procedure results when indicated",
               "TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.",
               "Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
-              "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and targeted androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
+              "Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and focused androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.",
               "Pregnancy test first when amenorrhea or pregnancy is possible; TSH, prolactin, gonadotropins/estradiol or testosterone/LH/FSH as syndrome-specific anchors.",
               "Androgen testing with reliable assays for hyperandrogenism; metabolic screening for PCOS; semen analysis and partner factors when infertility is in scope."
             ],
@@ -4384,7 +4384,7 @@
         "erectile_dysfunction_monitoring_bundle": {
           "rule_id": "erectile_dysfunction_monitoring_criteria",
           "source": "criteria",
-          "description": "Monitor ED by the same cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the active branch.",
+          "description": "Monitor ED by the cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the pathway.",
           "evaluable_from": [
             "symptoms",
             "vitals",
@@ -5394,7 +5394,7 @@
                     }
                   ]
                 },
-                "action": "Select the active branch: incomplete ED context, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
+                "action": "Select the ED pathway: incomplete context, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
                 "children": [
                   {
                     "id": "erectile_dysfunction_missing_objective_endpoint",
@@ -6601,7 +6601,7 @@
                         "criteria": {
                           "rule_id": "erectile_dysfunction_monitoring_criteria",
                           "source": "criteria",
-                          "description": "Monitor ED by the same cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the active branch.",
+                          "description": "Monitor ED by the cardiovascular, metabolic, endocrine, treatment-response, and adverse-effect data that selected the pathway.",
                           "evaluable_from": [
                             "symptoms",
                             "vitals",

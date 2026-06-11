@@ -4417,7 +4417,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Disease: route by findings, risk, treatment safety, and follow-up",
+        "label": "Cushing's Disease: route by Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; at least 2 measurements; 2 measurements; 1 mg; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -4510,8 +4510,8 @@
           {
             "id": "cushings_disease_concurrent_data_bundle",
             "type": "action",
-            "label": "Cushing's Disease: assessment and key results",
-            "edgeLabel": "Collect Cushing's Disease history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Cushing's Disease: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Cushing's Disease: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Inferior petrosal sinus sampling when MRI equivocal/discordant.; at least 2 measurements; 2 measurements; 1 mg; Measure blood pressure",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -4544,7 +4544,7 @@
               {
                 "id": "cushings_disease_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Disease: classify risk and disposition",
+                "label": "Cushing's Disease: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Cushing's Disease with available result(s): at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
@@ -5557,7 +5557,7 @@
                       {
                         "id": "cushings_disease_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Cushing's Disease: treatment safety resolved?",
+                        "label": "Cushing's Disease: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
@@ -5735,8 +5735,8 @@
                           {
                             "id": "cushings_disease_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Disease: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Cushing's Disease: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -5772,7 +5772,7 @@
                             "id": "cushings_disease_monitoring_bundle",
                             "type": "action",
                             "label": "Cushing's Disease: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Cushing's Disease symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Cushing's Disease symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -5950,7 +5950,7 @@
                                 "id": "cushings_disease_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Disease: reassessment escalation",
-                                "edgeLabel": "Cushing's Disease reassessment worsens or Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease. no longer fit the active branch",
+                                "edgeLabel": "Cushing's Disease reassessment worsens or Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -6800,7 +6800,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7276,7 +7276,7 @@
                     "id": "cushings_disease_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Disease: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic assessment; Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic assessment; Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -8188,7 +8188,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Cushing's Disease: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Cushing's Disease: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8228,7 +8228,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "cushings_disease_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic assessment; Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic assessment; Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -8242,7 +8242,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_disease_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",
@@ -8258,7 +8258,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_disease_worsening_endpoint",
-          "expected_active_branch": "Cushing's Disease reassessment worsens or Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease. no longer fit the active branch",
+          "expected_active_branch": "Cushing's Disease reassessment worsens or Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "cushings_disease_concurrent_data_bundle",

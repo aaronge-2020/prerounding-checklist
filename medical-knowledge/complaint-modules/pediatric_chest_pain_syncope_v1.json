@@ -2016,7 +2016,7 @@
         {
           "threshold": "1%",
           "evidence_item_id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
           "source_ids": [
             "RCH_CHEST_PAIN_CHILD"
           ],
@@ -2438,7 +2438,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -2583,7 +2583,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -2758,7 +2758,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -2897,7 +2897,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3034,7 +3034,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3173,7 +3173,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3312,7 +3312,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3455,7 +3455,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3578,7 +3578,7 @@
         "pediatric_chest_syncope_monitoring_bundle": {
           "rule_id": "pediatric_chest_syncope_monitoring_bundle_criteria",
           "source": "criteria",
-          "description": "Monitor pediatric chest pain/syncope by trending the objective findings that selected the active branch.",
+          "description": "Monitor pediatric chest pain/syncope by trending the ECG, orthostatic vital signs, oxygenation, respiratory findings, cardiac exam, and event pattern that selected the pathway.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3597,7 +3597,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3738,7 +3738,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -3880,7 +3880,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -4022,7 +4022,7 @@
           "criteria_options": [
             {
               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
               "cutoffs": [
                 "1%"
@@ -4285,7 +4285,7 @@
               "criteria_options": [
                 {
                   "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                  "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                  "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                   "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                   "cutoffs": [
                     "1%"
@@ -4443,7 +4443,7 @@
                   "criteria_options": [
                     {
                       "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                      "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                      "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                       "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                       "cutoffs": [
                         "1%"
@@ -4666,7 +4666,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -4792,7 +4792,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -4939,7 +4939,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -5065,7 +5065,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -5210,7 +5210,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -5336,7 +5336,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -5483,7 +5483,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -5609,7 +5609,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -5756,7 +5756,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -5882,7 +5882,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -6036,7 +6036,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -6175,7 +6175,7 @@
                     "criteria": {
                       "rule_id": "pediatric_chest_syncope_monitoring_bundle_criteria",
                       "source": "criteria",
-                      "description": "Monitor pediatric chest pain/syncope by trending the objective findings that selected the active branch.",
+                      "description": "Monitor pediatric chest pain/syncope by trending the ECG, orthostatic vital signs, oxygenation, respiratory findings, cardiac exam, and event pattern that selected the pathway.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6194,7 +6194,7 @@
                       "criteria_options": [
                         {
                           "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                          "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                          "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                           "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                           "cutoffs": [
                             "1%"
@@ -6348,7 +6348,7 @@
                           "criteria_options": [
                             {
                               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                               "cutoffs": [
                                 "1%"
@@ -6474,7 +6474,7 @@
                         "guideline_cutoffs": [
                           {
                             "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                            "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                            "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                             "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                             "cutoffs": [
                               "1%"
@@ -6597,7 +6597,7 @@
                       {
                         "id": "pediatric_chest_syncope_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and objective findings support benign or autonomic care",
+                        "label": "Pediatric chest/syncope de-escalation: stop cardiac/respiratory escalation only when red flags remain absent and ECG, vitals, oxygenation, and event pattern support benign or autonomic care",
                         "edgeLabel": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
@@ -6627,7 +6627,7 @@
                           "criteria_options": [
                             {
                               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                               "cutoffs": [
                                 "1%"
@@ -6747,13 +6747,13 @@
                             }
                           ]
                         },
-                        "action": "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, objective findings are stable, and return precautions/follow-up are clear.",
+                        "action": "Narrow to benign chest pain, vasovagal/orthostatic care, or another documented low-risk diagnosis only after red flags are absent, ECG/vitals/oxygenation and event pattern are stable, and return precautions/follow-up are clear.",
                         "children": [],
                         "endpoint_type": "deescalation_stopping",
                         "guideline_cutoffs": [
                           {
                             "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                            "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                            "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                             "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                             "cutoffs": [
                               "1%"
@@ -6906,7 +6906,7 @@
                           "criteria_options": [
                             {
                               "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                              "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                              "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                               "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                               "cutoffs": [
                                 "1%"
@@ -7049,7 +7049,7 @@
                     "guideline_cutoffs": [
                       {
                         "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                        "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                        "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                         "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                         "cutoffs": [
                           "1%"
@@ -7173,7 +7173,7 @@
                 "guideline_cutoffs": [
                   {
                     "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                    "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                     "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                     "cutoffs": [
                       "1%"
@@ -7295,7 +7295,7 @@
                 "clinical_criteria": [
                   {
                     "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                    "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                    "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                     "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                     "cutoffs": [
                       "1%"
@@ -7440,7 +7440,7 @@
             "guideline_cutoffs": [
               {
                 "id": "peds_chest_pain_low_base_rate_and_targeted_testing",
-                "label": "Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
+                "label": "Pediatric chest pain testing is focused: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present",
                 "criteria_text": "RCH states that cardiac-related causes account for as few as 1% of children presenting with chest pain and that ECG, CXR, and blood tests should be reserved for children with risk factors identified on history or examination; echocardiogram or CT pulmonary angiogram should be discussed with a senior clinician.",
                 "cutoffs": [
                   "1%"

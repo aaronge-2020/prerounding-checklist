@@ -5387,7 +5387,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Primary Hyperparathyroidism: route by findings, risk, treatment safety, and follow-up",
+        "label": "Primary Hyperparathyroidism: route by Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Refer surgical candidates for parathyroidectomy with localization imaging used for operative planning, not diagnosis.; For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; maintain hydration and avoid exacerbating medications when possible.",
         "edgeLabel": "",
         "source_ids": [
           "PHPT_WORKSHOP_2022",
@@ -5476,8 +5476,8 @@
           {
             "id": "primary_hyperparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Primary Hyperparathyroidism: assessment and key results",
-            "edgeLabel": "Collect Primary Hyperparathyroidism history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Primary Hyperparathyroidism: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Primary Hyperparathyroidism: Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR.; 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Measure blood pressure",
             "source_ids": [
               "PHPT_WORKSHOP_2022",
               "AHRQ_CALIBRATE_DX"
@@ -5506,7 +5506,7 @@
               {
                 "id": "primary_hyperparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Primary Hyperparathyroidism: classify risk and disposition",
+                "label": "Primary Hyperparathyroidism: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Primary Hyperparathyroidism with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "PHPT_WORKSHOP_2022",
@@ -6881,7 +6881,7 @@
                       {
                         "id": "primary_hyperparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Primary Hyperparathyroidism: treatment safety resolved?",
+                        "label": "Primary Hyperparathyroidism: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "PHPT_WORKSHOP_2022",
@@ -7142,8 +7142,8 @@
                           {
                             "id": "primary_hyperparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Primary Hyperparathyroidism: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Primary Hyperparathyroidism: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -7175,7 +7175,7 @@
                             "id": "primary_hyperparathyroidism_monitoring_bundle",
                             "type": "action",
                             "label": "Primary Hyperparathyroidism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Primary Hyperparathyroidism symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Primary Hyperparathyroidism symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -7436,7 +7436,7 @@
                                 "id": "primary_hyperparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Primary Hyperparathyroidism: reassessment escalation",
-                                "edgeLabel": "Primary Hyperparathyroidism reassessment worsens or Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR. no longer fit the active branch",
+                                "edgeLabel": "Primary Hyperparathyroidism reassessment worsens or Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR. no longer fit the selected pathway",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -8670,7 +8670,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -9368,7 +9368,7 @@
                     "id": "primary_hyperparathyroidism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Primary Hyperparathyroidism: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Primary Hyperparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Primary Hyperparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -10682,7 +10682,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Primary Hyperparathyroidism: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Primary Hyperparathyroidism: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -10722,7 +10722,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "primary_hyperparathyroidism_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Primary Hyperparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Primary Hyperparathyroidism: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "primary_hyperparathyroidism_concurrent_data_bundle",
@@ -10736,7 +10736,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "primary_hyperparathyroidism_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "primary_hyperparathyroidism_concurrent_data_bundle",
@@ -10752,7 +10752,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "primary_hyperparathyroidism_worsening_endpoint",
-          "expected_active_branch": "Primary Hyperparathyroidism reassessment worsens or Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR. no longer fit the active branch",
+          "expected_active_branch": "Primary Hyperparathyroidism reassessment worsens or Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "primary_hyperparathyroidism_concurrent_data_bundle",

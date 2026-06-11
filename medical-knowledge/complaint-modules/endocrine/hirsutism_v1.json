@@ -4601,7 +4601,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hirsutism: route by findings, risk, treatment safety, and follow-up",
+        "label": "Hirsutism: route by Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; above reference range; age >39 years; 20 mcg; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.",
         "edgeLabel": "",
         "source_ids": [
           "ES_HIRSUTISM_2018",
@@ -4692,8 +4692,8 @@
           {
             "id": "hirsutism_concurrent_data_bundle",
             "type": "action",
-            "label": "Hirsutism: assessment and key results",
-            "edgeLabel": "Collect Hirsutism history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Hirsutism: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Hirsutism: Total testosterone and free testosterone when indicated.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; above reference range; age >39 years; 20 mcg; Measure blood pressure",
             "source_ids": [
               "ES_HIRSUTISM_2018",
               "PCOS_GUIDELINE_2023",
@@ -4724,7 +4724,7 @@
               {
                 "id": "hirsutism_classification_decision",
                 "type": "decision",
-                "label": "Hirsutism: classify risk and disposition",
+                "label": "Hirsutism: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Hirsutism with available result(s): above reference range; age >39 years; 20 mcg; at least 6 months",
                 "source_ids": [
                   "ES_HIRSUTISM_2018",
@@ -5789,7 +5789,7 @@
                       {
                         "id": "hirsutism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Hirsutism: treatment safety resolved?",
+                        "label": "Hirsutism: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ES_HIRSUTISM_2018",
@@ -5972,8 +5972,8 @@
                           {
                             "id": "hirsutism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hirsutism: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Hirsutism: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
                               "PCOS_GUIDELINE_2023",
@@ -6007,7 +6007,7 @@
                             "id": "hirsutism_monitoring_bundle",
                             "type": "action",
                             "label": "Hirsutism: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Hirsutism symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Hirsutism symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
                               "PCOS_GUIDELINE_2023",
@@ -6191,7 +6191,7 @@
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hirsutism: reassessment escalation",
-                                "edgeLabel": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP. no longer fit the active branch",
+                                "edgeLabel": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
                                   "PCOS_GUIDELINE_2023",
@@ -7087,7 +7087,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7600,7 +7600,7 @@
                     "id": "hirsutism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hirsutism: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Hirsutism (Excessive hair growth): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Hirsutism (Excessive hair growth): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
                       "PCOS_GUIDELINE_2023",
@@ -8573,7 +8573,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Hirsutism: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Hirsutism: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8613,7 +8613,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hirsutism_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Hirsutism (Excessive hair growth): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Hirsutism (Excessive hair growth): diagnostic assessment; Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",
@@ -8627,7 +8627,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hirsutism_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",
@@ -8643,7 +8643,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hirsutism_worsening_endpoint",
-          "expected_active_branch": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP. no longer fit the active branch",
+          "expected_active_branch": "Hirsutism reassessment worsens or Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",

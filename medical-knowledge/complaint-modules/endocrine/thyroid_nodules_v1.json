@@ -4534,7 +4534,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Nodules: route by findings, risk, treatment safety, and follow-up",
+        "label": "Thyroid Nodules: route by Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; >=1 cm; >=1.5 cm; >=2 cm; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.; Treat autonomous hyperfunctioning nodules with radioactive iodine, surgery, or ablation according to size, symptoms, pregnancy context, and local expertise.",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -4625,8 +4625,8 @@
           {
             "id": "thyroid_nodules_concurrent_data_bundle",
             "type": "action",
-            "label": "Thyroid Nodules: assessment and key results",
-            "edgeLabel": "Collect Thyroid Nodules history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Thyroid Nodules: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Thyroid Nodules: TSH.; High-quality thyroid ultrasound with risk stratification.; FNA when indicated by size/risk system; low TSH prompts radionuclide scan.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; >=1 cm; >=1.5 cm; >=2 cm; Measure blood pressure",
             "source_ids": [
               "ATA_THYROID_NODULE_DTC_2015",
               "ETA_THYROID_NODULE_2023",
@@ -4657,7 +4657,7 @@
               {
                 "id": "thyroid_nodules_classification_decision",
                 "type": "decision",
-                "label": "Thyroid Nodules: classify risk and disposition",
+                "label": "Thyroid Nodules: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Thyroid Nodules with available result(s): >=1 cm; >=1.5 cm; >=2 cm; <1%",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
@@ -5606,7 +5606,7 @@
                       {
                         "id": "thyroid_nodules_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Thyroid Nodules: treatment safety resolved?",
+                        "label": "Thyroid Nodules: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
@@ -5767,8 +5767,8 @@
                           {
                             "id": "thyroid_nodules_review_endpoint",
                             "type": "endpoint",
-                            "label": "Thyroid Nodules: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Thyroid Nodules: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ETA_THYROID_NODULE_2023",
@@ -5802,7 +5802,7 @@
                             "id": "thyroid_nodules_monitoring_bundle",
                             "type": "action",
                             "label": "Thyroid Nodules: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Thyroid Nodules symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Thyroid Nodules symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ETA_THYROID_NODULE_2023",
@@ -5974,7 +5974,7 @@
                                 "id": "thyroid_nodules_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Nodules: reassessment escalation",
-                                "edgeLabel": "Thyroid Nodules reassessment worsens or Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification. no longer fit the active branch",
+                                "edgeLabel": "Thyroid Nodules reassessment worsens or Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
                                   "ETA_THYROID_NODULE_2023",
@@ -6770,7 +6770,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -7207,7 +7207,7 @@
                     "id": "thyroid_nodules_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Nodules: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Thyroid Nodules (Benign): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Thyroid Nodules (Benign): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
                       "ETA_THYROID_NODULE_2023",
@@ -8048,7 +8048,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Thyroid Nodules: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Thyroid Nodules: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8088,7 +8088,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyroid_nodules_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Thyroid Nodules (Benign): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Thyroid Nodules (Benign): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "thyroid_nodules_concurrent_data_bundle",
@@ -8102,7 +8102,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_nodules_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "thyroid_nodules_concurrent_data_bundle",
@@ -8118,7 +8118,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyroid_nodules_worsening_endpoint",
-          "expected_active_branch": "Thyroid Nodules reassessment worsens or Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification. no longer fit the active branch",
+          "expected_active_branch": "Thyroid Nodules reassessment worsens or Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "thyroid_nodules_concurrent_data_bundle",

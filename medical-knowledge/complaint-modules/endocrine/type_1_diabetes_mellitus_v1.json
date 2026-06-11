@@ -7116,7 +7116,7 @@
                       {
                         "id": "type_1_diabetes_risk_modifier_review_endpoint",
                         "type": "endpoint",
-                        "label": "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need clinician review",
+                        "label": "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need endocrinology/technology handoff",
                         "edgeLabel": "Modifier branch: pregnancy, recurrent severe hypoglycemia, pump/CGM failure, SGLT2-associated ketosis, low insulin access, or uncertain autoimmune classification",
                         "source_ids": [
                           "ADA_SOC_2026"

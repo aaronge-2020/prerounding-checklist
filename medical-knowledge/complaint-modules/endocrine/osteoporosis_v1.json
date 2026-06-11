@@ -5015,7 +5015,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Osteoporosis: route by findings, risk, treatment safety, and follow-up",
+        "label": "Osteoporosis: route by New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Use bisphosphonate first-line for many high-risk patients when renal function, esophageal risk, and adherence permit.; Use anabolic therapy such as teriparatide, abaloparatide, or romosozumab for very-high-risk patients, then follow with antiresorptive therapy.",
         "edgeLabel": "",
         "source_ids": [
           "AACE_OSTEOPOROSIS_2020",
@@ -5106,8 +5106,8 @@
           {
             "id": "osteoporosis_concurrent_data_bundle",
             "type": "action",
-            "label": "Osteoporosis: assessment and key results",
-            "edgeLabel": "Collect Osteoporosis history/exam, vitals, key labs/results, medication safety, and major cutoffs",
+            "label": "Osteoporosis: assessment, thresholds, and treatment-safety inputs",
+            "edgeLabel": "Collect Osteoporosis: DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Measure blood pressure",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
               "AACE_OSTEOPOROSIS_2020",
@@ -5138,7 +5138,7 @@
               {
                 "id": "osteoporosis_classification_decision",
                 "type": "decision",
-                "label": "Osteoporosis: classify risk and disposition",
+                "label": "Osteoporosis: classify thresholds, acuity, mimics, and disposition",
                 "edgeLabel": "Classify Osteoporosis with available result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
@@ -6351,7 +6351,7 @@
                       {
                         "id": "osteoporosis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Osteoporosis: treatment safety resolved?",
+                        "label": "Osteoporosis: contraindications, dosing, pregnancy, and comorbidity modifiers",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, or local-policy modifier may change the plan",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
@@ -6590,8 +6590,8 @@
                           {
                             "id": "osteoporosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Osteoporosis: clinician review modifier",
-                            "edgeLabel": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+                            "label": "Osteoporosis: reviewer handoff for contraindication or special population",
+                            "edgeLabel": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
                               "ENDO_OSTEOPOROSIS_2020",
@@ -6625,7 +6625,7 @@
                             "id": "osteoporosis_monitoring_bundle",
                             "type": "action",
                             "label": "Osteoporosis: monitoring and disposition readiness",
-                            "edgeLabel": "Trend Osteoporosis symptoms, vitals, key results, adverse effects, and disposition readiness",
+                            "edgeLabel": "Trend Osteoporosis symptoms, vital signs, threshold labs/results, treatment response, adverse effects, and disposition readiness",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
                               "AACE_OSTEOPOROSIS_2020",
@@ -6864,7 +6864,7 @@
                                 "id": "osteoporosis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteoporosis: reassessment escalation",
-                                "edgeLabel": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the active branch",
+                                "edgeLabel": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the selected pathway",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -7936,7 +7936,7 @@
                             ],
                             "parallel_actions": [
                               "repeat vital signs",
-                              "trend key labs/results",
+                              "trend threshold labs/results",
                               "review treatment response and adverse effects",
                               "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
@@ -8514,7 +8514,7 @@
                     "id": "osteoporosis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Osteoporosis: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Mimic or alternate pathway favored: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -9625,7 +9625,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing Osteoporosis: onset/trajectory, focused exam, vitals, key results, meds, comorbidities, pregnancy/applicability, or follow-up access",
+          "expected_active_branch": "Missing Osteoporosis: onset/trajectory, focused exam, vitals, threshold labs/results, meds, comorbidities, pregnancy/applicability, or follow-up access",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9665,7 +9665,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "osteoporosis_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Mimic or alternate pathway favored: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -9679,7 +9679,7 @@
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "osteoporosis_review_endpoint",
-          "expected_active_branch": "Contraindication, special population, conflicting guidance, or local protocol dependency",
+          "expected_active_branch": "Pregnancy/postpartum, pediatric/adult fit, renal/hepatic/cardiac disease, allergy/drug interaction, procedure risk, conflicting source, or named local protocol changes care",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -9695,7 +9695,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "osteoporosis_worsening_endpoint",
-          "expected_active_branch": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the active branch",
+          "expected_active_branch": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the selected pathway",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
