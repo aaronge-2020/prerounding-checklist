@@ -3140,6 +3140,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Erectile Dysfunction (Endocrine-related): diagnostic assessment",
+              "Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.",
               "Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
               "Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -5392,7 +5394,7 @@
                     }
                   ]
                 },
-                "action": "Select the active branch: missing objective data, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
+                "action": "Select the active branch: incomplete ED context, emergency/unstable ED, pituitary/prolactin, hypogonadism, metabolic/vascular, PDE5 first-line, therapy safety review, alternate driver, monitoring, de-escalation, or follow-up.",
                 "children": [
                   {
                     "id": "erectile_dysfunction_missing_objective_endpoint",
@@ -6042,7 +6044,7 @@
                         }
                       ]
                     },
-                    "action": "Choose the active ED treatment pathway after objective data are available.",
+                    "action": "Choose the active ED treatment pathway after PDE5 response, cardiometabolic risk, testosterone/prolactin/TSH status, medication contraindications, and urgent symptom screens are available.",
                     "children": [
                       {
                         "id": "erectile_dysfunction_pde5_endpoint",
@@ -6969,7 +6971,7 @@
                                 }
                               ]
                             },
-                            "action": "Escalate to ED/cardiology/urology/endocrinology as indicated, stop the unsafe ED medication, repeat the abnormal objective data, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
+                            "action": "Escalate to ED/cardiology/urology/endocrinology as indicated, stop the unsafe ED medication, repeat abnormal vitals, exam, glucose/A1c/lipid, testosterone/prolactin/TSH, PSA/hematocrit, or vascular findings as relevant, reassess mimics, verify PDE5 timing and adequate trials before labeling failure, and route priapism >4 hours, visual/hearing loss, chest pain, neurologic deficit, or pituitary mass-effect symptoms urgently.",
                             "children": [],
                             "endpoint_type": "escalation_disposition",
                             "guideline_cutoffs": [
@@ -7283,7 +7285,7 @@
                           "trend A1c/glucose/lipids and BP",
                           "review testosterone/prolactin/TSH results",
                           "monitor PSA/hematocrit when testosterone is used",
-                          "confirm follow-up owner and return precautions"
+                          "assign follow-up clinician/service and return precautions"
                         ],
                         "guideline_cutoffs": [
                           {

@@ -3981,7 +3981,7 @@
         "adult_chest_pain_reassessment_bundle": {
           "rule_id": "adult_chest_pain_reassessment_bundle_criteria",
           "source": "criteria",
-          "description": "Monitor adult chest pain by repeating the same objective data that selected the active branch.",
+          "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the active branch.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5114,7 +5114,7 @@
                         }
                       ]
                     },
-                    "action": "Discharge only when low-risk criteria are met. Document score, ECG/troponin timing, 99th percentile, no emergency features, shared decision, follow-up owner, and return precautions for recurrent pressure, dyspnea, syncope, neuro deficit, hemoptysis, severe back pain, fever, or failed follow-up.",
+                    "action": "Discharge only when low-risk criteria are met. Document score, ECG/troponin timing, 99th percentile, no emergency features, shared decision, named follow-up clinician/service, and return precautions for recurrent pressure, dyspnea, syncope, neuro deficit, hemoptysis, severe back pain, fever, or failed follow-up.",
                     "children": [],
                     "endpoint_type": "safety_net_instruction",
                     "guideline_cutoffs": [
@@ -5466,7 +5466,7 @@
                     "criteria": {
                       "rule_id": "adult_chest_pain_reassessment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Monitor adult chest pain by repeating the same objective data that selected the active branch.",
+                      "description": "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the active branch.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",

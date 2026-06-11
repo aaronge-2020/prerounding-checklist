@@ -2752,6 +2752,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Metabolic Syndrome: diagnostic assessment",
+              "Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "3 or more criteria shifts to intensive cardiometabolic risk reduction.",
               "Diabetes thresholds change diagnosis.",
@@ -4182,8 +4184,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ADA_SOC_2026",
             "NHLBI_METABOLIC_SYNDROME",
+            "ADA_SOC_2026",
             "CDC_DIABETES_TESTING_2024",
             "ADA_DIAGNOSIS_2026",
             "CDC_NDPP_LIFESTYLE_2024",
@@ -6813,8 +6815,8 @@
                     "label": "Mimic or fewer than 3 criteria: avoid metabolic syndrome label and treat the active abnormality",
                     "edgeLabel": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
                     "source_ids": [
-                      "ADA_SOC_2026",
                       "NHLBI_METABOLIC_SYNDROME",
+                      "ADA_SOC_2026",
                       "CDC_DIABETES_TESTING_2024",
                       "ADA_DIAGNOSIS_2026",
                       "CDC_NDPP_LIFESTYLE_2024",
@@ -6834,8 +6836,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ADA_SOC_2026",
                         "NHLBI_METABOLIC_SYNDROME",
+                        "ADA_SOC_2026",
                         "CDC_DIABETES_TESTING_2024",
                         "ADA_DIAGNOSIS_2026",
                         "CDC_NDPP_LIFESTYLE_2024",
@@ -7007,7 +7009,7 @@
                         }
                       ]
                     },
-                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document the criteria count and route to the active abnormality or competing diagnosis: Metabolic Syndrome: diagnostic assessment; Diagnosis commonly requires 3 or more: waist >102 cm men or >88 cm women in ATP III US cut points, TG >=150, HDL <40 men/<50 women, BP >=130/85 or treatment, fasting glucose >=100 or treatment. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Criteria count, waist threshold choice, pregnancy, medication effect, or secondary disease changes classification."

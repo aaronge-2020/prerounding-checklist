@@ -2863,6 +2863,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Pheochromocytoma: diagnostic assessment",
+              "Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
               ">3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4347,8 +4349,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ESE_ADRENAL_INCIDENTALOMA_2023",
             "ES_PHEO_PPGL_2014",
+            "ESE_ADRENAL_INCIDENTALOMA_2023",
             "MSD_HYPERTENSIVE_EMERGENCY_2026",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -7072,8 +7074,8 @@
                     "label": "PPGL borderline or mimic route: repeat controlled testing or switch pathway before irreversible treatment",
                     "edgeLabel": "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
                     "source_ids": [
-                      "ESE_ADRENAL_INCIDENTALOMA_2023",
                       "ES_PHEO_PPGL_2014",
+                      "ESE_ADRENAL_INCIDENTALOMA_2023",
                       "MSD_HYPERTENSIVE_EMERGENCY_2026",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -7094,8 +7096,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ESE_ADRENAL_INCIDENTALOMA_2023",
                         "ES_PHEO_PPGL_2014",
+                        "ESE_ADRENAL_INCIDENTALOMA_2023",
                         "MSD_HYPERTENSIVE_EMERGENCY_2026",
                         "AHRQ_CALIBRATE_DX"
                       ],

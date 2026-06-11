@@ -3024,6 +3024,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Gestational Diabetes: diagnostic assessment",
+              "One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
               "Postpartum abnormal OGTT changes long-term prevention.",
@@ -4664,8 +4666,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ADA_DIAGNOSIS_2026",
             "ADA_SOC_2026",
+            "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024",
             "CDC_NDPP_LIFESTYLE_2024",
             "AHRQ_CALIBRATE_DX"
@@ -7681,8 +7683,8 @@
                     "label": "Pregnancy glucose mimic or overt pregestational diabetes: route away from routine GDM plan",
                     "edgeLabel": "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
                     "source_ids": [
-                      "ADA_DIAGNOSIS_2026",
                       "ADA_SOC_2026",
+                      "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
                       "CDC_NDPP_LIFESTYLE_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -7701,8 +7703,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ADA_DIAGNOSIS_2026",
                         "ADA_SOC_2026",
+                        "ADA_DIAGNOSIS_2026",
                         "CDC_DIABETES_TESTING_2024",
                         "CDC_NDPP_LIFESTYLE_2024",
                         "AHRQ_CALIBRATE_DX"
@@ -7905,7 +7907,7 @@
                         }
                       ]
                     },
-                    "action": "Document why routine GDM is not the active pathway and route to the more specific diagnosis: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document why routine GDM is not the active pathway and route to the more specific diagnosis: Gestational Diabetes: diagnostic assessment; One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Pregnancy hyperglycemia may represent overt diabetes, hyperglycemic crisis, medication effect, or another diagnosis requiring a different pathway."

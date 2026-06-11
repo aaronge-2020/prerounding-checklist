@@ -2958,6 +2958,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Thyrotoxicosis: diagnostic assessment",
+              "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
               "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
               "Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -3345,7 +3347,7 @@
         "thyrotoxicosis_urgent_endpoint": {
           "rule_id": "thyrotoxicosis_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Thyrotoxicosis when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "description": "Escalate Thyrotoxicosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5108,7 +5110,7 @@
                     "id": "thyrotoxicosis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyrotoxicosis: emergency or monitored-care disposition",
-                    "edgeLabel": "Danger feature or high-risk result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5116,7 +5118,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Thyrotoxicosis when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "description": "Escalate Thyrotoxicosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5314,7 +5316,7 @@
                         }
                       ]
                     },
-                    "action": "Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
+                    "action": "Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -6153,7 +6155,7 @@
                                 "id": "thyrotoxicosis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis: reassessment escalation",
-                                "edgeLabel": "Thyrotoxicosis worsens, new danger feature appears, or results no longer fit the active branch",
+                                "edgeLabel": "Thyrotoxicosis reassessment worsens or Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI. no longer fit the active branch",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -6327,7 +6329,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Thyrotoxicosis objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat or review Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -6566,7 +6568,7 @@
                                 "id": "thyrotoxicosis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis: de-escalate, stop, or narrow",
-                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Thyrotoxicosis care",
+                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Thyrotoxicosis care",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -7002,7 +7004,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Thyrotoxicosis diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Thyrotoxicosis diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -7017,7 +7019,7 @@
                               "repeat vital signs",
                               "trend key labs/results",
                               "review treatment response and adverse effects",
-                              "confirm disposition and follow-up owner",
+                              "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
                               "Measure heart rate",
                               "Document mental status",
@@ -7504,7 +7506,7 @@
                     "id": "thyrotoxicosis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyrotoxicosis: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Thyrotoxicosis: diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -8464,7 +8466,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyrotoxicosis_urgent_endpoint",
-          "expected_active_branch": "Danger feature or high-risk result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -8478,7 +8480,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyrotoxicosis_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Thyrotoxicosis: diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -8508,7 +8510,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyrotoxicosis_worsening_endpoint",
-          "expected_active_branch": "Thyrotoxicosis worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_active_branch": "Thyrotoxicosis reassessment worsens or Storm physiology, AF, heart failure, severe weight loss, altered mental status.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI. no longer fit the active branch",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",
@@ -8525,7 +8527,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyrotoxicosis_deescalate_endpoint",
-          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Thyrotoxicosis care",
+          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Thyrotoxicosis care",
           "expected_path_node_ids": [
             "root",
             "thyrotoxicosis_concurrent_data_bundle",

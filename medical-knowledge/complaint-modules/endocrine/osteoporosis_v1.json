@@ -2892,6 +2892,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Osteoporosis: diagnostic assessment",
+              "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
               "Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.",
               "T-score <= -2.5 or fragility fracture confirms osteoporosis.",
               "Hip/vertebral fracture or very low T-score changes to high/very-high-risk pathway.",
@@ -3316,7 +3318,7 @@
         "osteoporosis_urgent_endpoint": {
           "rule_id": "osteoporosis_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Osteoporosis when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "description": "Escalate Osteoporosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4796,8 +4798,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "AACE_OSTEOPOROSIS_2020",
             "ENDO_OSTEOPOROSIS_2020",
+            "AACE_OSTEOPOROSIS_2020",
             "AHRQ_CALIBRATE_DX"
           ],
           "criteria_options": [
@@ -5524,7 +5526,7 @@
                     "id": "osteoporosis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Osteoporosis: emergency or monitored-care disposition",
-                    "edgeLabel": "Danger feature or high-risk result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -5533,7 +5535,7 @@
                     "criteria": {
                       "rule_id": "osteoporosis_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Osteoporosis when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "description": "Escalate Osteoporosis when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5791,7 +5793,7 @@
                         }
                       ]
                     },
-                    "action": "New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
+                    "action": "New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -6862,7 +6864,7 @@
                                 "id": "osteoporosis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteoporosis: reassessment escalation",
-                                "edgeLabel": "Osteoporosis worsens, new danger feature appears, or results no longer fit the active branch",
+                                "edgeLabel": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the active branch",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -7095,7 +7097,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Osteoporosis objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat or review New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -7379,7 +7381,7 @@
                                 "id": "osteoporosis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteoporosis: de-escalate, stop, or narrow",
-                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
+                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -7921,7 +7923,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Osteoporosis diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Osteoporosis diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -7936,7 +7938,7 @@
                               "repeat vital signs",
                               "trend key labs/results",
                               "review treatment response and adverse effects",
-                              "confirm disposition and follow-up owner",
+                              "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
                               "Measure heart rate",
                               "Document mental status"
@@ -8512,10 +8514,10 @@
                     "id": "osteoporosis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Osteoporosis: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
-                      "AACE_OSTEOPOROSIS_2020",
                       "ENDO_OSTEOPOROSIS_2020",
+                      "AACE_OSTEOPOROSIS_2020",
                       "AHRQ_CALIBRATE_DX"
                     ],
                     "criteria": {
@@ -8531,8 +8533,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "AACE_OSTEOPOROSIS_2020",
                         "ENDO_OSTEOPOROSIS_2020",
+                        "AACE_OSTEOPOROSIS_2020",
                         "AHRQ_CALIBRATE_DX"
                       ],
                       "criteria_options": [
@@ -9649,7 +9651,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "osteoporosis_urgent_endpoint",
-          "expected_active_branch": "Danger feature or high-risk result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -9663,7 +9665,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "osteoporosis_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Osteoporosis: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -9693,7 +9695,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "osteoporosis_worsening_endpoint",
-          "expected_active_branch": "Osteoporosis worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_active_branch": "Osteoporosis reassessment worsens or New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA and vertebral imaging when indicated.; Calcium, phosphorus, creatinine/eGFR, alkaline phosphatase, 25(OH)D, PTH, TSH/CBC/CMP and secondary-cause labs as indicated. no longer fit the active branch",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
@@ -9710,7 +9712,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "osteoporosis_deescalate_endpoint",
-          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
+          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Osteoporosis care",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",

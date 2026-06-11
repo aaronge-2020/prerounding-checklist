@@ -3257,6 +3257,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Type 2 Diabetes Mellitus: diagnostic assessment",
+              "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "Diabetes-range A1c/FPG/OGTT changes diagnosis and treatment intensity.",
               "UACR >=30 or reduced eGFR changes kidney-protective therapy.",
@@ -4923,9 +4925,9 @@
             "workup_findings"
           ],
           "source_ids": [
+            "ADA_SOC_2026",
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024",
-            "ADA_SOC_2026",
             "ADA_HYPERGLYCEMIC_CRISES_2024",
             "ADA_STANDARDS_HOSPITAL_2026",
             "AHRQ_CALIBRATE_DX"
@@ -8022,9 +8024,9 @@
                     "label": "Type 2 Diabetes Mellitus: route to prediabetes, alternate diabetes type, stress/steroid hyperglycemia, pregnancy, or endocrine mimic when thresholds do not fit",
                     "edgeLabel": "Alternate branch: prediabetes-range results only, discordant test, steroid/stress hyperglycemia, type 1/LADA versus type 2 mismatch, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, or secondary endocrine cause fits better",
                     "source_ids": [
+                      "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
-                      "ADA_SOC_2026",
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
                       "ADA_STANDARDS_HOSPITAL_2026",
                       "AHRQ_CALIBRATE_DX"
@@ -8043,9 +8045,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
+                        "ADA_SOC_2026",
                         "ADA_DIAGNOSIS_2026",
                         "CDC_DIABETES_TESTING_2024",
-                        "ADA_SOC_2026",
                         "ADA_HYPERGLYCEMIC_CRISES_2024",
                         "ADA_STANDARDS_HOSPITAL_2026",
                         "AHRQ_CALIBRATE_DX"
@@ -8223,7 +8225,7 @@
                         }
                       ]
                     },
-                    "action": "Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document which diabetes thresholds or type-classification findings are absent, then route to the appropriate alternate pathway: Type 2 Diabetes Mellitus: diagnostic assessment; A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Glucose thresholds, diabetes type, medication effect, pregnancy, or another endocrine/acute illness cause changes the active pathway."

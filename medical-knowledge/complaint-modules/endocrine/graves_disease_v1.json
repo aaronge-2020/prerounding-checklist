@@ -2933,6 +2933,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Graves' Disease: diagnostic assessment",
+              "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
               "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
               "TRAb-positive biochemical hyperthyroidism supports Graves.",
               "Orbitopathy changes radioactive iodine risk and ophthalmology urgency.",
@@ -3304,7 +3306,7 @@
         "graves_disease_urgent_endpoint": {
           "rule_id": "graves_disease_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Graves' Disease when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "description": "Escalate Graves' Disease when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5051,7 +5053,7 @@
                     "id": "graves_disease_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Graves' Disease: emergency or monitored-care disposition",
-                    "edgeLabel": "Danger feature or high-risk result present: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5059,7 +5061,7 @@
                     "criteria": {
                       "rule_id": "graves_disease_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Graves' Disease when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "description": "Escalate Graves' Disease when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5257,7 +5259,7 @@
                         }
                       ]
                     },
-                    "action": "Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
+                    "action": "Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -6080,7 +6082,7 @@
                                 "id": "graves_disease_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Graves' Disease: reassessment escalation",
-                                "edgeLabel": "Graves' Disease worsens, new danger feature appears, or results no longer fit the active branch",
+                                "edgeLabel": "Graves' Disease reassessment worsens or Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI. no longer fit the active branch",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -6254,7 +6256,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Graves' Disease objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat or review Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -6477,7 +6479,7 @@
                                 "id": "graves_disease_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Graves' Disease: de-escalate, stop, or narrow",
-                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Graves' Disease care",
+                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Graves' Disease care",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -6897,7 +6899,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Graves' Disease diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Graves' Disease diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -6912,7 +6914,7 @@
                               "repeat vital signs",
                               "trend key labs/results",
                               "review treatment response and adverse effects",
-                              "confirm disposition and follow-up owner",
+                              "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
                               "Measure heart rate",
                               "Document mental status",
@@ -7367,7 +7369,7 @@
                     "id": "graves_disease_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Graves' Disease: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Graves' Disease: diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -8279,7 +8281,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "graves_disease_urgent_endpoint",
-          "expected_active_branch": "Danger feature or high-risk result present: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -8293,7 +8295,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "graves_disease_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Graves' Disease: diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -8323,7 +8325,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "graves_disease_worsening_endpoint",
-          "expected_active_branch": "Graves' Disease worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_active_branch": "Graves' Disease reassessment worsens or Thyroid storm, vision-threatening orbitopathy, pregnancy with uncontrolled hyperthyroidism.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI. no longer fit the active branch",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",
@@ -8340,7 +8342,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "graves_disease_deescalate_endpoint",
-          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Graves' Disease care",
+          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Graves' Disease care",
           "expected_path_node_ids": [
             "root",
             "graves_disease_concurrent_data_bundle",

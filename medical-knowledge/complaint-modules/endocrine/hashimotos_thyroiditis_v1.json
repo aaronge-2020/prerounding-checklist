@@ -3021,6 +3021,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment",
+              "TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.",
               "Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
               "Positive TPO Ab supports autoimmune thyroiditis.",
               "Suspicious nodule/compressive findings move to ultrasound/FNA pathway.",
@@ -3402,7 +3404,7 @@
         "hashimotos_thyroiditis_urgent_endpoint": {
           "rule_id": "hashimotos_thyroiditis_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "description": "Escalate Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4534,9 +4536,9 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ATA_THYROID_NODULE_DTC_2015",
             "ATA_HYPOTHYROIDISM_2014",
             "AACE_ATA_HYPOTHYROIDISM_2012",
+            "ATA_THYROID_NODULE_DTC_2015",
             "ETA_THYROID_NODULE_2023",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -5178,7 +5180,7 @@
                     "id": "hashimotos_thyroiditis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hashimoto's Thyroiditis: emergency or monitored-care disposition",
-                    "edgeLabel": "Danger feature or high-risk result present: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5189,7 +5191,7 @@
                     "criteria": {
                       "rule_id": "hashimotos_thyroiditis_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "description": "Escalate Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5387,7 +5389,7 @@
                         }
                       ]
                     },
-                    "action": "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
+                    "action": "Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -6228,7 +6230,7 @@
                                 "id": "hashimotos_thyroiditis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis: reassessment escalation",
-                                "edgeLabel": "Hashimoto's Thyroiditis worsens, new danger feature appears, or results no longer fit the active branch",
+                                "edgeLabel": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the active branch",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6405,7 +6407,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Hashimoto's Thyroiditis objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat or review Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -6625,7 +6627,7 @@
                                 "id": "hashimotos_thyroiditis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis: de-escalate, stop, or narrow",
-                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Hashimoto's Thyroiditis care",
+                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Hashimoto's Thyroiditis care",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -7051,7 +7053,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Hashimoto's Thyroiditis diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Hashimoto's Thyroiditis diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -7066,7 +7068,7 @@
                               "repeat vital signs",
                               "trend key labs/results",
                               "review treatment response and adverse effects",
-                              "confirm disposition and follow-up owner",
+                              "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
                               "Measure heart rate",
                               "Document mental status",
@@ -7515,11 +7517,11 @@
                     "id": "hashimotos_thyroiditis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hashimoto's Thyroiditis: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
-                      "ATA_THYROID_NODULE_DTC_2015",
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
+                      "ATA_THYROID_NODULE_DTC_2015",
                       "ETA_THYROID_NODULE_2023",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -7536,9 +7538,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ATA_THYROID_NODULE_DTC_2015",
                         "ATA_HYPOTHYROIDISM_2014",
                         "AACE_ATA_HYPOTHYROIDISM_2012",
+                        "ATA_THYROID_NODULE_DTC_2015",
                         "ETA_THYROID_NODULE_2023",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -8419,7 +8421,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hashimotos_thyroiditis_urgent_endpoint",
-          "expected_active_branch": "Danger feature or high-risk result present: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -8433,7 +8435,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hashimotos_thyroiditis_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic assessment; TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -8463,7 +8465,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hashimotos_thyroiditis_worsening_endpoint",
-          "expected_active_branch": "Hashimoto's Thyroiditis worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_active_branch": "Hashimoto's Thyroiditis reassessment worsens or Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct. no longer fit the active branch",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",
@@ -8480,7 +8482,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hashimotos_thyroiditis_deescalate_endpoint",
-          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Hashimoto's Thyroiditis care",
+          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Hashimoto's Thyroiditis care",
           "expected_path_node_ids": [
             "root",
             "hashimotos_thyroiditis_concurrent_data_bundle",

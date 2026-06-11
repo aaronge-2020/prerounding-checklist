@@ -2706,7 +2706,7 @@
         "pediatric_chest_syncope_missing_objective_endpoint": {
           "rule_id": "pediatric_chest_syncope_missing_objective_criteria",
           "source": "criteria",
-          "description": "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required objective data are missing.",
+          "description": "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required ECG, orthostatic vital sign, oxygenation, respiratory, family-history, or cardiac-exam data are missing.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4579,7 +4579,7 @@
                     "criteria": {
                       "rule_id": "pediatric_chest_syncope_missing_objective_criteria",
                       "source": "criteria",
-                      "description": "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required objective data are missing.",
+                      "description": "Route here when pediatric cardiac/respiratory/syncope risk cannot be classified because required ECG, orthostatic vital sign, oxygenation, respiratory, family-history, or cardiac-exam data are missing.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6156,7 +6156,7 @@
                         }
                       ]
                     },
-                    "action": "Get pediatric, cardiology, respiratory, obstetric, toxicology, or neurology review as appropriate; do not clear exercise or discharge until the modifier, activity restriction, testing plan, and follow-up owner are documented.",
+                    "action": "Get pediatric, cardiology, respiratory, obstetric, toxicology, or neurology review as appropriate; do not clear exercise or discharge until the modifier, activity restriction, testing plan, and responsible follow-up clinician/service are documented.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Pregnancy/postpartum status, stimulant/toxin exposure, PE risk, congenital/acquired heart disease, ECG abnormality, or local sports/cardiology policy changes disposition."

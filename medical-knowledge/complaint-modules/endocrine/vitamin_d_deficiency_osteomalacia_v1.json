@@ -2882,6 +2882,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Vitamin D Deficiency / Osteomalacia: diagnostic assessment",
+              "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.",
               "Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.",
               "Low 25(OH)D with symptoms or osteomalacia labs changes from prevention advice to treatment and etiology evaluation.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -3290,7 +3292,7 @@
         "vitamin_d_deficiency_osteomalacia_urgent_endpoint": {
           "rule_id": "vitamin_d_deficiency_osteomalacia_urgent_criteria",
           "source": "criteria",
-          "description": "Escalate Vitamin D Deficiency / Osteomalacia when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+          "description": "Escalate Vitamin D Deficiency / Osteomalacia when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4770,8 +4772,8 @@
             "workup_findings"
           ],
           "source_ids": [
-            "NIH_VITD_FACTSHEET",
             "ENDO_VITD_2024",
+            "NIH_VITD_FACTSHEET",
             "AHRQ_CALIBRATE_DX"
           ],
           "criteria_options": [
@@ -5482,7 +5484,7 @@
                     "id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Vitamin D Deficiency / Osteomalacia: emergency or monitored-care disposition",
-                    "edgeLabel": "Danger feature or high-risk result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                    "edgeLabel": "High-acuity threshold or monitored-care result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_VITD_2024",
                       "NIH_VITD_FACTSHEET",
@@ -5491,7 +5493,7 @@
                     "criteria": {
                       "rule_id": "vitamin_d_deficiency_osteomalacia_urgent_criteria",
                       "source": "criteria",
-                      "description": "Escalate Vitamin D Deficiency / Osteomalacia when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.",
+                      "description": "Escalate Vitamin D Deficiency / Osteomalacia when condition-specific red flags, cited high-risk thresholds, unstable physiology, or monitored-care disposition rules are present.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5749,7 +5751,7 @@
                         }
                       ]
                     },
-                    "action": "Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.. Escalate using the abnormal cutoff, unstable feature, or monitored-care rule.",
+                    "action": "Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.. Escalate using the cited high-risk threshold, unstable vital sign, organ-risk finding, or monitored-care rule.",
                     "children": [],
                     "endpoint_type": "escalation_disposition",
                     "guideline_cutoffs": [
@@ -6804,7 +6806,7 @@
                                 "id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Vitamin D Deficiency / Osteomalacia: reassessment escalation",
-                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia worsens, new danger feature appears, or results no longer fit the active branch",
+                                "edgeLabel": "Vitamin D Deficiency / Osteomalacia reassessment worsens or Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D when clinically indicated.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR. no longer fit the active branch",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -7037,7 +7039,7 @@
                                     }
                                   ]
                                 },
-                                "action": "Repeat critical Vitamin D Deficiency / Osteomalacia objective data, reassess mimics and complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.",
+                                "action": "Repeat or review Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D when clinically indicated.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR.; reassess mimics and complications; move to ED, admission, or specialty review when the cited threshold, unstable vital sign, imaging/ECG/procedure result, or treatment-response pattern requires escalation.",
                                 "children": [],
                                 "endpoint_type": "escalation_disposition",
                                 "guideline_cutoffs": [
@@ -7305,7 +7307,7 @@
                                 "id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Vitamin D Deficiency / Osteomalacia: de-escalate, stop, or narrow",
-                                "edgeLabel": "Objective response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
+                                "edgeLabel": "Measured response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
                                   "NIH_VITD_FACTSHEET",
@@ -7831,7 +7833,7 @@
                                     "AHRQ_CALIBRATE_DX"
                                   ]
                                 },
-                                "action": "Document the Vitamin D Deficiency / Osteomalacia diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.",
+                                "action": "Document the Vitamin D Deficiency / Osteomalacia diagnosis/risk category, named pending-result clinician/service, follow-up interval, and return precautions for worsening symptoms, treatment intolerance, inability to complete treatment, or abnormal pending results.",
                                 "children": [],
                                 "endpoint_type": "safety_net_instruction",
                                 "monitoring_plan": [
@@ -7846,7 +7848,7 @@
                               "repeat vital signs",
                               "trend key labs/results",
                               "review treatment response and adverse effects",
-                              "confirm disposition and follow-up owner",
+                              "assign disposition and follow-up clinician/service",
                               "Measure blood pressure",
                               "Measure heart rate",
                               "Document mental status"
@@ -8390,10 +8392,10 @@
                     "id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Vitamin D Deficiency / Osteomalacia: alternate diagnosis pathway",
-                    "edgeLabel": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+                    "edgeLabel": "Objective findings favor mimic or alternate pathway: Vitamin D Deficiency / Osteomalacia: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
                     "source_ids": [
-                      "NIH_VITD_FACTSHEET",
                       "ENDO_VITD_2024",
+                      "NIH_VITD_FACTSHEET",
                       "AHRQ_CALIBRATE_DX"
                     ],
                     "criteria": {
@@ -8409,8 +8411,8 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "NIH_VITD_FACTSHEET",
                         "ENDO_VITD_2024",
+                        "NIH_VITD_FACTSHEET",
                         "AHRQ_CALIBRATE_DX"
                       ],
                       "criteria_options": [
@@ -9479,7 +9481,7 @@
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
-          "expected_active_branch": "Danger feature or high-risk result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+          "expected_active_branch": "High-acuity threshold or monitored-care result present: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -9493,7 +9495,7 @@
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
-          "expected_active_branch": "Objective findings favor mimic or alternate pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
+          "expected_active_branch": "Objective findings favor mimic or alternate pathway: Vitamin D Deficiency / Osteomalacia: diagnostic assessment; Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -9523,7 +9525,7 @@
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
-          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia worsens, new danger feature appears, or results no longer fit the active branch",
+          "expected_active_branch": "Vitamin D Deficiency / Osteomalacia reassessment worsens or Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state.; unstable vitals, altered mental status, arrhythmia, airway risk, or vision threat; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; 25(OH)D when clinically indicated.; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR. no longer fit the active branch",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
@@ -9540,7 +9542,7 @@
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
-          "expected_active_branch": "Objective response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
+          "expected_active_branch": "Measured response supports narrowing, stopping, tapering, or continuing Vitamin D Deficiency / Osteomalacia care",
           "expected_path_node_ids": [
             "root",
             "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",

@@ -2777,6 +2777,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Prediabetes: diagnostic assessment",
+              "A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.",
               "Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
               "A1c 5.7-6.4, FPG 100-125, or 2-hour OGTT 140-199 triggers prevention and surveillance.",
               "Diabetes-range values change diagnosis.",
@@ -4060,9 +4062,9 @@
             "workup_findings"
           ],
           "source_ids": [
+            "ADA_SOC_2026",
             "ADA_DIAGNOSIS_2026",
             "CDC_DIABETES_TESTING_2024",
-            "ADA_SOC_2026",
             "CDC_NDPP_LIFESTYLE_2024",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -6419,9 +6421,9 @@
                     "label": "Normal glycemia, medication/stress effect, pregnancy, or endocrine mimic: avoid labeling as prediabetes without repeatable thresholds",
                     "edgeLabel": "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
                     "source_ids": [
+                      "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
-                      "ADA_SOC_2026",
                       "CDC_NDPP_LIFESTYLE_2024",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -6439,9 +6441,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
+                        "ADA_SOC_2026",
                         "ADA_DIAGNOSIS_2026",
                         "CDC_DIABETES_TESTING_2024",
-                        "ADA_SOC_2026",
                         "CDC_NDPP_LIFESTYLE_2024",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -6592,7 +6594,7 @@
                         }
                       ]
                     },
-                    "action": "Document why prediabetes is not the active diagnosis and route to the more specific pathway: competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
+                    "action": "Document why prediabetes is not the active diagnosis and route to the more specific pathway: Prediabetes: diagnostic assessment; A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; competing endocrine, medication, pregnancy, organ-failure, pituitary/sellar, and age-specific mimics.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
                     "review_needed_reason": "Discordant glycemia, medication effects, pregnancy, or another diagnosis changes classification."

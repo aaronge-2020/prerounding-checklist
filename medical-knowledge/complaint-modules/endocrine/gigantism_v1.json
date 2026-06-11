@@ -2519,6 +2519,8 @@
               "severity/risk category",
               "treatment response",
               "disposition constraints",
+              "Gigantism: diagnostic assessment",
+              "Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.",
               "Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
               "Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
               "Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
@@ -4058,9 +4060,9 @@
             "workup_findings"
           ],
           "source_ids": [
-            "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
             "ES_ACROMEGALY_2014",
             "PITUITARY_ACROMEGALY_2021",
+            "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
             "ACROMEGALY_COMPLICATIONS_2026",
             "AHRQ_CALIBRATE_DX"
           ],
@@ -8851,9 +8853,9 @@
                     "label": "Gigantism mimic/confounder route: normal IGF-1, adolescence/pregnancy, uncontrolled diabetes, renal/hepatic failure, hypothyroidism, malnutrition, severe infection, oral estrogen, or pseudoacromegaly",
                     "edgeLabel": "Alternate branch: IGF-1 normal for age/puberty, OGTT suppresses GH, phenotype is explained by adolescence/pregnancy or insulin-mediated pseudoacromegaly, or IGF-1/GH is confounded by diabetes, renal/hepatic disease, hypothyroidism, malnutrition, severe infection, oral estrogen, assay mismatch, or medication effect",
                     "source_ids": [
-                      "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
+                      "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ACROMEGALY_COMPLICATIONS_2026",
                       "AHRQ_CALIBRATE_DX"
                     ],
@@ -8871,9 +8873,9 @@
                         "workup_findings"
                       ],
                       "source_ids": [
-                        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                         "ES_ACROMEGALY_2014",
                         "PITUITARY_ACROMEGALY_2021",
+                        "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                         "ACROMEGALY_COMPLICATIONS_2026",
                         "AHRQ_CALIBRATE_DX"
                       ],
@@ -9557,7 +9559,7 @@
                     "id": "gigantism_treatment_action",
                     "type": "action",
                     "label": "Gigantism treatment selection: surgery first when resectable, medical/radiation when persistent or nonsurgical, special-population review when pregnancy or growth plates change care",
-                    "edgeLabel": "Treatment branch: biochemical Gigantism is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute danger features are absent",
+                    "edgeLabel": "Treatment branch: biochemical Gigantism is confirmed or highly likely, MRI/surgical candidacy and comorbidity modifiers are available, and acute instability is absent",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014",

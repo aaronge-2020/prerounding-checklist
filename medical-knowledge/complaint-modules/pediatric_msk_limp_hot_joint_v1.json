@@ -2649,7 +2649,7 @@
               "disposition constraints",
               "Septic arthritis or osteomyelitis until excluded",
               "Fracture, occult injury, or safeguarding concern",
-              "Lower-risk transient synovitis or self-limited limp after danger features are absent",
+              "Lower-risk transient synovitis or self-limited limp after high-risk findings are absent",
               "Age-specific hip or referred knee pathology",
               "Immediate orthopedic route for septic arthritis",
               "Bone infection admission and antibiotic route",
@@ -12517,7 +12517,7 @@
                         }
                       ]
                     },
-                    "action": "Do not anchor on sprain or transient synovitis. Obtain FBE with film when malignancy or hematologic disease is possible, inflammatory markers and targeted rheumatology/infectious evaluation when morning stiffness/rash/recurrent fever is present, ECG and ARF workup when migratory arthritis or high CRP context suggests rheumatic fever, neurologic/abdominal/GU/scrotal exam and pathway referral when referred pain dominates, and admit or arrange urgent specialty review when systemic danger features are present.",
+                    "action": "Do not anchor on sprain or transient synovitis. Obtain FBE with film when malignancy or hematologic disease is possible, inflammatory markers and targeted rheumatology/infectious evaluation when morning stiffness/rash/recurrent fever is present, ECG and ARF workup when migratory arthritis or high CRP context suggests rheumatic fever, neurologic/abdominal/GU/scrotal exam and pathway referral when referred pain dominates, and admit or arrange urgent specialty review when systemic or limb-risk findings are present.",
                     "children": [],
                     "endpoint_type": "diagnostic_step",
                     "guideline_cutoffs": [
@@ -16061,7 +16061,7 @@
                             }
                           ]
                         },
-                        "action": "Document diagnosis or working diagnosis, red flags screened, ability to walk or weight-bear status, analgesia/rest/activity or non-weight-bearing plan, antibiotic plan if used, pending result owner for cultures/labs/imaging, specialty follow-up owner, and return precautions for fever, systemic illness, worsening or night pain, refusal to weight bear despite analgesia, new swelling/redness, neurovascular symptoms, no improvement after 3 days, persistence beyond 14 days, lethargy, or inability to access follow-up.",
+                        "action": "Document diagnosis or working diagnosis, red flags screened, ability to walk or weight-bear status, analgesia/rest/activity or non-weight-bearing plan, antibiotic plan if used, responsible service for pending cultures/labs/imaging, specialty follow-up clinician/service, and return precautions for fever, systemic illness, worsening or night pain, refusal to weight bear despite analgesia, new swelling/redness, neurovascular symptoms, no improvement after 3 days, persistence beyond 14 days, lethargy, or inability to access follow-up.",
                         "children": [],
                         "endpoint_type": "follow_up",
                         "monitoring_plan": [
