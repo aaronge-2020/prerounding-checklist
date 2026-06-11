@@ -3548,7 +3548,7 @@
         "thyrotoxicosis_treatment_bundle": {
           "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Thyrotoxicosis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Thyrotoxicosis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4626,7 +4626,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyrotoxicosis: compact evidence-cited management pathway",
+        "label": "Thyrotoxicosis: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPERTHYROIDISM_2016",
@@ -4653,7 +4653,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Thyrotoxicosis pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Thyrotoxicosis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4709,7 +4709,7 @@
             "id": "thyrotoxicosis_concurrent_data_bundle",
             "type": "action",
             "label": "Thyrotoxicosis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Thyrotoxicosis trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Thyrotoxicosis workup or documented findings: Do you have anterior neck pain or thyroid tenderness, painful swallowing, recent viral illness, fever, or postpartum timing suggesting thyroiditis?; Any thyroid hormone, antithyroid drug, amiodarone, lithium, iodine/contrast exposure, biotin, supplement use, missed dose, or recent dose change affecting thyroid interpretation?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Storm physiology, AF, heart failure, severe weight loss, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, T3.",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
               "AHRQ_CALIBRATE_DX"
@@ -4738,8 +4738,8 @@
               {
                 "id": "thyrotoxicosis_classification_decision",
                 "type": "decision",
-                "label": "Thyrotoxicosis: classify by Overt thyrotoxicosis biochemistry: TSH below LLN with free T4 and/or T3 above assay ULN: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: persistent TSH <0.1 mU/L over 3 to 6 months; treat age >65 or cardiac/osteoporosis/symptomatic risk: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: persistent TSH 0.1-0.4 mU/L; consider treatment age >=65 or cardiac/osteoporosis/symptoms, otherwise monitor 6-12 months: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH, free T4, T3.: 0.4-4.0 mIU/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Thyrotoxicosis: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Thyrotoxicosis results available for threshold classification: TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; ESR/CRP if painful thyroid.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; TSH; free T4; total/free T3; assay reference intervals; TRAb/TSI or uptake pattern when needed",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -5002,7 +5002,7 @@
                     "id": "thyrotoxicosis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Thyrotoxicosis threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Thyrotoxicosis result(s): TSH; free T4; total/free T3; assay reference intervals; TRAb/TSI or uptake pattern when needed; repeat TSH dates; age; cardiac disease",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ATA_HYPERTHYROIDISM_2016"
@@ -5096,7 +5096,7 @@
                     "id": "thyrotoxicosis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyrotoxicosis: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Thyrotoxicosis danger feature or high-risk cutoff: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; TSH below LLN; free T4 above ULN; T3 above ULN; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5540,8 +5540,8 @@
                   {
                     "id": "thyrotoxicosis_treatment_bundle",
                     "type": "action",
-                    "label": "Thyrotoxicosis: start treatment/disposition when Overt thyrotoxicosis biochemistry: TSH below LLN with free T4 and/or T3 above assay ULN: TSH below LLN, free T4 above ULN, T3 above ULN | Subclinical hyperthyroidism high-risk stratum: persistent TSH <0.1 mU/L over 3 to 6 months; treat age >65 or cardiac/osteoporosis/symptomatic risk: TSH <0.1 mU/L, 3 to 6 months, age >65 years | Subclinical hyperthyroidism low-detectable stratum: persistent TSH 0.1-0.4 mU/L; consider treatment age >=65 or cardiac/osteoporosis/symptoms, otherwise monitor 6-12 months: TSH 0.1-0.4 mU/L, age >=65 years, age <65 years, 6-12 months | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH, free T4, T3.: 0.4-4.0 mIU/L matches",
-                    "edgeLabel": "Thyrotoxicosis criteria match or treatment cannot safely wait",
+                    "label": "Thyrotoxicosis: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Thyrotoxicosis treatment/disposition indicated by: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; 3 to 6 months; age >65 years; Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.; Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate, with pregnancy trimester, liver disease, agranulocytosis counseling, and baseline labs considered.; Choose radioactive iodine, surgery, or continued medical therapy based on etiology, goiter/nodule features, orbitopathy, pregnancy plans, contraindications, and patient preference.; Treat thyroiditis primarily with supportive care, NSAID or glucocorticoid when indicated, and avoid antithyroid drugs when hormone release rather than synthesis is the mechanism.; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5549,7 +5549,7 @@
                     "criteria": {
                       "rule_id": "thyrotoxicosis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Thyrotoxicosis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Thyrotoxicosis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5755,7 +5755,7 @@
                         "id": "thyrotoxicosis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyrotoxicosis: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Thyrotoxicosis treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -5929,7 +5929,7 @@
                             "id": "thyrotoxicosis_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyrotoxicosis: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Thyrotoxicosis modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -5961,7 +5961,7 @@
                             "id": "thyrotoxicosis_monitoring_bundle",
                             "type": "action",
                             "label": "Thyrotoxicosis: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Thyrotoxicosis therapy or diagnostic plan, trend: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; Measure blood pressure",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -6141,7 +6141,7 @@
                                 "id": "thyrotoxicosis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Thyrotoxicosis reassessment worsens or contradicts expected response: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; Measure blood pressure",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -6554,7 +6554,7 @@
                                 "id": "thyrotoxicosis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Thyrotoxicosis objective response supports narrowing, stopping, tapering, or continuing: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia.",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -6967,7 +6967,7 @@
                                 "id": "thyrotoxicosis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyrotoxicosis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Thyrotoxicosis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -7492,7 +7492,7 @@
                     "id": "thyrotoxicosis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyrotoxicosis: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Thyrotoxicosis mimic/exclusion better fits: Thyrotoxicosis: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -8426,49 +8426,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Thyrotoxicosis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "thyrotoxicosis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Thyrotoxicosis result(s): TSH; free T4; total/free T3; assay reference intervals; TRAb/TSI or uptake pattern when needed; repeat TSH dates; age; cardiac disease"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyrotoxicosis_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Thyrotoxicosis danger feature or high-risk cutoff: Storm physiology, AF, heart failure, severe weight loss, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; TSH below LLN; free T4 above ULN; T3 above ULN; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyrotoxicosis_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Thyrotoxicosis mimic/exclusion better fits: Thyrotoxicosis: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyrotoxicosis_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Thyrotoxicosis modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyrotoxicosis_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Thyrotoxicosis reassessment worsens or contradicts expected response: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; TSH, free T4, T3.; TRAb/TSI.; RAIU: high uptake suggests overproduction; low uptake suggests thyroiditis/exogenous/iodine-related in many cases.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyrotoxicosis_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Thyrotoxicosis objective response supports narrowing, stopping, tapering, or continuing: TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use beta-blocker symptom control when not contraindicated for adrenergic symptoms or tachycardia."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyrotoxicosis_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Thyrotoxicosis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low uptake changes management away from antithyroid drugs toward thyroiditis/supportive pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

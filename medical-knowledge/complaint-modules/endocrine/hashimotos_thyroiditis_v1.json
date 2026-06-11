@@ -3605,7 +3605,7 @@
         "hashimotos_thyroiditis_treatment_bundle": {
           "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4695,7 +4695,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): compact evidence-cited management pathway",
+        "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -4728,7 +4728,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4784,7 +4784,7 @@
             "id": "hashimotos_thyroiditis_concurrent_data_bundle",
             "type": "action",
             "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) workup or documented findings: Have you had cold intolerance, constipation, fatigue, dry skin, slowed thinking, hoarse voice, weight gain, or heavy menses?; Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?; Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH, free T4, TPO antibody.",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -4819,8 +4819,8 @@
               {
                 "id": "hashimotos_thyroiditis_classification_decision",
                 "type": "decision",
-                "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): classify by Hypothyroid LT4 titration: target TSH typically 0.5 to 3.5 or 4 mIU/L; recheck 4-6 weeks after dose changes: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Hypothyroid LT4 adjustment: change by 12.5-25 mcg/day increments and repeat TSH 4-6 weeks; once stable check 4-6 months then yearly: 12.5-25 mcg/day, 4-6 weeks, 4-6 months | Hypothyroid overtreatment safety: avoid TSH <0.1 mIU/L; consider higher TSH target 4-6 mIU/L in age >70-80 years: TSH <0.1 mIU/L, 4-6 mIU/L, age >70-80 years | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH, free T4, TPO antibody.: 0.4-4.0 mIU/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) results available for threshold classification: TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; Ultrasound only for nodule, goiter, or compressive symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Hypothyroid safety data: check TSH/free T4 with TPO antibody when autoimmune disease matters, sodium/CK/lipids if severe or symptomatic, ECG/cardiac context for older or cardiac patients, and pregnancy-specific targets when pregnant or fertility planning.; TSH; LT4 dose; dose-change date; adherence/absorption interactions; pregnancy/age/comorbidity context",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5070,7 +5070,7 @@
                     "id": "hashimotos_thyroiditis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) result(s): TSH; LT4 dose; dose-change date; adherence/absorption interactions; pregnancy/age/comorbidity context; current LT4 dose; TSH trend; weight/age/pregnancy changes",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ATA_HYPOTHYROIDISM_2014",
@@ -5166,7 +5166,7 @@
                     "id": "hashimotos_thyroiditis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) danger feature or high-risk cutoff: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Positive TPO Ab supports autoimmune thyroiditis.",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5594,8 +5594,8 @@
                   {
                     "id": "hashimotos_thyroiditis_treatment_bundle",
                     "type": "action",
-                    "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): start treatment/disposition when Hypothyroid LT4 titration: target TSH typically 0.5 to 3.5 or 4 mIU/L; recheck 4-6 weeks after dose changes: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Hypothyroid LT4 adjustment: change by 12.5-25 mcg/day increments and repeat TSH 4-6 weeks; once stable check 4-6 months then yearly: 12.5-25 mcg/day, 4-6 weeks, 4-6 months | Hypothyroid overtreatment safety: avoid TSH <0.1 mIU/L; consider higher TSH target 4-6 mIU/L in age >70-80 years: TSH <0.1 mIU/L, 4-6 mIU/L, age >70-80 years | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH, free T4, TPO antibody.: 0.4-4.0 mIU/L matches",
-                    "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) criteria match or treatment cannot safely wait",
+                    "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment/disposition indicated by: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; 4-6 months; TSH <0.1 mIU/L; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.; For subclinical hypothyroidism, individualize treatment by TSH level, symptoms, antibodies, pregnancy/fertility context, goiter, and cardiovascular risk.; Use free T4 rather than TSH to titrate central hypothyroidism, after adrenal status is safe.; For suspected myxedema coma, use emergency IV thyroid hormone, stress-dose glucocorticoid coverage, warming, ventilation, sodium/glucose correction, and ICU-level care per local protocol.; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5606,7 +5606,7 @@
                     "criteria": {
                       "rule_id": "hashimotos_thyroiditis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5812,7 +5812,7 @@
                         "id": "hashimotos_thyroiditis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
                           "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -5995,7 +5995,7 @@
                             "id": "hashimotos_thyroiditis_review_endpoint",
                             "type": "endpoint",
                             "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6033,7 +6033,7 @@
                             "id": "hashimotos_thyroiditis_monitoring_bundle",
                             "type": "action",
                             "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) therapy or diagnostic plan, trend: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; Ultrasound only for nodule, goiter, or compressive symptoms.; Measure blood pressure",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
                               "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6216,7 +6216,7 @@
                                 "id": "hashimotos_thyroiditis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) reassessment worsens or contradicts expected response: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; Ultrasound only for nodule, goiter, or compressive symptoms.; Measure blood pressure",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -6613,7 +6613,7 @@
                                 "id": "hashimotos_thyroiditis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) objective response supports narrowing, stopping, tapering, or continuing: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications.",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -7010,7 +7010,7 @@
                                 "id": "hashimotos_thyroiditis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
                                   "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -7503,7 +7503,7 @@
                     "id": "hashimotos_thyroiditis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) mimic/exclusion better fits: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
                       "AACE_ATA_HYPOTHYROIDISM_2012",
@@ -8381,49 +8381,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hashimotos_thyroiditis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) result(s): TSH; LT4 dose; dose-change date; adherence/absorption interactions; pregnancy/age/comorbidity context; current LT4 dose; TSH trend; weight/age/pregnancy changes"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hashimotos_thyroiditis_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) danger feature or high-risk cutoff: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; Positive TPO Ab supports autoimmune thyroiditis."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hashimotos_thyroiditis_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) mimic/exclusion better fits: Hashimoto's Thyroiditis (Autoimmune Hypothyroidism): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hashimotos_thyroiditis_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hashimotos_thyroiditis_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) reassessment worsens or contradicts expected response: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; TSH, free T4, TPO antibody.; Thyroglobulin antibody as adjunct.; Ultrasound only for nodule, goiter, or compressive symptoms.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hashimotos_thyroiditis_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) objective response supports narrowing, stopping, tapering, or continuing: 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Treat overt primary hypothyroidism with levothyroxine, adjusted for age, cardiac disease, pregnancy, weight, adherence, and interacting medications."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hashimotos_thyroiditis_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Hashimoto's Thyroiditis (Autoimmune Hypothyroidism) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Positive TPO Ab supports autoimmune thyroiditis.; Suspicious nodule/compressive findings move to ultrasound/FNA pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

@@ -215,7 +215,7 @@ try {
   assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
   assert(/Orders and results/i.test(liveWorkupAudit.ordersText) && /Beta-hydroxybutyrate/i.test(liveWorkupAudit.ordersText), `workup should show necessary labs/exams and result fields: ${JSON.stringify(liveWorkupAudit)}`);
-  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /compact evidence-cited management pathway|evidence-cited clinical management pathway/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /does patient context support this workup|exact missing-data routing/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
   await page.click("#closeToolsButton");

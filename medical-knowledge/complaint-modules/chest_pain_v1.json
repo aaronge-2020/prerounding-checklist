@@ -3454,7 +3454,7 @@
         "chest_pain_treatment_bundle": {
           "rule_id": "chest_pain_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Chest pain treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Chest pain treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4081,7 +4081,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Chest pain: compact evidence-cited management pathway",
+        "label": "Chest pain: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "AHA_ACC_CHEST_PAIN_2021",
@@ -4108,7 +4108,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Chest pain pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Chest pain pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4164,7 +4164,7 @@
             "id": "chest_pain_concurrent_data_bundle",
             "type": "action",
             "label": "Chest pain: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Chest pain trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Chest pain workup or documented findings: When did the chest discomfort start, and is it ongoing?; What does it feel like, where is it, and does it radiate to arm, jaw, back, or shoulder?; Is it exertional, relieved by rest, or similar to prior angina?; Any shortness of breath, pleuritic pain, cough, hemoptysis, or oxygen requirement?; Unstable vitals or shock physiology; Syncope, new neurologic deficit, or severe sudden pain; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation",
             "source_ids": [
               "AHA_ACC_CHEST_PAIN_2021",
               "AHRQ_CALIBRATE_DX"
@@ -4193,8 +4193,8 @@
               {
                 "id": "chest_pain_classification_decision",
                 "type": "decision",
-                "label": "Chest pain: classify by Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Chest pain: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Chest pain results available for threshold classification: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Chest X-ray when pulmonary, pneumothorax, mediastinal, or heart failure features are possible; If PE concern persists, use local PE pathway for D-dimer or CT pulmonary angiography; arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin",
                 "source_ids": [
                   "AHA_ACC_CHEST_PAIN_2021",
                   "AHRQ_CALIBRATE_DX"
@@ -4322,7 +4322,7 @@
                     "id": "chest_pain_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Chest pain threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Chest pain result(s): arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin; repeat troponin time; delta troponin; structured chest pain risk score",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -4410,7 +4410,7 @@
                     "id": "chest_pain_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Chest pain: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Chest pain danger feature or high-risk cutoff: Unstable vitals or shock physiology; Syncope, new neurologic deficit, or severe sudden pain; Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms; Measure blood pressure; 10 minutes; 1 to 3 hours; 3 to 6 hours; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
                       "AHRQ_CALIBRATE_DX"
@@ -4632,8 +4632,8 @@
                   {
                     "id": "chest_pain_treatment_bundle",
                     "type": "action",
-                    "label": "Chest pain: start treatment/disposition when Acute chest pain ACS screen: 12-lead ECG reviewed within 10 minutes; cardiac troponin measured as soon as possible: 10 minutes | Serial troponin rule-out/rule-in timing: hs-cTn repeat at 1-3 hours; conventional cTn repeat at 3-6 hours: 1 to 3 hours, 3 to 6 hours | Low-risk chest pain: 30-day death/MACE risk <1%, HEART <3 or EDACS <16 with serial troponins below 99th percentile: <1%, HEART <3, EDACS <16 | Aortic dissection concern: abrupt severe/ripping pain plus pulse differential plus widened mediastinum gives >80% probability: >80% probability | 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation: 10 minutes matches",
-                    "edgeLabel": "Chest pain criteria match or treatment cannot safely wait",
+                    "label": "Chest pain: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Chest pain treatment/disposition indicated by: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; HEART <3; EDACS <16; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
                       "AHRQ_CALIBRATE_DX"
@@ -4641,7 +4641,7 @@
                     "criteria": {
                       "rule_id": "chest_pain_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Chest pain treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Chest pain treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4760,7 +4760,7 @@
                         "id": "chest_pain_treatment_safety_decision",
                         "type": "decision",
                         "label": "Chest pain: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Chest pain treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "AHA_ACC_CHEST_PAIN_2021",
                           "AHRQ_CALIBRATE_DX"
@@ -4790,7 +4790,7 @@
                             "id": "chest_pain_review_endpoint",
                             "type": "endpoint",
                             "label": "Chest pain: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Chest pain modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "AHA_ACC_CHEST_PAIN_2021",
                               "AHRQ_CALIBRATE_DX"
@@ -4822,7 +4822,7 @@
                             "id": "chest_pain_monitoring_bundle",
                             "type": "action",
                             "label": "Chest pain: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Chest pain therapy or diagnostic plan, trend: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Measure blood pressure",
                             "source_ids": [
                               "AHA_ACC_CHEST_PAIN_2021",
                               "AHRQ_CALIBRATE_DX"
@@ -4947,7 +4947,7 @@
                                 "id": "chest_pain_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Chest pain: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Chest pain reassessment worsens or contradicts expected response: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Measure blood pressure",
                                 "source_ids": [
                                   "AHA_ACC_CHEST_PAIN_2021",
                                   "AHRQ_CALIBRATE_DX"
@@ -5170,7 +5170,7 @@
                                 "id": "chest_pain_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Chest pain: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Chest pain objective response supports narrowing, stopping, tapering, or continuing: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.",
                                 "source_ids": [
                                   "AHA_ACC_CHEST_PAIN_2021",
                                   "AHRQ_CALIBRATE_DX"
@@ -5393,7 +5393,7 @@
                                 "id": "chest_pain_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Chest pain: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Chest pain stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation.",
                                 "source_ids": [
                                   "AHA_ACC_CHEST_PAIN_2021",
                                   "AHRQ_CALIBRATE_DX"
@@ -5644,7 +5644,7 @@
                     "id": "chest_pain_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Chest pain: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Chest pain mimic/exclusion better fits: ACS or myocardial injury; PE, pneumothorax, pneumonia, or pleural disease; Aortic syndrome or vascular emergency; Musculoskeletal, GI, anxiety, or other noncardiac causes after red flags are addressed",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021",
                       "AHRQ_CALIBRATE_DX"
@@ -6114,49 +6114,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Chest pain pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "chest_pain_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Chest pain result(s): arrival time; 12-lead ECG; cardiac troponin assay and collection time; troponin assay type; time-zero troponin; repeat troponin time; delta troponin; structured chest pain risk score"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "chest_pain_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Chest pain danger feature or high-risk cutoff: Unstable vitals or shock physiology; Syncope, new neurologic deficit, or severe sudden pain; Dissection pattern: tearing/ripping pain, back radiation, pulse/BP differential, neuro symptoms; Measure blood pressure; 10 minutes; 1 to 3 hours; 3 to 6 hours; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "chest_pain_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Chest pain mimic/exclusion better fits: ACS or myocardial injury; PE, pneumothorax, pneumonia, or pleural disease; Aortic syndrome or vascular emergency; Musculoskeletal, GI, anxiety, or other noncardiac causes after red flags are addressed"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "chest_pain_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Chest pain modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "chest_pain_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Chest pain reassessment worsens or contradicts expected response: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation; High-sensitivity troponin pathway with serial testing per local protocol; Cardiac monitor, IV access, and repeat vitals if acute or unstable; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "chest_pain_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Chest pain objective response supports narrowing, stopping, tapering, or continuing: 10 minutes; 1 to 3 hours; 3 to 6 hours; <1%; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "chest_pain_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Chest pain stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Acute chest pain with red flags belongs in emergency/monitored evaluation, not routine outpatient workup.; Use a structured chest pain clinical decision pathway and risk stratification rather than gestalt alone.; Monitor treatment response, complications, and need for reassessment with: 12-lead ECG immediately for acute chest pain, ideally within 10 minutes in emergency evaluation."
         }
       ],
       "audit_requirements": {

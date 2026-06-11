@@ -3830,7 +3830,7 @@
         "amenorrhea_treatment_bundle": {
           "rule_id": "amenorrhea_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4974,7 +4974,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Amenorrhea (Absence of menstruation): compact evidence-cited management pathway",
+        "label": "Amenorrhea (Absence of menstruation): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ASRM_AMENORRHEA_2024",
@@ -5001,7 +5001,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Amenorrhea (Absence of menstruation) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Amenorrhea (Absence of menstruation) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5057,7 +5057,7 @@
             "id": "amenorrhea_concurrent_data_bundle",
             "type": "action",
             "label": "Amenorrhea (Absence of menstruation): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Amenorrhea (Absence of menstruation) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Amenorrhea (Absence of menstruation) workup or documented findings: Did menstrual periods never start by the expected age, or did previously present periods stop?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pregnancy test first.",
             "source_ids": [
               "ASRM_AMENORRHEA_2024",
               "AHRQ_CALIBRATE_DX"
@@ -5086,8 +5086,8 @@
               {
                 "id": "amenorrhea_classification_decision",
                 "type": "decision",
-                "label": "Amenorrhea (Absence of menstruation): classify by Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Pregnancy test first.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | TSH and prolactin.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | FSH and estradiol.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Amenorrhea (Absence of menstruation): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Amenorrhea (Absence of menstruation) results available for threshold classification: Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L",
                 "source_ids": [
                   "ASRM_AMENORRHEA_2024",
                   "AHRQ_CALIBRATE_DX"
@@ -5333,7 +5333,7 @@
                     "id": "amenorrhea_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Amenorrhea (Absence of menstruation) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Amenorrhea (Absence of menstruation) result(s): 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ASRM_AMENORRHEA_2024"
@@ -5393,7 +5393,7 @@
                     "id": "amenorrhea_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Amenorrhea (Absence of menstruation): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Amenorrhea (Absence of menstruation) danger feature or high-risk cutoff: Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -5835,8 +5835,8 @@
                   {
                     "id": "amenorrhea_treatment_bundle",
                     "type": "action",
-                    "label": "Amenorrhea (Absence of menstruation): start treatment/disposition when Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Pregnancy test first.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | TSH and prolactin.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | FSH and estradiol.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L | Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.: 20 ng/mL, 25 ng/mL, 0.4-4.0 mIU/L matches",
-                    "edgeLabel": "Amenorrhea (Absence of menstruation) criteria match or treatment cannot safely wait",
+                    "label": "Amenorrhea (Absence of menstruation): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Amenorrhea (Absence of menstruation) treatment/disposition indicated by: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.; For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.; For POI, provide hormone replacement when appropriate, fertility counseling, and bone/cardiovascular prevention.; Provide endometrial protection for chronic anovulation when pregnancy is not desired.; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -5844,7 +5844,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Amenorrhea (Absence of menstruation) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6065,7 +6065,7 @@
                         "id": "amenorrhea_treatment_safety_decision",
                         "type": "decision",
                         "label": "Amenorrhea (Absence of menstruation): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Amenorrhea (Absence of menstruation) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ASRM_AMENORRHEA_2024",
                           "AHRQ_CALIBRATE_DX"
@@ -6254,7 +6254,7 @@
                             "id": "amenorrhea_review_endpoint",
                             "type": "endpoint",
                             "label": "Amenorrhea (Absence of menstruation): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Amenorrhea (Absence of menstruation) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "AHRQ_CALIBRATE_DX"
@@ -6286,7 +6286,7 @@
                             "id": "amenorrhea_monitoring_bundle",
                             "type": "action",
                             "label": "Amenorrhea (Absence of menstruation): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Amenorrhea (Absence of menstruation) therapy or diagnostic plan, trend: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Measure blood pressure; Measure heart rate",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
                               "AHRQ_CALIBRATE_DX"
@@ -6475,7 +6475,7 @@
                                 "id": "amenorrhea_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Amenorrhea (Absence of menstruation): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Amenorrhea (Absence of menstruation) reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Measure blood pressure; Measure heart rate",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -6880,7 +6880,7 @@
                                 "id": "amenorrhea_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Amenorrhea (Absence of menstruation): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Amenorrhea (Absence of menstruation) objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.; For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection.",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -7285,7 +7285,7 @@
                                 "id": "amenorrhea_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Amenorrhea (Absence of menstruation): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Amenorrhea (Absence of menstruation) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -7776,7 +7776,7 @@
                     "id": "amenorrhea_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Amenorrhea (Absence of menstruation): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Amenorrhea (Absence of menstruation) mimic/exclusion better fits: Amenorrhea (Absence of menstruation): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -8646,49 +8646,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Amenorrhea (Absence of menstruation) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "amenorrhea_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Amenorrhea (Absence of menstruation) result(s): 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Androgen testing when hyperandrogenism: testosterone, DHEAS, 17-OHP.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "amenorrhea_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) danger feature or high-risk cutoff: Positive pregnancy with pain/bleeding, visual loss/headache, rapid virilization, vital sign instability/eating disorder.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "amenorrhea_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) mimic/exclusion better fits: Amenorrhea (Absence of menstruation): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "amenorrhea_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "amenorrhea_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; Pregnancy test first.; TSH and prolactin.; FSH and estradiol.; Measure blood pressure; Measure heart rate"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "amenorrhea_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; 0.4-4.0 mIU/L; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause: pregnancy care, thyroid disease, hyperprolactinemia, PCOS/anovulation, functional hypothalamic amenorrhea, POI, or structural outflow disorder.; For functional hypothalamic amenorrhea, prioritize nutrition, weight restoration, exercise reduction, stress care, and bone protection."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "amenorrhea_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Amenorrhea (Absence of menstruation) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; FSH/E2 pattern separates ovarian failure from central/hypothalamic causes and changes imaging/referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

@@ -3353,7 +3353,7 @@
         "cushings_disease_treatment_bundle": {
           "rule_id": "cushings_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4417,7 +4417,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Disease (Pituitary-dependent Cushing's): compact evidence-cited management pathway",
+        "label": "Cushing's Disease (Pituitary-dependent Cushing's): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -4448,7 +4448,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Cushing's Disease (Pituitary-dependent Cushing's) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4504,7 +4504,7 @@
             "id": "cushings_disease_concurrent_data_bundle",
             "type": "action",
             "label": "Cushing's Disease (Pituitary-dependent Cushing's): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Cushing's Disease (Pituitary-dependent Cushing's) workup or documented findings: Have you noticed easy bruising, proximal muscle weakness, wide purple stretch marks, facial rounding, new hypertension, new diabetes, or recurrent infections?; Do symptoms occur in episodes or cycles, and are there symptom-free intervals, repeated abnormal labs, or triggers that suggest cyclic hormone excess?; Any oral, injected, inhaled, topical, eye-drop, joint-injection, or supplement steroid exposure?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -4537,8 +4537,8 @@
               {
                 "id": "cushings_disease_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Disease (Pituitary-dependent Cushing's): classify by Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | Cushing's Disease (Pituitary-dependent Cushing's): diagnostic frame from guideline-sourced endocrine workup: or 1-mg DST cortisol >1.8 ug/dL | Key thresholds and interpretation caveats: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: Post-1 mg DST cortisol >1.8 ug/dL | First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.: or 1-mg DST cortisol >1.8 ug/dL, Post-1 mg DST cortisol >1.8 ug/dL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Cushing's Disease (Pituitary-dependent Cushing's): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) results available for threshold classification: First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Inferior petrosal sinus sampling when MRI equivocal/discordant.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
                   "ES_CUSHING_TREATMENT_2015",
@@ -4799,7 +4799,7 @@
                     "id": "cushings_disease_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Cushing's Disease (Pituitary-dependent Cushing's) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_CUSHING_DX_2008",
@@ -4895,7 +4895,7 @@
                     "id": "cushings_disease_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Disease (Pituitary-dependent Cushing's): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) danger feature or high-risk cutoff: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -5331,8 +5331,8 @@
                   {
                     "id": "cushings_disease_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Disease (Pituitary-dependent Cushing's): start treatment/disposition when Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | Cushing's Disease (Pituitary-dependent Cushing's): diagnostic frame from guideline-sourced endocrine workup: or 1-mg DST cortisol >1.8 ug/dL | Key thresholds and interpretation caveats: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: Post-1 mg DST cortisol >1.8 ug/dL | First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.: or 1-mg DST cortisol >1.8 ug/dL, Post-1 mg DST cortisol >1.8 ug/dL matches",
-                    "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) criteria match or treatment cannot safely wait",
+                    "label": "Cushing's Disease (Pituitary-dependent Cushing's): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) treatment/disposition indicated by: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -5342,7 +5342,7 @@
                     "criteria": {
                       "rule_id": "cushings_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Cushing's Disease (Pituitary-dependent Cushing's) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5544,7 +5544,7 @@
                         "id": "cushings_disease_treatment_safety_decision",
                         "type": "decision",
                         "label": "Cushing's Disease (Pituitary-dependent Cushing's): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -5722,7 +5722,7 @@
                             "id": "cushings_disease_review_endpoint",
                             "type": "endpoint",
                             "label": "Cushing's Disease (Pituitary-dependent Cushing's): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -5758,7 +5758,7 @@
                             "id": "cushings_disease_monitoring_bundle",
                             "type": "action",
                             "label": "Cushing's Disease (Pituitary-dependent Cushing's): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Cushing's Disease (Pituitary-dependent Cushing's) therapy or diagnostic plan, trend: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Measure blood pressure",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -5936,7 +5936,7 @@
                                 "id": "cushings_disease_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Disease (Pituitary-dependent Cushing's): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -6341,7 +6341,7 @@
                                 "id": "cushings_disease_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Disease (Pituitary-dependent Cushing's): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -6746,7 +6746,7 @@
                                 "id": "cushings_disease_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Disease (Pituitary-dependent Cushing's): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -7262,7 +7262,7 @@
                     "id": "cushings_disease_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Disease (Pituitary-dependent Cushing's): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Cushing's Disease (Pituitary-dependent Cushing's) mimic/exclusion better fits: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -8174,49 +8174,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "cushings_disease_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Cushing's Disease (Pituitary-dependent Cushing's) result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_disease_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) danger feature or high-risk cutoff: Severe hypercortisolism with infection, hypokalemia, psychosis, VTE, uncontrolled hypertension/diabetes.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "cushings_disease_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) mimic/exclusion better fits: Cushing's Disease (Pituitary-dependent Cushing's): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Post-1 mg DST cortisol >1.8 ug/dL is a sensitive abnormal screen; late-night salivary and UFC cutoffs are assay-specific. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_disease_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_disease_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; First confirm endogenous Cushing with UFC, late-night salivary cortisol, or 1-mg DST cortisol >1.8 ug/dL.; ACTH: normal/high supports ACTH-dependent disease.; Pituitary MRI.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "cushings_disease_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_disease_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Cushing's Disease (Pituitary-dependent Cushing's) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; ACTH-dependent confirmed Cushing plus pituitary localization changes to pituitary surgery pathway; discordance triggers IPSS.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

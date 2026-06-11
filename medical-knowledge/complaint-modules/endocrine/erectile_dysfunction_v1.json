@@ -4311,7 +4311,7 @@
         "erectile_dysfunction_treatment_bundle": {
           "rule_id": "erectile_dysfunction_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6059,7 +6059,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Erectile Dysfunction (Endocrine-related): compact evidence-cited management pathway",
+        "label": "Erectile Dysfunction (Endocrine-related): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -6090,7 +6090,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Erectile Dysfunction (Endocrine-related) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Erectile Dysfunction (Endocrine-related) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -6146,7 +6146,7 @@
             "id": "erectile_dysfunction_concurrent_data_bundle",
             "type": "action",
             "label": "Erectile Dysfunction (Endocrine-related): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Erectile Dysfunction (Endocrine-related) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Erectile Dysfunction (Endocrine-related) workup or documented findings: Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; Any new, worsening, resistant, or treatment-limiting hypertension or diabetes that changes endocrine severity, complication screening, or medication choice?; Any history of ASCVD, heart failure, stroke/TIA, peripheral arterial disease, claudication, or vascular procedures?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Morning total testosterone.",
             "source_ids": [
               "AUA_ED_2018",
               "ES_TESTOSTERONE_2018",
@@ -6179,8 +6179,8 @@
               {
                 "id": "erectile_dysfunction_classification_decision",
                 "type": "decision",
-                "label": "Erectile Dysfunction (Endocrine-related): classify by Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Morning total testosterone.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | A1c/FPG and lipids.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Erectile Dysfunction (Endocrine-related): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Erectile Dysfunction (Endocrine-related) results available for threshold classification: Morning total testosterone.; A1c/FPG and lipids.; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Gonadal axis safety tests: pregnancy test when possible, prolactin/TSH, LH/FSH with estradiol or repeated early-morning testosterone, and targeted androgen, semen, bone, or metabolic testing based on syndrome and fertility goals.; 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
                   "AUA_ED_2018",
@@ -6564,7 +6564,7 @@
                     "id": "erectile_dysfunction_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Erectile Dysfunction (Endocrine-related) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Erectile Dysfunction (Endocrine-related) result(s): 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126; normal <140 mg/dL",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_TESTOSTERONE_2018",
@@ -6642,7 +6642,7 @@
                     "id": "erectile_dysfunction_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Erectile Dysfunction (Endocrine-related): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Erectile Dysfunction (Endocrine-related) danger feature or high-risk cutoff: New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; 20 ng/mL; 25 ng/mL; normal <5.7%; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.",
                     "source_ids": [
                       "AUA_ED_2018",
                       "ES_TESTOSTERONE_2018",
@@ -7320,8 +7320,8 @@
                   {
                     "id": "erectile_dysfunction_treatment_bundle",
                     "type": "action",
-                    "label": "Erectile Dysfunction (Endocrine-related): start treatment/disposition when Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Morning total testosterone.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | A1c/FPG and lipids.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 20 ng/mL, 25 ng/mL, normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL matches",
-                    "edgeLabel": "Erectile Dysfunction (Endocrine-related) criteria match or treatment cannot safely wait",
+                    "label": "Erectile Dysfunction (Endocrine-related): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Erectile Dysfunction (Endocrine-related) treatment/disposition indicated by: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.; Use PDE5 inhibitor therapy when not contraindicated, with nitrate/riociguat interaction and cardiac risk review.; Treat confirmed hypogonadism only when symptomatic and safe, avoiding exogenous testosterone when fertility is desired.; Escalate to vacuum device, intraurethral/intracavernosal therapy, penile prosthesis, psychosexual therapy, or urology referral when first-line therapy fails or is contraindicated.; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "AUA_ED_2018",
                       "ES_TESTOSTERONE_2018",
@@ -7331,7 +7331,7 @@
                     "criteria": {
                       "rule_id": "erectile_dysfunction_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Erectile Dysfunction (Endocrine-related) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -7652,7 +7652,7 @@
                         "id": "erectile_dysfunction_treatment_safety_decision",
                         "type": "decision",
                         "label": "Erectile Dysfunction (Endocrine-related): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Erectile Dysfunction (Endocrine-related) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_ED_2018",
@@ -7943,7 +7943,7 @@
                             "id": "erectile_dysfunction_review_endpoint",
                             "type": "endpoint",
                             "label": "Erectile Dysfunction (Endocrine-related): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Erectile Dysfunction (Endocrine-related) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_ED_2018",
@@ -7979,7 +7979,7 @@
                             "id": "erectile_dysfunction_monitoring_bundle",
                             "type": "action",
                             "label": "Erectile Dysfunction (Endocrine-related): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Erectile Dysfunction (Endocrine-related) therapy or diagnostic plan, trend: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; Morning total testosterone.; A1c/FPG and lipids.; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.; Measure blood pressure",
                             "source_ids": [
                               "AUA_ED_2018",
                               "ES_TESTOSTERONE_2018",
@@ -8270,7 +8270,7 @@
                                 "id": "erectile_dysfunction_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Erectile Dysfunction (Endocrine-related): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Erectile Dysfunction (Endocrine-related) reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; Morning total testosterone.; A1c/FPG and lipids.; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.; Measure blood pressure",
                                 "source_ids": [
                                   "AUA_ED_2018",
                                   "ES_TESTOSTERONE_2018",
@@ -8911,7 +8911,7 @@
                                 "id": "erectile_dysfunction_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Erectile Dysfunction (Endocrine-related): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Erectile Dysfunction (Endocrine-related) objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors.",
                                 "source_ids": [
                                   "AUA_ED_2018",
                                   "ES_TESTOSTERONE_2018",
@@ -9552,7 +9552,7 @@
                                 "id": "erectile_dysfunction_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Erectile Dysfunction (Endocrine-related): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Erectile Dysfunction (Endocrine-related) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "AUA_ED_2018",
                                   "ES_TESTOSTERONE_2018",
@@ -10315,7 +10315,7 @@
                     "id": "erectile_dysfunction_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Erectile Dysfunction (Endocrine-related): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Erectile Dysfunction (Endocrine-related) mimic/exclusion better fits: Erectile Dysfunction (Endocrine-related): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
                     "source_ids": [
                       "AUA_ED_2018",
                       "ES_TESTOSTERONE_2018",
@@ -11699,49 +11699,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Erectile Dysfunction (Endocrine-related) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "erectile_dysfunction_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Erectile Dysfunction (Endocrine-related) result(s): 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126; normal <140 mg/dL"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "erectile_dysfunction_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) danger feature or high-risk cutoff: New ED with chest pain/claudication, neurologic deficit, priapism, severe hypogonadism/pituitary symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; 20 ng/mL; 25 ng/mL; normal <5.7%; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "erectile_dysfunction_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) mimic/exclusion better fits: Erectile Dysfunction (Endocrine-related): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "erectile_dysfunction_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "erectile_dysfunction_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; Morning total testosterone.; A1c/FPG and lipids.; TSH/prolactin when low libido, gynecomastia, infertility, or pituitary symptoms.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "erectile_dysfunction_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; normal <5.7%; 5.7-6.4%; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Optimize cardiovascular risk, diabetes, BP/lipids, smoking, alcohol, sleep apnea, mood, and medication contributors."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "erectile_dysfunction_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Erectile Dysfunction (Endocrine-related) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Low testosterone changes to hypogonadism pathway; diabetes/ASCVD risk changes cardiovascular management.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

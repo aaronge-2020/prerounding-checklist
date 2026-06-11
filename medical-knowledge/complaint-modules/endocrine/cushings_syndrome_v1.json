@@ -3172,7 +3172,7 @@
         "cushings_syndrome_treatment_bundle": {
           "rule_id": "cushings_syndrome_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Cushing's Syndrome treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Cushing's Syndrome treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3712,7 +3712,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Cushing's Syndrome: compact evidence-cited management pathway",
+        "label": "Cushing's Syndrome: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -3743,7 +3743,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Cushing's Syndrome pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Cushing's Syndrome pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3799,7 +3799,7 @@
             "id": "cushings_syndrome_concurrent_data_bundle",
             "type": "action",
             "label": "Cushing's Syndrome: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Cushing's Syndrome trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Cushing's Syndrome workup or documented findings: Do you have trouble rising from a chair, climbing stairs, lifting overhead, or getting up from the floor?; Any measured fever, rigors, hypothermia, or toxic appearance suggesting infection as a precipitant or mimic?; Any cough, sputum, pleuritic pain, dyspnea, hypoxemia, or focal chest symptoms suggesting pneumonia or respiratory infection?; Any dysuria, urinary frequency or urgency, suprapubic pain, hematuria, or flank pain suggesting UTI or pyelonephritis?; Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Exclude exogenous steroids.",
             "source_ids": [
               "ES_CUSHING_DX_2008",
               "ES_CUSHING_TREATMENT_2015",
@@ -3832,8 +3832,8 @@
               {
                 "id": "cushings_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Syndrome: classify by Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: cortisol >1.8 ug/dL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Cushing's Syndrome: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Cushing's Syndrome results available for threshold classification: Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; 24-hour urinary free cortisol, at least two collections.; ACTH after confirmed hypercortisolism.; UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
                   "ES_CUSHING_TREATMENT_2015",
@@ -3932,7 +3932,7 @@
                     "id": "cushings_syndrome_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Cushing's Syndrome threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Cushing's Syndrome result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_CUSHING_DX_2008",
@@ -4026,7 +4026,7 @@
                     "id": "cushings_syndrome_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Syndrome: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Cushing's Syndrome danger feature or high-risk cutoff: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4186,8 +4186,8 @@
                   {
                     "id": "cushings_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Syndrome: start treatment/disposition when Cushing initial testing: use UFC at least 2 measurements, late-night salivary cortisol 2 measurements, 1-mg overnight DST, or 2 mg/day for 48 hours DST: at least 2 measurements, 2 measurements, 1 mg, 2 mg/day, 48 hours | Cushing positive biochemical screen: UFC > assay ULN, post-1 mg DST cortisol >1.8 ug/dL (50 nmol/L), or late-night salivary cortisol >145 ng/dL (4 nmol/L): >ULN, >1.8 ug/dL, >145 ng/dL | 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.: cortisol >1.8 ug/dL matches",
-                    "edgeLabel": "Cushing's Syndrome criteria match or treatment cannot safely wait",
+                    "label": "Cushing's Syndrome: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Cushing's Syndrome treatment/disposition indicated by: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; 48 hours; >ULN; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.; Control severe hypercortisolism complications urgently, including infection, VTE, psychosis, hypokalemia, hypertension, diabetes, and heart failure.; Use steroidogenesis inhibitors, glucocorticoid receptor blockade, pituitary-directed drugs, radiation, or bilateral adrenalectomy when surgery is delayed, incomplete, impossible, or recurrent.; Provide postoperative adrenal insufficiency monitoring, glucocorticoid replacement/taper, recurrence surveillance, and cardiometabolic/bone risk treatment.; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -4197,7 +4197,7 @@
                     "criteria": {
                       "rule_id": "cushings_syndrome_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Cushing's Syndrome treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Cushing's Syndrome treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4285,7 +4285,7 @@
                         "id": "cushings_syndrome_treatment_safety_decision",
                         "type": "decision",
                         "label": "Cushing's Syndrome: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Cushing's Syndrome treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
                           "ES_CUSHING_TREATMENT_2015",
@@ -4381,7 +4381,7 @@
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
                             "label": "Cushing's Syndrome: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Cushing's Syndrome modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4417,7 +4417,7 @@
                             "id": "cushings_syndrome_monitoring_bundle",
                             "type": "action",
                             "label": "Cushing's Syndrome: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Cushing's Syndrome therapy or diagnostic plan, trend: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
                               "ES_CUSHING_TREATMENT_2015",
@@ -4513,7 +4513,7 @@
                                 "id": "cushings_syndrome_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Syndrome: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Cushing's Syndrome reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4674,7 +4674,7 @@
                                 "id": "cushings_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Syndrome: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Cushing's Syndrome objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy.",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -4835,7 +4835,7 @@
                                 "id": "cushings_syndrome_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Cushing's Syndrome: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Cushing's Syndrome stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
                                   "ES_CUSHING_TREATMENT_2015",
@@ -5028,7 +5028,7 @@
                     "id": "cushings_syndrome_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Cushing's Syndrome: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Cushing's Syndrome mimic/exclusion better fits: Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
                       "ES_CUSHING_TREATMENT_2015",
@@ -5372,49 +5372,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Cushing's Syndrome pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "cushings_syndrome_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Cushing's Syndrome result(s): UFC collection count; late-night salivary cortisol count; dexamethasone dose and timing; renal function; pregnancy/antiepileptic context; 24-hour UFC with assay ULN; post-DST cortisol; late-night salivary cortisol"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "cushings_syndrome_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Cushing's Syndrome danger feature or high-risk cutoff: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; at least 2 measurements; 2 measurements; 1 mg; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "cushings_syndrome_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Cushing's Syndrome mimic/exclusion better fits: Cushing's Syndrome: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; abnormal screening generally needs confirmation. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "cushings_syndrome_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Cushing's Syndrome modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "cushings_syndrome_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Cushing's Syndrome reassessment worsens or contradicts expected response: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Exclude exogenous steroids.; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff.; Late-night salivary cortisol, often two samples.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "cushings_syndrome_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Cushing's Syndrome objective response supports narrowing, stopping, tapering, or continuing: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat the cause when feasible: transsphenoidal pituitary surgery for Cushing disease, adrenalectomy for unilateral adrenal cortisol excess, or ectopic source-directed therapy."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "cushings_syndrome_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Cushing's Syndrome stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; ACTH directs adrenal vs ACTH-dependent workup.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

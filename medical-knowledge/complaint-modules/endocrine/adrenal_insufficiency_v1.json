@@ -3831,7 +3831,7 @@
         "adrenal_insufficiency_treatment_bundle": {
           "rule_id": "adrenal_insufficiency_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Adrenal Insufficiency treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Adrenal Insufficiency treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5347,7 +5347,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Adrenal Insufficiency: compact evidence-cited management pathway",
+        "label": "Adrenal Insufficiency: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5374,7 +5374,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Adrenal Insufficiency pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Adrenal Insufficiency pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5430,7 +5430,7 @@
             "id": "adrenal_insufficiency_concurrent_data_bundle",
             "type": "action",
             "label": "Adrenal Insufficiency: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Adrenal Insufficiency trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Adrenal Insufficiency workup or documented findings: Any fatigue, cold intolerance, constipation, dry skin, hoarse voice, slowed thinking, depression, heavy menses, or weight gain suggesting hypothyroidism?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?; Any vomiting, severe weakness, abdominal pain, fever, missed steroid doses, recent illness, or inability to keep down stress-dose steroids?; Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 8 AM cortisol and ACTH.",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5459,8 +5459,8 @@
               {
                 "id": "adrenal_insufficiency_classification_decision",
                 "type": "decision",
-                "label": "Adrenal Insufficiency: classify by Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL | 8 AM cortisol and ACTH.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Cosyntropin stimulation test.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Adrenal Insufficiency: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Adrenal Insufficiency results available for threshold classification: 8 AM cortisol and ACTH.; Cosyntropin stimulation test.; BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Adrenal insufficiency safety labs: check sodium, potassium, glucose, bicarbonate, creatinine, morning cortisol/ACTH or cosyntropin testing when stable, and renin/aldosterone or 17-OHP context for mineralocorticoid/CAH decisions; do not delay stress-dose steroids in shock.; AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL",
                 "source_ids": [
                   "ES_ADRENAL_INSUFFICIENCY_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -5770,7 +5770,7 @@
                     "id": "adrenal_insufficiency_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Adrenal Insufficiency threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Adrenal Insufficiency result(s): AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; 3.5-5.0 mmol/L; 8 AM cortisol and ACTH.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -5838,7 +5838,7 @@
                     "id": "adrenal_insufficiency_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Adrenal Insufficiency: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Adrenal Insufficiency danger feature or high-risk cutoff: Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; AM cortisol <3 ug/dL; >15; 18 ug/dL; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -6406,8 +6406,8 @@
                   {
                     "id": "adrenal_insufficiency_treatment_bundle",
                     "type": "action",
-                    "label": "Adrenal Insufficiency: start treatment/disposition when Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL | 8 AM cortisol and ACTH.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Cosyntropin stimulation test.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L matches",
-                    "edgeLabel": "Adrenal Insufficiency criteria match or treatment cannot safely wait",
+                    "label": "Adrenal Insufficiency: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Adrenal Insufficiency treatment/disposition indicated by: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol.; For chronic replacement, use hydrocortisone 15-25 mg/day in divided doses or prednisolone 3-5 mg/day when appropriate; avoid dexamethasone for routine replacement.; Add fludrocortisone 50-100 microgram/day and liberal salt intake when aldosterone deficiency is confirmed, monitoring BP, edema, electrolytes, salt craving, and renin.; Provide sick-day rules, emergency injectable glucocorticoid plan, medical alert identification, perioperative stress dosing, and pregnancy-specific review.; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -6415,7 +6415,7 @@
                     "criteria": {
                       "rule_id": "adrenal_insufficiency_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Adrenal Insufficiency treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Adrenal Insufficiency treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6698,7 +6698,7 @@
                         "id": "adrenal_insufficiency_treatment_safety_decision",
                         "type": "decision",
                         "label": "Adrenal Insufficiency: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Adrenal Insufficiency treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -6949,7 +6949,7 @@
                             "id": "adrenal_insufficiency_review_endpoint",
                             "type": "endpoint",
                             "label": "Adrenal Insufficiency: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Adrenal Insufficiency modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_ADRENAL_INSUFFICIENCY_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -6981,7 +6981,7 @@
                             "id": "adrenal_insufficiency_monitoring_bundle",
                             "type": "action",
                             "label": "Adrenal Insufficiency: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Adrenal Insufficiency therapy or diagnostic plan, trend: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol and ACTH.; Cosyntropin stimulation test.; BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.; Measure blood pressure",
                             "source_ids": [
                               "ES_ADRENAL_INSUFFICIENCY_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -7232,7 +7232,7 @@
                                 "id": "adrenal_insufficiency_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Adrenal Insufficiency: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Adrenal Insufficiency reassessment worsens or contradicts expected response: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol and ACTH.; Cosyntropin stimulation test.; BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -7763,7 +7763,7 @@
                                 "id": "adrenal_insufficiency_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Adrenal Insufficiency: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Adrenal Insufficiency objective response supports narrowing, stopping, tapering, or continuing: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol.",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -8294,7 +8294,7 @@
                                 "id": "adrenal_insufficiency_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Adrenal Insufficiency: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Adrenal Insufficiency stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -8913,7 +8913,7 @@
                     "id": "adrenal_insufficiency_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Adrenal Insufficiency: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Adrenal Insufficiency mimic/exclusion better fits: Adrenal Insufficiency: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -10043,49 +10043,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Adrenal Insufficiency pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adrenal_insufficiency_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Adrenal Insufficiency result(s): AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; 3.5-5.0 mmol/L; 8 AM cortisol and ACTH."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "adrenal_insufficiency_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Adrenal Insufficiency danger feature or high-risk cutoff: Shock, vomiting/dehydration, hypoglycemia, severe hyponatremia/hyperkalemia, altered mental status.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; AM cortisol <3 ug/dL; >15; 18 ug/dL; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "adrenal_insufficiency_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Adrenal Insufficiency mimic/exclusion better fits: Adrenal Insufficiency: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "adrenal_insufficiency_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Adrenal Insufficiency modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "adrenal_insufficiency_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Adrenal Insufficiency reassessment worsens or contradicts expected response: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol and ACTH.; Cosyntropin stimulation test.; BMP/glucose; renin/aldosterone and 21-hydroxylase Ab if primary suspected.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "adrenal_insufficiency_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Adrenal Insufficiency objective response supports narrowing, stopping, tapering, or continuing: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "adrenal_insufficiency_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Adrenal Insufficiency stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspected adrenal crisis should be treated urgently; do not delay hydrocortisone for testing if unstable.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

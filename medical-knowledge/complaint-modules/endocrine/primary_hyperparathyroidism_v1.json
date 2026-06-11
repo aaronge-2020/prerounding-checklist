@@ -3815,7 +3815,7 @@
         "primary_hyperparathyroidism_treatment_bundle": {
           "rule_id": "primary_hyperparathyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Primary Hyperparathyroidism treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Primary Hyperparathyroidism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5387,7 +5387,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Primary Hyperparathyroidism: compact evidence-cited management pathway",
+        "label": "Primary Hyperparathyroidism: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "PHPT_WORKSHOP_2022",
@@ -5414,7 +5414,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Primary Hyperparathyroidism pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Primary Hyperparathyroidism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5470,7 +5470,7 @@
             "id": "primary_hyperparathyroidism_concurrent_data_bundle",
             "type": "action",
             "label": "Primary Hyperparathyroidism: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Primary Hyperparathyroidism trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Primary Hyperparathyroidism workup or documented findings: Any kidney stones, constipation, polyuria, polydipsia, bone pain, confusion, dehydration, or reduced kidney function?; Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Primary Hyperparathyroidism interpretation or safety?; Any family history of MEN, familial hypocalciuric hypercalcemia, parathyroid disease, kidney stones, pituitary tumors, pancreatic neuroendocrine tumors, or jaw tumors?; Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?; Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Repeat albumin-corrected/ionized calcium with intact PTH.",
             "source_ids": [
               "PHPT_WORKSHOP_2022",
               "AHRQ_CALIBRATE_DX"
@@ -5499,8 +5499,8 @@
               {
                 "id": "primary_hyperparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Primary Hyperparathyroidism: classify by Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Repeat albumin-corrected/ionized calcium with intact PTH.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | 25(OH)D, phosphorus, creatinine/eGFR.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Primary Hyperparathyroidism: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Primary Hyperparathyroidism results available for threshold classification: Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR.; 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "PHPT_WORKSHOP_2022",
                   "AHRQ_CALIBRATE_DX"
@@ -5868,7 +5868,7 @@
                     "id": "primary_hyperparathyroidism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Primary Hyperparathyroidism threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Primary Hyperparathyroidism result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; as low and <12 ng/mL; FHH often Ca/Cr clearance ratio <0.01",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "PHPT_WORKSHOP_2022"
@@ -5938,7 +5938,7 @@
                     "id": "primary_hyperparathyroidism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Primary Hyperparathyroidism: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Primary Hyperparathyroidism danger feature or high-risk cutoff: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; Measure blood pressure; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -6570,8 +6570,8 @@
                   {
                     "id": "primary_hyperparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Primary Hyperparathyroidism: start treatment/disposition when Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | Repeat albumin-corrected/ionized calcium with intact PTH.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | 25(OH)D, phosphorus, creatinine/eGFR.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL matches",
-                    "edgeLabel": "Primary Hyperparathyroidism criteria match or treatment cannot safely wait",
+                    "label": "Primary Hyperparathyroidism: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Primary Hyperparathyroidism treatment/disposition indicated by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; Refer surgical candidates for parathyroidectomy with localization imaging used for operative planning, not diagnosis.; For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; maintain hydration and avoid exacerbating medications when possible.; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; use antiresorptive therapy for low BMD when appropriate.; Treat severe symptomatic hypercalcemia urgently with fluids, antiresorptive/calcitonin strategies, and specialist input.; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -6579,7 +6579,7 @@
                     "criteria": {
                       "rule_id": "primary_hyperparathyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Primary Hyperparathyroidism treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Primary Hyperparathyroidism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6868,7 +6868,7 @@
                         "id": "primary_hyperparathyroidism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Primary Hyperparathyroidism: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Primary Hyperparathyroidism treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "PHPT_WORKSHOP_2022",
                           "AHRQ_CALIBRATE_DX"
@@ -7129,7 +7129,7 @@
                             "id": "primary_hyperparathyroidism_review_endpoint",
                             "type": "endpoint",
                             "label": "Primary Hyperparathyroidism: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Primary Hyperparathyroidism modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -7161,7 +7161,7 @@
                             "id": "primary_hyperparathyroidism_monitoring_bundle",
                             "type": "action",
                             "label": "Primary Hyperparathyroidism: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Primary Hyperparathyroidism therapy or diagnostic plan, trend: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR.; 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.; Measure blood pressure",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
                               "AHRQ_CALIBRATE_DX"
@@ -7422,7 +7422,7 @@
                                 "id": "primary_hyperparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Primary Hyperparathyroidism: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Primary Hyperparathyroidism reassessment worsens or contradicts expected response: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR.; 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.; Measure blood pressure",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -8021,7 +8021,7 @@
                                 "id": "primary_hyperparathyroidism_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Primary Hyperparathyroidism: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Primary Hyperparathyroidism objective response supports narrowing, stopping, tapering, or continuing: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Refer surgical candidates for parathyroidectomy with localization imaging used for operative planning, not diagnosis.",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -8620,7 +8620,7 @@
                                 "id": "primary_hyperparathyroidism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Primary Hyperparathyroidism: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Primary Hyperparathyroidism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
                                   "AHRQ_CALIBRATE_DX"
@@ -9354,7 +9354,7 @@
                     "id": "primary_hyperparathyroidism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Primary Hyperparathyroidism: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Primary Hyperparathyroidism mimic/exclusion better fits: Primary Hyperparathyroidism: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
                       "AHRQ_CALIBRATE_DX"
@@ -10668,49 +10668,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Primary Hyperparathyroidism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "primary_hyperparathyroidism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Primary Hyperparathyroidism result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; as low and <12 ng/mL; FHH often Ca/Cr clearance ratio <0.01"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "primary_hyperparathyroidism_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Primary Hyperparathyroidism danger feature or high-risk cutoff: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; Measure blood pressure; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "primary_hyperparathyroidism_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Primary Hyperparathyroidism mimic/exclusion better fits: Primary Hyperparathyroidism: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "primary_hyperparathyroidism_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Primary Hyperparathyroidism modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "primary_hyperparathyroidism_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Primary Hyperparathyroidism reassessment worsens or contradicts expected response: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Repeat albumin-corrected/ionized calcium with intact PTH.; 25(OH)D, phosphorus, creatinine/eGFR.; 24-hour urine calcium and Ca/Cr clearance ratio; renal imaging and DXA.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "primary_hyperparathyroidism_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Primary Hyperparathyroidism objective response supports narrowing, stopping, tapering, or continuing: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Refer surgical candidates for parathyroidectomy with localization imaging used for operative planning, not diagnosis."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "primary_hyperparathyroidism_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Primary Hyperparathyroidism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Ca >1 mg/dL above ULN, osteoporosis/fracture, stones, reduced renal function, or age criteria can change to surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

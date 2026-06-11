@@ -3688,7 +3688,7 @@
         "thyroid_cancer_treatment_bundle": {
           "rule_id": "thyroid_cancer_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4755,7 +4755,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Cancer (Papillary, Follicular, Medullary): compact evidence-cited management pathway",
+        "label": "Thyroid Cancer (Papillary, Follicular, Medullary): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -4788,7 +4788,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Thyroid Cancer (Papillary, Follicular, Medullary) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4844,7 +4844,7 @@
             "id": "thyroid_cancer_concurrent_data_bundle",
             "type": "action",
             "label": "Thyroid Cancer (Papillary, Follicular, Medullary): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Thyroid Cancer (Papillary, Follicular, Medullary) workup or documented findings: Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?; What is the current prior FNA Bethesda category, and how has it changed from baseline?; Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Neck ultrasound and nodal mapping.",
             "source_ids": [
               "ATA_THYROID_CANCER_2025",
               "ATA_THYROID_NODULE_DTC_2015",
@@ -4877,8 +4877,8 @@
               {
                 "id": "thyroid_cancer_classification_decision",
                 "type": "decision",
-                "label": "Thyroid Cancer (Papillary, Follicular, Medullary): classify by ATA thyroid nodule FNA: high-suspicion or intermediate-suspicion ultrasound pattern meets FNA threshold at >=1 cm: >=1 cm | ATA thyroid nodule FNA: low-suspicion pattern >=1.5 cm; very-low-suspicion/spongiform pattern consider FNA >=2 cm or observe: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: pure cystic nodules have <1% malignancy risk and no FNA unless symptomatic/cosmetic drainage is needed: <1% | Hypothyroid LT4 titration: target TSH typically 0.5 to 3.5 or 4 mIU/L; recheck 4-6 weeks after dose changes: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Thyroid Cancer (Papillary, Follicular, Medullary): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) results available for threshold classification: Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Calcitonin and CEA when medullary thyroid cancer suspected/confirmed.; RET testing for medullary thyroid cancer.; thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
                   "ATA_HYPOTHYROIDISM_2014",
@@ -5159,7 +5159,7 @@
                     "id": "thyroid_cancer_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Thyroid Cancer (Papillary, Follicular, Medullary) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) result(s): thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; spongiform/partially cystic status; patient preference/follow-up access; pure cystic status",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -5255,7 +5255,7 @@
                     "id": "thyroid_cancer_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Cancer (Papillary, Follicular, Medullary): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) danger feature or high-risk cutoff: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; >=1 cm; >=1.5 cm; >=2 cm; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -5711,8 +5711,8 @@
                   {
                     "id": "thyroid_cancer_treatment_bundle",
                     "type": "action",
-                    "label": "Thyroid Cancer (Papillary, Follicular, Medullary): start treatment/disposition when ATA thyroid nodule FNA: high-suspicion or intermediate-suspicion ultrasound pattern meets FNA threshold at >=1 cm: >=1 cm | ATA thyroid nodule FNA: low-suspicion pattern >=1.5 cm; very-low-suspicion/spongiform pattern consider FNA >=2 cm or observe: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: pure cystic nodules have <1% malignancy risk and no FNA unless symptomatic/cosmetic drainage is needed: <1% | Hypothyroid LT4 titration: target TSH typically 0.5 to 3.5 or 4 mIU/L; recheck 4-6 weeks after dose changes: 0.5 to 3.5 mIU/L, 4 mIU/L, 4-6 weeks | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L matches",
-                    "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) criteria match or treatment cannot safely wait",
+                    "label": "Thyroid Cancer (Papillary, Follicular, Medullary): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) treatment/disposition indicated by: >=1 cm; >=1.5 cm; >=2 cm; <1%; 0.5 to 3.5 mIU/L; 4 mIU/L; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.; Choose lobectomy versus total thyroidectomy, node dissection, radioactive iodine, and TSH suppression according to risk category and current ATA pathway.; For medullary thyroid cancer, coordinate RET testing, family screening, calcitonin/CEA surveillance, and specialized surgery.; Escalate airway compromise, vocal cord paralysis, bulky nodes, suspected anaplastic transformation, or rapidly enlarging mass urgently.; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -5722,7 +5722,7 @@
                     "criteria": {
                       "rule_id": "thyroid_cancer_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Thyroid Cancer (Papillary, Follicular, Medullary) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5926,7 +5926,7 @@
                         "id": "thyroid_cancer_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyroid Cancer (Papillary, Follicular, Medullary): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ATA_HYPOTHYROIDISM_2014",
@@ -6097,7 +6097,7 @@
                             "id": "thyroid_cancer_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyroid Cancer (Papillary, Follicular, Medullary): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ATA_HYPOTHYROIDISM_2014",
@@ -6135,7 +6135,7 @@
                             "id": "thyroid_cancer_monitoring_bundle",
                             "type": "action",
                             "label": "Thyroid Cancer (Papillary, Follicular, Medullary): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Thyroid Cancer (Papillary, Follicular, Medullary) therapy or diagnostic plan, trend: >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Measure blood pressure",
                             "source_ids": [
                               "ATA_THYROID_CANCER_2025",
                               "ATA_THYROID_NODULE_DTC_2015",
@@ -6315,7 +6315,7 @@
                                 "id": "thyroid_cancer_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer (Papillary, Follicular, Medullary): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) reassessment worsens or contradicts expected response: >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Measure blood pressure",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -6740,7 +6740,7 @@
                                 "id": "thyroid_cancer_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer (Papillary, Follicular, Medullary): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) objective response supports narrowing, stopping, tapering, or continuing: >=1 cm; >=1.5 cm; >=2 cm; <1%; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available.",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -7165,7 +7165,7 @@
                                 "id": "thyroid_cancer_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Cancer (Papillary, Follicular, Medullary): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ATA_THYROID_CANCER_2025",
                                   "ATA_THYROID_NODULE_DTC_2015",
@@ -7718,7 +7718,7 @@
                     "id": "thyroid_cancer_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Cancer (Papillary, Follicular, Medullary): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Thyroid Cancer (Papillary, Follicular, Medullary) mimic/exclusion better fits: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
                     "source_ids": [
                       "ATA_THYROID_CANCER_2025",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -8684,49 +8684,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "thyroid_cancer_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Thyroid Cancer (Papillary, Follicular, Medullary) result(s): thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; spongiform/partially cystic status; patient preference/follow-up access; pure cystic status"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyroid_cancer_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) danger feature or high-risk cutoff: Airway compromise, vocal cord paralysis, bulky nodes, rapidly enlarging mass, suspected anaplastic transformation.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; >=1 cm; >=1.5 cm; >=2 cm; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyroid_cancer_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) mimic/exclusion better fits: Thyroid Cancer (Papillary, Follicular, Medullary): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_cancer_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyroid_cancer_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) reassessment worsens or contradicts expected response: >=1 cm; >=1.5 cm; >=2 cm; <1%; Neck ultrasound and nodal mapping.; FNA cytology with Bethesda category.; TSH/free T4.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyroid_cancer_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) objective response supports narrowing, stopping, tapering, or continuing: >=1 cm; >=1.5 cm; >=2 cm; <1%; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use active surveillance only for carefully selected very-low-risk papillary microcarcinoma when specialist follow-up is available."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_cancer_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Thyroid Cancer (Papillary, Follicular, Medullary) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Bethesda V/VI, suspicious nodes, calcitonin/CEA elevation, or RET positivity changes surgical/genetic pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

@@ -3513,7 +3513,7 @@
         "thyroid_nodules_treatment_bundle": {
           "rule_id": "thyroid_nodules_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Thyroid Nodules (Benign) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Thyroid Nodules (Benign) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4534,7 +4534,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Thyroid Nodules (Benign): compact evidence-cited management pathway",
+        "label": "Thyroid Nodules (Benign): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ATA_THYROID_NODULE_DTC_2015",
@@ -4563,7 +4563,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Thyroid Nodules (Benign) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Thyroid Nodules (Benign) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4619,7 +4619,7 @@
             "id": "thyroid_nodules_concurrent_data_bundle",
             "type": "action",
             "label": "Thyroid Nodules (Benign): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Thyroid Nodules (Benign) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Thyroid Nodules (Benign) workup or documented findings: Has the thyroid nodule or neck mass grown rapidly, become painful, fixed, or associated with hoarseness, dysphagia, dyspnea, or suspicious nodes?; Any neck swelling, rapid growth, pain, hoarseness, trouble swallowing, positional shortness of breath, radiation exposure, or family thyroid cancer/MEN2 history?; Any childhood head/neck radiation, therapeutic radiation, occupational exposure, or family thyroid cancer risk factor?; Any personal or family history of MEN, VHL, NF1, SDHx-related tumors, medullary thyroid cancer, pheochromocytoma, paraganglioma, or adrenal/pituitary tumors?; Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; TSH.",
             "source_ids": [
               "ATA_THYROID_NODULE_DTC_2015",
               "ETA_THYROID_NODULE_2023",
@@ -4650,8 +4650,8 @@
               {
                 "id": "thyroid_nodules_classification_decision",
                 "type": "decision",
-                "label": "Thyroid Nodules (Benign): classify by ATA thyroid nodule FNA: high-suspicion or intermediate-suspicion ultrasound pattern meets FNA threshold at >=1 cm: >=1 cm | ATA thyroid nodule FNA: low-suspicion pattern >=1.5 cm; very-low-suspicion/spongiform pattern consider FNA >=2 cm or observe: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: pure cystic nodules have <1% malignancy risk and no FNA unless symptomatic/cosmetic drainage is needed: <1% | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH.: 0.4-4.0 mIU/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Thyroid Nodules (Benign): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Thyroid Nodules (Benign) results available for threshold classification: TSH.; High-quality thyroid ultrasound with risk stratification.; FNA when indicated by size/risk system; low TSH prompts radionuclide scan.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Structural thyroid safety workup: use TSH to route radionuclide scan versus FNA pathway, thyroid ultrasound with cervical-node mapping for suspicious nodules/cancer, calcitonin/RET context when medullary cancer or MEN2 is possible, and pregnancy testing before radioiodine decisions.; thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings",
                 "source_ids": [
                   "ATA_THYROID_NODULE_DTC_2015",
                   "ETA_THYROID_NODULE_2023",
@@ -4890,7 +4890,7 @@
                     "id": "thyroid_nodules_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Thyroid Nodules (Benign) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Thyroid Nodules (Benign) result(s): thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; spongiform/partially cystic status; patient preference/follow-up access; pure cystic status",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ATA_THYROID_NODULE_DTC_2015",
@@ -4976,7 +4976,7 @@
                     "id": "thyroid_nodules_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Nodules (Benign): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Thyroid Nodules (Benign) danger feature or high-risk cutoff: Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; >=1 cm; >=1.5 cm; >=2 cm; Suspicious ultrasound/Bethesda cytology changes cancer pathway.",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
                       "ETA_THYROID_NODULE_2023",
@@ -5386,8 +5386,8 @@
                   {
                     "id": "thyroid_nodules_treatment_bundle",
                     "type": "action",
-                    "label": "Thyroid Nodules (Benign): start treatment/disposition when ATA thyroid nodule FNA: high-suspicion or intermediate-suspicion ultrasound pattern meets FNA threshold at >=1 cm: >=1 cm | ATA thyroid nodule FNA: low-suspicion pattern >=1.5 cm; very-low-suspicion/spongiform pattern consider FNA >=2 cm or observe: >=1.5 cm, >=2 cm | ATA thyroid nodule no-biopsy branch: pure cystic nodules have <1% malignancy risk and no FNA unless symptomatic/cosmetic drainage is needed: <1% | Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.: 0.4-4.0 mIU/L | TSH.: 0.4-4.0 mIU/L matches",
-                    "edgeLabel": "Thyroid Nodules (Benign) criteria match or treatment cannot safely wait",
+                    "label": "Thyroid Nodules (Benign): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Thyroid Nodules (Benign) treatment/disposition indicated by: >=1 cm; >=1.5 cm; >=2 cm; <1%; 0.4-4.0 mIU/L; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.; Treat autonomous hyperfunctioning nodules with radioactive iodine, surgery, or ablation according to size, symptoms, pregnancy context, and local expertise.; Refer suspicious cytology, suspicious nodes, rapid growth, compressive symptoms, or high-risk history to thyroid specialist/surgery.; Consider minimally invasive ablation only for selected benign symptomatic nodules in centers with appropriate expertise.; Suspicious ultrasound/Bethesda cytology changes cancer pathway.; Low TSH with hot nodule shifts to autonomous-function pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
                       "ETA_THYROID_NODULE_2023",
@@ -5396,7 +5396,7 @@
                     "criteria": {
                       "rule_id": "thyroid_nodules_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Thyroid Nodules (Benign) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Thyroid Nodules (Benign) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5593,7 +5593,7 @@
                         "id": "thyroid_nodules_treatment_safety_decision",
                         "type": "decision",
                         "label": "Thyroid Nodules (Benign): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Thyroid Nodules (Benign) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ATA_THYROID_NODULE_DTC_2015",
                           "ETA_THYROID_NODULE_2023",
@@ -5754,7 +5754,7 @@
                             "id": "thyroid_nodules_review_endpoint",
                             "type": "endpoint",
                             "label": "Thyroid Nodules (Benign): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Thyroid Nodules (Benign) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ETA_THYROID_NODULE_2023",
@@ -5788,7 +5788,7 @@
                             "id": "thyroid_nodules_monitoring_bundle",
                             "type": "action",
                             "label": "Thyroid Nodules (Benign): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Thyroid Nodules (Benign) therapy or diagnostic plan, trend: >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification.; FNA when indicated by size/risk system; low TSH prompts radionuclide scan.; Measure blood pressure",
                             "source_ids": [
                               "ATA_THYROID_NODULE_DTC_2015",
                               "ETA_THYROID_NODULE_2023",
@@ -5960,7 +5960,7 @@
                                 "id": "thyroid_nodules_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Nodules (Benign): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Thyroid Nodules (Benign) reassessment worsens or contradicts expected response: >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification.; FNA when indicated by size/risk system; low TSH prompts radionuclide scan.; Measure blood pressure",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
                                   "ETA_THYROID_NODULE_2023",
@@ -6339,7 +6339,7 @@
                                 "id": "thyroid_nodules_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Nodules (Benign): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Thyroid Nodules (Benign) objective response supports narrowing, stopping, tapering, or continuing: >=1 cm; >=1.5 cm; >=2 cm; <1%; Suspicious ultrasound/Bethesda cytology changes cancer pathway.; Low TSH with hot nodule shifts to autonomous-function pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring.",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
                                   "ETA_THYROID_NODULE_2023",
@@ -6718,7 +6718,7 @@
                                 "id": "thyroid_nodules_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Thyroid Nodules (Benign): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Thyroid Nodules (Benign) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspicious ultrasound/Bethesda cytology changes cancer pathway.; Low TSH with hot nodule shifts to autonomous-function pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ATA_THYROID_NODULE_DTC_2015",
                                   "ETA_THYROID_NODULE_2023",
@@ -7193,7 +7193,7 @@
                     "id": "thyroid_nodules_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Thyroid Nodules (Benign): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Thyroid Nodules (Benign) mimic/exclusion better fits: Thyroid Nodules (Benign): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease.",
                     "source_ids": [
                       "ATA_THYROID_NODULE_DTC_2015",
                       "ETA_THYROID_NODULE_2023",
@@ -8034,49 +8034,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Thyroid Nodules (Benign) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "thyroid_nodules_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Thyroid Nodules (Benign) result(s): thyroid ultrasound pattern; largest nodule dimension; extrathyroidal extension features; microcalcifications/margins/shape; lymph node findings; spongiform/partially cystic status; patient preference/follow-up access; pure cystic status"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "thyroid_nodules_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Thyroid Nodules (Benign) danger feature or high-risk cutoff: Hard fixed nodule, rapid growth, vocal cord symptoms, suspicious lymph nodes, childhood radiation, MEN2 family history.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Thyroid storm, myxedema coma, atrial fibrillation/heart failure, vision-threatening orbitopathy, rapidly enlarging neck mass, hoarseness, dysphagia, dyspnea, or suspicious nodes.; Measure blood pressure; >=1 cm; >=1.5 cm; >=2 cm; Suspicious ultrasound/Bethesda cytology changes cancer pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "thyroid_nodules_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Thyroid Nodules (Benign) mimic/exclusion better fits: Thyroid Nodules (Benign): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: TSH typical adult range about 0.4-4.0 mIU/L; use local lab, pregnancy, and illness context. Free T4 typical adult range about 0.8-1.8 ng/dL; use local assay.; Important mimics/exclusions: Graves disease, toxic nodule/multinodular goiter, thyroiditis, exogenous thyroid hormone or supplements, iodine/amiodarone effects, nonthyroidal illness, pregnancy-related thyroid disease, malignancy, and compressive nonthyroid neck disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "thyroid_nodules_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Thyroid Nodules (Benign) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; Measure temperature; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "thyroid_nodules_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Thyroid Nodules (Benign) reassessment worsens or contradicts expected response: >=1 cm; >=1.5 cm; >=2 cm; <1%; TSH.; High-quality thyroid ultrasound with risk stratification.; FNA when indicated by size/risk system; low TSH prompts radionuclide scan.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "thyroid_nodules_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Thyroid Nodules (Benign) objective response supports narrowing, stopping, tapering, or continuing: >=1 cm; >=1.5 cm; >=2 cm; <1%; Suspicious ultrasound/Bethesda cytology changes cancer pathway.; Low TSH with hot nodule shifts to autonomous-function pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Observe benign low-risk nodules with ultrasound surveillance and symptom monitoring."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "thyroid_nodules_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Thyroid Nodules (Benign) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspicious ultrasound/Bethesda cytology changes cancer pathway.; Low TSH with hot nodule shifts to autonomous-function pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

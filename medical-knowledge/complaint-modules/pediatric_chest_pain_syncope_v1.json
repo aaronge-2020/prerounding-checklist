@@ -2532,7 +2532,7 @@
         "pediatric_chest_pain_syncope_treatment_bundle": {
           "rule_id": "pediatric_chest_pain_syncope_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2926,7 +2926,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric chest pain, syncope, or palpitations: compact evidence-cited management pathway",
+        "label": "Pediatric chest pain, syncope, or palpitations: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "RCH_CHEST_PAIN_CHILD",
@@ -2961,7 +2961,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric chest pain, syncope, or palpitations pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pediatric chest pain, syncope, or palpitations pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3017,7 +3017,7 @@
             "id": "pediatric_chest_pain_syncope_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric chest pain, syncope, or palpitations: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric chest pain, syncope, or palpitations trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pediatric chest pain, syncope, or palpitations workup or documented findings: Pediatric chest pain age band; Chest pain character and timing; Syncope palpitations and dizziness; Family and personal cardiac risk; Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; ECG when cardiac risk or syncope is present",
             "source_ids": [
               "RCH_PEDIATRIC_ECG",
               "JHACH_CHEST_PAIN_2018",
@@ -3054,8 +3054,8 @@
               {
                 "id": "pediatric_chest_pain_syncope_classification_decision",
                 "type": "decision",
-                "label": "Pediatric chest pain, syncope, or palpitations: classify by Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present: 1% | Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads: >0.12 seconds, >340 ms, <=450 ms, >2 mm",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pediatric chest pain, syncope, or palpitations: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pediatric chest pain, syncope, or palpitations results available for threshold classification: ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Syncope ECG glucose anemia and pregnancy tests; Echo Holter or exercise testing after review; risk factor history; cardiorespiratory exam; vital signs; ECG if risk factor present; manual ECG intervals",
                 "source_ids": [
                   "RCH_CHEST_PAIN_CHILD",
                   "RCH_PEDIATRIC_ECG",
@@ -3138,7 +3138,7 @@
                     "id": "pediatric_chest_pain_syncope_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pediatric chest pain, syncope, or palpitations threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pediatric chest pain, syncope, or palpitations result(s): risk factor history; cardiorespiratory exam; vital signs; ECG if risk factor present; manual ECG intervals; age; lead placement/scale; symptoms and cardiac red flags",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_CHEST_PAIN_CHILD",
@@ -3220,7 +3220,7 @@
                     "id": "pediatric_chest_pain_syncope_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric chest pain, syncope, or palpitations: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pediatric chest pain, syncope, or palpitations danger feature or high-risk cutoff: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; 1%; >0.12 seconds; >340 ms; Emergency pediatric cardiology escalation",
                     "source_ids": [
                       "RCH_SYNCOPE_CHILD",
                       "CHOP_PEDS_CHEST_PAIN_2025",
@@ -3344,8 +3344,8 @@
                   {
                     "id": "pediatric_chest_pain_syncope_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric chest pain, syncope, or palpitations: start treatment/disposition when Pediatric chest pain testing is targeted: cardiac causes are about 1%; ECG/CXR/troponin only when risk factors or exam findings are present: 1% | Pediatric ECG high-risk cutoffs: QRS >0.12 sec, QTc >450 ms or <=340 ms, ST shift >2 mm in precordial leads: >0.12 seconds, >340 ms, <=450 ms, >2 mm matches",
-                    "edgeLabel": "Pediatric chest pain, syncope, or palpitations criteria match or treatment cannot safely wait",
+                    "label": "Pediatric chest pain, syncope, or palpitations: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pediatric chest pain, syncope, or palpitations treatment/disposition indicated by: 1%; >0.12 seconds; >340 ms; <=450 ms; >2 mm; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route",
                     "source_ids": [
                       "RCH_PEDIATRIC_ECG",
                       "RCH_CHEST_PAIN_CHILD",
@@ -3357,7 +3357,7 @@
                     "criteria": {
                       "rule_id": "pediatric_chest_pain_syncope_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pediatric chest pain, syncope, or palpitations treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3427,7 +3427,7 @@
                         "id": "pediatric_chest_pain_syncope_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric chest pain, syncope, or palpitations: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pediatric chest pain, syncope, or palpitations treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
                           "RCH_PEDIATRIC_ECG",
@@ -3465,7 +3465,7 @@
                             "id": "pediatric_chest_pain_syncope_review_endpoint",
                             "type": "endpoint",
                             "label": "Pediatric chest pain, syncope, or palpitations: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pediatric chest pain, syncope, or palpitations modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "RCH_CHEST_PAIN_CHILD",
                               "RCH_PEDIATRIC_ECG",
@@ -3505,7 +3505,7 @@
                             "id": "pediatric_chest_pain_syncope_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric chest pain, syncope, or palpitations: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pediatric chest pain, syncope, or palpitations therapy or diagnostic plan, trend: 1%; >0.12 seconds; >340 ms; <=450 ms; ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Measure blood pressure",
                             "source_ids": [
                               "RCH_PEDIATRIC_ECG",
                               "RCH_CHEST_PAIN_CHILD",
@@ -3585,7 +3585,7 @@
                                 "id": "pediatric_chest_pain_syncope_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric chest pain, syncope, or palpitations: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pediatric chest pain, syncope, or palpitations reassessment worsens or contradicts expected response: 1%; >0.12 seconds; >340 ms; <=450 ms; ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Measure blood pressure",
                                 "source_ids": [
                                   "RCH_SYNCOPE_CHILD",
                                   "CHOP_PEDS_CHEST_PAIN_2025",
@@ -3710,7 +3710,7 @@
                                 "id": "pediatric_chest_pain_syncope_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric chest pain, syncope, or palpitations: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pediatric chest pain, syncope, or palpitations objective response supports narrowing, stopping, tapering, or continuing: 1%; >0.12 seconds; >340 ms; <=450 ms; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present.",
                                 "source_ids": [
                                   "RCH_PEDIATRIC_ECG",
                                   "RCH_CHEST_PAIN_CHILD",
@@ -3835,7 +3835,7 @@
                                 "id": "pediatric_chest_pain_syncope_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric chest pain, syncope, or palpitations: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pediatric chest pain, syncope, or palpitations stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route",
                                 "source_ids": [
                                   "RCH_PEDIATRIC_ECG",
                                   "RCH_CHEST_PAIN_CHILD",
@@ -3990,7 +3990,7 @@
                     "id": "pediatric_chest_pain_syncope_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric chest pain, syncope, or palpitations: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pediatric chest pain, syncope, or palpitations mimic/exclusion better fits: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -4248,49 +4248,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pediatric chest pain, syncope, or palpitations pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pediatric chest pain, syncope, or palpitations result(s): risk factor history; cardiorespiratory exam; vital signs; ECG if risk factor present; manual ECG intervals; age; lead placement/scale; symptoms and cardiac red flags"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations danger feature or high-risk cutoff: Exertional chest pain or syncope; Abnormal cardiac exam or poor perfusion; Family history of early sudden death or cardiomyopathy; Hypoxia respiratory distress or hemoptysis; 1%; >0.12 seconds; >340 ms; Emergency pediatric cardiology escalation"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations mimic/exclusion better fits: Cardiac chest pain or syncope risk with exertional symptoms, syncope, palpitations, abnormal cardiac exam, abnormal ECG, cardiac history, or family history of early sudden death; Respiratory, pulmonary embolus, pneumothorax, asthma, pneumonia, or hypoxemic cause of pediatric chest pain; Musculoskeletal pain, costochondritis, precordial catch, anxiety, reflux, or other self-limited cause after serious features are absent; Vasovagal, orthostatic, POTS, seizure mimic, hypoglycemia, toxin, or cardiogenic syncope pattern"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations reassessment worsens or contradicts expected response: 1%; >0.12 seconds; >340 ms; <=450 ms; ECG when cardiac risk or syncope is present; Chest X-ray only when indicated; Troponin and inflammatory labs when indicated; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations objective response supports narrowing, stopping, tapering, or continuing: 1%; >0.12 seconds; >340 ms; <=450 ms; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route; Monitor treatment response, complications, and need for reassessment with: ECG when cardiac risk or syncope is present."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_chest_pain_syncope_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pediatric chest pain, syncope, or palpitations stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency pediatric cardiology escalation; Low-risk chest pain testing restraint; Syncope consultation and discharge route"
         }
       ],
       "audit_requirements": {

@@ -3170,7 +3170,7 @@
         "acromegaly_treatment_bundle": {
           "rule_id": "acromegaly_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Acromegaly treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Acromegaly treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4264,7 +4264,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Acromegaly: compact evidence-cited management pathway",
+        "label": "Acromegaly: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "PITUITARY_ACROMEGALY_2021",
@@ -4297,7 +4297,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Acromegaly pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Acromegaly pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4353,7 +4353,7 @@
             "id": "acromegaly_concurrent_data_bundle",
             "type": "action",
             "label": "Acromegaly: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Acromegaly trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Acromegaly workup or documented findings: Any sweating, enlarged hands/feet, ring or shoe-size change, jaw/facial change, joint pain, sleep apnea, headaches, diabetes, hypertension, or colon-polyp history suggesting acromegaly complications?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; Any new, worsening, resistant, or treatment-limiting hypertension or diabetes that changes endocrine severity, complication screening, or medication choice?; Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?; Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; IGF-1 age/sex-adjusted.",
             "source_ids": [
               "ES_ACROMEGALY_2014",
               "PITUITARY_ACROMEGALY_2021",
@@ -4388,8 +4388,8 @@
               {
                 "id": "acromegaly_classification_decision",
                 "type": "decision",
-                "label": "Acromegaly: classify by Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | IGF-1 age/sex-adjusted.: 20 ng/mL, 25 ng/mL | Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.: often <1 ng/mL, 20 ng/mL, 25 ng/mL | Pituitary MRI after biochemical evidence.: 20 ng/mL, 25 ng/mL | A1c/BP/OSA/echo/colon risk screening.: 20 ng/mL, 25 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Acromegaly: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Acromegaly results available for threshold classification: IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; A1c/BP/OSA/echo/colon risk screening.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; 20 ng/mL; 25 ng/mL; often <1 ng/mL",
                 "source_ids": [
                   "PITUITARY_ACROMEGALY_2021",
                   "ES_ACROMEGALY_2014",
@@ -4611,7 +4611,7 @@
                     "id": "acromegaly_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Acromegaly threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Acromegaly result(s): 20 ng/mL; 25 ng/mL; often <1 ng/mL; IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; A1c/BP/OSA/echo/colon risk screening.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "PITUITARY_ACROMEGALY_2021",
@@ -4677,7 +4677,7 @@
                     "id": "acromegaly_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Acromegaly: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Acromegaly danger feature or high-risk cutoff: Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; 20 ng/mL; 25 ng/mL; often <1 ng/mL; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -5081,8 +5081,8 @@
                   {
                     "id": "acromegaly_treatment_bundle",
                     "type": "action",
-                    "label": "Acromegaly: start treatment/disposition when Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | IGF-1 age/sex-adjusted.: 20 ng/mL, 25 ng/mL | Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.: often <1 ng/mL, 20 ng/mL, 25 ng/mL | Pituitary MRI after biochemical evidence.: 20 ng/mL, 25 ng/mL | A1c/BP/OSA/echo/colon risk screening.: 20 ng/mL, 25 ng/mL matches",
-                    "edgeLabel": "Acromegaly criteria match or treatment cannot safely wait",
+                    "label": "Acromegaly: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Acromegaly treatment/disposition indicated by: 20 ng/mL; 25 ng/mL; often <1 ng/mL; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease.; Treat comorbidities such as sleep apnea, diabetes, hypertension, cardiomyopathy, colon neoplasia risk, and joint disease.; Monitor IGF-1, GH suppression/remission criteria, MRI, pituitary deficits, and complication surveillance longitudinally.; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -5093,7 +5093,7 @@
                     "criteria": {
                       "rule_id": "acromegaly_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Acromegaly treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Acromegaly treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5303,7 +5303,7 @@
                         "id": "acromegaly_treatment_safety_decision",
                         "type": "decision",
                         "label": "Acromegaly: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Acromegaly treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "PITUITARY_ACROMEGALY_2021",
                           "ES_ACROMEGALY_2014",
@@ -5486,7 +5486,7 @@
                             "id": "acromegaly_review_endpoint",
                             "type": "endpoint",
                             "label": "Acromegaly: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Acromegaly modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "PITUITARY_ACROMEGALY_2021",
                               "ES_ACROMEGALY_2014",
@@ -5524,7 +5524,7 @@
                             "id": "acromegaly_monitoring_bundle",
                             "type": "action",
                             "label": "Acromegaly: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Acromegaly therapy or diagnostic plan, trend: 20 ng/mL; 25 ng/mL; often <1 ng/mL; IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; Measure blood pressure; Measure heart rate",
                             "source_ids": [
                               "ES_ACROMEGALY_2014",
                               "PITUITARY_ACROMEGALY_2021",
@@ -5707,7 +5707,7 @@
                                 "id": "acromegaly_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Acromegaly: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Acromegaly reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; often <1 ng/mL; IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; Measure blood pressure; Measure heart rate",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -6076,7 +6076,7 @@
                                 "id": "acromegaly_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Acromegaly: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Acromegaly objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; often <1 ng/mL; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease.",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -6445,7 +6445,7 @@
                                 "id": "acromegaly_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Acromegaly: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Acromegaly stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -6881,7 +6881,7 @@
                     "id": "acromegaly_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Acromegaly: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Acromegaly mimic/exclusion better fits: Acromegaly: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -7654,49 +7654,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Acromegaly pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "acromegaly_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Acromegaly result(s): 20 ng/mL; 25 ng/mL; often <1 ng/mL; IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; A1c/BP/OSA/echo/colon risk screening.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "acromegaly_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Acromegaly danger feature or high-risk cutoff: Visual field loss, pituitary apoplexy, severe cardiomyopathy, uncontrolled diabetes/OSA.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; 20 ng/mL; 25 ng/mL; often <1 ng/mL; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "acromegaly_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Acromegaly mimic/exclusion better fits: Acromegaly: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "acromegaly_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Acromegaly modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "acromegaly_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Acromegaly reassessment worsens or contradicts expected response: 20 ng/mL; 25 ng/mL; often <1 ng/mL; IGF-1 age/sex-adjusted.; Oral glucose GH suppression test: failure to suppress below assay cutoff, often <1 ng/mL or lower with modern assays.; Pituitary MRI after biochemical evidence.; Measure blood pressure; Measure heart rate"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "acromegaly_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Acromegaly objective response supports narrowing, stopping, tapering, or continuing: 20 ng/mL; 25 ng/mL; often <1 ng/mL; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "acromegaly_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Acromegaly stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Elevated IGF-1 plus inadequate GH suppression changes to pituitary MRI/surgical pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

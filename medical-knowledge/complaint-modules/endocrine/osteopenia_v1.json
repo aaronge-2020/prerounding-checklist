@@ -3651,7 +3651,7 @@
         "osteopenia_treatment_bundle": {
           "rule_id": "osteopenia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Osteopenia treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Osteopenia treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5147,7 +5147,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Osteopenia: compact evidence-cited management pathway",
+        "label": "Osteopenia: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "AACE_OSTEOPOROSIS_2020",
@@ -5176,7 +5176,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Osteopenia pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Osteopenia pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5232,7 +5232,7 @@
             "id": "osteopenia_concurrent_data_bundle",
             "type": "action",
             "label": "Osteopenia: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Osteopenia trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Osteopenia workup or documented findings: Any low-trauma fracture, focal bone pain, height loss, falls, gait instability, back pain, glucocorticoid use, or malabsorption risk?; What was the menopause or ovarian-insufficiency timing, and are there fragility fracture, vasomotor, genitourinary, or hormone-therapy considerations?; Any kidney stones, nephrocalcinosis, hematuria, flank pain, recurrent UTIs, polyuria, dehydration, or renal-function changes affecting calcium/PTH interpretation?; Any antiseizure or enzyme-inducing medication use that could affect vitamin D metabolism, bone density, or calcium interpretation?; Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; DXA.",
             "source_ids": [
               "ENDO_OSTEOPOROSIS_2020",
               "AACE_OSTEOPOROSIS_2020",
@@ -5263,8 +5263,8 @@
               {
                 "id": "osteopenia_classification_decision",
                 "type": "decision",
-                "label": "Osteopenia: classify by Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | DXA.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | FRAX or validated fracture-risk tool.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Osteopenia: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Osteopenia results available for threshold classification: DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Thyroid safety data: pair TSH/free T4 with syndrome-specific add-ons such as T3, antibodies, ultrasound/FNA, or radionuclide scan, and account for pregnancy, biotin, acute illness, central disease, and medication effects before treatment changes.; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
                   "ENDO_OSTEOPOROSIS_2020",
@@ -5586,7 +5586,7 @@
                     "id": "osteopenia_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Osteopenia threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Osteopenia result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; as low and <12 ng/mL; DXA.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "AACE_OSTEOPOROSIS_2020",
@@ -5656,7 +5656,7 @@
                     "id": "osteopenia_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Osteopenia: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Osteopenia danger feature or high-risk cutoff: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; Measure blood pressure; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -6228,8 +6228,8 @@
                   {
                     "id": "osteopenia_treatment_bundle",
                     "type": "action",
-                    "label": "Osteopenia: start treatment/disposition when Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL | DXA.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | FRAX or validated fracture-risk tool.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: 8.5-10.5 mg/dL, 1.12-1.32 mmol/L, 10-65 pg/mL, normal >= -1.0, osteoporosis <= -2.5, many labs flag <20 ng/mL matches",
-                    "edgeLabel": "Osteopenia criteria match or treatment cannot safely wait",
+                    "label": "Osteopenia: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Osteopenia treatment/disposition indicated by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review.; Start osteoporosis pharmacotherapy if FRAX/local risk threshold, fragility fracture, or progression to osteoporosis occurs.; Treat reversible secondary causes such as hyperthyroidism, hyperparathyroidism, vitamin D deficiency, hypogonadism, malabsorption, or glucocorticoid exposure.; Repeat DXA on an interval driven by risk, prior BMD, age, and treatment decisions.; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -6238,7 +6238,7 @@
                     "criteria": {
                       "rule_id": "osteopenia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Osteopenia treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Osteopenia treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6514,7 +6514,7 @@
                         "id": "osteopenia_treatment_safety_decision",
                         "type": "decision",
                         "label": "Osteopenia: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Osteopenia treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "AACE_OSTEOPOROSIS_2020",
                           "ENDO_OSTEOPOROSIS_2020",
@@ -6763,7 +6763,7 @@
                             "id": "osteopenia_review_endpoint",
                             "type": "endpoint",
                             "label": "Osteopenia: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Osteopenia modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
                               "ENDO_OSTEOPOROSIS_2020",
@@ -6797,7 +6797,7 @@
                             "id": "osteopenia_monitoring_bundle",
                             "type": "action",
                             "label": "Osteopenia: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Osteopenia therapy or diagnostic plan, trend: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.; Measure blood pressure",
                             "source_ids": [
                               "ENDO_OSTEOPOROSIS_2020",
                               "AACE_OSTEOPOROSIS_2020",
@@ -7046,7 +7046,7 @@
                                 "id": "osteopenia_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteopenia: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Osteopenia reassessment worsens or contradicts expected response: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.; Measure blood pressure",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -7585,7 +7585,7 @@
                                 "id": "osteopenia_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteopenia: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Osteopenia objective response supports narrowing, stopping, tapering, or continuing: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review.",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -8124,7 +8124,7 @@
                                 "id": "osteopenia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Osteopenia: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Osteopenia stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
                                   "AACE_OSTEOPOROSIS_2020",
@@ -8764,7 +8764,7 @@
                     "id": "osteopenia_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Osteopenia: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Osteopenia mimic/exclusion better fits: Osteopenia: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture.",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
                       "AACE_OSTEOPOROSIS_2020",
@@ -9921,49 +9921,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Osteopenia pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "osteopenia_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Osteopenia result(s): 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; osteoporosis <= -2.5; many labs flag <20 ng/mL; as low and <12 ng/mL; DXA."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "osteopenia_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Osteopenia danger feature or high-risk cutoff: Fragility fracture despite osteopenic T-score, rapid bone loss, secondary cause signs.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Hip/vertebral fracture, cord/neurologic symptoms with back pain, severe hypercalcemia with dehydration/AKI/confusion, or symptomatic hypocalcemia with seizure/laryngospasm/arrhythmia.; Measure blood pressure; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "osteopenia_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Osteopenia mimic/exclusion better fits: Osteopenia: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab. Intact PTH often about 10-65 pg/mL but assay-specific.; Important mimics/exclusions: primary versus secondary or tertiary parathyroid disease, malignancy-associated calcium disorder, renal disease, vitamin D deficiency or excess, medication effects, malabsorption, osteomalacia, osteoporosis, and acute fracture."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "osteopenia_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Osteopenia modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "osteopenia_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Osteopenia reassessment worsens or contradicts expected response: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; DXA.; FRAX or validated fracture-risk tool.; Calcium, creatinine/eGFR, 25(OH)D, and secondary-cause labs when indicated.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "osteopenia_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Osteopenia objective response supports narrowing, stopping, tapering, or continuing: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle, fall prevention, weight-bearing/resistance exercise, protein, calcium/vitamin D adequacy, and medication/alcohol/tobacco review."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "osteopenia_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Osteopenia stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Osteopenia plus high fracture risk or fragility fracture can warrant pharmacologic therapy.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

@@ -3059,7 +3059,7 @@
         "pediatric_dka_hhs_hyperglycemia_treatment_bundle": {
           "rule_id": "pediatric_dka_hhs_hyperglycemia_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric DKA, HHS, or hyperglycemic crisis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pediatric DKA, HHS, or hyperglycemic crisis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4122,7 +4122,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric DKA, HHS, or hyperglycemic crisis: compact evidence-cited management pathway",
+        "label": "Pediatric DKA, HHS, or hyperglycemic crisis: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "CHQ_DKA_HHS_CHILD_2024",
@@ -4153,7 +4153,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric DKA, HHS, or hyperglycemic crisis pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pediatric DKA, HHS, or hyperglycemic crisis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4209,7 +4209,7 @@
             "id": "pediatric_dka_hhs_hyperglycemia_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric DKA, HHS, or hyperglycemic crisis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pediatric DKA, HHS, or hyperglycemic crisis workup or documented findings: Ask age weight and diabetes context; Ask hyperglycemia ketone and acidosis symptoms; Ask insulin doses pump CGM and access barriers; Ask vomiting intake and dehydration trajectory; Cerebral edema or oedema signs; Severe DKA or high-risk age; Venous blood gas and acid-base status",
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
               "NICE_NG18_DKA_CHILD",
@@ -4242,8 +4242,8 @@
               {
                 "id": "pediatric_dka_hhs_hyperglycemia_classification_decision",
                 "type": "decision",
-                "label": "Pediatric DKA, HHS, or hyperglycemic crisis: classify by Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake: 11 mmol/L, 18 mmol/L | Pediatric HHS: marked hyperglycemia with hyperosmolality, minimal ketosis, and no major acidosis; mixed DKA/HHS can occur: 33.3 mmol/L, 320 mOsm/kg, 1.1 mmol/L, 15 mmol/L | Venous blood gas and acid-base status: 5 c | Glucose and blood ketone thresholds: 11 mmol/L, 14 mmol/L, 33.3 mmol/L | Electrolytes, urea, creatinine, corrected sodium, and potassium: 1 hour",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pediatric DKA, HHS, or hyperglycemic crisis: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis results available for threshold classification: Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Effective osmolality for HHS or mixed DKA/HHS; 12-lead ECG when potassium risk or severe illness; 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; 1.1 mmol/L",
                 "source_ids": [
                   "CHQ_DKA_HHS_CHILD_2024",
                   "NICE_NG18_DKA_CHILD",
@@ -4509,7 +4509,7 @@
                     "id": "pediatric_dka_hhs_hyperglycemia_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pediatric DKA, HHS, or hyperglycemic crisis threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pediatric DKA, HHS, or hyperglycemic crisis result(s): 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; 1.1 mmol/L; 15 mmol/L; 5 c; 14 mmol/L",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "CHQ_DKA_HHS_CHILD_2024",
@@ -4583,7 +4583,7 @@
                     "id": "pediatric_dka_hhs_hyperglycemia_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric DKA, HHS, or hyperglycemic crisis: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis danger feature or high-risk cutoff: Cerebral edema or oedema signs; Severe DKA or high-risk age; Shock, cardiovascular compromise, or repeated fluid bolus need; Potassium danger or anuria; 11 mmol/L; 18 mmol/L; 33.3 mmol/L; Emergency ABCD and senior escalation route",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
                       "RCH_DKA_CHILD",
@@ -5027,8 +5027,8 @@
                   {
                     "id": "pediatric_dka_hhs_hyperglycemia_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric DKA, HHS, or hyperglycemic crisis: start treatment/disposition when Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake: 11 mmol/L, 18 mmol/L | Pediatric HHS: marked hyperglycemia with hyperosmolality, minimal ketosis, and no major acidosis; mixed DKA/HHS can occur: 33.3 mmol/L, 320 mOsm/kg, 1.1 mmol/L, 15 mmol/L | Venous blood gas and acid-base status: 5 c | Glucose and blood ketone thresholds: 11 mmol/L, 14 mmol/L, 33.3 mmol/L | Electrolytes, urea, creatinine, corrected sodium, and potassium: 1 hour matches",
-                    "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis criteria match or treatment cannot safely wait",
+                    "label": "Pediatric DKA, HHS, or hyperglycemic crisis: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis treatment/disposition indicated by: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; 1.1 mmol/L; 15 mmol/L; Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
                       "NICE_NG18_DKA_CHILD",
@@ -5038,7 +5038,7 @@
                     "criteria": {
                       "rule_id": "pediatric_dka_hhs_hyperglycemia_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric DKA, HHS, or hyperglycemic crisis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pediatric DKA, HHS, or hyperglycemic crisis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5243,7 +5243,7 @@
                         "id": "pediatric_dka_hhs_hyperglycemia_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric DKA, HHS, or hyperglycemic crisis: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "CHQ_DKA_HHS_CHILD_2024",
                           "NICE_NG18_DKA_CHILD",
@@ -5420,7 +5420,7 @@
                             "id": "pediatric_dka_hhs_hyperglycemia_review_endpoint",
                             "type": "endpoint",
                             "label": "Pediatric DKA, HHS, or hyperglycemic crisis: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis modifier changes treatment/disposition: Measure temperature; Measure heart rate and blood pressure; Measure respiratory rate and oxygen saturation; Document mental status with AVPU or modified GCS; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "CHQ_DKA_HHS_CHILD_2024",
                               "NICE_NG18_DKA_CHILD",
@@ -5456,7 +5456,7 @@
                             "id": "pediatric_dka_hhs_hyperglycemia_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric DKA, HHS, or hyperglycemic crisis: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pediatric DKA, HHS, or hyperglycemic crisis therapy or diagnostic plan, trend: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Measure temperature",
                             "source_ids": [
                               "CHQ_DKA_HHS_CHILD_2024",
                               "NICE_NG18_DKA_CHILD",
@@ -5633,7 +5633,7 @@
                                 "id": "pediatric_dka_hhs_hyperglycemia_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric DKA, HHS, or hyperglycemic crisis: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis reassessment worsens or contradicts expected response: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Measure temperature",
                                 "source_ids": [
                                   "CHQ_DKA_HHS_CHILD_2024",
                                   "RCH_DKA_CHILD",
@@ -6042,7 +6042,7 @@
                                 "id": "pediatric_dka_hhs_hyperglycemia_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric DKA, HHS, or hyperglycemic crisis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis objective response supports narrowing, stopping, tapering, or continuing: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus; Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status.",
                                 "source_ids": [
                                   "CHQ_DKA_HHS_CHILD_2024",
                                   "NICE_NG18_DKA_CHILD",
@@ -6451,7 +6451,7 @@
                                 "id": "pediatric_dka_hhs_hyperglycemia_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric DKA, HHS, or hyperglycemic crisis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus",
                                 "source_ids": [
                                   "CHQ_DKA_HHS_CHILD_2024",
                                   "NICE_NG18_DKA_CHILD",
@@ -6976,7 +6976,7 @@
                     "id": "pediatric_dka_hhs_hyperglycemia_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric DKA, HHS, or hyperglycemic crisis: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pediatric DKA, HHS, or hyperglycemic crisis mimic/exclusion better fits: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake; Pediatric HHS: marked hyperglycemia with hyperosmolality, minimal ketosis, and no major acidosis; mixed DKA/HHS can occur; Precipitating cause: new diabetes, insulin omission, pump/CGM failure, infection, dehydration, medication/SGLT2 exposure, pregnancy, psychosocial barrier, or recurrent DKA pattern",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
                       "ISPAD_DKA_HHS_2022",
@@ -7893,49 +7893,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pediatric DKA, HHS, or hyperglycemic crisis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pediatric DKA, HHS, or hyperglycemic crisis result(s): 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; 1.1 mmol/L; 15 mmol/L; 5 c; 14 mmol/L"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis danger feature or high-risk cutoff: Cerebral edema or oedema signs; Severe DKA or high-risk age; Shock, cardiovascular compromise, or repeated fluid bolus need; Potassium danger or anuria; 11 mmol/L; 18 mmol/L; 33.3 mmol/L; Emergency ABCD and senior escalation route"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis mimic/exclusion better fits: Pediatric DKA: hyperglycemia or diabetes context plus acidosis and moderate or large ketones; euglycemic DKA remains possible with SGLT2 exposure, fasting, pregnancy, or poor intake; Pediatric HHS: marked hyperglycemia with hyperosmolality, minimal ketosis, and no major acidosis; mixed DKA/HHS can occur; Precipitating cause: new diabetes, insulin omission, pump/CGM failure, infection, dehydration, medication/SGLT2 exposure, pregnancy, psychosocial barrier, or recurrent DKA pattern"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis modifier changes treatment/disposition: Measure temperature; Measure heart rate and blood pressure; Measure respiratory rate and oxygen saturation; Document mental status with AVPU or modified GCS; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis reassessment worsens or contradicts expected response: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; Venous blood gas and acid-base status; Glucose and blood ketone thresholds; Electrolytes, urea, creatinine, corrected sodium, and potassium; Measure temperature"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis objective response supports narrowing, stopping, tapering, or continuing: 11 mmol/L; 18 mmol/L; 33.3 mmol/L; 320 mOsm/kg; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus; Monitor treatment response, complications, and need for reassessment with: Venous blood gas and acid-base status."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_dka_hhs_hyperglycemia_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pediatric DKA, HHS, or hyperglycemic crisis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Emergency ABCD and senior escalation route; Pediatric fluid and dextrose route; Insulin after fluids with no bolus"
         }
       ],
       "audit_requirements": {

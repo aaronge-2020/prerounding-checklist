@@ -3053,7 +3053,7 @@
         "pediatric_neuro_headache_seizure_ams_treatment_bundle": {
           "rule_id": "pediatric_neuro_headache_seizure_ams_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4138,7 +4138,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: compact evidence-cited management pathway",
+        "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "RCH_HEADACHE_CHILD",
@@ -4175,7 +4175,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric headache, seizure, altered mental status, or focal neurologic concern pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pediatric headache, seizure, altered mental status, or focal neurologic concern pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4231,7 +4231,7 @@
             "id": "pediatric_neuro_headache_seizure_ams_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pediatric headache, seizure, altered mental status, or focal neurologic concern workup or documented findings: Ask age and neurodevelopment baseline; Ask headache pattern; Ask headache-associated danger features; Ask seizure or blackout event details; Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Do not order routine tests for low-risk headache",
             "source_ids": [
               "RCH_HEADACHE_CHILD",
               "CHQ_STATUS_EPILEPTICUS_CHILD",
@@ -4270,8 +4270,8 @@
               {
                 "id": "pediatric_neuro_headache_seizure_ams_classification_decision",
                 "type": "decision",
-                "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: classify by Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern results available for threshold classification: Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; 12-lead ECG when seizure mimic or first seizure assessment; Neuroimaging when indicated; age; headache pattern; vomiting; neurologic exam; seizure history",
                 "source_ids": [
                   "RCH_HEADACHE_CHILD",
                   "RCH_SEIZURES_ACUTE_2025",
@@ -4500,7 +4500,7 @@
                     "id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pediatric headache, seizure, altered mental status, or focal neurologic concern threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pediatric headache, seizure, altered mental status, or focal neurologic concern result(s): age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospital medication doses",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_HEADACHE_CHILD",
@@ -4600,7 +4600,7 @@
                     "id": "pediatric_neuro_headache_seizure_ams_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern danger feature or high-risk cutoff: Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Pediatric headache red flags; Focal deficit, papilledema, or raised-ICP signs; <4 years; >=5 minutes; 2 benzodiazepine doses; Active seizure emergency route",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
                       "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -5014,8 +5014,8 @@
                   {
                     "id": "pediatric_neuro_headache_seizure_ams_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: start treatment/disposition when Headache imaging/escalation triggers include age <4 years, early-morning/sleep-waking/positional/sudden severe/occipital headache, vomiting, seizure, focal neurologic signs, or progressive pattern: <4 years | Active seizure treatment starts when total seizure duration is >=5 minutes or unknown; include prehospital benzodiazepines: >=5 minutes, 2 benzodiazepine doses | Seizure dosing: midazolam 0.15 mg/kg IV/IM/IO or 0.3 mg/kg buccal/IN max 10 mg; phenytoin 20 mg/kg max 2 g; levetiracetam 40-60 mg/kg max 4.5 g: 0.15 mg/kg, 0.3 mg/kg, 10 mg, 20 mg/kg, 2 g, 40-60 mg/kg | Secondary headache, raised intracranial pressure, infection, or head injury: 4 years | Seizure, status epilepticus, or post-ictal neurologic risk: 12 months, more than 5 matches",
-                    "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern criteria match or treatment cannot safely wait",
+                    "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment/disposition indicated by: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; 0.3 mg/kg; 10 mg; Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route",
                     "source_ids": [
                       "CHQ_STATUS_EPILEPTICUS_CHILD",
                       "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -5028,7 +5028,7 @@
                     "criteria": {
                       "rule_id": "pediatric_neuro_headache_seizure_ams_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5243,7 +5243,7 @@
                         "id": "pediatric_neuro_headache_seizure_ams_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "RCH_HEADACHE_CHILD",
                           "RCH_SEIZURES_ACUTE_2025",
@@ -5382,7 +5382,7 @@
                             "id": "pediatric_neuro_headache_seizure_ams_review_endpoint",
                             "type": "endpoint",
                             "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern modifier changes treatment/disposition: Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "RCH_HEADACHE_CHILD",
                               "RCH_SEIZURES_ACUTE_2025",
@@ -5424,7 +5424,7 @@
                             "id": "pediatric_neuro_headache_seizure_ams_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pediatric headache, seizure, altered mental status, or focal neurologic concern therapy or diagnostic plan, trend: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; Measure temperature",
                             "source_ids": [
                               "CHQ_STATUS_EPILEPTICUS_CHILD",
                               "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -5616,7 +5616,7 @@
                                 "id": "pediatric_neuro_headache_seizure_ams_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern reassessment worsens or contradicts expected response: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; Measure temperature",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
                                   "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -5997,7 +5997,7 @@
                                 "id": "pediatric_neuro_headache_seizure_ams_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern objective response supports narrowing, stopping, tapering, or continuing: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route; Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache.",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
                                   "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -6378,7 +6378,7 @@
                                 "id": "pediatric_neuro_headache_seizure_ams_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route",
                                 "source_ids": [
                                   "CHQ_STATUS_EPILEPTICUS_CHILD",
                                   "RCH_ALTERED_CONSCIOUS_STATE_2022",
@@ -6823,7 +6823,7 @@
                     "id": "pediatric_neuro_headache_seizure_ams_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric headache, seizure, altered mental status, or focal neurologic concern: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pediatric headache, seizure, altered mental status, or focal neurologic concern mimic/exclusion better fits: Primary headache or migraine only after pediatric red flags are absent; Secondary headache, raised intracranial pressure, infection, or head injury; Seizure, status epilepticus, or post-ictal neurologic risk; Altered conscious state from trauma, infection, metabolic, toxic, seizure, or hypoxic cause; Focal neurologic deficit, stroke mimic, or pediatric stroke concern",
                     "source_ids": [
                       "RCH_HEADACHE_CHILD",
                       "NICE_NG127_CHILD_NEURO_2019",
@@ -7635,49 +7635,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pediatric headache, seizure, altered mental status, or focal neurologic concern pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pediatric headache, seizure, altered mental status, or focal neurologic concern result(s): age; headache pattern; vomiting; neurologic exam; seizure history; BP/conscious state; seizure start time; prehospital medication doses"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern danger feature or high-risk cutoff: Seizure over 5 minutes or repeated without recovery; Persistent altered conscious state; Pediatric headache red flags; Focal deficit, papilledema, or raised-ICP signs; <4 years; >=5 minutes; 2 benzodiazepine doses; Active seizure emergency route"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern mimic/exclusion better fits: Primary headache or migraine only after pediatric red flags are absent; Secondary headache, raised intracranial pressure, infection, or head injury; Seizure, status epilepticus, or post-ictal neurologic risk; Altered conscious state from trauma, infection, metabolic, toxic, seizure, or hypoxic cause; Focal neurologic deficit, stroke mimic, or pediatric stroke concern"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern modifier changes treatment/disposition: Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern reassessment worsens or contradicts expected response: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; Do not order routine tests for low-risk headache; Point-of-care glucose; Seizure metabolic labs when indicated; Measure temperature"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern objective response supports narrowing, stopping, tapering, or continuing: <4 years; >=5 minutes; 2 benzodiazepine doses; 0.15 mg/kg; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route; Monitor treatment response, complications, and need for reassessment with: Do not order routine tests for low-risk headache."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_neuro_headache_seizure_ams_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pediatric headache, seizure, altered mental status, or focal neurologic concern stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Active seizure emergency route; Persistent altered conscious state admission or transfer; Headache red flag senior review route"
         }
       ],
       "audit_requirements": {

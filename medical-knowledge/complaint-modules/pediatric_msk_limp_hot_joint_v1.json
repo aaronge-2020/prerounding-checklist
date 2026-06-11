@@ -2613,7 +2613,7 @@
         "pediatric_msk_limp_hot_joint_treatment_bundle": {
           "rule_id": "pediatric_msk_limp_hot_joint_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3203,7 +3203,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: compact evidence-cited management pathway",
+        "label": "Pediatric limp, hot joint, injury, or non-weight bearing: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "RCH_LIMPING_CHILD",
@@ -3238,7 +3238,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pediatric limp, hot joint, injury, or non-weight bearing pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3294,7 +3294,7 @@
             "id": "pediatric_msk_limp_hot_joint_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric limp, hot joint, injury, or non-weight bearing: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pediatric limp, hot joint, injury, or non-weight bearing workup or documented findings: Ask pediatric MSK age and walking baseline; Ask current weight-bearing ability; Ask onset and injury mechanism; Ask pain location and referred pain; Unable to walk or weight bear; Fever with hot swollen limited joint; No routine tests for low-risk comfortable limp",
             "source_ids": [
               "RCH_LIMPING_CHILD",
               "ACR_ACUTELY_LIMPING_CHILD_2018",
@@ -3329,8 +3329,8 @@
               {
                 "id": "pediatric_msk_limp_hot_joint_classification_decision",
                 "type": "decision",
-                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: classify by Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pediatric limp, hot joint, injury, or non-weight bearing: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing results available for threshold classification: No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Ultrasound hip effusion route; MRI for osteomyelitis localization; duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration",
                 "source_ids": [
                   "RCH_LIMPING_CHILD",
                   "ACR_ACUTELY_LIMPING_CHILD_2018",
@@ -3448,7 +3448,7 @@
                     "id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pediatric limp, hot joint, injury, or non-weight bearing threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pediatric limp, hot joint, injury, or non-weight bearing result(s): duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_LIMPING_CHILD",
@@ -3538,7 +3538,7 @@
                     "id": "pediatric_msk_limp_hot_joint_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric limp, hot joint, injury, or non-weight bearing: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing danger feature or high-risk cutoff: Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising; 7 days; >7 days; >=20 mg/L; Immediate orthopedic route for septic arthritis",
                     "source_ids": [
                       "RCH_LIMPING_CHILD",
                       "RCH_BONE_JOINT_INFECTION",
@@ -3732,8 +3732,8 @@
                   {
                     "id": "pediatric_msk_limp_hot_joint_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: start treatment/disposition when Low-risk limp: no investigations only if no red flags, mild/no discomfort with analgesia, and review plan within 7 days of onset: 7 days | Consult for limp lasting >7 days, inability to weight bear or permit movement after analgesia, systemic illness, malignancy features, or septic arthritis concern: >7 days | Hip septic arthritis support: CRP >=20 mg/L and ultrasound effusion >=7 mm increase specificity/sensitivity for pediatric hip septic arthritis: >=20 mg/L, >=7 mm | X-ray localized pain or injury area: age 5 matches",
-                    "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing criteria match or treatment cannot safely wait",
+                    "label": "Pediatric limp, hot joint, injury, or non-weight bearing: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing treatment/disposition indicated by: 7 days; >7 days; >=20 mg/L; >=7 mm; age 5; Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
                       "CHQ_BONE_JOINT_INFECTION_2025",
@@ -3745,7 +3745,7 @@
                     "criteria": {
                       "rule_id": "pediatric_msk_limp_hot_joint_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pediatric limp, hot joint, injury, or non-weight bearing treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3850,7 +3850,7 @@
                         "id": "pediatric_msk_limp_hot_joint_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric limp, hot joint, injury, or non-weight bearing: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "RCH_LIMPING_CHILD",
                           "ACR_ACUTELY_LIMPING_CHILD_2018",
@@ -3910,7 +3910,7 @@
                             "id": "pediatric_msk_limp_hot_joint_review_endpoint",
                             "type": "endpoint",
                             "label": "Pediatric limp, hot joint, injury, or non-weight bearing: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing modifier changes treatment/disposition: Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "RCH_LIMPING_CHILD",
                               "ACR_ACUTELY_LIMPING_CHILD_2018",
@@ -3950,7 +3950,7 @@
                             "id": "pediatric_msk_limp_hot_joint_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric limp, hot joint, injury, or non-weight bearing: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pediatric limp, hot joint, injury, or non-weight bearing therapy or diagnostic plan, trend: 7 days; >7 days; >=20 mg/L; >=7 mm; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Measure temperature",
                             "source_ids": [
                               "RCH_BONE_JOINT_INFECTION",
                               "CHQ_BONE_JOINT_INFECTION_2025",
@@ -4065,7 +4065,7 @@
                                 "id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric limp, hot joint, injury, or non-weight bearing: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing reassessment worsens or contradicts expected response: 7 days; >7 days; >=20 mg/L; >=7 mm; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Measure temperature",
                                 "source_ids": [
                                   "RCH_LIMPING_CHILD",
                                   "RCH_BONE_JOINT_INFECTION",
@@ -4260,7 +4260,7 @@
                                 "id": "pediatric_msk_limp_hot_joint_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric limp, hot joint, injury, or non-weight bearing: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing objective response supports narrowing, stopping, tapering, or continuing: 7 days; >7 days; >=20 mg/L; >=7 mm; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp.",
                                 "source_ids": [
                                   "RCH_BONE_JOINT_INFECTION",
                                   "CHQ_BONE_JOINT_INFECTION_2025",
@@ -4455,7 +4455,7 @@
                                 "id": "pediatric_msk_limp_hot_joint_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric limp, hot joint, injury, or non-weight bearing: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably",
                                 "source_ids": [
                                   "RCH_BONE_JOINT_INFECTION",
                                   "CHQ_BONE_JOINT_INFECTION_2025",
@@ -4680,7 +4680,7 @@
                     "id": "pediatric_msk_limp_hot_joint_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric limp, hot joint, injury, or non-weight bearing: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pediatric limp, hot joint, injury, or non-weight bearing mimic/exclusion better fits: Septic arthritis or osteomyelitis until excluded; Fracture, occult injury, or safeguarding concern; Lower-risk transient synovitis or self-limited limp after danger features are absent; Age-specific hip or referred knee pathology; Systemic, hematologic, rheumatologic, neurologic, or referred cause",
                     "source_ids": [
                       "RCH_BONE_JOINT_INFECTION",
                       "RCH_LIMPING_CHILD",
@@ -5080,49 +5080,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pediatric limp, hot joint, injury, or non-weight bearing pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pediatric limp, hot joint, injury, or non-weight bearing result(s): duration of limp; red-flag screen; ability to weight bear after analgesia; review access; symptom duration; weight-bearing status; range of motion after analgesia; temperature/systemic features"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing danger feature or high-risk cutoff: Unable to walk or weight bear; Fever with hot swollen limited joint; Systemically unwell or sepsis physiology; Night pain weight loss pallor bruising; 7 days; >7 days; >=20 mg/L; Immediate orthopedic route for septic arthritis"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing mimic/exclusion better fits: Septic arthritis or osteomyelitis until excluded; Fracture, occult injury, or safeguarding concern; Lower-risk transient synovitis or self-limited limp after danger features are absent; Age-specific hip or referred knee pathology; Systemic, hematologic, rheumatologic, neurologic, or referred cause"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing modifier changes treatment/disposition: Measure temperature; Measure heart rate; Measure respiratory rate; Measure blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing reassessment worsens or contradicts expected response: 7 days; >7 days; >=20 mg/L; >=7 mm; No routine tests for low-risk comfortable limp; X-ray localized pain or injury area; Infection labs and blood culture route; Measure temperature"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing objective response supports narrowing, stopping, tapering, or continuing: 7 days; >7 days; >=20 mg/L; >=7 mm; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably; Monitor treatment response, complications, and need for reassessment with: No routine tests for low-risk comfortable limp."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_msk_limp_hot_joint_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pediatric limp, hot joint, injury, or non-weight bearing stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Immediate orthopedic route for septic arthritis; Bone infection admission and antibiotic route; Low-risk discharge only when walking comfortably"
         }
       ],
       "audit_requirements": {

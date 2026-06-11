@@ -4792,7 +4792,7 @@
         "type_1_diabetes_mellitus_treatment_bundle": {
           "rule_id": "type_1_diabetes_mellitus_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Type 1 Diabetes Mellitus treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Type 1 Diabetes Mellitus treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6660,7 +6660,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Type 1 Diabetes Mellitus: compact evidence-cited management pathway",
+        "label": "Type 1 Diabetes Mellitus: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -6691,7 +6691,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Type 1 Diabetes Mellitus pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Type 1 Diabetes Mellitus pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -6747,7 +6747,7 @@
             "id": "type_1_diabetes_mellitus_concurrent_data_bundle",
             "type": "action",
             "label": "Type 1 Diabetes Mellitus: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Type 1 Diabetes Mellitus trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Type 1 Diabetes Mellitus workup or documented findings: How much are you drinking and urinating, including polyuria, polydipsia, overnight urination, thirst intensity, access to water, and any dehydration or confusion?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Any vomiting, abdominal pain, deep or labored breathing, confusion, dehydration, infection symptoms, missed insulin, pump failure, steroid use, or very high glucose/ketones suggesting hyperglycemic crisis?; Any personal or family autoimmune disease, endocrine disease, thyroid cancer/MEN2, adrenal disease, or related inherited condition?; Vomiting, dehydration, hypotension, Kussmaul respirations, altered mental status.; SGLT2 inhibitor with ketotic symptoms even if glucose is not very high.; A1c/glucose criteria plus ketones/acid-base if symptomatic.",
             "source_ids": [
               "ADA_SOC_2026",
               "ADA_DIAGNOSIS_2026",
@@ -6780,8 +6780,8 @@
               {
                 "id": "type_1_diabetes_mellitus_classification_decision",
                 "type": "decision",
-                "label": "Type 1 Diabetes Mellitus: classify by Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126 | A1c/glucose criteria plus ketones/acid-base if symptomatic.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Type 1 Diabetes Mellitus: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Type 1 Diabetes Mellitus results available for threshold classification: A1c/glucose criteria plus ketones/acid-base if symptomatic.; Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.; Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Diabetes safety tests: review POC/plasma glucose trend, BMP with potassium/bicarbonate/anion gap and creatinine, beta-hydroxybutyrate or urine ketones when acutely ill, and UACR/lipids for complication-directed therapy.; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126",
                 "source_ids": [
                   "ADA_DIAGNOSIS_2026",
                   "ADA_SOC_2026",
@@ -7187,7 +7187,7 @@
                     "id": "type_1_diabetes_mellitus_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Type 1 Diabetes Mellitus threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Type 1 Diabetes Mellitus result(s): normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126; normal <140 mg/dL; diabetes >=200; A1c/glucose criteria plus ketones/acid-base if symptomatic.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ADA_DIAGNOSIS_2026",
@@ -7259,7 +7259,7 @@
                     "id": "type_1_diabetes_mellitus_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Type 1 Diabetes Mellitus: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Type 1 Diabetes Mellitus danger feature or high-risk cutoff: Vomiting, dehydration, hypotension, Kussmaul respirations, altered mental status.; SGLT2 inhibitor with ketotic symptoms even if glucose is not very high.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; Ketosis plus acidosis requires urgent DKA pathway.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -7979,8 +7979,8 @@
                   {
                     "id": "type_1_diabetes_mellitus_treatment_bundle",
                     "type": "action",
-                    "label": "Type 1 Diabetes Mellitus: start treatment/disposition when Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126 | A1c/glucose criteria plus ketones/acid-base if symptomatic.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: normal <5.7%, 5.7-6.4%, diabetes >=6.5%, normal <100 mg/dL, diabetes >=126, normal <140 mg/dL matches",
-                    "edgeLabel": "Type 1 Diabetes Mellitus criteria match or treatment cannot safely wait",
+                    "label": "Type 1 Diabetes Mellitus: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Type 1 Diabetes Mellitus treatment/disposition indicated by: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126; normal <140 mg/dL; Treat DKA/HHS with institutional protocol for IV fluids, insulin, potassium, dextrose transition, precipitant treatment, and monitored disposition.; Use lifelong physiologic basal-bolus insulin or pump therapy with CGM when feasible, plus education on carbohydrate dosing and correction factors.; Prescribe glucagon rescue, sick-day rules, ketone testing, backup basal insulin plan, and supplies before discharge or transition.; Adjust regimen to avoid severe hypoglycemia and address technology access, exercise, meals, pregnancy, renal function, and psychosocial barriers.; Ketosis plus acidosis requires urgent DKA pathway.; Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -7990,7 +7990,7 @@
                     "criteria": {
                       "rule_id": "type_1_diabetes_mellitus_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Type 1 Diabetes Mellitus treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Type 1 Diabetes Mellitus treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -8331,7 +8331,7 @@
                         "id": "type_1_diabetes_mellitus_treatment_safety_decision",
                         "type": "decision",
                         "label": "Type 1 Diabetes Mellitus: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Type 1 Diabetes Mellitus treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
                           "ADA_SOC_2026",
@@ -8642,7 +8642,7 @@
                             "id": "type_1_diabetes_mellitus_review_endpoint",
                             "type": "endpoint",
                             "label": "Type 1 Diabetes Mellitus: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Type 1 Diabetes Mellitus modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure current weight; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ADA_DIAGNOSIS_2026",
                               "ADA_SOC_2026",
@@ -8678,7 +8678,7 @@
                             "id": "type_1_diabetes_mellitus_monitoring_bundle",
                             "type": "action",
                             "label": "Type 1 Diabetes Mellitus: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Type 1 Diabetes Mellitus therapy or diagnostic plan, trend: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; A1c/glucose criteria plus ketones/acid-base if symptomatic.; Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.; Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.; Measure blood pressure",
                             "source_ids": [
                               "ADA_SOC_2026",
                               "ADA_DIAGNOSIS_2026",
@@ -8989,7 +8989,7 @@
                                 "id": "type_1_diabetes_mellitus_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Type 1 Diabetes Mellitus: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Type 1 Diabetes Mellitus reassessment worsens or contradicts expected response: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; A1c/glucose criteria plus ketones/acid-base if symptomatic.; Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.; Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.; Measure blood pressure",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -9672,7 +9672,7 @@
                                 "id": "type_1_diabetes_mellitus_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Type 1 Diabetes Mellitus: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Type 1 Diabetes Mellitus objective response supports narrowing, stopping, tapering, or continuing: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; Ketosis plus acidosis requires urgent DKA pathway.; Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Treat DKA/HHS with institutional protocol for IV fluids, insulin, potassium, dextrose transition, precipitant treatment, and monitored disposition.",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -10355,7 +10355,7 @@
                                 "id": "type_1_diabetes_mellitus_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Type 1 Diabetes Mellitus: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Type 1 Diabetes Mellitus stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Ketosis plus acidosis requires urgent DKA pathway.; Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -11162,7 +11162,7 @@
                     "id": "type_1_diabetes_mellitus_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Type 1 Diabetes Mellitus: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Type 1 Diabetes Mellitus mimic/exclusion better fits: Type 1 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -12628,49 +12628,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Type 1 Diabetes Mellitus pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "type_1_diabetes_mellitus_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Type 1 Diabetes Mellitus result(s): normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; diabetes >=126; normal <140 mg/dL; diabetes >=200; A1c/glucose criteria plus ketones/acid-base if symptomatic."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "type_1_diabetes_mellitus_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Type 1 Diabetes Mellitus danger feature or high-risk cutoff: Vomiting, dehydration, hypotension, Kussmaul respirations, altered mental status.; SGLT2 inhibitor with ketotic symptoms even if glucose is not very high.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; DKA/HHS physiology, recurrent severe hypoglycemia, vomiting/dehydration, altered mental status, infected foot wound, or pregnancy with hyperglycemia.; normal <5.7%; 5.7-6.4%; diabetes >=6.5%; Ketosis plus acidosis requires urgent DKA pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "type_1_diabetes_mellitus_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Type 1 Diabetes Mellitus mimic/exclusion better fits: Type 1 Diabetes Mellitus: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: A1c: normal <5.7%; prediabetes 5.7-6.4%; diabetes >=6.5%. Fasting plasma glucose: normal <100 mg/dL; prediabetes 100-125; diabetes >=126.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "type_1_diabetes_mellitus_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Type 1 Diabetes Mellitus modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure current weight; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "type_1_diabetes_mellitus_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Type 1 Diabetes Mellitus reassessment worsens or contradicts expected response: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; A1c/glucose criteria plus ketones/acid-base if symptomatic.; Beta-hydroxybutyrate, BMP, venous/arterial pH, bicarbonate, anion gap.; Islet autoantibodies: GAD65, IA-2, ZnT8, insulin Ab if needed; C-peptide with concurrent glucose.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "type_1_diabetes_mellitus_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Type 1 Diabetes Mellitus objective response supports narrowing, stopping, tapering, or continuing: normal <5.7%; 5.7-6.4%; diabetes >=6.5%; normal <100 mg/dL; Ketosis plus acidosis requires urgent DKA pathway.; Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Treat DKA/HHS with institutional protocol for IV fluids, insulin, potassium, dextrose transition, precipitant treatment, and monitored disposition."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "type_1_diabetes_mellitus_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Type 1 Diabetes Mellitus stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Ketosis plus acidosis requires urgent DKA pathway.; Positive antibodies or low C-peptide supports autoimmune insulin-deficient diabetes.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

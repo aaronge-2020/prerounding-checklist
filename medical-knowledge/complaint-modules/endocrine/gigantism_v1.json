@@ -2666,7 +2666,7 @@
         "gigantism_treatment_bundle": {
           "rule_id": "gigantism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Gigantism treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Gigantism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3047,7 +3047,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gigantism: compact evidence-cited management pathway",
+        "label": "Gigantism: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -3080,7 +3080,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Gigantism pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Gigantism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3136,7 +3136,7 @@
             "id": "gigantism_concurrent_data_bundle",
             "type": "action",
             "label": "Gigantism: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Gigantism trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Gigantism workup or documented findings: How has height or growth velocity changed compared with prior measurements, family height pattern, and puberty timing?; Any loud snoring, witnessed apneas, morning headaches, daytime sleepiness, resistant hypertension, or CPAP use?; Is pregnancy possible now, planned soon, or recently postpartum, and would pregnancy change medication or imaging safety?; Any eye pain, redness, light sensitivity, bulging eyes, double vision, reduced vision, or trouble closing the eyelids?; Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; IGF-1 age/puberty-adjusted.",
             "source_ids": [
               "ES_ACROMEGALY_2014",
               "PITUITARY_ACROMEGALY_2021",
@@ -3171,8 +3171,8 @@
               {
                 "id": "gigantism_classification_decision",
                 "type": "decision",
-                "label": "Gigantism: classify by GH excess diagnosis: typical phenotype with IGF-1 >1.3 x ULN for age confirms acromegaly/gigantism spectrum: >1.3 x ULN | GH excess OGTT: failure to suppress GH to <1 ng/mL, or <0.4 ng/mL with ultrasensitive assays, supports active disease when IGF-1 is high/equivocal: GH nadir <1 ng/mL, GH nadir <0.4 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Gigantism: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Gigantism results available for threshold classification: IGF-1 age/puberty-adjusted.; GH suppression after oral glucose.; Bone age and growth assessment.; Pituitary MRI after biochemical evidence.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; age/sex/puberty-adjusted IGF-1; assay ULN; typical GH-excess features; repeat IGF-1 if equivocal; 75-g OGTT GH nadir",
                 "source_ids": [
                   "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                   "ES_ACROMEGALY_2014",
@@ -3252,7 +3252,7 @@
                     "id": "gigantism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Gigantism threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Gigantism result(s): age/sex/puberty-adjusted IGF-1; assay ULN; typical GH-excess features; repeat IGF-1 if equivocal; 75-g OGTT GH nadir; GH assay sensitivity; IGF-1 result; puberty/diabetes status",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
@@ -3334,7 +3334,7 @@
                     "id": "gigantism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Gigantism: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Gigantism danger feature or high-risk cutoff: Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -3454,8 +3454,8 @@
                   {
                     "id": "gigantism_treatment_bundle",
                     "type": "action",
-                    "label": "Gigantism: start treatment/disposition when GH excess diagnosis: typical phenotype with IGF-1 >1.3 x ULN for age confirms acromegaly/gigantism spectrum: >1.3 x ULN | GH excess OGTT: failure to suppress GH to <1 ng/mL, or <0.4 ng/mL with ultrasensitive assays, supports active disease when IGF-1 is high/equivocal: GH nadir <1 ng/mL, GH nadir <0.4 ng/mL matches",
-                    "edgeLabel": "Gigantism criteria match or treatment cannot safely wait",
+                    "label": "Gigantism: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Gigantism treatment/disposition indicated by: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease.; Treat comorbidities such as sleep apnea, diabetes, hypertension, cardiomyopathy, colon neoplasia risk, and joint disease.; Monitor IGF-1, GH suppression/remission criteria, MRI, pituitary deficits, and complication surveillance longitudinally.; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -3466,7 +3466,7 @@
                     "criteria": {
                       "rule_id": "gigantism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Gigantism treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Gigantism treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3534,7 +3534,7 @@
                         "id": "gigantism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Gigantism: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Gigantism treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                           "ES_ACROMEGALY_2014",
@@ -3570,7 +3570,7 @@
                             "id": "gigantism_review_endpoint",
                             "type": "endpoint",
                             "label": "Gigantism: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Gigantism modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                               "ES_ACROMEGALY_2014",
@@ -3608,7 +3608,7 @@
                             "id": "gigantism_monitoring_bundle",
                             "type": "action",
                             "label": "Gigantism: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Gigantism therapy or diagnostic plan, trend: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; IGF-1 age/puberty-adjusted.; GH suppression after oral glucose.; Bone age and growth assessment.; Measure blood pressure; Measure heart rate",
                             "source_ids": [
                               "ES_ACROMEGALY_2014",
                               "PITUITARY_ACROMEGALY_2021",
@@ -3685,7 +3685,7 @@
                                 "id": "gigantism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Gigantism: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Gigantism reassessment worsens or contradicts expected response: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; IGF-1 age/puberty-adjusted.; GH suppression after oral glucose.; Bone age and growth assessment.; Measure blood pressure; Measure heart rate",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -3806,7 +3806,7 @@
                                 "id": "gigantism_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Gigantism: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Gigantism objective response supports narrowing, stopping, tapering, or continuing: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease.",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -3927,7 +3927,7 @@
                                 "id": "gigantism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Gigantism: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Gigantism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_ACROMEGALY_2014",
                                   "PITUITARY_ACROMEGALY_2021",
@@ -4079,7 +4079,7 @@
                     "id": "gigantism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Gigantism: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Gigantism mimic/exclusion better fits: Gigantism: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
                     "source_ids": [
                       "ES_ACROMEGALY_2014",
                       "PITUITARY_ACROMEGALY_2021",
@@ -4333,49 +4333,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Gigantism pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gigantism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Gigantism result(s): age/sex/puberty-adjusted IGF-1; assay ULN; typical GH-excess features; repeat IGF-1 if equivocal; 75-g OGTT GH nadir; GH assay sensitivity; IGF-1 result; puberty/diabetes status"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gigantism_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Gigantism danger feature or high-risk cutoff: Visual symptoms, severe headache, rapid growth acceleration, pituitary apoplexy.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "gigantism_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Gigantism mimic/exclusion better fits: Gigantism: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Pediatric/puberty-specific reference ranges are mandatory; adult cutoffs are not sufficient. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gigantism_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Gigantism modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gigantism_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Gigantism reassessment worsens or contradicts expected response: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; IGF-1 age/puberty-adjusted.; GH suppression after oral glucose.; Bone age and growth assessment.; Measure blood pressure; Measure heart rate"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "gigantism_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Gigantism objective response supports narrowing, stopping, tapering, or continuing: >1.3 x ULN; GH nadir <1 ng/mL; GH nadir <0.4 ng/mL; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use transsphenoidal surgery as first-line for most resectable pituitary adenomas causing GH excess.; Use somatostatin receptor ligands, pegvisomant, dopamine agonists, or radiotherapy for persistent, unresectable, recurrent, or nonsurgical disease."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gigantism_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Gigantism stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Confirmed GH excess before epiphyseal closure changes urgency of pediatric pituitary treatment.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

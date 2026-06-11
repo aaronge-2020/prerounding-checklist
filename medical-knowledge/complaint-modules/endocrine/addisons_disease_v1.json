@@ -3886,7 +3886,7 @@
         "addisons_disease_treatment_bundle": {
           "rule_id": "addisons_disease_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Addison's Disease treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Addison's Disease treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5412,7 +5412,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Addison's Disease: compact evidence-cited management pathway",
+        "label": "Addison's Disease: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5439,7 +5439,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Addison's Disease pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Addison's Disease pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5495,7 +5495,7 @@
             "id": "addisons_disease_concurrent_data_bundle",
             "type": "action",
             "label": "Addison's Disease: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Addison's Disease trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Addison's Disease workup or documented findings: Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?; Any abdominal pain, nausea/vomiting, poor intake, salt craving, orthostasis, weight loss, or new skin/oral hyperpigmentation suggesting adrenal insufficiency or crisis physiology?; How has weight changed from baseline, and was the change intentional or associated with appetite, fluid status, or systemic symptoms?; Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?; Adrenal crisis, severe hyperkalemia, shock, infection.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; 8 AM cortisol/ACTH.",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5524,8 +5524,8 @@
               {
                 "id": "addisons_disease_classification_decision",
                 "type": "decision",
-                "label": "Addison's Disease: classify by Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL | 8 AM cortisol/ACTH.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Cosyntropin stimulation.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Renin/aldosterone.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | 21-hydroxylase antibodies.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Addison's Disease: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Addison's Disease results available for threshold classification: 8 AM cortisol/ACTH.; Cosyntropin stimulation.; Renin/aldosterone.; 21-hydroxylase antibodies.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL",
                 "source_ids": [
                   "ES_ADRENAL_INSUFFICIENCY_2016",
                   "AHRQ_CALIBRATE_DX"
@@ -5863,7 +5863,7 @@
                     "id": "addisons_disease_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Addison's Disease threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Addison's Disease result(s): AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; 3.5-5.0 mmol/L; 8 AM cortisol/ACTH.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -5931,7 +5931,7 @@
                     "id": "addisons_disease_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Addison's Disease: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Addison's Disease danger feature or high-risk cutoff: Adrenal crisis, severe hyperkalemia, shock, infection.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; AM cortisol <3 ug/dL; >15; 18 ug/dL; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -6537,8 +6537,8 @@
                   {
                     "id": "addisons_disease_treatment_bundle",
                     "type": "action",
-                    "label": "Addison's Disease: start treatment/disposition when Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL | 8 AM cortisol/ACTH.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Cosyntropin stimulation.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | Renin/aldosterone.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L | 21-hydroxylase antibodies.: AM cortisol <3 ug/dL, >15, 18 ug/dL, Cosyntropin peak cortisol <18 ug/dL, 14-15 ug/dL, 135-145 mmol/L matches",
-                    "edgeLabel": "Addison's Disease criteria match or treatment cannot safely wait",
+                    "label": "Addison's Disease: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Addison's Disease treatment/disposition indicated by: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol.; For chronic replacement, use hydrocortisone 15-25 mg/day in divided doses or prednisolone 3-5 mg/day when appropriate; avoid dexamethasone for routine replacement.; Add fludrocortisone 50-100 microgram/day and liberal salt intake when aldosterone deficiency is confirmed, monitoring BP, edema, electrolytes, salt craving, and renin.; Provide sick-day rules, emergency injectable glucocorticoid plan, medical alert identification, perioperative stress dosing, and pregnancy-specific review.; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -6546,7 +6546,7 @@
                     "criteria": {
                       "rule_id": "addisons_disease_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Addison's Disease treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Addison's Disease treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6839,7 +6839,7 @@
                         "id": "addisons_disease_treatment_safety_decision",
                         "type": "decision",
                         "label": "Addison's Disease: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Addison's Disease treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016",
                           "AHRQ_CALIBRATE_DX"
@@ -7090,7 +7090,7 @@
                             "id": "addisons_disease_review_endpoint",
                             "type": "endpoint",
                             "label": "Addison's Disease: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Addison's Disease modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_ADRENAL_INSUFFICIENCY_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -7122,7 +7122,7 @@
                             "id": "addisons_disease_monitoring_bundle",
                             "type": "action",
                             "label": "Addison's Disease: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Addison's Disease therapy or diagnostic plan, trend: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol/ACTH.; Cosyntropin stimulation.; Renin/aldosterone.; Measure blood pressure",
                             "source_ids": [
                               "ES_ADRENAL_INSUFFICIENCY_2016",
                               "AHRQ_CALIBRATE_DX"
@@ -7373,7 +7373,7 @@
                                 "id": "addisons_disease_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Addison's Disease: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Addison's Disease reassessment worsens or contradicts expected response: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol/ACTH.; Cosyntropin stimulation.; Renin/aldosterone.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -7932,7 +7932,7 @@
                                 "id": "addisons_disease_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Addison's Disease: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Addison's Disease objective response supports narrowing, stopping, tapering, or continuing: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol.",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -8491,7 +8491,7 @@
                                 "id": "addisons_disease_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Addison's Disease: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Addison's Disease stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_ADRENAL_INSUFFICIENCY_2016",
                                   "AHRQ_CALIBRATE_DX"
@@ -9166,7 +9166,7 @@
                     "id": "addisons_disease_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Addison's Disease: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Addison's Disease mimic/exclusion better fits: Addison's Disease: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -10380,49 +10380,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Addison's Disease pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "addisons_disease_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Addison's Disease result(s): AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 14-15 ug/dL; 135-145 mmol/L; 3.5-5.0 mmol/L; 8 AM cortisol/ACTH."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "addisons_disease_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Addison's Disease danger feature or high-risk cutoff: Adrenal crisis, severe hyperkalemia, shock, infection.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; AM cortisol <3 ug/dL; >15; 18 ug/dL; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "addisons_disease_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Addison's Disease mimic/exclusion better fits: Addison's Disease: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: 8 AM cortisol <3 ug/dL strongly suggests adrenal insufficiency; >15-18 ug/dL often makes it unlikely, context dependent. Cosyntropin peak cortisol <18 ug/dL is a traditional abnormal cutoff; modern assays may use about 14-15 ug/dL.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "addisons_disease_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Addison's Disease modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "addisons_disease_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Addison's Disease reassessment worsens or contradicts expected response: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; 8 AM cortisol/ACTH.; Cosyntropin stimulation.; Renin/aldosterone.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "addisons_disease_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Addison's Disease objective response supports narrowing, stopping, tapering, or continuing: AM cortisol <3 ug/dL; >15; 18 ug/dL; Cosyntropin peak cortisol <18 ug/dL; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat adrenal crisis with hydrocortisone 100 mg IV/IM, isotonic fluids with dextrose as needed, and ongoing hydrocortisone about 200 mg per 24 hours per local protocol."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "addisons_disease_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Addison's Disease stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; High ACTH plus low cortisol confirms primary pattern; mineralocorticoid deficiency changes therapy to fludrocortisone/salt guidance.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

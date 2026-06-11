@@ -785,6 +785,14 @@ function listLabels(items = [], maxItems = 5) {
   return items.slice(0, maxItems).map((item) => itemLabel(item)).filter(Boolean);
 }
 
+function listText(items = [], fallback = "", maxItems = 5) {
+  return cleanText(listLabels(items, maxItems).join("; ") || fallback);
+}
+
+function arrayText(items = [], fallback = "", maxItems = 6) {
+  return cleanText(unique(items).slice(0, maxItems).join("; ") || fallback);
+}
+
 function sourceRowsForTree(sourceIds = [], sourceById = new Map()) {
   return unique(sourceIds).map((sourceId) => {
     const source = sourceById.get(sourceId);
@@ -960,16 +968,16 @@ function buildTraversableContext(module, sourceIds, tests, criteriaRows) {
   };
 }
 
-function buildSyntheticScenarios(prefix) {
+function buildSyntheticScenarios(prefix, edgeLabels = {}) {
   return [
-    { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: "Missing context" },
-    { scenario_id: "missing_cutoff_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: "Threshold/result data missing" },
-    { scenario_id: "urgent_or_high_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: `${prefix}_urgent_endpoint`, expected_active_branch: "Emergency or high-risk criteria met" },
-    { scenario_id: "alternate_pathway", major_pathway: "mimics_exclusions", expected_endpoint_id: `${prefix}_alternate_endpoint`, expected_active_branch: "Criteria favor mimic or alternate pathway" },
-    { scenario_id: "special_population_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: `${prefix}_review_endpoint`, expected_active_branch: "Treatment modifier unresolved" },
-    { scenario_id: "worsening_after_treatment", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: `${prefix}_worsening_endpoint`, expected_active_branch: "Worsening or discordant reassessment" },
-    { scenario_id: "deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: `${prefix}_deescalate_endpoint`, expected_active_branch: "Stopping or de-escalation criteria met" },
-    { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: `${prefix}_followup_endpoint`, expected_active_branch: "Stable for follow-up with safety net" }
+    { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: edgeLabels.missingContext },
+    { scenario_id: "missing_cutoff_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: `${prefix}_missing_cutoff_data_endpoint`, expected_active_branch: edgeLabels.missingCutoff },
+    { scenario_id: "urgent_or_high_risk", major_pathway: "escalation_emergency_actions", expected_endpoint_id: `${prefix}_urgent_endpoint`, expected_active_branch: edgeLabels.urgent },
+    { scenario_id: "alternate_pathway", major_pathway: "mimics_exclusions", expected_endpoint_id: `${prefix}_alternate_endpoint`, expected_active_branch: edgeLabels.alternate },
+    { scenario_id: "special_population_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: `${prefix}_review_endpoint`, expected_active_branch: edgeLabels.review },
+    { scenario_id: "worsening_after_treatment", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: `${prefix}_worsening_endpoint`, expected_active_branch: edgeLabels.worsening },
+    { scenario_id: "deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: `${prefix}_deescalate_endpoint`, expected_active_branch: edgeLabels.deescalate },
+    { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: `${prefix}_followup_endpoint`, expected_active_branch: edgeLabels.followup }
   ];
 }
 
@@ -996,15 +1004,71 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const thresholdExamples = unique(criteriaRows.flatMap((row) => row.cutoffs || [])).slice(0, 10);
   const cutoffSummary = criteriaRows.slice(0, 5).map((row) => `${row.label}: ${(row.cutoffs || []).slice(0, 6).join(", ")}`).join(" | ");
   const thresholdSummary = cutoffSummary || thresholdExamples.join("; ") || "documented diagnostic criteria with clinician review when numeric thresholds are unavailable";
-  const shortThresholdSummary = shortText(thresholdSummary, 180);
+  const shortThresholdSummary = arrayText(thresholdExamples, thresholdSummary, 6);
   const redFlagSummary = listLabels(redFlags, 4).join("; ");
   const safetySummary = listLabels(safetyChecks, 5);
   const treatmentSummary = [...listLabels(treatments, 4), ...listLabels(dispositions, 3)].filter(Boolean).join("; ");
+  const activationItems = firstItems(module, "requiredQuestions", 4, ["conditionalQuestions", "requiredExam"]);
+  const activationSummary = arrayText([
+    ...listLabels(activationItems, 4),
+    ...listLabels(redFlags, 2),
+    ...listLabels(tests, 2)
+  ], `${label} symptoms, exam, vitals, and workup selection`, 7);
+  const diagnosticDataSummary = arrayText([
+    ...listLabels(tests, 5),
+    ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 6),
+    ...thresholdExamples.slice(0, 4)
+  ], `${label} diagnostic, severity, and treatment-safety results`, 10);
+  const redFlagBranchSummary = arrayText([
+    ...listLabels(redFlags, 4),
+    ...thresholdExamples.slice(0, 3),
+    ...listLabels(dispositions, 2)
+  ], `${label} unstable physiology, danger feature, or monitored-care rule`, 8);
+  const alternateBranchSummary = listText(differentials, `${label} exclusion or competing diagnosis`, 5);
+  const safetyModifierSummary = arrayText([
+    ...listLabels(safetyChecks, 4),
+    "pregnancy/postpartum/lactation status",
+    "renal/hepatic/cardiac disease",
+    "allergy or drug interaction",
+    "pediatric/adult applicability",
+    "local protocol requirement"
+  ], `${label} treatment modifier`, 8);
+  const monitoringSummary = arrayText([
+    ...thresholdExamples.slice(0, 4),
+    ...listLabels(tests, 3),
+    ...listLabels(safetyChecks, 3)
+  ], `${label} symptoms, vitals, labs/results, adverse effects, and disposition`, 8);
+  const deescalationSummary = arrayText([
+    ...thresholdExamples.slice(0, 4),
+    ...listLabels(dispositions, 3),
+    ...listLabels(treatments, 3)
+  ], `${label} objective response and diagnosis certainty`, 8);
+  const followupSummary = arrayText([
+    "pending-result owner",
+    "follow-up interval",
+    "return precautions",
+    ...listLabels(dispositions, 3)
+  ], `${label} follow-up ownership and safety net`, 6);
+  const edgeLabels = {
+    missingContext: `Missing exact ${label} pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings`,
+    diagnosticData: `Selected ${label} workup or documented findings: ${activationSummary}`,
+    classification: `${label} results available for threshold classification: ${diagnosticDataSummary}`,
+    missingCutoff: `Missing exact ${label} result(s): ${arrayText(exactDiagnosticData, `${label} threshold/result data`, 8)}`,
+    urgent: `${label} danger feature or high-risk cutoff: ${redFlagBranchSummary}`,
+    treatment: `${label} treatment/disposition indicated by: ${arrayText([shortThresholdSummary, treatmentSummary], `${label} confirmed or high-risk branch`, 4)}`,
+    alternate: `${label} mimic/exclusion better fits: ${alternateBranchSummary}`,
+    safetySelected: `${label} treatment selected; check patient-specific modifiers`,
+    review: `${label} modifier changes treatment/disposition: ${safetyModifierSummary}`,
+    monitoring: `After ${label} therapy or diagnostic plan, trend: ${monitoringSummary}`,
+    worsening: `${label} reassessment worsens or contradicts expected response: ${monitoringSummary}`,
+    deescalate: `${label} objective response supports narrowing, stopping, tapering, or continuing: ${deescalationSummary}`,
+    followup: `${label} stable for discharge/outpatient plan: ${followupSummary}`
+  };
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_endpoint`,
     label: `${label}: follow-up ownership and safety-net endpoint`,
-    edgeLabel: "Stable for follow-up with safety net",
+    edgeLabel: edgeLabels.followup,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_followup_criteria`, `Use after ${label} is stable, actionable results have an owner, and return precautions are documented.`, ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], managementSources),
     action: `Document the ${label} diagnosis/risk category, pending-result owner, follow-up interval, and return precautions for worsening symptoms, new danger features, inability to complete treatment, or abnormal pending results.`,
@@ -1015,7 +1079,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalate_endpoint`,
     label: `${label}: de-escalate, stop, or narrow when objective criteria normalize`,
-    edgeLabel: "Stopping or de-escalation criteria met",
+    edgeLabel: edgeLabels.deescalate,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_deescalate_criteria`, `Stop, narrow, taper, or de-escalate ${label} treatment only when objective response, diagnosis certainty, and cited stopping criteria support it.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Use the active ${label} objective criteria and response trend (${shortText(thresholdExamples.join("; "), 220)}) to stop, narrow, taper, or continue treatment; document what threshold or finding changed.`,
@@ -1026,7 +1090,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
     label: `${label}: escalate when reassessment worsens or contradicts expected course`,
-    edgeLabel: "Worsening or discordant reassessment",
+    edgeLabel: edgeLabels.worsening,
     sourceIds: unique([...redFlagSources, ...managementSources]),
     criteria: criteria(`${prefix}_worsening_criteria`, `Escalate ${label} if symptoms, vitals, critical thresholds, imaging/ECG/procedure results, or treatment response worsen or no longer fit the selected branch.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Repeat critical ${label} objective data, reassess mimics/complications, and move to ED/admission/specialty review according to the abnormal cutoff or danger feature.`,
@@ -1037,7 +1101,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const monitoring = actionNode({
     id: `${prefix}_monitoring_bundle`,
     label: `${label}: concurrent monitoring, response checks, and disposition readiness`,
-    edgeLabel: "Treatment started or diagnostic plan active",
+    edgeLabel: edgeLabels.monitoring,
     sourceIds: managementSources,
     criteria: criteria(`${prefix}_monitoring_criteria`, `Monitor ${label} by trending the same cited threshold/result findings that selected the branch, plus medication adverse effects and disposition constraints.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Reassess ${label} using the active thresholds and clinical course; do not close the pathway until response, adverse effects, pending data, and disposition are owned.`,
@@ -1049,7 +1113,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const reviewEndpoint = endpoint({
     id: `${prefix}_review_endpoint`,
     label: `${label}: clinician review for contraindication, special population, or local-policy cutoff`,
-    edgeLabel: "Treatment modifier unresolved",
+    edgeLabel: edgeLabels.review,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_review_criteria`, `Use clinician review when ${label} treatment/disposition depends on pregnancy/postpartum status, pediatric/adult applicability, renal/hepatic/cardiac disease, allergy, drug interaction, procedural risk, guideline conflict, or local protocol.`, ["pregnancy_status", "demographics", "medications", "comorbidities", "allergies", "local_policy", "workup_findings"], cutoffSources),
     action: `Pause non-emergent ${label} treatment choices until the modifier is resolved and the reviewer documents the applicable guideline/local cutoff.`,
@@ -1060,7 +1124,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const safetyDecision = decision({
     id: `${prefix}_treatment_safety_decision`,
     label: `${label}: medication/procedure safety and special-population thresholds resolved?`,
-    edgeLabel: "Diagnosis/risk branch selected",
+    edgeLabel: edgeLabels.safetySelected,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_safety_decision_criteria`, `Route ${label} management by treatment contraindications, dose/weight/renal/pregnancy constraints, and local protocol dependencies before committing to therapy.`, ["medications", "allergies", "pregnancy_status", "demographics", "comorbidities", "labs", "workup_findings"], cutoffSources, { criteria_options: criteriaRows.filter((row) => /treat|dose|mg|kg|pregnan|bmi|renal|contra/i.test(`${row.label} ${row.criteria_text}`)).slice(0, 8) }),
     action: `Apply ${label}-specific safety modifiers before final treatment/disposition.`,
@@ -1069,10 +1133,10 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const treatmentBundle = actionNode({
     id: `${prefix}_treatment_bundle`,
-    label: `${label}: start treatment/disposition when ${shortThresholdSummary} matches`,
-    edgeLabel: `${label} criteria match or treatment cannot safely wait`,
+    label: `${label}: initiate treatment/disposition for the active threshold-defined branch`,
+    edgeLabel: edgeLabels.treatment,
     sourceIds: managementSources,
-    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Use the ${label} treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
+    criteria: criteria(`${prefix}_treatment_bundle_criteria`, `Use the ${label} treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], managementSources, { criteria_options: criteriaRows.slice(0, 10) }),
     action: treatmentSummary || `Treat ${label} according to the active threshold-defined branch and documented severity.`,
     parallelActions: unique([...listLabels(treatments, 5), ...listLabels(dispositions, 3)]),
     guidelineCutoffs: criteriaRows,
@@ -1082,7 +1146,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_endpoint`,
     label: `${label}: switch to mimic/alternate pathway when threshold/result criteria do not fit`,
-    edgeLabel: "Criteria favor mimic or alternate pathway",
+    edgeLabel: edgeLabels.alternate,
     sourceIds: differentialSources,
     criteria: criteria(`${prefix}_alternate_criteria`, `Use an alternate pathway when ${label} criteria are absent, a cited mimic better explains the presentation, or objective result data contradict this workup.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], differentialSources, { criteria_options: criteriaRows.slice(0, 8) }),
     action: `Document why ${label} is not the active pathway and route to the competing diagnosis: ${shortText(listLabels(differentials, 5).join("; "), 320)}.`,
@@ -1093,7 +1157,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_endpoint`,
     label: `${label}: emergency escalation or monitored-care disposition when danger thresholds are met`,
-    edgeLabel: "Emergency or high-risk criteria met",
+    edgeLabel: edgeLabels.urgent,
     sourceIds: unique([...redFlagSources, ...managementSources]),
     criteria: criteria(`${prefix}_urgent_criteria`, `Escalate ${label} when any condition-specific danger feature, high-risk cutoff, unstable physiology, or monitored-care disposition rule is present.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "mental_status", "workup_findings"], unique([...redFlagSources, ...managementSources]), { criteria_options: criteriaRows.slice(0, 10) }),
     action: redFlagSummary ? `${redFlagSummary}. ${shortText(treatmentSummary, 240)}` : `Escalate ${label} for emergency evaluation or monitored care using the abnormal cutoff or danger feature.`,
@@ -1104,7 +1168,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const missingCutoffEndpoint = endpoint({
     id: `${prefix}_missing_cutoff_data_endpoint`,
     label: `Missing data needed: ${label} threshold/results`,
-    edgeLabel: "Threshold/result data missing",
+    edgeLabel: edgeLabels.missingCutoff,
     sourceIds: unique([...genericSourceIds, ...cutoffSources]),
     criteria: criteria(`${prefix}_missing_cutoff_data_criteria`, `Route here when ${label} cannot be classified because exact threshold/result data are missing.`, contextDomains, unique([...genericSourceIds, ...cutoffSources]), { missing_any: exactDiagnosticData }),
     action: `Obtain the exact ${label} data needed for threshold-based routing: ${shortText(exactDiagnosticData.join("; "), 420)}.`,
@@ -1114,8 +1178,8 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label}: classify by ${shortThresholdSummary}`,
-    edgeLabel: "Concurrent data bundle obtained",
+    label: `${label}: classify severity and disposition by cited thresholds`,
+    edgeLabel: edgeLabels.classification,
     sourceIds: cutoffSources,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} against cited thresholds and condition-specific rules: ${shortText(thresholdSummary, 520)}`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], cutoffSources, { criteria_options: criteriaRows }),
     action: `Choose the active ${label} branch by matching patient data to: ${shortText(thresholdSummary, 520)}.`,
@@ -1127,7 +1191,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const dataBundle = actionNode({
     id: `${prefix}_concurrent_data_bundle`,
     label: `${label}: obtain concurrent diagnostic, severity, and treatment-safety data`,
-    edgeLabel: `${label} trigger present with enough context to gather objective data`,
+    edgeLabel: edgeLabels.diagnosticData,
     sourceIds: testSources,
     criteria: criteria(`${prefix}_data_bundle_criteria`, `Obtain ${label} diagnostic/severity/treatment-safety data together rather than as a one-step chain.`, ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status"], testSources),
     action: `Obtain together: ${shortText([...listLabels(tests, 8), ...safetySummary, ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 8)].join("; "), 520)}.`,
@@ -1140,7 +1204,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const missingContextEndpoint = endpoint({
     id: "endpoint_missing_context",
     label: `Missing data needed: ${label} pathway context`,
-    edgeLabel: "Missing context",
+    edgeLabel: edgeLabels.missingContext,
     sourceIds: genericSourceIds,
     criteria: criteria("missing_context_criteria", `Route here when the patient context needed to activate ${label} is absent or cannot be extracted.`, contextDomains, genericSourceIds, { missing_any: contextDomains }),
     action: `Before choosing a non-emergency ${label} branch, document: presenting trigger, onset/trajectory, focused exam, vital signs, threshold labs/results, medication/allergy context, comorbidities, demographics, pregnancy/applicability status, and current workup findings.`,
@@ -1150,7 +1214,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: `${label}: compact evidence-cited management pathway`,
+    label: `${label}: does patient context support this workup or require exact missing-data routing?`,
     sourceIds: cutoffSources,
     criteria: criteria("activate_workup", `Activate when structured or extractable context matches ${label} triggers or the clinician selects workup ${module.id}.`, ["selected_workup_id", "presenting_symptoms", "problem_list_or_diagnosis", "clinician_selected_module"], cutoffSources),
     action: `Route ${label} using cited diagnostic thresholds/rules, concurrent data bundles, treatment-safety checks, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
@@ -1188,7 +1252,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
     traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
     activationRules,
     root,
-    synthetic_patient_scenarios: buildSyntheticScenarios(prefix),
+    synthetic_patient_scenarios: buildSyntheticScenarios(prefix, edgeLabels),
     audit_requirements: {
       required_domains: requiredPathwayDomains,
       compact_tree_requirements: [
@@ -1197,6 +1261,407 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
         "cited thresholds/rules visible in classification and endpoint nodes",
         "all endpoints cite evidence or state needs_clinical_review",
         "missing-data endpoints name exact data needed"
+      ]
+    }
+  };
+}
+
+function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Fever, infection, or sepsis";
+  const prefix = "fever_infection_sepsis";
+  const ssc = ["SSC_SEPSIS_2026"];
+  const maternal = ["SMFM_MATERNAL_SEPSIS_2023"];
+  const sourceIds = unique([...ssc, ...maternal, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 5, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "adult_sepsis_screening_and_diagnosis",
+      label: "Acutely ill adult: screen with NEWS/NEWS2/MEWS/SIRS rather than qSOFA alone; sepsis is a clinical diagnosis, not a single biomarker rule-out",
+      criteria_text: "SSC 2026 recommends NEWS, NEWS2, MEWS, or SIRS over qSOFA as a single sepsis screening tool in hospital; sepsis is a clinical diagnosis and should not be ruled in or ruled out with one biomarker/test.",
+      cutoffs: [],
+      data_needed: ["suspected infection", "NEWS/NEWS2/MEWS/SIRS elements", "organ dysfunction evidence", "clinician source assessment"],
+      source_ids: ssc,
+      source_section: "Screening and biomarkers"
+    }),
+    criterion({
+      id: "adult_sepsis_blood_culture_lactate",
+      label: "Possible/probable/definite sepsis or shock: collect blood cultures as soon as possible, ideally before antimicrobials, and measure lactate",
+      criteria_text: "For adults with possible, probable, or definite sepsis or septic shock, SSC recommends blood cultures as soon as possible and ideally before antimicrobials, and suggests measuring blood lactate.",
+      cutoffs: [],
+      data_needed: ["blood culture timing", "antimicrobial timing", "initial lactate", "suspected source"],
+      source_ids: ssc,
+      source_section: "Blood culture and blood lactate"
+    }),
+    criterion({
+      id: "adult_sepsis_fluid_resuscitation",
+      label: "Sepsis-induced hypoperfusion or septic shock: at least 30 mL/kg IV crystalloid in first 3 hours with frequent reassessment",
+      criteria_text: "SSC 2026 suggests at least 30 mL/kg IV crystalloid in the first 3 hours for adults with sepsis-induced hypoperfusion or septic shock; use actual body weight or adjusted/ideal weight when BMI >30 kg/m2 and reassess frequently.",
+      cutoffs: ["30 mL/kg", "3 hours", "BMI >30 kg/m2"],
+      data_needed: ["weight", "BMI", "fluid already given", "perfusion assessment", "heart failure/renal disease risk", "fluid responsiveness"],
+      source_ids: ssc,
+      source_section: "Fluid resuscitation"
+    }),
+    criterion({
+      id: "adult_sepsis_map_vasopressor_targets",
+      label: "Septic shock physiology: vasopressors to maintain MAP >=65 mm Hg with lactate >2 mmol/L; treatment target MAP 65 mm Hg, or 60-65 mm Hg initially if age >=65",
+      criteria_text: "Route suspected infection to septic shock/monitored-care escalation when vasopressors are needed to maintain MAP >=65 mm Hg and lactate remains >2 mmol/L after adequate fluid resuscitation. SSC 2026 recommends initial MAP target 65 mm Hg in adult septic shock, suggests 60-65 mm Hg in age 65 years or older, and suggests starting vasopressors peripherally rather than delaying for central venous access.",
+      cutoffs: ["MAP >=65 mm Hg", "lactate >2 mmol/L", "MAP 65 mm Hg", "age >=65 years", "60-65 mm Hg"],
+      data_needed: ["MAP", "lactate", "age", "vasopressor requirement", "fluid resuscitation status", "central/peripheral access", "arterial/noninvasive BP reliability"],
+      source_ids: ssc,
+      source_section: "Vasopressor administration and mean arterial pressure"
+    }),
+    criterion({
+      id: "adult_sepsis_antibiotic_timing",
+      label: "Antimicrobials: septic shock or probable/definite sepsis within 1 hour; possible sepsis without shock rapid investigation then antibiotics within 3 hours if concern persists",
+      criteria_text: "SSC 2026 recommends antimicrobials immediately, ideally within 1 hour, for septic shock and probable/definite sepsis without shock; possible sepsis without shock should receive rapid investigation and antibiotics within 3 hours if infection concern persists, while low-likelihood infection without shock can defer antimicrobials with close monitoring.",
+      cutoffs: ["1 hour", "3 hours"],
+      data_needed: ["shock status", "infection likelihood", "time sepsis first suspected", "cultures obtained/not delayed", "antimicrobial allergies", "local resistance/MDR risk"],
+      source_ids: ssc,
+      source_section: "Antibiotic initiation"
+    }),
+    criterion({
+      id: "adult_sepsis_source_control",
+      label: "Source control: evaluate emergent source-control diagnoses and perform early source control ideally within 6 hours when required",
+      criteria_text: "SSC 2026 states adults with sepsis or shock should be rapidly evaluated for source-control diagnoses and suggests early source control, ideally within 6 hours of sepsis or shock diagnosis requiring source control.",
+      cutoffs: ["6 hours"],
+      data_needed: ["suspected source", "imaging/procedure results", "drainage/debridement/line removal need", "consult availability"],
+      source_ids: ssc,
+      source_section: "Source control"
+    }),
+    criterion({
+      id: "adult_sepsis_icu_and_respiratory_cutoffs",
+      label: "ICU/respiratory escalation: ICU admission within 6 hours when required; oxygen target usually SpO2 90-96%; HFNC if PaO2/FiO2 <200 or SpO2/FiO2 <235",
+      criteria_text: "SSC 2026 suggests ICU admission within 6 hours when ICU admission is required, SpO2 practice targets commonly 90-96% in acute hypoxemic respiratory failure, and HFNC for sepsis-associated hypoxemic respiratory failure with PaO2/FiO2 <200 or SpO2/FiO2 <235.",
+      cutoffs: ["6 hours", "SpO2 90-96%", "PaO2/FiO2 <200", "SpO2/FiO2 <235"],
+      data_needed: ["ICU need", "oxygen requirement", "SpO2", "PaO2/FiO2", "SpO2/FiO2", "work of breathing"],
+      source_ids: ssc,
+      source_section: "ICU admission, oxygen targets, respiratory support"
+    }),
+    criterion({
+      id: "adult_sepsis_ards_ventilator_cutoffs",
+      label: "Sepsis-associated ARDS: low tidal volume 6 mL/kg, plateau pressure <=30 cm H2O, prone ventilation >12 hours/day for moderate-severe ARDS",
+      criteria_text: "SSC 2026 recommends low tidal volume ventilation at 6 mL/kg in sepsis-associated ARDS, plateau pressure upper limit 30 cm H2O, and prone ventilation for greater than 12 hours daily in moderate-severe ARDS.",
+      cutoffs: ["6 mL/kg", "<=30 cm", ">12 hours"],
+      data_needed: ["ARDS status", "ideal body weight", "tidal volume", "plateau pressure", "PaO2/FiO2 severity", "proning eligibility"],
+      source_ids: ssc,
+      source_section: "Mechanical ventilation"
+    }),
+    criterion({
+      id: "adult_sepsis_serial_lactate_and_deescalation",
+      label: "Monitoring/de-escalation: use serial lactate when lactate elevated or shock; de-escalate when cultures/susceptibility or final negative cultures allow; stop empiric therapy if alternate diagnosis strongly suspected",
+      criteria_text: "SSC 2026 suggests serial lactate to guide resuscitation in elevated lactate or shock, recommends antimicrobial de-escalation with confirmed microbiology/susceptibility, suggests de-escalation when final cultures identify no pathogen, and advises discontinuing empiric therapy when an alternative diagnosis is demonstrated or strongly suspected.",
+      cutoffs: [],
+      data_needed: ["repeat lactate", "perfusion trend", "culture results", "susceptibility profile", "source control adequacy", "alternate diagnosis evidence"],
+      source_ids: ssc,
+      source_section: "Serial lactate and antimicrobial therapy"
+    }),
+    criterion({
+      id: "adult_sepsis_discharge_followup",
+      label: "Survivor discharge: written/verbal sepsis diagnosis and treatment summary; follow-up for new physical, cognitive, or emotional impairments",
+      criteria_text: "SSC 2026 good-practice statements call for shared discharge planning, written/verbal summary of sepsis diagnosis/treatments/common impairments, and follow-up for new physical, cognitive, or emotional problems after sepsis hospitalization.",
+      cutoffs: [],
+      data_needed: ["discharge plan", "pending result owner", "new impairments", "follow-up access", "patient/family education"],
+      source_ids: ssc,
+      source_section: "Hospital discharge and post-hospital evaluation"
+    }),
+    criterion({
+      id: "maternal_sepsis_review",
+      label: "Pregnancy/postpartum sepsis: maternal sepsis pathway and obstetric source/fetal considerations require clinician review",
+      criteria_text: "Pregnancy or postpartum status changes fever/sepsis evaluation, antimicrobial selection, source control, fetal considerations, and disposition; use maternal sepsis guidance and obstetric consultation.",
+      cutoffs: [],
+      data_needed: ["pregnancy status", "postpartum status", "gestational age", "obstetric source concern", "fetal/maternal monitoring needs"],
+      source_ids: maternal,
+      source_section: "Maternal sepsis consult"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: adult fever/sepsis pathway context",
+    edgeLabel: "Missing exact infection/sepsis context: source symptoms, onset, vitals, mental status, perfusion, oxygenation, medications/allergies, comorbidities, immune status, pregnancy/postpartum status, and current workup findings",
+    sourceIds,
+    criteria: criteria("adult_sepsis_missing_context_criteria", "Route here when the data needed to decide infection likelihood, shock physiology, source, or disposition cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Obtain and document fever/source symptoms, onset and trajectory, full vital signs, mental status, perfusion/urine output, oxygenation/work of breathing, allergies/recent antimicrobials, immune status, pregnancy/postpartum status, comorbidities, and available labs/imaging before choosing a non-emergency branch.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: contextDomains
+  });
+
+  const missingSepsisDataEndpoint = endpoint({
+    id: `${prefix}_missing_lactate_culture_source_endpoint`,
+    label: "Missing data needed: lactate, cultures, source, perfusion, or organ dysfunction",
+    edgeLabel: "Cannot classify sepsis urgency until lactate, MAP/BP, perfusion, mental status, oxygenation, organ dysfunction, culture timing, and likely source are known",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_missing_sepsis_data_criteria`, "Route here when suspected infection is present but exact data needed for sepsis/shock, antibiotic timing, source control, or disposition are missing.", contextDomains, ssc, { missing_any: ["blood pressure/MAP", "lactate", "mental status", "perfusion/capillary refill/urine output", "oxygenation", "suspected source", "blood culture timing", "antimicrobial timing"] }),
+    action: "Measure lactate, obtain blood cultures as soon as possible and ideally before antimicrobials if this does not delay therapy, repeat vital signs/MAP, assess perfusion and mental status, identify likely source, and document whether shock/probable sepsis/possible sepsis criteria apply.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["blood pressure/MAP", "lactate", "mental status", "perfusion/capillary refill/urine output", "oxygenation", "suspected source", "blood culture timing", "antimicrobial timing"]
+  });
+
+  const shockIcuEndpoint = endpoint({
+    id: `${prefix}_shock_resuscitation_icu_endpoint`,
+    label: "Septic shock or hypoperfusion: resuscitate now and use monitored/ICU pathway",
+    edgeLabel: "Shock/hypoperfusion: MAP below target, severe hypotension, lactate >=4 mmol/L, lactate >2 mmol/L with vasopressor need, mottling, altered mentation, hypoxemia, oliguria, or rapid deterioration",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_shock_icu_criteria`, "Use when sepsis-induced hypoperfusion or septic shock is present or strongly suspected.", ["vitals", "labs", "exam", "mental_status", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Begin immediate sepsis resuscitation: obtain cultures/lactate without delaying therapy, give broad-spectrum antimicrobials ideally within 1 hour, administer at least 30 mL/kg IV crystalloid in the first 3 hours when hypoperfusion/shock is present, reassess fluid tolerance frequently, start norepinephrine/peripheral vasopressors if hypotension persists, target MAP 65 mm Hg (or 60-65 mm Hg initially if age >=65), evaluate source control, and arrange monitored/ICU care within 6 hours when ICU admission is required.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["MAP target 65 mm Hg or 60-65 mm Hg if age >=65", "lactate trend", "fluid balance/overload", "perfusion/capillary refill", "urine output", "oxygen requirement", "vasopressor dose", "source control timing"]
+  });
+
+  const persistentHypoperfusionEndpoint = endpoint({
+    id: `${prefix}_persistent_hypoperfusion_endpoint`,
+    label: "Persistent hypoperfusion: reassess fluids, vasopressors, oxygenation, and source control",
+    edgeLabel: "After initial therapy: MAP remains below target, lactate remains elevated, capillary refill/perfusion abnormal, escalating oxygen or vasopressor need, or source control not achieved",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_persistent_hypoperfusion_criteria`, "Use when reassessment after initial sepsis therapy shows persistent shock, elevated lactate, worsening oxygenation, or uncontrolled source.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Repeat focused exam and lactate, use dynamic measures such as passive leg raise/fluid challenge response to decide additional fluid, avoid reflexive fluids after the initial bolus, titrate vasopressors to MAP target, escalate respiratory support when SpO2/FiO2 or PaO2/FiO2 thresholds are met, and urgently re-evaluate antimicrobial coverage and source control.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["serial lactate", "MAP and vasopressor dose", "dynamic fluid responsiveness", "capillary refill/perfusion", "oxygenation ratios", "source control status"]
+  });
+
+  const probableSepsisTreatmentEndpoint = endpoint({
+    id: `${prefix}_probable_definite_sepsis_treatment_endpoint`,
+    label: "Probable or definite sepsis without shock: cultures, lactate, antimicrobials within 1 hour, and source plan",
+    edgeLabel: "Probable/definite infection with organ dysfunction or high-risk trajectory but no current shock: start antimicrobials ideally within 1 hour and define source control need",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_probable_sepsis_criteria`, "Use when infection is probable or definite and acute organ dysfunction or high-risk trajectory is present without current shock.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Collect blood cultures as soon as possible and ideally before antibiotics if this does not delay treatment, measure lactate, give empiric antimicrobials immediately and ideally within 1 hour, tailor MDR/anaerobic/antifungal coverage to risk factors and likely source, evaluate source-control diagnoses, and set disposition based on organ dysfunction, oxygen need, lactate/perfusion, and monitoring needs.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["lactate if elevated", "organ dysfunction labs", "culture and susceptibility follow-up", "antibiotic time", "source-control clock"]
+  });
+
+  const possibleSepsisRapidEvaluationEndpoint = endpoint({
+    id: `${prefix}_possible_sepsis_rapid_eval_endpoint`,
+    label: "Possible sepsis without shock: rapid infectious vs noninfectious assessment and 3-hour antibiotic decision",
+    edgeLabel: "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_possible_sepsis_criteria`, "Use when sepsis is possible but not probable/definite and no shock is present.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Perform rapid assessment for infectious and noninfectious causes, obtain targeted tests and cultures when indicated, reassess vitals/perfusion, and either administer antimicrobials within 3 hours if infection concern persists or defer antimicrobials with close monitoring when infection likelihood is low and shock is absent.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["time first suspected", "repeat vitals", "source-directed tests", "decision by 3 hours", "return/escalation precautions"]
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_or_noninfectious_endpoint`,
+    label: "Noninfectious mimic or alternate source better explains fever/systemic illness",
+    edgeLabel: "Low infection likelihood or alternate diagnosis: drug fever, inflammatory/autoimmune flare, thrombosis/PE, malignancy, transfusion reaction, endocrine crisis, or localized nonseptic syndrome better explains findings",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when rapid assessment demonstrates or strongly suggests a noninfectious cause or another pathway explains the presentation better than sepsis.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], ssc),
+    action: "Document the alternate diagnosis, stop or avoid unnecessary empiric antimicrobials when infection is unconfirmed and an alternative cause is demonstrated or strongly suspected, continue close monitoring if uncertainty remains, and route to the appropriate workup.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Sepsis mimics require clinician confirmation before antimicrobials are withheld or stopped."
+  });
+
+  const sourceControlEndpoint = endpoint({
+    id: `${prefix}_source_control_endpoint`,
+    label: "Source control needed: drainage, debridement, device removal, or procedure",
+    edgeLabel: "Anatomic diagnosis needs source control: abscess, obstructed infected urinary/biliary source, necrotizing soft tissue infection, infected line/device, CNS/deep infection, abdominal/pelvic source, septic joint, or empyema",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_source_control_criteria`, "Use when a specific anatomic diagnosis or source requires procedural control.", ["symptoms", "exam", "imaging_results", "cultures", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Activate appropriate surgical/interventional/urologic/IR consultation, obtain imaging if needed without delaying unstable care, and target source control ideally within 6 hours when sepsis or septic shock requires source control.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_antimicrobial_deescalation_endpoint`,
+    label: "Antimicrobial de-escalation or stopping criteria reached",
+    edgeLabel: "Cultures/susceptibility or final negative cultures allow narrowing; adequate source control achieved; or alternate diagnosis demonstrated/strongly suspected",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use after cultures, susceptibility, clinical response, source control, and alternate diagnosis review determine whether empiric antimicrobials can narrow, stop, or shorten.", ["labs", "cultures", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Narrow or discontinue unnecessary empiric antimicrobials when microbiology/susceptibility, final negative cultures, or an alternate diagnosis support it; use shorter therapy after adequate source control where appropriate, and use procalcitonin plus clinical evaluation only when optimal duration remains unclear.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const probablePersistentEndpoint = endpoint({
+    id: `${prefix}_probable_persistent_hypoperfusion_endpoint`,
+    label: "Probable sepsis reassessment: worsening perfusion, lactate, oxygenation, or organ dysfunction",
+    edgeLabel: "After probable-sepsis treatment: new hypotension, MAP below target, rising/elevated lactate, worsening oxygenation, oliguria, altered mentation, or source-control delay",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_probable_persistent_criteria`, "Use when initially non-shock sepsis worsens or declares hypoperfusion during monitoring.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Reclassify as shock/hypoperfusion risk, repeat lactate and perfusion assessment, escalate monitoring, reassess fluids/vasopressors/oxygenation, and revisit source control and antimicrobial adequacy.",
+    endpointType: "monitoring_reassessment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["repeat MAP/BP", "repeat lactate", "urine output", "oxygen requirement", "source-control status", "antimicrobial adequacy"]
+  });
+
+  const probableDeescalateEndpoint = endpoint({
+    id: `${prefix}_probable_antimicrobial_deescalation_endpoint`,
+    label: "Probable sepsis: narrow, stop, or shorten antimicrobials when evidence allows",
+    edgeLabel: "Probable-sepsis cultures/susceptibility, final negative cultures, clinical response, adequate source control, or alternate diagnosis supports de-escalation",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_probable_deescalation_criteria`, "Use after probable-sepsis treatment when microbiology, source control, response, or alternate diagnosis evidence supports de-escalation.", ["labs", "cultures", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Narrow spectrum, discontinue unnecessary empiric agents, or shorten duration after adequate source control; if duration remains unclear, combine clinical evaluation with procalcitonin rather than using procalcitonin alone.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const probableDischargeEndpoint = endpoint({
+    id: `${prefix}_probable_discharge_followup_endpoint`,
+    label: "Probable sepsis: lower-acuity disposition, follow-up, and safety net",
+    edgeLabel: "Probable-sepsis patient stable for lower-acuity care: hemodynamics/oxygenation stable, source plan owned, antimicrobial plan reconciled, pending cultures assigned",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_probable_discharge_criteria`, "Use when a treated probable-sepsis patient is stable enough for lower-acuity care and follow-up/safety-net requirements are documented.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Assign pending culture/result ownership, reconcile antimicrobial dose/duration and allergies, document source follow-up and return precautions, and arrange follow-up for any new impairment or unresolved infection concern.",
+    endpointType: "safety_net_instruction",
+    monitoringPlan: ["pending cultures", "antimicrobial plan", "source follow-up", "return precautions", "new impairment follow-up"]
+  });
+
+  const dischargeEndpoint = endpoint({
+    id: `${prefix}_discharge_followup_endpoint`,
+    label: "Sepsis survivor disposition, follow-up, and safety-net endpoint",
+    edgeLabel: "Stable for discharge or lower acuity: source controlled or owned, hemodynamics/oxygenation stable, antimicrobial plan reconciled, pending results assigned, and sepsis education/follow-up documented",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_discharge_criteria`, "Use when the patient is stable enough for lower acuity care or discharge and post-sepsis needs are addressed.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Document sepsis diagnosis/source, treatments received, culture and pending-result owner, antimicrobial plan/duration, new physical/cognitive/emotional impairments, follow-up access, and return precautions for recurrent fever, rigors, confusion, dyspnea, hypotension/syncope, decreased urine output, worsening pain, inability to take antimicrobials, or new rash/purpura.",
+    endpointType: "safety_net_instruction",
+    monitoringPlan: ["pending culture owner", "antimicrobial reconciliation", "source-control follow-up", "new impairment follow-up", "return precautions"]
+  });
+
+  const specialPopulationReview = endpoint({
+    id: `${prefix}_special_population_review_endpoint`,
+    label: "Clinician review: pregnancy/postpartum, immunocompromise, MDR risk, renal/hepatic dosing, or local sepsis policy",
+    edgeLabel: "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies",
+    sourceIds: unique([...ssc, ...maternal]),
+    criteria: criteria(`${prefix}_special_population_criteria`, "Use when patient-specific modifiers change empiric antimicrobials, source-control timing, fetal/maternal monitoring, dosing, or disposition.", ["pregnancy_status", "demographics", "medications", "allergies", "comorbidities", "labs", "local_policy", "workup_findings"], unique([...ssc, ...maternal]), { criteria_options: criteriaRows }),
+    action: "Pause non-emergent branching long enough to involve the appropriate clinician/service, but do not delay resuscitation or time-critical antimicrobials/source control; document the modifier, applicable protocol, and reviewer recommendation.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "Pregnancy/postpartum, immunocompromise, MDR risk, organ dysfunction dosing, allergies, devices, or local policy changes management."
+  });
+
+  const shockReassessmentDecision = decision({
+    id: `${prefix}_shock_reassessment_decision`,
+    label: "After initial sepsis resuscitation, is shock/perfusion improving enough to narrow intensity?",
+    edgeLabel: "Initial crystalloid, antimicrobial, vasopressor, lactate, oxygenation, and source-control response documented",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_shock_reassessment_criteria`, "Route by response after initial shock/hypoperfusion therapy.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Classify whether the patient needs ICU/escalation, more resuscitation/source control, antimicrobial de-escalation, or discharge/lower-acuity planning.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [shockIcuEndpoint, persistentHypoperfusionEndpoint, deescalateEndpoint, dischargeEndpoint]
+  });
+
+  const shockAction = actionNode({
+    id: `${prefix}_shock_resuscitation_action`,
+    label: "Septic shock or sepsis-induced hypoperfusion: start concurrent resuscitation, antimicrobials, cultures, lactate, and source control",
+    edgeLabel: "Shock/hypoperfusion suspected from hypotension, MAP below 65 mm Hg, lactate elevation, altered mentation, mottling, oliguria, hypoxemia, or rapid worsening",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_shock_action_criteria`, "Use when immediate resuscitation cannot safely wait for full source confirmation.", ["vitals", "labs", "exam", "mental_status", "oxygenation", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Run cultures, lactate, fluids, antibiotics, vasopressors, oxygen/respiratory support, and source-control evaluation concurrently according to shock physiology.",
+    parallelActions: ["blood cultures ideally before antibiotics if no delay", "initial lactate and serial lactate if elevated", "at least 30 mL/kg IV crystalloid in first 3 hours when hypoperfusion/shock", "broad antimicrobials ideally within 1 hour", "norepinephrine/vasopressor support for persistent hypotension", "source-control evaluation"],
+    guidelineCutoffs: criteriaRows,
+    children: [shockReassessmentDecision]
+  });
+
+  const probableSepsisAction = actionNode({
+    id: `${prefix}_probable_sepsis_action`,
+    label: "Probable or definite sepsis without shock: treat within 1 hour and define source/disposition",
+    edgeLabel: "Probable/definite infection with organ dysfunction, high-risk host, lactate elevation, hypoxemia, oliguria, altered mentation, or rapidly worsening course but no current shock",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_probable_action_criteria`, "Use when infection is probable/definite without shock but management cannot wait.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Give antimicrobials immediately and ideally within 1 hour, measure lactate, collect blood cultures as soon as possible and ideally before antimicrobials if no delay, select source-directed diagnostics, and determine whether source control or higher-acuity disposition is needed.",
+    parallelActions: ["blood cultures/lactate", "antimicrobials ideally within 1 hour", "source-directed imaging/tests", "MDR/anaerobic/fungal risk review", "disposition/monitoring decision"],
+    guidelineCutoffs: criteriaRows,
+    children: [probableSepsisTreatmentEndpoint, sourceControlEndpoint, probablePersistentEndpoint, probableDeescalateEndpoint, probableDischargeEndpoint]
+  });
+
+  const possibleSepsisAction = actionNode({
+    id: `${prefix}_possible_sepsis_action`,
+    label: "Possible sepsis without shock: complete rapid infectious-vs-mimic evaluation before the 3-hour treatment decision",
+    edgeLabel: "Possible infection without shock: stable enough for time-limited rapid investigation, with antimicrobials by 3 hours if infection concern persists",
+    sourceIds: ssc,
+    criteria: criteria(`${prefix}_possible_action_criteria`, "Use for possible sepsis without shock where infection likelihood is uncertain.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
+    action: "Run a time-limited rapid assessment for infection source and mimics, monitor closely, and document the 3-hour antibiotic decision point.",
+    parallelActions: ["repeat vitals/perfusion", "source-directed labs/imaging", "culture only when indicated", "mimic review", "3-hour antimicrobial decision"],
+    guidelineCutoffs: criteriaRows,
+    children: [possibleSepsisRapidEvaluationEndpoint, mimicEndpoint, specialPopulationReview]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Fever/infection bedside assessment: source, organ dysfunction, perfusion, oxygenation, cultures, lactate, and medication risk",
+    edgeLabel: "Fever or suspected infection with enough bedside data to choose shock, probable sepsis, possible sepsis, mimic, or special-population branch",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial fever/infection evaluation requires source symptoms, complete vital signs, mental status, perfusion, oxygenation, organ dysfunction clues, cultures/lactate when sepsis is possible, medication/allergy risks, and host modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess suspected source and mimic probability, measure full vitals including MAP and oxygenation, document mental status/perfusion/urine output, collect cultures/lactate when sepsis is possible, review allergy/recent antimicrobials/MDR risk, and identify pregnancy/postpartum or immunocompromised status.",
+    parallelActions: ["full vital signs including MAP", "mental status/perfusion/urine output", "oxygenation/work of breathing", "blood cultures/lactate when sepsis possible", "source-directed tests", "allergy/recent antimicrobial/MDR risk review", "pregnancy/postpartum and immune status"],
+    guidelineCutoffs: criteriaRows,
+    children: [
+      missingSepsisDataEndpoint,
+      shockAction,
+      probableSepsisAction,
+      possibleSepsisAction
+    ]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Fever/infection: choose adult sepsis urgency, infection likelihood, source-control need, and disposition",
+    sourceIds,
+    criteria: criteria("activate_adult_fever_sepsis", "Activate when adult patient context includes fever, suspected infection, systemic inflammatory symptoms, sepsis concern, shock physiology, or clinician-selected fever/sepsis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
+    action: "Route adult fever/infection through missing-data, septic shock, probable sepsis, possible sepsis, mimic, special-population review, source control, monitoring, de-escalation, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  const activationRules = {};
+  const allNodeSourceIds = [];
+  const collect = (entry) => {
+    allNodeSourceIds.push(...(entry.source_ids || []), ...(entry.criteria?.source_ids || []));
+    if (entry.criteria) activationRules[entry.id] = entry.criteria;
+    for (const child of entry.children || []) collect(child);
+  };
+  collect(root);
+  const sourceThresholds = sourceThresholdsFromCriteria(criteriaRows);
+  const localEvidenceSourceIds = sourceIdsForItems([...tests, ...redFlags, ...differentials, ...dispositions], sourceIds);
+  const finalSourceIds = unique([...sourceIds, ...localEvidenceSourceIds, ...allNodeSourceIds, ...sourceThresholds.flatMap((row) => row.source_ids || [])]);
+
+  return {
+    schema: "clinical_pathway_tree_v1",
+    workupId: module.id,
+    workup_id: module.id,
+    title: label,
+    version: "4.0.0",
+    status: "hand_polished_adult_sepsis_pathway_needs_clinician_review",
+    source_ids: finalSourceIds,
+    source_metadata: sourceRowsForTree(finalSourceIds, sourceById),
+    provenance: {
+      generated_by: "scripts/hand-polish-clinical-pathway-trees.js",
+      generated_at: `${auditDate}T00:00:00.000Z`,
+      update_scope: "clinical_pathway_tree_v1 only",
+      source_material: "SSC 2026 adult sepsis recommendations, SMFM maternal sepsis source metadata, and local module evidence rows",
+      review_note: "Adult sepsis tree is disease-specific and threshold-cited; local sepsis alert policy, antimicrobial formulary, antibiogram, and source-control pathways still require clinician governance."
+    },
+    source_thresholds: sourceThresholds,
+    traversable_context: buildTraversableContext(module, finalSourceIds, tests, criteriaRows),
+    activationRules,
+    root,
+    synthetic_patient_scenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: "endpoint_missing_context", expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_lactate_source_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingSepsisDataEndpoint.id, expected_active_branch: missingSepsisDataEndpoint.edgeLabel },
+      { scenario_id: "septic_shock_hypoperfusion", major_pathway: "escalation_emergency_actions", expected_endpoint_id: shockIcuEndpoint.id, expected_active_branch: shockIcuEndpoint.edgeLabel },
+      { scenario_id: "possible_sepsis_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "pregnancy_or_mdr_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialPopulationReview.id, expected_active_branch: specialPopulationReview.edgeLabel },
+      { scenario_id: "persistent_lactate_or_hypoperfusion", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: persistentHypoperfusionEndpoint.id, expected_active_branch: persistentHypoperfusionEndpoint.edgeLabel },
+      { scenario_id: "culture_deescalation_ready", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "survivor_discharge_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: dischargeEndpoint.id, expected_active_branch: dischargeEndpoint.edgeLabel }
+    ],
+    audit_requirements: {
+      required_domains: requiredPathwayDomains,
+      hand_polished_requirements: [
+        "adult sepsis/shock branch uses SSC 2026 timing and hemodynamic thresholds",
+        "possible sepsis without shock includes 3-hour rapid evaluation branch",
+        "probable/definite sepsis and septic shock include 1-hour antimicrobial branch",
+        "source control, serial lactate, MAP, vasopressor, de-escalation, discharge, and special-population decisions are explicit",
+        "local antimicrobial formulary, antibiogram, and sepsis alert policy remain clinician-governed"
       ]
     }
   };
@@ -1231,7 +1696,9 @@ function main() {
     const original = JSON.stringify(raw, null, 2);
     const baseModule = raw.module || raw;
     const module = enrichModule(baseModule);
-    const clinicalPathway = buildCompactClinicalPathwayTree(module, sourceById);
+    const clinicalPathway = module.id === "fever_infection_sepsis_v1"
+      ? buildAdultSepsisClinicalPathwayTree(module, sourceById)
+      : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;

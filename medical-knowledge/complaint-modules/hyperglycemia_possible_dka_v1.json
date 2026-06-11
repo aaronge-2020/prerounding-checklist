@@ -4912,7 +4912,7 @@
         "hyperglycemia_possible_dka_treatment_bundle": {
           "rule_id": "hyperglycemia_possible_dka_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hyperglycemia / possible DKA or HHS treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Hyperglycemia / possible DKA or HHS treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -5909,7 +5909,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hyperglycemia / possible DKA or HHS: compact evidence-cited management pathway",
+        "label": "Hyperglycemia / possible DKA or HHS: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -5938,7 +5938,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hyperglycemia / possible DKA or HHS pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Hyperglycemia / possible DKA or HHS pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -5994,7 +5994,7 @@
             "id": "hyperglycemia_possible_dka_concurrent_data_bundle",
             "type": "action",
             "label": "Hyperglycemia / possible DKA or HHS: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Hyperglycemia / possible DKA or HHS trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Hyperglycemia / possible DKA or HHS workup or documented findings: Known diabetes type, duration, insulin regimen, pump/CGM use, and last insulin dose?; Recent glucose values, beta-hydroxybutyrate/urine ketones, anion gap, bicarbonate, pH, potassium, creatinine, and osmolality if known?; Missed or reduced insulin, pump/infusion-set failure, empty reservoir, expired insulin, medication access issue, or recent dose change?; Polyuria, polydipsia, weight loss, dehydration, or very dry mouth?; Altered mental status, confusion, obtundation, seizure, or coma; Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO; Point-of-care glucose now",
             "source_ids": [
               "ADA_HYPERGLYCEMIC_CRISES_2024",
               "AHRQ_CALIBRATE_DX"
@@ -6023,8 +6023,8 @@
               {
                 "id": "hyperglycemia_possible_dka_classification_decision",
                 "type": "decision",
-                "label": "Hyperglycemia / possible DKA or HHS: classify by DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L, or urine ketones >=2, and pH <7.3, and/or bicarbonate <18 mmol/L | HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg, or total osmolality >320 mOsm/kg | Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol: persistent inpatient glucose >=180 mg/dL | Hemoglobin A1c if no reliable result in the prior 3 months or if baseline control is unclear: 3 months | Hypokalemia, marked hyperkalemia, ECG changes, severe AKI/ESKD, or inability to monitor electrolytes safely: be delayed when potassium is <3.5 mmol/L",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Hyperglycemia / possible DKA or HHS: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Hyperglycemia / possible DKA or HHS results available for threshold classification: Point-of-care glucose now; Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable; Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium; Venous pH/blood gas for acidosis severity; arterial gas only when oxygenation/ventilation concern or local protocol requires it; Calculate effective osmolality and measure serum osmolality when HHS/mixed crisis, severe dehydration, altered mental status, or very high glucose is possible; prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; and/or bicarbonate <18 mmol/L",
                 "source_ids": [
                   "ADA_HYPERGLYCEMIC_CRISES_2024",
                   "ADA_STANDARDS_HOSPITAL_2026",
@@ -6202,7 +6202,7 @@
                     "id": "hyperglycemia_possible_dka_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Hyperglycemia / possible DKA or HHS threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Hyperglycemia / possible DKA or HHS result(s): prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; and/or bicarbonate <18 mmol/L; glucose >=600 mg/dL; effective osmolality >300 mOsm/kg; or total osmolality >320 mOsm/kg",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -6282,7 +6282,7 @@
                     "id": "hyperglycemia_possible_dka_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hyperglycemia / possible DKA or HHS: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Hyperglycemia / possible DKA or HHS danger feature or high-risk cutoff: Altered mental status, confusion, obtundation, seizure, or coma; Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO; Kussmaul respirations, respiratory distress, or severe acidosis concern; SGLT2 inhibitor, pregnancy, fasting, or lower glucose with ketotic symptoms; prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -6600,8 +6600,8 @@
                   {
                     "id": "hyperglycemia_possible_dka_treatment_bundle",
                     "type": "action",
-                    "label": "Hyperglycemia / possible DKA or HHS: start treatment/disposition when DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L, or urine ketones >=2, and pH <7.3, and/or bicarbonate <18 mmol/L | HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg, or total osmolality >320 mOsm/kg | Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol: persistent inpatient glucose >=180 mg/dL | Hemoglobin A1c if no reliable result in the prior 3 months or if baseline control is unclear: 3 months | Hypokalemia, marked hyperkalemia, ECG changes, severe AKI/ESKD, or inability to monitor electrolytes safely: be delayed when potassium is <3.5 mmol/L matches",
-                    "edgeLabel": "Hyperglycemia / possible DKA or HHS criteria match or treatment cannot safely wait",
+                    "label": "Hyperglycemia / possible DKA or HHS: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Hyperglycemia / possible DKA or HHS treatment/disposition indicated by: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; and/or bicarbonate <18 mmol/L; glucose >=600 mg/dL; Monitor treatment response, complications, and need for reassessment with: Point-of-care glucose now.; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
                       "AHRQ_CALIBRATE_DX"
@@ -6609,7 +6609,7 @@
                     "criteria": {
                       "rule_id": "hyperglycemia_possible_dka_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hyperglycemia / possible DKA or HHS treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Hyperglycemia / possible DKA or HHS treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -6776,7 +6776,7 @@
                         "id": "hyperglycemia_possible_dka_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hyperglycemia / possible DKA or HHS: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Hyperglycemia / possible DKA or HHS treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024",
                           "ADA_STANDARDS_HOSPITAL_2026",
@@ -6935,7 +6935,7 @@
                             "id": "hyperglycemia_possible_dka_review_endpoint",
                             "type": "endpoint",
                             "label": "Hyperglycemia / possible DKA or HHS: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Hyperglycemia / possible DKA or HHS modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ADA_HYPERGLYCEMIC_CRISES_2024",
                               "ADA_STANDARDS_HOSPITAL_2026",
@@ -6969,7 +6969,7 @@
                             "id": "hyperglycemia_possible_dka_monitoring_bundle",
                             "type": "action",
                             "label": "Hyperglycemia / possible DKA or HHS: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Hyperglycemia / possible DKA or HHS therapy or diagnostic plan, trend: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; Point-of-care glucose now; Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable; Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium; Measure blood pressure",
                             "source_ids": [
                               "ADA_HYPERGLYCEMIC_CRISES_2024",
                               "AHRQ_CALIBRATE_DX"
@@ -7142,7 +7142,7 @@
                                 "id": "hyperglycemia_possible_dka_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hyperglycemia / possible DKA or HHS: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Hyperglycemia / possible DKA or HHS reassessment worsens or contradicts expected response: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; Point-of-care glucose now; Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable; Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium; Measure blood pressure",
                                 "source_ids": [
                                   "ADA_HYPERGLYCEMIC_CRISES_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -7461,7 +7461,7 @@
                                 "id": "hyperglycemia_possible_dka_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Hyperglycemia / possible DKA or HHS: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Hyperglycemia / possible DKA or HHS objective response supports narrowing, stopping, tapering, or continuing: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.; Monitor treatment response, complications, and need for reassessment with: Point-of-care glucose now.",
                                 "source_ids": [
                                   "ADA_HYPERGLYCEMIC_CRISES_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -7780,7 +7780,7 @@
                                 "id": "hyperglycemia_possible_dka_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hyperglycemia / possible DKA or HHS: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Hyperglycemia / possible DKA or HHS stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.",
                                 "source_ids": [
                                   "ADA_HYPERGLYCEMIC_CRISES_2024",
                                   "AHRQ_CALIBRATE_DX"
@@ -8129,7 +8129,7 @@
                     "id": "hyperglycemia_possible_dka_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hyperglycemia / possible DKA or HHS: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Hyperglycemia / possible DKA or HHS mimic/exclusion better fits: DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake; HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS; Precipitating illness or barrier: infection, insulin omission/access issue, pump failure, MI/stroke, pancreatitis, glucocorticoids/other medications, pregnancy, alcohol, or other physiologic stress; Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
                       "ADA_STANDARDS_HOSPITAL_2026",
@@ -8790,49 +8790,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Hyperglycemia / possible DKA or HHS pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hyperglycemia_possible_dka_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Hyperglycemia / possible DKA or HHS result(s): prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; and/or bicarbonate <18 mmol/L; glucose >=600 mg/dL; effective osmolality >300 mOsm/kg; or total osmolality >320 mOsm/kg"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hyperglycemia_possible_dka_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS danger feature or high-risk cutoff: Altered mental status, confusion, obtundation, seizure, or coma; Hypotension, shock, severe dehydration, poor perfusion, or inability to tolerate PO; Kussmaul respirations, respiratory distress, or severe acidosis concern; SGLT2 inhibitor, pregnancy, fasting, or lower glucose with ketotic symptoms; prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hyperglycemia_possible_dka_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS mimic/exclusion better fits: DKA: diabetes/prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L; can be euglycemic with SGLT2, pregnancy, fasting, or poor intake; HHS: glucose >=600 mg/dL, effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, absent significant ketonemia, and no significant acidosis; assess for mixed DKA/HHS; Precipitating illness or barrier: infection, insulin omission/access issue, pump failure, MI/stroke, pancreatitis, glucocorticoids/other medications, pregnancy, alcohol, or other physiologic stress; Hyperglycemia without crisis: persistent inpatient glucose >=180 mg/dL generally needs insulin initiation/intensification, while mild stable T2DM may be managed less intensively per inpatient protocol"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hyperglycemia_possible_dka_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure respiratory rate; Measure oxygen saturation; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hyperglycemia_possible_dka_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS reassessment worsens or contradicts expected response: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; Point-of-care glucose now; Blood beta-hydroxybutyrate preferred; urine ketones only if blood ketones are unavailable; Basic metabolic panel/electrolytes with sodium, potassium, chloride, bicarbonate, BUN, creatinine, glucose, anion gap, and corrected sodium; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hyperglycemia_possible_dka_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS objective response supports narrowing, stopping, tapering, or continuing: prior diabetes or glucose >=200 mg/dL; beta-hydroxybutyrate >=3.0 mmol/L; or urine ketones >=2; and pH <7.3; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity.; Monitor treatment response, complications, and need for reassessment with: Point-of-care glucose now."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hyperglycemia_possible_dka_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Hyperglycemia / possible DKA or HHS stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Suspected DKA/HHS is not routine outpatient hyperglycemia; use urgent evaluation with protocolized fluids, insulin, electrolyte replacement, and precipitant treatment.; ICU/high-acuity care is appropriate for severe DKA, HHS, shock, altered mental status, critical precipitating illness, severe electrolyte disturbance, or inability to monitor safely.; Uncomplicated mild/moderate DKA may be managed in ED observation or step-down with close nursing, serial labs, and IV or protocolized subcutaneous rapid-acting insulin; severe/complicated DKA and HHS need higher acuity."
         }
       ],
       "audit_requirements": {

@@ -3382,7 +3382,7 @@
         "hypogonadism_treatment_bundle": {
           "rule_id": "hypogonadism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hypogonadism (Low Testosterone in Men) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Hypogonadism (Low Testosterone in Men) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4488,7 +4488,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypogonadism (Low Testosterone in Men): compact evidence-cited management pathway",
+        "label": "Hypogonadism (Low Testosterone in Men): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -4517,7 +4517,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hypogonadism (Low Testosterone in Men) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Hypogonadism (Low Testosterone in Men) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4573,7 +4573,7 @@
             "id": "hypogonadism_concurrent_data_bundle",
             "type": "action",
             "label": "Hypogonadism (Low Testosterone in Men): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Hypogonadism (Low Testosterone in Men) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Hypogonadism (Low Testosterone in Men) workup or documented findings: Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; What was the timing of puberty and sexual development, and were there delayed, incomplete, or abnormal pubertal milestones?; Any breast tenderness, discrete mass, nipple discharge, testicular pain or mass, fertility change, libido change, medication exposure, liver/kidney disease, alcohol, or cannabis use?; Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?; New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Morning total testosterone on two occasions.",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
               "AUA_TESTOSTERONE_2024",
@@ -4604,8 +4604,8 @@
               {
                 "id": "hypogonadism_classification_decision",
                 "type": "decision",
-                "label": "Hypogonadism (Low Testosterone in Men): classify by Male hypogonadism pituitary imaging trigger: severe secondary hypogonadism with serum testosterone <150 ng/dL, persistent hyperprolactinemia, panhypopituitarism, or mass effect: <150 ng/dL | Testosterone therapy safety stop/review: PSA >4 ng/mL, PSA >3 ng/mL in high-risk men without urology review, hematocrit >54%, or MI/stroke within last 6 months: >4 ng/mL, >3 ng/mL, >54%, 6 months | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Morning total testosterone on two occasions.: 20 ng/mL, 25 ng/mL | Free testosterone if SHBG altered or total near lower limit.: 20 ng/mL, 25 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Hypogonadism (Low Testosterone in Men): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Hypogonadism (Low Testosterone in Men) results available for threshold classification: Morning total testosterone on two occasions.; Free testosterone if SHBG altered or total near lower limit.; LH/FSH.; Prolactin, iron studies, pituitary evaluation when secondary.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; testosterone; LH/FSH; prolactin; other pituitary hormones; headache/visual symptoms",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
                   "AUA_TESTOSTERONE_2024",
@@ -4864,7 +4864,7 @@
                     "id": "hypogonadism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Hypogonadism (Low Testosterone in Men) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Hypogonadism (Low Testosterone in Men) result(s): testosterone; LH/FSH; prolactin; other pituitary hormones; headache/visual symptoms; PSA; prostate exam/risk; hematocrit",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_TESTOSTERONE_2018",
@@ -4954,7 +4954,7 @@
                     "id": "hypogonadism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hypogonadism (Low Testosterone in Men): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Hypogonadism (Low Testosterone in Men) danger feature or high-risk cutoff: New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; <150 ng/dL; >4 ng/mL; >3 ng/mL; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -5400,8 +5400,8 @@
                   {
                     "id": "hypogonadism_treatment_bundle",
                     "type": "action",
-                    "label": "Hypogonadism (Low Testosterone in Men): start treatment/disposition when Male hypogonadism pituitary imaging trigger: severe secondary hypogonadism with serum testosterone <150 ng/dL, persistent hyperprolactinemia, panhypopituitarism, or mass effect: <150 ng/dL | Testosterone therapy safety stop/review: PSA >4 ng/mL, PSA >3 ng/mL in high-risk men without urology review, hematocrit >54%, or MI/stroke within last 6 months: >4 ng/mL, >3 ng/mL, >54%, 6 months | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Morning total testosterone on two occasions.: 20 ng/mL, 25 ng/mL | Free testosterone if SHBG altered or total near lower limit.: 20 ng/mL, 25 ng/mL matches",
-                    "edgeLabel": "Hypogonadism (Low Testosterone in Men) criteria match or treatment cannot safely wait",
+                    "label": "Hypogonadism (Low Testosterone in Men): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Hypogonadism (Low Testosterone in Men) treatment/disposition indicated by: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; 6 months; 20 ng/mL; Treat reversible causes such as obesity, sleep apnea, medications, opioids/anabolic steroid withdrawal, systemic illness, pituitary disease, or hyperprolactinemia.; Use testosterone therapy only for confirmed symptomatic testosterone deficiency without contraindications and with monitoring of symptoms, testosterone level, hematocrit, PSA/prostate risk, and adverse effects.; Use fertility-preserving approaches such as gonadotropins or selective estrogen receptor modulators under specialist care when conception is desired.; Refer severe secondary hypogonadism, pituitary mass symptoms, very low testosterone with low/normal gonadotropins, infertility, or testicular mass urgently.; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -5410,7 +5410,7 @@
                     "criteria": {
                       "rule_id": "hypogonadism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hypogonadism (Low Testosterone in Men) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Hypogonadism (Low Testosterone in Men) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5623,7 +5623,7 @@
                         "id": "hypogonadism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hypogonadism (Low Testosterone in Men): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Hypogonadism (Low Testosterone in Men) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
                           "AUA_TESTOSTERONE_2024",
@@ -5805,7 +5805,7 @@
                             "id": "hypogonadism_review_endpoint",
                             "type": "endpoint",
                             "label": "Hypogonadism (Low Testosterone in Men): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Hypogonadism (Low Testosterone in Men) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -5839,7 +5839,7 @@
                             "id": "hypogonadism_monitoring_bundle",
                             "type": "action",
                             "label": "Hypogonadism (Low Testosterone in Men): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Hypogonadism (Low Testosterone in Men) therapy or diagnostic plan, trend: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Morning total testosterone on two occasions.; Free testosterone if SHBG altered or total near lower limit.; LH/FSH.; Measure blood pressure",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
                               "AUA_TESTOSTERONE_2024",
@@ -6023,7 +6023,7 @@
                                 "id": "hypogonadism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypogonadism (Low Testosterone in Men): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Hypogonadism (Low Testosterone in Men) reassessment worsens or contradicts expected response: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Morning total testosterone on two occasions.; Free testosterone if SHBG altered or total near lower limit.; LH/FSH.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -6434,7 +6434,7 @@
                                 "id": "hypogonadism_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypogonadism (Low Testosterone in Men): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Hypogonadism (Low Testosterone in Men) objective response supports narrowing, stopping, tapering, or continuing: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat reversible causes such as obesity, sleep apnea, medications, opioids/anabolic steroid withdrawal, systemic illness, pituitary disease, or hyperprolactinemia.",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -6845,7 +6845,7 @@
                                 "id": "hypogonadism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hypogonadism (Low Testosterone in Men): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Hypogonadism (Low Testosterone in Men) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
                                   "AUA_TESTOSTERONE_2024",
@@ -7360,7 +7360,7 @@
                     "id": "hypogonadism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hypogonadism (Low Testosterone in Men): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Hypogonadism (Low Testosterone in Men) mimic/exclusion better fits: Hypogonadism (Low Testosterone in Men): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
                       "AUA_TESTOSTERONE_2024",
@@ -8277,49 +8277,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Hypogonadism (Low Testosterone in Men) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hypogonadism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Hypogonadism (Low Testosterone in Men) result(s): testosterone; LH/FSH; prolactin; other pituitary hormones; headache/visual symptoms; PSA; prostate exam/risk; hematocrit"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hypogonadism_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) danger feature or high-risk cutoff: New severe headache/vision loss, very low T with low/normal LH/FSH, testicular mass, infertility priority.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; <150 ng/dL; >4 ng/mL; >3 ng/mL; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hypogonadism_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) mimic/exclusion better fits: Hypogonadism (Low Testosterone in Men): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hypogonadism_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hypogonadism_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) reassessment worsens or contradicts expected response: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Morning total testosterone on two occasions.; Free testosterone if SHBG altered or total near lower limit.; LH/FSH.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hypogonadism_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) objective response supports narrowing, stopping, tapering, or continuing: <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Treat reversible causes such as obesity, sleep apnea, medications, opioids/anabolic steroid withdrawal, systemic illness, pituitary disease, or hyperprolactinemia."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hypogonadism_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Hypogonadism (Low Testosterone in Men) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Fertility plans change away from exogenous testosterone; pituitary signs trigger MRI/endocrine referral.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

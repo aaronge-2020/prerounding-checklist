@@ -4667,7 +4667,7 @@
         "gestational_diabetes_treatment_bundle": {
           "rule_id": "gestational_diabetes_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Gestational Diabetes treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Gestational Diabetes treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -6719,7 +6719,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gestational Diabetes: compact evidence-cited management pathway",
+        "label": "Gestational Diabetes: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -6748,7 +6748,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Gestational Diabetes pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Gestational Diabetes pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -6804,7 +6804,7 @@
             "id": "gestational_diabetes_concurrent_data_bundle",
             "type": "action",
             "label": "Gestational Diabetes: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Gestational Diabetes trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Gestational Diabetes workup or documented findings: How many weeks pregnant are you, and has pregnancy dating, fetal growth, or obstetric context changed diabetes screening or treatment safety?; Any history of prior gestational diabetes or macrosomia that changes Gestational Diabetes risk, test interpretation, or treatment safety?; Any pre-pregnancy diabetes, prior A1c/glucose abnormality, PCOS, obesity, steroid exposure, or strong family history that changes gestational diabetes classification or treatment intensity?; What is the current home glucose pattern if available, and how has it changed from baseline?; Ketones, vomiting/dehydration, severe hyperglycemia.; Hypertension or preeclampsia features.; Early risk testing if high risk.",
             "source_ids": [
               "ADA_SOC_2026",
               "ADA_DIAGNOSIS_2026",
@@ -6835,8 +6835,8 @@
               {
                 "id": "gestational_diabetes_classification_decision",
                 "type": "decision",
-                "label": "Gestational Diabetes: classify by Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Early risk testing if high risk.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL, normal <5.7% | 24-28 week one-step 75-g OGTT or local two-step strategy.: 24-28 week, fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Postpartum 75-g OGTT at 4-12 weeks.: 4-12 weeks, fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL, normal <5.7%",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Gestational Diabetes: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Gestational Diabetes results available for threshold classification: Early risk testing if high risk.; 24-28 week one-step 75-g OGTT or local two-step strategy.; Postpartum 75-g OGTT at 4-12 weeks.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Gestational diabetes safety tests: route the local OGTT strategy with gestational age, review home glucose pattern if available, and check ketones, electrolytes/anion gap, creatinine, and acid-base status for vomiting, dehydration, severe hyperglycemia, or insulin-deficiency symptoms.; fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; 140 mg/dL",
                 "source_ids": [
                   "ADA_DIAGNOSIS_2026",
                   "ADA_SOC_2026",
@@ -7290,7 +7290,7 @@
                     "id": "gestational_diabetes_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Gestational Diabetes threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Gestational Diabetes result(s): fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; 140 mg/dL; normal <5.7%; 5.7-6.4%; Early risk testing if high risk.",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ADA_DIAGNOSIS_2026",
@@ -7360,7 +7360,7 @@
                     "id": "gestational_diabetes_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Gestational Diabetes: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Gestational Diabetes danger feature or high-risk cutoff: Ketones, vomiting/dehydration, severe hyperglycemia.; Hypertension or preeclampsia features.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertension/preeclampsia features, or reduced fetal movement requires urgent obstetric/endocrine evaluation.; fasting >=92; hour >=180; or 2-hour >=153 mg/dL; OGTT threshold crossing changes maternal/fetal monitoring and therapy.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -8160,8 +8160,8 @@
                   {
                     "id": "gestational_diabetes_treatment_bundle",
                     "type": "action",
-                    "label": "Gestational Diabetes: start treatment/disposition when Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Early risk testing if high risk.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL, normal <5.7% | 24-28 week one-step 75-g OGTT or local two-step strategy.: 24-28 week, fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Postpartum 75-g OGTT at 4-12 weeks.: 4-12 weeks, fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL | Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.: fasting >=92, hour >=180, or 2-hour >=153 mg/dL, g screen often >=130, 140 mg/dL, normal <5.7% matches",
-                    "edgeLabel": "Gestational Diabetes criteria match or treatment cannot safely wait",
+                    "label": "Gestational Diabetes: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Gestational Diabetes treatment/disposition indicated by: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; 140 mg/dL; normal <5.7%; Start nutrition therapy, activity as obstetrically appropriate, glucose monitoring, and obstetric fetal-growth coordination.; Add insulin when lifestyle therapy does not meet pregnancy glucose targets or if fasting/postprandial values are persistently above local goals.; Use metformin or glyburide only within local obstetric/endocrine policy and shared decision-making about placental transfer and failure rates.; Escalate vomiting, ketones, dehydration, severe hyperglycemia, hypertension, or fetal/maternal danger signs urgently.; OGTT threshold crossing changes maternal/fetal monitoring and therapy.; Postpartum abnormal OGTT changes long-term prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -8170,7 +8170,7 @@
                     "criteria": {
                       "rule_id": "gestational_diabetes_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Gestational Diabetes treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Gestational Diabetes treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -8542,7 +8542,7 @@
                         "id": "gestational_diabetes_treatment_safety_decision",
                         "type": "decision",
                         "label": "Gestational Diabetes: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Gestational Diabetes treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
                           "ADA_SOC_2026",
@@ -8883,7 +8883,7 @@
                             "id": "gestational_diabetes_review_endpoint",
                             "type": "endpoint",
                             "label": "Gestational Diabetes: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Gestational Diabetes modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure current weight; Measure waist circumference; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ADA_DIAGNOSIS_2026",
                               "ADA_SOC_2026",
@@ -8917,7 +8917,7 @@
                             "id": "gestational_diabetes_monitoring_bundle",
                             "type": "action",
                             "label": "Gestational Diabetes: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Gestational Diabetes therapy or diagnostic plan, trend: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; Early risk testing if high risk.; 24-28 week one-step 75-g OGTT or local two-step strategy.; Postpartum 75-g OGTT at 4-12 weeks.; Measure blood pressure",
                             "source_ids": [
                               "ADA_SOC_2026",
                               "ADA_DIAGNOSIS_2026",
@@ -9258,7 +9258,7 @@
                                 "id": "gestational_diabetes_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Gestational Diabetes: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Gestational Diabetes reassessment worsens or contradicts expected response: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; Early risk testing if high risk.; 24-28 week one-step 75-g OGTT or local two-step strategy.; Postpartum 75-g OGTT at 4-12 weeks.; Measure blood pressure",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -10021,7 +10021,7 @@
                                 "id": "gestational_diabetes_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Gestational Diabetes: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Gestational Diabetes objective response supports narrowing, stopping, tapering, or continuing: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; OGTT threshold crossing changes maternal/fetal monitoring and therapy.; Postpartum abnormal OGTT changes long-term prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Start nutrition therapy, activity as obstetrically appropriate, glucose monitoring, and obstetric fetal-growth coordination.",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -10784,7 +10784,7 @@
                                 "id": "gestational_diabetes_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Gestational Diabetes: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Gestational Diabetes stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; OGTT threshold crossing changes maternal/fetal monitoring and therapy.; Postpartum abnormal OGTT changes long-term prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.",
                                 "source_ids": [
                                   "ADA_SOC_2026",
                                   "ADA_DIAGNOSIS_2026",
@@ -11690,7 +11690,7 @@
                     "id": "gestational_diabetes_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Gestational Diabetes: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Gestational Diabetes mimic/exclusion better fits: Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes.",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -13337,49 +13337,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Gestational Diabetes pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gestational_diabetes_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Gestational Diabetes result(s): fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; 140 mg/dL; normal <5.7%; 5.7-6.4%; Early risk testing if high risk."
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "gestational_diabetes_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Gestational Diabetes danger feature or high-risk cutoff: Ketones, vomiting/dehydration, severe hyperglycemia.; Hypertension or preeclampsia features.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Ketones, vomiting/dehydration, severe hyperglycemia, altered mental status, hypertension/preeclampsia features, or reduced fetal movement requires urgent obstetric/endocrine evaluation.; fasting >=92; hour >=180; or 2-hour >=153 mg/dL; OGTT threshold crossing changes maternal/fetal monitoring and therapy."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "gestational_diabetes_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Gestational Diabetes mimic/exclusion better fits: Gestational Diabetes: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: One-step 75-g OGTT for GDM: fasting >=92, 1-hour >=180, or 2-hour >=153 mg/dL. Two-step approach if used: 50-g screen often >=130-140 mg/dL; 100-g Carpenter-Coustan thresholds fasting 95, 1-hour 180, 2-hour 155, 3-hour 140 mg/dL, usually 2 abnormal values.; Important mimics/exclusions: stress or steroid hyperglycemia, type 1/LADA versus type 2 diabetes, DKA/HHS versus uncomplicated hyperglycemia, hypoglycemia/drug effect, renal disease, infection, pregnancy, and secondary endocrine causes."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "gestational_diabetes_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Gestational Diabetes modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure current weight; Measure waist circumference; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "gestational_diabetes_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Gestational Diabetes reassessment worsens or contradicts expected response: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; Early risk testing if high risk.; 24-28 week one-step 75-g OGTT or local two-step strategy.; Postpartum 75-g OGTT at 4-12 weeks.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "gestational_diabetes_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Gestational Diabetes objective response supports narrowing, stopping, tapering, or continuing: fasting >=92; hour >=180; or 2-hour >=153 mg/dL; g screen often >=130; OGTT threshold crossing changes maternal/fetal monitoring and therapy.; Postpartum abnormal OGTT changes long-term prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Start nutrition therapy, activity as obstetrically appropriate, glucose monitoring, and obstetric fetal-growth coordination."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "gestational_diabetes_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Gestational Diabetes stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; OGTT threshold crossing changes maternal/fetal monitoring and therapy.; Postpartum abnormal OGTT changes long-term prevention.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care."
         }
       ],
       "audit_requirements": {

@@ -33,7 +33,21 @@ const prohibitedGenericNodePatterns = [
   /source-backed criteria/i,
   /explicit guideline cutoffs/i,
   /cutoff-bearing/i,
-  /cutoff criteria/i
+  /cutoff criteria/i,
+  /trigger present/i,
+  /enough context/i,
+  /gather objective data/i,
+  /concurrent data bundle obtained/i,
+  /criteria match/i,
+  /treatment modifier unresolved/i,
+  /treatment started or diagnostic plan active/i,
+  /worsening or discordant reassessment/i,
+  /stopping or de-escalation criteria met/i,
+  /stable for follow-up with safety net/i,
+  /diagnosis\/risk branch selected/i,
+  /threshold\/result data missing/i,
+  /compact evidence-cited management pathway/i,
+  /treatment branch only when the cited diagnostic\/severity criteria match/i
 ];
 
 const cutoffUnits = "(?:mg/dL|mg/L|g/L|mmol/L|mEq/L|mIU/L|mU/L|ng/mL|pg/mL|ug/L|mg/g|mcg/mg|mm Hg|mL/kg|mg/kg|g/kg|kg/m2|mL/min(?:/1\\.73\\s*m2)?|mL|hours?|days?|weeks?|months?|years?|cm|mm|ms|seconds?|minutes?|breaths/minute|x10\\^9/L|%|C|ULN|LLN|mOsm/kg|bpm|IU/L|U/L|mcg/dL|ug/dL|mcg/day|mcg|g|mg|kg|cycles/year|measurements?|collections?|samples?|percent|percentile)";

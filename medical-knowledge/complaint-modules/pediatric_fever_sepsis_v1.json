@@ -2265,7 +2265,7 @@
         "pediatric_fever_sepsis_treatment_bundle": {
           "rule_id": "pediatric_fever_sepsis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pediatric fever, infection, or sepsis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pediatric fever, infection, or sepsis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3073,7 +3073,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric fever, infection, or sepsis: compact evidence-cited management pathway",
+        "label": "Pediatric fever, infection, or sepsis: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "AAP_FEBRILE_INFANT_2021",
@@ -3106,7 +3106,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pediatric fever, infection, or sepsis pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pediatric fever, infection, or sepsis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3162,7 +3162,7 @@
             "id": "pediatric_fever_sepsis_concurrent_data_bundle",
             "type": "action",
             "label": "Pediatric fever, infection, or sepsis: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pediatric fever, infection, or sepsis trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pediatric fever, infection, or sepsis workup or documented findings: Exact pediatric age band; Pediatric fever severity cues; Respiratory infection-source symptoms; Pediatric fever source-localizing symptoms; Fever in an infant under 3 months; Pediatric sepsis or shock danger physiology; Pediatric sepsis lactate cultures and antibiotic timing",
             "source_ids": [
               "SSC_PEDIATRIC_SEPSIS_2026",
               "NICE_FEVER_UNDER5_NG143",
@@ -3197,8 +3197,8 @@
               {
                 "id": "pediatric_fever_sepsis_classification_decision",
                 "type": "decision",
-                "label": "Pediatric fever, infection, or sepsis: classify by Well-appearing febrile infant 8 to 60 days with rectal temperature at least 38.0 C and gestational age 37 to 42 weeks: 8 to 60 days, at least 38.0, age 37, 42 weeks | Pediatric sepsis lactate cultures and antibiotic timing: 1 hour, 3 hours | Febrile infant 8 to 60 day pathway tests: 8 to 60 day, 8 to 60 days, at least 38.0 | Fever in an infant under 3 months: 3 months | Pediatric sepsis escalation antibiotics and fluids: 1 hour, 10 to 20 mL/kg, up to 40, 60 mL/kg",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pediatric fever, infection, or sepsis: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pediatric fever, infection, or sepsis results available for threshold classification: Pediatric sepsis lactate cultures and antibiotic timing; Age and source-directed pediatric fever tests; Febrile infant 8 to 60 day pathway tests; 8 to 60 days; at least 38.0; age 37; 42 weeks; 1 hour; 3 hours",
                 "source_ids": [
                   "AAP_FEBRILE_INFANT_2021",
                   "SSC_PEDIATRIC_SEPSIS_2026",
@@ -3352,7 +3352,7 @@
                     "id": "pediatric_fever_sepsis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pediatric fever, infection, or sepsis threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pediatric fever, infection, or sepsis result(s): 8 to 60 days; at least 38.0; age 37; 42 weeks; 1 hour; 3 hours; 8 to 60 day; 3 months",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "AAP_FEBRILE_INFANT_2021",
@@ -3420,7 +3420,7 @@
                     "id": "pediatric_fever_sepsis_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric fever, infection, or sepsis: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pediatric fever, infection, or sepsis danger feature or high-risk cutoff: Fever in an infant under 3 months; Pediatric sepsis or shock danger physiology; Non-blanching rash meningitis or CNS cues; Measure temperature; 8 to 60 days; at least 38.0; age 37; Pediatric sepsis escalation antibiotics and fluids",
                     "source_ids": [
                       "AAP_FEBRILE_INFANT_2021",
                       "SSC_PEDIATRIC_SEPSIS_2026",
@@ -3688,8 +3688,8 @@
                   {
                     "id": "pediatric_fever_sepsis_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric fever, infection, or sepsis: start treatment/disposition when Well-appearing febrile infant 8 to 60 days with rectal temperature at least 38.0 C and gestational age 37 to 42 weeks: 8 to 60 days, at least 38.0, age 37, 42 weeks | Pediatric sepsis lactate cultures and antibiotic timing: 1 hour, 3 hours | Febrile infant 8 to 60 day pathway tests: 8 to 60 day, 8 to 60 days, at least 38.0 | Fever in an infant under 3 months: 3 months | Pediatric sepsis escalation antibiotics and fluids: 1 hour, 10 to 20 mL/kg, up to 40, 60 mL/kg matches",
-                    "edgeLabel": "Pediatric fever, infection, or sepsis criteria match or treatment cannot safely wait",
+                    "label": "Pediatric fever, infection, or sepsis: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pediatric fever, infection, or sepsis treatment/disposition indicated by: 8 to 60 days; at least 38.0; age 37; 42 weeks; 1 hour; 3 hours; Monitor treatment response, complications, and need for reassessment with: Pediatric sepsis lactate cultures and antibiotic timing.; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route",
                     "source_ids": [
                       "SSC_PEDIATRIC_SEPSIS_2026",
                       "NICE_FEVER_UNDER5_NG143",
@@ -3700,7 +3700,7 @@
                     "criteria": {
                       "rule_id": "pediatric_fever_sepsis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pediatric fever, infection, or sepsis treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pediatric fever, infection, or sepsis treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3842,7 +3842,7 @@
                         "id": "pediatric_fever_sepsis_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pediatric fever, infection, or sepsis: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pediatric fever, infection, or sepsis treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "AAP_FEBRILE_INFANT_2021",
                           "SSC_PEDIATRIC_SEPSIS_2026",
@@ -3935,7 +3935,7 @@
                             "id": "pediatric_fever_sepsis_review_endpoint",
                             "type": "endpoint",
                             "label": "Pediatric fever, infection, or sepsis: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pediatric fever, infection, or sepsis modifier changes treatment/disposition: Measure temperature; Measure respiratory rate; Measure oxygen saturation; Measure heart rate; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "AAP_FEBRILE_INFANT_2021",
                               "SSC_PEDIATRIC_SEPSIS_2026",
@@ -3973,7 +3973,7 @@
                             "id": "pediatric_fever_sepsis_monitoring_bundle",
                             "type": "action",
                             "label": "Pediatric fever, infection, or sepsis: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pediatric fever, infection, or sepsis therapy or diagnostic plan, trend: 8 to 60 days; at least 38.0; age 37; 42 weeks; Pediatric sepsis lactate cultures and antibiotic timing; Age and source-directed pediatric fever tests; Febrile infant 8 to 60 day pathway tests; Measure temperature",
                             "source_ids": [
                               "SSC_PEDIATRIC_SEPSIS_2026",
                               "NICE_FEVER_UNDER5_NG143",
@@ -4124,7 +4124,7 @@
                                 "id": "pediatric_fever_sepsis_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric fever, infection, or sepsis: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pediatric fever, infection, or sepsis reassessment worsens or contradicts expected response: 8 to 60 days; at least 38.0; age 37; 42 weeks; Pediatric sepsis lactate cultures and antibiotic timing; Age and source-directed pediatric fever tests; Febrile infant 8 to 60 day pathway tests; Measure temperature",
                                 "source_ids": [
                                   "AAP_FEBRILE_INFANT_2021",
                                   "SSC_PEDIATRIC_SEPSIS_2026",
@@ -4393,7 +4393,7 @@
                                 "id": "pediatric_fever_sepsis_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric fever, infection, or sepsis: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pediatric fever, infection, or sepsis objective response supports narrowing, stopping, tapering, or continuing: 8 to 60 days; at least 38.0; age 37; 42 weeks; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route; Monitor treatment response, complications, and need for reassessment with: Pediatric sepsis lactate cultures and antibiotic timing.",
                                 "source_ids": [
                                   "SSC_PEDIATRIC_SEPSIS_2026",
                                   "NICE_FEVER_UNDER5_NG143",
@@ -4662,7 +4662,7 @@
                                 "id": "pediatric_fever_sepsis_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pediatric fever, infection, or sepsis: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pediatric fever, infection, or sepsis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route",
                                 "source_ids": [
                                   "SSC_PEDIATRIC_SEPSIS_2026",
                                   "NICE_FEVER_UNDER5_NG143",
@@ -4960,7 +4960,7 @@
                     "id": "pediatric_fever_sepsis_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pediatric fever, infection, or sepsis: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pediatric fever, infection, or sepsis mimic/exclusion better fits: Pediatric sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered responsiveness, hypoxemia, oliguria, meningitis signs, or rapid worsening; Respiratory infection source such as pneumonia, bronchiolitis, viral respiratory infection, aspiration, or hypoxemic respiratory illness; Urinary, abdominal, skin, line, CNS, joint, travel, exposure, or immunization-related fever source; Well-appearing febrile infant 8 to 60 days with rectal temperature at least 38.0 C and gestational age 37 to 42 weeks",
                     "source_ids": [
                       "SSC_PEDIATRIC_SEPSIS_2026",
                       "NICE_SEPSIS_UNDER16_2025",
@@ -5499,49 +5499,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pediatric fever, infection, or sepsis pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_fever_sepsis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pediatric fever, infection, or sepsis result(s): 8 to 60 days; at least 38.0; age 37; 42 weeks; 1 hour; 3 hours; 8 to 60 day; 3 months"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pediatric_fever_sepsis_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis danger feature or high-risk cutoff: Fever in an infant under 3 months; Pediatric sepsis or shock danger physiology; Non-blanching rash meningitis or CNS cues; Measure temperature; 8 to 60 days; at least 38.0; age 37; Pediatric sepsis escalation antibiotics and fluids"
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pediatric_fever_sepsis_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis mimic/exclusion better fits: Pediatric sepsis or serious bacterial infection with organ dysfunction, shock physiology, altered responsiveness, hypoxemia, oliguria, meningitis signs, or rapid worsening; Respiratory infection source such as pneumonia, bronchiolitis, viral respiratory infection, aspiration, or hypoxemic respiratory illness; Urinary, abdominal, skin, line, CNS, joint, travel, exposure, or immunization-related fever source; Well-appearing febrile infant 8 to 60 days with rectal temperature at least 38.0 C and gestational age 37 to 42 weeks"
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pediatric_fever_sepsis_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis modifier changes treatment/disposition: Measure temperature; Measure respiratory rate; Measure oxygen saturation; Measure heart rate; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pediatric_fever_sepsis_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis reassessment worsens or contradicts expected response: 8 to 60 days; at least 38.0; age 37; 42 weeks; Pediatric sepsis lactate cultures and antibiotic timing; Age and source-directed pediatric fever tests; Febrile infant 8 to 60 day pathway tests; Measure temperature"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pediatric_fever_sepsis_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis objective response supports narrowing, stopping, tapering, or continuing: 8 to 60 days; at least 38.0; age 37; 42 weeks; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route; Monitor treatment response, complications, and need for reassessment with: Pediatric sepsis lactate cultures and antibiotic timing."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pediatric_fever_sepsis_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pediatric fever, infection, or sepsis stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Pediatric sepsis escalation antibiotics and fluids; Pediatric fever safety net and reassessment; Pregnant or postpartum adolescent fever route"
         }
       ],
       "audit_requirements": {

@@ -3432,7 +3432,7 @@
         "pheochromocytoma_treatment_bundle": {
           "rule_id": "pheochromocytoma_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Pheochromocytoma treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Pheochromocytoma treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4491,7 +4491,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pheochromocytoma: compact evidence-cited management pathway",
+        "label": "Pheochromocytoma: does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_PHEO_PPGL_2014",
@@ -4520,7 +4520,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Pheochromocytoma pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Pheochromocytoma pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4576,7 +4576,7 @@
             "id": "pheochromocytoma_concurrent_data_bundle",
             "type": "action",
             "label": "Pheochromocytoma: obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Pheochromocytoma trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Pheochromocytoma workup or documented findings: Any sweating, enlarged hands/feet, ring or shoe-size change, jaw/facial change, joint pain, sleep apnea, headaches, diabetes, hypertension, or colon-polyp history suggesting acromegaly complications?; Any palpitations, tremor, heat intolerance, anxiety, insomnia, weight loss, diarrhea, or sweating suggesting thyroid hormone excess or adrenergic physiology?; Do you feel lightheaded when standing, faint, unusually weak, or better after fluids or salt?; Have you had new salt craving, dizziness on standing, low blood pressure, vomiting, abdominal pain, or unusual skin darkening?; Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Plasma free metanephrines or urinary fractionated metanephrines.",
             "source_ids": [
               "ES_PHEO_PPGL_2014",
               "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -4607,8 +4607,8 @@
               {
                 "id": "pheochromocytoma_classification_decision",
                 "type": "decision",
-                "label": "Pheochromocytoma: classify by PPGL biochemical confirmation: plasma free or urinary fractionated metanephrines above assay ULN need follow-up; values about 3-fold ULN are high probability: >ULN, 3-fold ULN | PPGL pre-op preparation: functional tumor needs alpha blockade and high-sodium/fluid preparation for 7 to 14 days before surgery: 7 to 14 days | PPGL surgery approach: open resection for large pheochromocytoma >6 cm or invasive disease; minimally invasive adrenalectomy for most smaller adrenal tumors: >6 cm | PPGL follow-up: biochemical testing 2-4 weeks after surgery and lifelong annual metanephrine testing for recurrence/metastatic disease: 2-4 weeks | Key thresholds and interpretation caveats: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: >3",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Pheochromocytoma: classify severity and disposition by cited thresholds",
+                "edgeLabel": "Pheochromocytoma results available for threshold classification: Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; PPGL safety tests: obtain plasma free or urine fractionated metanephrines under appropriate collection conditions, add ECG/cardiac injury testing for crisis symptoms, and reserve imaging/genetic pathway for biochemical framing unless emergency stabilization is needed.; plasma free or urinary fractionated metanephrines; assay ULN; supine sampling status; interfering medications; clinical presentation",
                 "source_ids": [
                   "ES_PHEO_PPGL_2014",
                   "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -4885,7 +4885,7 @@
                     "id": "pheochromocytoma_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Pheochromocytoma threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Pheochromocytoma result(s): plasma free or urinary fractionated metanephrines; assay ULN; supine sampling status; interfering medications; clinical presentation; functional PPGL status; blood pressure; heart rate",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_PHEO_PPGL_2014",
@@ -4977,7 +4977,7 @@
                     "id": "pheochromocytoma_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Pheochromocytoma: emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Pheochromocytoma danger feature or high-risk cutoff: Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; >ULN; 3-fold ULN; 7 to 14 days; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014",
                       "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -5431,8 +5431,8 @@
                   {
                     "id": "pheochromocytoma_treatment_bundle",
                     "type": "action",
-                    "label": "Pheochromocytoma: start treatment/disposition when PPGL biochemical confirmation: plasma free or urinary fractionated metanephrines above assay ULN need follow-up; values about 3-fold ULN are high probability: >ULN, 3-fold ULN | PPGL pre-op preparation: functional tumor needs alpha blockade and high-sodium/fluid preparation for 7 to 14 days before surgery: 7 to 14 days | PPGL surgery approach: open resection for large pheochromocytoma >6 cm or invasive disease; minimally invasive adrenalectomy for most smaller adrenal tumors: >6 cm | PPGL follow-up: biochemical testing 2-4 weeks after surgery and lifelong annual metanephrine testing for recurrence/metastatic disease: 2-4 weeks | Key thresholds and interpretation caveats: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.: >3 matches",
-                    "edgeLabel": "Pheochromocytoma criteria match or treatment cannot safely wait",
+                    "label": "Pheochromocytoma: initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Pheochromocytoma treatment/disposition indicated by: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; 2-4 weeks; >3; Begin alpha-adrenergic blockade and volume/salt preparation before surgery once diagnosis is established; add beta-blocker only after adequate alpha blockade if tachyarrhythmia requires it.; Refer for adrenalectomy or tumor resection with endocrine, anesthesia, and surgical planning.; Use genetic counseling/testing when PPGL is confirmed or hereditary features are present.; Manage hypertensive crisis, arrhythmia, ACS/stroke symptoms, or planned urgent procedure with specialist/ICU-level support.; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014",
                       "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -5441,7 +5441,7 @@
                     "criteria": {
                       "rule_id": "pheochromocytoma_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Pheochromocytoma treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Pheochromocytoma treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5644,7 +5644,7 @@
                         "id": "pheochromocytoma_treatment_safety_decision",
                         "type": "decision",
                         "label": "Pheochromocytoma: medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Pheochromocytoma treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_PHEO_PPGL_2014",
                           "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -5813,7 +5813,7 @@
                             "id": "pheochromocytoma_review_endpoint",
                             "type": "endpoint",
                             "label": "Pheochromocytoma: clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Pheochromocytoma modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Measure standing blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_PHEO_PPGL_2014",
                               "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -5847,7 +5847,7 @@
                             "id": "pheochromocytoma_monitoring_bundle",
                             "type": "action",
                             "label": "Pheochromocytoma: concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Pheochromocytoma therapy or diagnostic plan, trend: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Measure blood pressure",
                             "source_ids": [
                               "ES_PHEO_PPGL_2014",
                               "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -6025,7 +6025,7 @@
                                 "id": "pheochromocytoma_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Pheochromocytoma: escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Pheochromocytoma reassessment worsens or contradicts expected response: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_PHEO_PPGL_2014",
                                   "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -6448,7 +6448,7 @@
                                 "id": "pheochromocytoma_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Pheochromocytoma: de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Pheochromocytoma objective response supports narrowing, stopping, tapering, or continuing: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Begin alpha-adrenergic blockade and volume/salt preparation before surgery once diagnosis is established; add beta-blocker only after adequate alpha blockade if tachyarrhythmia requires it.",
                                 "source_ids": [
                                   "ES_PHEO_PPGL_2014",
                                   "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -6871,7 +6871,7 @@
                                 "id": "pheochromocytoma_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Pheochromocytoma: follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Pheochromocytoma stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_PHEO_PPGL_2014",
                                   "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -7423,7 +7423,7 @@
                     "id": "pheochromocytoma_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Pheochromocytoma: switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Pheochromocytoma mimic/exclusion better fits: Pheochromocytoma: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics.",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014",
                       "ESE_ADRENAL_INCIDENTALOMA_2023",
@@ -8390,49 +8390,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Pheochromocytoma pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pheochromocytoma_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Pheochromocytoma result(s): plasma free or urinary fractionated metanephrines; assay ULN; supine sampling status; interfering medications; clinical presentation; functional PPGL status; blood pressure; heart rate"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "pheochromocytoma_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Pheochromocytoma danger feature or high-risk cutoff: Hypertensive crisis, arrhythmia, ACS/stroke symptoms, planned surgery without alpha blockade.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Adrenal crisis, shock, severe vomiting/dehydration, hypoglycemia, severe hyperkalemia/hyponatremia, hypertensive crisis, arrhythmia, stroke/ACS symptoms, psychosis, infection, or VTE.; Measure blood pressure; >ULN; 3-fold ULN; 7 to 14 days; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "pheochromocytoma_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Pheochromocytoma mimic/exclusion better fits: Pheochromocytoma: diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Metanephrine intervals are lab and sampling-position-specific; >3x ULN is highly suggestive. Use local laboratory intervals and assay-specific cutoffs; endocrine immunoassays are affected by pregnancy, age, sex, acute illness, binding proteins, biotin, and medication effects.; Important mimics/exclusions: exogenous glucocorticoid exposure or withdrawal, primary versus central adrenal insufficiency, adrenal incidentaloma, medication-altered renin/aldosterone testing, catecholamine excess, severe illness, infection, and electrolyte mimics."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "pheochromocytoma_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Pheochromocytoma modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure orthostatic blood pressure; Measure standing blood pressure; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "pheochromocytoma_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Pheochromocytoma reassessment worsens or contradicts expected response: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; Plasma free metanephrines or urinary fractionated metanephrines.; Use proper sampling conditions; supine rest for plasma when possible.; CT/MRI only after biochemical evidence.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "pheochromocytoma_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Pheochromocytoma objective response supports narrowing, stopping, tapering, or continuing: >ULN; 3-fold ULN; 7 to 14 days; >6 cm; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Begin alpha-adrenergic blockade and volume/salt preparation before surgery once diagnosis is established; add beta-blocker only after adequate alpha blockade if tachyarrhythmia requires it."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "pheochromocytoma_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Pheochromocytoma stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; >3x ULN metanephrines changes to localization/genetic/preoperative alpha-blockade pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

@@ -3494,7 +3494,7 @@
         "hirsutism_treatment_bundle": {
           "rule_id": "hirsutism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Hirsutism (Excessive hair growth) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Hirsutism (Excessive hair growth) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4601,7 +4601,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hirsutism (Excessive hair growth): compact evidence-cited management pathway",
+        "label": "Hirsutism (Excessive hair growth): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_HIRSUTISM_2018",
@@ -4630,7 +4630,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Hirsutism (Excessive hair growth) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Hirsutism (Excessive hair growth) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4686,7 +4686,7 @@
             "id": "hirsutism_concurrent_data_bundle",
             "type": "action",
             "label": "Hirsutism (Excessive hair growth): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Hirsutism (Excessive hair growth) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Hirsutism (Excessive hair growth) workup or documented findings: Any new or rapidly progressive facial/body hair growth, acne, scalp hair loss, deepening voice, clitoromegaly, or menstrual irregularity?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; Which medications, supplements, missed doses, biotin, iodine/contrast exposure, hormone therapy, or recent treatment changes could alter Hirsutism (Excessive hair growth) interpretation or safety?; Are fertility goals, pregnancy possibility, partner factors, or treatment choices relevant to the timing and safety of this endocrine workup?; Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Total testosterone and free testosterone when indicated.",
             "source_ids": [
               "ES_HIRSUTISM_2018",
               "PCOS_GUIDELINE_2023",
@@ -4717,8 +4717,8 @@
               {
                 "id": "hirsutism_classification_decision",
                 "type": "decision",
-                "label": "Hirsutism (Excessive hair growth): classify by Hirsutism workup trigger: abnormal hirsutism score warrants androgen testing; eumenorrheic local hair growth without abnormal score should not trigger broad testing: above reference range | Hirsutism OCP choice modifier: age >39 years or obesity/VTE risk favors lowest effective ethinyl estradiol dose, usually 20 mcg, with low-risk progestin: age >39 years, 20 mcg | Hirsutism treatment response: trial pharmacologic therapy for at least 6 months before changing dose, switching, or adding antiandrogen: at least 6 months, 6 months | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Total testosterone and free testosterone when indicated.: 20 ng/mL, 25 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Hirsutism (Excessive hair growth): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Hirsutism (Excessive hair growth) results available for threshold classification: Total testosterone and free testosterone when indicated.; Early morning 17-OHP.; DHEAS when severe/rapid.; TSH/prolactin/metabolic PCOS tests when menstrual disturbance.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold; menstrual pattern; androgen assay; age",
                 "source_ids": [
                   "ES_HIRSUTISM_2018",
                   "PCOS_GUIDELINE_2023",
@@ -4995,7 +4995,7 @@
                     "id": "hirsutism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Hirsutism (Excessive hair growth) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Hirsutism (Excessive hair growth) result(s): modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold; menstrual pattern; androgen assay; age; BMI/VTE risk factors; contraception need; OCP contraindications",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_HIRSUTISM_2018",
@@ -5089,7 +5089,7 @@
                     "id": "hirsutism_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Hirsutism (Excessive hair growth): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Hirsutism (Excessive hair growth) danger feature or high-risk cutoff: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; above reference range; age >39 years; 20 mcg; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
                       "PCOS_GUIDELINE_2023",
@@ -5553,8 +5553,8 @@
                   {
                     "id": "hirsutism_treatment_bundle",
                     "type": "action",
-                    "label": "Hirsutism (Excessive hair growth): start treatment/disposition when Hirsutism workup trigger: abnormal hirsutism score warrants androgen testing; eumenorrheic local hair growth without abnormal score should not trigger broad testing: above reference range | Hirsutism OCP choice modifier: age >39 years or obesity/VTE risk favors lowest effective ethinyl estradiol dose, usually 20 mcg, with low-risk progestin: age >39 years, 20 mcg | Hirsutism treatment response: trial pharmacologic therapy for at least 6 months before changing dose, switching, or adding antiandrogen: at least 6 months, 6 months | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Total testosterone and free testosterone when indicated.: 20 ng/mL, 25 ng/mL matches",
-                    "edgeLabel": "Hirsutism (Excessive hair growth) criteria match or treatment cannot safely wait",
+                    "label": "Hirsutism (Excessive hair growth): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Hirsutism (Excessive hair growth) treatment/disposition indicated by: above reference range; age >39 years; 20 mcg; at least 6 months; 6 months; 20 ng/mL; Use lifestyle and weight-management support for metabolic risk and patient goals.; Use combined hormonal contraceptive for cycle control and hyperandrogenic symptoms when pregnancy is not desired and no contraindication exists.; Add antiandrogen such as spironolactone only with reliable contraception and monitoring when hirsutism/acne persists after first-line therapy.; For fertility goals, use ovulation induction pathway such as letrozole-first approaches per reproductive specialist/local guideline.; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
                       "PCOS_GUIDELINE_2023",
@@ -5563,7 +5563,7 @@
                     "criteria": {
                       "rule_id": "hirsutism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Hirsutism (Excessive hair growth) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Hirsutism (Excessive hair growth) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5776,7 +5776,7 @@
                         "id": "hirsutism_treatment_safety_decision",
                         "type": "decision",
                         "label": "Hirsutism (Excessive hair growth): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Hirsutism (Excessive hair growth) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_HIRSUTISM_2018",
                           "PCOS_GUIDELINE_2023",
@@ -5959,7 +5959,7 @@
                             "id": "hirsutism_review_endpoint",
                             "type": "endpoint",
                             "label": "Hirsutism (Excessive hair growth): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Hirsutism (Excessive hair growth) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
                               "PCOS_GUIDELINE_2023",
@@ -5993,7 +5993,7 @@
                             "id": "hirsutism_monitoring_bundle",
                             "type": "action",
                             "label": "Hirsutism (Excessive hair growth): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Hirsutism (Excessive hair growth) therapy or diagnostic plan, trend: above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP.; DHEAS when severe/rapid.; Measure blood pressure",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
                               "PCOS_GUIDELINE_2023",
@@ -6177,7 +6177,7 @@
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Hirsutism (Excessive hair growth): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Hirsutism (Excessive hair growth) reassessment worsens or contradicts expected response: above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP.; DHEAS when severe/rapid.; Measure blood pressure",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
                                   "PCOS_GUIDELINE_2023",
@@ -6606,7 +6606,7 @@
                                 "id": "hirsutism_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Hirsutism (Excessive hair growth): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Hirsutism (Excessive hair growth) objective response supports narrowing, stopping, tapering, or continuing: above reference range; age >39 years; 20 mcg; at least 6 months; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle and weight-management support for metabolic risk and patient goals.",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
                                   "PCOS_GUIDELINE_2023",
@@ -7035,7 +7035,7 @@
                                 "id": "hirsutism_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Hirsutism (Excessive hair growth): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Hirsutism (Excessive hair growth) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
                                   "PCOS_GUIDELINE_2023",
@@ -7586,7 +7586,7 @@
                     "id": "hirsutism_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Hirsutism (Excessive hair growth): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Hirsutism (Excessive hair growth) mimic/exclusion better fits: Hirsutism (Excessive hair growth): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease.",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
                       "PCOS_GUIDELINE_2023",
@@ -8559,49 +8559,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Hirsutism (Excessive hair growth) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hirsutism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Hirsutism (Excessive hair growth) result(s): modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold; menstrual pattern; androgen assay; age; BMI/VTE risk factors; contraception need; OCP contraindications"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "hirsutism_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) danger feature or high-risk cutoff: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Positive pregnancy with pain/bleeding, rapid virilization, tumor-range androgens, severe abnormal bleeding, visual symptoms/headache, testicular mass, hard breast mass, or priapism.; Measure blood pressure; above reference range; age >39 years; 20 mcg; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "hirsutism_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) mimic/exclusion better fits: Hirsutism (Excessive hair growth): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: pregnancy, hypothalamic/pituitary disease, thyroid disease, hyperprolactinemia, PCOS, androgen-secreting tumor, medication or substance effects, primary gonadal failure, menopause/POI, and structural pelvic or testicular disease."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "hirsutism_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Measure body mass index; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "hirsutism_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) reassessment worsens or contradicts expected response: above reference range; age >39 years; 20 mcg; at least 6 months; Total testosterone and free testosterone when indicated.; Early morning 17-OHP.; DHEAS when severe/rapid.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "hirsutism_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) objective response supports narrowing, stopping, tapering, or continuing: above reference range; age >39 years; 20 mcg; at least 6 months; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use lifestyle and weight-management support for metabolic risk and patient goals."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "hirsutism_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Hirsutism (Excessive hair growth) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {

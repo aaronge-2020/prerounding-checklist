@@ -3350,7 +3350,7 @@
         "prolactinoma_treatment_bundle": {
           "rule_id": "prolactinoma_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Use the Prolactinoma (Benign pituitary tumor) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+          "description": "Use the Prolactinoma (Benign pituitary tumor) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -4451,7 +4451,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Prolactinoma (Benign pituitary tumor): compact evidence-cited management pathway",
+        "label": "Prolactinoma (Benign pituitary tumor): does patient context support this workup or require exact missing-data routing?",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPERPROLACTINEMIA_2011",
@@ -4480,7 +4480,7 @@
             "id": "endpoint_missing_context",
             "type": "endpoint",
             "label": "Missing data needed: Prolactinoma (Benign pituitary tumor) pathway context",
-            "edgeLabel": "Missing context",
+            "edgeLabel": "Missing exact Prolactinoma (Benign pituitary tumor) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4536,7 +4536,7 @@
             "id": "prolactinoma_concurrent_data_bundle",
             "type": "action",
             "label": "Prolactinoma (Benign pituitary tumor): obtain concurrent diagnostic, severity, and treatment-safety data",
-            "edgeLabel": "Prolactinoma (Benign pituitary tumor) trigger present with enough context to gather objective data",
+            "edgeLabel": "Selected Prolactinoma (Benign pituitary tumor) workup or documented findings: Any spontaneous or expressible nipple discharge, breast tenderness, headaches, visual symptoms, or medications that raise prolactin?; When was the last menstrual period, how regular are cycles, and has bleeding changed from baseline?; How long has conception been attempted, are cycles ovulatory/regular, and have partner semen analysis or prior fertility evaluations found abnormalities?; Any change in libido, morning erections, erectile function, ejaculation, orgasm, fertility goals, or testicular symptoms?; Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Serum prolactin; repeat/macroprolactin if mild/discordant.",
             "source_ids": [
               "PITUITARY_PROLACTINOMA_2023",
               "ES_HYPERPROLACTINEMIA_2011",
@@ -4567,8 +4567,8 @@
               {
                 "id": "prolactinoma_classification_decision",
                 "type": "decision",
-                "label": "Prolactinoma (Benign pituitary tumor): classify by Hyperprolactinemia diagnosis: single prolactin above assay ULN confirms when drawn without excessive venipuncture stress; normal values are generally <25 ug/L: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L usually indicates prolactinoma; >500 ug/L is diagnostic of macroprolactinoma; macroadenoma >10 mm: >250 ug/L, >500 ug/L, >10 mm | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Serum prolactin; repeat/macroprolactin if mild/discordant.: 20 ng/mL, 25 ng/mL | Pregnancy test, TSH/free T4, renal function.: 20 ng/mL, 25 ng/mL",
-                "edgeLabel": "Concurrent data bundle obtained",
+                "label": "Prolactinoma (Benign pituitary tumor): classify severity and disposition by cited thresholds",
+                "edgeLabel": "Prolactinoma (Benign pituitary tumor) results available for threshold classification: Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Compare with prior results and repeat discordant nonurgent endocrine tests using correct timing, local assay, and interference precautions.; Prolactin/pituitary mass safety tests: repeat fasting prolactin with macroprolactin, medication, pregnancy, TSH, and renal context, obtain pituitary MRI for persistent or mass-effect concern, and check gonadal/adrenal/thyroid axes for macroadenoma.; serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list",
                 "source_ids": [
                   "ES_HYPERPROLACTINEMIA_2011",
                   "PITUITARY_PROLACTINOMA_2023",
@@ -4809,7 +4809,7 @@
                     "id": "prolactinoma_missing_cutoff_data_endpoint",
                     "type": "endpoint",
                     "label": "Missing data needed: Prolactinoma (Benign pituitary tumor) threshold/results",
-                    "edgeLabel": "Threshold/result data missing",
+                    "edgeLabel": "Missing exact Prolactinoma (Benign pituitary tumor) result(s): serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list; prolactin; pituitary MRI size; drug causes such as risperidone/metoclopramide",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -4897,7 +4897,7 @@
                     "id": "prolactinoma_urgent_endpoint",
                     "type": "endpoint",
                     "label": "Prolactinoma (Benign pituitary tumor): emergency escalation or monitored-care disposition when danger thresholds are met",
-                    "edgeLabel": "Emergency or high-risk criteria met",
+                    "edgeLabel": "Prolactinoma (Benign pituitary tumor) danger feature or high-risk cutoff: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -5325,8 +5325,8 @@
                   {
                     "id": "prolactinoma_treatment_bundle",
                     "type": "action",
-                    "label": "Prolactinoma (Benign pituitary tumor): start treatment/disposition when Hyperprolactinemia diagnosis: single prolactin above assay ULN confirms when drawn without excessive venipuncture stress; normal values are generally <25 ug/L: >ULN, <25 ug/L | Prolactinoma probability by prolactin level: >250 ug/L usually indicates prolactinoma; >500 ug/L is diagnostic of macroprolactinoma; macroadenoma >10 mm: >250 ug/L, >500 ug/L, >10 mm | Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.: 20 ng/mL, 25 ng/mL | Serum prolactin; repeat/macroprolactin if mild/discordant.: 20 ng/mL, 25 ng/mL | Pregnancy test, TSH/free T4, renal function.: 20 ng/mL, 25 ng/mL matches",
-                    "edgeLabel": "Prolactinoma (Benign pituitary tumor) criteria match or treatment cannot safely wait",
+                    "label": "Prolactinoma (Benign pituitary tumor): initiate treatment/disposition for the active threshold-defined branch",
+                    "edgeLabel": "Prolactinoma (Benign pituitary tumor) treatment/disposition indicated by: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; >10 mm; 20 ng/mL; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.; Monitor prolactin response, tumor size, vision, gonadal recovery, and medication tolerance.; Use surgery or radiation when medication is not tolerated, ineffective, or urgent decompression is required.; Manage pregnancy with specialist plan, especially macroadenoma or visual symptoms.; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -5335,7 +5335,7 @@
                     "criteria": {
                       "rule_id": "prolactinoma_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Use the Prolactinoma (Benign pituitary tumor) treatment branch only when the cited diagnostic/severity criteria match and required treatment-safety data are available.",
+                      "description": "Use the Prolactinoma (Benign pituitary tumor) treatment branch only when cited diagnostic/severity thresholds are satisfied and required treatment-safety data are available.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5548,7 +5548,7 @@
                         "id": "prolactinoma_treatment_safety_decision",
                         "type": "decision",
                         "label": "Prolactinoma (Benign pituitary tumor): medication/procedure safety and special-population thresholds resolved?",
-                        "edgeLabel": "Diagnosis/risk branch selected",
+                        "edgeLabel": "Prolactinoma (Benign pituitary tumor) treatment selected; check patient-specific modifiers",
                         "source_ids": [
                           "ES_HYPERPROLACTINEMIA_2011",
                           "PITUITARY_PROLACTINOMA_2023",
@@ -5725,7 +5725,7 @@
                             "id": "prolactinoma_review_endpoint",
                             "type": "endpoint",
                             "label": "Prolactinoma (Benign pituitary tumor): clinician review for contraindication, special population, or local-policy cutoff",
-                            "edgeLabel": "Treatment modifier unresolved",
+                            "edgeLabel": "Prolactinoma (Benign pituitary tumor) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement",
                             "source_ids": [
                               "ES_HYPERPROLACTINEMIA_2011",
                               "PITUITARY_PROLACTINOMA_2023",
@@ -5759,7 +5759,7 @@
                             "id": "prolactinoma_monitoring_bundle",
                             "type": "action",
                             "label": "Prolactinoma (Benign pituitary tumor): concurrent monitoring, response checks, and disposition readiness",
-                            "edgeLabel": "Treatment started or diagnostic plan active",
+                            "edgeLabel": "After Prolactinoma (Benign pituitary tumor) therapy or diagnostic plan, trend: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Measure blood pressure",
                             "source_ids": [
                               "PITUITARY_PROLACTINOMA_2023",
                               "ES_HYPERPROLACTINEMIA_2011",
@@ -5943,7 +5943,7 @@
                                 "id": "prolactinoma_worsening_endpoint",
                                 "type": "endpoint",
                                 "label": "Prolactinoma (Benign pituitary tumor): escalate when reassessment worsens or contradicts expected course",
-                                "edgeLabel": "Worsening or discordant reassessment",
+                                "edgeLabel": "Prolactinoma (Benign pituitary tumor) reassessment worsens or contradicts expected response: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Measure blood pressure",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -6336,7 +6336,7 @@
                                 "id": "prolactinoma_deescalate_endpoint",
                                 "type": "endpoint",
                                 "label": "Prolactinoma (Benign pituitary tumor): de-escalate, stop, or narrow when objective criteria normalize",
-                                "edgeLabel": "Stopping or de-escalation criteria met",
+                                "edgeLabel": "Prolactinoma (Benign pituitary tumor) objective response supports narrowing, stopping, tapering, or continuing: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas.",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -6729,7 +6729,7 @@
                                 "id": "prolactinoma_followup_endpoint",
                                 "type": "endpoint",
                                 "label": "Prolactinoma (Benign pituitary tumor): follow-up ownership and safety-net endpoint",
-                                "edgeLabel": "Stable for follow-up with safety net",
+                                "edgeLabel": "Prolactinoma (Benign pituitary tumor) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
                                   "ES_HYPERPROLACTINEMIA_2011",
@@ -7207,7 +7207,7 @@
                     "id": "prolactinoma_alternate_endpoint",
                     "type": "endpoint",
                     "label": "Prolactinoma (Benign pituitary tumor): switch to mimic/alternate pathway when threshold/result criteria do not fit",
-                    "edgeLabel": "Criteria favor mimic or alternate pathway",
+                    "edgeLabel": "Prolactinoma (Benign pituitary tumor) mimic/exclusion better fits: Prolactinoma (Benign pituitary tumor): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants.",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
                       "ES_HYPERPROLACTINEMIA_2011",
@@ -8068,49 +8068,49 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Missing context"
+          "expected_active_branch": "Missing exact Prolactinoma (Benign pituitary tumor) pathway context: symptoms, exam, vitals, labs/results, medications, comorbidities, demographics, pregnancy/applicability, and workup findings"
         },
         {
           "scenario_id": "missing_cutoff_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "prolactinoma_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Threshold/result data missing"
+          "expected_active_branch": "Missing exact Prolactinoma (Benign pituitary tumor) result(s): serum prolactin; assay ULN; venipuncture stress; pregnancy/lactation status; medication list; prolactin; pituitary MRI size; drug causes such as risperidone/metoclopramide"
         },
         {
           "scenario_id": "urgent_or_high_risk",
           "major_pathway": "escalation_emergency_actions",
           "expected_endpoint_id": "prolactinoma_urgent_endpoint",
-          "expected_active_branch": "Emergency or high-risk criteria met"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) danger feature or high-risk cutoff: Visual field deficit, severe headache/apoplexy, cranial nerve palsy, pregnancy with macroadenoma symptoms.; Hemodynamic instability, altered mental status, severe electrolyte/glucose abnormality, arrhythmia, airway compromise, or vision threat requires urgent escalation.; Pituitary apoplexy, acute severe headache, visual field deficit, cranial nerve palsy, adrenal crisis, severe hypernatremia, inability to drink, or macroadenoma symptoms in pregnancy.; Measure blood pressure; >ULN; <25 ug/L; >250 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement."
         },
         {
           "scenario_id": "alternate_pathway",
           "major_pathway": "mimics_exclusions",
           "expected_endpoint_id": "prolactinoma_alternate_endpoint",
-          "expected_active_branch": "Criteria favor mimic or alternate pathway"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) mimic/exclusion better fits: Prolactinoma (Benign pituitary tumor): diagnostic frame from guideline-sourced endocrine workup; Key thresholds and interpretation caveats: Prolactin upper limit often about 20 ng/mL in men and 25 ng/mL in women, but lab, pregnancy, lactation, and macroprolactin matter. Male total testosterone should be early morning and repeated; lower limit often around 264-300 ng/dL depending assay.; Important mimics/exclusions: medication effects, pregnancy/lactation, renal/hepatic disease, sellar or parasellar mass, pituitary apoplexy, primary target-gland disease, central versus nephrogenic water-balance disorder, and age/puberty-specific normal variants."
         },
         {
           "scenario_id": "special_population_review",
           "major_pathway": "contraindications_special_populations",
           "expected_endpoint_id": "prolactinoma_review_endpoint",
-          "expected_active_branch": "Treatment modifier unresolved"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) modifier changes treatment/disposition: Measure blood pressure; Measure heart rate; Document mental status; pregnancy/postpartum/lactation status; renal/hepatic/cardiac disease; allergy or drug interaction; pediatric/adult applicability; local protocol requirement"
         },
         {
           "scenario_id": "worsening_after_treatment",
           "major_pathway": "monitoring_reassessment_escalation",
           "expected_endpoint_id": "prolactinoma_worsening_endpoint",
-          "expected_active_branch": "Worsening or discordant reassessment"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) reassessment worsens or contradicts expected response: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Serum prolactin; repeat/macroprolactin if mild/discordant.; Pregnancy test, TSH/free T4, renal function.; Pituitary MRI after persistent unexplained elevation or mass symptoms.; Measure blood pressure"
         },
         {
           "scenario_id": "deescalation_ready",
           "major_pathway": "deescalation_stopping_criteria",
           "expected_endpoint_id": "prolactinoma_deescalate_endpoint",
-          "expected_active_branch": "Stopping or de-escalation criteria met"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) objective response supports narrowing, stopping, tapering, or continuing: >ULN; <25 ug/L; >250 ug/L; >500 ug/L; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment.; Use dopamine agonist therapy, usually cabergoline when appropriate, for most symptomatic prolactinomas or macroadenomas."
         },
         {
           "scenario_id": "followup_safety_net",
           "major_pathway": "disposition_followup_safety_netting",
           "expected_endpoint_id": "prolactinoma_followup_endpoint",
-          "expected_active_branch": "Stable for follow-up with safety net"
+          "expected_active_branch": "Prolactinoma (Benign pituitary tumor) stable for discharge/outpatient plan: pending-result owner; follow-up interval; return precautions; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement.; Unstable physiology, endocrine crisis, pregnancy-critical medication issue, or dangerous electrolyte/glucose abnormality changes disposition to urgent monitored care.; Discordant or borderline endocrine tests should be confirmed and interpreted with timing, assay, medication, pregnancy, and acute illness context before irreversible treatment."
         }
       ],
       "audit_requirements": {
