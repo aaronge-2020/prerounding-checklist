@@ -3882,6 +3882,487 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Hyperaldosteronism (Conn's Syndrome)";
+  const prefix = "primary_aldosteronism";
+  const pa = ["ES_PRIMARY_ALDO_2025"];
+  const emergency = ["MSD_HYPERTENSIVE_EMERGENCY_2026"];
+  const sourceIds = unique([...pa, ...emergency, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    criterion({
+      id: "pa_screening_population",
+      label: "Primary aldosteronism screening: all individuals with hypertension are eligible for aldosterone, renin, ARR, and potassium assessment",
+      criteria_text: "The 2025 Endocrine Society guideline suggests screening all individuals with hypertension for primary aldosteronism using aldosterone, renin, ARR, and potassium to interpret aldosterone accurately.",
+      cutoffs: [],
+      data_needed: ["hypertension diagnosis", "serum or plasma aldosterone", "plasma renin activity or direct renin concentration", "aldosterone-to-renin ratio", "potassium"],
+      source_ids: pa,
+      source_section: "Recommendations 1 and 3"
+    }),
+    criterion({
+      id: "pa_positive_screen_cutoffs",
+      label: "Positive PA screen: PRA <=1 ng/mL/h or DRC <=8.2 mU/L plus aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, with ARR >20 or >70 by unit system",
+      criteria_text: "A positive PA screen usually requires low renin and inappropriately high aldosterone: PRA <=1 ng/mL/h or DRC <=8.2 mU/L with aldosterone >=10 ng/dL by immunoassay or >=7.5 ng/dL by LC-MS/MS, plus ARR >20 for aldosterone ng/dL to PRA ng/mL/h or >70 for aldosterone pmol/L to DRC mU/L.",
+      cutoffs: ["PRA <=1 ng/mL/h", "DRC <=8.2 mU/L", "aldosterone >=10 ng/dL", "aldosterone >=7.5 ng/dL", "ARR >20", "ARR >70"],
+      data_needed: ["PRA or DRC", "aldosterone", "aldosterone assay method", "ARR", "ARR units", "potassium", "medication list"],
+      source_ids: pa,
+      source_section: "Recommendation 3 technical remarks"
+    }),
+    criterion({
+      id: "pa_repeat_screen_interference_cutoffs",
+      label: "Repeat PA screen after correction or medication washout: potassium into lab reference range; 4 weeks for MRAs/ENaC inhibitors/diuretics, 2 weeks for ACEi/ARB or beta/central alpha-2 agents when safe",
+      criteria_text: "If PA screening is negative with hypokalemia or medications that can cause false-negative results, correct potassium and repeat; withdraw MRAs, ENaC inhibitors, and other diuretics for 4 weeks, ACE inhibitors or ARBs for 2 weeks, and repeat positive screens after beta-blocker or central alpha-2 withdrawal for 2 weeks if safe and feasible.",
+      cutoffs: ["4 weeks", "2 weeks", "aldosterone 10-15 ng/dL", "aldosterone 7.5-10 ng/dL"],
+      data_needed: ["potassium", "medications", "MRA/ENaC inhibitor/diuretic stop date", "ACE inhibitor or ARB stop date", "beta-blocker or central alpha-2 stop date", "repeat aldosterone/renin/ARR"],
+      source_ids: pa,
+      source_section: "Recommendation 3 technical remarks"
+    }),
+    criterion({
+      id: "pa_no_suppression_testing_cutoffs",
+      label: "PA suppression testing can be skipped: resistant hypertension or hypertension plus hypokalemia with PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+      criteria_text: "Aldosterone-suppression testing is not recommended before PA-specific therapy when resistant hypertension or hypertension with hypokalemia has overt renin-independent aldosterone production: PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL by immunoassay or >15 ng/dL by LC-MS/MS.",
+      cutoffs: ["PRA <0.2 ng/mL/h", "DRC <2 mU/L", "aldosterone >20 ng/dL", "aldosterone >15 ng/dL"],
+      data_needed: ["resistant hypertension status", "hypokalemia status", "PRA or DRC", "aldosterone", "assay method", "surgery preference"],
+      source_ids: pa,
+      source_section: "Recommendation 4 technical remarks"
+    }),
+    criterion({
+      id: "pa_low_likelihood_suppression_cutoffs",
+      label: "Low likelihood of lateralizing PA: normokalemia with aldosterone <~11 ng/dL immunoassay or <~8 ng/dL LC-MS/MS supports avoiding formal lateralization workup",
+      criteria_text: "Aldosterone-suppression testing may be avoided when the likelihood of lateralizing PA is so low that formal diagnosis is not justifiable, such as normokalemia with plasma/serum aldosterone <~11 ng/dL by immunoassay or <~8 ng/dL by LC-MS/MS.",
+      cutoffs: ["aldosterone <~11 ng/dL", "aldosterone <~8 ng/dL"],
+      data_needed: ["potassium", "aldosterone", "assay method", "renin", "pretest probability", "patient preference"],
+      source_ids: pa,
+      source_section: "Recommendation 4 technical remarks"
+    }),
+    criterion({
+      id: "pa_lateralization_avs_exception_cutoffs",
+      label: "PA lateralization: CT plus AVS before surgery; AVS exception may apply at age <35 with hypokalemia and unilateral adrenal adenoma >1.0 cm",
+      criteria_text: "Patients with PA considering adrenalectomy should undergo adrenal CT and AVS; a potential AVS exception is age <35 years with marked PA, hypokalemia, and a unilateral adrenal adenoma >1.0 cm on CT.",
+      cutoffs: ["age <35 years", ">1.0 cm"],
+      data_needed: ["age", "hypokalemia", "adrenal CT lesion size and side", "AVS availability", "surgery candidacy", "patient preference"],
+      source_ids: pa,
+      source_section: "Recommendation 6 technical remarks"
+    }),
+    criterion({
+      id: "pa_mra_monitoring_and_contraindication",
+      label: "PA medical therapy: prefer spironolactone MRA; monitor potassium, renal function, renin, and BP, and avoid spironolactone when hyperkalemia, advanced renal impairment, or pregnancy applies",
+      criteria_text: "For PA-specific medical therapy, spironolactone is suggested because of cost and availability; monitor potassium, renal function, renin, and BP response. The MRA-over-ENaC recommendation does not apply when spironolactone is contraindicated, such as hyperkalemia, advanced renal impairment, or pregnancy.",
+      cutoffs: [],
+      data_needed: ["surgery candidacy", "pregnancy status", "potassium", "renal function/eGFR", "renin", "blood pressure", "MRA adverse effects"],
+      source_ids: pa,
+      source_section: "Recommendations 7, 9, and 10"
+    }),
+    criterion({
+      id: "pa_hypertensive_emergency_cutoffs",
+      label: "Hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs ED/ICU titratable IV therapy and about 20-25% MAP reduction in 1-2 hours",
+      criteria_text: "Severe BP often defined as systolic >=180 mm Hg and/or diastolic >=120 mm Hg with target-organ damage is a hypertensive emergency; treatment uses short-acting IV medication, ICU monitoring, and about 20-25% MAP reduction in 1-2 hours rather than urgent normalization.",
+      cutoffs: [">=180/120 mm Hg", "20-25%", "1-2 hours"],
+      data_needed: ["systolic BP", "diastolic BP", "neurologic symptoms", "chest pain/dyspnea", "renal injury", "retinopathy/papilledema", "pregnancy status"],
+      source_ids: emergency,
+      source_section: "Hypertensive emergencies diagnosis and treatment"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: PA pathway context",
+    edgeLabel: "Missing PA context: BP pattern, potassium, aldosterone, renin, ARR units, medication interference, renal function, pregnancy status, adrenal imaging, surgery preference, or follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when PA routing data cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document sustained or resistant hypertension status, BP readings and symptoms, potassium, aldosterone with assay method, PRA or DRC, ARR and units, current antihypertensives including MRA/ENaC inhibitor/diuretic/ACEi/ARB/beta-blocker/central alpha-2 use, renal function, pregnancy status, adrenal CT/AVS status if known, surgery preference, and follow-up access.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["BP readings and hypertension treatment count", "potassium", "aldosterone and assay method", "PRA or DRC", "ARR and units", "interfering medications", "renal function", "pregnancy status", "adrenal CT/AVS status", "surgery preference"]
+  });
+
+  const missingScreenEndpoint = endpoint({
+    id: `${prefix}_missing_screen_endpoint`,
+    label: "Missing data needed: aldosterone, renin, ARR units, potassium, assay method, or interfering medications",
+    edgeLabel: "Cannot classify PA until aldosterone, PRA or DRC, ARR units, potassium, assay method, BP treatment count, and medication-interference status are available",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_missing_screen_criteria`, "Route here when PA screening or confirmation cannot be interpreted because exact lab or medication data are absent.", contextDomains, pa, { missing_any: ["aldosterone", "PRA or DRC", "ARR units", "potassium", "aldosterone assay method", "medication interference"] }),
+    action: "Obtain morning seated aldosterone, PRA or DRC, ARR with units, potassium collected and processed correctly, BP readings and medication count, renal function, and the medication-interference timeline before choosing PA confirmation, repeat testing, or treatment.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["morning seated aldosterone", "PRA or DRC", "ARR units", "potassium", "aldosterone assay method", "medication list and withdrawal feasibility", "renal function", "BP treatment count"]
+  });
+
+  const emergencyEndpoint = endpoint({
+    id: `${prefix}_emergency_endpoint`,
+    label: "PA escalation: hypertensive emergency, severe hypokalemia, paralysis, arrhythmia, stroke/ACS symptoms, pulmonary edema, or renal injury",
+    edgeLabel: "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, severe hypokalemia with weakness/paralysis or arrhythmia, chest pain, neurologic deficit, pulmonary edema, acute kidney injury, or pregnancy severe hypertension",
+    sourceIds: unique([...pa, ...emergency]),
+    criteria: criteria(`${prefix}_emergency_criteria`, "Use when PA evaluation reveals hypertensive emergency physiology or dangerous hypokalemia/arrhythmia before routine endocrine workup.", ["symptoms", "exam", "vitals", "labs", "pregnancy_status", "workup_findings"], unique([...pa, ...emergency]), { criteria_options: criteriaRows }),
+    action: "Send for ED/ICU-level evaluation when target-organ damage or severe hypokalemia risk is present. Treat hypertensive emergency with titratable IV therapy and monitored about 20-25% MAP reduction in 1-2 hours; correct potassium and arrhythmia risk while preserving PA diagnostic plans when clinically safe.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["BP and MAP trajectory", "potassium and magnesium", "ECG/arrhythmia", "target-organ symptoms", "renal function", "pregnancy status", "PA labs after stabilization"]
+  });
+
+  const repeatEndpoint = endpoint({
+    id: `${prefix}_repeat_or_mimic_endpoint`,
+    label: "PA negative or confounded screen: correct potassium, address interfering medications, repeat testing, or route to mimic",
+    edgeLabel: "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_repeat_or_mimic_criteria`, "Use when PA screen is negative, borderline, or medication/condition-confounded, or another secondary-hypertension pathway fits better.", contextDomains, sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: "Correct potassium into the laboratory reference range and repeat aldosterone/renin/ARR on another day if pretest probability remains moderate-high. When safe, hold MRAs/ENaC inhibitors/diuretics for 4 weeks, ACEi/ARB for 2 weeks, or beta-blocker/central alpha-2 agents for 2 weeks before repeat interpretation. If PA probability is low, route to resistant-hypertension, renovascular, CKD, medication/licorice, Cushing, PPGL, or genetic mineralocorticoid mimic review.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "PA result is negative, borderline, or confounded by potassium, medication, assay, renal disease, or a competing secondary-hypertension diagnosis.",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const overtEndpoint = endpoint({
+    id: `${prefix}_overt_pa_endpoint`,
+    label: "Overt PA: start PA-specific therapy without aldosterone-suppression testing when renin-independent aldosterone is clear",
+    edgeLabel: "Overt branch: resistant hypertension or hypertension with hypokalemia plus PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_overt_pa_criteria`, "Use when PA probability is high enough that aldosterone-suppression testing is not needed before PA-specific therapy.", ["vitals", "labs", "medications", "workup_findings"], pa, { criteria_options: criteriaRows }),
+    action: "Do not delay PA-specific therapy for suppression testing when overt criteria are met. Discuss surgery candidacy and preference; if bilateral/unknown lateralization, not a surgical candidate, or declines surgery, use MRA therapy and monitor BP, potassium, renal function, and renin response.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["BP response", "potassium", "renal function/eGFR", "renin", "MRA adverse effects", "surgery preference"]
+  });
+
+  const suppressionEndpoint = endpoint({
+    id: `${prefix}_suppression_testing_endpoint`,
+    label: "Intermediate PA screen: aldosterone-suppression testing or clinician-guided documentation before surgery pathway",
+    edgeLabel: "Intermediate branch: positive PA screen but not overt; patient is willing and able to consider adrenalectomy and needs suppression testing or specialist interpretation before lateralization",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_suppression_testing_criteria`, "Use after a positive PA screen when suppression testing would change surgical eligibility or diagnostic certainty.", ["vitals", "labs", "medications", "comorbidities", "workup_findings"], pa, { criteria_options: criteriaRows }),
+    action: "Arrange aldosterone-suppression testing when it will change eligibility for surgery or diagnostic certainty. Avoid unnecessary suppression testing when overt PA criteria are met, when the patient will not pursue AVS/adrenalectomy and MRA therapy is appropriate, or when lateralizing PA likelihood is very low.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Suppression-test choice, protocol, and assay-specific interpretation depend on local endocrine laboratory practice."
+  });
+
+  const lateralizationEndpoint = endpoint({
+    id: `${prefix}_lateralization_endpoint`,
+    label: "PA lateralization: adrenal CT plus AVS before adrenalectomy, with narrow age <35 and adenoma >1 cm exception",
+    edgeLabel: "Surgery branch: diagnosed PA, adrenalectomy desired/feasible, adrenal CT result available or ordered, and AVS needed unless age <35 with hypokalemia, marked PA, and unilateral adrenal adenoma >1.0 cm",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_lateralization_criteria`, "Use when diagnosed PA patient desires and can undergo adrenalectomy.", ["demographics", "labs", "imaging_results", "comorbidities", "workup_findings"], pa, { criteria_options: criteriaRows }),
+    action: "Order adrenal CT for anatomy and carcinoma exclusion, then AVS with an experienced team before unilateral adrenalectomy unless the narrow exception applies. If AVS shows lateralizing PA and the patient is a surgical candidate who desires surgery, refer for unilateral adrenalectomy; otherwise use MRA therapy.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["CT lesion size/side", "AVS lateralization", "surgical candidacy", "patient preference", "postoperative BP/potassium"]
+  });
+
+  const medicalEndpoint = endpoint({
+    id: `${prefix}_medical_monitoring_endpoint`,
+    label: "PA medical management and follow-up: MRA titration, renin/BP response, potassium/renal monitoring, and rescreen safety-net",
+    edgeLabel: "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_medical_monitoring_criteria`, "Use for nonoperative PA, bilateral/unknown lateralization, postadrenalectomy follow-up, and safety-netting.", ["vitals", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], pa, { criteria_options: criteriaRows }),
+    action: "Use PA-specific medical therapy, usually spironolactone unless contraindicated or poorly tolerated, and titrate based on BP response, potassium, renal function, and renin rise from pretreatment baseline when hypertension remains uncontrolled. Safety-net for weakness/paralysis, palpitations/syncope, chest pain, neurologic symptoms, dyspnea, severe BP symptoms, hyperkalemia symptoms, and medication access failure.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["BP", "potassium", "renal function/eGFR", "renin", "MRA adverse effects", "surgery referral status", "return precautions"]
+  });
+
+  const positiveAction = actionNode({
+    id: `${prefix}_positive_screen_action`,
+    label: "PA positive screen: choose overt treatment, suppression testing, lateralization, or MRA route using renin, aldosterone, ARR, potassium, assay, and preferences",
+    edgeLabel: "Positive PA screen branch: low renin with aldosterone/ARR above guideline cutoffs after potassium and medication context are interpreted",
+    sourceIds: pa,
+    criteria: criteria(`${prefix}_positive_screen_criteria`, "Route positive PA screens by overt biochemical probability, suppression-test need, lateralization/surgery preference, and MRA eligibility.", contextDomains, pa, { criteria_options: criteriaRows }),
+    action: "Use the same lab facts to pick the next step: overt PA without suppression testing, intermediate PA suppression testing, CT/AVS if surgery is desired, or MRA medical therapy if bilateral/unknown/not surgical.",
+    parallelActions: ["classify overt versus intermediate PA", "decide suppression-test value", "document adrenalectomy preference", "plan CT and AVS when surgical", "start or titrate MRA when nonoperative"],
+    guidelineCutoffs: criteriaRows,
+    children: [overtEndpoint, suppressionEndpoint, lateralizationEndpoint, medicalEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "PA classification: missing labs, emergency physiology, positive screen, or repeat/mimic route",
+    edgeLabel: "PA screening facts available: BP pattern, potassium, aldosterone, PRA/DRC, ARR units, assay method, medication interference, renal function, pregnancy status, and patient preference",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify PA by emergency risk, guideline screen cutoffs, medication/potassium interference, suppression-test need, lateralization, and medical-therapy safety.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose missing-data, emergency, positive PA, or repeat/mimic branch using the exact PA cutoffs and patient-specific modifiers.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingScreenEndpoint, emergencyEndpoint, positiveAction, repeatEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "PA assessment: document BP pattern, target-organ symptoms, potassium, aldosterone/renin/ARR, assay method, medications, renal function, pregnancy, and surgery preference",
+    edgeLabel: "Hypertension, resistant hypertension, hypokalemia, adrenal incidentaloma, family history, sleep apnea, atrial fibrillation, or clinician-chosen PA evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial PA assessment requires BP severity, potassium, aldosterone-renin testing, medication interference, renal/pregnancy safety, and disposition context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Measure repeat BP and target-organ symptoms; obtain potassium, aldosterone, PRA or DRC, ARR with units, assay method, renal function, pregnancy status, and medication-interference history. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions], "PA tests, red flags, and management rules", 10)}.`,
+    parallelActions: ["repeat BP and target-organ symptom screen", "potassium", "aldosterone with assay method", "PRA or DRC", "ARR and units", "medication-interference timeline", "renal function", "pregnancy status", "surgery preference and follow-up access"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Primary aldosteronism: route hypertension by ARR cutoffs, potassium/medication modifiers, emergency risk, and lateralization or MRA plan",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for hypertension, resistant hypertension, hypokalemia, adrenal incidentaloma, early-onset hypertension family history, sleep apnea, atrial fibrillation without another cause, or clinician-chosen PA evaluation.", ["clinician_selected_module", "vitals", "labs", "medications", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
+    action: "Route suspected PA through missing-data, emergency stabilization, ARR-based screen interpretation, repeat or mimic review, suppression-test decision, CT/AVS lateralization, MRA therapy, monitoring, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_primary_aldosteronism_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Endocrine Society Primary Aldosteronism Guideline 2025, MSD Manual hypertensive emergency review, and local module evidence rows",
+    reviewNote: "Primary aldosteronism tree is threshold-cited and patient-traversable; local ARR assay cut points, suppression-test protocol, AVS technical interpretation, pregnancy antihypertensive/MRA choices, and perioperative pathway require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_aldosterone_renin", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingScreenEndpoint.id, expected_active_branch: missingScreenEndpoint.edgeLabel },
+      { scenario_id: "hypertensive_emergency_or_hypokalemia", major_pathway: "escalation_emergency_actions", expected_endpoint_id: emergencyEndpoint.id, expected_active_branch: emergencyEndpoint.edgeLabel },
+      { scenario_id: "positive_arr_screen", major_pathway: "diagnostic_confirmation", expected_endpoint_id: overtEndpoint.id, expected_active_branch: overtEndpoint.edgeLabel },
+      { scenario_id: "intermediate_suppression_testing", major_pathway: "severity_risk_stratification", expected_endpoint_id: suppressionEndpoint.id, expected_active_branch: suppressionEndpoint.edgeLabel },
+      { scenario_id: "surgical_lateralization", major_pathway: "first_line_management", expected_endpoint_id: lateralizationEndpoint.id, expected_active_branch: lateralizationEndpoint.edgeLabel },
+      { scenario_id: "mra_contraindication_or_pregnancy", major_pathway: "contraindications_special_populations", expected_endpoint_id: medicalEndpoint.id, expected_active_branch: medicalEndpoint.edgeLabel },
+      { scenario_id: "confounded_or_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: repeatEndpoint.id, expected_active_branch: repeatEndpoint.edgeLabel },
+      { scenario_id: "mra_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: medicalEndpoint.id, expected_active_branch: medicalEndpoint.edgeLabel },
+      { scenario_id: "low_likelihood_or_rescreen", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: repeatEndpoint.id, expected_active_branch: repeatEndpoint.edgeLabel },
+      { scenario_id: "followup_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: medicalEndpoint.id, expected_active_branch: medicalEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "screening branch includes PRA <=1 ng/mL/h, DRC <=8.2 mU/L, aldosterone >=10 ng/dL immunoassay or >=7.5 ng/dL LC-MS/MS, ARR >20 or >70",
+      "repeat branch includes potassium correction plus 4-week and 2-week medication-withdrawal cutoffs when safe",
+      "overt PA branch includes PRA <0.2 or DRC <2 with aldosterone >20 or >15 ng/dL cutoffs",
+      "lateralization branch includes CT plus AVS and age <35, hypokalemia, unilateral adenoma >1.0 cm exception",
+      "emergency branch includes BP >=180/120 mm Hg with target-organ damage and 20-25% MAP reduction in 1-2 hours"
+    ]
+  });
+}
+
+function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pheochromocytoma";
+  const prefix = "pheochromocytoma";
+  const ppgl = ["ES_PHEO_PPGL_2014"];
+  const emergency = ["MSD_HYPERTENSIVE_EMERGENCY_2026"];
+  const sourceIds = unique([...ppgl, ...emergency, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 10);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+
+  const criteriaRows = [
+    ...pheochromocytomaCutoffCriteria.map(criterion),
+    criterion({
+      id: "ppgl_supine_sampling_and_borderline_repeat",
+      label: "PPGL sampling: plasma metanephrines should be drawn supine using supine reference intervals; borderline elevations need preanalytical and medication review",
+      criteria_text: "Endocrine Society suggests drawing plasma metanephrines with the patient supine and using reference intervals established in the same position; positive tests require follow-up by degree of increase and clinical presentation.",
+      cutoffs: [">ULN"],
+      data_needed: ["plasma free metanephrines", "urinary fractionated metanephrines", "supine sampling status", "reference interval position", "interfering medications", "clinical presentation"],
+      source_ids: ppgl,
+      source_section: "Biochemical testing recommendations 1.1-1.4"
+    }),
+    criterion({
+      id: "ppgl_preop_alpha_beta_targets",
+      label: "PPGL pre-op BP/HR goals: alpha blockade 7-14 days; consider BP <130/80 seated and SBP >90 standing with HR 60-70 seated and 70-80 standing; beta only after alpha blockade",
+      criteria_text: "Functional PPGLs need alpha-adrenergic blockade for 7-14 days before surgery. Common endocrine perioperative targets are BP <130/80 mm Hg seated with systolic BP >90 mm Hg standing and heart rate 60-70 seated or 70-80 standing; beta-blockers should be used only after adequate alpha blockade when tachycardia persists.",
+      cutoffs: ["7-14 days", "<130/80 mm Hg", ">90 mm Hg", "60-70 bpm", "70-80 bpm"],
+      data_needed: ["alpha-blockade start date", "seated BP", "standing BP", "heart rate", "tachyarrhythmia", "volume status", "beta-blocker timing"],
+      source_ids: ppgl,
+      source_section: "Perioperative medical management recommendations 4.1-4.2"
+    }),
+    criterion({
+      id: "ppgl_alpha_blocker_starting_doses",
+      label: "PPGL alpha blockade options: phenoxybenzamine commonly starts 10 mg twice daily or selective alpha-1 blocker such as doxazosin 2 mg daily, then titrate",
+      criteria_text: "Preoperative alpha blockade usually uses phenoxybenzamine or selective alpha-1 blockade with dose titration. Starting-dose examples require local protocol and clinician review because guideline text prioritizes blockade and physiologic targets over one universal dose.",
+      cutoffs: ["10 mg twice daily", "2 mg daily"],
+      data_needed: ["selected alpha blocker", "starting dose", "orthostatic BP", "heart rate", "local endocrine/anesthesia protocol", "adverse effects"],
+      source_ids: ppgl,
+      source_section: "Perioperative blockade implementation"
+    }),
+    criterion({
+      id: "ppgl_hypertensive_emergency_cutoffs",
+      label: "PPGL hypertensive emergency: BP >=180/120 mm Hg with acute target-organ damage needs monitored IV therapy; avoid unopposed beta blockade when PPGL is possible",
+      criteria_text: "Severe BP often defined as systolic >=180 mm Hg and/or diastolic >=120 mm Hg with acute target-organ damage is a hypertensive emergency. PPGL crisis requires monitored acute care, avoidance of unopposed beta blockade, and PPGL-aware vasoactive medication selection.",
+      cutoffs: [">=180/120 mm Hg", "20-25%", "1-2 hours"],
+      data_needed: ["systolic BP", "diastolic BP", "neurologic symptoms", "chest pain/dyspnea", "arrhythmia", "renal injury", "beta-blocker exposure"],
+      source_ids: unique([...emergency, ...ppgl]),
+      source_section: "Hypertensive emergency treatment and PPGL crisis medication cautions"
+    })
+  ];
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: "Missing data needed: PPGL pathway context",
+    edgeLabel: "Missing PPGL context: paroxysmal symptoms, BP/HR pattern, metanephrine values and ULN, sampling position, medication triggers, adrenal or extra-adrenal imaging, pregnancy/genetic risk, or surgery status",
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Route here when PPGL routing data cannot be extracted.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: "Document episodic headache, sweating, palpitations, panic-like spells, sustained/paroxysmal BP and heart rate, plasma free or urinary fractionated metanephrines with assay ULN, sampling position and reference interval, medication/diet triggers, adrenal incidentaloma or imaging findings, pregnancy status, prior PPGL or hereditary syndrome risk, and surgery/follow-up status.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["paroxysmal symptoms", "BP and heart rate", "metanephrine values and ULN", "sampling position/reference interval", "medication/diet triggers", "adrenal or extra-adrenal imaging", "pregnancy status", "genetic or prior PPGL risk", "surgery status"]
+  });
+
+  const missingMetanephrineEndpoint = endpoint({
+    id: `${prefix}_missing_metanephrine_endpoint`,
+    label: "Missing data needed: plasma free or urinary fractionated metanephrines, ULN, sampling position, and medication triggers",
+    edgeLabel: "Cannot classify PPGL probability until plasma free or urinary fractionated metanephrines, assay ULN, sampling position, medication/diet confounders, BP/HR, and imaging context are available",
+    sourceIds: ppgl,
+    criteria: criteria(`${prefix}_missing_metanephrine_criteria`, "Route here when PPGL biochemical probability cannot be interpreted because exact metanephrine or sampling data are absent.", contextDomains, ppgl, { missing_any: ["metanephrine value", "assay ULN", "sampling position", "interfering medications", "BP/HR", "imaging context"] }),
+    action: "Obtain plasma free metanephrines or urinary fractionated metanephrines with assay ULN, note whether plasma sampling was supine with matching reference interval, review interfering medications and catecholamine-provoking drugs, document BP/HR pattern and symptoms, and add adrenal/extra-adrenal imaging only after clear biochemical evidence unless emergent imaging is needed for another diagnosis.",
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["plasma free or urinary fractionated metanephrines", "assay ULN", "supine sampling status", "interfering medications", "BP and heart rate", "symptom pattern", "imaging context"]
+  });
+
+  const crisisEndpoint = endpoint({
+    id: `${prefix}_crisis_endpoint`,
+    label: "PPGL crisis or hypertensive emergency: monitored acute care before elective localization or surgery",
+    edgeLabel: "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, catecholamine crisis, arrhythmia, ACS/stroke symptoms, pulmonary edema, shock, medication-triggered crisis, pregnancy severe hypertension, or unopposed beta-blocker exposure",
+    sourceIds: unique([...ppgl, ...emergency]),
+    criteria: criteria(`${prefix}_crisis_criteria`, "Use when possible PPGL has hypertensive emergency physiology, catecholamine crisis, high-risk medication exposure, or unstable end-organ symptoms.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], unique([...ppgl, ...emergency]), { criteria_options: criteriaRows }),
+    action: "Send for monitored acute care. Treat BP/arrhythmia with short-acting titratable agents using PPGL-aware medication selection, avoid unopposed beta blockade, assess for ACS/stroke/pulmonary edema/renal injury, and defer routine elective localization or surgery until stabilized and alpha blockade planning is owned.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["BP and MAP trajectory", "heart rhythm", "target-organ symptoms", "beta-blocker exposure", "volume status", "pregnancy status", "endocrine/anesthesia consultation"]
+  });
+
+  const borderlineEndpoint = endpoint({
+    id: `${prefix}_borderline_or_mimic_endpoint`,
+    label: "PPGL borderline or mimic route: repeat controlled testing or switch pathway before irreversible treatment",
+    edgeLabel: "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
+    sourceIds: sourceIdsForItems(differentials, sourceIds),
+    criteria: criteria(`${prefix}_borderline_or_mimic_criteria`, "Use when PPGL biochemical evidence is absent, borderline, or confounded, or when another diagnosis better explains the presentation.", contextDomains, sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
+    action: "Repeat controlled biochemical testing when suspicion persists, preferably plasma metanephrines with supine rest and matching reference intervals or 24-hour urinary fractionated metanephrines. Remove or document medication/diet confounders when clinically safe and route to panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, or other adrenal/endocrine pathway when better supported.",
+    endpointType: "clinician_review_handoff",
+    reviewNeededReason: "PPGL biochemical evidence is absent, borderline, or confounded by sampling position, medication, acute illness, or another diagnosis.",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const localizationEndpoint = endpoint({
+    id: `${prefix}_localization_genetic_endpoint`,
+    label: "PPGL confirmed/high probability: CT/MRI localization, hereditary-risk testing, and expert-center referral",
+    edgeLabel: "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need",
+    sourceIds: ppgl,
+    criteria: criteria(`${prefix}_localization_genetic_criteria`, "Use when biochemical evidence supports PPGL localization and hereditary-risk assessment.", ["symptoms", "vitals", "labs", "imaging_results", "demographics", "pregnancy_status", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
+    action: "After clear biochemical evidence, use CT as usual first localization imaging; choose MRI when metastatic disease, skull-base/neck paraganglioma, contrast allergy, surgical clips, children, pregnancy, germline mutation, or radiation limitation applies. Engage shared decision-making for genetic testing in all PPGL patients, prioritize SDHx for paraganglioma and SDHB for metastatic disease, and refer complex or pregnant cases to an expert multidisciplinary center.",
+    endpointType: "diagnostic_step",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["metanephrine level and ULN", "CT/MRI result", "adrenal versus paraganglioma site", "genetic testing plan", "pregnancy/metastatic risk", "expert-center referral"]
+  });
+
+  const preopEndpoint = endpoint({
+    id: `${prefix}_preop_blockade_endpoint`,
+    label: "Functional PPGL preoperative management: alpha blockade, volume expansion, beta only after alpha, and surgery approach",
+    edgeLabel: "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days",
+    sourceIds: ppgl,
+    criteria: criteria(`${prefix}_preop_blockade_criteria`, "Use for hormonally functional PPGL before planned surgery.", ["vitals", "medications", "labs", "comorbidities", "imaging_results", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
+    action: "Start alpha blockade and volume preparation for 7-14 days before surgery, using local endocrine/anesthesia dosing protocols such as phenoxybenzamine or selective alpha-1 blockade, then add beta-blockade only after adequate alpha blockade if tachyarrhythmia persists. Target BP/HR and orthostasis safety, coordinate anesthesia, and choose minimally invasive adrenalectomy for most adrenal pheochromocytomas but open resection for invasive or large tumors such as >6 cm.",
+    endpointType: "treatment",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["seated and standing BP", "heart rate", "orthostatic symptoms", "alpha-blocker dose", "volume/sodium plan", "beta-blocker timing", "tumor size/invasion"]
+  });
+
+  const postopEndpoint = endpoint({
+    id: `${prefix}_postop_followup_endpoint`,
+    label: "PPGL postoperative and lifelong follow-up: immediate BP/HR/glucose monitoring, metanephrines after recovery, and annual surveillance",
+    edgeLabel: "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
+    sourceIds: ppgl,
+    criteria: criteria(`${prefix}_postop_followup_criteria`, "Use after PPGL treatment or when recurrence/metastatic surveillance is due.", ["vitals", "labs", "imaging_results", "genetics", "follow_up_access", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
+    action: "Monitor BP, heart rate, and blood glucose immediately after surgery, repeat plasma or urine metanephrines after recovery such as 2-4 weeks postoperatively to document biochemical remission, and assign lifelong annual biochemical surveillance for recurrent or metastatic PPGL, with MRI-based surveillance when genetic or biochemically silent risk applies.",
+    endpointType: "safety_net_instruction",
+    guidelineCutoffs: criteriaRows,
+    monitoringPlan: ["postoperative BP", "heart rate", "glucose", "metanephrines 2-4 weeks after surgery", "annual metanephrines", "genetic/metastatic risk", "return precautions"]
+  });
+
+  const positiveAction = actionNode({
+    id: `${prefix}_positive_biochemistry_action`,
+    label: "PPGL positive biochemistry: localize, assess genetics, prepare blockade, choose surgery, and assign surveillance",
+    edgeLabel: "Positive biochemical branch: plasma free or urinary fractionated metanephrines above ULN with clinical probability, especially around 3-fold ULN, after sampling and medication context are reviewed",
+    sourceIds: ppgl,
+    criteria: criteria(`${prefix}_positive_biochemistry_criteria`, "Route positive PPGL biochemistry through localization, genetics, preoperative blockade, surgery, and follow-up.", contextDomains, ppgl, { criteria_options: criteriaRows }),
+    action: "Move as a coordinated PPGL plan: confirm biochemical probability, localize with CT/MRI as appropriate, assess hereditary/metastatic risk, prepare alpha blockade and volume expansion for functional tumors, choose surgical approach by site/size/invasion, and assign lifelong surveillance.",
+    parallelActions: ["confirm metanephrine elevation and sampling context", "localize with CT or MRI", "genetic testing shared decision-making", "alpha blockade and volume expansion", "surgery approach by site/size/invasion", "postoperative and annual surveillance"],
+    guidelineCutoffs: criteriaRows,
+    children: [localizationEndpoint, preopEndpoint, postopEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "PPGL classification: missing metanephrines, crisis, positive biochemistry, or borderline/mimic route",
+    edgeLabel: "PPGL facts available: symptoms, BP/HR, metanephrine value and ULN, sampling position, medication triggers, imaging context, pregnancy/genetic risk, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify PPGL by emergency physiology, metanephrine magnitude, sampling quality, medication confounders, localization need, blockade safety, surgery approach, and surveillance status.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Choose missing-data, crisis, positive biochemical, or borderline/mimic branch with exact metanephrine, sampling, BP/HR, medication, imaging, pregnancy, and genetic-risk data.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingMetanephrineEndpoint, crisisEndpoint, positiveAction, borderlineEndpoint]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment`,
+    label: "PPGL assessment: collect paroxysmal symptoms, BP/HR pattern, metanephrine values/ULN, sampling position, medication triggers, imaging, pregnancy, and genetic risk",
+    edgeLabel: "Possible PPGL: paroxysmal headache, sweating, palpitations, sustained or episodic hypertension, adrenal incidentaloma, hereditary syndrome, prior PPGL, paraganglioma concern, or clinician-chosen PPGL evaluation",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial PPGL assessment requires symptoms, vitals, biochemical evidence, sampling quality, medication confounders, imaging context, and special-population risk.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: `Measure repeat BP, orthostatic BP when safe, heart rate, rhythm, oxygenation, and mental status. Obtain plasma free or urinary fractionated metanephrines with ULN, sampling position and reference interval, medication/diet triggers, renal function, glucose if ill or post-op, pregnancy status, adrenal/extra-adrenal imaging context, hereditary syndrome/family history, and surgery or surveillance status. Local evidence reminders: ${listText([...tests, ...redFlags, ...dispositions], "PPGL tests, red flags, and management rules", 10)}.`,
+    parallelActions: ["BP/HR and orthostatic vitals", "target-organ symptom screen", "metanephrines with ULN", "sampling position and reference interval", "medication/diet trigger review", "renal function and glucose when indicated", "adrenal/extra-adrenal imaging context", "pregnancy and genetic-risk review", "surgery/surveillance status"],
+    requiredData: unique(criteriaRows.flatMap((row) => row.data_needed || [])),
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pheochromocytoma: route by metanephrine magnitude, sampling quality, crisis risk, localization, alpha blockade, surgery, and surveillance",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for paroxysmal catecholamine symptoms, sustained or episodic hypertension, adrenal incidentaloma, hereditary PPGL risk, prior PPGL, paraganglioma concern, or clinician-chosen PPGL evaluation.", ["clinician_selected_module", "symptoms", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Route possible PPGL through missing-data, acute crisis, metanephrine-based confirmation, mimic review, CT/MRI localization, genetic testing, preoperative blockade, surgical approach, postoperative monitoring, lifelong follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pheochromocytoma_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "Endocrine Society Pheochromocytoma/Paraganglioma Guideline 2014, MSD Manual hypertensive emergency review, and local module evidence rows",
+    reviewNote: "Pheochromocytoma tree is threshold-cited and patient-traversable; local metanephrine reference intervals, alpha-blocker dosing protocol, acute PPGL crisis medication protocol, pregnancy pathway, genetic-panel selection, and expert-center surgical planning require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_metanephrine_uln", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingMetanephrineEndpoint.id, expected_active_branch: missingMetanephrineEndpoint.edgeLabel },
+      { scenario_id: "ppgl_crisis", major_pathway: "escalation_emergency_actions", expected_endpoint_id: crisisEndpoint.id, expected_active_branch: crisisEndpoint.edgeLabel },
+      { scenario_id: "positive_metanephrines", major_pathway: "diagnostic_confirmation", expected_endpoint_id: localizationEndpoint.id, expected_active_branch: localizationEndpoint.edgeLabel },
+      { scenario_id: "borderline_or_confounded", major_pathway: "mimics_exclusions", expected_endpoint_id: borderlineEndpoint.id, expected_active_branch: borderlineEndpoint.edgeLabel },
+      { scenario_id: "genetic_or_pregnancy_review", major_pathway: "contraindications_special_populations", expected_endpoint_id: localizationEndpoint.id, expected_active_branch: localizationEndpoint.edgeLabel },
+      { scenario_id: "preoperative_alpha_blockade", major_pathway: "first_line_management", expected_endpoint_id: preopEndpoint.id, expected_active_branch: preopEndpoint.edgeLabel },
+      { scenario_id: "surgery_size_route", major_pathway: "severity_risk_stratification", expected_endpoint_id: preopEndpoint.id, expected_active_branch: preopEndpoint.edgeLabel },
+      { scenario_id: "postop_monitoring", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: postopEndpoint.id, expected_active_branch: postopEndpoint.edgeLabel },
+      { scenario_id: "biochemical_remission_surveillance", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: postopEndpoint.id, expected_active_branch: postopEndpoint.edgeLabel },
+      { scenario_id: "lifelong_safety_net", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: postopEndpoint.id, expected_active_branch: postopEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "diagnostic branch uses plasma free or urinary fractionated metanephrines above ULN and high-probability about 3-fold ULN routing",
+      "sampling branch requires supine plasma sampling and matching reference intervals or controlled repeat testing",
+      "crisis branch includes BP >=180/120 mm Hg with target-organ damage and avoidance of unopposed beta blockade",
+      "preoperative branch includes alpha blockade for 7-14 days, BP/HR targets, beta only after alpha blockade, and high-sodium/fluid preparation",
+      "surgery branch includes open resection for invasive or large pheochromocytoma such as >6 cm and lifelong annual biochemical surveillance"
+    ]
+  });
+}
+
 function finalizeClinicalPathwayTree({
   module,
   sourceById,
@@ -3987,9 +4468,13 @@ function main() {
                     ? buildDiabetesMellitusClinicalPathwayTree(module, sourceById, "type2")
                     : module.id === "prediabetes_v1"
                       ? buildPrediabetesClinicalPathwayTree(module, sourceById)
-                      : module.id === "metabolic_syndrome_v1"
-                        ? buildMetabolicSyndromeClinicalPathwayTree(module, sourceById)
-                        : buildCompactClinicalPathwayTree(module, sourceById);
+                    : module.id === "metabolic_syndrome_v1"
+                      ? buildMetabolicSyndromeClinicalPathwayTree(module, sourceById)
+                      : module.id === "hyperaldosteronism_v1"
+                        ? buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById)
+                        : module.id === "pheochromocytoma_v1"
+                          ? buildPheochromocytomaClinicalPathwayTree(module, sourceById)
+                          : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...module, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
