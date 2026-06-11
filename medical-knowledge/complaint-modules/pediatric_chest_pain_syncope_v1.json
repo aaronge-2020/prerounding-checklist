@@ -4174,13 +4174,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route pediatric chest pain/syncope through missing-data, cardiac escalation, respiratory/PE/pneumothorax evaluation, orthostatic/POTS care, low-risk no-testing care, seizure/mimic evaluation, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Use the pediatric chest pain/syncope pathway for cardiac escalation, respiratory/PE/pneumothorax evaluation, orthostatic/POTS care, low-risk no-testing care, seizure/mimic evaluation, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
               "RCH_SYNCOPE_CHILD",
@@ -4222,7 +4222,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4230,7 +4230,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "age",
@@ -4568,8 +4568,8 @@
                   {
                     "id": "pediatric_chest_syncope_missing_objective_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
                       "RCH_SYNCOPE_CHILD",
@@ -4610,7 +4610,7 @@
                         "cardiac exam"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4618,7 +4618,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "ECG",
@@ -7567,7 +7567,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -7579,7 +7579,7 @@
           "scenario_id": "missing_ecg_orthostatics",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_chest_syncope_missing_objective_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "pediatric_chest_syncope_initial_assessment_bundle",

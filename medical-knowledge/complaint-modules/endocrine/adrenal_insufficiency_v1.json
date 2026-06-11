@@ -4963,8 +4963,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
               "AHRQ_CALIBRATE_DX"
@@ -5002,7 +5002,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5010,7 +5010,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "blood pressure and postural symptoms",
@@ -5471,8 +5471,8 @@
                   {
                     "id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
                       "AHRQ_CALIBRATE_DX"
@@ -5507,7 +5507,7 @@
                         "recent glucocorticoid exposure"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5515,7 +5515,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "8 AM or morning cortisol",
@@ -9295,7 +9295,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -9307,7 +9307,7 @@
           "scenario_id": "missing_adrenal_testing",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "adrenal_insufficiency_missing_adrenal_testing_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "adrenal_insufficiency_initial_assessment",

@@ -4903,13 +4903,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route pregnancy hyperglycemia through missing-data, emergency obstetric/endocrine evaluation, one-step or two-step diagnostic thresholds, treatment targets, insulin/medication safety, postpartum OGTT, prevention, follow-up, and safety-net endpoints.",
+        "action": "Use the pregnancy hyperglycemia pathway for emergency obstetric/endocrine evaluation, one-step or two-step diagnostic thresholds, treatment targets, insulin/medication safety, postpartum OGTT, prevention, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "ADA_SOC_2026",
               "ADA_DIAGNOSIS_2026",
@@ -4953,7 +4953,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4961,7 +4961,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "gestational age",
@@ -5444,13 +5444,13 @@
                     }
                   ]
                 },
-                "action": "Choose from missing OGTT/glucose-log data, obstetric/endocrine emergency, GDM/overt-diabetes diagnosis, stable treatment, postpartum prevention, or competing diagnosis.",
+                "action": "Choose from obstetric/endocrine emergency, GDM/overt-diabetes diagnosis, stable treatment, postpartum prevention, or competing diagnosis.",
                 "children": [
                   {
                     "id": "gestational_diabetes_missing_ogtt_log_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "ADA_SOC_2026",
                       "ADA_DIAGNOSIS_2026",
@@ -5491,7 +5491,7 @@
                         "postpartum OGTT date"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5499,7 +5499,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "75-g fasting/1-hour/2-hour values",
@@ -8577,7 +8577,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8589,7 +8589,7 @@
           "scenario_id": "missing_ogtt_values",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gestational_diabetes_missing_ogtt_log_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "gestational_diabetes_initial_assessment",

@@ -3699,7 +3699,7 @@
         "amenorrhea_treatment_bundle": {
           "rule_id": "amenorrhea_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Amenorrhea category supports Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Amenorrhea category supports Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3969,7 +3969,7 @@
         "amenorrhea_review_endpoint": {
           "rule_id": "amenorrhea_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Amenorrhea treatment when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Amenorrhea treatment when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -4710,8 +4710,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -4747,7 +4747,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4755,7 +4755,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -4803,7 +4803,7 @@
               {
                 "id": "amenorrhea_classification_decision",
                 "type": "decision",
-                "label": "Amenorrhea decision: Amenorrhea evaluation timing; age 15",
+                "label": "Amenorrhea cutoffs: Amenorrhea evaluation timing; age 15",
                 "edgeLabel": "Cutoff check: age 15; 5 years after breast development; age 10; age 13",
                 "source_ids": [
                   "ASRM_AMENORRHEA_2024",
@@ -4983,13 +4983,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with age 15; 5 years after breast development; age 10; age 13; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with age 15; 5 years after breast development; age 10; age 13; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "amenorrhea_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ASRM_AMENORRHEA_2024",
@@ -5046,7 +5046,7 @@
                         "<15-20 ng/mL"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5054,7 +5054,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "age",
@@ -5422,7 +5422,7 @@
                   {
                     "id": "amenorrhea_treatment_bundle",
                     "type": "action",
-                    "label": "Amenorrhea plan: Treat the cause; For functional hypothalamic amenorrhea",
+                    "label": "Amenorrhea treatment: Treat the cause; For functional hypothalamic amenorrhea",
                     "edgeLabel": "Amenorrhea management: Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -5431,7 +5431,7 @@
                     "criteria": {
                       "rule_id": "amenorrhea_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Amenorrhea category supports Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Amenorrhea category supports Treat the cause; For functional hypothalamic amenorrhea; discordant endocrine tests need correct timing; Amenorrhea evaluation timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -5715,7 +5715,7 @@
                           {
                             "id": "amenorrhea_review_endpoint",
                             "type": "endpoint",
-                            "label": "Amenorrhea consult: Amenorrhea evaluation timing; Amenorrhea initial labs",
+                            "label": "Amenorrhea review: Amenorrhea evaluation timing; Amenorrhea initial labs",
                             "edgeLabel": "Review trigger: Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause",
                             "source_ids": [
                               "ASRM_AMENORRHEA_2024",
@@ -5725,7 +5725,7 @@
                             "criteria": {
                               "rule_id": "amenorrhea_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Amenorrhea treatment when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Amenorrhea treatment when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -5744,7 +5744,7 @@
                             "action": "Resolve the named Amenorrhea modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Amenorrhea therapy, dose, procedure, imaging, or care location when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Amenorrhea therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Amenorrhea evaluation timing; Amenorrhea initial labs; Amenorrhea pituitary branch; discordant endocrine tests need correct timing; Treat the cause; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "amenorrhea_monitoring_bundle",
@@ -5929,7 +5929,7 @@
                               {
                                 "id": "amenorrhea_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea worse: pregnancy-critical pain/bleeding; age 15",
+                                "label": "Amenorrhea escalation: pregnancy-critical pain/bleeding; age 15",
                                 "edgeLabel": "Worsening finding: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age 15; 5 years after breast development; Pregnancy test first; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6262,7 +6262,7 @@
                               {
                                 "id": "amenorrhea_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea de-escalate: age 15; Treat the cause",
+                                "label": "Amenorrhea stop/narrow: age 15; Treat the cause",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6595,7 +6595,7 @@
                               {
                                 "id": "amenorrhea_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Amenorrhea return: return precautions",
+                                "label": "Amenorrhea follow-up: return precautions",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ASRM_AMENORRHEA_2024",
@@ -6958,7 +6958,7 @@
                   {
                     "id": "amenorrhea_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Amenorrhea alternate route",
+                    "label": "Amenorrhea alternate",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ASRM_AMENORRHEA_2024",
@@ -7135,7 +7135,7 @@
                     "action": "Name the competing diagnosis or exclusion for Amenorrhea, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Amenorrhea as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Amenorrhea as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -7644,7 +7644,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -7656,7 +7656,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "amenorrhea_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "amenorrhea_concurrent_data_bundle",

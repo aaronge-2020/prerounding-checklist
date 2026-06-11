@@ -13395,16 +13395,16 @@
       ));
       if (node.type === "endpoint") node.children = [];
       if (node.endpoint_type === "missing_data_needed") {
-        node.label = "Internal traversal guard";
-        node.edgeLabel = "Internal traversal guard";
-        node.action = "Hidden structured data guard; excluded from the readable clinical pathway.";
+        node.label = "Hidden traversal metadata";
+        node.edgeLabel = "Hidden traversal metadata";
+        node.action = "Hidden metadata only; omitted from the clinical pathway outline and graph.";
         node.internal_traversal_guard = true;
         node.display = {
           ...(node.display || {}),
           visible_in_pathway: false,
           visible_in_graph: false,
           visible_in_outline: false,
-          reason: node.display?.reason || "Internal structured guard for branch-critical data."
+          reason: node.display?.reason || "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
         };
       }
       return node;

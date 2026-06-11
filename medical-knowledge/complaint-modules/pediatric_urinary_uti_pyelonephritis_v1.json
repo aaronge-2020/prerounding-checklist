@@ -2472,7 +2472,7 @@
         "pediatric_urinary_uti_pyelonephritis_treatment_bundle": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Pediatric urinary symptoms, UTI, or pyelonephritis category supports Suspected UTI in baby under 3 months; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Pediatric urinary symptoms, UTI, or pyelonephritis category supports Suspected UTI in baby under 3 months; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2604,7 +2604,7 @@
         "pediatric_urinary_uti_pyelonephritis_review_endpoint": {
           "rule_id": "pediatric_urinary_uti_pyelonephritis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3018,8 +3018,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3055,7 +3055,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3063,7 +3063,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3081,7 +3081,7 @@
           {
             "id": "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis data: organism",
+            "label": "Peds UTI/pyelo data: Urine sample before antibiotics when feasible",
             "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis data: Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; Upper-tract labs and renal ultrasound; Age-based UTI imaging schedule; organism; time on antibiotic",
             "source_ids": [
               "NICE_UTI_UNDER16_NG224",
@@ -3115,7 +3115,7 @@
               {
                 "id": "pediatric_urinary_uti_pyelonephritis_classification_decision",
                 "type": "decision",
-                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis threshold decision",
+                "label": "Peds UTI/pyelo cutoffs: Atypical/recurrent UTI; 48 hours; 2 or more",
                 "edgeLabel": "Cutoff check: 48 hours; 2 or more; 1 or more; 3 or more",
                 "source_ids": [
                   "NICE_UTI_UNDER16_NG224",
@@ -3212,13 +3212,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 48 hours; 2 or more; 1 or more; 3 or more; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with 48 hours; 2 or more; 1 or more; 3 or more; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "NICE_UTI_UNDER16_NG224",
@@ -3275,7 +3275,7 @@
                         "3 days"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3283,7 +3283,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "organism",
@@ -3316,7 +3316,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis urgent: 48 hours",
+                    "label": "Peds UTI/pyelo urgent: Suspected UTI in baby under 3 months",
                     "edgeLabel": "Urgent findings: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; Upper UTI or pyelonephritis features; Atypical/recurrent UTI; UTI imaging schedule",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
@@ -3483,7 +3483,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis treatment decision",
+                    "label": "Peds UTI/pyelo treatment: Suspected UTI in baby under 3 months",
                     "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis management: Suspected UTI in baby under 3 months; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route",
                     "source_ids": [
                       "CHQ_PEDS_UTI_2024",
@@ -3494,7 +3494,7 @@
                     "criteria": {
                       "rule_id": "pediatric_urinary_uti_pyelonephritis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Pediatric urinary symptoms, UTI, or pyelonephritis category supports Suspected UTI in baby under 3 months; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Pediatric urinary symptoms, UTI, or pyelonephritis category supports Suspected UTI in baby under 3 months; Infant or sepsis escalation; Uncomplicated outpatient UTI route; Upper or complex UTI route and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -3584,7 +3584,7 @@
                       {
                         "id": "pediatric_urinary_uti_pyelonephritis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric urinary symptoms, UTI, or pyelonephritis therapy safety",
+                        "label": "Peds UTI/pyelo safety: Atypical/recurrent UTI",
                         "edgeLabel": "Safety modifier: Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route",
                         "source_ids": [
                           "NICE_UTI_UNDER16_NG224",
@@ -3641,7 +3641,7 @@
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis specialist review",
+                            "label": "Peds UTI/pyelo review: Atypical/recurrent UTI; UTI imaging schedule",
                             "edgeLabel": "Review trigger: Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route",
                             "source_ids": [
                               "NICE_UTI_UNDER16_NG224",
@@ -3652,7 +3652,7 @@
                             "criteria": {
                               "rule_id": "pediatric_urinary_uti_pyelonephritis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Pediatric urinary symptoms, UTI, or pyelonephritis treatment when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -3672,12 +3672,12 @@
                             "action": "Resolve the named Pediatric urinary symptoms, UTI, or pyelonephritis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Pediatric urinary symptoms, UTI, or pyelonephritis therapy, dose, procedure, imaging, or care location when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Pediatric urinary symptoms, UTI, or pyelonephritis therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Atypical/recurrent UTI; UTI imaging schedule; When MCUG is done, give oral prophylactic antibiotics for 3 days with MCUG on day 2; Infant or sepsis escalation; Uncomplicated outpatient UTI route; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "pediatric_urinary_uti_pyelonephritis_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric urinary symptoms, UTI, or pyelonephritis trend: 48 hours",
+                            "label": "Peds UTI/pyelo trend: 48 hours; Urine sample before antibiotics when feasible",
                             "edgeLabel": "Pediatric urinary symptoms, UTI, or pyelonephritis trend: 48 hours; 2 or more; Urine sample before antibiotics when feasible; Dipstick microscopy and culture interpretation; treatment response",
                             "source_ids": [
                               "CHQ_PEDS_UTI_2024",
@@ -3776,7 +3776,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis worse: 48 hours",
+                                "label": "Peds UTI/pyelo escalation: Suspected UTI in baby under 3 months; 48 hours",
                                 "edgeLabel": "Worsening finding: Suspected UTI in baby under 3 months; Toxic appearance or sepsis physiology; 48 hours; 2 or more; Urine sample before antibiotics when feasible",
                                 "source_ids": [
                                   "NICE_UTI_UNDER16_NG224",
@@ -3943,7 +3943,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis de-escalate: 48 hours",
+                                "label": "Peds UTI/pyelo stop/narrow: 48 hours; Infant or sepsis escalation",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
@@ -4110,7 +4110,7 @@
                               {
                                 "id": "pediatric_urinary_uti_pyelonephritis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric urinary symptoms, UTI, or pyelonephritis return: return precautions",
+                                "label": "Peds UTI/pyelo follow-up: Infant or sepsis escalation",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "CHQ_PEDS_UTI_2024",
@@ -4305,7 +4305,7 @@
                   {
                     "id": "pediatric_urinary_uti_pyelonephritis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric urinary symptoms, UTI, or pyelonephritis alternate route",
+                    "label": "Peds UTI/pyelo alternate: Lower UTI or cystitis pattern with dysuria",
                     "edgeLabel": "Alternate diagnosis: Lower UTI or cystitis pattern with dysuria; Infant UTI, fever without focus, or sepsis-risk urinary source",
                     "source_ids": [
                       "NICE_UTI_UNDER16_NG224",
@@ -4401,7 +4401,7 @@
                     "action": "Name the competing diagnosis or exclusion for Pediatric urinary symptoms, UTI, or pyelonephritis, such as Lower UTI or cystitis pattern with dysuria; Infant UTI, fever without focus, or sepsis-risk urinary source; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Pediatric urinary symptoms, UTI, or pyelonephritis as the diagnosis when Lower UTI or cystitis pattern with dysuria; Infant UTI, fever without focus, or sepsis-risk urinary source; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Pediatric urinary symptoms, UTI, or pyelonephritis as the diagnosis when Lower UTI or cystitis pattern with dysuria; Infant UTI, fever without focus, or sepsis-risk urinary source; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4652,7 +4652,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -4664,7 +4664,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_urinary_uti_pyelonephritis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "pediatric_urinary_uti_pyelonephritis_concurrent_data_bundle",

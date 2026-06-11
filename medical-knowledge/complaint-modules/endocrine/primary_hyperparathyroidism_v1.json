@@ -2960,7 +2960,7 @@
         "primary_hyperparathyroidism_treatment_bundle": {
           "rule_id": "primary_hyperparathyroidism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Primary Hyperparathyroidism category supports For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Primary Hyperparathyroidism category supports For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3250,7 +3250,7 @@
         "primary_hyperparathyroidism_review_endpoint": {
           "rule_id": "primary_hyperparathyroidism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Primary Hyperparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Primary Hyperparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3888,8 +3888,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3925,7 +3925,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3933,7 +3933,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3951,7 +3951,7 @@
           {
             "id": "primary_hyperparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Primary Hyperparathyroidism data: 25D, phosphorus, creatinine/eGFR",
+            "label": "Primary hyperPTH data: Repeat albumin-corrected/ionized calcium with intact PTH",
             "edgeLabel": "Primary Hyperparathyroidism data: Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; 24-hour urine calcium and Ca/Cr clearance ratio; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "PHPT_WORKSHOP_2022",
@@ -3981,7 +3981,7 @@
               {
                 "id": "primary_hyperparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Primary Hyperparathyroidism decision: ionized calcium about 1.12-1.32 mmol/L",
+                "label": "Primary hyperPTH cutoffs: Corrected calcium often about 8.5-10.5 mg/dL",
                 "edgeLabel": "Cutoff check: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "PHPT_WORKSHOP_2022",
@@ -4134,13 +4134,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "primary_hyperparathyroidism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "PHPT_WORKSHOP_2022"
@@ -4183,7 +4183,7 @@
                         "Corrected calcium often about 8.5-10.5 mg/dL; ionized calcium about 1.12-1.32 mmol/L; use local lab."
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4191,7 +4191,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "8.5-10.5 mg/dL",
@@ -4214,7 +4214,7 @@
                   {
                     "id": "primary_hyperparathyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Primary Hyperparathyroidism urgent: 8.5-10.5 mg/dL",
+                    "label": "Primary hyperPTH urgent: 8.5-10.5 mg/dL",
                     "edgeLabel": "Urgent findings: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4497,7 +4497,7 @@
                   {
                     "id": "primary_hyperparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Primary Hyperparathyroidism plan: For nonsurgical monitoring",
+                    "label": "Primary hyperPTH treatment: For nonsurgical monitoring",
                     "edgeLabel": "Primary Hyperparathyroidism management: For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; discordant endocrine tests need correct timing",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4506,7 +4506,7 @@
                     "criteria": {
                       "rule_id": "primary_hyperparathyroidism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Primary Hyperparathyroidism category supports For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Primary Hyperparathyroidism category supports For nonsurgical monitoring, follow calcium, renal function, DXA, symptoms, and stone risk; Use cinacalcet to lower calcium when surgery is not done and hypercalcemia needs control; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4654,7 +4654,7 @@
                       {
                         "id": "primary_hyperparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Primary Hyperparathyroidism safety: Corrected calcium often about 8.5-10.5 mg/dL",
+                        "label": "Primary hyperPTH safety: Corrected calcium often about 8.5-10.5 mg/dL",
                         "edgeLabel": "Safety modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                         "source_ids": [
                           "PHPT_WORKSHOP_2022",
@@ -4809,7 +4809,7 @@
                           {
                             "id": "primary_hyperparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Primary Hyperparathyroidism consult: ionized calcium about 1.12-1.32 mmol/L",
+                            "label": "Primary hyperPTH review: Corrected calcium often about 8.5-10.5 mg/dL",
                             "edgeLabel": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4818,7 +4818,7 @@
                             "criteria": {
                               "rule_id": "primary_hyperparathyroidism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Primary Hyperparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Primary Hyperparathyroidism treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4836,12 +4836,12 @@
                             "action": "Resolve the named Primary Hyperparathyroidism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Primary Hyperparathyroidism therapy, dose, procedure, imaging, or care location when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Primary Hyperparathyroidism therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "primary_hyperparathyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Primary Hyperparathyroidism trend: 8.5-10.5 mg/dL",
+                            "label": "Primary hyperPTH trend: 8.5-10.5 mg/dL",
                             "edgeLabel": "Primary Hyperparathyroidism trend: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4996,7 +4996,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Primary Hyperparathyroidism worse: 8.5-10.5 mg/dL",
+                                "label": "Primary hyperPTH escalation: 8.5-10.5 mg/dL",
                                 "edgeLabel": "Worsening finding: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5279,7 +5279,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Primary Hyperparathyroidism de-escalate: 8.5-10.5 mg/dL",
+                                "label": "Primary hyperPTH stop/narrow: 8.5-10.5 mg/dL",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5562,7 +5562,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Primary Hyperparathyroidism return: return precautions",
+                                "label": "Primary hyperPTH follow-up: return precautions",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5875,7 +5875,7 @@
                   {
                     "id": "primary_hyperparathyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Primary Hyperparathyroidism alternate: ionized calcium about 1.12-1.32 mmol/L",
+                    "label": "Primary hyperPTH alternate: Corrected calcium often about 8.5-10.5 mg/dL",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -6027,7 +6027,7 @@
                     "action": "Name the competing diagnosis or exclusion for Primary Hyperparathyroidism, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Primary Hyperparathyroidism as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Primary Hyperparathyroidism as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6446,7 +6446,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -6458,7 +6458,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "primary_hyperparathyroidism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "primary_hyperparathyroidism_concurrent_data_bundle",

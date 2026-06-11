@@ -186,7 +186,7 @@ try {
   assert.equal(supabaseRequests.postedRows[0].section_key, "clinical_pathway_tree_v1");
   const importedTreeDraft = JSON.stringify(supabaseRequests.postedRows[0].after_snapshot || {});
   assert.doesNotMatch(importedTreeDraft, /Missing data needed: glucose and ketones/i, "Imported missing-data placeholders should be sanitized out of stored pathway text.");
-  assert.match(importedTreeDraft, /Internal traversal guard/i, "Imported missing-data guards should remain as hidden internal traversal metadata.");
+  assert.match(importedTreeDraft, /Hidden traversal metadata/i, "Imported missing-data guards should remain as hidden traversal metadata.");
 
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");

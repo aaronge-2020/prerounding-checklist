@@ -2766,7 +2766,7 @@
         "pediatric_rash_skin_treatment_bundle": {
           "rule_id": "pediatric_rash_skin_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Pediatric rash, urticaria, petechiae, or skin infection category supports Non-blanching rash with fever or unwell child; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Pediatric rash, urticaria, petechiae, or skin infection category supports Non-blanching rash with fever or unwell child; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -2946,7 +2946,7 @@
         "pediatric_rash_skin_review_endpoint": {
           "rule_id": "pediatric_rash_skin_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Pediatric rash, urticaria, petechiae, or skin infection treatment when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Pediatric rash, urticaria, petechiae, or skin infection treatment when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3428,8 +3428,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3465,7 +3465,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3473,7 +3473,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3491,7 +3491,7 @@
           {
             "id": "pediatric_rash_skin_concurrent_data_bundle",
             "type": "action",
-            "label": "Pediatric rash, urticaria, petechiae, or skin infection data: fever day count",
+            "label": "Peds rash/skin data: Non-blanching rash senior-review tests",
             "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection data: Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; SSTI culture imaging and source control route; Anaphylaxis immediate treatment route; fever day count; conjunctivitis",
             "source_ids": [
               "RCH_PETECHIAE_PURPURA_CHILD",
@@ -3529,7 +3529,7 @@
               {
                 "id": "pediatric_rash_skin_classification_decision",
                 "type": "decision",
-                "label": "Pediatric rash, urticaria, petechiae, or skin infection threshold decision",
+                "label": "Peds rash/skin cutoffs: Kawasaki disease; >=4 days",
                 "edgeLabel": "Cutoff check: >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5",
                 "source_ids": [
                   "RCH_KAWASAKI_DISEASE",
@@ -3643,13 +3643,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with >=4 days; 4 principal clinical features; >=1.5 cm; >=2.5; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "RCH_KAWASAKI_DISEASE",
@@ -3710,7 +3710,7 @@
                         ">=2"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3718,7 +3718,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "fever day count",
@@ -3751,7 +3751,7 @@
                   {
                     "id": "pediatric_rash_skin_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection urgent: >=4 days",
+                    "label": "Peds rash/skin urgent: Non-blanching rash with fever or unwell child; >=4 days",
                     "edgeLabel": "Urgent findings: Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; Prolonged fever with Kawasaki features; Kawasaki disease; Kawasaki echo/high-risk cutoffs",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -3948,7 +3948,7 @@
                   {
                     "id": "pediatric_rash_skin_treatment_bundle",
                     "type": "action",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection treatment decision",
+                    "label": "Peds rash/skin treatment: Non-blanching rash with fever or unwell child",
                     "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection management: Non-blanching rash with fever or unwell child; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -3961,7 +3961,7 @@
                     "criteria": {
                       "rule_id": "pediatric_rash_skin_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Pediatric rash, urticaria, petechiae, or skin infection category supports Non-blanching rash with fever or unwell child; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Pediatric rash, urticaria, petechiae, or skin infection category supports Non-blanching rash with fever or unwell child; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Kawasaki senior review and cardiac route and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4066,7 +4066,7 @@
                       {
                         "id": "pediatric_rash_skin_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Pediatric rash, urticaria, petechiae, or skin infection safety: Kawasaki disease",
+                        "label": "Peds rash/skin safety: Kawasaki disease",
                         "edgeLabel": "Safety modifier: Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child",
                         "source_ids": [
                           "RCH_KAWASAKI_DISEASE",
@@ -4158,7 +4158,7 @@
                           {
                             "id": "pediatric_rash_skin_review_endpoint",
                             "type": "endpoint",
-                            "label": "Pediatric rash, urticaria, petechiae, or skin infection specialist review",
+                            "label": "Peds rash/skin review: Kawasaki disease; Kawasaki treatment",
                             "edgeLabel": "Review trigger: Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child",
                             "source_ids": [
                               "RCH_KAWASAKI_DISEASE",
@@ -4171,7 +4171,7 @@
                             "criteria": {
                               "rule_id": "pediatric_rash_skin_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Pediatric rash, urticaria, petechiae, or skin infection treatment when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Pediatric rash, urticaria, petechiae, or skin infection treatment when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4193,12 +4193,12 @@
                             "action": "Resolve the named Pediatric rash, urticaria, petechiae, or skin infection modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Pediatric rash, urticaria, petechiae, or skin infection therapy, dose, procedure, imaging, or care location when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Pediatric rash, urticaria, petechiae, or skin infection therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Kawasaki disease; Kawasaki treatment; Immediate sepsis or meningococcal route; Anaphylaxis observation and discharge route; Non-blanching rash with fever or unwell child; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "pediatric_rash_skin_monitoring_bundle",
                             "type": "action",
-                            "label": "Pediatric rash, urticaria, petechiae, or skin infection trend: >=4 days",
+                            "label": "Peds rash/skin trend: >=4 days; Non-blanching rash senior-review tests",
                             "edgeLabel": "Pediatric rash, urticaria, petechiae, or skin infection trend: >=4 days; 4 principal clinical features; Non-blanching rash senior-review tests; Kawasaki labs ECG and echocardiography route; treatment response",
                             "source_ids": [
                               "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4314,7 +4314,7 @@
                               {
                                 "id": "pediatric_rash_skin_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric rash, urticaria, petechiae, or skin infection worse: >=4 days",
+                                "label": "Peds rash/skin escalation: Non-blanching rash with fever or unwell child",
                                 "edgeLabel": "Worsening finding: Non-blanching rash with fever or unwell child; Urticaria with airway breathing circulation or GI symptoms; >=4 days; 4 principal clinical features; Non-blanching rash senior-review tests",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4511,7 +4511,7 @@
                               {
                                 "id": "pediatric_rash_skin_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric rash, urticaria, petechiae, or skin infection de-escalate: >=4 days",
+                                "label": "Peds rash/skin stop/narrow: >=4 days; Immediate sepsis or meningococcal route",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4708,7 +4708,7 @@
                               {
                                 "id": "pediatric_rash_skin_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Pediatric rash, urticaria, petechiae, or skin infection return precautions",
+                                "label": "Peds rash/skin follow-up: Immediate sepsis or meningococcal route",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "RCH_PETECHIAE_PURPURA_CHILD",
@@ -4932,7 +4932,7 @@
                   {
                     "id": "pediatric_rash_skin_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric rash, urticaria, petechiae, or skin infection alternate route",
+                    "label": "Peds rash/skin alternate: Non-blanching petechiae or purpura with fever",
                     "edgeLabel": "Alternate diagnosis: Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features",
                     "source_ids": [
                       "RCH_PETECHIAE_PURPURA_CHILD",
@@ -5045,7 +5045,7 @@
                     "action": "Name the competing diagnosis or exclusion for Pediatric rash, urticaria, petechiae, or skin infection, such as Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Pediatric rash, urticaria, petechiae, or skin infection as the diagnosis when Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Pediatric rash, urticaria, petechiae, or skin infection as the diagnosis when Non-blanching petechiae or purpura with fever, rapid progression, or unwell appearance; Prolonged fever with Kawasaki disease or inflammatory rash features; Urticaria or angioedema with or without anaphylaxis features; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5335,7 +5335,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -5347,7 +5347,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "pediatric_rash_skin_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "pediatric_rash_skin_concurrent_data_bundle",

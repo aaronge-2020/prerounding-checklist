@@ -3129,7 +3129,7 @@
         "cushings_syndrome_treatment_bundle": {
           "rule_id": "cushings_syndrome_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Cushing's Syndrome category supports Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Cushing's Syndrome category supports Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3265,7 +3265,7 @@
         "cushings_syndrome_review_endpoint": {
           "rule_id": "cushings_syndrome_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Cushing's Syndrome treatment when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Cushing's Syndrome treatment when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3603,8 +3603,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3640,7 +3640,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3648,7 +3648,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3700,7 +3700,7 @@
               {
                 "id": "cushings_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Cushing's Syndrome decision: Cushing initial testing; at least 2 measurements",
+                "label": "Cushing's Syndrome cutoffs: Cushing initial testing; at least 2 measurements",
                 "edgeLabel": "Cutoff check: at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
@@ -3778,13 +3778,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with at least 2 measurements; 2 measurements; 1 mg; 2 mg/day; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "cushings_syndrome_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_CUSHING_DX_2008",
@@ -3840,7 +3840,7 @@
                         ">145 ng/dL"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3848,7 +3848,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "UFC collection count",
@@ -4009,7 +4009,7 @@
                   {
                     "id": "cushings_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Cushing's Syndrome plan: Treat the cause when feasible",
+                    "label": "Cushing's Syndrome treatment: Treat the cause when feasible",
                     "edgeLabel": "Cushing's Syndrome management: Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -4020,7 +4020,7 @@
                     "criteria": {
                       "rule_id": "cushings_syndrome_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Cushing's Syndrome category supports Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Cushing's Syndrome category supports Treat the cause when feasible; Control severe hypercortisolism complications urgently; Use steroidogenesis inhibitors; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4171,7 +4171,7 @@
                           {
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Cushing's Syndrome consult: Cushing initial testing",
+                            "label": "Cushing's Syndrome review: Cushing initial testing",
                             "edgeLabel": "Review trigger: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
@@ -4182,7 +4182,7 @@
                             "criteria": {
                               "rule_id": "cushings_syndrome_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Cushing's Syndrome treatment when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Cushing's Syndrome treatment when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4202,7 +4202,7 @@
                             "action": "Resolve the named Cushing's Syndrome modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Cushing's Syndrome therapy, dose, procedure, imaging, or care location when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Cushing's Syndrome therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "cushings_syndrome_monitoring_bundle",
@@ -4287,7 +4287,7 @@
                               {
                                 "id": "cushings_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome worse: at least 2 measurements",
+                                "label": "Cushing's Syndrome escalation: at least 2 measurements",
                                 "edgeLabel": "Worsening finding: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4416,7 +4416,7 @@
                               {
                                 "id": "cushings_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome de-escalate: at least 2 measurements",
+                                "label": "Cushing's Syndrome stop/narrow: at least 2 measurements",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4545,7 +4545,7 @@
                               {
                                 "id": "cushings_syndrome_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Cushing's Syndrome return: ACTH directs adrenal vs ACTH-dependent workup",
+                                "label": "Cushing's Syndrome follow-up: ACTH directs adrenal vs ACTH-dependent workup",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4778,7 +4778,7 @@
                     "action": "Name the competing diagnosis or exclusion for Cushing's Syndrome, such as DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Cushing's Syndrome as the diagnosis when DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Cushing's Syndrome as the diagnosis when DST, late-night salivary cortisol, and UFC cutoffs are assay-specific; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -4972,7 +4972,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -4984,7 +4984,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "cushings_syndrome_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "cushings_syndrome_concurrent_data_bundle",

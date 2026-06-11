@@ -6557,13 +6557,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Gigantism through missing-data, urgent mass-effect/comorbidity escalation, IGF-1/OGTT diagnostic confirmation, mimic review, surgery, medical/radiation therapy, special-population review, monitoring/remission, follow-up, and safety-net endpoints.",
+        "action": "Use Gigantism pathway for urgent mass-effect/comorbidity escalation, IGF-1/OGTT diagnostic confirmation, mimic review, surgery, medical/radiation therapy, special-population review, monitoring/remission, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
               "ES_ACROMEGALY_2014",
@@ -6607,7 +6607,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -6615,7 +6615,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "height velocity",
@@ -7379,13 +7379,13 @@
                     }
                   ]
                 },
-                "action": "Choose missing-data, urgent escalation, diagnostic confirmation, mimic/confounder, or treatment/monitoring branch for Gigantism.",
+                "action": "Choose urgent escalation, diagnostic confirmation, mimic/confounder, or treatment/monitoring branch for Gigantism.",
                 "children": [
                   {
                     "id": "gigantism_missing_biochemical_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "ACROMEGALY_DIAGNOSIS_REMISSION_2024",
                       "ES_ACROMEGALY_2014"
@@ -7418,7 +7418,7 @@
                         "OGTT glucose values"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -7426,7 +7426,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "age/sex/puberty-adjusted IGF-1",
@@ -14938,7 +14938,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -14950,7 +14950,7 @@
           "scenario_id": "missing_igf1_or_ogtt",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "gigantism_missing_biochemical_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "gigantism_initial_assessment",

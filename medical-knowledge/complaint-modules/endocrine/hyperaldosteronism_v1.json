@@ -4787,13 +4787,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route suspected PA through missing-data, emergency stabilization, ARR-based screen interpretation, repeat or mimic review, suppression-test decision, CT/AVS lateralization, MRA therapy, monitoring, and safety-net endpoints.",
+        "action": "Use the suspected PA pathway for emergency stabilization, ARR-based screen interpretation, repeat or mimic review, suppression-test decision, CT/AVS lateralization, MRA therapy, monitoring, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "ES_PRIMARY_ALDO_2025",
               "MSD_HYPERTENSIVE_EMERGENCY_2026",
@@ -4833,7 +4833,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -4841,7 +4841,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "BP readings and hypertension treatment count",
@@ -5278,13 +5278,13 @@
                     }
                   ]
                 },
-                "action": "Choose missing-data, emergency, positive PA, or repeat/mimic branch using the exact PA cutoffs and patient-specific modifiers.",
+                "action": "Choose emergency, positive PA, or repeat/mimic branch using the exact PA cutoffs and patient-specific modifiers.",
                 "children": [
                   {
                     "id": "primary_aldosteronism_missing_screen_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025"
                     ],
@@ -5316,7 +5316,7 @@
                         "medication interference"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5324,7 +5324,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "morning seated aldosterone",
@@ -8673,7 +8673,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8685,7 +8685,7 @@
           "scenario_id": "missing_aldosterone_renin",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "primary_aldosteronism_missing_screen_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "primary_aldosteronism_initial_assessment",

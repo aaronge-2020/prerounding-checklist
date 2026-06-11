@@ -5189,13 +5189,13 @@
             "AHRQ_CALIBRATE_DX"
           ]
         },
-        "action": "Route Type 1 Diabetes Mellitus through missing-data, DKA/HHS or severe hypoglycemia escalation, diagnostic/type classification, treatment intensity, medication-safety modifiers, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+        "action": "Use Type 1 Diabetes Mellitus pathway for DKA/HHS or severe hypoglycemia escalation, diagnostic/type classification, treatment intensity, medication-safety modifiers, monitoring, de-escalation, follow-up, and safety-net endpoints.",
         "children": [
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
               "CDC_DIABETES_TESTING_2024",
@@ -5241,7 +5241,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -5249,7 +5249,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "A1c and plasma glucose data",
@@ -5686,13 +5686,13 @@
                     }
                   ]
                 },
-                "action": "Choose from missing diabetes data, DKA/HHS/severe hypoglycemia emergency, confirmed Type 1 Diabetes Mellitus management, comorbidity/modifier review, follow-up safety net, or alternate pathway.",
+                "action": "Choose from DKA/HHS/severe hypoglycemia emergency, confirmed Type 1 Diabetes Mellitus management, comorbidity/modifier review, follow-up safety net, or alternate pathway.",
                 "children": [
                   {
                     "id": "type_1_diabetes_missing_diabetes_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
                       "CDC_DIABETES_TESTING_2024",
@@ -5735,7 +5735,7 @@
                         "hypoglycemia history"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -5743,7 +5743,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "A1c",
@@ -8844,7 +8844,7 @@
           "scenario_id": "missing_context",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -8856,7 +8856,7 @@
           "scenario_id": "missing_diabetes_data",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "type_1_diabetes_missing_diabetes_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "type_1_diabetes_initial_assessment",

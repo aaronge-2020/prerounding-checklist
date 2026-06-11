@@ -3005,7 +3005,7 @@
         "hirsutism_treatment_bundle": {
           "rule_id": "hirsutism_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Hirsutism category supports Use lifestyle and weight-management support for metabolic risk and patient goals; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Hirsutism category supports Use lifestyle and weight-management support for metabolic risk and patient goals; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3152,7 +3152,7 @@
         "hirsutism_review_endpoint": {
           "rule_id": "hirsutism_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Hirsutism treatment when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Hirsutism treatment when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3546,8 +3546,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3583,7 +3583,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3591,7 +3591,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3641,7 +3641,7 @@
               {
                 "id": "hirsutism_classification_decision",
                 "type": "decision",
-                "label": "Hirsutism decision: Hirsutism workup trigger; above reference range",
+                "label": "Hirsutism cutoffs: Hirsutism workup trigger; above reference range",
                 "edgeLabel": "Cutoff check: above reference range; age >39 years; 20 mcg; at least 6 months",
                 "source_ids": [
                   "ES_HIRSUTISM_2018",
@@ -3733,13 +3733,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with above reference range; age >39 years; 20 mcg; at least 6 months; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with above reference range; age >39 years; 20 mcg; at least 6 months; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "hirsutism_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "ES_HIRSUTISM_2018",
@@ -3793,7 +3793,7 @@
                         "6 months"
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -3801,7 +3801,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "modified Ferriman-Gallwey or local hirsutism score",
@@ -3992,7 +3992,7 @@
                   {
                     "id": "hirsutism_treatment_bundle",
                     "type": "action",
-                    "label": "Hirsutism treatment decision",
+                    "label": "Hirsutism treatment",
                     "edgeLabel": "Hirsutism management: Use lifestyle and weight-management support for metabolic risk and patient goals; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -4002,7 +4002,7 @@
                     "criteria": {
                       "rule_id": "hirsutism_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Hirsutism category supports Use lifestyle and weight-management support for metabolic risk and patient goals; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Hirsutism category supports Use lifestyle and weight-management support for metabolic risk and patient goals; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4163,7 +4163,7 @@
                           {
                             "id": "hirsutism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Hirsutism consult: Hirsutism OCP choice modifier; Hirsutism treatment response",
+                            "label": "Hirsutism review: Hirsutism OCP choice modifier; Hirsutism treatment response",
                             "edgeLabel": "Review trigger: Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
@@ -4173,7 +4173,7 @@
                             "criteria": {
                               "rule_id": "hirsutism_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Hirsutism treatment when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Hirsutism treatment when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4192,7 +4192,7 @@
                             "action": "Resolve the named Hirsutism modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Hirsutism therapy, dose, procedure, imaging, or care location when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Hirsutism therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "hirsutism_monitoring_bundle",
@@ -4291,7 +4291,7 @@
                               {
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Hirsutism worse: above reference range",
+                                "label": "Hirsutism escalation: above reference range",
                                 "edgeLabel": "Worsening finding: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4450,7 +4450,7 @@
                               {
                                 "id": "hirsutism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Hirsutism de-escalate: above reference range",
+                                "label": "Hirsutism stop/narrow: above reference range",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4609,7 +4609,7 @@
                               {
                                 "id": "hirsutism_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Hirsutism return: return precautions",
+                                "label": "Hirsutism follow-up: return precautions",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4795,7 +4795,7 @@
                   {
                     "id": "hirsutism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Hirsutism alternate route",
+                    "label": "Hirsutism alternate",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -4886,7 +4886,7 @@
                     "action": "Name the competing diagnosis or exclusion for Hirsutism, such as competing diagnosis better explains the presentation; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Hirsutism as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Hirsutism as the diagnosis when competing diagnosis better explains the presentation; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -5128,7 +5128,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -5140,7 +5140,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "hirsutism_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "hirsutism_concurrent_data_bundle",

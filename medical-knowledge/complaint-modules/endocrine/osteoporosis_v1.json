@@ -2898,7 +2898,7 @@
         "osteoporosis_treatment_bundle": {
           "rule_id": "osteoporosis_treatment_bundle_criteria",
           "source": "criteria",
-          "description": "Proceed when the measured Osteoporosis category supports Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+          "description": "Proceed when the measured Osteoporosis category supports Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
           "evaluable_from": [
             "symptoms",
             "exam",
@@ -3154,7 +3154,7 @@
         "osteoporosis_review_endpoint": {
           "rule_id": "osteoporosis_review_criteria",
           "source": "criteria",
-          "description": "Use reviewer handoff before non-emergent Osteoporosis treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+          "description": "Use reviewer handoff before non-emergent Osteoporosis treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
           "evaluable_from": [
             "pregnancy_status",
             "demographics",
@@ -3728,8 +3728,8 @@
           {
             "id": "endpoint_missing_context",
             "type": "endpoint",
-            "label": "Internal traversal guard",
-            "edgeLabel": "Internal traversal guard",
+            "label": "Hidden traversal metadata",
+            "edgeLabel": "Hidden traversal metadata",
             "source_ids": [
               "AHRQ_CALIBRATE_DX"
             ],
@@ -3765,7 +3765,7 @@
                 "workup_findings"
               ]
             },
-            "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+            "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
             "children": [],
             "endpoint_type": "missing_data_needed",
             "internal_traversal_guard": true,
@@ -3773,7 +3773,7 @@
               "visible_in_pathway": false,
               "visible_in_graph": false,
               "visible_in_outline": false,
-              "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+              "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
             },
             "missing_data_needed": [
               "symptoms",
@@ -3823,7 +3823,7 @@
               {
                 "id": "osteoporosis_classification_decision",
                 "type": "decision",
-                "label": "Osteoporosis decision: Corrected calcium often about 8.5-10.5 mg/dL",
+                "label": "Osteoporosis cutoffs: Corrected calcium often about 8.5-10.5 mg/dL",
                 "edgeLabel": "Cutoff check: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "AACE_OSTEOPOROSIS_2020",
@@ -3960,13 +3960,13 @@
                     }
                   ]
                 },
-                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, the treatment node for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
+                "action": "Compare current patient data with 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0; select emergency care for urgent findings, diagnosis-specific treatment for confirmed or likely disease, clinician review for contraindication/protocol modifiers, or the alternate-diagnosis endpoint when measured findings contradict this workup.",
                 "children": [
                   {
                     "id": "osteoporosis_missing_cutoff_data_endpoint",
                     "type": "endpoint",
-                    "label": "Internal traversal guard",
-                    "edgeLabel": "Internal traversal guard",
+                    "label": "Hidden traversal metadata",
+                    "edgeLabel": "Hidden traversal metadata",
                     "source_ids": [
                       "AHRQ_CALIBRATE_DX",
                       "AACE_OSTEOPOROSIS_2020",
@@ -4010,7 +4010,7 @@
                         "Intact PTH often about 10-65 pg/mL but assay-specific."
                       ]
                     },
-                    "action": "Internal structured traversal guard; hidden from the clinical pathway outline and graph.",
+                    "action": "Hidden metadata only; omitted from the clinical pathway outline and graph.",
                     "children": [],
                     "endpoint_type": "missing_data_needed",
                     "internal_traversal_guard": true,
@@ -4018,7 +4018,7 @@
                       "visible_in_pathway": false,
                       "visible_in_graph": false,
                       "visible_in_outline": false,
-                      "reason": "Internal traversal guard; exact unavailable fields remain in missing_data_needed."
+                      "reason": "Hidden metadata only; unavailable fields are stored in missing_data_needed for traversal."
                     },
                     "missing_data_needed": [
                       "8.5-10.5 mg/dL",
@@ -4289,7 +4289,7 @@
                   {
                     "id": "osteoporosis_treatment_bundle",
                     "type": "action",
-                    "label": "Osteoporosis plan: Use anabolic therapy such as teriparatide",
+                    "label": "Osteoporosis treatment: Use anabolic therapy such as teriparatide",
                     "edgeLabel": "Osteoporosis management: Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis",
                     "source_ids": [
                       "ENDO_OSTEOPOROSIS_2020",
@@ -4299,7 +4299,7 @@
                     "criteria": {
                       "rule_id": "osteoporosis_treatment_bundle_criteria",
                       "source": "criteria",
-                      "description": "Proceed when the measured Osteoporosis category supports Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis and contraindication, dose, pregnancy, organ-function, and care-location checks have been reviewed.",
+                      "description": "Proceed when the measured Osteoporosis category supports Use bisphosphonate first-line for many high-risk patients when renal function; Use anabolic therapy such as teriparatide; Use denosumab when appropriate; T-score <= -2.5 or fragility fracture confirms osteoporosis and contraindication, dose, pregnancy, organ-function, ED/admission, and outpatient-safety checks have been reviewed.",
                       "evaluable_from": [
                         "symptoms",
                         "exam",
@@ -4569,7 +4569,7 @@
                           {
                             "id": "osteoporosis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Osteoporosis consult: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "label": "Osteoporosis review: Corrected calcium often about 8.5-10.5 mg/dL",
                             "edgeLabel": "Review trigger: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis",
                             "source_ids": [
                               "AACE_OSTEOPOROSIS_2020",
@@ -4579,7 +4579,7 @@
                             "criteria": {
                               "rule_id": "osteoporosis_review_criteria",
                               "source": "criteria",
-                              "description": "Use reviewer handoff before non-emergent Osteoporosis treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis changes the therapy, dose, procedure, imaging, assay interpretation, or care location.",
+                              "description": "Use reviewer handoff before non-emergent Osteoporosis treatment when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis changes the therapy, dose, procedure, imaging, assay interpretation, ED/admission decision, or outpatient eligibility.",
                               "evaluable_from": [
                                 "pregnancy_status",
                                 "demographics",
@@ -4598,7 +4598,7 @@
                             "action": "Resolve the named Osteoporosis modifier before final non-emergent treatment: document pregnancy/fertility status, contraindicating medication or comorbidity, assay/timing conflict, procedure or imaging constraint, and the guideline or institutional protocol that changes the plan.",
                             "children": [],
                             "endpoint_type": "clinician_review_handoff",
-                            "review_needed_reason": "Clinician review is required before final Osteoporosis therapy, dose, procedure, imaging, or care location when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis; record the reviewer recommendation and protocol used."
+                            "review_needed_reason": "Clinician review is required before final Osteoporosis therapy, dose, procedure, imaging, ED/admission decision, or outpatient eligibility when Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; T-score <= -2.5 or fragility fracture confirms osteoporosis; write the modifier and resulting treatment change."
                           },
                           {
                             "id": "osteoporosis_monitoring_bundle",
@@ -4742,7 +4742,7 @@
                               {
                                 "id": "osteoporosis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis worse: 8.5-10.5 mg/dL",
+                                "label": "Osteoporosis escalation: 8.5-10.5 mg/dL",
                                 "edgeLabel": "Worsening finding: New severe back pain, neurologic symptoms, hip fracture, multiple fragility fractures; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; DXA and vertebral imaging; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -4991,7 +4991,7 @@
                               {
                                 "id": "osteoporosis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis de-escalate: 8.5-10.5 mg/dL",
+                                "label": "Osteoporosis stop/narrow: 8.5-10.5 mg/dL",
                                 "edgeLabel": "De-escalate when response, safety, and diagnostic certainty support it",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -5240,7 +5240,7 @@
                               {
                                 "id": "osteoporosis_followup_endpoint",
                                 "type": "endpoint",
-                                "label": "Osteoporosis return: T-score <= -2.5 or fragility fracture confirms osteoporosis",
+                                "label": "Osteoporosis follow-up: return precautions",
                                 "edgeLabel": "Follow-up: result owner, interval, and return precautions",
                                 "source_ids": [
                                   "ENDO_OSTEOPOROSIS_2020",
@@ -5655,7 +5655,7 @@
                     "action": "Name the competing diagnosis or exclusion for Osteoporosis, such as Corrected calcium often about 8.5-10.5 mg/dL; route to the corresponding workup or specialty pathway and document why this branch is not used.",
                     "children": [],
                     "endpoint_type": "clinician_review_handoff",
-                    "review_needed_reason": "Do not close Osteoporosis as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and assign the matching workup or specialty pathway."
+                    "review_needed_reason": "Do not close Osteoporosis as the diagnosis when Corrected calcium often about 8.5-10.5 mg/dL; name the competing diagnosis and start that workup or specialty pathway."
                   }
                 ],
                 "guideline_cutoffs": [
@@ -6019,7 +6019,7 @@
           "scenario_id": "internal_context_guard",
           "major_pathway": "missing_data_needed",
           "expected_endpoint_id": "endpoint_missing_context",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "endpoint_missing_context"
@@ -6031,7 +6031,7 @@
           "scenario_id": "internal_threshold_guard",
           "major_pathway": "diagnostic_confirmation_missing_data",
           "expected_endpoint_id": "osteoporosis_missing_cutoff_data_endpoint",
-          "expected_active_branch": "Internal traversal guard",
+          "expected_active_branch": "Hidden traversal metadata",
           "expected_path_node_ids": [
             "root",
             "osteoporosis_concurrent_data_bundle",
