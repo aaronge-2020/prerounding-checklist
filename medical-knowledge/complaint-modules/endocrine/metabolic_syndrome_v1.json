@@ -4360,7 +4360,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Metabolic syndrome: use five criteria, urgent cardiometabolic exclusions, component treatment, and surveillance",
+        "label": "Metabolic syndrome pathway",
         "edgeLabel": "",
         "source_ids": [
           "NHLBI_METABOLIC_SYNDROME",
@@ -4469,7 +4469,7 @@
           {
             "id": "metabolic_syndrome_initial_assessment",
             "type": "action",
-            "label": "Metabolic syndrome: measure waist, BP, weight, mental status, fasting glucose/A1c, HDL, triglycerides, medications, and ASCVD symptoms",
+            "label": "Initial metabolic syndrome assessment",
             "edgeLabel": "Metabolic syndrome evaluation: central obesity, hypertension, dyslipidemia, prediabetes/diabetes risk, fatty liver/OSA/PCOS, medication effect, or clinician-chosen cardiometabolic workup",
             "source_ids": [
               "NHLBI_METABOLIC_SYNDROME",
@@ -4674,7 +4674,7 @@
               {
                 "id": "metabolic_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Metabolic syndrome: choose missing-data, urgent cardiometabolic, criteria-count, risk-reduction, mimic, or follow-up branch",
+                "label": "Choose metabolic syndrome branch",
                 "edgeLabel": "Waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, pregnancy status, and follow-up access are available",
                 "source_ids": [
                   "NHLBI_METABOLIC_SYNDROME",
@@ -4949,7 +4949,7 @@
                   {
                     "id": "metabolic_syndrome_urgent_cardiometabolic_endpoint",
                     "type": "endpoint",
-                    "label": "Urgent cardiometabolic route: diabetes-range symptomatic hyperglycemia, severe BP, ASCVD symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+                    "label": "Urgent cardiometabolic escalation",
                     "edgeLabel": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
                     "source_ids": [
                       "CDC_DIABETES_TESTING_2024",
@@ -5324,7 +5324,7 @@
                   {
                     "id": "metabolic_syndrome_management_action",
                     "type": "action",
-                    "label": "Metabolic syndrome: count five criteria, target each active risk factor, and assign surveillance",
+                    "label": "Metabolic syndrome management plan",
                     "edgeLabel": "Stable metabolic branch: waist, BP, fasting glucose, HDL, triglycerides, and treatment status are available and urgent symptoms are absent",
                     "source_ids": [
                       "NHLBI_METABOLIC_SYNDROME",
@@ -5529,7 +5529,7 @@
                       {
                         "id": "metabolic_syndrome_criteria_count_endpoint",
                         "type": "endpoint",
-                        "label": "Metabolic syndrome confirmed when 3 or more criteria are present",
+                        "label": "Metabolic syndrome criteria met",
                         "edgeLabel": "Criteria branch: at least 3 of waist, triglyceride, HDL, BP, and fasting glucose/treatment criteria are present",
                         "source_ids": [
                           "NHLBI_METABOLIC_SYNDROME"
@@ -5887,7 +5887,7 @@
                       {
                         "id": "metabolic_syndrome_risk_reduction_endpoint",
                         "type": "endpoint",
-                        "label": "Metabolic syndrome management: treat active BP, lipid, glucose, weight, activity, and sleep/fatty-liver risks",
+                        "label": "Metabolic risk-reduction plan",
                         "edgeLabel": "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
                         "source_ids": [
                           "NHLBI_METABOLIC_SYNDROME",
@@ -6259,7 +6259,7 @@
                       {
                         "id": "metabolic_syndrome_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Metabolic syndrome follow-up: criteria trend, ASCVD prevention, diabetes surveillance, and urgent symptom safety-net",
+                        "label": "Metabolic syndrome follow-up and safety-net",
                         "edgeLabel": "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
                         "source_ids": [
                           "NHLBI_METABOLIC_SYNDROME",
@@ -6811,7 +6811,7 @@
                   {
                     "id": "metabolic_syndrome_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "Mimic or fewer than 3 criteria: avoid metabolic syndrome label and treat the active abnormality",
+                    "label": "Metabolic syndrome mimic or fewer criteria",
                     "edgeLabel": "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
                     "source_ids": [
                       "NHLBI_METABOLIC_SYNDROME",

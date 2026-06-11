@@ -4935,7 +4935,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Adrenal Insufficiency: use adrenal crisis physiology, cortisol confirmation, replacement needs, and safety planning",
+        "label": "Adrenal Insufficiency pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5027,7 +5027,7 @@
           {
             "id": "adrenal_insufficiency_initial_assessment",
             "type": "action",
-            "label": "Adrenal Insufficiency: assess crisis physiology and endocrine confirmation data together",
+            "label": "Initial adrenal insufficiency assessment",
             "edgeLabel": "Patient has hypotension, volume depletion, vomiting, fatigue/weight loss, hyperpigmentation, hypoglycemia, hyponatremia, hyperkalemia, suspected steroid withdrawal, autoimmune Addison's disease, or clinician-selected adrenal evaluation",
             "source_ids": [
               "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5249,7 +5249,7 @@
               {
                 "id": "adrenal_insufficiency_classification_decision",
                 "type": "decision",
-                "label": "Adrenal Insufficiency: choose crisis treatment, endocrine confirmation, replacement, mimic, or review branch",
+                "label": "Choose adrenal insufficiency branch",
                 "edgeLabel": "Adrenal vitals, cortisol/ACTH or cosyntropin data, electrolytes, steroid exposure, renin/aldosterone status, and stress/pregnancy modifiers are available for routing",
                 "source_ids": [
                   "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -5532,7 +5532,7 @@
                   {
                     "id": "adrenal_insufficiency_adrenal_crisis_endpoint",
                     "type": "endpoint",
-                    "label": "Adrenal crisis or severe suspected adrenal insufficiency: hydrocortisone, isotonic fluid, dextrose when needed, and monitored care",
+                    "label": "Adrenal crisis or severe adrenal insufficiency",
                     "edgeLabel": "Severe branch: shock, marked hypotension, dehydration, vomiting, altered mental status, hypoglycemia, severe hyponatremia/hyperkalemia, infection, trauma, surgery, labor, or missed steroids",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -5950,7 +5950,7 @@
                   {
                     "id": "adrenal_insufficiency_chronic_replacement_action",
                     "type": "action",
-                    "label": "Confirmed adrenal insufficiency: combine glucocorticoid plan, mineralocorticoid decision, monitoring, and crisis prevention",
+                    "label": "Chronic adrenal replacement plan",
                     "edgeLabel": "Stable confirmed/likely branch: crisis excluded or treated, cortisol deficiency established, primary-vs-central pattern reviewed, and replacement plan can be made",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",
@@ -6168,7 +6168,7 @@
                       {
                         "id": "adrenal_insufficiency_primary_confirmed_endpoint",
                         "type": "endpoint",
-                        "label": "Primary adrenal insufficiency confirmed or highly likely: replace glucocorticoid and mineralocorticoid axes",
+                        "label": "Primary adrenal insufficiency replacement",
                         "edgeLabel": "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -6583,7 +6583,7 @@
                       {
                         "id": "adrenal_insufficiency_special_population_endpoint",
                         "type": "endpoint",
-                        "label": "Pregnancy, child, labor, surgery, or major stress: endocrine-governed dosing branch",
+                        "label": "Pregnancy, pediatric, or stress-dose review",
                         "edgeLabel": "Modifier branch: pregnancy, third trimester symptoms, active labor, child/adolescent dosing, surgery/anesthesia, trauma, ICU illness, or inability to use the local stress-dose protocol",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -6992,7 +6992,7 @@
                       {
                         "id": "adrenal_insufficiency_monitoring_reassessment_endpoint",
                         "type": "endpoint",
-                        "label": "Adrenal therapy monitoring: reassess hemodynamics, electrolytes, glucose, volume, and steroid adverse effects",
+                        "label": "Adrenal therapy monitoring",
                         "edgeLabel": "After hydrocortisone or chronic replacement: hypotension, glucose, sodium, potassium, edema, salt craving, weight, energy, infection source, or oral intake still needs active reassessment",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -7410,7 +7410,7 @@
                       {
                         "id": "adrenal_insufficiency_transition_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Adrenal crisis resolving: transition to oral regimen, emergency kit, and sick-day safety plan",
+                        "label": "Adrenal crisis transition and sick-day plan",
                         "edgeLabel": "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed",
                         "source_ids": [
                           "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -8025,7 +8025,7 @@
                   {
                     "id": "adrenal_insufficiency_borderline_assay_review_endpoint",
                     "type": "endpoint",
-                    "label": "Borderline cortisol or assay-dependent result: endocrine review before excluding adrenal insufficiency",
+                    "label": "Borderline cortisol or assay review",
                     "edgeLabel": "Indeterminate branch: cortisol timing uncertain, cosyntropin cutoff differs by assay, acute illness alters interpretation, exogenous steroids interfere, or ACTH/mineralocorticoid pattern is discordant",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016"
@@ -8433,7 +8433,7 @@
                   {
                     "id": "adrenal_insufficiency_mimic_exclusion_endpoint",
                     "type": "endpoint",
-                    "label": "Mimic or competing adrenal pattern: route to the more specific diagnosis after crisis is excluded",
+                    "label": "Adrenal mimic or competing pattern",
                     "edgeLabel": "Adrenal thresholds do not fit or another cause better explains hypotension, electrolyte changes, weight loss, hyperpigmentation, vomiting, fatigue, or hypoglycemia",
                     "source_ids": [
                       "ES_ADRENAL_INSUFFICIENCY_2016",

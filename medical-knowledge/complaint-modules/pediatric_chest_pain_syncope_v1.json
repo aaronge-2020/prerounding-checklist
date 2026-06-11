@@ -4146,7 +4146,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric chest pain/syncope: use cardiac red flags, ECG cutoffs, orthostatic thresholds, respiratory danger, low-risk pattern, and follow-up needs",
+        "label": "Pediatric chest pain/syncope pathway",
         "edgeLabel": "",
         "source_ids": [
           "RCH_CHEST_PAIN_CHILD",
@@ -4252,7 +4252,7 @@
           {
             "id": "pediatric_chest_syncope_initial_assessment_bundle",
             "type": "action",
-            "label": "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and focused ECG/testing",
+            "label": "Initial chest pain/syncope assessment",
             "edgeLabel": "Pediatric chest/syncope assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and focused ECG/testing",
             "source_ids": [
               "RCH_CHEST_PAIN_CHILD",
@@ -4410,7 +4410,7 @@
               {
                 "id": "pediatric_chest_syncope_classification_decision",
                 "type": "decision",
-                "label": "Pediatric chest pain/syncope: classify cardiac risk, respiratory risk, autonomic syncope, low-risk chest pain, mimic, or clinician-review modifier",
+                "label": "Choose pediatric chest/syncope branch",
                 "edgeLabel": "Pediatric chest/syncope branch ready: history, family history, vitals, orthostatics, exam/perfusion, oxygenation, ECG, and respiratory or syncope mimic features are available",
                 "source_ids": [
                   "RCH_CHEST_PAIN_CHILD",
@@ -4638,7 +4638,7 @@
                   {
                     "id": "pediatric_chest_syncope_cardiac_escalation_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric cardiac escalation: exertional chest pain/syncope, palpitations with syncope, abnormal exam/perfusion, abnormal ECG, cardiac history, or family sudden-death risk",
+                    "label": "Cardiac red flags or abnormal ECG",
                     "edgeLabel": "Cardiac risk: exertional pain/syncope, palpitations with syncope, poor perfusion, abnormal cardiac exam, family sudden-death risk, QRS >0.12 sec, QTc <=340 or >450 ms, ST shift >2 mm, WPW/long QT/wide-complex rhythm, or HCM pattern",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
@@ -4915,7 +4915,7 @@
                   {
                     "id": "pediatric_chest_syncope_respiratory_pe_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body chest pain route",
+                    "label": "Respiratory, PE, or trauma chest pain",
                     "edgeLabel": "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD"
@@ -5188,7 +5188,7 @@
                   {
                     "id": "pediatric_chest_syncope_orthostatic_syncope_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric vasovagal, orthostatic hypotension, or POTS branch after cardiac red flags are absent",
+                    "label": "Vasovagal, orthostatic, or POTS syncope",
                     "edgeLabel": "Orthostatic/autonomic branch: reflex trigger/prodrome or standing symptoms with orthostatic BP drop >20 mmHg systolic or >10 mmHg diastolic within 2-3 minutes, or chronic orthostatic symptoms with HR rise >40 bpm or >30 bpm within 5-10 minutes without postural hypotension",
                     "source_ids": [
                       "RCH_SYNCOPE_CHILD"
@@ -5459,7 +5459,7 @@
                   {
                     "id": "pediatric_chest_syncope_low_risk_no_testing_endpoint",
                     "type": "endpoint",
-                    "label": "Low-risk pediatric chest pain: no ECG/CXR/troponin/blood testing when risk factors and concerning exam findings are absent",
+                    "label": "Low-risk pediatric chest pain",
                     "edgeLabel": "Low-risk pediatric chest pain branch: no exertional syncope/chest pain, no palpitations with syncope, normal vitals/perfusion/cardiac exam, no abnormal ECG concern, no serious family history, no hypoxia/respiratory distress/hemoptysis, and musculoskeletal/precordial catch/anxiety/reflux pattern fits",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD"
@@ -5732,7 +5732,7 @@
                   {
                     "id": "pediatric_chest_syncope_seizure_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric syncope mimic branch: seizure, hypoglycemia, toxin, anemia, pregnancy, or functional event",
+                    "label": "Syncope mimic or neurologic event",
                     "edgeLabel": "Syncope mimic branch: prolonged confusion 20-30 minutes, tonic-clonic movements, clustering, hypoglycemia concern, toxin/stimulant exposure, anemia/menorrhagia, pregnancy possibility, or neurologic features better explain the event",
                     "source_ids": [
                       "RCH_SYNCOPE_CHILD"
@@ -6005,7 +6005,7 @@
                   {
                     "id": "pediatric_chest_syncope_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric chest/syncope review: pregnancy/postpartum, stimulant/toxin, VTE risk, congenital heart disease, arrhythmia, or cardiology policy",
+                    "label": "Pregnancy, toxin, VTE, or cardiac-history review",
                     "edgeLabel": "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
@@ -6164,7 +6164,7 @@
                   {
                     "id": "pediatric_chest_syncope_monitoring_bundle",
                     "type": "action",
-                    "label": "Pediatric chest/syncope monitoring: vitals, oxygenation, ECG interpretation, orthostatic response, pain pattern, event recurrence, and disposition readiness",
+                    "label": "Monitor ECG, vitals, symptoms, and readiness",
                     "edgeLabel": "Monitoring branch after pediatric chest/syncope classification: trend pain, recurrence, exertional relationship, perfusion, oxygenation, ECG findings, orthostatic BP/HR, respiratory findings, and activity/follow-up constraints",
                     "source_ids": [
                       "RCH_CHEST_PAIN_CHILD",
@@ -6319,7 +6319,7 @@
                       {
                         "id": "pediatric_chest_syncope_worsening_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric chest/syncope reassessment: new exertional symptoms, abnormal ECG, hypoxia, poor perfusion, recurrent syncope, or worsening pain escalates care",
+                        "label": "Escalating chest pain/syncope findings",
                         "edgeLabel": "Reassessment branch: exertional pain/syncope appears, palpitations with syncope recur, ECG abnormality is found, oxygenation drops, respiratory distress develops, perfusion worsens, fever/myocarditis concern appears, or low-risk pain pattern no longer fits",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
@@ -6597,7 +6597,7 @@
                       {
                         "id": "pediatric_chest_syncope_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric chest/syncope de-escalation: red flags absent and ECG, vitals, oxygenation, and event pattern support benign/autonomic care",
+                        "label": "Benign or autonomic de-escalation",
                         "edgeLabel": "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",
@@ -6876,7 +6876,7 @@
                       {
                         "id": "pediatric_chest_syncope_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric chest/syncope follow-up and safety-net: activity restriction, result ownership, recurrent syncope plan, and return precautions",
+                        "label": "Chest/syncope follow-up and safety-net",
                         "edgeLabel": "Disposition branch: cause identified or serious causes addressed, follow-up arranged, activity advice documented, pending results assigned, and family return precautions given",
                         "source_ids": [
                           "RCH_CHEST_PAIN_CHILD",

@@ -5269,7 +5269,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Hypopituitarism: use apoplexy/adrenal crisis risk, pituitary-axis labs, hormone sequencing, DI safety, and disposition",
+        "label": "Hypopituitarism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPOPITUITARISM_2016",
@@ -5367,7 +5367,7 @@
           {
             "id": "hypopituitarism_initial_assessment",
             "type": "action",
-            "label": "Hypopituitarism: assess mass effect and endocrine axes with adrenal safety first",
+            "label": "Initial hypopituitarism assessment",
             "edgeLabel": "Patient has known pituitary disease, surgery/radiation, immune checkpoint inhibitor exposure, postpartum pituitary injury, headache/vision symptoms, fatigue, amenorrhea/low libido, polyuria, hyponatremia, low free T4 with non-elevated TSH, or clinician-chosen pituitary evaluation",
             "source_ids": [
               "ES_HYPOPITUITARISM_2016",
@@ -5579,7 +5579,7 @@
               {
                 "id": "hypopituitarism_classification_decision",
                 "type": "decision",
-                "label": "Hypopituitarism: choose apoplexy/crisis, adrenal-first sequence, DI safety, replacement, mimic, or follow-up branch",
+                "label": "Choose hypopituitarism branch",
                 "edgeLabel": "Pituitary symptoms, visual findings, cortisol, free T4/TSH, sodium/water-balance data, pituitary MRI/visual results, medications, and special-population modifiers are available for routing",
                 "source_ids": [
                   "ES_HYPOPITUITARISM_2016",
@@ -5858,7 +5858,7 @@
                   {
                     "id": "hypopituitarism_apoplexy_or_adrenal_crisis_endpoint",
                     "type": "endpoint",
-                    "label": "Pituitary apoplexy or secondary adrenal crisis: hydrocortisone now, urgent MRI/visual assessment, endocrine-neurosurgical disposition",
+                    "label": "Pituitary apoplexy or adrenal crisis",
                     "edgeLabel": "Emergency branch: sudden severe headache, visual loss, visual-field defect, ophthalmoplegia/cranial nerve palsy, reduced consciousness, meningism, severe hypotension, vomiting, hypoglycemia, or severe hyponatremia",
                     "source_ids": [
                       "ES_HYPOPITUITARISM_2016",
@@ -6255,7 +6255,7 @@
                   {
                     "id": "hypopituitarism_replacement_sequence_action",
                     "type": "action",
-                    "label": "Stable hypopituitarism: sequence adrenal, thyroid, DI, gonadal, GH, monitoring, and follow-up decisions",
+                    "label": "Stable hypopituitarism replacement sequence",
                     "edgeLabel": "Stable branch: no immediate apoplexy or crisis physiology, and enough endocrine axis data exist to apply hormone-sequencing rules",
                     "source_ids": [
                       "ES_HYPOPITUITARISM_2016",
@@ -6463,7 +6463,7 @@
                       {
                         "id": "hypopituitarism_central_ai_endpoint",
                         "type": "endpoint",
-                        "label": "Central adrenal insufficiency: replace glucocorticoid before thyroid hormone escalation",
+                        "label": "Central adrenal replacement first",
                         "edgeLabel": "Adrenal branch: 8-9 AM cortisol below 3 ug/dL, indeterminate 3-15 ug/dL needing dynamic test, peak stimulated cortisol below 18.1 ug/dL, or adrenal status unknown before L-T4",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016"
@@ -6852,7 +6852,7 @@
                       {
                         "id": "hypopituitarism_central_hypothyroid_endpoint",
                         "type": "endpoint",
-                        "label": "Central hypothyroidism: titrate levothyroxine by free T4 after adrenal coverage",
+                        "label": "Central hypothyroidism treatment",
                         "edgeLabel": "Thyroid branch: free T4 below reference range with low or inappropriately normal TSH, but adrenal reserve has been covered or excluded",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016"
@@ -7242,7 +7242,7 @@
                       {
                         "id": "hypopituitarism_di_ddavp_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Central diabetes insipidus: DDAVP plan with sodium, thirst, weight, and overdose safeguards",
+                        "label": "Central DI and DDAVP safety",
                         "edgeLabel": "DI branch: polyuria/nocturia, hypernatremia or high-normal sodium, dilute urine, postoperative DI, adipsia, DDAVP use, hyponatremia risk, or new polyuria after glucocorticoids",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016"
@@ -7635,7 +7635,7 @@
                       {
                         "id": "hypopituitarism_gonadal_gh_prolactin_endpoint",
                         "type": "endpoint",
-                        "label": "Gonadal, GH, and prolactin axes: confirm deficiency, contraindications, fertility goals, and tumor context",
+                        "label": "Gonadal, GH, and prolactin-axis review",
                         "edgeLabel": "Stable axis branch: adrenal and thyroid sequencing addressed, then LH/FSH-sex steroid, prolactin, IGF-1/dynamic GH testing, fertility intent, age, tumor activity, and contraindications guide treatment",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016"
@@ -8020,7 +8020,7 @@
                       {
                         "id": "hypopituitarism_monitoring_interactions_endpoint",
                         "type": "endpoint",
-                        "label": "Replacement monitoring: prevent adrenal, thyroid, DDAVP, GH, and postoperative interaction harms",
+                        "label": "Pituitary replacement monitoring",
                         "edgeLabel": "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016"
@@ -8415,7 +8415,7 @@
                       {
                         "id": "hypopituitarism_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Hypopituitarism follow-up: emergency steroid/DI safety, pending-result ownership, and specialty review",
+                        "label": "Hypopituitarism follow-up and safety-net",
                         "edgeLabel": "Stable branch: emergency physiology excluded or treated, hormone sequence documented, medication access confirmed, pending labs/imaging owned, and safety instructions can be delivered",
                         "source_ids": [
                           "ES_HYPOPITUITARISM_2016",
@@ -8999,7 +8999,7 @@
                   {
                     "id": "hypopituitarism_mimic_exclusion_endpoint",
                     "type": "endpoint",
-                    "label": "Mimic or alternate pituitary-axis explanation: route after adrenal crisis and apoplexy are excluded",
+                    "label": "Pituitary-axis mimic or alternate diagnosis",
                     "edgeLabel": "Alternate branch: primary thyroid/adrenal/gonadal disease, medication effect, pregnancy/lactation physiology, renal or osmotic polyuria, hyperglycemia, hypercalcemia, infection, malignancy, or nonpituitary sellar disease fits better",
                     "source_ids": [
                       "ES_HYPOPITUITARISM_2016",

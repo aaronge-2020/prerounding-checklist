@@ -3662,7 +3662,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Hyperthyroidism",
+        "label": "Hyperthyroidism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPERTHYROIDISM_2016",
@@ -3751,7 +3751,7 @@
           {
             "id": "hyperthyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: TSH, free T4, total/free T3; TRAb/TSI; RAIU or Doppler ultrasound when etiology unclear",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: TSH, free T4, total/free T3; TRAb/TSI; RAIU or Doppler ultrasound when etiology unclear; Thyrotoxicosis safety data; TSH; free T4",
             "source_ids": [
               "ATA_HYPERTHYROIDISM_2016",
@@ -3781,7 +3781,7 @@
               {
                 "id": "hyperthyroidism_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using TSH below LLN; free T4 above ULN; T3 above ULN; TSH <0.1 mU/L",
                 "source_ids": [
                   "ATA_HYPERTHYROIDISM_2016",
@@ -3981,7 +3981,7 @@
                   {
                     "id": "hyperthyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; TSH below LLN; free T4 above ULN",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -4154,7 +4154,7 @@
                   {
                     "id": "hyperthyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Use antithyroid drugs for Graves/toxic nodular hyperthyroidism when appropriate",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",
@@ -4256,7 +4256,7 @@
                       {
                         "id": "hyperthyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Overt thyrotoxicosis biochemistry",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPERTHYROIDISM_2016",
@@ -4334,7 +4334,7 @@
                           {
                             "id": "hyperthyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Overt thyrotoxicosis biochemistry",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Overt thyrotoxicosis biochemistry; Subclinical hyperthyroidism high-risk stratum; Subclinical hyperthyroidism low-detectable stratum; Suppressed TSH plus high FT4/T3 confirms overt hyperthyroidism",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
@@ -4366,7 +4366,7 @@
                           {
                             "id": "hyperthyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; TRAb/TSI; treatment response",
                             "source_ids": [
                               "ATA_HYPERTHYROIDISM_2016",
@@ -4466,7 +4466,7 @@
                               {
                                 "id": "hyperthyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: TSH below LLN; free T4 above ULN; TSH, free T4, total/free T3; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
@@ -4639,7 +4639,7 @@
                               {
                                 "id": "hyperthyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: TSH below LLN; free T4 above ULN; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_HYPERTHYROIDISM_2016",
@@ -5013,7 +5013,7 @@
                   {
                     "id": "hyperthyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPERTHYROIDISM_2016",

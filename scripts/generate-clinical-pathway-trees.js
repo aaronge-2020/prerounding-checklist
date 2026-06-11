@@ -402,8 +402,8 @@ function buildMonitoringBranch(prefix, module, sourceIds, options = {}) {
     children: [
       endpoint({
         id: `${prefix}_missing_reassessment_endpoint`,
-        label: "Missing data needed: reassessment before disposition",
-        edgeLabel: "Reassessment data unavailable",
+        label: "Internal data-availability guard",
+        edgeLabel: "Internal data-availability guard",
         sourceIds: genericSourceIds,
         criteria: criteria(
           `${prefix}_missing_reassessment_criteria`,
@@ -412,7 +412,7 @@ function buildMonitoringBranch(prefix, module, sourceIds, options = {}) {
           genericSourceIds,
           { missing_any: ["repeat vital signs", "treatment response", "adverse effects", "pending diagnostic results", "disposition constraints"] }
         ),
-        action: "Obtain repeat vital signs, symptom trajectory, focused exam, key labs/results, adverse-effect screen, and disposition constraints before closing the pathway.",
+        action: "Hidden structured guard for branch-critical reassessment fields; excluded from the readable clinical pathway.",
         endpointType: "missing_data_needed",
         missingDataNeeded: ["repeat vital signs", "treatment response", "adverse effects", "pending diagnostic results", "disposition constraints"]
       }),
@@ -838,8 +838,8 @@ function buildClinicalPathwayTree(module, sourceById) {
     children: [
       endpoint({
         id: "endpoint_missing_confirmation_data",
-        label: "Missing data needed: diagnostic confirmation",
-        edgeLabel: "Required confirmation data unavailable",
+        label: "Internal data-availability guard",
+        edgeLabel: "Internal data-availability guard",
         sourceIds: testSources,
         criteria: criteria(
           "missing_confirmation_data_criteria",
@@ -848,7 +848,7 @@ function buildClinicalPathwayTree(module, sourceById) {
           testSources,
           { missing_any: listLabels(tests, 5) }
         ),
-        action: `Obtain or document missing ${label} confirmation data before selecting a non-emergency treatment branch.`,
+        action: "Hidden structured guard for branch-critical confirmation fields; excluded from the readable clinical pathway.",
         endpointType: "missing_data_needed",
         missingDataNeeded: listLabels(tests, 5)
       }),
@@ -935,8 +935,8 @@ function buildClinicalPathwayTree(module, sourceById) {
     children: [
       endpoint({
         id: "endpoint_missing_core_context",
-        label: "Missing data needed before safe pathway traversal",
-        edgeLabel: "Missing data: core context unavailable",
+        label: "Internal data-availability guard",
+        edgeLabel: "Internal data-availability guard",
         sourceIds: genericSourceIds,
         criteria: criteria(
           "missing_core_context",
@@ -945,7 +945,7 @@ function buildClinicalPathwayTree(module, sourceById) {
           genericSourceIds,
           { missing_any: coreContextData }
         ),
-        action: `Obtain or document the exact missing data before choosing a ${label} management branch. If the patient is unstable, bypass missing-data collection and use emergency escalation.`,
+        action: "Hidden structured guard for branch-critical core context; excluded from the readable clinical pathway.",
         endpointType: "missing_data_needed",
         missingDataNeeded: coreContextData,
         fallbackState: "warning"

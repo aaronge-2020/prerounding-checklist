@@ -6606,7 +6606,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Adult hyperglycemia: choose DKA/HHS urgency, potassium safety, treatment path, and disposition",
+        "label": "Adult hyperglycemia pathway",
         "edgeLabel": "",
         "source_ids": [
           "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -6703,7 +6703,7 @@
           {
             "id": "adult_dka_hhs_initial_assessment",
             "type": "action",
-            "label": "Adult hyperglycemic crisis screen: glucose, ketones, pH or bicarbonate, potassium, creatinine, osmolality, mental status, medication exposure, and precipitant",
+            "label": "Initial adult hyperglycemia assessment",
             "edgeLabel": "Adult hyperglycemia, ketotic symptoms, dehydration, altered mentation, suspected DKA/HHS, SGLT2 exposure, or clinician-selected hyperglycemic-crisis workup",
             "source_ids": [
               "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -6878,7 +6878,7 @@
               {
                 "id": "adult_dka_hhs_classification_decision",
                 "type": "decision",
-                "label": "Adult hyperglycemic crisis: classify DKA, HHS, mixed crisis, euglycemic DKA, non-crisis hyperglycemia, or mimic",
+                "label": "Choose adult hyperglycemia branch",
                 "edgeLabel": "Adult hyperglycemia labs and bedside severity available for threshold routing",
                 "source_ids": [
                   "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -7115,7 +7115,7 @@
                   {
                     "id": "adult_dka_hhs_dka_action",
                     "type": "action",
-                    "label": "Adult DKA: classify severity, protect potassium safety, and treat the precipitant",
+                    "label": "Adult DKA treatment route",
                     "edgeLabel": "Adult DKA thresholds met, including prior diabetes or glucose >=200 mg/dL with ketonemia/ketonuria and pH <7.3 and/or bicarbonate <18 mmol/L",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -7282,7 +7282,7 @@
                       {
                         "id": "adult_dka_hhs_potassium_insulin_hold_endpoint",
                         "type": "endpoint",
-                        "label": "Potassium hazard: replace potassium and hold insulin until K is safe",
+                        "label": "Potassium hazard before insulin",
                         "edgeLabel": "Potassium/ECG/renal hazard: insulin should be delayed when potassium is <3.5 mmol/L, marked hyperkalemia/ECG change is present, or renal failure prevents safe replacement",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -7598,7 +7598,7 @@
                       {
                         "id": "adult_dka_hhs_dka_protocol_endpoint",
                         "type": "endpoint",
-                        "label": "Adult DKA confirmed: start fluid, potassium-aware insulin, precipitant treatment, and serial monitoring",
+                        "label": "Adult DKA protocol",
                         "edgeLabel": "DKA branch: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -7916,7 +7916,7 @@
                       {
                         "id": "adult_dka_hhs_dka_transition_discharge_endpoint",
                         "type": "endpoint",
-                        "label": "Adult DKA resolving: transition to basal-bolus insulin, prevent recurrence, and safety-net",
+                        "label": "Adult DKA transition and recurrence prevention",
                         "edgeLabel": "DKA improving: biochemical resolution, stable vitals/mentation, oral intake possible, precipitant owned, and basal insulin can overlap IV insulin 1-2 h",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -8385,7 +8385,7 @@
                   {
                     "id": "adult_dka_hhs_hhs_action",
                     "type": "action",
-                    "label": "Adult HHS: fluid-first high-acuity pathway with gradual osmolality correction",
+                    "label": "Adult HHS treatment route",
                     "edgeLabel": "Adult HHS thresholds met: glucose >=600 mg/dL and effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, without significant ketoacidosis",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -8553,7 +8553,7 @@
                       {
                         "id": "adult_dka_hhs_hhs_protocol_endpoint",
                         "type": "endpoint",
-                        "label": "Adult HHS confirmed: high-acuity fluid-first correction with osmolality and neurologic monitoring",
+                        "label": "Adult HHS protocol",
                         "edgeLabel": "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -8872,7 +8872,7 @@
                       {
                         "id": "adult_dka_hhs_hhs_resolution_endpoint",
                         "type": "endpoint",
-                        "label": "Adult HHS improving: de-escalate only after osmolality, cognition, hydration, and precipitant stabilize",
+                        "label": "Adult HHS de-escalation readiness",
                         "edgeLabel": "HHS response branch: osmolality falling safely, mental status improving, perfusion restored, electrolyte plan stable, precipitant treated, and nutrition/insulin plan ready",
                         "source_ids": [
                           "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -9334,7 +9334,7 @@
                   {
                     "id": "adult_dka_hhs_mixed_dka_hhs_endpoint",
                     "type": "endpoint",
-                    "label": "Mixed DKA/HHS: manage as high-acuity combined ketoacidotic and hyperosmolar crisis",
+                    "label": "Mixed DKA/HHS crisis",
                     "edgeLabel": "Mixed crisis: DKA ketone/acidosis thresholds coexist with HHS hyperglycemia/osmolality thresholds or altered mentation",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -9644,7 +9644,7 @@
                   {
                     "id": "adult_dka_hhs_euglycemic_special_population_endpoint",
                     "type": "endpoint",
-                    "label": "Euglycemic DKA or special population: stop SGLT2 inhibitor and use specialist-reviewed fluid/insulin plan",
+                    "label": "Euglycemic DKA or special-population review",
                     "edgeLabel": "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024"
@@ -9956,7 +9956,7 @@
                   {
                     "id": "adult_dka_hhs_noncrisis_hyperglycemia_endpoint",
                     "type": "endpoint",
-                    "label": "Hyperglycemia without DKA/HHS: treat persistent inpatient glucose >=180 mg/dL and arrange follow-up",
+                    "label": "Non-crisis hyperglycemia",
                     "edgeLabel": "No DKA/HHS acidosis, ketone, osmolality, shock, or mental-status branch; persistent inpatient glucose >=180 mg/dL or outpatient hyperglycemia still needs diabetes plan",
                     "source_ids": [
                       "ADA_STANDARDS_HOSPITAL_2026"
@@ -10267,7 +10267,7 @@
                   {
                     "id": "adult_dka_hhs_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis or mimic: route away from DKA/HHS when objective thresholds contradict crisis",
+                    "label": "DKA/HHS mimic or alternate diagnosis",
                     "edgeLabel": "DKA/HHS thresholds absent or another cause better explains symptoms: starvation/alcohol ketosis, lactic acidosis, renal failure, intoxication, sepsis, pancreatitis, MI/stroke, medication effect, or lab artifact",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024",

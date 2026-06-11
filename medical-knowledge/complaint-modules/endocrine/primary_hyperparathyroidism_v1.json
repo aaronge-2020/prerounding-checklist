@@ -3862,7 +3862,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Primary Hyperparathyroidism",
+        "label": "Primary Hyperparathyroidism pathway",
         "edgeLabel": "",
         "source_ids": [
           "PHPT_WORKSHOP_2022",
@@ -3951,7 +3951,7 @@
           {
             "id": "primary_hyperparathyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Repeat albumin-corrected/ionized calcium with intact PTH",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; 24-hour urine calcium and Ca/Cr clearance ratio; DXA/vertebral imaging or validated fracture-risk tool; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "PHPT_WORKSHOP_2022",
@@ -3981,7 +3981,7 @@
               {
                 "id": "primary_hyperparathyroidism_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "PHPT_WORKSHOP_2022",
@@ -4214,7 +4214,7 @@
                   {
                     "id": "primary_hyperparathyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4497,7 +4497,7 @@
                   {
                     "id": "primary_hyperparathyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: For nonsurgical monitoring; discordant endocrine tests need correct timing",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",
@@ -4654,7 +4654,7 @@
                       {
                         "id": "primary_hyperparathyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Corrected calcium often about 8.5-10.5 mg/dL; allergy or drug interaction",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "PHPT_WORKSHOP_2022",
@@ -4809,7 +4809,7 @@
                           {
                             "id": "primary_hyperparathyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4841,7 +4841,7 @@
                           {
                             "id": "primary_hyperparathyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; 25D, phosphorus, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "PHPT_WORKSHOP_2022",
@@ -4996,7 +4996,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Severe hypercalcemia, dehydration, AKI, confusion, pancreatitis; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; Repeat albumin-corrected/ionized calcium with intact PTH; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5279,7 +5279,7 @@
                               {
                                 "id": "primary_hyperparathyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "PHPT_WORKSHOP_2022",
@@ -5875,7 +5875,7 @@
                   {
                     "id": "primary_hyperparathyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "PHPT_WORKSHOP_2022",

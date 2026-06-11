@@ -3561,7 +3561,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Vitamin D Deficiency / Osteomalacia",
+        "label": "Vitamin D Deficiency / Osteomalacia pathway",
         "edgeLabel": "",
         "source_ids": [
           "NIH_VITD_FACTSHEET",
@@ -3652,7 +3652,7 @@
           {
             "id": "vitamin_d_deficiency_osteomalacia_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; DXA/vertebral imaging or validated fracture-risk tool; 24-hour urine calcium and renal imaging when calcium-stone risk is relevant; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
             "source_ids": [
               "ENDO_VITD_2024",
@@ -3684,7 +3684,7 @@
               {
                 "id": "vitamin_d_deficiency_osteomalacia_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 10-65 pg/mL; normal >= -1.0",
                 "source_ids": [
                   "NIH_VITD_FACTSHEET",
@@ -3883,7 +3883,7 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Severe hypocalcemia symptoms; Corrected calcium often about 8.5-10.5 mg/dL",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; Corrected calcium often about 8.5-10.5 mg/dL; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
                     "source_ids": [
                       "ENDO_VITD_2024",
@@ -4100,7 +4100,7 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Replete vitamin D and calcium intake when deficiency is clinically relevant",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDO_VITD_2024",
@@ -4225,7 +4225,7 @@
                       {
                         "id": "vitamin_d_deficiency_osteomalacia_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Corrected calcium often about 8.5-10.5 mg/dL; allergy or drug interaction",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NIH_VITD_FACTSHEET",
@@ -4348,7 +4348,7 @@
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Corrected calcium often about 8.5-10.5 mg/dL",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Corrected calcium often about 8.5-10.5 mg/dL; Intact PTH often about 10-65 pg/mL but assay-specific; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "NIH_VITD_FACTSHEET",
@@ -4382,7 +4382,7 @@
                           {
                             "id": "vitamin_d_deficiency_osteomalacia_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; Calcium, phosphorus, alkaline phosphatase, PTH, creatinine/eGFR; treatment response",
                             "source_ids": [
                               "ENDO_VITD_2024",
@@ -4505,7 +4505,7 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: Severe hypocalcemia symptoms; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Severe hypocalcemia symptoms, fracture, profound weakness, malabsorption/high-risk state; 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; 25D; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
@@ -4722,7 +4722,7 @@
                               {
                                 "id": "vitamin_d_deficiency_osteomalacia_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: 8.5-10.5 mg/dL; 1.12-1.32 mmol/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDO_VITD_2024",
@@ -5186,7 +5186,7 @@
                   {
                     "id": "vitamin_d_deficiency_osteomalacia_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: Corrected calcium often about 8.5-10.5 mg/dL",
                     "source_ids": [
                       "ENDO_VITD_2024",

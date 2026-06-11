@@ -5745,7 +5745,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "CAH pathway: emergency, diagnosis, replacement, nonclassic care, medication safety, and follow-up",
+        "label": "CAH pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_CAH_2018",
@@ -5851,7 +5851,7 @@
           {
             "id": "congenital_adrenal_hyperplasia_initial_assessment",
             "type": "action",
-            "label": "CAH initial screen: age/gestation, crisis signs, phenotype, 17-OHP, electrolytes, medications",
+            "label": "Initial CAH assessment",
             "edgeLabel": "CAH is already suspected or known: assess salt-wasting danger, virilization/hyperandrogenism phenotype, diagnostic thresholds, and current steroid/mineralocorticoid/crinecerfont safety",
             "source_ids": [
               "ES_CAH_2018",
@@ -6337,7 +6337,7 @@
               {
                 "id": "congenital_adrenal_hyperplasia_branch_decision",
                 "type": "decision",
-                "label": "CAH branch: crisis, diagnosis, classic therapy, nonclassic therapy, crinecerfont, pregnancy/DSD, mimic, or safety net",
+                "label": "Choose CAH branch",
                 "edgeLabel": "Use age/gestation, 17-OHP/cosyntropin profile, electrolytes/glucose, phenotype, current steroids, crinecerfont risks, pregnancy/fertility context, and follow-up reliability",
                 "source_ids": [
                   "ES_CAH_2018",
@@ -6878,7 +6878,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_adrenal_crisis_endpoint",
                     "type": "endpoint",
-                    "label": "Salt-wasting or adrenal crisis: hydrocortisone injection, isotonic fluid, dextrose, and monitored care",
+                    "label": "Salt-wasting CAH or adrenal crisis",
                     "edgeLabel": "Emergency branch: newborn first 4 weeks or any CAH patient with vomiting, dehydration, shock, hypoglycemia, hyponatremia, hyperkalemia, major illness, surgery, trauma, labor, or missed steroids",
                     "source_ids": [
                       "ES_CAH_2018",
@@ -7489,7 +7489,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_newborn_confirmation_endpoint",
                     "type": "endpoint",
-                    "label": "Newborn positive screen or virilization: confirm 21-hydroxylase CAH and prevent salt wasting",
+                    "label": "Newborn/classic CAH confirmation",
                     "edgeLabel": "Newborn branch: positive screen, ambiguous genitalia/virilization, poor feeding, vomiting, weight loss, dehydration, or family history with age/gestation-adjusted 17-OHP pending",
                     "source_ids": [
                       "ES_CAH_2018",
@@ -8059,7 +8059,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_after_infancy_diagnosis_endpoint",
                     "type": "endpoint",
-                    "label": "After infancy: classify classic, nonclassic, carrier, or unaffected by early morning 17-OHP and cosyntropin profile",
+                    "label": "After-infancy CAH classification",
                     "edgeLabel": "Symptomatic child, adolescent, or adult branch: virilization, rapid pubarche, advanced bone age, hirsutism/acne, menstrual irregularity, infertility, adrenal rest tumor, or family history",
                     "source_ids": [
                       "ES_CAH_2018",
@@ -8602,7 +8602,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_classic_replacement_endpoint",
                     "type": "endpoint",
-                    "label": "Classic CAH replacement: hydrocortisone, mineralocorticoid, salt in infancy, and dose-safety monitoring",
+                    "label": "Classic CAH replacement plan",
                     "edgeLabel": "Classic CAH confirmed or highly likely without crisis: salt-wasting or simple-virilizing phenotype, classic 17-OHP range, or established CYP21A2 diagnosis needs maintenance therapy",
                     "source_ids": [
                       "ES_CAH_2018"
@@ -9202,7 +9202,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_nonclassic_symptomatic_endpoint",
                     "type": "endpoint",
-                    "label": "Nonclassic CAH symptoms: treat patient-important androgen effects or fertility goals, not an isolated lab value",
+                    "label": "Symptomatic nonclassic CAH treatment",
                     "edgeLabel": "Nonclassic branch needing therapy: rapid pubarche, advanced bone age, overt virilization, infertility, miscarriage history, or patient-important hyperandrogenism",
                     "source_ids": [
                       "ES_CAH_2018"
@@ -9732,7 +9732,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_nonclassic_no_daily_or_stop_endpoint",
                     "type": "endpoint",
-                    "label": "Nonclassic CAH without treatment indication: avoid or stop daily steroids and reserve stress dosing for proven cortisol risk",
+                    "label": "Nonclassic CAH no daily-steroid route",
                     "edgeLabel": "Low-treatment branch: asymptomatic nonpregnant nonclassic CAH, adult height attained, symptoms resolved, most adult males, or stress dosing question without inadequate cortisol reserve",
                     "source_ids": [
                       "ES_CAH_2018"
@@ -10262,7 +10262,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_crinecerfont_adjunct_endpoint",
                     "type": "endpoint",
-                    "label": "Crinecerfont adjunct: age >=4 classic CAH with androgen-control need and continued glucocorticoid replacement",
+                    "label": "Crinecerfont adjunct review",
                     "edgeLabel": "Adjunct branch: classic CAH age at least 4 years, weight known, androgen control remains problematic, glucocorticoid replacement continues, and hypersensitivity/renal/CYP3A4 risks are reviewed",
                     "source_ids": [
                       "DAILYMED_CRENESSITY_CRINECERFONT_2024"
@@ -10806,7 +10806,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_pregnancy_dsd_review_endpoint",
                     "type": "endpoint",
-                    "label": "Pregnancy, prenatal dexamethasone, fertility, or DSD surgery: specialist review required",
+                    "label": "Pregnancy, fertility, or DSD review",
                     "edgeLabel": "Special branch: pregnancy or conception planning, infertility, prenatal dexamethasone request, partner/genetic counseling need, virilized 46,XX infant, or genital surgery discussion",
                     "source_ids": [
                       "ES_CAH_2018"
@@ -11352,7 +11352,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_monitoring_reassessment_endpoint",
                     "type": "endpoint",
-                    "label": "CAH monitoring: growth/BP/electrolytes/renin/timed hormones and overtreatment checks",
+                    "label": "CAH monitoring and overtreatment checks",
                     "edgeLabel": "Monitoring branch: patient is on glucocorticoid, mineralocorticoid, salt, or crinecerfont therapy, or has fertility/adrenal rest tumor surveillance needs",
                     "source_ids": [
                       "ES_CAH_2018",
@@ -12474,7 +12474,7 @@
                   {
                     "id": "congenital_adrenal_hyperplasia_followup_safety_net_endpoint",
                     "type": "endpoint",
-                    "label": "CAH disposition and safety net: emergency kit, medical ID, sick-day rules, and follow-up owner",
+                    "label": "CAH follow-up and sick-day safety-net",
                     "edgeLabel": "Stable branch: no active crisis, diagnostic/treatment plan is documented, medications are accessible, caregiver or patient can use injection kit, and follow-up/result ownership is assigned",
                     "source_ids": [
                       "ES_CAH_2018",

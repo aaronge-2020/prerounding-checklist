@@ -4681,7 +4681,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pediatric DKA/HHS: choose emergency stabilization, protocol treatment, cerebral-edema route, and disposition",
+        "label": "Pediatric DKA/HHS pathway",
         "edgeLabel": "",
         "source_ids": [
           "CHQ_DKA_HHS_CHILD_2024",
@@ -4786,7 +4786,7 @@
           {
             "id": "pediatric_dka_hhs_initial_assessment",
             "type": "action",
-            "label": "Pediatric hyperglycemia: obtain emergency ABCD, weight, neuro status, ketone/acid-base, electrolyte, and osmolality data together",
+            "label": "Initial pediatric hyperglycemia assessment",
             "edgeLabel": "Child or adolescent with hyperglycemia, ketones, vomiting, abdominal pain, dehydration, Kussmaul breathing, altered mental status, suspected DKA/HHS, pump failure, insulin omission, or clinician-selected pediatric crisis workup",
             "source_ids": [
               "CHQ_DKA_HHS_CHILD_2024",
@@ -4989,7 +4989,7 @@
               {
                 "id": "pediatric_dka_hhs_classification_decision",
                 "type": "decision",
-                "label": "Pediatric hyperglycemic crisis: classify DKA severity, HHS, cerebral edema, potassium hazard, transition readiness, or mimic",
+                "label": "Choose pediatric hyperglycemia branch",
                 "edgeLabel": "Pediatric glucose, ketone, pH/bicarbonate, electrolyte, osmolality, weight, fluid, and neurologic data available for threshold routing",
                 "source_ids": [
                   "CHQ_DKA_HHS_CHILD_2024",
@@ -5263,7 +5263,7 @@
                   {
                     "id": "pediatric_dka_hhs_cerebral_edema_endpoint",
                     "type": "endpoint",
-                    "label": "Cerebral edema suspected: treat immediately before imaging",
+                    "label": "Suspected cerebral edema",
                     "edgeLabel": "Headache, bradycardia or unexpected HR fall, rising BP, recurrent vomiting, agitation/irritability, deteriorating consciousness, respiratory pauses, oculomotor palsy, pupillary abnormality, falling sodium/osmolality, or high-risk age/severe DKA",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
@@ -5630,7 +5630,7 @@
                   {
                     "id": "pediatric_dka_hhs_dka_action",
                     "type": "action",
-                    "label": "Pediatric DKA: severity, shock, potassium, glucose-fluid, and transition decisions",
+                    "label": "Pediatric DKA treatment route",
                     "edgeLabel": "Pediatric DKA diagnostic thresholds met; classify mild/moderate/severe by pH/bicarbonate and apply age, shock, potassium, cerebral-edema, and monitoring rules",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
@@ -5827,7 +5827,7 @@
                       {
                         "id": "pediatric_dka_hhs_shock_bolus_endpoint",
                         "type": "endpoint",
-                        "label": "Shock or cardiovascular compromise: 0.9% saline bolus and urgent critical-care route",
+                        "label": "Shock or cardiovascular compromise",
                         "edgeLabel": "Shock, poor perfusion, hypotension, coma, cardiovascular compromise, or need for repeated fluid bolus; two 10 mL/kg boluses or maximum 20 mL/kg requires urgent critical-care advice",
                         "source_ids": [
                           "CHQ_DKA_HHS_CHILD_2024"
@@ -6190,7 +6190,7 @@
                       {
                         "id": "pediatric_dka_hhs_potassium_anuria_endpoint",
                         "type": "endpoint",
-                        "label": "Potassium danger or anuria: specialist fluid/insulin modification",
+                        "label": "Potassium danger or anuria",
                         "edgeLabel": "K <3.5 mmol/L at diagnosis, potassium below 3 mmol/L during treatment, hyperkalemia, ECG changes, anuria, renal failure, or inability to monitor potassium safely",
                         "source_ids": [
                           "CHQ_DKA_HHS_CHILD_2024",
@@ -6550,7 +6550,7 @@
                       {
                         "id": "pediatric_dka_hhs_dka_protocol_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric DKA confirmed: fluids first, no insulin bolus, potassium-safe infusion, and hourly monitoring",
+                        "label": "Pediatric DKA protocol",
                         "edgeLabel": "Pediatric DKA thresholds met: BGL >11 mmol/L, acidosis, and moderate/large ketones; severity and high-risk age determine monitoring location",
                         "source_ids": [
                           "CHQ_DKA_HHS_CHILD_2024",
@@ -6921,7 +6921,7 @@
                       {
                         "id": "pediatric_dka_hhs_glucose_fluids_endpoint",
                         "type": "endpoint",
-                        "label": "Glucose falling during DKA therapy: add dextrose and continue insulin for ketone clearance",
+                        "label": "DKA glucose-fluid adjustment",
                         "edgeLabel": "Treatment glucose branch: plasma glucose <14 mmol/L needs 0.9% saline with 5% glucose and potassium; glucose <6 mmol/L with persisting ketosis needs more glucose and at least 0.05 units/kg/hour insulin",
                         "source_ids": [
                           "NICE_NG18_DKA_CHILD"
@@ -7276,7 +7276,7 @@
                       {
                         "id": "pediatric_dka_hhs_transition_recurrence_endpoint",
                         "type": "endpoint",
-                        "label": "Pediatric DKA resolving: oral fluids, subcutaneous insulin overlap, education, and recurrence prevention",
+                        "label": "Pediatric DKA transition and recurrence prevention",
                         "edgeLabel": "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin",
                         "source_ids": [
                           "CHQ_DKA_HHS_CHILD_2024",
@@ -7821,7 +7821,7 @@
                   {
                     "id": "pediatric_dka_hhs_hhs_specialist_endpoint",
                     "type": "endpoint",
-                    "label": "Pediatric HHS or mixed DKA/HHS: urgent endocrine/critical-care pathway",
+                    "label": "Pediatric HHS or mixed DKA/HHS",
                     "edgeLabel": "Pediatric HHS thresholds: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, pH >7.25 and/or bicarbonate >15 mmol/L, or mixed DKA/HHS features",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",
@@ -8190,7 +8190,7 @@
                   {
                     "id": "pediatric_dka_hhs_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate pediatric diagnosis or no crisis: route away from DKA/HHS only after thresholds are checked",
+                    "label": "Pediatric DKA/HHS mimic or no crisis",
                     "edgeLabel": "DKA/HHS thresholds absent or another diagnosis better explains vomiting, abdominal pain, acidosis, dehydration, altered mental status, or hyperglycemia",
                     "source_ids": [
                       "CHQ_DKA_HHS_CHILD_2024",

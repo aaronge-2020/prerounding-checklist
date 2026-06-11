@@ -3611,7 +3611,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Hypothyroidism",
+        "label": "Hypothyroidism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -3702,7 +3702,7 @@
           {
             "id": "hypothyroidism_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: TSH and free T4; TPO antibody for autoimmune etiology",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: TSH and free T4; TPO antibody for autoimmune etiology; Pregnancy test if pregnancy is possible; Hypothyroid safety data; TSH; LT4 dose",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
@@ -3734,7 +3734,7 @@
               {
                 "id": "hypothyroidism_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
@@ -3931,7 +3931,7 @@
                   {
                     "id": "hypothyroidism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L; 4 mIU/L",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
@@ -4100,7 +4100,7 @@
                   {
                     "id": "hypothyroidism_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Treat overt primary hypothyroidism with levothyroxine",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
@@ -4201,7 +4201,7 @@
                       {
                         "id": "hypothyroidism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4300,7 +4300,7 @@
                           {
                             "id": "hypothyroidism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; High TSH plus low FT4 confirms overt primary hypothyroidism",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4334,7 +4334,7 @@
                           {
                             "id": "hypothyroidism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; TPO antibody for autoimmune etiology; treatment response",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4433,7 +4433,7 @@
                               {
                                 "id": "hypothyroidism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH and free T4; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
@@ -4602,7 +4602,7 @@
                               {
                                 "id": "hypothyroidism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: 0.5 to 3.5 mIU/L; 4 mIU/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
@@ -4968,7 +4968,7 @@
                   {
                     "id": "hypothyroidism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",

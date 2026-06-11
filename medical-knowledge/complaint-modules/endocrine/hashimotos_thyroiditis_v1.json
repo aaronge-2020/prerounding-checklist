@@ -3844,7 +3844,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Hashimoto's Thyroiditis",
+        "label": "Hashimoto's Thyroiditis pathway",
         "edgeLabel": "",
         "source_ids": [
           "ATA_HYPOTHYROIDISM_2014",
@@ -3939,7 +3939,7 @@
           {
             "id": "hashimotos_thyroiditis_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; Ultrasound only for nodule, goiter, or compressive symptoms; Hypothyroid safety data; TSH; LT4 dose",
             "source_ids": [
               "ATA_HYPOTHYROIDISM_2014",
@@ -3975,7 +3975,7 @@
               {
                 "id": "hashimotos_thyroiditis_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using 0.5 to 3.5 mIU/L; 4 mIU/L; 4-6 weeks; 12.5-25 mcg/day",
                 "source_ids": [
                   "ATA_HYPOTHYROIDISM_2014",
@@ -4180,7 +4180,7 @@
                   {
                     "id": "hashimotos_thyroiditis_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes; Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; 0.5 to 3.5 mIU/L; 4 mIU/L",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
@@ -4353,7 +4353,7 @@
                   {
                     "id": "hashimotos_thyroiditis_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Treat overt primary hypothyroidism with levothyroxine",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",
@@ -4458,7 +4458,7 @@
                       {
                         "id": "hashimotos_thyroiditis_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ATA_HYPOTHYROIDISM_2014",
@@ -4561,7 +4561,7 @@
                           {
                             "id": "hashimotos_thyroiditis_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Hypothyroid LT4 titration; Hypothyroid LT4 adjustment; Hypothyroid overtreatment safety; Positive TPO Ab supports autoimmune thyroiditis; Suspicious nodule/compressive findings move to ultrasound/FNA pathway",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4599,7 +4599,7 @@
                           {
                             "id": "hashimotos_thyroiditis_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH, free T4, TPO antibody",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: 0.5 to 3.5 mIU/L; 4 mIU/L; TSH, free T4, TPO antibody; Thyroglobulin antibody as adjunct; treatment response",
                             "source_ids": [
                               "ATA_HYPOTHYROIDISM_2014",
@@ -4702,7 +4702,7 @@
                               {
                                 "id": "hashimotos_thyroiditis_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: Rapidly enlarging thyroid; 0.5 to 3.5 mIU/L; 4 mIU/L",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Rapidly enlarging thyroid, compressive symptoms, hard fixed nodule, cervical nodes; 0.5 to 3.5 mIU/L; 4 mIU/L; TSH, free T4, TPO antibody; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
@@ -4875,7 +4875,7 @@
                               {
                                 "id": "hashimotos_thyroiditis_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: 0.5 to 3.5 mIU/L; 4 mIU/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ATA_HYPOTHYROIDISM_2014",
@@ -5249,7 +5249,7 @@
                   {
                     "id": "hashimotos_thyroiditis_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ATA_HYPOTHYROIDISM_2014",

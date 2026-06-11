@@ -3580,7 +3580,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Pediatric abdominal pain, vomiting, or acute abdomen",
+        "label": "Pediatric abdominal pain, vomiting, or acute abdomen pathway",
         "edgeLabel": "",
         "source_ids": [
           "RCH_VOMITING_CHILD",
@@ -3683,7 +3683,7 @@
           {
             "id": "pediatric_abdominal_pain_vomiting_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; Urinalysis with urine culture; Pregnancy test for pregnancy-capable adolescent; point-of-care glucose; blood or urine ketones",
             "source_ids": [
               "IDSA_APPENDICITIS_IMAGING_2024",
@@ -3725,7 +3725,7 @@
               {
                 "id": "pediatric_abdominal_pain_vomiting_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Vomiting metabolic screen; Vomiting shock resuscitation; <3 mmol/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using <3 mmol/L; >11 mmol/L; <2.6 mmol/L; 10-20 mL/kg",
                 "source_ids": [
                   "RCH_VOMITING_CHILD",
@@ -3950,7 +3950,7 @@
                   {
                     "id": "pediatric_abdominal_pain_vomiting_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Bilious green vomiting or obstruction concern",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; Possible ectopic pregnancy emergency; Vomiting metabolic screen; Vomiting shock resuscitation",
                     "source_ids": [
                       "RCH_VOMITING_CHILD",
@@ -4131,7 +4131,7 @@
                   {
                     "id": "pediatric_abdominal_pain_vomiting_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Bilious green vomiting or obstruction concern; Surgical or ED escalation",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -4244,7 +4244,7 @@
                       {
                         "id": "pediatric_abdominal_pain_vomiting_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Ondansetron support if age >6 months; allergy or drug interaction",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "RCH_VOMITING_CHILD",
@@ -4355,7 +4355,7 @@
                           {
                             "id": "pediatric_abdominal_pain_vomiting_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Ondansetron support if age >6 months; Surgical or ED escalation",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Ondansetron support if age >6 months; Surgical or ED escalation; Appendicitis imaging disposition; Bilious green vomiting or obstruction concern",
                             "source_ids": [
                               "RCH_VOMITING_CHILD",
@@ -4401,7 +4401,7 @@
                           {
                             "id": "pediatric_abdominal_pain_vomiting_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: <3 mmol/L; >11 mmol/L; Right lower quadrant ultrasound first",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: <3 mmol/L; >11 mmol/L; Right lower quadrant ultrasound first; Equivocal ultrasound appendicitis pathway; treatment response",
                             "source_ids": [
                               "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -4512,7 +4512,7 @@
                               {
                                 "id": "pediatric_abdominal_pain_vomiting_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: Bilious green vomiting or obstruction concern",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Bilious green vomiting or obstruction concern; Peritonitis or progressive localized pain; <3 mmol/L; >11 mmol/L; Right lower quadrant ultrasound first",
                                 "source_ids": [
                                   "RCH_VOMITING_CHILD",
@@ -4693,7 +4693,7 @@
                               {
                                 "id": "pediatric_abdominal_pain_vomiting_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: <3 mmol/L; >11 mmol/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "RCH_ACUTE_ABDOMINAL_PAIN",
@@ -5081,7 +5081,7 @@
                   {
                     "id": "pediatric_abdominal_pain_vomiting_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: Gastroenteritis or dehydration with vomiting",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: Appendicitis or surgical acute abdomen with localized or progressive abdominal pain; Gastroenteritis or dehydration with vomiting",
                     "source_ids": [
                       "IDSA_APPENDICITIS_IMAGING_2024",

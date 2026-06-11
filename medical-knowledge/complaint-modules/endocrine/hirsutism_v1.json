@@ -3518,7 +3518,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Hirsutism",
+        "label": "Hirsutism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_HIRSUTISM_2018",
@@ -3609,7 +3609,7 @@
           {
             "id": "hirsutism_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Total testosterone and free testosterone; Early morning 17-OHP; DHEAS when severe/rapid",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Total testosterone and free testosterone; Early morning 17-OHP; DHEAS when severe/rapid; TSH/prolactin/metabolic PCOS tests when menstrual disturbance; modified Ferriman-Gallwey or local hirsutism score; ethnicity-specific scoring threshold",
             "source_ids": [
               "ES_HIRSUTISM_2018",
@@ -3641,7 +3641,7 @@
               {
                 "id": "hirsutism_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Hirsutism workup trigger; Hirsutism OCP choice modifier; above reference range",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using above reference range; age >39 years; 20 mcg; at least 6 months",
                 "source_ids": [
                   "ES_HIRSUTISM_2018",
@@ -3833,7 +3833,7 @@
                   {
                     "id": "hirsutism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Hirsutism workup trigger; Hirsutism OCP choice modifier; above reference range",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -3992,7 +3992,7 @@
                   {
                     "id": "hirsutism_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Use lifestyle and weight-management support for metabolic risk and patient goals",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",
@@ -4088,7 +4088,7 @@
                       {
                         "id": "hirsutism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Hirsutism OCP choice modifier; Hirsutism treatment response",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HIRSUTISM_2018",
@@ -4163,7 +4163,7 @@
                           {
                             "id": "hirsutism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Hirsutism OCP choice modifier; Hirsutism treatment response",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Hirsutism OCP choice modifier; Hirsutism treatment response; Tumor-range androgens or virilization changes to urgent imaging/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
@@ -4197,7 +4197,7 @@
                           {
                             "id": "hirsutism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: above reference range; age >39 years; Total testosterone and free testosterone",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: above reference range; age >39 years; Total testosterone and free testosterone; Early morning 17-OHP; treatment response",
                             "source_ids": [
                               "ES_HIRSUTISM_2018",
@@ -4291,7 +4291,7 @@
                               {
                                 "id": "hirsutism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Rapid onset, virilization, very high testosterone/DHEAS, pelvic/adrenal mass symptoms; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; above reference range; age >39 years",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4450,7 +4450,7 @@
                               {
                                 "id": "hirsutism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: above reference range; age >39 years; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_HIRSUTISM_2018",
@@ -4795,7 +4795,7 @@
                   {
                     "id": "hirsutism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_HIRSUTISM_2018",

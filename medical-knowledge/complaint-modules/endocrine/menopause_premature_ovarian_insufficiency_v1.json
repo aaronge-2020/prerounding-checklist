@@ -4103,7 +4103,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Menopause / Premature Ovarian Insufficiency",
+        "label": "Menopause / Premature Ovarian Insufficiency pathway",
         "edgeLabel": "",
         "source_ids": [
           "ESHRE_POI_2024",
@@ -4198,7 +4198,7 @@
           {
             "id": "menopause_premature_ovarian_insufficiency_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Pregnancy test if amenorrhea; FSH and estradiol for POI; TSH/prolactin",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Pregnancy test if amenorrhea; FSH and estradiol for POI; TSH/prolactin; POI etiology/health: karyotype/FMR1/adrenal-thyroid autoimmunity/DXA; age; menstrual disturbance duration",
             "source_ids": [
               "ESHRE_POI_2024",
@@ -4234,7 +4234,7 @@
               {
                 "id": "menopause_premature_ovarian_insufficiency_classification_decision",
                 "type": "decision",
-                "label": "Classify by: POI diagnosis; POI hormone therapy; age <40",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using age <40; at least 4 months; FSH >25 IU/L; 4-6 weeks",
                 "source_ids": [
                   "ESHRE_POI_2024",
@@ -4470,7 +4470,7 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; POI diagnosis; POI hormone therapy; age <40; at least 4 months",
                     "source_ids": [
                       "ESHRE_POI_2024",
@@ -4693,7 +4693,7 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: POI changes routine menopause counseling to etiologic evaluation",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ESHRE_POI_2024",
@@ -4823,7 +4823,7 @@
                       {
                         "id": "menopause_premature_ovarian_insufficiency_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: POI diagnosis; POI hormone therapy; allergy or drug interaction",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ESHRE_POI_2024",
@@ -4926,7 +4926,7 @@
                           {
                             "id": "menopause_premature_ovarian_insufficiency_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: POI diagnosis; POI hormone therapy",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: POI diagnosis; POI hormone therapy; POI combined-pill caution; POI changes routine menopause counseling to etiologic evaluation; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ESHRE_POI_2024",
@@ -4964,7 +4964,7 @@
                           {
                             "id": "menopause_premature_ovarian_insufficiency_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: age <40; at least 4 months; Pregnancy test if amenorrhea",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: age <40; at least 4 months; Pregnancy test if amenorrhea; FSH and estradiol for POI; treatment response",
                             "source_ids": [
                               "ESHRE_POI_2024",
@@ -5092,7 +5092,7 @@
                               {
                                 "id": "menopause_premature_ovarian_insufficiency_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; age <40; at least 4 months; Pregnancy test if amenorrhea; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
@@ -5315,7 +5315,7 @@
                               {
                                 "id": "menopause_premature_ovarian_insufficiency_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: age <40; at least 4 months; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ESHRE_POI_2024",
@@ -5790,7 +5790,7 @@
                   {
                     "id": "menopause_premature_ovarian_insufficiency_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ESHRE_POI_2024",

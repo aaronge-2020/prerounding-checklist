@@ -4762,7 +4762,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Primary aldosteronism: route hypertension by ARR cutoffs, potassium/medication modifiers, emergency risk, and lateralization or MRA plan",
+        "label": "Primary aldosteronism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_PRIMARY_ALDO_2025",
@@ -4859,7 +4859,7 @@
           {
             "id": "primary_aldosteronism_initial_assessment",
             "type": "action",
-            "label": "PA assessment: document BP pattern, target-organ symptoms, potassium, aldosterone/renin/ARR, assay method, medications, renal function, pregnancy, and surgery preference",
+            "label": "Initial PA assessment",
             "edgeLabel": "Hypertension, resistant hypertension, hypokalemia, adrenal incidentaloma, family history, sleep apnea, atrial fibrillation, or clinician-chosen PA evaluation",
             "source_ids": [
               "ES_PRIMARY_ALDO_2025",
@@ -5071,7 +5071,7 @@
               {
                 "id": "primary_aldosteronism_classification_decision",
                 "type": "decision",
-                "label": "PA classification: missing labs, emergency physiology, positive screen, or repeat/mimic route",
+                "label": "Choose PA branch",
                 "edgeLabel": "PA screening facts available: BP pattern, potassium, aldosterone, PRA/DRC, ARR units, assay method, medication interference, renal function, pregnancy status, and patient preference",
                 "source_ids": [
                   "ES_PRIMARY_ALDO_2025",
@@ -5340,7 +5340,7 @@
                   {
                     "id": "primary_aldosteronism_emergency_endpoint",
                     "type": "endpoint",
-                    "label": "PA escalation: hypertensive emergency, severe hypokalemia, paralysis, arrhythmia, stroke/ACS symptoms, pulmonary edema, or renal injury",
+                    "label": "Hypertensive emergency or dangerous hypokalemia",
                     "edgeLabel": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, severe hypokalemia with weakness/paralysis or arrhythmia, chest pain, neurologic deficit, pulmonary edema, acute kidney injury, or pregnancy severe hypertension",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025",
@@ -5735,7 +5735,7 @@
                   {
                     "id": "primary_aldosteronism_positive_screen_action",
                     "type": "action",
-                    "label": "PA positive screen: choose overt treatment, suppression testing, lateralization, or MRA route using renin, aldosterone, ARR, potassium, assay, and preferences",
+                    "label": "Positive PA screen route",
                     "edgeLabel": "Positive PA screen branch: low renin with aldosterone/ARR above guideline cutoffs after potassium and medication context are interpreted",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025"
@@ -5943,7 +5943,7 @@
                       {
                         "id": "primary_aldosteronism_overt_pa_endpoint",
                         "type": "endpoint",
-                        "label": "Overt PA: start PA-specific therapy without aldosterone-suppression testing when renin-independent aldosterone is clear",
+                        "label": "Overt PA treatment route",
                         "edgeLabel": "Overt branch: resistant hypertension or hypertension with hypokalemia plus PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
                         "source_ids": [
                           "ES_PRIMARY_ALDO_2025"
@@ -6333,7 +6333,7 @@
                       {
                         "id": "primary_aldosteronism_suppression_testing_endpoint",
                         "type": "endpoint",
-                        "label": "Intermediate PA screen: aldosterone-suppression testing or clinician-guided documentation before surgery pathway",
+                        "label": "Intermediate PA confirmation",
                         "edgeLabel": "Intermediate branch: positive PA screen but not overt; patient is willing and able to consider adrenalectomy and needs suppression testing or specialist interpretation before lateralization",
                         "source_ids": [
                           "ES_PRIMARY_ALDO_2025"
@@ -6717,7 +6717,7 @@
                       {
                         "id": "primary_aldosteronism_lateralization_endpoint",
                         "type": "endpoint",
-                        "label": "PA lateralization: adrenal CT plus AVS before adrenalectomy, with narrow age <35 and adenoma >1 cm exception",
+                        "label": "PA lateralization for adrenalectomy",
                         "edgeLabel": "Surgery branch: diagnosed PA, adrenalectomy desired/feasible, adrenal CT result available or ordered, and AVS needed unless age <35 with hypokalemia, marked PA, and unilateral adrenal adenoma >1.0 cm",
                         "source_ids": [
                           "ES_PRIMARY_ALDO_2025"
@@ -7107,7 +7107,7 @@
                       {
                         "id": "primary_aldosteronism_medical_monitoring_endpoint",
                         "type": "endpoint",
-                        "label": "PA medical management and follow-up: MRA titration, renin/BP response, potassium/renal monitoring, and rescreen safety-net",
+                        "label": "PA medical therapy and monitoring",
                         "edgeLabel": "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
                         "source_ids": [
                           "ES_PRIMARY_ALDO_2025"
@@ -7687,7 +7687,7 @@
                   {
                     "id": "primary_aldosteronism_repeat_or_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "PA negative or confounded screen: correct potassium, address interfering medications, repeat testing, or route to mimic",
+                    "label": "Confounded PA screen or mimic",
                     "edgeLabel": "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better",
                     "source_ids": [
                       "ES_PRIMARY_ALDO_2025",

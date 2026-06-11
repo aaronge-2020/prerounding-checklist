@@ -4536,7 +4536,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Pheochromocytoma: use metanephrine magnitude, sampling quality, crisis risk, localization, alpha blockade, surgery, and surveillance",
+        "label": "Pheochromocytoma/PPGL pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_PHEO_PPGL_2014",
@@ -4632,7 +4632,7 @@
           {
             "id": "pheochromocytoma_initial_assessment",
             "type": "action",
-            "label": "PPGL assessment: collect paroxysmal symptoms, BP/HR pattern, metanephrine values/ULN, sampling position, medication triggers, imaging, pregnancy, and genetic risk",
+            "label": "Initial PPGL assessment",
             "edgeLabel": "Possible PPGL: paroxysmal headache, sweating, palpitations, sustained or episodic hypertension, adrenal incidentaloma, hereditary syndrome, prior PPGL, paraganglioma concern, or clinician-chosen PPGL evaluation",
             "source_ids": [
               "ES_PHEO_PPGL_2014",
@@ -4843,7 +4843,7 @@
               {
                 "id": "pheochromocytoma_classification_decision",
                 "type": "decision",
-                "label": "PPGL classification: missing metanephrines, crisis, positive biochemistry, or borderline/mimic route",
+                "label": "Choose PPGL branch",
                 "edgeLabel": "PPGL facts available: symptoms, BP/HR, metanephrine value and ULN, sampling position, medication triggers, imaging context, pregnancy/genetic risk, and follow-up access",
                 "source_ids": [
                   "ES_PHEO_PPGL_2014",
@@ -5110,7 +5110,7 @@
                   {
                     "id": "pheochromocytoma_crisis_endpoint",
                     "type": "endpoint",
-                    "label": "PPGL crisis or hypertensive emergency: monitored acute care before elective localization or surgery",
+                    "label": "PPGL crisis or hypertensive emergency",
                     "edgeLabel": "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, catecholamine crisis, arrhythmia, ACS/stroke symptoms, pulmonary edema, shock, medication-triggered crisis, pregnancy severe hypertension, or unopposed beta-blocker exposure",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014",
@@ -5504,7 +5504,7 @@
                   {
                     "id": "pheochromocytoma_positive_biochemistry_action",
                     "type": "action",
-                    "label": "PPGL positive biochemistry: localize, assess genetics, prepare blockade, choose surgery, and assign surveillance",
+                    "label": "Positive PPGL biochemistry route",
                     "edgeLabel": "Positive biochemical branch: plasma free or urinary fractionated metanephrines above ULN with clinical probability, especially around 3-fold ULN, after sampling and medication context are reviewed",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014"
@@ -5711,7 +5711,7 @@
                       {
                         "id": "pheochromocytoma_localization_genetic_endpoint",
                         "type": "endpoint",
-                        "label": "PPGL confirmed/high probability: CT/MRI localization, hereditary-risk testing, and expert-center referral",
+                        "label": "Confirmed PPGL localization/genetic review",
                         "edgeLabel": "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need",
                         "source_ids": [
                           "ES_PHEO_PPGL_2014"
@@ -6102,7 +6102,7 @@
                       {
                         "id": "pheochromocytoma_preop_blockade_endpoint",
                         "type": "endpoint",
-                        "label": "Functional PPGL preoperative management: alpha blockade, volume expansion, beta only after alpha, and surgery approach",
+                        "label": "Functional PPGL pre-op blockade",
                         "edgeLabel": "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days",
                         "source_ids": [
                           "ES_PHEO_PPGL_2014"
@@ -6493,7 +6493,7 @@
                       {
                         "id": "pheochromocytoma_postop_followup_endpoint",
                         "type": "endpoint",
-                        "label": "PPGL postoperative and lifelong follow-up: immediate BP/HR/glucose monitoring, metanephrines after recovery, and annual surveillance",
+                        "label": "PPGL follow-up and lifelong surveillance",
                         "edgeLabel": "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
                         "source_ids": [
                           "ES_PHEO_PPGL_2014"
@@ -7071,7 +7071,7 @@
                   {
                     "id": "pheochromocytoma_borderline_or_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "PPGL borderline or mimic route: repeat controlled testing or switch pathway before irreversible treatment",
+                    "label": "Borderline PPGL result or mimic",
                     "edgeLabel": "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
                     "source_ids": [
                       "ES_PHEO_PPGL_2014",

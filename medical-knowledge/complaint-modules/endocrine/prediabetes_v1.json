@@ -4219,7 +4219,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Prediabetes: use A1c/FPG/OGTT thresholds, diabetes exclusion, prevention eligibility, metformin criteria, and follow-up",
+        "label": "Prediabetes pathway",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -4326,7 +4326,7 @@
           {
             "id": "prediabetes_initial_assessment",
             "type": "action",
-            "label": "Prediabetes: collect glycemic thresholds, weight/BMI/waist, BP/lipids, pregnancy/prior GDM, medication causes, and prevention access",
+            "label": "Initial prediabetes assessment",
             "edgeLabel": "Prediabetes evaluation: abnormal A1c/FPG/OGTT, metabolic risk, prior GDM, overweight/obesity, PCOS/fatty liver/OSA, medication hyperglycemia, or clinician-chosen prevention workup",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
@@ -4510,7 +4510,7 @@
               {
                 "id": "prediabetes_classification_decision",
                 "type": "decision",
-                "label": "Prediabetes: choose missing-data, diabetes-range escalation, prevention, metformin-review, mimic, or follow-up branch",
+                "label": "Choose prediabetes branch",
                 "edgeLabel": "A1c/FPG/OGTT, symptoms, BMI/waist/BP/lipids, pregnancy status, prior GDM, medication context, and follow-up access are available",
                 "source_ids": [
                   "ADA_DIAGNOSIS_2026",
@@ -4763,7 +4763,7 @@
                   {
                     "id": "prediabetes_diabetes_range_endpoint",
                     "type": "endpoint",
-                    "label": "Diabetes-range or symptomatic hyperglycemia: leave prevention-only branch and confirm diabetes pathway",
+                    "label": "Diabetes-range escalation",
                     "edgeLabel": "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
@@ -5092,7 +5092,7 @@
                   {
                     "id": "prediabetes_management_action",
                     "type": "action",
-                    "label": "Prediabetes: combine threshold classification, prevention intensity, metformin review, risk-factor treatment, and surveillance",
+                    "label": "Prediabetes prevention plan",
                     "edgeLabel": "Stable prevention branch: prediabetes-range glycemia confirmed, diabetes-range and emergency features absent, prevention eligibility data available",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
@@ -5276,7 +5276,7 @@
                       {
                         "id": "prediabetes_lifestyle_prevention_endpoint",
                         "type": "endpoint",
-                        "label": "Prediabetes confirmed: DPP-style lifestyle plan, weight/activity goals, and yearly glycemic surveillance",
+                        "label": "Lifestyle prevention plan",
                         "edgeLabel": "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms",
                         "source_ids": [
                           "ADA_SOC_2026",
@@ -5607,7 +5607,7 @@
                       {
                         "id": "prediabetes_metformin_review_endpoint",
                         "type": "endpoint",
-                        "label": "High-risk prediabetes: consider metformin only after renal, pregnancy, B12, and preference review",
+                        "label": "High-risk metformin prevention review",
                         "edgeLabel": "Metformin branch: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, prior GDM, rising glycemia, or lifestyle program unavailable/insufficient",
                         "source_ids": [
                           "ADA_SOC_2026"
@@ -5928,7 +5928,7 @@
                       {
                         "id": "prediabetes_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Prediabetes follow-up: yearly testing, cardiometabolic risk ownership, and safety-net for diabetes symptoms",
+                        "label": "Prediabetes follow-up and safety-net",
                         "edgeLabel": "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
@@ -6418,7 +6418,7 @@
                   {
                     "id": "prediabetes_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "Normal glycemia, medication/stress effect, pregnancy, or endocrine mimic: avoid labeling as prediabetes without repeatable thresholds",
+                    "label": "Prediabetes mimic or normal glycemia",
                     "edgeLabel": "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
                     "source_ids": [
                       "ADA_SOC_2026",

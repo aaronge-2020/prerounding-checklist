@@ -232,7 +232,7 @@ function visibleTextIssues(node = {}) {
   if (isInternalTraversalGuard(node)) return [];
   const issues = [];
   const checks = [
-    ["label", node.label, 180],
+    ["label", node.label, 80],
     ["edgeLabel", node.edgeLabel, 320],
     ["action", node.action, 720],
     ["criteria.description", node.criteria?.description, 860]

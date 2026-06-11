@@ -3692,7 +3692,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Diabetes Insipidus",
+        "label": "Diabetes Insipidus pathway",
         "edgeLabel": "",
         "source_ids": [
           "ENDOTEXT_DI_2026",
@@ -3783,7 +3783,7 @@
           {
             "id": "diabetes_insipidus_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Confirm hypotonic polyuria; Serum sodium/plasma osmolality",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Confirm hypotonic polyuria; Serum sodium/plasma osmolality; Exclude osmotic diuresis: glucose, calcium, potassium, renal function; Water deprivation/desmopressin or copeptin-based test; adult urine volume often >3; L/day or >40",
             "source_ids": [
               "ENDOTEXT_DI_2026",
@@ -3815,7 +3815,7 @@
               {
                 "id": "diabetes_insipidus_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using adult urine volume often >3; L/day or >40; 50 mL/kg; day with urine osmolality often <300 mOsm/kg",
                 "source_ids": [
                   "ENDOTEXT_DI_2026",
@@ -4028,7 +4028,7 @@
                   {
                     "id": "diabetes_insipidus_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Diabetes Insipidus; Serum sodium normal about 135-145 mmol/L; adult urine volume often >3; L/day or >40",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
@@ -4269,7 +4269,7 @@
                   {
                     "id": "diabetes_insipidus_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: discordant endocrine tests need correct timing; Diabetes Insipidus",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",
@@ -4406,7 +4406,7 @@
                       {
                         "id": "diabetes_insipidus_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ENDOTEXT_DI_2026",
@@ -4541,7 +4541,7 @@
                           {
                             "id": "diabetes_insipidus_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Serum sodium normal about 135-145 mmol/L; Confirm hypotonic polyuria; Hypernatremia or impaired water access changes to urgent monitored fluid/desmopressin pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
@@ -4575,7 +4575,7 @@
                           {
                             "id": "diabetes_insipidus_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; Serum sodium/plasma osmolality; treatment response",
                             "source_ids": [
                               "ENDOTEXT_DI_2026",
@@ -4710,7 +4710,7 @@
                               {
                                 "id": "diabetes_insipidus_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: adult urine volume often >3; L/day or >40; Confirm hypotonic polyuria; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
@@ -4951,7 +4951,7 @@
                               {
                                 "id": "diabetes_insipidus_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: adult urine volume often >3; L/day or >40; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ENDOTEXT_DI_2026",
@@ -5461,7 +5461,7 @@
                   {
                     "id": "diabetes_insipidus_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: Serum sodium normal about 135-145 mmol/L",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: Serum sodium normal about 135-145 mmol/L",
                     "source_ids": [
                       "ENDOTEXT_DI_2026",

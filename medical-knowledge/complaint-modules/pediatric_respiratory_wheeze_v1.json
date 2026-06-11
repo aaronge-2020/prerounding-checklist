@@ -2847,7 +2847,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Pediatric respiratory distress, wheeze, or bronchiolitis",
+        "label": "Pediatric respiratory distress, wheeze, or bronchiolitis pathway",
         "edgeLabel": "",
         "source_ids": [
           "NICE_BRONCHIOLITIS_NG9",
@@ -2942,7 +2942,7 @@
           {
             "id": "pediatric_respiratory_wheeze_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Bronchiolitis testing limits; Chest imaging when focal or severe",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Bronchiolitis testing limits; Chest imaging when focal or severe; Asthma response reassessment; Controller and trigger review; age; illness day",
             "source_ids": [
               "NICE_BRONCHIOLITIS_NG9",
@@ -2978,7 +2978,7 @@
               {
                 "id": "pediatric_respiratory_wheeze_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Bronchiolitis frame; Bronchiolitis referral/admission; <2 years",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using <2 years; 3-6 months; 3-5 days; 90%",
                 "source_ids": [
                   "NICE_BRONCHIOLITIS_NG9",
@@ -3191,7 +3191,7 @@
                   {
                     "id": "pediatric_respiratory_wheeze_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Apnea or central cyanosis; Exhaustion or poor respiratory effort",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Apnea or central cyanosis; Exhaustion or poor respiratory effort; Severe respiratory distress; Bronchiolitis frame; Bronchiolitis referral/admission",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
@@ -3384,7 +3384,7 @@
                   {
                     "id": "pediatric_respiratory_wheeze_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Apnea or central cyanosis; Emergency pediatric respiratory escalation",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",
@@ -3499,7 +3499,7 @@
                       {
                         "id": "pediatric_respiratory_wheeze_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: allergy or drug interaction; weight/renal dosing",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "NICE_BRONCHIOLITIS_NG9",
@@ -3535,7 +3535,7 @@
                           {
                             "id": "pediatric_respiratory_wheeze_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Emergency pediatric respiratory escalation; Apnea or central cyanosis",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Emergency pediatric respiratory escalation; Bronchiolitis supportive plan; Apnea or central cyanosis",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
@@ -3573,7 +3573,7 @@
                           {
                             "id": "pediatric_respiratory_wheeze_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: <2 years; 3-6 months; Bronchiolitis testing limits",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: <2 years; 3-6 months; Bronchiolitis testing limits; Chest imaging when focal or severe; treatment response",
                             "source_ids": [
                               "NICE_BRONCHIOLITIS_NG9",
@@ -3686,7 +3686,7 @@
                               {
                                 "id": "pediatric_respiratory_wheeze_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Apnea or central cyanosis; Exhaustion or poor respiratory effort; <2 years; 3-6 months; Bronchiolitis testing limits",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
@@ -3879,7 +3879,7 @@
                               {
                                 "id": "pediatric_respiratory_wheeze_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: <2 years; 3-6 months; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "NICE_BRONCHIOLITIS_NG9",
@@ -4290,7 +4290,7 @@
                   {
                     "id": "pediatric_respiratory_wheeze_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: Bronchiolitis in a child under 2 years with coryzal prodrome",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: Bronchiolitis in a child under 2 years with coryzal prodrome; Asthma exacerbation or viral-induced wheeze with recurrent episodes",
                     "source_ids": [
                       "NICE_BRONCHIOLITIS_NG9",

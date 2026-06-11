@@ -3279,7 +3279,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Hypogonadism",
+        "label": "Hypogonadism pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_TESTOSTERONE_2018",
@@ -3370,7 +3370,7 @@
           {
             "id": "hypogonadism_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Morning total testosterone on two occasions",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; LH/FSH; Prolactin, iron studies, pituitary evaluation when secondary; testosterone; prolactin",
             "source_ids": [
               "ES_TESTOSTERONE_2018",
@@ -3402,7 +3402,7 @@
               {
                 "id": "hypogonadism_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using <150 ng/dL; >4 ng/mL; >3 ng/mL; >54%",
                 "source_ids": [
                   "ES_TESTOSTERONE_2018",
@@ -3572,7 +3572,7 @@
                   {
                     "id": "hypogonadism_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: New severe headache/vision loss",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; <150 ng/dL",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -3695,7 +3695,7 @@
                   {
                     "id": "hypogonadism_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Treat reversible causes such as obesity",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",
@@ -3773,7 +3773,7 @@
                       {
                         "id": "hypogonadism_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Male hypogonadism pituitary imaging trigger",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_TESTOSTERONE_2018",
@@ -3829,7 +3829,7 @@
                           {
                             "id": "hypogonadism_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Male hypogonadism pituitary imaging trigger",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Male hypogonadism pituitary imaging trigger; Testosterone therapy safety stop/review; Fertility plans change away from exogenous testosterone; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
@@ -3863,7 +3863,7 @@
                           {
                             "id": "hypogonadism_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions; Free testosterone if SHBG altered or total near lower limit; treatment response",
                             "source_ids": [
                               "ES_TESTOSTERONE_2018",
@@ -3939,7 +3939,7 @@
                               {
                                 "id": "hypogonadism_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: New severe headache/vision loss",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: New severe headache/vision loss; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <150 ng/dL; >4 ng/mL; Morning total testosterone on two occasions",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
@@ -4062,7 +4062,7 @@
                               {
                                 "id": "hypogonadism_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: <150 ng/dL; >4 ng/mL; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_TESTOSTERONE_2018",
@@ -4335,7 +4335,7 @@
                   {
                     "id": "hypogonadism_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "ES_TESTOSTERONE_2018",

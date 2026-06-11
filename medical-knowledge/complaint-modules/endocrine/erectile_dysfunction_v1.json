@@ -4867,7 +4867,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "ED route: emergency, CV/metabolic risk, testosterone, prolactin, PDE5 safety, follow-up",
+        "label": "Erectile dysfunction pathway",
         "edgeLabel": "",
         "source_ids": [
           "ENDOTEXT_ED_2022",

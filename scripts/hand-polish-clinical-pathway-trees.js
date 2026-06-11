@@ -1384,6 +1384,21 @@ function displayWorkupLabel(value = "") {
   return cleanText(value).replace(/\s*\([^)]{1,90}\)/g, "");
 }
 
+function compactWorkupLabel(value = "", fallbackId = "") {
+  const clean = displayWorkupLabel(value);
+  if (clean.length <= 58) return clean;
+  const fromId = cleanText(String(fallbackId || "").replace(/_v1$/i, "").replace(/_/g, " "));
+  if (!fromId) return clean;
+  return fromId
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    .replace(/\bAms\b/g, "AMS")
+    .replace(/\bDka\b/g, "DKA")
+    .replace(/\bHhs\b/g, "HHS")
+    .replace(/\bUti\b/g, "UTI")
+    .replace(/\bPcos\b/g, "PCOS")
+    .replace(/\bPoi\b/g, "POI");
+}
+
 function visibleEvidenceLabel(item = {}) {
   const text = itemLabel(item);
   if (!text) return "";
@@ -1783,6 +1798,7 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const label = module.label || module.id;
   const displayLabel = displayWorkupLabel(label);
   const prefix = slug(module.id || label).replace(/_v1$/g, "");
+  const rootDisplayLabel = compactWorkupLabel(label, prefix);
   const tests = firstItems(module, "initialTests", 8);
   const redFlags = firstItems(module, "redFlags", 6, ["safetyChecks"]);
   const safetyChecks = firstItems(module, "safetyChecks", 5);
@@ -1900,55 +1916,18 @@ function buildCompactClinicalPathwayTree(module, sourceById) {
   const branchDetails = (items = []) => unique(items.map(branchDetail).filter(Boolean));
   const criterionLabels = criteriaRows.map(displayCriterionLabel).filter(Boolean);
   const branchLabels = {
-    root: compactBranchLabel("Route", branchDetails([displayLabel]), `Route ${displayLabel}`, 92),
-    dataBundle: compactBranchLabel("Collect", branchDetails([
-      ...visibleListLabels(tests, 3),
-      ...criteriaRows.flatMap((row) => row.data_needed || []).slice(0, 4),
-      ...thresholdExamples.slice(0, 2)
-    ]), "Collect routing data", 98),
-    classification: compactBranchLabel("Classify by", branchDetails([
-      ...criterionLabels.slice(0, 2),
-      ...thresholdExamples.slice(0, 3),
-      ...visibleRedFlagLabels.slice(0, 2)
-    ]), "Classify acuity, thresholds, and mimics", 98),
-    urgent: compactBranchLabel("Escalate for", branchDetails([
-      ...visibleRedFlagLabels.slice(0, 3),
-      ...criterionLabels.slice(0, 2),
-      ...thresholdExamples.slice(0, 2)
-    ]), "Escalate to ED or monitored care", 98),
-    treatment: compactBranchLabel("Choose treatment", branchDetails([
-      ...treatmentModifierLabels.slice(0, 2),
-      ...dispositionModifierLabels.slice(0, 2),
-      ...criterionLabels.slice(0, 2)
-    ]), "Choose treatment and disposition", 98),
-    safety: compactBranchLabel("Check safety", branchDetails([
-      ...diseaseModifierLabels.slice(0, 2),
-      ...clinicalSafetySummary.slice(0, 2),
-      "allergy or drug interaction",
-      "weight/renal dosing"
-    ]), "Check dosing and safety modifiers", 92),
-    review: compactBranchLabel("Review modifiers", branchDetails([
-      ...diseaseModifierLabels.slice(0, 2),
-      ...dispositionModifierLabels.slice(0, 1),
-      ...treatmentModifierLabels.slice(0, 1)
-    ]), "Review modifier-sensitive plan", 92),
-    monitoring: compactBranchLabel("Monitor", branchDetails([
-      ...thresholdExamples.slice(0, 2),
-      ...visibleListLabels(tests, 2),
-      ...clinicalSafetySummary.slice(0, 1)
-    ]), "Monitor response and disposition readiness", 96),
-    worsening: compactBranchLabel("Escalate if worse", branchDetails([
-      ...visibleRedFlagLabels.slice(0, 2),
-      ...thresholdExamples.slice(0, 2),
-      ...visibleListLabels(tests, 1)
-    ]), "Escalate if reassessment worsens", 96),
-    deescalate: compactBranchLabel("Narrow/stop by", branchDetails([
-      ...thresholdExamples.slice(0, 2),
-      "objective response",
-      "diagnosis certainty"
-    ]), "Narrow, stop, or continue", 88),
+    root: `${rootDisplayLabel} pathway`,
+    dataBundle: "Initial data bundle",
+    classification: "Choose clinical branch",
+    urgent: "Escalation branch",
+    treatment: "Treatment/disposition plan",
+    safety: "Treatment safety review",
+    review: "Clinician-review modifier",
+    monitoring: "Monitoring and readiness",
+    worsening: "Reassessment escalation",
+    deescalate: "De-escalation or stopping criteria",
     followup: "Close loop: result owner, follow-up, return precautions",
-    alternate: compactBranchLabel("Alternate diagnosis", branchDetails(visibleListLabels(differentials, 3)), "Use alternate diagnosis pathway", 98)
+    alternate: "Alternate diagnosis pathway"
   };
   const displayDiagnosticData = compactArrayText(branchDetails([
     ...visibleListLabels(tests, 4),
@@ -2346,7 +2325,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const shockIcuEndpoint = endpoint({
     id: `${prefix}_shock_resuscitation_icu_endpoint`,
-    label: "Septic shock or hypoperfusion: resuscitate now and use monitored/ICU pathway",
+    label: "Septic shock or hypoperfusion",
     edgeLabel: "Shock/hypoperfusion: MAP below target, severe hypotension, lactate >=4 mmol/L, lactate >2 mmol/L with vasopressor need, mottling, altered mentation, hypoxemia, oliguria, or rapid deterioration",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_shock_icu_criteria`, "Use when sepsis-induced hypoperfusion or septic shock is present or strongly suspected.", ["vitals", "labs", "exam", "mental_status", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2358,7 +2337,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const persistentHypoperfusionEndpoint = endpoint({
     id: `${prefix}_persistent_hypoperfusion_endpoint`,
-    label: "Persistent hypoperfusion: reassess fluids, vasopressors, oxygenation, and source control",
+    label: "Persistent hypoperfusion",
     edgeLabel: "After initial therapy: MAP remains below target, lactate remains elevated, capillary refill/perfusion abnormal, escalating oxygen or vasopressor need, or source control not achieved",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_persistent_hypoperfusion_criteria`, "Use when reassessment after initial sepsis therapy shows persistent shock, elevated lactate, worsening oxygenation, or uncontrolled source.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2370,7 +2349,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const probableSepsisTreatmentEndpoint = endpoint({
     id: `${prefix}_probable_definite_sepsis_treatment_endpoint`,
-    label: "Probable or definite sepsis without shock: cultures, lactate, antimicrobials within 1 hour, and source plan",
+    label: "Probable sepsis treatment",
     edgeLabel: "Probable/definite infection with organ dysfunction or high-risk trajectory but no current shock: start antimicrobials ideally within 1 hour and define source control need",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_probable_sepsis_criteria`, "Use when infection is probable or definite and acute organ dysfunction or high-risk trajectory is present without current shock.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2382,7 +2361,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const possibleSepsisRapidEvaluationEndpoint = endpoint({
     id: `${prefix}_possible_sepsis_rapid_eval_endpoint`,
-    label: "Possible sepsis without shock: rapid infectious vs noninfectious assessment and 3-hour antibiotic decision",
+    label: "Possible sepsis rapid evaluation",
     edgeLabel: "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_possible_sepsis_criteria`, "Use when sepsis is possible but not probable/definite and no shock is present.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2394,7 +2373,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_or_noninfectious_endpoint`,
-    label: "Noninfectious mimic or alternate source better explains fever/systemic illness",
+    label: "Noninfectious mimic or alternate source",
     edgeLabel: "Low infection likelihood or alternate diagnosis: drug fever, inflammatory/autoimmune flare, thrombosis/PE, malignancy, transfusion reaction, endocrine crisis, or localized nonseptic syndrome better explains findings",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when rapid assessment demonstrates or strongly suggests a noninfectious cause or another pathway explains the presentation better than sepsis.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], ssc),
@@ -2405,7 +2384,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const sourceControlEndpoint = endpoint({
     id: `${prefix}_source_control_endpoint`,
-    label: "Source control needed: drainage, debridement, device removal, or procedure",
+    label: "Source-control procedure needed",
     edgeLabel: "Anatomic diagnosis needs source control: abscess, obstructed infected urinary/biliary source, necrotizing soft tissue infection, infected line/device, CNS/deep infection, abdominal/pelvic source, septic joint, or empyema",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_source_control_criteria`, "Use when a specific anatomic diagnosis or source requires procedural control.", ["symptoms", "exam", "imaging_results", "cultures", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2416,7 +2395,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_antimicrobial_deescalation_endpoint`,
-    label: "Antimicrobial de-escalation or stopping criteria reached",
+    label: "Antimicrobial de-escalation criteria",
     edgeLabel: "Cultures/susceptibility or final negative cultures allow narrowing; adequate source control achieved; or alternate diagnosis demonstrated/strongly suspected",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use after cultures, susceptibility, clinical response, source control, and alternate diagnosis review determine whether empiric antimicrobials can narrow, stop, or shorten.", ["labs", "cultures", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2427,7 +2406,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const probablePersistentEndpoint = endpoint({
     id: `${prefix}_probable_persistent_hypoperfusion_endpoint`,
-    label: "Probable sepsis reassessment: worsening perfusion, lactate, oxygenation, or organ dysfunction",
+    label: "Probable sepsis worsening on reassessment",
     edgeLabel: "After probable-sepsis treatment: new hypotension, MAP below target, rising/elevated lactate, worsening oxygenation, oliguria, altered mentation, or source-control delay",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_probable_persistent_criteria`, "Use when initially non-shock sepsis worsens or declares hypoperfusion during monitoring.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2439,7 +2418,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const probableDeescalateEndpoint = endpoint({
     id: `${prefix}_probable_antimicrobial_deescalation_endpoint`,
-    label: "Probable sepsis: narrow, stop, or shorten antimicrobials when evidence allows",
+    label: "Probable sepsis antimicrobial de-escalation",
     edgeLabel: "Probable-sepsis cultures/susceptibility, final negative cultures, clinical response, adequate source control, or alternate diagnosis supports de-escalation",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_probable_deescalation_criteria`, "Use after probable-sepsis treatment when microbiology, source control, response, or alternate diagnosis evidence supports de-escalation.", ["labs", "cultures", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2450,7 +2429,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const probableDischargeEndpoint = endpoint({
     id: `${prefix}_probable_discharge_followup_endpoint`,
-    label: "Probable sepsis: lower-acuity disposition, follow-up, and safety net",
+    label: "Probable sepsis disposition and safety-net",
     edgeLabel: "Probable-sepsis patient stable for lower-acuity care: hemodynamics/oxygenation stable, source plan owned, antimicrobial plan reconciled, pending cultures assigned",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_probable_discharge_criteria`, "Use when a treated probable-sepsis patient is stable enough for lower-acuity care and follow-up/safety-net requirements are documented.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2461,7 +2440,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const dischargeEndpoint = endpoint({
     id: `${prefix}_discharge_followup_endpoint`,
-    label: "Sepsis survivor disposition, follow-up, and safety-net endpoint",
+    label: "Sepsis follow-up and safety-net",
     edgeLabel: "Stable for discharge or lower acuity: source controlled or owned, hemodynamics/oxygenation stable, antimicrobial plan reconciled, pending results assigned, and sepsis education/follow-up documented",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_discharge_criteria`, "Use when the patient is stable enough for lower acuity care or discharge and post-sepsis needs are addressed.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2472,7 +2451,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const specialPopulationReview = endpoint({
     id: `${prefix}_special_population_review_endpoint`,
-    label: "Clinician review: pregnancy/postpartum, immunocompromise, MDR risk, renal/hepatic dosing, or local sepsis policy",
+    label: "Pregnancy, immunocompromise, MDR, or dosing review",
     edgeLabel: "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or local protocol applies",
     sourceIds: unique([...ssc, ...maternal]),
     criteria: criteria(`${prefix}_special_population_criteria`, "Use when patient-specific modifiers change empiric antimicrobials, source-control timing, fetal/maternal monitoring, dosing, or disposition.", ["pregnancy_status", "demographics", "medications", "allergies", "comorbidities", "labs", "local_policy", "workup_findings"], unique([...ssc, ...maternal]), { criteria_options: criteriaRows }),
@@ -2483,7 +2462,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const shockReassessmentDecision = decision({
     id: `${prefix}_shock_reassessment_decision`,
-    label: "After initial sepsis resuscitation, is shock/perfusion improving enough to narrow intensity?",
+    label: "Reassess shock response",
     edgeLabel: "Initial crystalloid, antimicrobial, vasopressor, lactate, oxygenation, and source-control response documented",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_shock_reassessment_criteria`, "Route by response after initial shock/hypoperfusion therapy.", ["vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2495,7 +2474,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const shockAction = actionNode({
     id: `${prefix}_shock_resuscitation_action`,
-    label: "Septic shock or sepsis-induced hypoperfusion: start concurrent resuscitation, antimicrobials, cultures, lactate, and source control",
+    label: "Septic shock resuscitation route",
     edgeLabel: "Shock/hypoperfusion suspected from hypotension, MAP below 65 mm Hg, lactate elevation, altered mentation, mottling, oliguria, hypoxemia, or rapid worsening",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_shock_action_criteria`, "Use when immediate resuscitation cannot safely wait for full source confirmation.", ["vitals", "labs", "exam", "mental_status", "oxygenation", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2507,7 +2486,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const probableSepsisAction = actionNode({
     id: `${prefix}_probable_sepsis_action`,
-    label: "Probable or definite sepsis without shock: treat within 1 hour and define source/disposition",
+    label: "Probable sepsis treatment route",
     edgeLabel: "Probable/definite infection with organ dysfunction, high-risk host, lactate elevation, hypoxemia, oliguria, altered mentation, or rapidly worsening course but no current shock",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_probable_action_criteria`, "Use when infection is probable/definite without shock but management cannot wait.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "comorbidities", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2519,7 +2498,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const possibleSepsisAction = actionNode({
     id: `${prefix}_possible_sepsis_action`,
-    label: "Possible sepsis without shock: complete rapid infectious-vs-mimic evaluation before the 3-hour treatment decision",
+    label: "Possible sepsis evaluation route",
     edgeLabel: "Possible infection without shock: stable enough for time-limited rapid investigation, with antimicrobials by 3 hours if infection concern persists",
     sourceIds: ssc,
     criteria: criteria(`${prefix}_possible_action_criteria`, "Use for possible sepsis without shock where infection likelihood is uncertain.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], ssc, { criteria_options: criteriaRows }),
@@ -2531,7 +2510,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment_bundle`,
-    label: "Fever/infection bedside assessment: source, organ dysfunction, perfusion, oxygenation, cultures, lactate, and medication risk",
+    label: "Initial fever/infection assessment",
     edgeLabel: "Fever or suspected infection with enough bedside data to choose shock, probable sepsis, possible sepsis, mimic, or special-population branch",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial fever/infection evaluation requires source symptoms, complete vital signs, mental status, perfusion, oxygenation, organ dysfunction clues, cultures/lactate when sepsis is possible, medication/allergy risks, and host modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -2548,7 +2527,7 @@ function buildAdultSepsisClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Fever/infection: choose adult sepsis urgency, infection likelihood, source-control need, and disposition",
+    label: "Fever/infection sepsis pathway",
     sourceIds,
     criteria: criteria("activate_adult_fever_sepsis", "Activate when adult patient context includes fever, suspected infection, systemic inflammatory symptoms, sepsis concern, shock physiology, or clinician-selected fever/sepsis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
     action: "Route adult fever/infection through missing-data, septic shock, probable sepsis, possible sepsis, mimic, special-population review, source control, monitoring, de-escalation, and safety-net endpoints.",
@@ -2702,7 +2681,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const potassiumHoldEndpoint = endpoint({
     id: `${prefix}_potassium_insulin_hold_endpoint`,
-    label: "Potassium hazard: replace potassium and hold insulin until K is safe",
+    label: "Potassium hazard before insulin",
     edgeLabel: "Potassium/ECG/renal hazard: insulin should be delayed when potassium is <3.5 mmol/L, marked hyperkalemia/ECG change is present, or renal failure prevents safe replacement",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_potassium_hold_criteria`, "Use before insulin when potassium or renal/ECG status makes insulin unsafe.", ["labs", "vitals", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2714,7 +2693,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const dkaProtocolEndpoint = endpoint({
     id: `${prefix}_dka_protocol_endpoint`,
-    label: "Adult DKA confirmed: start fluid, potassium-aware insulin, precipitant treatment, and serial monitoring",
+    label: "Adult DKA protocol",
     edgeLabel: "DKA branch: prior diabetes or glucose >=200 mg/dL, beta-hydroxybutyrate >=3.0 mmol/L or urine ketones >=2+, and pH <7.3 and/or bicarbonate <18 mmol/L",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_dka_protocol_criteria`, "Use when adult DKA diagnostic thresholds are met and potassium is safe enough for insulin.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2726,7 +2705,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const dkaTransitionEndpoint = endpoint({
     id: `${prefix}_dka_transition_discharge_endpoint`,
-    label: "Adult DKA resolving: transition to basal-bolus insulin, prevent recurrence, and safety-net",
+    label: "Adult DKA transition and recurrence prevention",
     edgeLabel: "DKA improving: biochemical resolution, stable vitals/mentation, oral intake possible, precipitant owned, and basal insulin can overlap IV insulin 1-2 h",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_dka_transition_criteria`, "Use when adult DKA has resolved enough to leave IV insulin and move to subcutaneous therapy or lower acuity.", ["vitals", "labs", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2738,7 +2717,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const dkaAction = actionNode({
     id: `${prefix}_dka_action`,
-    label: "Adult DKA: classify severity, protect potassium safety, and treat the precipitant",
+    label: "Adult DKA treatment route",
     edgeLabel: "Adult DKA thresholds met, including prior diabetes or glucose >=200 mg/dL with ketonemia/ketonuria and pH <7.3 and/or bicarbonate <18 mmol/L",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_dka_action_criteria`, "Route here when adult DKA diagnostic thresholds are present or strongly suspected.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2750,7 +2729,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const hhsProtocolEndpoint = endpoint({
     id: `${prefix}_hhs_protocol_endpoint`,
-    label: "Adult HHS confirmed: high-acuity fluid-first correction with osmolality and neurologic monitoring",
+    label: "Adult HHS protocol",
     edgeLabel: "HHS branch: glucose >=600 mg/dL with effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, minimal ketonemia, and no major acidosis",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_hhs_protocol_criteria`, "Use when adult HHS thresholds are met or mixed DKA/HHS has been excluded.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2762,7 +2741,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const hhsTransitionEndpoint = endpoint({
     id: `${prefix}_hhs_resolution_endpoint`,
-    label: "Adult HHS improving: de-escalate only after osmolality, cognition, hydration, and precipitant stabilize",
+    label: "Adult HHS de-escalation readiness",
     edgeLabel: "HHS response branch: osmolality falling safely, mental status improving, perfusion restored, electrolyte plan stable, precipitant treated, and nutrition/insulin plan ready",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_hhs_resolution_criteria`, "Use when HHS is improving enough to step down monitoring or transition insulin strategy.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2773,7 +2752,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const hhsAction = actionNode({
     id: `${prefix}_hhs_action`,
-    label: "Adult HHS: fluid-first high-acuity pathway with gradual osmolality correction",
+    label: "Adult HHS treatment route",
     edgeLabel: "Adult HHS thresholds met: glucose >=600 mg/dL and effective osmolality >300 mOsm/kg or total osmolality >320 mOsm/kg, without significant ketoacidosis",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_hhs_action_criteria`, "Route here when adult HHS diagnostic thresholds are met.", ["symptoms", "vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2785,7 +2764,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const mixedEndpoint = endpoint({
     id: `${prefix}_mixed_dka_hhs_endpoint`,
-    label: "Mixed DKA/HHS: manage as high-acuity combined ketoacidotic and hyperosmolar crisis",
+    label: "Mixed DKA/HHS crisis",
     edgeLabel: "Mixed crisis: DKA ketone/acidosis thresholds coexist with HHS hyperglycemia/osmolality thresholds or altered mentation",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_mixed_criteria`, "Use when adult patient has DKA-level ketones/acidosis plus HHS-level hyperglycemia or osmolality.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2796,7 +2775,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const euglycemicSpecialEndpoint = endpoint({
     id: `${prefix}_euglycemic_special_population_endpoint`,
-    label: "Euglycemic DKA or special population: stop SGLT2 inhibitor and use clinician-governed fluid/insulin plan",
+    label: "Euglycemic DKA or special-population review",
     edgeLabel: "Ketotic acidosis even if glucose is <200 mg/dL, or pregnancy/frailty/heart failure/advanced kidney disease/SGLT2 exposure changes standard fluid or insulin assumptions",
     sourceIds: adaCrisis,
     criteria: criteria(`${prefix}_euglycemic_special_criteria`, "Use when glucose is lower than typical DKA thresholds but ketotic acidosis or special-population risk changes treatment.", ["symptoms", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], adaCrisis, { criteria_options: criteriaRows }),
@@ -2808,7 +2787,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const noncrisisEndpoint = endpoint({
     id: `${prefix}_noncrisis_hyperglycemia_endpoint`,
-    label: "Hyperglycemia without DKA/HHS: treat persistent inpatient glucose >=180 mg/dL and arrange follow-up",
+    label: "Non-crisis hyperglycemia",
     edgeLabel: "No DKA/HHS acidosis, ketone, osmolality, shock, or mental-status branch; persistent inpatient glucose >=180 mg/dL or outpatient hyperglycemia still needs diabetes plan",
     sourceIds: adaHospital,
     criteria: criteria(`${prefix}_noncrisis_criteria`, "Use when crisis thresholds are absent and the patient is stable enough for inpatient hyperglycemia or outpatient diabetes management.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "workup_findings", "follow_up_access"], adaHospital, { criteria_options: criteriaRows }),
@@ -2819,7 +2798,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_endpoint`,
-    label: "Alternate diagnosis or mimic: route away from DKA/HHS when objective thresholds contradict crisis",
+    label: "DKA/HHS mimic or alternate diagnosis",
     edgeLabel: "DKA/HHS thresholds absent or another cause better explains symptoms: starvation/alcohol ketosis, lactic acidosis, renal failure, intoxication, sepsis, pancreatitis, MI/stroke, medication effect, or lab artifact",
     sourceIds: unique([...adaCrisis, ...genericSourceIds]),
     criteria: criteria(`${prefix}_alternate_criteria`, "Use an alternate pathway when adult DKA/HHS thresholds are absent or a competing diagnosis explains the abnormal data.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], unique([...adaCrisis, ...genericSourceIds]), { criteria_options: criteriaRows }),
@@ -2830,7 +2809,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Adult hyperglycemic crisis: classify DKA, HHS, mixed crisis, euglycemic DKA, non-crisis hyperglycemia, or mimic",
+    label: "Choose adult hyperglycemia branch",
     edgeLabel: "Adult hyperglycemia labs and bedside severity available for threshold routing",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify adult hyperglycemia using glucose, ketones, pH, bicarbonate, potassium, osmolality, mental status, pregnancy/SGLT2 status, and comorbid fluid risk.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -2842,7 +2821,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Adult hyperglycemic crisis screen: glucose, ketones, pH or bicarbonate, potassium, creatinine, osmolality, mental status, medication exposure, and precipitant",
+    label: "Initial adult hyperglycemia assessment",
     edgeLabel: "Adult hyperglycemia, ketotic symptoms, dehydration, altered mentation, suspected DKA/HHS, SGLT2 exposure, or clinician-selected hyperglycemic-crisis workup",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult DKA/HHS assessment requires concurrent clinical severity and lab data before a non-emergency branch is selected.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -2855,7 +2834,7 @@ function buildAdultDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Adult hyperglycemia: choose DKA/HHS urgency, potassium safety, treatment path, and disposition",
+    label: "Adult hyperglycemia pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for adult hyperglycemia, suspected DKA/HHS, ketones, acidosis, hyperosmolality, altered mental status, dehydration, SGLT2 inhibitor exposure, pregnancy, or clinician-selected hyperglycemic-crisis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
     action: "Route adult hyperglycemia through missing-data, DKA, HHS, mixed crisis, euglycemic/special-population, potassium safety, monitoring/transition, non-crisis, mimic, and safety-net endpoints.",
@@ -3013,7 +2992,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const cerebralEdemaEndpoint = endpoint({
     id: `${prefix}_cerebral_edema_endpoint`,
-    label: "Cerebral edema suspected: treat immediately before imaging",
+    label: "Suspected cerebral edema",
     edgeLabel: "Headache, bradycardia or unexpected HR fall, rising BP, recurrent vomiting, agitation/irritability, deteriorating consciousness, respiratory pauses, oculomotor palsy, pupillary abnormality, falling sodium/osmolality, or high-risk age/severe DKA",
     sourceIds: unique([...chq, ...nice]),
     criteria: criteria(`${prefix}_cerebral_edema_criteria`, "Use whenever pediatric DKA neurologic warning signs or cerebral edema signs appear.", ["symptoms", "vitals", "exam", "labs", "workup_findings"], unique([...chq, ...nice]), { criteria_options: criteriaRows }),
@@ -3025,7 +3004,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const shockBolusEndpoint = endpoint({
     id: `${prefix}_shock_bolus_endpoint`,
-    label: "Shock or cardiovascular compromise: 0.9% saline bolus and urgent critical-care route",
+    label: "Shock or cardiovascular compromise",
     edgeLabel: "Shock, poor perfusion, hypotension, coma, cardiovascular compromise, or need for repeated fluid bolus; two 10 mL/kg boluses or maximum 20 mL/kg requires urgent critical-care advice",
     sourceIds: chq,
     criteria: criteria(`${prefix}_shock_bolus_criteria`, "Use when pediatric DKA/HHS presents with shock or severe perfusion compromise.", ["vitals", "exam", "labs", "workup_findings"], chq, { criteria_options: criteriaRows }),
@@ -3037,7 +3016,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const pediatricDkaProtocolEndpoint = endpoint({
     id: `${prefix}_dka_protocol_endpoint`,
-    label: "Pediatric DKA confirmed: fluids first, no insulin bolus, potassium-safe infusion, and hourly monitoring",
+    label: "Pediatric DKA protocol",
     edgeLabel: "Pediatric DKA thresholds met: BGL >11 mmol/L, acidosis, and moderate/large ketones; severity and high-risk age determine monitoring location",
     sourceIds: unique([...chq, ...nice, ...rch, ...ispad]),
     criteria: criteria(`${prefix}_dka_protocol_criteria`, "Use when pediatric DKA diagnostic thresholds are met and cerebral edema/shock have been addressed.", ["symptoms", "vitals", "labs", "exam", "medications", "workup_findings"], unique([...chq, ...nice, ...rch, ...ispad]), { criteria_options: criteriaRows }),
@@ -3049,7 +3028,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const potassiumAnuriaEndpoint = endpoint({
     id: `${prefix}_potassium_anuria_endpoint`,
-    label: "Potassium danger or anuria: specialist fluid/insulin modification",
+    label: "Potassium danger or anuria",
     edgeLabel: "K <3.5 mmol/L at diagnosis, potassium below 3 mmol/L during treatment, hyperkalemia, ECG changes, anuria, renal failure, or inability to monitor potassium safely",
     sourceIds: unique([...chq, ...nice]),
     criteria: criteria(`${prefix}_potassium_anuria_criteria`, "Use when potassium, urine output, ECG, or renal status changes pediatric DKA/HHS insulin and fluid safety.", ["labs", "vitals", "exam", "medications", "workup_findings"], unique([...chq, ...nice]), { criteria_options: criteriaRows }),
@@ -3061,7 +3040,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const pediatricHhsEndpoint = endpoint({
     id: `${prefix}_hhs_specialist_endpoint`,
-    label: "Pediatric HHS or mixed DKA/HHS: urgent endocrine/critical-care pathway",
+    label: "Pediatric HHS or mixed DKA/HHS",
     edgeLabel: "Pediatric HHS thresholds: BGL >33.3 mmol/L, effective osmolality >320 mOsm/kg, ketones <1.1 mmol/L, pH >7.25 and/or bicarbonate >15 mmol/L, or mixed DKA/HHS features",
     sourceIds: unique([...chq, ...ispad]),
     criteria: criteria(`${prefix}_hhs_criteria`, "Use when pediatric HHS or mixed DKA/HHS thresholds are present.", ["vitals", "labs", "exam", "medications", "comorbidities", "workup_findings"], unique([...chq, ...ispad]), { criteria_options: criteriaRows }),
@@ -3073,7 +3052,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const transitionEndpoint = endpoint({
     id: `${prefix}_transition_recurrence_endpoint`,
-    label: "Pediatric DKA resolving: oral fluids, subcutaneous insulin overlap, education, and recurrence prevention",
+    label: "Pediatric DKA transition and recurrence prevention",
     edgeLabel: "DKA improving: ketosis resolving, pH >=7.3, alert, no vomiting, oral fluids tolerated, and subcutaneous insulin can start at least 30 minutes before stopping IV insulin",
     sourceIds: unique([...chq, ...nice, ...rch]),
     criteria: criteria(`${prefix}_transition_criteria`, "Use when pediatric DKA is resolving and transition or discharge planning can start.", ["vitals", "labs", "exam", "medications", "workup_findings", "follow_up_access"], unique([...chq, ...nice, ...rch]), { criteria_options: criteriaRows }),
@@ -3085,7 +3064,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const glucoseFluidsEndpoint = endpoint({
     id: `${prefix}_glucose_fluids_endpoint`,
-    label: "Glucose falling during DKA therapy: add dextrose and continue insulin for ketone clearance",
+    label: "DKA glucose-fluid adjustment",
     edgeLabel: "Treatment glucose branch: plasma glucose <14 mmol/L needs 0.9% saline with 5% glucose and potassium; glucose <6 mmol/L with persisting ketosis needs more glucose and at least 0.05 units/kg/hour insulin",
     sourceIds: nice,
     criteria: criteria(`${prefix}_glucose_fluids_criteria`, "Use during pediatric DKA treatment when glucose falls before ketosis/acidosis has resolved.", ["labs", "medications", "workup_findings"], nice, { criteria_options: criteriaRows }),
@@ -3096,7 +3075,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_endpoint`,
-    label: "Alternate pediatric diagnosis or no crisis: route away from DKA/HHS only after thresholds are checked",
+    label: "Pediatric DKA/HHS mimic or no crisis",
     edgeLabel: "DKA/HHS thresholds absent or another diagnosis better explains vomiting, abdominal pain, acidosis, dehydration, altered mental status, or hyperglycemia",
     sourceIds: unique([...chq, ...nice, ...genericSourceIds]),
     criteria: criteria(`${prefix}_alternate_criteria`, "Use an alternate pathway when pediatric DKA/HHS thresholds are absent and another diagnosis better explains the presentation.", ["symptoms", "vitals", "labs", "exam", "imaging_results", "medications", "workup_findings"], unique([...chq, ...nice, ...genericSourceIds]), { criteria_options: criteriaRows }),
@@ -3107,7 +3086,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const dkaAction = actionNode({
     id: `${prefix}_dka_action`,
-    label: "Pediatric DKA: severity, shock, potassium, glucose-fluid, and transition decisions",
+    label: "Pediatric DKA treatment route",
     edgeLabel: "Pediatric DKA diagnostic thresholds met; classify mild/moderate/severe by pH/bicarbonate and apply age, shock, potassium, cerebral-edema, and monitoring rules",
     sourceIds: unique([...chq, ...nice, ...rch, ...ispad]),
     criteria: criteria(`${prefix}_dka_action_criteria`, "Route here when pediatric DKA diagnostic thresholds are present.", ["symptoms", "vitals", "labs", "exam", "medications", "workup_findings"], unique([...chq, ...nice, ...rch, ...ispad]), { criteria_options: criteriaRows }),
@@ -3119,7 +3098,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Pediatric hyperglycemic crisis: classify DKA severity, HHS, cerebral edema, potassium hazard, transition readiness, or mimic",
+    label: "Choose pediatric hyperglycemia branch",
     edgeLabel: "Pediatric glucose, ketone, pH/bicarbonate, electrolyte, osmolality, weight, fluid, and neurologic data available for threshold routing",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric DKA/HHS using age, weight, glucose, ketones, pH, bicarbonate, potassium, sodium/osmolality, shock/perfusion, mental status, and treatment response.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3131,7 +3110,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Pediatric hyperglycemia: obtain emergency ABCD, weight, neuro status, ketone/acid-base, electrolyte, and osmolality data together",
+    label: "Initial pediatric hyperglycemia assessment",
     edgeLabel: "Child or adolescent with hyperglycemia, ketones, vomiting, abdominal pain, dehydration, Kussmaul breathing, altered mental status, suspected DKA/HHS, pump failure, insulin omission, or clinician-selected pediatric crisis workup",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric DKA/HHS assessment requires emergency ABCD, neurologic risk, weight-based dosing data, and threshold labs before a non-emergency branch is selected.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3144,7 +3123,7 @@ function buildPediatricDkaHhsClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Pediatric DKA/HHS: choose emergency stabilization, protocol treatment, cerebral-edema route, and disposition",
+    label: "Pediatric DKA/HHS pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for child/adolescent hyperglycemia, suspected DKA/HHS, ketones, acidosis, dehydration, Kussmaul breathing, altered mental status, shock, SGLT2/pregnancy/fasting risk, pump failure, insulin omission, or clinician-selected pediatric hyperglycemic-crisis workup.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
     action: "Route pediatric DKA/HHS through missing-data, cerebral edema, shock bolus, DKA protocol, HHS/mixed crisis, glucose-fluid adjustment, potassium/anuria review, transition, recurrence prevention, mimic, and safety-net endpoints.",
@@ -3246,7 +3225,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const crisisEndpoint = endpoint({
     id: `${prefix}_adrenal_crisis_endpoint`,
-    label: "Salt-wasting or adrenal crisis: hydrocortisone injection, isotonic fluid, dextrose, and monitored care",
+    label: "Salt-wasting CAH or adrenal crisis",
     edgeLabel: "Emergency branch: newborn first 4 weeks or any CAH patient with vomiting, dehydration, shock, hypoglycemia, hyponatremia, hyperkalemia, major illness, surgery, trauma, labor, or missed steroids",
     sourceIds: unique([...esCah, ...geneReviews]),
     criteria: criteria(`${prefix}_crisis_criteria`, "Use when salt-wasting crisis or adrenal crisis is suspected; treatment should not wait for full diagnostic confirmation in an unstable patient.", ["symptoms", "exam", "vitals", "labs", "medications", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /crisis|salt|stress|hydrocortisone|newborn/i.test(row.id)) }),
@@ -3258,7 +3237,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const newbornDiagnosticEndpoint = endpoint({
     id: `${prefix}_newborn_confirmation_endpoint`,
-    label: "Newborn positive screen or virilization: confirm 21-hydroxylase CAH and prevent salt wasting",
+    label: "Newborn/classic CAH confirmation",
     edgeLabel: "Newborn branch: positive screen, ambiguous genitalia/virilization, poor feeding, vomiting, weight loss, dehydration, or family history with age/gestation-adjusted 17-OHP pending",
     sourceIds: unique([...esCah, ...geneReviews]),
     criteria: criteria(`${prefix}_newborn_confirmation_criteria`, "Use for stable newborns or infants with a positive CAH screen, virilization, family risk, or early salt-wasting concern who are not already in adrenal crisis.", ["demographics", "symptoms", "exam", "labs", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /newborn|cosyntropin|salt/i.test(row.id)) }),
@@ -3270,7 +3249,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const afterInfancyDiagnosticEndpoint = endpoint({
     id: `${prefix}_after_infancy_diagnosis_endpoint`,
-    label: "After infancy: classify classic, nonclassic, carrier, or unaffected by early morning 17-OHP and cosyntropin profile",
+    label: "After-infancy CAH classification",
     edgeLabel: "Symptomatic child, adolescent, or adult branch: virilization, rapid pubarche, advanced bone age, hirsutism/acne, menstrual irregularity, infertility, adrenal rest tumor, or family history",
     sourceIds: unique([...esCah, ...geneReviews]),
     criteria: criteria(`${prefix}_after_infancy_diagnosis_criteria`, "Use when possible CAH presents after infancy and early morning biochemical thresholds can separate classic, nonclassic, and mimic pathways.", ["symptoms", "exam", "labs", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews]), { criteria_options: criteriaRows.filter((row) => /17ohp|cosyntropin|after_infancy/i.test(row.id)) }),
@@ -3282,7 +3261,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const classicTreatmentEndpoint = endpoint({
     id: `${prefix}_classic_replacement_endpoint`,
-    label: "Classic CAH replacement: hydrocortisone, mineralocorticoid, salt in infancy, and dose-safety monitoring",
+    label: "Classic CAH replacement plan",
     edgeLabel: "Classic CAH confirmed or highly likely without crisis: salt-wasting or simple-virilizing phenotype, classic 17-OHP range, or established CYP21A2 diagnosis needs maintenance therapy",
     sourceIds: esCah,
     criteria: criteria(`${prefix}_classic_replacement_criteria`, "Use for stable classic CAH patients who need maintenance glucocorticoid/mineralocorticoid replacement or dose review.", ["labs", "medications", "demographics", "exam", "vitals", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /growing|adult_classic|monitoring|overtreatment/i.test(row.id)) }),
@@ -3294,7 +3273,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const nonclassicTreatmentEndpoint = endpoint({
     id: `${prefix}_nonclassic_symptomatic_endpoint`,
-    label: "Nonclassic CAH symptoms: treat patient-important androgen effects or fertility goals, not an isolated lab value",
+    label: "Symptomatic nonclassic CAH treatment",
     edgeLabel: "Nonclassic branch needing therapy: rapid pubarche, advanced bone age, overt virilization, infertility, miscarriage history, or patient-important hyperandrogenism",
     sourceIds: esCah,
     criteria: criteria(`${prefix}_nonclassic_symptomatic_criteria`, "Use when nonclassic CAH is confirmed and symptoms or reproductive goals justify treatment.", ["symptoms", "exam", "labs", "demographics", "pregnancy_status", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /nonclassic/i.test(row.id)) }),
@@ -3306,7 +3285,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const nonclassicDeescalationEndpoint = endpoint({
     id: `${prefix}_nonclassic_no_daily_or_stop_endpoint`,
-    label: "Nonclassic CAH without treatment indication: avoid or stop daily steroids and reserve stress dosing for proven cortisol risk",
+    label: "Nonclassic CAH no daily-steroid route",
     edgeLabel: "Low-treatment branch: asymptomatic nonpregnant nonclassic CAH, adult height attained, symptoms resolved, most adult males, or stress dosing question without inadequate cortisol reserve",
     sourceIds: esCah,
     criteria: criteria(`${prefix}_nonclassic_deescalation_criteria`, "Use when nonclassic CAH does not justify daily glucocorticoids or when prior treatment can be tapered/stopped.", ["symptoms", "exam", "labs", "demographics", "medications", "pregnancy_status", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /nonclassic/i.test(row.id)) }),
@@ -3318,7 +3297,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const crinecerfontEndpoint = endpoint({
     id: `${prefix}_crinecerfont_adjunct_endpoint`,
-    label: "Crinecerfont adjunct: age >=4 classic CAH with androgen-control need and continued glucocorticoid replacement",
+    label: "Crinecerfont adjunct review",
     edgeLabel: "Adjunct branch: classic CAH age at least 4 years, weight known, androgen control remains problematic, glucocorticoid replacement continues, and hypersensitivity/renal/CYP3A4 risks are reviewed",
     sourceIds: crinecerfont,
     criteria: criteria(`${prefix}_crinecerfont_criteria`, "Use when crinecerfont is being considered, started, monitored, dose-adjusted, or stopped.", ["demographics", "labs", "medications", "comorbidities", "vitals", "workup_findings"], crinecerfont, { criteria_options: criteriaRows.filter((row) => /crinecerfont/i.test(row.id)) }),
@@ -3330,7 +3309,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const pregnancyDsdReviewEndpoint = endpoint({
     id: `${prefix}_pregnancy_dsd_review_endpoint`,
-    label: "Pregnancy, prenatal dexamethasone, fertility, or DSD surgery: specialist review required",
+    label: "Pregnancy, fertility, or DSD review",
     edgeLabel: "Special branch: pregnancy or conception planning, infertility, prenatal dexamethasone request, partner/genetic counseling need, virilized 46,XX infant, or genital surgery discussion",
     sourceIds: esCah,
     criteria: criteria(`${prefix}_pregnancy_dsd_review_criteria`, "Use when pregnancy, fertility, prenatal treatment, genetic counseling, or genital anatomy decisions alter CAH management.", ["pregnancy_status", "demographics", "exam", "labs", "medications", "workup_findings"], esCah, { criteria_options: criteriaRows.filter((row) => /pregnancy|prenatal|genital|surgery/i.test(row.id)) }),
@@ -3342,7 +3321,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const monitoringEndpoint = endpoint({
     id: `${prefix}_monitoring_reassessment_endpoint`,
-    label: "CAH monitoring: growth/BP/electrolytes/renin/timed hormones and overtreatment checks",
+    label: "CAH monitoring and overtreatment checks",
     edgeLabel: "Monitoring branch: patient is on glucocorticoid, mineralocorticoid, salt, or crinecerfont therapy, or has fertility/adrenal rest tumor surveillance needs",
     sourceIds: unique([...esCah, ...geneReviews, ...crinecerfont]),
     criteria: criteria(`${prefix}_monitoring_criteria`, "Use after any CAH diagnostic or treatment branch when response, dose toxicity, or long-term complication surveillance must be tracked.", ["symptoms", "exam", "vitals", "labs", "medications", "demographics", "pregnancy_status", "workup_findings"], unique([...esCah, ...geneReviews, ...crinecerfont]), { criteria_options: criteriaRows.filter((row) => /monitoring|surveillance|crinecerfont/i.test(row.id)) }),
@@ -3365,7 +3344,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const safetyNetEndpoint = endpoint({
     id: `${prefix}_followup_safety_net_endpoint`,
-    label: "CAH disposition and safety net: emergency kit, medical ID, sick-day rules, and follow-up owner",
+    label: "CAH follow-up and sick-day safety-net",
     edgeLabel: "Stable branch: no active crisis, diagnostic/treatment plan is documented, medications are accessible, caregiver or patient can use injection kit, and follow-up/result ownership is assigned",
     sourceIds: unique([...esCah, ...geneReviews, ...crinecerfont]),
     criteria: criteria(`${prefix}_followup_safety_net_criteria`, "Use when the CAH plan is ready for discharge, outpatient management, or interval follow-up after emergency risk has been addressed.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], unique([...esCah, ...geneReviews, ...crinecerfont]), { criteria_options: criteriaRows.filter((row) => /stress|hydrocortisone|monitoring|crinecerfont/i.test(row.id)) }),
@@ -3377,7 +3356,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const classificationDecision = decision({
     id: `${prefix}_branch_decision`,
-    label: "CAH branch: crisis, diagnosis, classic therapy, nonclassic therapy, crinecerfont, pregnancy/DSD, mimic, or safety net",
+    label: "Choose CAH branch",
     edgeLabel: "Use age/gestation, 17-OHP/cosyntropin profile, electrolytes/glucose, phenotype, current steroids, crinecerfont risks, pregnancy/fertility context, and follow-up reliability",
     sourceIds,
     criteria: criteria(`${prefix}_branch_criteria`, "Classify CAH management using crisis physiology, age and gestational context, 17-OHP/cosyntropin thresholds, salt-wasting labs, classic versus nonclassic phenotype, treatment exposure, medication contraindications, pregnancy/fertility status, and reliable follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3402,7 +3381,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "CAH initial screen: age/gestation, crisis signs, phenotype, 17-OHP, electrolytes, medications",
+    label: "Initial CAH assessment",
     edgeLabel: "CAH is already suspected or known: assess salt-wasting danger, virilization/hyperandrogenism phenotype, diagnostic thresholds, and current steroid/mineralocorticoid/crinecerfont safety",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial CAH assessment captures the exact patient data needed for emergency treatment, diagnosis, chronic replacement, nonclassic management, medication safety, and follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3415,7 +3394,7 @@ function buildCongenitalAdrenalHyperplasiaClinicalPathwayTree(module, sourceById
 
   const root = decision({
     id: "root",
-    label: "CAH pathway: emergency, diagnosis, replacement, nonclassic care, medication safety, and follow-up",
+    label: "CAH pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for known or suspected 21-hydroxylase-deficient CAH, positive newborn screen, ambiguous genitalia/virilization, salt-wasting symptoms, adrenal crisis risk, early pubarche or hyperandrogenism, infertility/miscarriage context, chronic CAH medication review, crinecerfont review, pregnancy planning, or clinician-opened CAH evaluation.", ["problem_list_or_diagnosis", "presenting_symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "clinician_opened_module"], sourceIds),
     action: "Route CAH through immediate crisis treatment when unstable; otherwise use exact age, gestational, 17-OHP, cosyntropin, electrolyte, phenotype, medication, pregnancy/fertility, and follow-up data to reach an actionable diagnostic, treatment, monitoring, review, or safety-net endpoint.",
@@ -3594,7 +3573,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const crisisEndpoint = endpoint({
     id: `${prefix}_adrenal_crisis_endpoint`,
-    label: "Adrenal crisis or severe suspected adrenal insufficiency: hydrocortisone, isotonic fluid, dextrose when needed, and monitored care",
+    label: "Adrenal crisis or severe adrenal insufficiency",
     edgeLabel: "Severe branch: shock, marked hypotension, dehydration, vomiting, altered mental status, hypoglycemia, severe hyponatremia/hyperkalemia, infection, trauma, surgery, labor, or missed steroids",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_crisis_criteria`, "Use when severe adrenal insufficiency symptoms or adrenal crisis features are present or treatment cannot wait for endocrine testing.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3606,7 +3585,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const primaryConfirmedEndpoint = endpoint({
     id: `${prefix}_primary_confirmed_endpoint`,
-    label: "Primary adrenal insufficiency confirmed or highly likely: replace glucocorticoid and mineralocorticoid axes",
+    label: "Primary adrenal insufficiency replacement",
     edgeLabel: "Confirmed/likely primary pattern: cosyntropin peak cortisol below 18 ug/dL, morning cortisol below 5 ug/dL when stimulation cannot be done, ACTH above 2-fold ULN, or aldosterone deficiency with high renin",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_primary_confirmed_criteria`, "Use when primary adrenal insufficiency is confirmed or strongly likely after crisis stabilization.", ["labs", "vitals", "medications", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3618,7 +3597,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const borderlineEndpoint = endpoint({
     id: `${prefix}_borderline_assay_review_endpoint`,
-    label: "Borderline cortisol or assay-dependent result: endocrine review before excluding adrenal insufficiency",
+    label: "Borderline cortisol or assay review",
     edgeLabel: "Indeterminate branch: cortisol timing uncertain, cosyntropin cutoff differs by assay, acute illness alters interpretation, exogenous steroids interfere, or ACTH/mineralocorticoid pattern is discordant",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_borderline_assay_criteria`, "Use when cortisol/ACTH/cosyntropin data are incomplete, assay-dependent, discordant, or affected by acute illness or steroid exposure.", ["labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3630,7 +3609,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_exclusion_endpoint`,
-    label: "Mimic or competing adrenal pattern: route to the more specific diagnosis after crisis is excluded",
+    label: "Adrenal mimic or competing pattern",
     edgeLabel: "Adrenal thresholds do not fit or another cause better explains hypotension, electrolyte changes, weight loss, hyperpigmentation, vomiting, fatigue, or hypoglycemia",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when the cortisol/ACTH/mineralocorticoid pattern does not support this adrenal pathway or a competing diagnosis is more likely.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -3641,7 +3620,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const specialPopulationEndpoint = endpoint({
     id: `${prefix}_special_population_endpoint`,
-    label: "Pregnancy, child, labor, surgery, or major stress: endocrine-governed dosing branch",
+    label: "Pregnancy, pediatric, or stress-dose review",
     edgeLabel: "Modifier branch: pregnancy, third trimester symptoms, active labor, child/adolescent dosing, surgery/anesthesia, trauma, ICU illness, or inability to use the local stress-dose protocol",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_special_population_criteria`, "Use when pregnancy, pediatric status, labor, major surgery, trauma, or local perioperative policy changes replacement or stress-dose decisions.", ["demographics", "pregnancy_status", "medications", "vitals", "labs", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3653,7 +3632,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const monitoringEndpoint = endpoint({
     id: `${prefix}_monitoring_reassessment_endpoint`,
-    label: "Adrenal therapy monitoring: reassess hemodynamics, electrolytes, glucose, volume, and steroid adverse effects",
+    label: "Adrenal therapy monitoring",
     edgeLabel: "After hydrocortisone or chronic replacement: hypotension, glucose, sodium, potassium, edema, salt craving, weight, energy, infection source, or oral intake still needs active reassessment",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_monitoring_criteria`, "Use after acute or chronic adrenal treatment decisions to confirm physiologic response and medication safety.", ["symptoms", "exam", "vitals", "labs", "medications", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3665,7 +3644,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const transitionEndpoint = endpoint({
     id: `${prefix}_transition_safety_endpoint`,
-    label: "Adrenal crisis resolving: transition to oral regimen, emergency kit, and sick-day safety plan",
+    label: "Adrenal crisis transition and sick-day plan",
     edgeLabel: "Improving branch: hemodynamics stable, glucose/electrolytes improving, precipitating illness controlled, oral intake possible, and outpatient steroid access confirmed",
     sourceIds: adrenal,
     criteria: criteria(`${prefix}_transition_criteria`, "Use when adrenal crisis physiology has resolved enough to move from parenteral stress dosing to a documented oral and safety-net plan.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], adrenal, { criteria_options: criteriaRows }),
@@ -3677,7 +3656,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const chronicAction = actionNode({
     id: `${prefix}_chronic_replacement_action`,
-    label: "Confirmed adrenal insufficiency: combine glucocorticoid plan, mineralocorticoid decision, monitoring, and crisis prevention",
+    label: "Chronic adrenal replacement plan",
     edgeLabel: "Stable confirmed/likely branch: crisis excluded or treated, cortisol deficiency established, primary-vs-central pattern reviewed, and replacement plan can be made",
     sourceIds,
     criteria: criteria(`${prefix}_chronic_replacement_criteria`, "Route stable confirmed or highly likely adrenal insufficiency to replacement, mineralocorticoid assessment, monitoring, and safety education together.", ["labs", "vitals", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -3689,7 +3668,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label}: choose crisis treatment, endocrine confirmation, replacement, mimic, or review branch`,
+    label: "Choose adrenal insufficiency branch",
     edgeLabel: "Adrenal vitals, cortisol/ACTH or cosyntropin data, electrolytes, steroid exposure, renin/aldosterone status, and stress/pregnancy modifiers are available for routing",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify adrenal urgency and replacement needs using hemodynamics, cortisol/ACTH testing, cosyntropin response, sodium, potassium, glucose, steroid exposure, renin/aldosterone status, and special-population modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3701,7 +3680,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: `${label}: assess crisis physiology and endocrine confirmation data together`,
+    label: "Initial adrenal insufficiency assessment",
     edgeLabel: "Patient has hypotension, volume depletion, vomiting, fatigue/weight loss, hyperpigmentation, hypoglycemia, hyponatremia, hyperkalemia, suspected steroid withdrawal, autoimmune Addison's disease, or clinician-selected adrenal evaluation",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adrenal assessment requires immediate crisis screen plus paired endocrine and electrolyte data when the patient is stable enough for testing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -3714,7 +3693,7 @@ function buildAdrenalInsufficiencyClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: `${label}: route by adrenal crisis physiology, cortisol confirmation, replacement needs, and safety planning`,
+    label: `${label} pathway`,
     sourceIds,
     criteria: criteria(`${prefix}_activate`, `Activate for suspected ${label}, adrenal crisis concern, Addison's disease history, glucocorticoid withdrawal, unexplained hypotension, hyponatremia, hyperkalemia, hypoglycemia, vomiting, hyperpigmentation, autoimmune adrenal disease, or clinician-chosen adrenal evaluation.`, ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
     action: `Route ${label} through crisis treatment, cortisol/ACTH/cosyntropin confirmation, primary-vs-central pattern review, glucocorticoid and mineralocorticoid replacement, special-population dosing, monitoring, transition, follow-up, and sick-day safety endpoints.`,
@@ -3888,7 +3867,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const apoplexyCrisisEndpoint = endpoint({
     id: `${prefix}_apoplexy_or_adrenal_crisis_endpoint`,
-    label: "Pituitary apoplexy or secondary adrenal crisis: hydrocortisone now, urgent MRI/visual assessment, endocrine-neurosurgical disposition",
+    label: "Pituitary apoplexy or adrenal crisis",
     edgeLabel: "Emergency branch: sudden severe headache, visual loss, visual-field defect, ophthalmoplegia/cranial nerve palsy, reduced consciousness, meningism, severe hypotension, vomiting, hypoglycemia, or severe hyponatremia",
     sourceIds: unique([...hypopit, ...adrenal]),
     criteria: criteria(`${prefix}_apoplexy_crisis_criteria`, "Use when mass-effect symptoms, pituitary apoplexy concern, or secondary adrenal crisis features require emergency treatment and monitored disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], unique([...hypopit, ...adrenal]), { criteria_options: criteriaRows }),
@@ -3900,7 +3879,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const centralAiEndpoint = endpoint({
     id: `${prefix}_central_ai_endpoint`,
-    label: "Central adrenal insufficiency: replace glucocorticoid before thyroid hormone escalation",
+    label: "Central adrenal replacement first",
     edgeLabel: "Adrenal branch: 8-9 AM cortisol below 3 ug/dL, indeterminate 3-15 ug/dL needing dynamic test, peak stimulated cortisol below 18.1 ug/dL, or adrenal status unknown before L-T4",
     sourceIds: hypopit,
     criteria: criteria(`${prefix}_central_ai_criteria`, "Use when central adrenal insufficiency is diagnosed, indeterminate, or must be covered before thyroid hormone is started.", ["labs", "medications", "vitals", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
@@ -3912,7 +3891,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const centralHypothyroidEndpoint = endpoint({
     id: `${prefix}_central_hypothyroid_endpoint`,
-    label: "Central hypothyroidism: titrate levothyroxine by free T4 after adrenal coverage",
+    label: "Central hypothyroidism treatment",
     edgeLabel: "Thyroid branch: free T4 below reference range with low or inappropriately normal TSH, but adrenal reserve has been covered or excluded",
     sourceIds: hypopit,
     criteria: criteria(`${prefix}_central_hypothyroid_criteria`, "Use when central hypothyroidism is present and adrenal insufficiency has been excluded or glucocorticoid therapy has been started.", ["labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
@@ -3924,7 +3903,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const diEndpoint = endpoint({
     id: `${prefix}_di_ddavp_safety_endpoint`,
-    label: "Central diabetes insipidus: DDAVP plan with sodium, thirst, weight, and overdose safeguards",
+    label: "Central DI and DDAVP safety",
     edgeLabel: "DI branch: polyuria/nocturia, hypernatremia or high-normal sodium, dilute urine, postoperative DI, adipsia, DDAVP use, hyponatremia risk, or new polyuria after glucocorticoids",
     sourceIds: hypopit,
     criteria: criteria(`${prefix}_di_criteria`, "Use when central diabetes insipidus or DDAVP safety affects the active hypopituitarism branch.", ["symptoms", "labs", "medications", "comorbidities", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
@@ -3936,7 +3915,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const gonadalGhProlactinEndpoint = endpoint({
     id: `${prefix}_gonadal_gh_prolactin_endpoint`,
-    label: "Gonadal, GH, and prolactin axes: confirm deficiency, contraindications, fertility goals, and tumor context",
+    label: "Gonadal, GH, and prolactin-axis review",
     edgeLabel: "Stable axis branch: adrenal and thyroid sequencing addressed, then LH/FSH-sex steroid, prolactin, IGF-1/dynamic GH testing, fertility intent, age, tumor activity, and contraindications guide treatment",
     sourceIds: hypopit,
     criteria: criteria(`${prefix}_gonadal_gh_prolactin_criteria`, "Use for stable outpatient-style replacement decisions after emergency, adrenal, thyroid, and DI safety have been addressed.", ["labs", "medications", "demographics", "pregnancy_status", "comorbidities", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
@@ -3948,7 +3927,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_exclusion_endpoint`,
-    label: "Mimic or alternate pituitary-axis explanation: route after adrenal crisis and apoplexy are excluded",
+    label: "Pituitary-axis mimic or alternate diagnosis",
     edgeLabel: "Alternate branch: primary thyroid/adrenal/gonadal disease, medication effect, pregnancy/lactation physiology, renal or osmotic polyuria, hyperglycemia, hypercalcemia, infection, malignancy, or nonpituitary sellar disease fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when pituitary-axis results or imaging do not support hypopituitarism or a competing diagnosis explains the abnormalities better.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -3959,7 +3938,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const monitoringEndpoint = endpoint({
     id: `${prefix}_monitoring_interactions_endpoint`,
-    label: "Replacement monitoring: prevent adrenal, thyroid, DDAVP, GH, and postoperative interaction harms",
+    label: "Pituitary replacement monitoring",
     edgeLabel: "Monitoring branch: GH start, estrogen change, glucocorticoid start, DDAVP use, postoperative status, pituitary surgery, radiation, or overreplacement risk changes labs and symptoms",
     sourceIds: hypopit,
     criteria: criteria(`${prefix}_monitoring_criteria`, "Use after any hormone replacement or pituitary surgery/radiation plan to detect hormone interactions, underreplacement, overreplacement, and water-balance complications.", ["symptoms", "exam", "vitals", "labs", "medications", "imaging_results", "workup_findings"], hypopit, { criteria_options: criteriaRows }),
@@ -3971,7 +3950,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Hypopituitarism follow-up: emergency steroid/DI safety, pending-result ownership, and specialty review",
+    label: "Hypopituitarism follow-up and safety-net",
     edgeLabel: "Stable branch: emergency physiology excluded or treated, hormone sequence documented, medication access confirmed, pending labs/imaging owned, and safety instructions can be delivered",
     sourceIds,
     criteria: criteria(`${prefix}_followup_criteria`, "Use when hypopituitarism management is stable enough for disposition and longitudinal endocrine follow-up.", ["vitals", "labs", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -3983,7 +3962,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const replacementAction = actionNode({
     id: `${prefix}_replacement_sequence_action`,
-    label: "Stable hypopituitarism: sequence adrenal, thyroid, DI, gonadal, GH, monitoring, and follow-up decisions",
+    label: "Stable hypopituitarism replacement sequence",
     edgeLabel: "Stable branch: no immediate apoplexy or crisis physiology, and enough endocrine axis data exist to apply hormone-sequencing rules",
     sourceIds,
     criteria: criteria(`${prefix}_replacement_sequence_criteria`, "Route stable hypopituitarism through hormone replacement sequencing and monitoring after emergency features have been excluded.", ["labs", "medications", "imaging_results", "pregnancy_status", "comorbidities", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -3995,7 +3974,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Hypopituitarism: choose apoplexy/crisis, adrenal-first sequence, DI safety, replacement, mimic, or follow-up branch",
+    label: "Choose hypopituitarism branch",
     edgeLabel: "Pituitary symptoms, visual findings, cortisol, free T4/TSH, sodium/water-balance data, pituitary MRI/visual results, medications, and special-population modifiers are available for routing",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify hypopituitarism by emergency mass effect, central adrenal reserve, thyroid status, DI/water balance, remaining pituitary axes, medications, pregnancy/fertility status, imaging, and treatment response.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4007,7 +3986,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Hypopituitarism: assess mass effect and endocrine axes with adrenal safety first",
+    label: "Initial hypopituitarism assessment",
     edgeLabel: "Patient has known pituitary disease, surgery/radiation, immune checkpoint inhibitor exposure, postpartum pituitary injury, headache/vision symptoms, fatigue, amenorrhea/low libido, polyuria, hyponatremia, low free T4 with non-elevated TSH, or clinician-chosen pituitary evaluation",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial hypopituitarism assessment requires emergency mass-effect screen and endocrine axes that allow safe replacement sequencing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4020,7 +3999,7 @@ function buildHypopituitarismClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Hypopituitarism: route by apoplexy/adrenal crisis risk, pituitary-axis labs, hormone sequencing, DI safety, and disposition",
+    label: "Hypopituitarism pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for known or suspected hypothalamic-pituitary disease, pituitary mass/surgery/radiation, apoplexy symptoms, postpartum pituitary injury, unexplained multi-axis hormone deficiency, central hypothyroidism, central adrenal insufficiency, central DI, hypogonadotropic hypogonadism, GH deficiency, or clinician-chosen pituitary evaluation.", ["selected_workup_id", "presenting_symptoms", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis", "clinician_selected_module"], sourceIds),
     action: "Route hypopituitarism through emergency apoplexy/adrenal crisis treatment, missing axis data, adrenal-before-thyroid sequencing, central hypothyroid dosing by free T4, DDAVP and sodium safety, gonadal/GH/prolactin review, monitoring interactions, follow-up, and safety-net endpoints.",
@@ -4196,7 +4175,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_obstetric_endocrine_endpoint`,
-    label: "Pregnancy diabetes emergency: ketone/acidosis, dehydration, severe hyperglycemia, preeclampsia feature, or fetal concern",
+    label: "Pregnancy diabetes emergency",
     edgeLabel: "Emergency branch: ketones, vomiting or dehydration, altered mental status, severe hyperglycemia, acid-base abnormality, blood pressure >=140/90 with symptoms or >=160/110, reduced fetal movement, or inability to keep insulin/fluids down",
     sourceIds,
     criteria: criteria(`${prefix}_urgent_criteria`, "Use when pregnancy hyperglycemia has DKA/acidosis risk, dehydration, hypertensive/preeclampsia features, altered mental status, or fetal concern.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -4208,7 +4187,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const diagnosticEndpoint = endpoint({
     id: `${prefix}_diagnostic_confirmation_endpoint`,
-    label: "GDM or overt diabetes classification: apply the selected OGTT/diabetes thresholds",
+    label: "GDM or overt diabetes classification",
     edgeLabel: "Diagnostic branch: 24-28 week screening due, one-step 75-g threshold crossed, two-step screen/100-g threshold crossed, or early pregnancy diabetes-range value suggests overt diabetes",
     sourceIds: unique([...adaDx, "CDC_DIABETES_TESTING_2024"]),
     criteria: criteria(`${prefix}_diagnostic_criteria`, "Use when gestational age and OGTT or overt-diabetes data are available for classification.", ["pregnancy_status", "labs", "symptoms", "workup_findings"], unique([...adaDx, "CDC_DIABETES_TESTING_2024"]), { criteria_options: criteriaRows }),
@@ -4219,7 +4198,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const treatmentEndpoint = endpoint({
     id: `${prefix}_nutrition_insulin_endpoint`,
-    label: "GDM treatment: nutrition/activity, glucose monitoring, then insulin if fasting or postprandial targets remain high",
+    label: "GDM nutrition, monitoring, or insulin plan",
     edgeLabel: "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
     sourceIds: adaSoc,
     criteria: criteria(`${prefix}_treatment_criteria`, "Use when GDM is diagnosed and the patient is stable enough for outpatient-style therapy or obstetric co-management.", ["labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], adaSoc, { criteria_options: criteriaRows }),
@@ -4231,7 +4210,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_or_overt_diabetes_endpoint`,
-    label: "Pregnancy glucose mimic or overt pregestational diabetes: route away from routine GDM plan",
+    label: "Pregnancy glucose mimic or overt diabetes",
     edgeLabel: "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when glucose results or clinical context indicate overt diabetes, a hyperglycemic crisis, or another cause rather than routine gestational diabetes.", ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -4242,7 +4221,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const postpartumEndpoint = endpoint({
     id: `${prefix}_postpartum_followup_endpoint`,
-    label: "Postpartum GDM: 75-g OGTT, prevention plan, lifelong screening, and future-pregnancy safety-net",
+    label: "Postpartum GDM follow-up and prevention",
     edgeLabel: "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due",
     sourceIds: unique([...adaSoc, ...adaDx, "CDC_NDPP_LIFESTYLE_2024"]),
     criteria: criteria(`${prefix}_postpartum_criteria`, "Use after delivery or when GDM history changes future diabetes prevention and screening.", ["pregnancy_status", "labs", "medications", "follow_up_access", "workup_findings"], unique([...adaSoc, ...adaDx, "CDC_NDPP_LIFESTYLE_2024"]), { criteria_options: criteriaRows }),
@@ -4254,7 +4233,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const managementAction = actionNode({
     id: `${prefix}_management_action`,
-    label: "Gestational diabetes: combine diagnostic classification, treatment targets, obstetric modifiers, and postpartum plan",
+    label: "Gestational diabetes management plan",
     edgeLabel: "Stable pregnancy branch: OGTT or glucose-log data available, emergency features absent, and maternal-fetal management can be selected",
     sourceIds,
     criteria: criteria(`${prefix}_management_criteria`, "Route stable pregnancy hyperglycemia through diagnostic thresholds, treatment targets, medication safety, fetal/obstetric modifiers, monitoring, and postpartum prevention.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4266,7 +4245,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Gestational diabetes: choose missing-data, emergency, diagnostic, treatment, mimic, or postpartum branch",
+    label: "Choose gestational diabetes branch",
     edgeLabel: "Gestational age, OGTT values, home glucose log, ketones/acid-base status, blood pressure, fetal symptoms, medication context, and postpartum status are available",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify pregnancy hyperglycemia by gestational age, selected OGTT strategy, glucose thresholds, emergency symptoms, treatment response, medication constraints, and postpartum timing.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4278,7 +4257,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Gestational diabetes: collect gestational age, OGTT strategy, glucose log, ketone risk, blood pressure, weight, and fetal symptoms together",
+    label: "Initial gestational diabetes assessment",
     edgeLabel: "Pregnant or postpartum patient with GDM risk, abnormal glucose screen, diabetes-range value, hyperglycemia symptoms, prior GDM, obesity/PCOS/family history, or clinician-chosen pregnancy diabetes evaluation",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial GDM assessment requires pregnancy timing, exact glucose thresholds, acute illness safety, blood pressure/fetal assessment, and medication context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4291,7 +4270,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Gestational diabetes: route by pregnancy timing, OGTT thresholds, glucose targets, urgent obstetric risk, and postpartum prevention",
+    label: "Gestational diabetes pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for pregnancy or postpartum context with GDM screening need, abnormal glucose challenge/OGTT, diabetes-range early pregnancy value, home glucose elevations, prior GDM, or clinician-chosen pregnancy diabetes evaluation.", ["clinician_selected_module", "pregnancy_status", "gestational_age", "labs", "presenting_symptoms", "problem_list_or_diagnosis"], sourceIds),
     action: "Route pregnancy hyperglycemia through missing-data, emergency obstetric/endocrine evaluation, one-step or two-step diagnostic thresholds, treatment targets, insulin/medication safety, postpartum OGTT, prevention, follow-up, and safety-net endpoints.",
@@ -4337,6 +4316,7 @@ function buildGestationalDiabetesClinicalPathwayTree(module, sourceById) {
 function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesType) {
   const isType1 = diabetesType === "type1";
   const label = module.label || (isType1 ? "Type 1 Diabetes Mellitus" : "Type 2 Diabetes Mellitus");
+  const shortDiabetesLabel = isType1 ? "Type 1 diabetes" : "Type 2 diabetes";
   const prefix = isType1 ? "type_1_diabetes" : "type_2_diabetes";
   const diag = ["ADA_DIAGNOSIS_2026", "CDC_DIABETES_TESTING_2024"];
   const soc = ["ADA_SOC_2026"];
@@ -4459,7 +4439,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const crisisEndpoint = endpoint({
     id: `${prefix}_crisis_hypoglycemia_endpoint`,
-    label: `${label}: DKA/HHS, severe hypoglycemia, dehydration, altered mental status, or infected foot wound needs urgent protocol care`,
+    label: `${shortDiabetesLabel} crisis or severe hypoglycemia`,
     edgeLabel: "Emergency branch: ketosis/acidosis, vomiting, dehydration, Kussmaul respirations, altered mental status, severe hyperglycemia, severe hypoglycemia requiring assistance, SGLT2 ketotic symptoms, pregnancy hyperglycemia, or infected foot wound",
     sourceIds: unique([...crisis, ...soc]),
     criteria: criteria(`${prefix}_crisis_criteria`, `Use when ${label} has hyperglycemic crisis physiology, severe hypoglycemia, infected foot, pregnancy hyperglycemia, or unstable vital signs.`, ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], unique([...crisis, ...soc]), { criteria_options: criteriaRows }),
@@ -4471,7 +4451,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const diagnosisEndpoint = endpoint({
     id: `${prefix}_diagnosis_classification_endpoint`,
-    label: `${label}: confirm diabetes-range result and classify type before durable treatment choices`,
+    label: `${shortDiabetesLabel} diagnosis and type classification`,
     edgeLabel: `Diagnostic branch: A1c/glucose threshold meets diabetes range or ${isType1 ? "autoimmune/insulin-deficient features need type 1/LADA confirmation" : "type 2 phenotype requires type 1/LADA and secondary-cause exclusions"}`,
     sourceIds: unique([...diag, ...soc]),
     criteria: criteria(`${prefix}_diagnosis_classification_criteria`, `Use when ${label} diagnostic thresholds and type-classification data are available.`, ["symptoms", "labs", "medications", "comorbidities", "demographics", "pregnancy_status", "workup_findings"], unique([...diag, ...soc]), { criteria_options: criteriaRows }),
@@ -4484,7 +4464,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const treatmentEndpoint = endpoint({
     id: `${prefix}_treatment_endpoint`,
-    label: isType1 ? "Type 1 diabetes: basal-bolus or pump insulin, ketone sick-day plan, glucagon, and hypoglycemia prevention" : "Type 2 diabetes: lifestyle, metformin or first-line comorbidity-directed therapy, and insulin when severe hyperglycemia/catabolism is present",
+    label: isType1 ? "Type 1 insulin and sick-day plan" : "Type 2 medication and insulin-intensity plan",
     edgeLabel: isType1
       ? "Treatment branch: type 1 diabetes confirmed or strongly likely, crisis excluded or treated, insulin access and hypoglycemia safety can be planned"
       : "Treatment branch: type 2 diabetes confirmed, crisis excluded or treated, A1c/glucose severity and cardiorenal comorbidities guide medication intensity",
@@ -4500,7 +4480,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const riskModifierEndpoint = endpoint({
     id: `${prefix}_risk_modifier_review_endpoint`,
-    label: isType1 ? "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need endocrinology/technology handoff" : "Type 2 modifiers: CKD/albuminuria, ASCVD/HF, pregnancy, eGFR limits, hypoglycemia risk, or cost/access changes therapy",
+    label: isType1 ? "Type 1 pregnancy, device, or access review" : "Type 2 cardiorenal or access review",
     edgeLabel: isType1
       ? "Modifier branch: pregnancy, recurrent severe hypoglycemia, pump/CGM failure, SGLT2-associated ketosis, low insulin access, or uncertain autoimmune classification"
       : "Modifier branch: UACR >=30, eGFR <60 or SGLT2 threshold review, ASCVD/HF, pregnancy, frailty, eGFR <30 metformin concern, hypoglycemia-prone regimen, or medication cost/access barrier",
@@ -4516,7 +4496,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const followupEndpoint = endpoint({
     id: `${prefix}_monitoring_followup_endpoint`,
-    label: `${label}: monitoring, complication screening, de-escalation, and safety-net follow-up`,
+    label: `${shortDiabetesLabel} monitoring and safety-net`,
     edgeLabel: "Follow-up branch: crisis absent/resolved, treatment plan active, A1c/glucose/hypoglycemia/kidney data have an owner, and complication screening or prevention plan is due",
     sourceIds,
     criteria: criteria(`${prefix}_followup_criteria`, `Use when ${label} can leave the acute branch with monitoring, complication screening, de-escalation, and safety-net instructions.`, ["labs", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -4528,7 +4508,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_endpoint`,
-    label: `${label}: route to prediabetes, alternate diabetes type, stress/steroid hyperglycemia, pregnancy, or endocrine mimic when thresholds do not fit`,
+    label: `${shortDiabetesLabel} mimic or alternate glucose pathway`,
     edgeLabel: "Alternate branch: prediabetes-range results only, discordant test, steroid/stress hyperglycemia, type 1/LADA versus type 2 mismatch, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, `Use when ${label} thresholds are absent, discordant, or another diagnosis explains the glucose pattern better.`, ["symptoms", "vitals", "labs", "medications", "comorbidities", "pregnancy_status", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -4539,7 +4519,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const managementAction = actionNode({
     id: `${prefix}_management_action`,
-    label: `${label}: combine diagnostic classification, acute crisis safety, treatment, modifiers, monitoring, and follow-up`,
+    label: `${shortDiabetesLabel} stable management plan`,
     edgeLabel: `${label} stable branch: diagnostic thresholds available, crisis physiology absent or treated, and treatment-safety data can guide management`,
     sourceIds,
     criteria: criteria(`${prefix}_management_criteria`, `Route stable ${label} through classification, treatment, comorbidity modifiers, complication monitoring, and safety-net follow-up.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4551,7 +4531,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: `${label}: choose missing-data, crisis, confirmed diabetes, modifier, follow-up, or mimic branch`,
+    label: `Choose ${shortDiabetesLabel} branch`,
     edgeLabel: "A1c/glucose thresholds, symptoms, ketones/acid-base status, medication context, kidney/cardiovascular risk, pregnancy status, hypoglycemia history, and access barriers are available",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, `Classify ${label} by diagnostic glucose thresholds, crisis physiology, diabetes type evidence, treatment severity, medication contraindications, comorbid risk, and follow-up safety.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4563,7 +4543,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: `${label}: collect glucose/A1c, ketone-acidosis data when ill, diabetes type evidence, safety labs, meds, and access`,
+    label: `Initial ${shortDiabetesLabel} assessment`,
     edgeLabel: `${label} evaluation: diabetes-range test, hyperglycemia symptoms, abnormal glucose pattern, ketosis risk, hypoglycemia, medication adjustment need, complication concern, or clinician-chosen diabetes workup`,
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, `Initial ${label} assessment requires diagnostic thresholds, acute crisis safety, medication context, comorbid risk, and follow-up access before nonurgent therapy changes.`, contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4576,7 +4556,7 @@ function buildDiabetesMellitusClinicalPathwayTree(module, sourceById, diabetesTy
 
   const root = decision({
     id: "root",
-    label: `${label}: route by diagnostic glucose thresholds, crisis risk, diabetes type, treatment safety, complications, and follow-up`,
+    label: `${shortDiabetesLabel} pathway`,
     sourceIds,
     criteria: criteria(`${prefix}_activate`, `Activate for known or suspected ${label}, diabetes-range A1c/glucose, symptoms of hyperglycemia, ketones/acidosis concern, medication titration, hypoglycemia, kidney/cardiovascular complication risk, or clinician-chosen diabetes evaluation.`, ["clinician_selected_module", "presenting_symptoms", "problem_list_or_diagnosis", "labs", "medications", "workup_findings"], sourceIds),
     action: `Route ${label} through missing-data, DKA/HHS or severe hypoglycemia escalation, diagnostic/type classification, treatment intensity, medication-safety modifiers, monitoring, de-escalation, follow-up, and safety-net endpoints.`,
@@ -4721,7 +4701,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const diabetesRangeEndpoint = endpoint({
     id: `${prefix}_diabetes_range_endpoint`,
-    label: "Diabetes-range or symptomatic hyperglycemia: leave prevention-only branch and confirm diabetes pathway",
+    label: "Diabetes-range escalation",
     edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL, 2-hour OGTT >=200 mg/dL, random glucose >=200 mg/dL with symptoms, dehydration, pregnancy hyperglycemia, severe hypertension, or ASCVD symptoms",
     sourceIds: diag,
     criteria: criteria(`${prefix}_diabetes_range_criteria`, "Use when diabetes-range values or unstable symptoms require diagnostic confirmation or urgent diabetes/cardiometabolic evaluation.", ["symptoms", "vitals", "labs", "pregnancy_status", "workup_findings"], diag, { criteria_options: criteriaRows }),
@@ -4733,7 +4713,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const preventionEndpoint = endpoint({
     id: `${prefix}_lifestyle_prevention_endpoint`,
-    label: "Prediabetes confirmed: DPP-style lifestyle plan, weight/activity goals, and yearly glycemic surveillance",
+    label: "Lifestyle prevention plan",
     edgeLabel: "Prediabetes branch: A1c 5.7-6.4%, fasting 100-125 mg/dL, or 2-hour OGTT 140-199 mg/dL without diabetes-range values or acute symptoms",
     sourceIds: prevention,
     criteria: criteria(`${prefix}_prevention_criteria`, "Use when prediabetes thresholds are met and diabetes-range or urgent features are absent.", ["labs", "vitals", "demographics", "comorbidities", "pregnancy_status", "follow_up_access"], prevention, { criteria_options: criteriaRows }),
@@ -4745,7 +4725,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const metforminEndpoint = endpoint({
     id: `${prefix}_metformin_review_endpoint`,
-    label: "High-risk prediabetes: consider metformin only after renal, pregnancy, B12, and preference review",
+    label: "High-risk metformin prevention review",
     edgeLabel: "Metformin branch: age 25-59 years, BMI >=35 kg/m2, fasting glucose >=110 mg/dL, A1c >=6.0%, prior GDM, rising glycemia, or lifestyle program unavailable/insufficient",
     sourceIds: ["ADA_SOC_2026"],
     criteria: criteria(`${prefix}_metformin_criteria`, "Use when high-risk prediabetes features make metformin prevention a clinician-review option.", ["labs", "demographics", "pregnancy_status", "medications", "comorbidities", "workup_findings"], ["ADA_SOC_2026"], { criteria_options: criteriaRows }),
@@ -4757,7 +4737,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_endpoint`,
-    label: "Normal glycemia, medication/stress effect, pregnancy, or endocrine mimic: avoid labeling as prediabetes without repeatable thresholds",
+    label: "Prediabetes mimic or normal glycemia",
     edgeLabel: "Alternate branch: normal repeated tests, acute illness/steroid hyperglycemia, pregnancy-context hyperglycemia, lab interference, hypoglycemia/drug effect, renal/hepatic disease, or secondary endocrine cause fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when prediabetes thresholds are absent, discordant, nonrepeatable, or explained by another condition.", ["symptoms", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -4768,7 +4748,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Prediabetes follow-up: yearly testing, cardiometabolic risk ownership, and safety-net for diabetes symptoms",
+    label: "Prediabetes follow-up and safety-net",
     edgeLabel: "Follow-up branch: prevention plan chosen, diabetes-range values absent, risk-factor treatment and surveillance owner documented",
     sourceIds,
     criteria: criteria(`${prefix}_followup_criteria`, "Use when prediabetes prevention and surveillance can be assigned.", ["labs", "vitals", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -4780,7 +4760,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const managementAction = actionNode({
     id: `${prefix}_management_action`,
-    label: "Prediabetes: combine threshold classification, prevention intensity, metformin review, risk-factor treatment, and surveillance",
+    label: "Prediabetes prevention plan",
     edgeLabel: "Stable prevention branch: prediabetes-range glycemia confirmed, diabetes-range and emergency features absent, prevention eligibility data available",
     sourceIds,
     criteria: criteria(`${prefix}_management_criteria`, "Route prediabetes through lifestyle prevention, high-risk metformin review, mimics, monitoring, and safety-net follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4792,7 +4772,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Prediabetes: choose missing-data, diabetes-range escalation, prevention, metformin-review, mimic, or follow-up branch",
+    label: "Choose prediabetes branch",
     edgeLabel: "A1c/FPG/OGTT, symptoms, BMI/waist/BP/lipids, pregnancy status, prior GDM, medication context, and follow-up access are available",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify by prediabetes thresholds, diabetes-range exclusions, prevention eligibility, high-risk metformin criteria, medication/pregnancy mimics, and follow-up access.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4804,7 +4784,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Prediabetes: collect glycemic thresholds, weight/BMI/waist, BP/lipids, pregnancy/prior GDM, medication causes, and prevention access",
+    label: "Initial prediabetes assessment",
     edgeLabel: "Prediabetes evaluation: abnormal A1c/FPG/OGTT, metabolic risk, prior GDM, overweight/obesity, PCOS/fatty liver/OSA, medication hyperglycemia, or clinician-chosen prevention workup",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial prediabetes assessment requires exact glycemic classification, cardiometabolic risk data, mimics, and prevention eligibility.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -4817,7 +4797,7 @@ function buildPrediabetesClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Prediabetes: route by A1c/FPG/OGTT thresholds, diabetes exclusion, prevention eligibility, metformin criteria, and follow-up",
+    label: "Prediabetes pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for prediabetes-range A1c/FPG/OGTT, elevated diabetes risk, prior GDM, metabolic syndrome risk, abnormal screening, or clinician-chosen prevention evaluation.", ["clinician_selected_module", "labs", "vitals", "demographics", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
     action: "Route prediabetes through missing-data, diabetes-range escalation, DPP-style lifestyle intervention, high-risk metformin review, mimics/exclusions, surveillance, follow-up, and safety-net endpoints.",
@@ -4963,7 +4943,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const urgentEndpoint = endpoint({
     id: `${prefix}_urgent_cardiometabolic_endpoint`,
-    label: "Urgent cardiometabolic route: diabetes-range symptomatic hyperglycemia, severe BP, ASCVD symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
+    label: "Urgent cardiometabolic escalation",
     edgeLabel: "Escalation branch: A1c >=6.5%, fasting glucose >=126 mg/dL or random glucose >=200 mg/dL with symptoms, BP around >=180/120 mm Hg or end-organ symptoms, chest pain, dyspnea, neurologic symptoms, pregnancy hyperglycemia, dehydration, or altered mental status",
     sourceIds: unique([...diag, ...soc, ...nhlbi]),
     criteria: criteria(`${prefix}_urgent_criteria`, "Use when metabolic syndrome workup reveals diabetes-range symptomatic glycemia, severe hypertension, ASCVD symptoms, pregnancy concern, or unstable physiology.", ["symptoms", "exam", "vitals", "labs", "pregnancy_status", "workup_findings"], unique([...diag, ...soc, ...nhlbi]), { criteria_options: criteriaRows }),
@@ -4975,7 +4955,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const diagnosisEndpoint = endpoint({
     id: `${prefix}_criteria_count_endpoint`,
-    label: "Metabolic syndrome confirmed when 3 or more criteria are present",
+    label: "Metabolic syndrome criteria met",
     edgeLabel: "Criteria branch: at least 3 of waist, triglyceride, HDL, BP, and fasting glucose/treatment criteria are present",
     sourceIds: nhlbi,
     criteria: criteria(`${prefix}_criteria_count_criteria`, "Use when all five criteria can be counted.", ["exam", "vitals", "labs", "medications", "demographics", "workup_findings"], nhlbi, { criteria_options: criteriaRows }),
@@ -4986,7 +4966,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const riskReductionEndpoint = endpoint({
     id: `${prefix}_risk_reduction_endpoint`,
-    label: "Metabolic syndrome management: treat active BP, lipid, glucose, weight, activity, and sleep/fatty-liver risks",
+    label: "Metabolic risk-reduction plan",
     edgeLabel: "Management branch: metabolic syndrome confirmed or near-threshold high-risk pattern without urgent diabetes/BP/ASCVD symptoms",
     sourceIds: unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]),
     criteria: criteria(`${prefix}_risk_reduction_criteria`, "Use when active criteria can be targeted with outpatient risk reduction and surveillance.", ["vitals", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], unique([...nhlbi, ...soc, "CDC_NDPP_LIFESTYLE_2024"]), { criteria_options: criteriaRows }),
@@ -4998,7 +4978,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const mimicEndpoint = endpoint({
     id: `${prefix}_mimic_endpoint`,
-    label: "Mimic or fewer than 3 criteria: avoid metabolic syndrome label and treat the active abnormality",
+    label: "Metabolic syndrome mimic or fewer criteria",
     edgeLabel: "Alternate branch: fewer than 3 criteria, race/ethnicity waist threshold changes classification, pregnancy or medication effect, secondary endocrine disease, acute illness, or isolated lipid/BP/glucose abnormality better explains findings",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_mimic_criteria`, "Use when metabolic syndrome criteria are not met or another diagnosis explains the findings better.", ["exam", "vitals", "labs", "medications", "pregnancy_status", "comorbidities", "workup_findings"], sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -5009,7 +4989,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Metabolic syndrome follow-up: criteria trend, ASCVD prevention, diabetes surveillance, and urgent symptom safety-net",
+    label: "Metabolic syndrome follow-up and safety-net",
     edgeLabel: "Follow-up branch: no urgent symptoms, active criteria and risk-factor owners documented, surveillance interval and return precautions assigned",
     sourceIds,
     criteria: criteria(`${prefix}_followup_criteria`, "Use when metabolic syndrome or component risks have an outpatient prevention and monitoring owner.", ["labs", "vitals", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -5021,7 +5001,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const managementAction = actionNode({
     id: `${prefix}_management_action`,
-    label: "Metabolic syndrome: count five criteria, target each active risk factor, and assign surveillance",
+    label: "Metabolic syndrome management plan",
     edgeLabel: "Stable metabolic branch: waist, BP, fasting glucose, HDL, triglycerides, and treatment status are available and urgent symptoms are absent",
     sourceIds,
     criteria: criteria(`${prefix}_management_criteria`, "Route metabolic syndrome through criteria count, component treatment, mimic review, monitoring, and safety-net follow-up.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5033,7 +5013,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Metabolic syndrome: choose missing-data, urgent cardiometabolic, criteria-count, risk-reduction, mimic, or follow-up branch",
+    label: "Choose metabolic syndrome branch",
     edgeLabel: "Waist, BP, fasting glucose/A1c, HDL, triglycerides, medications, symptoms, pregnancy status, and follow-up access are available",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify by the five metabolic syndrome criteria, diabetes/hypertension/ASCVD red flags, treatment status, secondary causes, and follow-up access.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5045,7 +5025,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "Metabolic syndrome: measure waist, BP, weight, mental status, fasting glucose/A1c, HDL, triglycerides, medications, and ASCVD symptoms",
+    label: "Initial metabolic syndrome assessment",
     edgeLabel: "Metabolic syndrome evaluation: central obesity, hypertension, dyslipidemia, prediabetes/diabetes risk, fatty liver/OSA/PCOS, medication effect, or clinician-chosen cardiometabolic workup",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial metabolic syndrome assessment requires all five criteria plus urgent symptom exclusions and secondary-cause context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5058,7 +5038,7 @@ function buildMetabolicSyndromeClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Metabolic syndrome: route by five criteria, urgent cardiometabolic exclusions, component treatment, and surveillance",
+    label: "Metabolic syndrome pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for central obesity, elevated BP, dyslipidemia, prediabetes/high glucose, cardiometabolic risk clustering, fatty liver/OSA/PCOS risk, or clinician-chosen metabolic syndrome evaluation.", ["clinician_selected_module", "vitals", "labs", "exam", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
     action: "Route metabolic syndrome through missing-data, urgent cardiometabolic escalation, five-criterion diagnosis, active risk-factor treatment, mimic review, monitoring, follow-up, and safety-net endpoints.",
@@ -5211,7 +5191,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const emergencyEndpoint = endpoint({
     id: `${prefix}_emergency_endpoint`,
-    label: "PA escalation: hypertensive emergency, severe hypokalemia, paralysis, arrhythmia, stroke/ACS symptoms, pulmonary edema, or renal injury",
+    label: "Hypertensive emergency or dangerous hypokalemia",
     edgeLabel: "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, severe hypokalemia with weakness/paralysis or arrhythmia, chest pain, neurologic deficit, pulmonary edema, acute kidney injury, or pregnancy severe hypertension",
     sourceIds: unique([...pa, ...emergency]),
     criteria: criteria(`${prefix}_emergency_criteria`, "Use when PA evaluation reveals hypertensive emergency physiology or dangerous hypokalemia/arrhythmia before routine endocrine workup.", ["symptoms", "exam", "vitals", "labs", "pregnancy_status", "workup_findings"], unique([...pa, ...emergency]), { criteria_options: criteriaRows }),
@@ -5223,7 +5203,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const repeatEndpoint = endpoint({
     id: `${prefix}_repeat_or_mimic_endpoint`,
-    label: "PA negative or confounded screen: correct potassium, address interfering medications, repeat testing, or route to mimic",
+    label: "Confounded PA screen or mimic",
     edgeLabel: "Repeat/mimic branch: hypokalemia, ACEi/ARB/diuretic/MRA/ENaC/beta-blocker/central alpha-2 interference, borderline aldosterone, unsuppressed renin, normokalemia with low aldosterone, renal artery stenosis, CKD, licorice, Liddle syndrome, Cushing syndrome, or PPGL fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_repeat_or_mimic_criteria`, "Use when PA screen is negative, borderline, or medication/condition-confounded, or another secondary-hypertension pathway fits better.", contextDomains, sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -5235,7 +5215,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const overtEndpoint = endpoint({
     id: `${prefix}_overt_pa_endpoint`,
-    label: "Overt PA: start PA-specific therapy without aldosterone-suppression testing when renin-independent aldosterone is clear",
+    label: "Overt PA treatment route",
     edgeLabel: "Overt branch: resistant hypertension or hypertension with hypokalemia plus PRA <0.2 ng/mL/h or DRC <2 mU/L and aldosterone >20 ng/dL immunoassay or >15 ng/dL LC-MS/MS",
     sourceIds: pa,
     criteria: criteria(`${prefix}_overt_pa_criteria`, "Use when PA probability is high enough that aldosterone-suppression testing is not needed before PA-specific therapy.", ["vitals", "labs", "medications", "workup_findings"], pa, { criteria_options: criteriaRows }),
@@ -5247,7 +5227,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const suppressionEndpoint = endpoint({
     id: `${prefix}_suppression_testing_endpoint`,
-    label: "Intermediate PA screen: aldosterone-suppression testing or clinician-guided documentation before surgery pathway",
+    label: "Intermediate PA confirmation",
     edgeLabel: "Intermediate branch: positive PA screen but not overt; patient is willing and able to consider adrenalectomy and needs suppression testing or specialist interpretation before lateralization",
     sourceIds: pa,
     criteria: criteria(`${prefix}_suppression_testing_criteria`, "Use after a positive PA screen when suppression testing would change surgical eligibility or diagnostic certainty.", ["vitals", "labs", "medications", "comorbidities", "workup_findings"], pa, { criteria_options: criteriaRows }),
@@ -5259,7 +5239,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const lateralizationEndpoint = endpoint({
     id: `${prefix}_lateralization_endpoint`,
-    label: "PA lateralization: adrenal CT plus AVS before adrenalectomy, with narrow age <35 and adenoma >1 cm exception",
+    label: "PA lateralization for adrenalectomy",
     edgeLabel: "Surgery branch: diagnosed PA, adrenalectomy desired/feasible, adrenal CT result available or ordered, and AVS needed unless age <35 with hypokalemia, marked PA, and unilateral adrenal adenoma >1.0 cm",
     sourceIds: pa,
     criteria: criteria(`${prefix}_lateralization_criteria`, "Use when diagnosed PA patient desires and can undergo adrenalectomy.", ["demographics", "labs", "imaging_results", "comorbidities", "workup_findings"], pa, { criteria_options: criteriaRows }),
@@ -5271,7 +5251,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const medicalEndpoint = endpoint({
     id: `${prefix}_medical_monitoring_endpoint`,
-    label: "PA medical management and follow-up: MRA titration, renin/BP response, potassium/renal monitoring, and rescreen safety-net",
+    label: "PA medical therapy and monitoring",
     edgeLabel: "Medical/follow-up branch: bilateral PA, unknown lateralization, not surgical, declines surgery, mild PA, comorbidity-limited surgery, or post-treatment monitoring needed",
     sourceIds: pa,
     criteria: criteria(`${prefix}_medical_monitoring_criteria`, "Use for nonoperative PA, bilateral/unknown lateralization, postadrenalectomy follow-up, and safety-netting.", ["vitals", "labs", "medications", "comorbidities", "follow_up_access", "workup_findings"], pa, { criteria_options: criteriaRows }),
@@ -5283,7 +5263,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const positiveAction = actionNode({
     id: `${prefix}_positive_screen_action`,
-    label: "PA positive screen: choose overt treatment, suppression testing, lateralization, or MRA route using renin, aldosterone, ARR, potassium, assay, and preferences",
+    label: "Positive PA screen route",
     edgeLabel: "Positive PA screen branch: low renin with aldosterone/ARR above guideline cutoffs after potassium and medication context are interpreted",
     sourceIds: pa,
     criteria: criteria(`${prefix}_positive_screen_criteria`, "Route positive PA screens by overt biochemical probability, suppression-test need, lateralization/surgery preference, and MRA eligibility.", contextDomains, pa, { criteria_options: criteriaRows }),
@@ -5295,7 +5275,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "PA classification: missing labs, emergency physiology, positive screen, or repeat/mimic route",
+    label: "Choose PA branch",
     edgeLabel: "PA screening facts available: BP pattern, potassium, aldosterone, PRA/DRC, ARR units, assay method, medication interference, renal function, pregnancy status, and patient preference",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify PA by emergency risk, guideline screen cutoffs, medication/potassium interference, suppression-test need, lateralization, and medical-therapy safety.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5307,7 +5287,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "PA assessment: document BP pattern, target-organ symptoms, potassium, aldosterone/renin/ARR, assay method, medications, renal function, pregnancy, and surgery preference",
+    label: "Initial PA assessment",
     edgeLabel: "Hypertension, resistant hypertension, hypokalemia, adrenal incidentaloma, family history, sleep apnea, atrial fibrillation, or clinician-chosen PA evaluation",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial PA assessment requires BP severity, potassium, aldosterone-renin testing, medication interference, renal/pregnancy safety, and disposition context.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5320,7 +5300,7 @@ function buildPrimaryAldosteronismClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Primary aldosteronism: route hypertension by ARR cutoffs, potassium/medication modifiers, emergency risk, and lateralization or MRA plan",
+    label: "Primary aldosteronism pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for hypertension, resistant hypertension, hypokalemia, adrenal incidentaloma, early-onset hypertension family history, sleep apnea, atrial fibrillation without another cause, or clinician-chosen PA evaluation.", ["clinician_selected_module", "vitals", "labs", "medications", "problem_list_or_diagnosis", "workup_findings"], sourceIds),
     action: "Route suspected PA through missing-data, emergency stabilization, ARR-based screen interpretation, repeat or mimic review, suppression-test decision, CT/AVS lateralization, MRA therapy, monitoring, and safety-net endpoints.",
@@ -5440,7 +5420,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const crisisEndpoint = endpoint({
     id: `${prefix}_crisis_endpoint`,
-    label: "PPGL crisis or hypertensive emergency: monitored acute care before elective localization or surgery",
+    label: "PPGL crisis or hypertensive emergency",
     edgeLabel: "Emergency branch: BP >=180/120 mm Hg with target-organ symptoms, catecholamine crisis, arrhythmia, ACS/stroke symptoms, pulmonary edema, shock, medication-triggered crisis, pregnancy severe hypertension, or unopposed beta-blocker exposure",
     sourceIds: unique([...ppgl, ...emergency]),
     criteria: criteria(`${prefix}_crisis_criteria`, "Use when possible PPGL has hypertensive emergency physiology, catecholamine crisis, high-risk medication exposure, or unstable end-organ symptoms.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], unique([...ppgl, ...emergency]), { criteria_options: criteriaRows }),
@@ -5452,7 +5432,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const borderlineEndpoint = endpoint({
     id: `${prefix}_borderline_or_mimic_endpoint`,
-    label: "PPGL borderline or mimic route: repeat controlled testing or switch pathway before irreversible treatment",
+    label: "Borderline PPGL result or mimic",
     edgeLabel: "Borderline/mimic branch: metanephrines not above ULN, mild elevation without supine sampling, medication/diet confounder, panic/anxiety, hyperthyroidism, stimulant/withdrawal, OSA, pain/illness, adrenal incidentaloma without biochemical evidence, or alternate endocrine pathway fits better",
     sourceIds: sourceIdsForItems(differentials, sourceIds),
     criteria: criteria(`${prefix}_borderline_or_mimic_criteria`, "Use when PPGL biochemical evidence is absent, borderline, or confounded, or when another diagnosis better explains the presentation.", contextDomains, sourceIdsForItems(differentials, sourceIds), { criteria_options: criteriaRows }),
@@ -5464,7 +5444,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const localizationEndpoint = endpoint({
     id: `${prefix}_localization_genetic_endpoint`,
-    label: "PPGL confirmed/high probability: CT/MRI localization, hereditary-risk testing, and expert-center referral",
+    label: "Confirmed PPGL localization/genetic review",
     edgeLabel: "Localization branch: metanephrines above ULN with high clinical probability or about 3-fold ULN, adrenal incidentaloma with biochemical evidence, prior PPGL, hereditary syndrome, paraganglioma, metastatic risk, pregnancy, or complex localization need",
     sourceIds: ppgl,
     criteria: criteria(`${prefix}_localization_genetic_criteria`, "Use when biochemical evidence supports PPGL localization and hereditary-risk assessment.", ["symptoms", "vitals", "labs", "imaging_results", "demographics", "pregnancy_status", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
@@ -5476,7 +5456,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const preopEndpoint = endpoint({
     id: `${prefix}_preop_blockade_endpoint`,
-    label: "Functional PPGL preoperative management: alpha blockade, volume expansion, beta only after alpha, and surgery approach",
+    label: "Functional PPGL pre-op blockade",
     edgeLabel: "Treatment branch: hormonally functional PPGL, surgery planned or likely, BP/HR can be optimized, and alpha blockade plus high-sodium/fluid preparation can be started for 7-14 days",
     sourceIds: ppgl,
     criteria: criteria(`${prefix}_preop_blockade_criteria`, "Use for hormonally functional PPGL before planned surgery.", ["vitals", "medications", "labs", "comorbidities", "imaging_results", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
@@ -5488,7 +5468,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const postopEndpoint = endpoint({
     id: `${prefix}_postop_followup_endpoint`,
-    label: "PPGL postoperative and lifelong follow-up: immediate BP/HR/glucose monitoring, metanephrines after recovery, and annual surveillance",
+    label: "PPGL follow-up and lifelong surveillance",
     edgeLabel: "Follow-up branch: post-resection, persistent symptoms, hereditary/metastatic risk, paraganglioma, large or invasive tumor, or lifelong recurrence surveillance due",
     sourceIds: ppgl,
     criteria: criteria(`${prefix}_postop_followup_criteria`, "Use after PPGL treatment or when recurrence/metastatic surveillance is due.", ["vitals", "labs", "imaging_results", "genetics", "follow_up_access", "workup_findings"], ppgl, { criteria_options: criteriaRows }),
@@ -5500,7 +5480,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const positiveAction = actionNode({
     id: `${prefix}_positive_biochemistry_action`,
-    label: "PPGL positive biochemistry: localize, assess genetics, prepare blockade, choose surgery, and assign surveillance",
+    label: "Positive PPGL biochemistry route",
     edgeLabel: "Positive biochemical branch: plasma free or urinary fractionated metanephrines above ULN with clinical probability, especially around 3-fold ULN, after sampling and medication context are reviewed",
     sourceIds: ppgl,
     criteria: criteria(`${prefix}_positive_biochemistry_criteria`, "Route positive PPGL biochemistry through localization, genetics, preoperative blockade, surgery, and follow-up.", contextDomains, ppgl, { criteria_options: criteriaRows }),
@@ -5512,7 +5492,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "PPGL classification: missing metanephrines, crisis, positive biochemistry, or borderline/mimic route",
+    label: "Choose PPGL branch",
     edgeLabel: "PPGL facts available: symptoms, BP/HR, metanephrine value and ULN, sampling position, medication triggers, imaging context, pregnancy/genetic risk, and follow-up access",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify PPGL by emergency physiology, metanephrine magnitude, sampling quality, medication confounders, localization need, blockade safety, surgery approach, and surveillance status.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5524,7 +5504,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment`,
-    label: "PPGL assessment: collect paroxysmal symptoms, BP/HR pattern, metanephrine values/ULN, sampling position, medication triggers, imaging, pregnancy, and genetic risk",
+    label: "Initial PPGL assessment",
     edgeLabel: "Possible PPGL: paroxysmal headache, sweating, palpitations, sustained or episodic hypertension, adrenal incidentaloma, hereditary syndrome, prior PPGL, paraganglioma concern, or clinician-chosen PPGL evaluation",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial PPGL assessment requires symptoms, vitals, biochemical evidence, sampling quality, medication confounders, imaging context, and special-population risk.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -5537,7 +5517,7 @@ function buildPheochromocytomaClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Pheochromocytoma: route by metanephrine magnitude, sampling quality, crisis risk, localization, alpha blockade, surgery, and surveillance",
+    label: "Pheochromocytoma/PPGL pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for paroxysmal catecholamine symptoms, sustained or episodic hypertension, adrenal incidentaloma, hereditary PPGL risk, prior PPGL, paraganglioma concern, or clinician-chosen PPGL evaluation.", ["clinician_selected_module", "symptoms", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
     action: "Route possible PPGL through missing-data, acute crisis, metanephrine-based confirmation, mimic review, CT/MRI localization, genetic testing, preoperative blockade, surgical approach, postoperative monitoring, lifelong follow-up, and safety-net endpoints.",
@@ -6159,7 +6139,7 @@ function buildErectileDysfunctionClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "ED route: emergency, CV/metabolic risk, testosterone, prolactin, PDE5 safety, follow-up",
+    label: "Erectile dysfunction pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for erectile dysfunction, loss of erection maintenance, reduced erection rigidity, endocrine-related ED concern, low libido with ED, medication-related ED, vascular/metabolic risk with ED, or clinician-chosen ED evaluation.", ["presenting_symptoms", "problem_list_or_diagnosis", "medications", "labs", "comorbidities", "clinician_chosen_module"], sourceIds),
     action: "Route erectile dysfunction through missing-data, emergency, cardiovascular/metabolic, hypogonadism, prolactin/pituitary, PDE5 safety, testosterone safety, alternate-driver, monitoring, de-escalation, follow-up, and safety-net endpoints.",
@@ -6316,7 +6296,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const acsEmergencyEndpoint = endpoint({
     id: `${prefix}_acs_emergency_endpoint`,
-    label: "ACS emergency: STEMI/ischemic ECG, dynamic troponin rise, shock, syncope, or HEART 7-10",
+    label: "High-risk ACS emergency",
     edgeLabel: "STEMI or ischemic ECG, evolving serial ECG, troponin above 99th percentile with dynamic change, HEART 7-10, hypotension/shock, recurrent syncope, or new neurologic deficit",
     sourceIds: aha,
     criteria: criteria(`${prefix}_acs_emergency_criteria`, "Use when acute coronary syndrome, myocardial injury, unstable physiology, or high-risk structured criteria require emergency treatment/disposition rather than outpatient testing.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
@@ -6327,7 +6307,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const lifeThreateningMimicEndpoint = endpoint({
     id: `${prefix}_aortic_pe_esophageal_endpoint`,
-    label: "Non-ACS emergency: aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis, or sepsis",
+    label: "Non-ACS chest pain emergency",
     edgeLabel: "Abrupt tearing pain/back radiation, pulse/BP differential, widened mediastinum, pleuritic hypoxemia, unilateral absent breath sounds, fever/rub, emesis, or subcutaneous emphysema",
     sourceIds: aha,
     criteria: criteria(`${prefix}_life_threatening_mimic_criteria`, "Use when adult chest pain features point to acute aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis/pericarditis, pneumonia, or another time-sensitive emergency.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: mimicRows }),
@@ -6338,7 +6318,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const lowRiskEndpoint = endpoint({
     id: `${prefix}_low_risk_discharge_endpoint`,
-    label: "Low-risk discharge: <1% 30-day death/MACE, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile",
+    label: "Low-risk chest pain discharge",
     edgeLabel: "30-day death/MACE <1%, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile, no aortic/PE features, stable symptoms, and follow-up access",
     sourceIds: aha,
     criteria: criteria(`${prefix}_low_risk_discharge_criteria`, "Use only after adult chest pain has low short-term risk and no alternate emergency condition.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: lowRiskRows }),
@@ -6349,7 +6329,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const intermediateEndpoint = endpoint({
     id: `${prefix}_intermediate_testing_endpoint`,
-    label: "Intermediate risk: HEART 4-6, unresolved troponin/ECG risk, known CAD, or need for observation, CCTA, or stress imaging",
+    label: "Intermediate-risk testing or observation",
     edgeLabel: "HEART 4-6, nondiagnostic ECG with ongoing suspicion, unresolved troponin risk, known CAD/risk factors, or need for observation/imaging",
     sourceIds: aha,
     criteria: criteria(`${prefix}_intermediate_testing_criteria`, "Use when acute chest pain is not low risk and not an immediate high-risk emergency, and further observation or cardiac testing will change disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], aha, { criteria_options: testingSafetyRows }),
@@ -6360,7 +6340,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const testingSafetyEndpoint = endpoint({
     id: `${prefix}_testing_safety_review_endpoint`,
-    label: "Safety review: pregnancy, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
+    label: "Chest-pain testing safety review",
     edgeLabel: "Pregnancy/postpartum, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
     sourceIds: aha,
     criteria: criteria(`${prefix}_testing_safety_review_criteria`, "Use when patient-specific factors change adult chest pain testing, treatment, or disposition.", ["demographics", "pregnancy_status", "medications", "allergies", "comorbidities", "vitals", "labs", "local_policy", "workup_findings"], aha, { criteria_options: testingSafetyRows }),
@@ -6371,7 +6351,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: "Reassessment escalation: worse pain, new ischemic ECG, rising troponin, hypoxemia, hypotension, syncope, or neurologic deficit",
+    label: "Escalating chest pain on reassessment",
     edgeLabel: "Worse pain, new ischemic ECG, troponin >99th percentile or concerning delta, worse vitals/SpO2, syncope/neuro deficit, or new aortic/PE/pneumothorax signs",
     sourceIds: aha,
     criteria: criteria(`${prefix}_worsening_criteria`, "Escalate adult chest pain when reassessment contradicts the current low/intermediate-risk branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: acsRiskRows }),
@@ -6382,7 +6362,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
-    label: "De-escalate ACS route: stable symptoms, nonischemic serial ECGs, troponins below 99th percentile without concerning delta, and low-risk score",
+    label: "Low-risk ACS de-escalation",
     edgeLabel: "Symptoms stable/resolved, ECGs nonischemic, serial troponins below 99th percentile without concerning delta, HEART/EDACS low risk, and emergencies excluded",
     sourceIds: aha,
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective adult chest pain reassessment supports narrowing from emergency ACS/aortic/PE evaluation to outpatient or alternate diagnosis care.", ["symptoms", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], aha, { criteria_options: lowRiskRows }),
@@ -6393,7 +6373,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Adult chest pain follow-up and safety-net: pending results, outpatient testing owner, risk-factor care, and return precautions",
+    label: "Chest-pain follow-up and safety-net",
     edgeLabel: "Emergency causes excluded or managed, pending results have owners, follow-up is reachable, and return precautions are documented",
     sourceIds: aha,
     criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when adult chest pain is stable enough for discharge or lower-acuity care with result ownership and safety-net instructions.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], aha, { criteria_options: lowRiskRows }),
@@ -6404,7 +6384,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const alternateEndpoint = endpoint({
     id: `${prefix}_alternate_noncardiac_endpoint`,
-    label: "Adult chest pain alternate diagnosis: musculoskeletal, GI, anxiety, pulmonary infection, shingles, or other noncardiac cause after emergencies are excluded",
+    label: "Alternate noncardiac diagnosis",
     edgeLabel: "Localized tenderness, reflux/biliary pattern, dermatomal rash, pneumonia findings, or anxiety/panic pattern fits after ACS/aortic/PE/pneumothorax/esophageal/myopericarditis checks",
     sourceIds: aha,
     criteria: criteria(`${prefix}_alternate_noncardiac_criteria`, "Use when a noncardiac or alternate diagnosis explains adult chest pain and emergency diagnoses are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], aha, { criteria_options: mimicRows }),
@@ -6415,7 +6395,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const reassessmentBundle = actionNode({
     id: `${prefix}_reassessment_bundle`,
-    label: "Adult chest pain monitoring: serial symptoms, vital signs, ECG, troponin, oxygenation, and disposition readiness",
+    label: "Monitor symptoms, ECG, troponin, and disposition",
     edgeLabel: "Trend pain, vitals, oxygenation, ECG, troponin timing/delta, imaging results, adverse effects, and disposition readiness",
     sourceIds: aha,
     criteria: criteria(`${prefix}_reassessment_bundle_criteria`, "Monitor adult chest pain by reassessing the symptoms, vital signs, ECG, troponin timing/value, imaging findings, and risk score that selected the pathway.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], aha, { criteria_options: acsRiskRows }),
@@ -6427,7 +6407,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const riskDecision = decision({
     id: `${prefix}_risk_decision`,
-    label: "Classify by ECG, troponin timing/delta, HEART/EDACS, emergency mimics, and test safety",
+    label: "Choose chest-pain risk branch",
     edgeLabel: "ECG, troponin assay/timing/delta, HEART/EDACS, aortic/PE screen, and test contraindications are available",
     sourceIds: aha,
     criteria: criteria(`${prefix}_risk_decision_criteria`, "Classify adult chest pain by ECG, troponin timing/delta, structured risk score, vital stability, and life-threatening non-ACS features.", contextDomains, aha, { criteria_options: criteriaRows }),
@@ -6439,7 +6419,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment_bundle`,
-    label: "Bedside assessment: onset, ischemic features, vitals, ECG within 10 minutes, troponin assay, aortic/PE screen, and test safety",
+    label: "Initial chest-pain assessment",
     edgeLabel: "Collect onset, ischemic descriptors, vitals, focused exam, ECG, troponin assay/timing, mimic signs, medication risks, pregnancy status, and follow-up access",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial adult chest pain assessment requires symptom timing/quality, focused cardiovascular/pulmonary exam, full vital signs, 12-lead ECG, troponin assay plan, emergency mimic screening, medication/contraindication review, and disposition constraints.", contextDomains, sourceIds, { criteria_options: focusedCriteria("adult_chest_pain_ecg_troponin_timing", "adult_chest_pain_aortic_dissection_probability", `${prefix}_stress_ccta_safety_cutoffs`) }),
@@ -6452,7 +6432,7 @@ function buildAdultChestPainClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Adult chest pain: route by ACS timing, life-threatening mimics, structured risk, testing safety, and disposition",
+    label: "Adult chest pain pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for adult chest pain, chest pressure/tightness, anginal equivalent symptoms, suspected ACS, aortic or pulmonary emergency concern, or clinician-chosen adult chest-pain evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
     action: "Route adult chest pain through missing-data, ECG/troponin timing, high-risk ACS, aortic/PE/non-ACS emergency, low-risk discharge, intermediate testing, contraindication review, reassessment, de-escalation, follow-up, and safety-net endpoints.",
@@ -6854,7 +6834,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const cardiacEscalationEndpoint = endpoint({
     id: `${prefix}_cardiac_escalation_endpoint`,
-    label: "Pediatric cardiac escalation: exertional chest pain/syncope, palpitations with syncope, abnormal exam/perfusion, abnormal ECG, cardiac history, or family sudden-death risk",
+    label: "Cardiac red flags or abnormal ECG",
     edgeLabel: "Cardiac risk: exertional pain/syncope, palpitations with syncope, poor perfusion, abnormal cardiac exam, family sudden-death risk, QRS >0.12 sec, QTc <=340 or >450 ms, ST shift >2 mm, WPW/long QT/wide-complex rhythm, or HCM pattern",
     sourceIds: unique([...rchChest, ...rchSyncope, ...rchEcg]),
     criteria: criteria(`${prefix}_cardiac_escalation_criteria`, "Use when pediatric chest pain, syncope, or palpitations has cardiac red flags, abnormal ECG, abnormal cardiac exam, poor perfusion, or serious family history.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "family_history", "workup_findings"], unique([...rchChest, ...rchSyncope, ...rchEcg]), { criteria_options: criteriaRows }),
@@ -6865,7 +6845,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const respiratoryEndpoint = endpoint({
     id: `${prefix}_respiratory_pe_endpoint`,
-    label: "Pediatric respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body chest pain route",
+    label: "Respiratory, PE, or trauma chest pain",
     edgeLabel: "Respiratory/PE branch: hypoxia, respiratory distress, hemoptysis, pleuritic pain, fever/cough, wheeze, unilateral decreased air entry, trauma, PE risk, or foreign-body concern",
     sourceIds: rchChest,
     criteria: criteria(`${prefix}_respiratory_pe_criteria`, "Use when pediatric chest pain is better explained by respiratory, PE, pneumothorax, pneumonia, asthma, trauma, or foreign-body features.", ["symptoms", "exam", "vitals", "imaging_results", "comorbidities", "pregnancy_status", "workup_findings"], rchChest, { criteria_options: criteriaRows }),
@@ -6876,7 +6856,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const orthostaticSyncopeEndpoint = endpoint({
     id: `${prefix}_orthostatic_syncope_endpoint`,
-    label: "Pediatric vasovagal, orthostatic hypotension, or POTS branch after cardiac red flags are absent",
+    label: "Vasovagal, orthostatic, or POTS syncope",
     edgeLabel: "Orthostatic/autonomic branch: reflex trigger/prodrome or standing symptoms with orthostatic BP drop >20 mmHg systolic or >10 mmHg diastolic within 2-3 minutes, or chronic orthostatic symptoms with HR rise >40 bpm or >30 bpm within 5-10 minutes without postural hypotension",
     sourceIds: rchSyncope,
     criteria: criteria(`${prefix}_orthostatic_syncope_criteria`, "Use when pediatric syncope fits vasovagal, orthostatic hypotension, or POTS and cardiac red flags are absent.", ["symptoms", "vitals", "exam", "labs", "workup_findings"], rchSyncope, { criteria_options: criteriaRows }),
@@ -6887,7 +6867,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const lowRiskChestPainEndpoint = endpoint({
     id: `${prefix}_low_risk_no_testing_endpoint`,
-    label: "Low-risk pediatric chest pain: no ECG/CXR/troponin/blood testing when risk factors and concerning exam findings are absent",
+    label: "Low-risk pediatric chest pain",
     edgeLabel: "Low-risk pediatric chest pain branch: no exertional syncope/chest pain, no palpitations with syncope, normal vitals/perfusion/cardiac exam, no abnormal ECG concern, no serious family history, no hypoxia/respiratory distress/hemoptysis, and musculoskeletal/precordial catch/anxiety/reflux pattern fits",
     sourceIds: rchChest,
     criteria: criteria(`${prefix}_low_risk_no_testing_criteria`, "Use low-risk pediatric chest pain care only after cardiac, respiratory, PE, trauma, and systemic red flags are absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings", "follow_up_access"], rchChest, { criteria_options: criteriaRows }),
@@ -6898,7 +6878,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const seizureMimicEndpoint = endpoint({
     id: `${prefix}_seizure_mimic_endpoint`,
-    label: "Pediatric syncope mimic branch: seizure, hypoglycemia, toxin, anemia, pregnancy, or functional event",
+    label: "Syncope mimic or neurologic event",
     edgeLabel: "Syncope mimic branch: prolonged confusion 20-30 minutes, tonic-clonic movements, clustering, hypoglycemia concern, toxin/stimulant exposure, anemia/menorrhagia, pregnancy possibility, or neurologic features better explain the event",
     sourceIds: rchSyncope,
     criteria: criteria(`${prefix}_seizure_mimic_criteria`, "Use when pediatric transient loss of consciousness is more consistent with seizure or another non-cardiac mimic than vasovagal syncope.", ["symptoms", "exam", "vitals", "labs", "medications", "pregnancy_status", "workup_findings"], rchSyncope, { criteria_options: criteriaRows }),
@@ -6909,7 +6889,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const specialReviewEndpoint = endpoint({
     id: `${prefix}_special_population_review_endpoint`,
-    label: "Pediatric chest/syncope review: pregnancy/postpartum, stimulant/toxin, VTE risk, congenital heart disease, arrhythmia, or cardiology policy",
+    label: "Pregnancy, toxin, VTE, or cardiac-history review",
     edgeLabel: "Special-population branch: pregnant/recently postpartum adolescent, PE/VTE risk, stimulant/toxin exposure, congenital/acquired heart disease, known arrhythmia/cardiomyopathy, prior cardiac surgery, abnormal ECG needing cardiology, or local sports-return policy applies",
     sourceIds,
     criteria: criteria(`${prefix}_special_population_review_criteria`, "Use when pediatric chest pain/syncope management depends on pregnancy, medication/toxin exposure, VTE risk, congenital heart disease, known arrhythmia, cardiology testing access, or local return-to-play policy.", ["demographics", "pregnancy_status", "medications", "comorbidities", "labs", "imaging_results", "local_policy", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -6920,7 +6900,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const worseningEndpoint = endpoint({
     id: `${prefix}_worsening_endpoint`,
-    label: "Pediatric chest/syncope reassessment: new exertional symptoms, abnormal ECG, hypoxia, poor perfusion, recurrent syncope, or worsening pain escalates care",
+    label: "Escalating chest pain/syncope findings",
     edgeLabel: "Reassessment branch: exertional pain/syncope appears, palpitations with syncope recur, ECG abnormality is found, oxygenation drops, respiratory distress develops, perfusion worsens, fever/myocarditis concern appears, or low-risk pain pattern no longer fits",
     sourceIds,
     criteria: criteria(`${prefix}_worsening_criteria`, "Escalate pediatric chest pain/syncope when reassessment contradicts the low-risk or autonomic branch.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -6931,7 +6911,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const deescalateEndpoint = endpoint({
     id: `${prefix}_deescalation_endpoint`,
-    label: "Pediatric chest/syncope de-escalation: red flags absent and ECG, vitals, oxygenation, and event pattern support benign/autonomic care",
+    label: "Benign or autonomic de-escalation",
     edgeLabel: "De-escalation branch: normal vitals/perfusion, no exertional symptoms, no concerning family history, normal ECG if obtained, no hypoxia/respiratory distress, orthostatic/autonomic pattern stable, and follow-up/safety-net access documented",
     sourceIds,
     criteria: criteria(`${prefix}_deescalation_criteria`, "Use when pediatric chest pain/syncope has been reassessed and emergency cardiac/respiratory/seizure features remain absent.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -6942,7 +6922,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const followupEndpoint = endpoint({
     id: `${prefix}_followup_safety_endpoint`,
-    label: "Pediatric chest/syncope follow-up and safety-net: activity restriction, result ownership, recurrent syncope plan, and return precautions",
+    label: "Chest/syncope follow-up and safety-net",
     edgeLabel: "Disposition branch: cause identified or serious causes addressed, follow-up arranged, activity advice documented, pending results assigned, and family return precautions given",
     sourceIds,
     criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric chest pain/syncope is stable enough for discharge or lower-acuity follow-up.", ["symptoms", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -6953,7 +6933,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const monitoringBundle = actionNode({
     id: `${prefix}_monitoring_bundle`,
-    label: "Pediatric chest/syncope monitoring: vitals, oxygenation, ECG interpretation, orthostatic response, pain pattern, event recurrence, and disposition readiness",
+    label: "Monitor ECG, vitals, symptoms, and readiness",
     edgeLabel: "Monitoring branch after pediatric chest/syncope classification: trend pain, recurrence, exertional relationship, perfusion, oxygenation, ECG findings, orthostatic BP/HR, respiratory findings, and activity/follow-up constraints",
     sourceIds,
     criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric chest pain/syncope by trending the ECG, orthostatic vital signs, oxygenation, respiratory findings, cardiac exam, and event pattern that selected the pathway.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
@@ -6965,7 +6945,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const classificationDecision = decision({
     id: `${prefix}_classification_decision`,
-    label: "Pediatric chest pain/syncope: classify cardiac risk, respiratory risk, autonomic syncope, low-risk chest pain, mimic, or clinician-review modifier",
+    label: "Choose pediatric chest/syncope branch",
     edgeLabel: "Pediatric chest/syncope branch ready: history, family history, vitals, orthostatics when indicated, exam/perfusion, oxygenation, ECG when indicated, and respiratory or syncope mimic features are available",
     sourceIds,
     criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric chest pain/syncope using red flags, ECG intervals, orthostatic/POTS thresholds, respiratory findings, and low-risk pattern rules.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -6977,7 +6957,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const initialAssessment = actionNode({
     id: `${prefix}_initial_assessment_bundle`,
-    label: "Pediatric chest pain/syncope bedside assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and targeted ECG/testing",
+    label: "Initial chest pain/syncope assessment",
     edgeLabel: "Pediatric chest/syncope assessment: age, exertion, syncope/palpitations, family history, vitals/orthostatics, cardiac/respiratory exam, and targeted ECG/testing",
     sourceIds,
     criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric chest pain/syncope assessment requires age, symptom pattern, exertion/syncope/palpitations, family history, vitals including orthostatics when indicated, cardiac/respiratory/neurologic exam, targeted ECG/testing, and disposition constraints.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
@@ -6990,7 +6970,7 @@ function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
 
   const root = decision({
     id: "root",
-    label: "Pediatric chest pain/syncope: route by cardiac red flags, ECG cutoffs, orthostatic thresholds, respiratory danger, low-risk pattern, and follow-up needs",
+    label: "Pediatric chest pain/syncope pathway",
     sourceIds,
     criteria: criteria(`${prefix}_activate`, "Activate for child/adolescent chest pain, exertional symptoms, syncope, near-syncope, palpitations, abnormal ECG concern, respiratory chest pain, or clinician-chosen pediatric chest/syncope evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
     action: "Route pediatric chest pain/syncope through missing-data, cardiac escalation, respiratory/PE/pneumothorax evaluation, orthostatic/POTS care, low-risk no-testing care, seizure/mimic evaluation, special-population review, monitoring, de-escalation, follow-up, and safety-net endpoints.",

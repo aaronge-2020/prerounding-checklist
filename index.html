@@ -1386,7 +1386,7 @@
 
     .decision-tree-traversal-summary {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       min-width: 0;
       padding: 8px;
@@ -1409,6 +1409,26 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0;
+    }
+
+    .decision-tree-data-gaps {
+      grid-column: 1 / -1;
+      min-width: 0;
+      color: var(--muted);
+    }
+
+    .decision-tree-data-gaps summary {
+      cursor: pointer;
+      font-weight: 780;
+      color: var(--ink);
+      list-style-position: inside;
+    }
+
+    .decision-tree-data-gaps ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 3px;
     }
 
     .workup-order-table {
@@ -13375,13 +13395,16 @@
       ));
       if (node.type === "endpoint") node.children = [];
       if (node.endpoint_type === "missing_data_needed") {
+        node.label = "Internal traversal guard";
+        node.edgeLabel = "Internal traversal guard";
+        node.action = "Hidden structured data guard; excluded from the readable clinical pathway.";
         node.internal_traversal_guard = true;
         node.display = {
           ...(node.display || {}),
           visible_in_pathway: false,
           visible_in_graph: false,
           visible_in_outline: false,
-          reason: node.display?.reason || "Internal traversal guard; exact missing fields remain in missing_data_needed."
+          reason: node.display?.reason || "Internal structured guard for branch-critical data."
         };
       }
       return node;
@@ -14214,9 +14237,22 @@
         return wrapper;
       };
       const activeSummary = summaryItem("Active branch", traversalSummary.activeBranch);
-      const missingSummary = summaryItem("Missing data", traversalSummary.missingDataNeeded.length ? traversalSummary.missingDataNeeded.join("; ") : "None identified on active branch");
       const endpointSummary = summaryItem("Endpoint", traversalSummary.terminalEndpoint);
-      traversalPanel.append(activeSummary, missingSummary, endpointSummary);
+      traversalPanel.append(activeSummary, endpointSummary);
+      if (traversalSummary.missingDataNeeded.length) {
+        const dataGaps = document.createElement("details");
+        dataGaps.className = "decision-tree-data-gaps";
+        const summary = document.createElement("summary");
+        summary.textContent = `${traversalSummary.missingDataNeeded.length} branch-critical data field${traversalSummary.missingDataNeeded.length === 1 ? "" : "s"} unresolved`;
+        const list = document.createElement("ul");
+        traversalSummary.missingDataNeeded.forEach((field) => {
+          const item = document.createElement("li");
+          item.textContent = field;
+          list.appendChild(item);
+        });
+        dataGaps.append(summary, list);
+        traversalPanel.append(dataGaps);
+      }
       container.append(traversalPanel);
       if (showCanvas) {
         renderDecisionTreeGraph(container, graph);

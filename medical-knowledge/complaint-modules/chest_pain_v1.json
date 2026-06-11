@@ -4286,7 +4286,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Adult chest pain: use ACS timing, life-threatening mimics, structured risk, testing safety, and disposition",
+        "label": "Adult chest pain pathway",
         "edgeLabel": "",
         "source_ids": [
           "AHA_ACC_CHEST_PAIN_2021",
@@ -4382,7 +4382,7 @@
           {
             "id": "adult_chest_pain_initial_assessment_bundle",
             "type": "action",
-            "label": "Bedside assessment: onset, ischemic features, vitals, ECG within 10 minutes, troponin assay, aortic/PE screen, and test safety",
+            "label": "Initial chest-pain assessment",
             "edgeLabel": "Collect onset, ischemic descriptors, vitals, focused exam, ECG, troponin assay/timing, mimic signs, medication risks, pregnancy status, and follow-up access",
             "source_ids": [
               "AHA_ACC_CHEST_PAIN_2021",
@@ -4489,7 +4489,7 @@
               {
                 "id": "adult_chest_pain_risk_decision",
                 "type": "decision",
-                "label": "Classify by ECG, troponin timing/delta, HEART/EDACS, emergency mimics, and test safety",
+                "label": "Choose chest-pain risk branch",
                 "edgeLabel": "ECG, troponin assay/timing/delta, HEART/EDACS, aortic/PE screen, and test contraindications are available",
                 "source_ids": [
                   "AHA_ACC_CHEST_PAIN_2021"
@@ -4798,7 +4798,7 @@
                   {
                     "id": "adult_chest_pain_acs_emergency_endpoint",
                     "type": "endpoint",
-                    "label": "ACS emergency: STEMI/ischemic ECG, dynamic troponin rise, shock, syncope, or HEART 7-10",
+                    "label": "High-risk ACS emergency",
                     "edgeLabel": "STEMI or ischemic ECG, evolving serial ECG, troponin above 99th percentile with dynamic change, HEART 7-10, hypotension/shock, recurrent syncope, or new neurologic deficit",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -4969,7 +4969,7 @@
                   {
                     "id": "adult_chest_pain_aortic_pe_esophageal_endpoint",
                     "type": "endpoint",
-                    "label": "Non-ACS emergency: aortic syndrome, PE, pneumothorax, esophageal rupture, myocarditis, or sepsis",
+                    "label": "Non-ACS chest pain emergency",
                     "edgeLabel": "Abrupt tearing pain/back radiation, pulse/BP differential, widened mediastinum, pleuritic hypoxemia, unilateral absent breath sounds, fever/rub, emesis, or subcutaneous emphysema",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5045,7 +5045,7 @@
                   {
                     "id": "adult_chest_pain_low_risk_discharge_endpoint",
                     "type": "endpoint",
-                    "label": "Low-risk discharge: <1% 30-day death/MACE, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile",
+                    "label": "Low-risk chest pain discharge",
                     "edgeLabel": "30-day death/MACE <1%, HEART <3 or EDACS <16, nonischemic ECG, serial troponins below 99th percentile, no aortic/PE features, stable symptoms, and follow-up access",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5169,7 +5169,7 @@
                   {
                     "id": "adult_chest_pain_intermediate_testing_endpoint",
                     "type": "endpoint",
-                    "label": "Intermediate risk: HEART 4-6, unresolved troponin/ECG risk, known CAD, or need for observation, CCTA, or stress imaging",
+                    "label": "Intermediate-risk testing or observation",
                     "edgeLabel": "HEART 4-6, nondiagnostic ECG with ongoing suspicion, unresolved troponin risk, known CAD/risk factors, or need for observation/imaging",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5315,7 +5315,7 @@
                   {
                     "id": "adult_chest_pain_testing_safety_review_endpoint",
                     "type": "endpoint",
-                    "label": "Safety review: pregnancy, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
+                    "label": "Chest-pain testing safety review",
                     "edgeLabel": "Pregnancy/postpartum, eGFR <30, contrast allergy, BP >=200/110, SBP <90, AMI <2 days, bronchospasm, arrhythmia, caffeine within 12 hours, or local troponin protocol",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5405,7 +5405,7 @@
                   {
                     "id": "adult_chest_pain_alternate_noncardiac_endpoint",
                     "type": "endpoint",
-                    "label": "Adult chest pain alternate diagnosis: musculoskeletal, GI, anxiety, pulmonary infection, shingles, or other noncardiac cause after emergencies are excluded",
+                    "label": "Alternate noncardiac diagnosis",
                     "edgeLabel": "Localized tenderness, reflux/biliary pattern, dermatomal rash, pneumonia findings, or anxiety/panic pattern fits after ACS/aortic/PE/pneumothorax/esophageal/myopericarditis checks",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5458,7 +5458,7 @@
                   {
                     "id": "adult_chest_pain_reassessment_bundle",
                     "type": "action",
-                    "label": "Adult chest pain monitoring: serial symptoms, vital signs, ECG, troponin, oxygenation, and disposition readiness",
+                    "label": "Monitor symptoms, ECG, troponin, and disposition",
                     "edgeLabel": "Trend pain, vitals, oxygenation, ECG, troponin timing/delta, imaging results, adverse effects, and disposition readiness",
                     "source_ids": [
                       "AHA_ACC_CHEST_PAIN_2021"
@@ -5556,7 +5556,7 @@
                       {
                         "id": "adult_chest_pain_worsening_endpoint",
                         "type": "endpoint",
-                        "label": "Reassessment escalation: worse pain, new ischemic ECG, rising troponin, hypoxemia, hypotension, syncope, or neurologic deficit",
+                        "label": "Escalating chest pain on reassessment",
                         "edgeLabel": "Worse pain, new ischemic ECG, troponin >99th percentile or concerning delta, worse vitals/SpO2, syncope/neuro deficit, or new aortic/PE/pneumothorax signs",
                         "source_ids": [
                           "AHA_ACC_CHEST_PAIN_2021"
@@ -5726,7 +5726,7 @@
                       {
                         "id": "adult_chest_pain_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "De-escalate ACS route: stable symptoms, nonischemic serial ECGs, troponins below 99th percentile without concerning delta, and low-risk score",
+                        "label": "Low-risk ACS de-escalation",
                         "edgeLabel": "Symptoms stable/resolved, ECGs nonischemic, serial troponins below 99th percentile without concerning delta, HEART/EDACS low risk, and emergencies excluded",
                         "source_ids": [
                           "AHA_ACC_CHEST_PAIN_2021"
@@ -5850,7 +5850,7 @@
                       {
                         "id": "adult_chest_pain_followup_safety_endpoint",
                         "type": "endpoint",
-                        "label": "Adult chest pain follow-up and safety-net: pending results, outpatient testing owner, risk-factor care, and return precautions",
+                        "label": "Chest-pain follow-up and safety-net",
                         "edgeLabel": "Emergency causes excluded or managed, pending results have owners, follow-up is reachable, and return precautions are documented",
                         "source_ids": [
                           "AHA_ACC_CHEST_PAIN_2021"

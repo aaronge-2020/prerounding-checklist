@@ -3573,7 +3573,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Cushing's Syndrome",
+        "label": "Cushing's Syndrome pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_CUSHING_DX_2008",
@@ -3666,7 +3666,7 @@
           {
             "id": "cushings_syndrome_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Exclude exogenous steroids",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; Late-night salivary cortisol, often two samples; 24-hour urinary free cortisol, at least two collections; UFC collection count",
             "source_ids": [
               "ES_CUSHING_DX_2008",
@@ -3700,7 +3700,7 @@
               {
                 "id": "cushings_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using at least 2 measurements; 2 measurements; 1 mg; 2 mg/day",
                 "source_ids": [
                   "ES_CUSHING_DX_2008",
@@ -3880,7 +3880,7 @@
                   {
                     "id": "cushings_syndrome_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; Cushing initial testing; Cushing positive biochemical screen; at least 2 measurements; 2 measurements",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -4009,7 +4009,7 @@
                   {
                     "id": "cushings_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Treat the cause when feasible",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",
@@ -4091,7 +4091,7 @@
                       {
                         "id": "cushings_syndrome_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Cushing initial testing; Cushing positive biochemical screen",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_CUSHING_DX_2008",
@@ -4171,7 +4171,7 @@
                           {
                             "id": "cushings_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Cushing initial testing; Cushing positive biochemical screen",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Cushing initial testing; Cushing positive biochemical screen; Abnormal screening plus convincing phenotype triggers confirmatory/endocrine pathway; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
@@ -4207,7 +4207,7 @@
                           {
                             "id": "cushings_syndrome_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: at least 2 measurements; 2 measurements; Exclude exogenous steroids",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: at least 2 measurements; 2 measurements; Exclude exogenous steroids; 1-mg overnight DST: cortisol >1.8 ug/dL abnormal/sensitive cutoff; treatment response",
                             "source_ids": [
                               "ES_CUSHING_DX_2008",
@@ -4287,7 +4287,7 @@
                               {
                                 "id": "cushings_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: at least 2 measurements; 2 measurements; Exclude exogenous steroids",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Severe hypokalemia, uncontrolled hypertension/diabetes, infection, psychosis, VTE; at least 2 measurements; 2 measurements; Exclude exogenous steroids; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4416,7 +4416,7 @@
                               {
                                 "id": "cushings_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: at least 2 measurements; 2 measurements; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "ES_CUSHING_DX_2008",
@@ -4701,7 +4701,7 @@
                   {
                     "id": "cushings_syndrome_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Alternate diagnosis: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: DST, late-night salivary cortisol, and UFC cutoffs are assay-specific",
                     "source_ids": [
                       "ES_CUSHING_DX_2008",

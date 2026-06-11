@@ -5158,7 +5158,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Type 1 Diabetes Mellitus: use diagnostic glucose thresholds, crisis risk, diabetes type, treatment safety, complications, and follow-up",
+        "label": "Type 1 diabetes pathway",
         "edgeLabel": "",
         "source_ids": [
           "ADA_DIAGNOSIS_2026",
@@ -5269,7 +5269,7 @@
           {
             "id": "type_1_diabetes_initial_assessment",
             "type": "action",
-            "label": "Type 1 Diabetes Mellitus: collect glucose/A1c, ketone-acidosis data when ill, diabetes type evidence, safety labs, meds, and access",
+            "label": "Initial Type 1 diabetes assessment",
             "edgeLabel": "Type 1 Diabetes Mellitus evaluation: diabetes-range test, hyperglycemia symptoms, abnormal glucose pattern, ketosis risk, hypoglycemia, medication adjustment need, complication concern, or clinician-chosen diabetes workup",
             "source_ids": [
               "ADA_DIAGNOSIS_2026",
@@ -5480,7 +5480,7 @@
               {
                 "id": "type_1_diabetes_classification_decision",
                 "type": "decision",
-                "label": "Type 1 Diabetes Mellitus: choose missing-data, crisis, confirmed diabetes, modifier, follow-up, or mimic branch",
+                "label": "Choose Type 1 diabetes branch",
                 "edgeLabel": "A1c/glucose thresholds, symptoms, ketones/acid-base status, medication context, kidney/cardiovascular risk, pregnancy status, hypoglycemia history, and access barriers are available",
                 "source_ids": [
                   "ADA_DIAGNOSIS_2026",
@@ -5761,7 +5761,7 @@
                   {
                     "id": "type_1_diabetes_crisis_hypoglycemia_endpoint",
                     "type": "endpoint",
-                    "label": "Type 1 Diabetes Mellitus: DKA/HHS, severe hypoglycemia, dehydration, altered mental status, or infected foot wound needs urgent protocol care",
+                    "label": "Type 1 diabetes crisis or severe hypoglycemia",
                     "edgeLabel": "Emergency branch: ketosis/acidosis, vomiting, dehydration, Kussmaul respirations, altered mental status, severe hyperglycemia, severe hypoglycemia requiring assistance, SGLT2 ketotic symptoms, pregnancy hyperglycemia, or infected foot wound",
                     "source_ids": [
                       "ADA_HYPERGLYCEMIC_CRISES_2024",
@@ -6147,7 +6147,7 @@
                   {
                     "id": "type_1_diabetes_management_action",
                     "type": "action",
-                    "label": "Type 1 Diabetes Mellitus: combine diagnostic classification, acute crisis safety, treatment, modifiers, monitoring, and follow-up",
+                    "label": "Type 1 diabetes stable management plan",
                     "edgeLabel": "Type 1 Diabetes Mellitus stable branch: diagnostic thresholds available, crisis physiology absent or treated, and treatment-safety data can guide management",
                     "source_ids": [
                       "ADA_DIAGNOSIS_2026",
@@ -6358,7 +6358,7 @@
                       {
                         "id": "type_1_diabetes_diagnosis_classification_endpoint",
                         "type": "endpoint",
-                        "label": "Type 1 Diabetes Mellitus: confirm diabetes-range result and classify type before durable treatment choices",
+                        "label": "Type 1 diabetes diagnosis and type classification",
                         "edgeLabel": "Diagnostic branch: A1c/glucose threshold meets diabetes range or autoimmune/insulin-deficient features need type 1/LADA confirmation",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
@@ -6733,7 +6733,7 @@
                       {
                         "id": "type_1_diabetes_treatment_endpoint",
                         "type": "endpoint",
-                        "label": "Type 1 diabetes: basal-bolus or pump insulin, ketone sick-day plan, glucagon, and hypoglycemia prevention",
+                        "label": "Type 1 insulin and sick-day plan",
                         "edgeLabel": "Treatment branch: type 1 diabetes confirmed or strongly likely, crisis excluded or treated, insulin access and hypoglycemia safety can be planned",
                         "source_ids": [
                           "ADA_SOC_2026",
@@ -7116,7 +7116,7 @@
                       {
                         "id": "type_1_diabetes_risk_modifier_review_endpoint",
                         "type": "endpoint",
-                        "label": "Type 1 modifiers: pregnancy, pump failure, SGLT2 use, recurrent hypoglycemia, access barriers, or uncertain LADA need endocrinology/technology handoff",
+                        "label": "Type 1 pregnancy, device, or access review",
                         "edgeLabel": "Modifier branch: pregnancy, recurrent severe hypoglycemia, pump/CGM failure, SGLT2-associated ketosis, low insulin access, or uncertain autoimmune classification",
                         "source_ids": [
                           "ADA_SOC_2026"
@@ -7487,7 +7487,7 @@
                       {
                         "id": "type_1_diabetes_monitoring_followup_endpoint",
                         "type": "endpoint",
-                        "label": "Type 1 Diabetes Mellitus: monitoring, complication screening, de-escalation, and safety-net follow-up",
+                        "label": "Type 1 diabetes monitoring and safety-net",
                         "edgeLabel": "Follow-up branch: crisis absent/resolved, treatment plan active, A1c/glucose/hypoglycemia/kidney data have an owner, and complication screening or prevention plan is due",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
@@ -8056,7 +8056,7 @@
                   {
                     "id": "type_1_diabetes_mimic_endpoint",
                     "type": "endpoint",
-                    "label": "Type 1 Diabetes Mellitus: route to prediabetes, alternate diabetes type, stress/steroid hyperglycemia, pregnancy, or endocrine mimic when thresholds do not fit",
+                    "label": "Type 1 diabetes mimic or alternate glucose pathway",
                     "edgeLabel": "Alternate branch: prediabetes-range results only, discordant test, steroid/stress hyperglycemia, type 1/LADA versus type 2 mismatch, pregnancy hyperglycemia, pancreatic/monogenic diabetes, hypoglycemia/drug effect, or secondary endocrine cause fits better",
                     "source_ids": [
                       "ADA_SOC_2026",

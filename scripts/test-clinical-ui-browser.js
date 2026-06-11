@@ -215,7 +215,7 @@ try {
   assert(liveWorkupAudit.rowCount === 0, `clinical workup should remove the old full-workup row drilldown: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.modifierCount === 0, `clinical workup should remove clinical modifier chips: ${JSON.stringify(liveWorkupAudit)}`);
   assert(/Orders and results/i.test(liveWorkupAudit.ordersText) && /Beta-hydroxybutyrate/i.test(liveWorkupAudit.ordersText), `workup should show necessary labs/exams and result fields: ${JSON.stringify(liveWorkupAudit)}`);
-  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /DKA\/HHS urgency|adult DKA\/HHS context|hyperglycemic crisis/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
+  assert(/Live decision tree/i.test(liveWorkupAudit.treeText) && /Active branch/i.test(liveWorkupAudit.treeText) && /Adult hyperglycemia pathway|DKA\/HHS urgency|adult DKA\/HHS context|hyperglycemic crisis/i.test(liveWorkupAudit.treeText), `workup should render a live decision tree with traversal summary: ${JSON.stringify(liveWorkupAudit)}`);
   assert(liveWorkupAudit.activeTreeNodes >= 1 && liveWorkupAudit.pendingTreeNodes >= 1, `decision tree should expose lit and pending path states: ${JSON.stringify(liveWorkupAudit)}`);
 
   await page.click("#closeToolsButton");
@@ -267,11 +267,16 @@ try {
     bhbValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='betaHydroxybutyrate']")?.value || "",
     anionGapValue: document.querySelector("#patientWorkupOrdersPanel [data-objective-field='anionGap']")?.value || "",
     tree: document.querySelector("#patientDecisionTreePanel")?.textContent || "",
+    visibleTreeText: document.querySelector("#patientDecisionTreePanel")?.innerText || "",
+    dataGapDisclosureOpen: document.querySelector("#patientDecisionTreePanel .decision-tree-data-gaps")?.open ?? false,
+    dataGapDisclosureCount: document.querySelectorAll("#patientDecisionTreePanel .decision-tree-data-gaps").length,
     activeNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='active']")).map((node) => node.textContent || ""),
     warningNodes: Array.from(document.querySelectorAll("#patientDecisionTreePanel .decision-tree-node[data-state='warning']")).map((node) => node.textContent || "")
   }));
   assert(/4\.2 mmol\/L/i.test(patientLiveWorkup.bhbValue) && /22/i.test(patientLiveWorkup.anionGapValue), `patient Workup tab should show entered DKA labs in orders/results inputs: ${JSON.stringify(patientLiveWorkup)}`);
   assert(/(?:Live|Editable) decision tree|Decision pathway/i.test(patientLiveWorkup.tree) && /Active branch/i.test(patientLiveWorkup.tree) && /Adult hyperglycemia|DKA\/HHS urgency|hyperglycemic crisis/i.test(patientLiveWorkup.tree), `patient Workup tab should show the DKA pathway traversal summary from entered labs: ${JSON.stringify(patientLiveWorkup)}`);
+  assert(!/Missing data needed|Cannot distinguish|Cannot classify/i.test(patientLiveWorkup.visibleTreeText), `patient-facing pathway text should not expose placeholder missing-data endpoint prose: ${JSON.stringify(patientLiveWorkup)}`);
+  assert(patientLiveWorkup.dataGapDisclosureCount === 0 || patientLiveWorkup.dataGapDisclosureOpen === false, `branch-critical data details should be collapsed by default: ${JSON.stringify(patientLiveWorkup)}`);
   assert(/Auto from chart|Manual override|Missing/i.test(patientLiveWorkup.orders), `patient Workup tab should expose objective data source states: ${JSON.stringify(patientLiveWorkup)}`);
   await page.waitForSelector("#decisionTreeEditorPanel:not([hidden])");
   const editModeAudit = await page.evaluate(() => ({

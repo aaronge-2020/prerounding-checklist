@@ -4874,7 +4874,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Gestational diabetes: use pregnancy timing, OGTT thresholds, glucose targets, urgent obstetric risk, and postpartum prevention",
+        "label": "Gestational diabetes pathway",
         "edgeLabel": "",
         "source_ids": [
           "ADA_SOC_2026",
@@ -4979,7 +4979,7 @@
           {
             "id": "gestational_diabetes_initial_assessment",
             "type": "action",
-            "label": "Gestational diabetes: collect gestational age, OGTT strategy, glucose log, ketone risk, blood pressure, weight, and fetal symptoms together",
+            "label": "Initial gestational diabetes assessment",
             "edgeLabel": "Pregnant or postpartum patient with GDM risk, abnormal glucose screen, diabetes-range value, hyperglycemia symptoms, prior GDM, obesity/PCOS/family history, or clinician-chosen pregnancy diabetes evaluation",
             "source_ids": [
               "ADA_SOC_2026",
@@ -5214,7 +5214,7 @@
               {
                 "id": "gestational_diabetes_classification_decision",
                 "type": "decision",
-                "label": "Gestational diabetes: choose missing-data, emergency, diagnostic, treatment, mimic, or postpartum branch",
+                "label": "Choose gestational diabetes branch",
                 "edgeLabel": "Gestational age, OGTT values, home glucose log, ketones/acid-base status, blood pressure, fetal symptoms, medication context, and postpartum status are available",
                 "source_ids": [
                   "ADA_SOC_2026",
@@ -5514,7 +5514,7 @@
                   {
                     "id": "gestational_diabetes_urgent_obstetric_endocrine_endpoint",
                     "type": "endpoint",
-                    "label": "Pregnancy diabetes emergency: ketone/acidosis, dehydration, severe hyperglycemia, preeclampsia feature, or fetal concern",
+                    "label": "Pregnancy diabetes emergency",
                     "edgeLabel": "Emergency branch: ketones, vomiting or dehydration, altered mental status, severe hyperglycemia, acid-base abnormality, blood pressure >=140/90 with symptoms or >=160/110, reduced fetal movement, or inability to keep insulin/fluids down",
                     "source_ids": [
                       "ADA_SOC_2026",
@@ -5954,7 +5954,7 @@
                   {
                     "id": "gestational_diabetes_management_action",
                     "type": "action",
-                    "label": "Gestational diabetes: combine diagnostic classification, treatment targets, obstetric modifiers, and postpartum plan",
+                    "label": "Gestational diabetes management plan",
                     "edgeLabel": "Stable pregnancy branch: OGTT or glucose-log data available, emergency features absent, and maternal-fetal management can be selected",
                     "source_ids": [
                       "ADA_SOC_2026",
@@ -6189,7 +6189,7 @@
                       {
                         "id": "gestational_diabetes_diagnostic_confirmation_endpoint",
                         "type": "endpoint",
-                        "label": "GDM or overt diabetes classification: apply the selected OGTT/diabetes thresholds",
+                        "label": "GDM or overt diabetes classification",
                         "edgeLabel": "Diagnostic branch: 24-28 week screening due, one-step 75-g threshold crossed, two-step screen/100-g threshold crossed, or early pregnancy diabetes-range value suggests overt diabetes",
                         "source_ids": [
                           "ADA_DIAGNOSIS_2026",
@@ -6611,7 +6611,7 @@
                       {
                         "id": "gestational_diabetes_nutrition_insulin_endpoint",
                         "type": "endpoint",
-                        "label": "GDM treatment: nutrition/activity, glucose monitoring, then insulin if fasting or postprandial targets remain high",
+                        "label": "GDM nutrition, monitoring, or insulin plan",
                         "edgeLabel": "Treatment branch: GDM confirmed and no emergency physiology; fasting or postprandial glucose targets guide nutrition, activity, insulin, and obstetric monitoring",
                         "source_ids": [
                           "ADA_SOC_2026"
@@ -7041,7 +7041,7 @@
                       {
                         "id": "gestational_diabetes_postpartum_followup_endpoint",
                         "type": "endpoint",
-                        "label": "Postpartum GDM: 75-g OGTT, prevention plan, lifelong screening, and future-pregnancy safety-net",
+                        "label": "Postpartum GDM follow-up and prevention",
                         "edgeLabel": "Postpartum branch: delivered after GDM, 4-12 week 75-g OGTT due or abnormal, breastfeeding/contraception/future pregnancy counseling needed, or long-term diabetes prevention follow-up due",
                         "source_ids": [
                           "ADA_SOC_2026",
@@ -7680,7 +7680,7 @@
                   {
                     "id": "gestational_diabetes_mimic_or_overt_diabetes_endpoint",
                     "type": "endpoint",
-                    "label": "Pregnancy glucose mimic or overt pregestational diabetes: route away from routine GDM plan",
+                    "label": "Pregnancy glucose mimic or overt diabetes",
                     "edgeLabel": "Alternate branch: early diabetes-range value, type 1/type 2 diabetes, steroid or stress hyperglycemia, DKA/HHS, renal disease, infection, hypoglycemia/drug effect, or secondary endocrine cause fits better",
                     "source_ids": [
                       "ADA_SOC_2026",

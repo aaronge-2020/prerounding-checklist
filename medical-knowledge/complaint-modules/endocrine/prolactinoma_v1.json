@@ -3257,7 +3257,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Prolactinoma",
+        "label": "Prolactinoma pathway",
         "edgeLabel": "",
         "source_ids": [
           "ES_HYPERPROLACTINEMIA_2011",
@@ -3348,7 +3348,7 @@
           {
             "id": "prolactinoma_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Serum prolactin; Pregnancy test, TSH/free T4, renal function",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Serum prolactin; Pregnancy test, TSH/free T4, renal function; Pituitary MRI after persistent unexplained elevation or mass symptoms; Prolactin/pituitary mass safety tests; serum prolactin; assay ULN",
             "source_ids": [
               "PITUITARY_PROLACTINOMA_2023",
@@ -3380,7 +3380,7 @@
               {
                 "id": "prolactinoma_classification_decision",
                 "type": "decision",
-                "label": "Classify by: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using >ULN; <25 ug/L; >250 ug/L; >500 ug/L",
                 "source_ids": [
                   "ES_HYPERPROLACTINEMIA_2011",
@@ -3544,7 +3544,7 @@
                   {
                     "id": "prolactinoma_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; >ULN; <25 ug/L",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
@@ -3667,7 +3667,7 @@
                   {
                     "id": "prolactinoma_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Use dopamine agonist therapy; Monitor prolactin response",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",
@@ -3745,7 +3745,7 @@
                       {
                         "id": "prolactinoma_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "ES_HYPERPROLACTINEMIA_2011",
@@ -3777,7 +3777,7 @@
                           {
                             "id": "prolactinoma_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Hyperprolactinemia diagnosis; Prolactinoma probability by prolactin level; Mass effect or macroadenoma changes urgency and ophthalmology/neurosurgery involvement; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "ES_HYPERPROLACTINEMIA_2011",
@@ -3811,7 +3811,7 @@
                           {
                             "id": "prolactinoma_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: >ULN; <25 ug/L; Serum prolactin",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: >ULN; <25 ug/L; Serum prolactin; Pregnancy test, TSH/free T4, renal function; treatment response",
                             "source_ids": [
                               "PITUITARY_PROLACTINOMA_2023",
@@ -3887,7 +3887,7 @@
                               {
                                 "id": "prolactinoma_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: >ULN; <25 ug/L; Serum prolactin",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: >ULN; <25 ug/L; Serum prolactin; worsening symptoms or treatment intolerance",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
@@ -4010,7 +4010,7 @@
                               {
                                 "id": "prolactinoma_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: >ULN; <25 ug/L; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "PITUITARY_PROLACTINOMA_2023",
@@ -4283,7 +4283,7 @@
                   {
                     "id": "prolactinoma_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "PITUITARY_PROLACTINOMA_2023",

@@ -6633,7 +6633,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Fever/infection: choose adult sepsis urgency, infection likelihood, source-control need, and disposition",
+        "label": "Fever/infection sepsis pathway",
         "edgeLabel": "",
         "source_ids": [
           "SSC_SEPSIS_2026",
@@ -6729,7 +6729,7 @@
           {
             "id": "fever_infection_sepsis_initial_assessment_bundle",
             "type": "action",
-            "label": "Fever/infection bedside assessment: source, organ dysfunction, perfusion, oxygenation, cultures, lactate, and medication risk",
+            "label": "Initial fever/infection assessment",
             "edgeLabel": "Fever or suspected infection with enough bedside data to choose shock, probable sepsis, possible sepsis, mimic, or special-population branch",
             "source_ids": [
               "SSC_SEPSIS_2026",
@@ -7050,7 +7050,7 @@
               {
                 "id": "fever_infection_sepsis_shock_resuscitation_action",
                 "type": "action",
-                "label": "Septic shock or sepsis-induced hypoperfusion: start concurrent resuscitation, antimicrobials, cultures, lactate, and source control",
+                "label": "Septic shock resuscitation route",
                 "edgeLabel": "Shock/hypoperfusion suspected from hypotension, MAP below 65 mm Hg, lactate elevation, altered mentation, mottling, oliguria, hypoxemia, or rapid worsening",
                 "source_ids": [
                   "SSC_SEPSIS_2026"
@@ -7304,7 +7304,7 @@
                   {
                     "id": "fever_infection_sepsis_shock_reassessment_decision",
                     "type": "decision",
-                    "label": "After initial sepsis resuscitation, is shock/perfusion improving enough to narrow intensity?",
+                    "label": "Reassess shock response",
                     "edgeLabel": "Initial crystalloid, antimicrobial, vasopressor, lactate, oxygenation, and source-control response documented",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -7558,7 +7558,7 @@
                       {
                         "id": "fever_infection_sepsis_shock_resuscitation_icu_endpoint",
                         "type": "endpoint",
-                        "label": "Septic shock or hypoperfusion: resuscitate now and use monitored/ICU pathway",
+                        "label": "Septic shock or hypoperfusion",
                         "edgeLabel": "Shock/hypoperfusion: MAP below target, severe hypotension, lactate >=4 mmol/L, lactate >2 mmol/L with vasopressor need, mottling, altered mentation, hypoxemia, oliguria, or rapid deterioration",
                         "source_ids": [
                           "SSC_SEPSIS_2026"
@@ -8051,7 +8051,7 @@
                       {
                         "id": "fever_infection_sepsis_persistent_hypoperfusion_endpoint",
                         "type": "endpoint",
-                        "label": "Persistent hypoperfusion: reassess fluids, vasopressors, oxygenation, and source control",
+                        "label": "Persistent hypoperfusion",
                         "edgeLabel": "After initial therapy: MAP remains below target, lactate remains elevated, capillary refill/perfusion abnormal, escalating oxygen or vasopressor need, or source control not achieved",
                         "source_ids": [
                           "SSC_SEPSIS_2026"
@@ -8543,7 +8543,7 @@
                       {
                         "id": "fever_infection_sepsis_antimicrobial_deescalation_endpoint",
                         "type": "endpoint",
-                        "label": "Antimicrobial de-escalation or stopping criteria reached",
+                        "label": "Antimicrobial de-escalation criteria",
                         "edgeLabel": "Cultures/susceptibility or final negative cultures allow narrowing; adequate source control achieved; or alternate diagnosis demonstrated/strongly suspected",
                         "source_ids": [
                           "SSC_SEPSIS_2026"
@@ -9026,7 +9026,7 @@
                       {
                         "id": "fever_infection_sepsis_discharge_followup_endpoint",
                         "type": "endpoint",
-                        "label": "Sepsis survivor disposition, follow-up, and safety-net endpoint",
+                        "label": "Sepsis follow-up and safety-net",
                         "edgeLabel": "Stable for discharge or lower acuity: source controlled or owned, hemodynamics/oxygenation stable, antimicrobial plan reconciled, pending results assigned, and sepsis education/follow-up documented",
                         "source_ids": [
                           "SSC_SEPSIS_2026"
@@ -9984,7 +9984,7 @@
               {
                 "id": "fever_infection_sepsis_probable_sepsis_action",
                 "type": "action",
-                "label": "Probable or definite sepsis without shock: treat within 1 hour and define source/disposition",
+                "label": "Probable sepsis treatment route",
                 "edgeLabel": "Probable/definite infection with organ dysfunction, high-risk host, lactate elevation, hypoxemia, oliguria, altered mentation, or rapidly worsening course but no current shock",
                 "source_ids": [
                   "SSC_SEPSIS_2026"
@@ -10239,7 +10239,7 @@
                   {
                     "id": "fever_infection_sepsis_probable_definite_sepsis_treatment_endpoint",
                     "type": "endpoint",
-                    "label": "Probable or definite sepsis without shock: cultures, lactate, antimicrobials within 1 hour, and source plan",
+                    "label": "Probable sepsis treatment",
                     "edgeLabel": "Probable/definite infection with organ dysfunction or high-risk trajectory but no current shock: start antimicrobials ideally within 1 hour and define source control need",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -10731,7 +10731,7 @@
                   {
                     "id": "fever_infection_sepsis_source_control_endpoint",
                     "type": "endpoint",
-                    "label": "Source control needed: drainage, debridement, device removal, or procedure",
+                    "label": "Source-control procedure needed",
                     "edgeLabel": "Anatomic diagnosis needs source control: abscess, obstructed infected urinary/biliary source, necrotizing soft tissue infection, infected line/device, CNS/deep infection, abdominal/pelvic source, septic joint, or empyema",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -11214,7 +11214,7 @@
                   {
                     "id": "fever_infection_sepsis_probable_persistent_hypoperfusion_endpoint",
                     "type": "endpoint",
-                    "label": "Probable sepsis reassessment: worsening perfusion, lactate, oxygenation, or organ dysfunction",
+                    "label": "Probable sepsis worsening on reassessment",
                     "edgeLabel": "After probable-sepsis treatment: new hypotension, MAP below target, rising/elevated lactate, worsening oxygenation, oliguria, altered mentation, or source-control delay",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -11706,7 +11706,7 @@
                   {
                     "id": "fever_infection_sepsis_probable_antimicrobial_deescalation_endpoint",
                     "type": "endpoint",
-                    "label": "Probable sepsis: narrow, stop, or shorten antimicrobials when evidence allows",
+                    "label": "Probable sepsis antimicrobial de-escalation",
                     "edgeLabel": "Probable-sepsis cultures/susceptibility, final negative cultures, clinical response, adequate source control, or alternate diagnosis supports de-escalation",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -12189,7 +12189,7 @@
                   {
                     "id": "fever_infection_sepsis_probable_discharge_followup_endpoint",
                     "type": "endpoint",
-                    "label": "Probable sepsis: lower-acuity disposition, follow-up, and safety net",
+                    "label": "Probable sepsis disposition and safety-net",
                     "edgeLabel": "Probable-sepsis patient stable for lower-acuity care: hemodynamics/oxygenation stable, source plan owned, antimicrobial plan reconciled, pending cultures assigned",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -12688,7 +12688,7 @@
               {
                 "id": "fever_infection_sepsis_possible_sepsis_action",
                 "type": "action",
-                "label": "Possible sepsis without shock: complete rapid infectious-vs-mimic evaluation before the 3-hour treatment decision",
+                "label": "Possible sepsis evaluation route",
                 "edgeLabel": "Possible infection without shock: stable enough for time-limited rapid investigation, with antimicrobials by 3 hours if infection concern persists",
                 "source_ids": [
                   "SSC_SEPSIS_2026"
@@ -12943,7 +12943,7 @@
                   {
                     "id": "fever_infection_sepsis_possible_sepsis_rapid_eval_endpoint",
                     "type": "endpoint",
-                    "label": "Possible sepsis without shock: rapid infectious vs noninfectious assessment and 3-hour antibiotic decision",
+                    "label": "Possible sepsis rapid evaluation",
                     "edgeLabel": "Possible infection without shock and diagnosis uncertain: investigate rapidly; if concern persists, give antimicrobials within 3 hours from first suspicion",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -13434,7 +13434,7 @@
                   {
                     "id": "fever_infection_sepsis_mimic_or_noninfectious_endpoint",
                     "type": "endpoint",
-                    "label": "Noninfectious mimic or alternate source better explains fever/systemic illness",
+                    "label": "Noninfectious mimic or alternate source",
                     "edgeLabel": "Low infection likelihood or alternate diagnosis: drug fever, inflammatory/autoimmune flare, thrombosis/PE, malignancy, transfusion reaction, endocrine crisis, or localized nonseptic syndrome better explains findings",
                     "source_ids": [
                       "SSC_SEPSIS_2026"
@@ -13464,7 +13464,7 @@
                   {
                     "id": "fever_infection_sepsis_special_population_review_endpoint",
                     "type": "endpoint",
-                    "label": "Clinician review: pregnancy/postpartum, immunocompromise, MDR risk, renal/hepatic dosing, or local sepsis policy",
+                    "label": "Pregnancy, immunocompromise, MDR, or dosing review",
                     "edgeLabel": "Treatment/disposition changes because pregnancy/postpartum status, immunocompromise/neutropenia, MDR colonization/prior infection, renal/hepatic dysfunction, antimicrobial allergy, device infection, or institutional protocol applies",
                     "source_ids": [
                       "SSC_SEPSIS_2026",

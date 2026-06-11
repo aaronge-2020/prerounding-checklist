@@ -3630,7 +3630,7 @@
       "root": {
         "id": "root",
         "type": "decision",
-        "label": "Route: Polycystic Ovary Syndrome",
+        "label": "Polycystic Ovary Syndrome pathway",
         "edgeLabel": "",
         "source_ids": [
           "PCOS_GUIDELINE_2023",
@@ -3719,7 +3719,7 @@
           {
             "id": "polycystic_ovary_syndrome_concurrent_data_bundle",
             "type": "action",
-            "label": "Collect: Pregnancy test; Total/free testosterone by reliable assay",
+            "label": "Initial data bundle",
             "edgeLabel": "Assessment bundle: Pregnancy test; Total/free testosterone by reliable assay; Exclude mimics: TSH, prolactin, 17-OHP; Ovulatory dysfunction criteria; menarche date; cycle length",
             "source_ids": [
               "PCOS_GUIDELINE_2023",
@@ -3749,7 +3749,7 @@
               {
                 "id": "polycystic_ovary_syndrome_classification_decision",
                 "type": "decision",
-                "label": "Classify by: PCOS ovulatory dysfunction; Adult PCOM ultrasound; <21 days",
+                "label": "Choose clinical branch",
                 "edgeLabel": "Classify using <21 days; >45 days; >35 days; <8 cycles/year",
                 "source_ids": [
                   "PCOS_GUIDELINE_2023",
@@ -3950,7 +3950,7 @@
                   {
                     "id": "polycystic_ovary_syndrome_urgent_endpoint",
                     "type": "endpoint",
-                    "label": "Escalate for: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                    "label": "Escalation branch",
                     "edgeLabel": "Escalate: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; PCOS ovulatory dysfunction; Adult PCOM ultrasound; <21 days",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
@@ -4121,7 +4121,7 @@
                   {
                     "id": "polycystic_ovary_syndrome_treatment_bundle",
                     "type": "action",
-                    "label": "Choose treatment: Use lifestyle and weight-management support for metabolic risk and patient goals",
+                    "label": "Treatment/disposition plan",
                     "edgeLabel": "Treat/dispose using confirmed category and safety data",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",
@@ -4222,7 +4222,7 @@
                       {
                         "id": "polycystic_ovary_syndrome_treatment_safety_decision",
                         "type": "decision",
-                        "label": "Check safety: Adult PCOM ultrasound; allergy or drug interaction; weight/renal dosing",
+                        "label": "Treatment safety review",
                         "edgeLabel": "Medication, procedure, pregnancy, comorbidity, dose, or order-set modifier may change the plan",
                         "source_ids": [
                           "PCOS_GUIDELINE_2023",
@@ -4274,7 +4274,7 @@
                           {
                             "id": "polycystic_ovary_syndrome_review_endpoint",
                             "type": "endpoint",
-                            "label": "Review modifiers: Adult PCOM ultrasound",
+                            "label": "Clinician-review modifier",
                             "edgeLabel": "Review modifier: Adult PCOM ultrasound; Tumor-range androgens or rapid virilization changes to urgent imaging/endocrine evaluation; discordant endocrine tests need correct timing",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
@@ -4306,7 +4306,7 @@
                           {
                             "id": "polycystic_ovary_syndrome_monitoring_bundle",
                             "type": "action",
-                            "label": "Monitor: <21 days; >45 days; Pregnancy test",
+                            "label": "Monitoring and readiness",
                             "edgeLabel": "Monitor: <21 days; >45 days; Pregnancy test; Total/free testosterone by reliable assay; treatment response",
                             "source_ids": [
                               "PCOS_GUIDELINE_2023",
@@ -4405,7 +4405,7 @@
                               {
                                 "id": "polycystic_ovary_syndrome_worsening_endpoint",
                                 "type": "endpoint",
-                                "label": "Escalate if worse: pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism",
+                                "label": "Reassessment escalation",
                                 "edgeLabel": "Escalate if reassessment worsens: Rapid virilization, very high testosterone/DHEAS, pelvic mass, severe abnormal uterine bleeding; pregnancy-critical pain/bleeding, tumor-range hormones, mass, or priapism; <21 days; >45 days; Pregnancy test",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
@@ -4576,7 +4576,7 @@
                               {
                                 "id": "polycystic_ovary_syndrome_deescalate_endpoint",
                                 "type": "endpoint",
-                                "label": "Narrow/stop by: <21 days; >45 days; objective response",
+                                "label": "De-escalation or stopping criteria",
                                 "edgeLabel": "Narrow/stop when response and diagnosis certainty support it",
                                 "source_ids": [
                                   "PCOS_GUIDELINE_2023",
@@ -4944,7 +4944,7 @@
                   {
                     "id": "polycystic_ovary_syndrome_alternate_endpoint",
                     "type": "endpoint",
-                    "label": "Use alternate diagnosis pathway",
+                    "label": "Alternate diagnosis pathway",
                     "edgeLabel": "Alternate diagnosis: competing diagnosis better explains the presentation",
                     "source_ids": [
                       "PCOS_GUIDELINE_2023",

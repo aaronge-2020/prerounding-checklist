@@ -184,6 +184,9 @@ try {
   assert.equal(supabaseRequests.postedRows[0].review_status, "draft");
   assert.equal(supabaseRequests.postedRows[0].export_ready, false);
   assert.equal(supabaseRequests.postedRows[0].section_key, "clinical_pathway_tree_v1");
+  const importedTreeDraft = JSON.stringify(supabaseRequests.postedRows[0].after_snapshot || {});
+  assert.doesNotMatch(importedTreeDraft, /Missing data needed: glucose and ketones/i, "Imported missing-data placeholders should be sanitized out of stored pathway text.");
+  assert.match(importedTreeDraft, /Internal traversal guard/i, "Imported missing-data guards should remain as hidden internal traversal metadata.");
 
   await page.locator("#workupStudioSectionTabs button", { hasText: "History questions" }).click();
   await page.waitForSelector("#workupStudioItemLabelInput");
@@ -209,6 +212,7 @@ try {
   const exportJsonPreview = await page.inputValue("#workupStudioJsonPreview");
   assert.match(exportJsonPreview, /"clinical_pathway_tree_v1"/, "Advanced export JSON drawer should include the tree section.");
   assert.match(exportJsonPreview, /"requiredQuestions"/, "Advanced export JSON drawer should preserve history questions.");
+  assert.doesNotMatch(exportJsonPreview, /Missing data needed: glucose and ketones/i, "Advanced export preview should not expose imported missing-data placeholder labels.");
   assert.doesNotMatch(exportJsonPreview, /raw chart|MRN|DOB|room number/i, "Authoring export preview should not expose patient identifiers.");
 
   const downloadPromise = page.waitForEvent("download");
