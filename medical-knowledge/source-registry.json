@@ -1894,6 +1894,24 @@
       "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Urticaria."
     },
     {
+      "id": "RCH_ANAPHYLAXIS_CHILD",
+      "title": "Royal Children's Hospital Clinical Practice Guideline: Anaphylaxis",
+      "source": "Royal Children's Hospital Melbourne",
+      "version": "last updated October 2025, accessed 2026-06-11",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Anaphylaxis/",
+      "date_accessed": "2026-06-11",
+      "review_owner": "general_medicine_content_review",
+      "reviewed_by_role": "clinician_content_reviewer",
+      "last_reviewed": "2026-06-11",
+      "next_review_due": "2027-06-11",
+      "currency_status": "reviewed_current_for_scope",
+      "citation": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaphylaxis. Last updated October 2025.",
+      "year": "2025",
+      "review_status": "reviewed_current_for_scope",
+      "url_or_doi": "https://www.rch.org.au/clinicalguide/guideline_index/Anaphylaxis/",
+      "citation_text": "Royal Children's Hospital Melbourne. Clinical Practice Guideline: Anaphylaxis. Last updated October 2025."
+    },
+    {
       "id": "RCH_UTI_CHILD",
       "title": "Royal Children's Hospital Clinical Practice Guideline: Urinary Tract Infection",
       "source": "Royal Children's Hospital Melbourne",

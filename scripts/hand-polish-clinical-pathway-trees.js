@@ -988,6 +988,51 @@ const curatedCutoffCriteria = {
       data_needed: ["weight", "diagnosis certainty", "cardiology plan", "aspirin contraindications", "follow-up echo schedule"],
       source_ids: ["RCH_KAWASAKI_DISEASE"],
       source_section: "Treatment"
+    },
+    {
+      id: "peds_nonblanching_meningococcal_risk",
+      label: "Non-blanching rash risk: fever plus ill appearance, purpura >2 mm, CRT >=3 seconds, neck stiffness, shock, altered mental status, or difficulty mobilizing",
+      criteria_text: "NICE flags meningococcal disease when fever and non-blanching rash occur, especially with ill appearance, purpura >2 mm, capillary refill time >=3 seconds, or neck stiffness; RCH treats unwell children with petechiae/purpura as urgent and notes shock, altered conscious state, abnormal vitals, and limb tenderness or difficulty mobilizing as unwell features.",
+      cutoffs: [">2 mm", ">=3 seconds", "<6 months"],
+      data_needed: ["fever status", "rash blanching/glass test", "purpura size", "capillary refill time", "neck stiffness", "mental status", "vital signs", "limb tenderness or mobility", "immunization status", "age"],
+      source_ids: ["NICE_FEVER_UNDER5_NG143", "RCH_PETECHIAE_PURPURA_CHILD"],
+      source_section: "Meningococcal disease signs and petechiae/purpura assessment"
+    },
+    {
+      id: "peds_petechiae_antibiotic_doses",
+      label: "Unwell petechiae/purpura antibiotics: ceftriaxone 100 mg/kg IV daily max 4 g, avoid neonates <41 weeks; cefotaxime 50 mg/kg IV by neonatal age interval",
+      criteria_text: "RCH petechiae/purpura antimicrobial notes list ceftriaxone 100 mg/kg IV daily (maximum 4 g) and advise avoiding ceftriaxone in neonates <41 weeks gestation, especially if jaundiced or receiving calcium-containing solutions; cefotaxime 50 mg/kg IV is dosed every 12 hours in week 1, every 6-8 hours in weeks 2-4, and every 6 hours after week 4.",
+      cutoffs: ["100 mg/kg", "4 g", "<41 weeks", "50 mg/kg", "12 hours", "6-8 hours", "6 hours", "week 1", "weeks 2-4", ">week 4"],
+      data_needed: ["weight", "corrected gestational age", "jaundice", "calcium-containing infusions or TPN", "neonatal age in weeks", "local antimicrobial policy", "allergy history"],
+      source_ids: ["RCH_PETECHIAE_PURPURA_CHILD"],
+      source_section: "Management antibiotic dosing footnote"
+    },
+    {
+      id: "peds_anaphylaxis_adrenaline_observation",
+      label: "Anaphylaxis: IM adrenaline 1:1000 by weight band, repeat/escalate after 2 doses; observe >=4 hours after last adrenaline or symptom onset",
+      criteria_text: "RCH anaphylaxis guidance uses IM adrenaline 1:1000 volumes by weight band (0.1 mL under 7.5-10 kg, 0.15 mL at 15 kg, 0.2 mL at 20 kg, 0.3 mL at 30 kg, 0.4 mL at 40 kg, 0.5 mL above 50 kg), defines refractory anaphylaxis as persisting respiratory or cardiovascular symptoms despite 2 appropriate IM doses, and observes all children for at least 4 hours after the last adrenaline dose or symptom onset.",
+      cutoffs: ["0.1 mL", "0.15 mL", "0.2 mL", "0.3 mL", "0.4 mL", "0.5 mL", "2 doses", ">=4 hours", "7.5-20 kg", ">20 kg", ">50 kg"],
+      data_needed: ["weight", "airway/breathing/circulation symptoms", "GI symptoms and trigger", "adrenaline dose count", "last adrenaline time", "asthma status", "distance from emergency services"],
+      source_ids: ["RCH_ANAPHYLAXIS_CHILD", "RCH_URTICARIA_CHILD"],
+      source_section: "Adrenaline dose chart, observation and admission, urticaria anaphylaxis screen"
+    },
+    {
+      id: "peds_urticaria_cetirizine_prednisolone_cutoffs",
+      label: "Urticaria: acute hives use cetirizine age dosing; severe nonresponse prednisolone 0.5-1 mg/kg max 60 mg; chronic >6 weeks may increase cetirizine to 4x dose",
+      criteria_text: "RCH urticaria guidance states acute urticaria usually needs no investigations, uses non-sedating antihistamines such as cetirizine with age-based dosing, may use one oral prednisolone dose 0.5-1 mg/kg (max 60 mg) in severe cases not responding to antihistamines, and chronic urticaria (>6 weeks) can increase cetirizine up to 4 times the recommended daily dose with specialist advice if symptoms persist.",
+      cutoffs: ["6-11 months", "0.25 mg/kg", "2.5 mg", "1-2 years", "2.5 mg twice daily", "2-6 years", "5 mg daily", "6-12 years", "10 mg daily", "12-18 years", "0.5-1 mg/kg", "60 mg", ">6 weeks", "4 times", "40 mg"],
+      data_needed: ["age", "weight", "hives duration", "anaphylaxis excluded", "severity/pruritus", "cetirizine response", "fever/bruising/joint pain/systemic features"],
+      source_ids: ["RCH_URTICARIA_CHILD"],
+      source_section: "Treatment, chronic urticaria, consultation and discharge"
+    },
+    {
+      id: "peds_ssti_severity_dosing_cutoffs",
+      label: "Pediatric SSTI: abscess/cellulitis <5 cm mild, >5 cm or systemic symptoms moderate; oral antibiotics 5 days; TMP-SMX, doxycycline, clindamycin, cephalexin doses",
+      criteria_text: "Johns Hopkins All Children's SSTI pathway classifies suppurative abscess/cellulitis as mild when total cellulitis plus abscess is <5 cm with no systemic symptoms, moderate when >5 cm and/or systemic symptoms, and severe/complicated with hemodynamic instability, toxic appearance, immunocompromise, necrotizing concern, poor adherence/social concern, failed I&D, or failed outpatient therapy. It recommends I&D as primary abscess treatment, oral antibiotics for 5 days when indicated, and lists TMP-SMX 8 mg/kg TMP component q12h max 320 mg TMP, doxycycline 2.2 mg/kg q12h max 100 mg, clindamycin 10 mg/kg q8h max 450 mg, or cephalexin 50 mg/kg/day divided q6-8h max 500 mg.",
+      cutoffs: ["<5 cm", ">5 cm", "5 days", "8 mg/kg", "q12h", "320 mg", "2.2 mg/kg", "100 mg", "10 mg/kg", "q8h", "450 mg", "50 mg/kg/day", "q6-8h", "500 mg", ">48 hours"],
+      data_needed: ["cellulitis/abscess diameter", "systemic symptoms", "hemodynamic stability", "immunocompromise", "necrotizing features", "drainage feasibility", "MRSA risk or PCR", "allergy history", "age/weight", "outpatient failure or adherence concerns"],
+      source_ids: ["JHACH_SSTI_CHILD_2023"],
+      source_section: "Non-suppurative and suppurative SSTI algorithms and antimicrobial therapy"
     }
   ],
   pediatric_respiratory_wheeze_v1: [
@@ -6842,6 +6887,245 @@ function buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById) {
   });
 }
 
+function buildPediatricRashSkinClinicalPathwayTree(module, sourceById) {
+  const label = module.label || "Pediatric rash, urticaria, petechiae, or skin infection";
+  const prefix = "pediatric_rash_skin";
+  const rchPetechiae = ["RCH_PETECHIAE_PURPURA_CHILD"];
+  const rchKawasaki = ["RCH_KAWASAKI_DISEASE"];
+  const rchUrticaria = ["RCH_URTICARIA_CHILD"];
+  const rchAnaphylaxis = ["RCH_ANAPHYLAXIS_CHILD"];
+  const niceFever = ["NICE_FEVER_UNDER5_NG143"];
+  const jhSsti = ["JHACH_SSTI_CHILD_2023"];
+  const sourceIds = unique([...rchPetechiae, ...rchKawasaki, ...rchUrticaria, ...rchAnaphylaxis, ...niceFever, ...jhSsti, ...genericSourceIds]);
+  const tests = firstItems(module, "initialTests", 8);
+  const redFlags = firstItems(module, "redFlags", 8, ["safetyChecks"]);
+  const differentials = firstItems(module, "differentialBuckets", 8);
+  const dispositions = firstItems(module, "dispositionRules", 8, ["treatmentOptions"]);
+  const safetyChecks = firstItems(module, "safetyChecks", 8);
+  const visibleSafetyLabels = visibleListLabels(safetyChecks, 8)
+    .filter((text) => !/^(Measure|Document)\b|temperature|heart rate|respiratory rate|oxygen saturation|blood pressure|mental status|weight/i.test(text));
+  const evidenceLabels = {
+    tests: compactArrayText(visibleListLabels(tests, 8), "rash tests, cultures, ECG/echo, or source-control data", 5, 260),
+    redFlags: compactArrayText(visibleListLabels(redFlags, 8), "non-blanching, anaphylaxis, Kawasaki, SSTI, or hematology red flags", 5, 260),
+    differentials: compactArrayText(visibleListLabels(differentials, 8), "petechiae, Kawasaki, urticaria, SSTI, viral, vasculitis, or hematology mimics", 5, 260),
+    dispositions: compactArrayText(visibleListLabels(dispositions, 8), "sepsis, allergy, cardiac, SSTI, and low-risk follow-up plans", 5, 260),
+    safety: compactArrayText(visibleSafetyLabels, "age, immune, allergy, pregnancy, medication, and follow-up modifiers", 4, 220)
+  };
+  const criteriaRows = cutoffCriteriaForModule(module);
+  const criteriaById = Object.fromEntries(criteriaRows.map((row) => [row.id, row]));
+  const focusedCriteria = (...ids) => ids.map((id) => criteriaById[id]).filter(Boolean);
+  const petechiaeRows = focusedCriteria("peds_nonblanching_meningococcal_risk", "peds_petechiae_antibiotic_doses");
+  const kawasakiRows = focusedCriteria("peds_kawasaki_complete_criteria", "peds_kawasaki_echo_risk_cutoffs", "peds_kawasaki_treatment_cutoffs");
+  const urticariaRows = focusedCriteria("peds_anaphylaxis_adrenaline_observation", "peds_urticaria_cetirizine_prednisolone_cutoffs");
+  const sstiRows = focusedCriteria("peds_ssti_severity_dosing_cutoffs");
+
+  const missingContextEndpoint = endpoint({
+    id: "endpoint_missing_context",
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_context_criteria`, "Use when pediatric rash cannot be safely classified because core morphology, fever, acuity, medication, immune-risk, or follow-up data are unavailable.", contextDomains, sourceIds, { missing_any: contextDomains }),
+    action: internalTraversalGuardAction,
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["age and weight", "immunization status", "immunocompromise", "temperature and fever duration", "rash morphology and blanching", "purpura size", "vital signs and perfusion", "mental status", "airway/breathing/circulation symptoms", "Kawasaki features", "skin infection size/drainage/location", "medications/allergies", "pregnancy possibility in adolescents", "follow-up access"]
+  });
+
+  const missingBranchDataEndpoint = endpoint({
+    id: `${prefix}_missing_branch_data_endpoint`,
+    label: internalTraversalGuardLabel,
+    edgeLabel: internalTraversalGuardLabel,
+    sourceIds,
+    criteria: criteria(`${prefix}_missing_branch_data_criteria`, "Use when a rash pattern is present but branch-critical values for sepsis, Kawasaki, anaphylaxis, urticaria, SSTI, or mimic selection are unavailable.", contextDomains, sourceIds, { missing_any: ["rash blanching/glass test", "purpura size", "capillary refill time", "neck stiffness", "Kawasaki feature count", "fever day count", "coronary Z-score or echo status", "adrenaline dose count and last dose time", "urticaria duration", "abscess/cellulitis size", "MRSA risk or PCR", "follow-up access"] }),
+    action: internalTraversalGuardAction,
+    endpointType: "missing_data_needed",
+    missingDataNeeded: ["rash blanching/glass test", "purpura size >2 mm status", "capillary refill time", "neck stiffness or meningitis screen", "Kawasaki fever day and feature count", "cervical node size", "echo/coronary Z-score when KD possible", "CRP/platelets when KD risk is assessed", "adrenaline dose count and timing", "urticaria duration", "cellulitis/abscess diameter", "drainage/culture/MRSA status", "follow-up or transfer access"]
+  });
+
+  const nonBlanchingEndpoint = endpoint({
+    id: `${prefix}_nonblanching_emergency_endpoint`,
+    label: "Non-blanching rash emergency",
+    edgeLabel: "Fever or unwell child plus petechiae/purpura, purpura >2 mm, CRT >=3 sec, neck stiffness, shock, altered mental status, limb tenderness, age <6 months, incomplete immunization, or immunocompromise",
+    sourceIds: unique([...rchPetechiae, ...niceFever]),
+    criteria: criteria(`${prefix}_nonblanching_emergency_criteria`, "Use when non-blanching rash features or systemic illness make meningococcal disease, sepsis, DIC, leukemia, HUS, or another urgent cause possible.", ["symptoms", "exam", "vitals", "labs", "medications", "comorbidities", "demographics", "workup_findings"], unique([...rchPetechiae, ...niceFever]), { criteria_options: petechiaeRows }),
+    action: "Get senior pediatric review immediately. Assess ABCs, perfusion, mental status, CRT, rash distribution and purpura size, meningitis signs, bleeding, hepatosplenomegaly, lymph nodes, joints, and mobility. Use sepsis/meningococcal care when unwell; obtain culture/FBE-film/coagulation/CRP per senior plan; give ceftriaxone 100 mg/kg IV daily max 4 g unless neonatal contraindication applies, or cefotaxime 50 mg/kg IV by neonatal age interval; admit or transfer if care exceeds local capability.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: petechiaeRows
+  });
+
+  const kawasakiEndpoint = endpoint({
+    id: `${prefix}_kawasaki_endpoint`,
+    label: "Kawasaki disease treatment",
+    edgeLabel: "Fever >=4 days plus >=4 principal features, or infant <12 months/prolonged fever with fewer features; node >=1.5 cm, coronary Z-score >=2.5, EF <55%, CRP >=130 mg/L, platelets >=450 x10^9/L, or IVIG delay >=10 days",
+    sourceIds: rchKawasaki,
+    criteria: criteria(`${prefix}_kawasaki_criteria`, "Use when complete or incomplete Kawasaki disease is suspected and cardiac or inflammatory risk changes treatment, admission, or follow-up.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "demographics", "workup_findings"], rchKawasaki, { criteria_options: kawasakiRows }),
+    action: "Consult senior pediatrics and cardiology. Order FBE, CRP, ESR, UEC, LFTs, blood culture, urine microscopy/culture, ECG, and baseline echocardiogram without delaying treatment. Treat confirmed or strongly suspected KD with IVIG 2 g/kg over 8-12 hours plus aspirin 5 mg/kg PO daily until cardiology review around 6 weeks. Add corticosteroid pathway for high CAA risk or clinician decision, and transfer if cardiac involvement or timely echo is unavailable.",
+    endpointType: "treatment",
+    guidelineCutoffs: kawasakiRows
+  });
+
+  const urticariaAnaphylaxisEndpoint = endpoint({
+    id: `${prefix}_urticaria_anaphylaxis_endpoint`,
+    label: "Urticaria or anaphylaxis route",
+    edgeLabel: "Hives/angioedema with airway, breathing, circulation, or severe GI symptoms; or isolated migratory wheals after anaphylaxis is excluded; chronic hives >6 weeks",
+    sourceIds: unique([...rchUrticaria, ...rchAnaphylaxis]),
+    criteria: criteria(`${prefix}_urticaria_anaphylaxis_criteria`, "Use when hives, angioedema, or allergy symptoms determine emergency treatment, antihistamine dosing, observation, or allergy follow-up.", ["symptoms", "exam", "vitals", "medications", "demographics", "comorbidities", "workup_findings"], unique([...rchUrticaria, ...rchAnaphylaxis]), { criteria_options: urticariaRows }),
+    action: "If airway, breathing, circulation, collapse, hypotension, or severe persistent GI symptoms are present, remove allergen when possible and give IM adrenaline 1:1000 using the weight band chart; give adrenaline before asthma medicines when asthma coexists. Escalate after 2 appropriate IM doses or infusion need. Observe anaphylaxis at least 4 hours after last adrenaline or symptom onset. For isolated acute urticaria, avoid routine allergy tests, remove triggers, use cetirizine age dosing, consider one prednisolone 0.5-1 mg/kg dose max 60 mg only for severe antihistamine nonresponse, and arrange allergy review for persistent/systemic cases.",
+    endpointType: "treatment",
+    guidelineCutoffs: urticariaRows
+  });
+
+  const sstiEndpoint = endpoint({
+    id: `${prefix}_ssti_endpoint`,
+    label: "Cellulitis, impetigo, or abscess",
+    edgeLabel: "Painful warm erythema, crusting, purulence, abscess, drainage, bite/wound source, difficult location, <5 cm mild abscess/cellulitis, >5 cm/systemic moderate disease, or severe/complicated infection",
+    sourceIds: jhSsti,
+    criteria: criteria(`${prefix}_ssti_criteria`, "Use when rash morphology and exam point to cellulitis, erysipelas, impetigo, purulent cellulitis, or cutaneous abscess and severity changes drainage, antibiotics, admission, or culture.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "comorbidities", "workup_findings"], jhSsti, { criteria_options: sstiRows }),
+    action: "Measure erythema/abscess diameter and assess systemic illness, hemodynamics, immunocompromise, necrotizing concern, adherence, and outpatient failure. Drain abscess when indicated and send culture/MRSA-SA PCR at I&D. Use 5 days of oral therapy for uncomplicated outpatient infection when antibiotics are indicated: TMP-SMX 8 mg/kg TMP q12h max 320 mg, doxycycline 2.2 mg/kg q12h max 100 mg, clindamycin 10 mg/kg q8h max 450 mg if susceptible, or cephalexin 50 mg/kg/day divided q6-8h max 500 mg when MRSA risk is low. Admit severe/complicated infection for IV cefazolin or vancomycin by MRSA/immunocompromise/ill appearance and ID/surgery input.",
+    endpointType: "treatment",
+    guidelineCutoffs: sstiRows
+  });
+
+  const specialReviewEndpoint = endpoint({
+    id: `${prefix}_special_review_endpoint`,
+    label: "Rash special-population review",
+    edgeLabel: "Age <6 months, newborn petechiae, immunocompromise, incomplete immunization, pregnancy, drug/mucosal severe rash, periorbital/orbital site, chronic urticaria >6 weeks, urticarial vasculitis lesions >48 hours, or live vaccines after IVIG",
+    sourceIds,
+    criteria: criteria(`${prefix}_special_review_criteria`, "Use when age, immune status, pregnancy, medication reaction, anatomic site, chronicity, or treatment contraindication changes pediatric rash care.", ["demographics", "pregnancy_status", "medications", "allergies", "comorbidities", "exam", "vitals", "workup_findings"], sourceIds, { criteria_options: unique([...petechiaeRows, ...kawasakiRows, ...urticariaRows, ...sstiRows]) }),
+    action: "Get senior pediatrics, dermatology, infectious diseases, allergy, cardiology, ophthalmology, surgery, safeguarding, or obstetric advice as indicated. Resolve ceftriaxone avoidance in neonates <41 weeks or calcium/TPN exposure, pregnancy-safe medicines, immunocompromised host coverage, orbital/periorbital and difficult abscess drainage, chronic urticaria or vasculitis workup, suspected severe drug eruption, and live-vaccine delay for 11 months after IVIG.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: unique([...petechiaeRows, ...kawasakiRows, ...urticariaRows, ...sstiRows]),
+    reviewNeededReason: "Specialist review is required when pediatric rash management depends on neonatal antibiotic safety, immunocompromise, pregnancy, severe drug eruption, orbital/periorbital disease, difficult drainage, Kawasaki cardiology, chronic urticaria, or post-IVIG vaccination timing."
+  });
+
+  const mimicEndpoint = endpoint({
+    id: `${prefix}_mimic_endpoint`,
+    label: "Rash mimic or benign pattern",
+    edgeLabel: "Blanching viral exanthem, mechanical petechiae above nipple line after cough/vomiting, contact/eczema pattern, erythema multiforme target lesions, HSP/IgA vasculitis, ITP/leukemia clues, trauma/safeguarding, measles, scarlet fever, MIS-C, or toxic shock",
+    sourceIds: unique([...rchPetechiae, ...rchUrticaria, ...rchKawasaki, ...niceFever]),
+    criteria: criteria(`${prefix}_mimic_criteria`, "Use when rash morphology, distribution, systemic findings, exposure, trauma, or labs make a non-primary rash diagnosis more likely than meningococcal disease, KD, anaphylaxis, or SSTI.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "demographics", "workup_findings"], unique([...rchPetechiae, ...rchUrticaria, ...rchKawasaki, ...niceFever]), { criteria_options: criteriaRows }),
+    action: "Name the competing diagnosis and start disease-specific care: mechanical petechiae only after cough/vomiting and above the nipple line, IgA vasculitis with purpura plus abdominal/joint/urine findings, ITP/leukemia/DIC/HUS with bleeding or abnormal FBE/film, erythema multiforme target lesions, measles or scarlet fever features, MIS-C/PIMS-TS, toxic shock, eczema/contact dermatitis, or safeguarding concern. Discharge benign rash only after serious causes are considered unlikely and follow-up is reliable.",
+    endpointType: "clinician_review_handoff",
+    guidelineCutoffs: criteriaRows,
+    reviewNeededReason: "Clinician review should confirm the named alternate rash diagnosis, serious-cause exclusions, and follow-up ownership before closure."
+  });
+
+  const worseningEndpoint = endpoint({
+    id: `${prefix}_worsening_endpoint`,
+    label: "Rash worsening or treatment failure",
+    edgeLabel: "New fever/toxic appearance, spreading non-blanching rash, CRT >=3 sec, hypotension, hypoxemia, recurrent anaphylaxis, fever >=38 C >=36 hours after IVIG, SSTI worse after 24 hours or not improving >48 hours, or new bleeding/mucosal lesions",
+    sourceIds,
+    criteria: criteria(`${prefix}_worsening_criteria`, "Escalate pediatric rash care when reassessment contradicts the current lower-risk branch or treatment response is inadequate.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Reassess ABCs, vitals, perfusion, mental status, rash spread/blanching, fever curve, medication doses, cultures/labs/echo, and diagnosis. Move to ED/admission/transfer for new shock, meningitis, progressive purpura, recurrent anaphylaxis, refractory KD, necrotizing/SSTI failure, mucosal severe drug eruption, bleeding, or inability to maintain follow-up.",
+    endpointType: "escalation_disposition",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const deescalateEndpoint = endpoint({
+    id: `${prefix}_deescalation_endpoint`,
+    label: "Rash de-escalation or stop criteria",
+    edgeLabel: "Serious causes unlikely, vitals/perfusion normal, anaphylaxis observed >=4 hours and stable, KD afebrile/well >=36 hours after treatment, SSTI improving, or abscess drained with no systemic illness",
+    sourceIds,
+    criteria: criteria(`${prefix}_deescalation_criteria`, "Use when objective reassessment supports narrowing monitoring, antibiotics, admission intensity, or emergency concern.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Narrow the plan only when the cited branch is objectively improving: benign petechiae explanation or negative senior review, anaphylaxis stable for at least 4 hours, KD afebrile/well for at least 36 hours with aspirin and echo follow-up, SSTI improving after expected early 24-hour worsening window, or drained abscess without systemic illness. Document what changed and who owns pending results.",
+    endpointType: "deescalation_stopping",
+    guidelineCutoffs: criteriaRows
+  });
+
+  const followupEndpoint = endpoint({
+    id: `${prefix}_followup_safety_endpoint`,
+    label: "Rash follow-up and safety-net",
+    edgeLabel: "Diagnosis and risk category documented, pending FBE/film/cultures/urine/echo owned, medication plan supplied, follow-up reachable, and return precautions reviewed",
+    sourceIds,
+    criteria: criteria(`${prefix}_followup_safety_criteria`, "Use when pediatric rash is stable enough for discharge or lower-acuity care with result ownership and explicit return precautions.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Document diagnosis or working diagnosis, serious conditions considered, exact medicine doses, pending result owner, follow-up service and interval, and caregiver return precautions for becoming more unwell, fever recurrence, spreading/non-blanching rash, breathing trouble, swelling, vomiting/collapse, new bleeding/bruising, worsening pain/redness, dehydration, medication reaction, inability to take treatment, or missed follow-up.",
+    endpointType: "follow_up",
+    monitoringPlan: ["vital sign and perfusion trend", "rash spread/blanching", "FBE/film/culture/urine/echo owner", "adrenaline or antihistamine education", "SSTI response within 24-48 hours", "KD cardiology echo follow-up", "caregiver return precautions"]
+  });
+
+  const monitoringBundle = actionNode({
+    id: `${prefix}_monitoring_bundle`,
+    label: "Monitor rash response and disposition",
+    edgeLabel: "Trend fever, vitals, perfusion, rash spread/blanching, airway/breathing, cultures/labs/echo, medication response, adverse effects, and follow-up readiness",
+    sourceIds,
+    criteria: criteria(`${prefix}_monitoring_bundle_criteria`, "Monitor pediatric rash by reassessing the exact findings that selected the branch and pending results that could change treatment or disposition.", ["symptoms", "exam", "vitals", "labs", "imaging_results", "medications", "follow_up_access", "workup_findings"], sourceIds, { criteria_options: criteriaRows }),
+    action: "Repeat vitals, mental status, perfusion/CRT, rash blanching and spread, mucosal/eye findings, airway/breathing, abdominal/joint/urine symptoms, skin infection border/drainage, medication timing/doses, culture/FBE-film/coag/CRP/ESR/urine/echo status, treatment response, adverse effects, and caregiver access before closing the pathway.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.differentials, evidenceLabels.dispositions, evidenceLabels.safety, "repeat rash morphology and blanching check", "trend fever and CRT", "verify medication dose and timing", "confirm pending-result owner and return access"]),
+    guidelineCutoffs: criteriaRows,
+    children: [worseningEndpoint, deescalateEndpoint, followupEndpoint]
+  });
+
+  const classificationDecision = decision({
+    id: `${prefix}_classification_decision`,
+    label: "Choose pediatric rash branch",
+    edgeLabel: "Morphology, blanching, fever/acuity, Kawasaki features, allergy symptoms, SSTI size/drainage, host modifiers, and follow-up access are available",
+    sourceIds,
+    criteria: criteria(`${prefix}_classification_criteria`, "Classify pediatric rash using rash morphology, blanching, fever duration, systemic illness, allergy/anaphylaxis features, Kawasaki criteria, SSTI severity, mimics, and treatment-safety modifiers.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Select non-blanching rash emergency, Kawasaki disease, urticaria/anaphylaxis, cellulitis/abscess/impetigo, special-population review, named competing diagnosis, or monitoring/follow-up.",
+    clinicalCriteria: criteriaRows,
+    guidelineCutoffs: criteriaRows,
+    children: [missingBranchDataEndpoint, nonBlanchingEndpoint, kawasakiEndpoint, urticariaAnaphylaxisEndpoint, sstiEndpoint, specialReviewEndpoint, mimicEndpoint, monitoringBundle]
+  });
+
+  const initialAssessment = actionNode({
+    id: `${prefix}_initial_assessment_bundle`,
+    label: "Initial pediatric rash assessment",
+    edgeLabel: "Start with age/weight, fever duration, rash morphology and blanching, vitals/perfusion, mucosa/eyes, allergy symptoms, SSTI source, medicines, immune risk, and follow-up access",
+    sourceIds,
+    criteria: criteria(`${prefix}_initial_assessment_criteria`, "Initial pediatric rash assessment must collect the data needed to identify sepsis/meningococcemia, Kawasaki disease, anaphylaxis, urticaria, SSTI, hematology/vasculitis mimics, and safe disposition.", contextDomains, sourceIds, { criteria_options: criteriaRows }),
+    action: "Assess age, weight, immunization and immune status, fever day count, rash onset/progression, morphology/distribution, glass-test blanching, purpura size, pain/pruritus, full vitals, CRT/perfusion, mental status, neck stiffness, limb/joint/abdominal/urine findings, oral mucosa/lips/conjunctiva/hands/feet/cervical node size, hives/angioedema/anaphylaxis symptoms, cellulitis or abscess size/drainage/location, medications/allergies, pregnancy possibility in adolescents, and follow-up access.",
+    parallelActions: unique([evidenceLabels.tests, evidenceLabels.redFlags, evidenceLabels.differentials, evidenceLabels.dispositions, evidenceLabels.safety, "glass test and purpura size", "Kawasaki feature count and fever day", "airway/breathing/circulation allergy screen", "SSTI size/drainage/source check", "medication/allergy/pregnancy and immune-risk review"]),
+    requiredData: ["age and weight", "immunization/immune status", "temperature and fever duration", "rash morphology/distribution/progression", "blanching/glass test", "purpura size", "full vital signs and CRT", "mental status and meningitis screen", "Kawasaki feature count", "hives/angioedema/anaphylaxis features", "SSTI size/drainage/location", "medications/allergies", "pregnancy possibility in adolescents", "follow-up access"],
+    guidelineCutoffs: criteriaRows,
+    children: [classificationDecision]
+  });
+
+  const root = decision({
+    id: "root",
+    label: "Pediatric rash/skin pathway",
+    sourceIds,
+    criteria: criteria(`${prefix}_activate`, "Activate for child or adolescent with rash, petechiae, purpura, non-blanching lesions, hives, angioedema, suspected anaphylaxis, prolonged fever with rash, cellulitis, impetigo, abscess, or clinician-chosen pediatric skin evaluation.", ["clinician_chosen_module", "symptoms", "exam", "vitals", "labs", "imaging_results", "problem_list_or_diagnosis"], sourceIds),
+    action: "Use the pediatric rash/skin pathway for non-blanching rash emergencies, Kawasaki disease, anaphylaxis/urticaria, SSTI, mimics, monitoring, de-escalation, follow-up, and safety-net endpoints.",
+    children: [missingContextEndpoint, initialAssessment]
+  });
+
+  return finalizeClinicalPathwayTree({
+    module,
+    sourceById,
+    label,
+    version: "4.0.0",
+    status: "hand_polished_pediatric_rash_skin_pathway_needs_clinician_review",
+    sourceIds,
+    criteriaRows,
+    tests,
+    redFlags,
+    differentials,
+    dispositions,
+    root,
+    sourceMaterial: "RCH petechiae/purpura, Kawasaki disease, urticaria, and anaphylaxis guidelines; NICE NG143 fever in under 5s; Johns Hopkins All Children's SSTI pathway; local module evidence rows",
+    reviewNote: "Pediatric rash/skin tree is threshold-cited and patient-traversable; local antimicrobial formulary, retrieval/transfer thresholds, dermatology/ID/allergy/cardiology availability, neonatal ceftriaxone policy, and local safeguarding policy require clinician governance.",
+    syntheticScenarios: [
+      { scenario_id: "missing_context", major_pathway: "missing_data_needed", expected_endpoint_id: missingContextEndpoint.id, expected_active_branch: missingContextEndpoint.edgeLabel },
+      { scenario_id: "missing_branch_data", major_pathway: "diagnostic_confirmation_missing_data", expected_endpoint_id: missingBranchDataEndpoint.id, expected_active_branch: missingBranchDataEndpoint.edgeLabel },
+      { scenario_id: "febrile_nonblanching_purpura", major_pathway: "escalation_emergency_actions", expected_endpoint_id: nonBlanchingEndpoint.id, expected_active_branch: nonBlanchingEndpoint.edgeLabel },
+      { scenario_id: "complete_or_incomplete_kawasaki", major_pathway: "first_line_management", expected_endpoint_id: kawasakiEndpoint.id, expected_active_branch: kawasakiEndpoint.edgeLabel },
+      { scenario_id: "hives_anaphylaxis_or_isolated_urticaria", major_pathway: "first_line_management", expected_endpoint_id: urticariaAnaphylaxisEndpoint.id, expected_active_branch: urticariaAnaphylaxisEndpoint.edgeLabel },
+      { scenario_id: "cellulitis_abscess_ssti", major_pathway: "first_line_management", expected_endpoint_id: sstiEndpoint.id, expected_active_branch: sstiEndpoint.edgeLabel },
+      { scenario_id: "neonate_immunocompromised_pregnancy_or_drug_rash", major_pathway: "contraindications_special_populations", expected_endpoint_id: specialReviewEndpoint.id, expected_active_branch: specialReviewEndpoint.edgeLabel },
+      { scenario_id: "mechanical_viral_hematology_or_vasculitis_mimic", major_pathway: "mimics_exclusions", expected_endpoint_id: mimicEndpoint.id, expected_active_branch: mimicEndpoint.edgeLabel },
+      { scenario_id: "worsening_or_treatment_failure", major_pathway: "monitoring_reassessment_escalation", expected_endpoint_id: worseningEndpoint.id, expected_active_branch: worseningEndpoint.edgeLabel },
+      { scenario_id: "deescalation_after_stable_reassessment", major_pathway: "deescalation_stopping_criteria", expected_endpoint_id: deescalateEndpoint.id, expected_active_branch: deescalateEndpoint.edgeLabel },
+      { scenario_id: "followup_return_precautions", major_pathway: "disposition_followup_safety_netting", expected_endpoint_id: followupEndpoint.id, expected_active_branch: followupEndpoint.edgeLabel }
+    ],
+    handPolishRequirements: [
+      "non-blanching rash branch includes purpura >2 mm, CRT >=3 seconds, age/immunization/immune-risk modifiers, senior review, and ceftriaxone/cefotaxime dosing",
+      "Kawasaki branch includes fever >=4 days, >=4 principal features, node >=1.5 cm, echo Z-score/EF/FS cutoffs, IVIG 2 g/kg, aspirin 5 mg/kg, and 4-6 week echo follow-up",
+      "anaphylaxis and urticaria branch includes adrenaline weight-band dosing, >=4 hour observation, admission triggers, cetirizine age dosing, prednisolone rescue dose, and chronic >6 week escalation",
+      "SSTI branch includes <5 cm versus >5 cm severity, I&D primary abscess treatment, 5-day oral therapy, and TMP-SMX/doxycycline/clindamycin/cephalexin dosing",
+      "mimic and special-population branches explicitly handle mechanical petechiae, HSP/IgA vasculitis, hematology, measles/scarlet fever/MIS-C/TSS, severe drug rash, neonates, immunocompromise, pregnancy, orbital/difficult-site SSTI, and post-IVIG live-vaccine delay"
+    ]
+  });
+}
+
 function buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById) {
   const label = module.label || "Pediatric chest pain, syncope, or palpitations";
   const prefix = "pediatric_chest_syncope";
@@ -7483,11 +7767,13 @@ function main() {
                                   ? buildErectileDysfunctionClinicalPathwayTree(module, sourceById)
                                   : module.id === "pediatric_fever_sepsis_v1"
                                     ? buildPediatricFeverSepsisClinicalPathwayTree(module, sourceById)
-                                    : module.id === "pediatric_chest_pain_syncope_v1"
-                                      ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
-                                      : module.id === "pediatric_msk_limp_hot_joint_v1"
-                                        ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
-                                        : buildCompactClinicalPathwayTree(module, sourceById);
+                                    : module.id === "pediatric_rash_skin_v1"
+                                      ? buildPediatricRashSkinClinicalPathwayTree(module, sourceById)
+                                      : module.id === "pediatric_chest_pain_syncope_v1"
+                                        ? buildPediatricChestPainSyncopeClinicalPathwayTree(module, sourceById)
+                                        : module.id === "pediatric_msk_limp_hot_joint_v1"
+                                          ? buildPediatricMskLimpHotJointClinicalPathwayTree(module, sourceById)
+                                          : buildCompactClinicalPathwayTree(module, sourceById);
     const nextModule = { ...baseModule, clinical_pathway_tree_v1: clinicalPathway };
     const nextRaw = raw.module ? { ...raw, module: nextModule } : nextModule;
     const next = `${JSON.stringify(nextRaw, null, 2)}\n`;
